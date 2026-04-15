@@ -4,7 +4,6 @@ use uuid::Uuid;
 
 use super::asset::Asset;
 use super::finding::{Finding, FindingStatus, FindingSummary};
-use super::stig::Severity;
 
 /// A STIG checklist — the core output artifact (.ckl / .cklb).
 ///

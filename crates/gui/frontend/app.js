@@ -1051,6 +1051,15 @@ async function loadSettings() {
       ),
       h('div', { id: 'sm-test-result', style: 'margin-top: 16px' }),
     ),
+    h('div', { className: 'card', style: 'max-width: 700px; margin-top: 20px' },
+      h('div', { className: 'card-header' },
+        h('h2', {}, 'Answer Files'),
+      ),
+      h('p', { style: 'color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px' },
+        'Create and manage answer file templates for pre-populating checklist findings.',
+      ),
+      h('button', { className: 'btn btn-primary', onClick: openAnswerEditor }, 'Open Answer File Editor'),
+    ),
   );
 }
 
@@ -1960,6 +1969,75 @@ async function updateStatusBar() {
     if (dot) dot.style.background = 'var(--orange)';
     if (text) text.textContent = 'Air-Gapped';
   }
+}
+
+// ---------------------------------------------------------------------------
+// Compliance Sparkline (SVG)
+// ---------------------------------------------------------------------------
+function sparkline(dataPoints, width = 200, height = 40) {
+  if (!dataPoints || dataPoints.length < 2) return h('span', { style: 'color: var(--text-muted); font-size: 0.75rem' }, 'No trend data');
+  const values = dataPoints.map(d => d.compliance_pct);
+  const min = Math.min(...values) - 5;
+  const max = Math.max(...values) + 5;
+  const range = max - min || 1;
+  const points = values.map((v, i) => {
+    const x = (i / (values.length - 1)) * width;
+    const y = height - ((v - min) / range) * height;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  const color = values[values.length - 1] >= 95 ? 'var(--green)' : values[values.length - 1] >= 80 ? 'var(--yellow)' : 'var(--red)';
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', width); svg.setAttribute('height', height);
+  svg.setAttribute('viewBox', `0 0 ${width} ${height}`); svg.style.display = 'block';
+  const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+  polyline.setAttribute('points', points); polyline.setAttribute('fill', 'none');
+  polyline.setAttribute('stroke', color); polyline.setAttribute('stroke-width', '2');
+  svg.appendChild(polyline);
+  return svg;
+}
+
+// ---------------------------------------------------------------------------
+// Answer File Editor
+// ---------------------------------------------------------------------------
+async function openAnswerEditor() {
+  try {
+    const [files, benchmarks] = await Promise.all([api('/answer-files'), api('/library/benchmarks')]);
+    const opts = benchmarks.map(b => h('option', { value: b.id }, b.id));
+    const overlay = h('div', { className: 'modal-overlay' },
+      h('div', { className: 'modal', style: 'max-width: 700px; max-height: 80vh; overflow-y: auto' },
+        h('h3', {}, 'Answer File Editor'),
+        files.length > 0 ? h('div', { style: 'margin-bottom: 16px' },
+          h('h4', { style: 'margin-bottom: 8px' }, `Existing Files (${files.length})`),
+          ...files.map(f => h('div', { style: 'padding: 4px 0; font-size: 0.85rem' },
+            `${f.name} — ${f.stig_id || 'Any STIG'} (${f.entries} entries)`)),
+        ) : null,
+        h('h4', { style: 'margin: 12px 0 8px' }, 'Create New'),
+        h('div', { className: 'form-group' },
+          h('label', { className: 'form-label' }, 'Name'),
+          h('input', { className: 'form-input', id: 'af-name', placeholder: 'Site Answers' })),
+        h('div', { className: 'form-group' },
+          h('label', { className: 'form-label' }, 'Target STIG'),
+          h('select', { className: 'form-select', id: 'af-stig' }, h('option', { value: '' }, 'Any'), ...opts)),
+        h('div', { className: 'form-group' },
+          h('label', { className: 'form-label' }, 'Entries (JSON)'),
+          h('textarea', { className: 'form-input', id: 'af-entries', rows: '8', style: 'font-family: monospace; font-size: 0.8rem',
+            placeholder: '[{"vuln_id":"V-254239","status":"Not_Applicable","finding_details":"Not used"}]' })),
+        h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 12px' },
+          h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Close'),
+          h('button', { className: 'btn btn-primary', onClick: async () => {
+            const name = document.getElementById('af-name')?.value;
+            if (!name) { toast('Enter a name', 'error'); return; }
+            let entries; try { entries = JSON.parse(document.getElementById('af-entries')?.value || '[]'); } catch (_) { toast('Invalid JSON', 'error'); return; }
+            try {
+              const r = await api('/answer-files', { method: 'POST', body: JSON.stringify({ name, stig_id: document.getElementById('af-stig')?.value || null, version: '1.0', description: null, entries }) });
+              toast(`Saved: ${r.entries} entries`, 'success'); overlay.remove();
+            } catch (e) { toast(e.message, 'error'); }
+          }}, 'Save'),
+        ),
+      ),
+    );
+    document.body.appendChild(overlay);
+  } catch (e) { toast(e.message, 'error'); }
 }
 
 // ---------------------------------------------------------------------------

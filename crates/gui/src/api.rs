@@ -81,10 +81,16 @@ pub fn routes() -> Router<AppState> {
         .route("/schedules/{id}/run", post(run_schedule_now))
         // Bulk operations
         .route("/assets/bulk-assign-stig", post(bulk_assign_stig))
+        .route("/assets/bulk-update", post(bulk_update_assets))
         .route("/checklists/{id}/re-evaluate", post(re_evaluate))
         .route("/checklists/{id}/findings/{vuln_id}/poam", axum::routing::patch(update_poam))
         .route("/checklists/compare", post(compare_checklists))
         .route("/trends/{hostname}", get(compliance_trends))
+        // Answer file management
+        .route("/answer-files", get(list_answer_files))
+        .route("/answer-files", post(save_answer_file))
+        // Webhooks / notifications
+        .route("/webhooks/test", post(test_webhook))
         // Export
         .route("/export/ckl/{id}", get(export_ckl))
         .route("/export/cklb/{id}", get(export_cklb))
@@ -1332,33 +1338,53 @@ async fn evaluate_batch(
         Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
     };
 
-    let engine = automatestig_core::engine::EvaluationEngine::with_defaults();
-    let mut results = Vec::new();
+    let engine = std::sync::Arc::new(automatestig_core::engine::EvaluationEngine::with_defaults());
+    let benchmark = std::sync::Arc::new(benchmark);
 
-    for hostname in &req.hostnames {
-        let asset = Asset::new(hostname);
-        match engine.evaluate(&benchmark, &asset, None, &[]) {
-            Ok(checklist) => {
-                let s = checklist.summary();
-                let db = state.db();
-                let _ = db.save_checklist(&checklist);
-                let _ = db.log_evaluation(&checklist, "gui-batch", None);
-                results.push(serde_json::json!({
-                    "hostname": hostname,
-                    "id": checklist.id.to_string(),
-                    "total": s.total,
-                    "open": s.open,
-                    "compliance_pct": s.compliance_pct(),
-                    "success": true,
-                }));
+    // Parallel evaluation with semaphore (max 10 concurrent).
+    let sem = std::sync::Arc::new(tokio::sync::Semaphore::new(10));
+    let mut handles = Vec::new();
+
+    for hostname in req.hostnames.clone() {
+        let sem = sem.clone();
+        let engine = engine.clone();
+        let benchmark = benchmark.clone();
+        let state = state.clone();
+
+        handles.push(tokio::spawn(async move {
+            let _permit = sem.acquire().await;
+            let asset = Asset::new(&hostname);
+            match engine.evaluate(&benchmark, &asset, None, &[]) {
+                Ok(checklist) => {
+                    let s = checklist.summary();
+                    let db = state.db();
+                    let _ = db.save_checklist(&checklist);
+                    let _ = db.log_evaluation(&checklist, "gui-batch", None);
+                    serde_json::json!({
+                        "hostname": hostname,
+                        "id": checklist.id.to_string(),
+                        "total": s.total,
+                        "open": s.open,
+                        "compliance_pct": s.compliance_pct(),
+                        "success": true,
+                    })
+                }
+                Err(e) => {
+                    serde_json::json!({
+                        "hostname": hostname,
+                        "error": e.to_string(),
+                        "success": false,
+                    })
+                }
             }
-            Err(e) => {
-                results.push(serde_json::json!({
-                    "hostname": hostname,
-                    "error": e.to_string(),
-                    "success": false,
-                }));
-            }
+        }));
+    }
+
+    // Collect results from all tasks.
+    let mut results = Vec::new();
+    for handle in handles {
+        if let Ok(result) = handle.await {
+            results.push(result);
         }
     }
 
@@ -1849,6 +1875,172 @@ async fn run_schedule_now(
         "assets_matched": target_assets.len(),
         "message": "Schedule triggered. Evaluations will run in background.",
     }))
+}
+
+// ---------------------------------------------------------------------------
+// Bulk Asset Update
+// ---------------------------------------------------------------------------
+
+#[derive(Deserialize)]
+struct BulkUpdateRequest {
+    asset_ids: Vec<String>,
+    credential_id: Option<String>,
+    enabled: Option<bool>,
+    add_tag: Option<String>,
+    remove_tag: Option<String>,
+}
+
+async fn bulk_update_assets(
+    State(state): State<AppState>,
+    Json(req): Json<BulkUpdateRequest>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    let mut assets = load_assets(&db);
+    let mut count = 0;
+
+    for asset in assets.iter_mut() {
+        if req.asset_ids.contains(&asset.id) {
+            if let Some(ref cid) = req.credential_id {
+                asset.credential_id = Some(cid.clone());
+            }
+            if let Some(enabled) = req.enabled {
+                asset.enabled = enabled;
+            }
+            if let Some(ref tag) = req.add_tag {
+                if !asset.tags.contains(tag) {
+                    asset.tags.push(tag.clone());
+                }
+            }
+            if let Some(ref tag) = req.remove_tag {
+                asset.tags.retain(|t| t != tag);
+            }
+            count += 1;
+        }
+    }
+
+    save_assets(&db, &assets);
+    api_ok(serde_json::json!({ "updated": count }))
+}
+
+// ---------------------------------------------------------------------------
+// Answer File Management
+// ---------------------------------------------------------------------------
+
+async fn list_answer_files(State(state): State<AppState>) -> Json<serde_json::Value> {
+    let lib_path = &state.inner.library_path;
+    let templates_dir = lib_path.join("answer_templates");
+    let mut files = Vec::new();
+
+    if templates_dir.exists() {
+        if let Ok(entries) = std::fs::read_dir(&templates_dir) {
+            for entry in entries.flatten() {
+                let path = entry.path();
+                let ext = path.extension().and_then(|e| e.to_str()).unwrap_or("");
+                if ext == "json" || ext == "yaml" || ext == "yml" {
+                    if let Ok(af) = automatestig_core::answer::AnswerFile::load(&path) {
+                        files.push(serde_json::json!({
+                            "name": af.name,
+                            "stig_id": af.stig_id,
+                            "version": af.version,
+                            "entries": af.entries.len(),
+                            "path": path.display().to_string(),
+                        }));
+                    }
+                }
+            }
+        }
+    }
+
+    api_ok(files)
+}
+
+async fn save_answer_file(
+    State(state): State<AppState>,
+    Json(af): Json<automatestig_core::answer::AnswerFile>,
+) -> Json<serde_json::Value> {
+    let lib_path = &state.inner.library_path;
+    let templates_dir = lib_path.join("answer_templates");
+    let _ = std::fs::create_dir_all(&templates_dir);
+
+    let filename = format!("{}.json", af.name.replace(' ', "_").to_lowercase());
+    let path = templates_dir.join(&filename);
+
+    match af.save_json(&path) {
+        Ok(()) => {
+            let issues = af.validate();
+            api_ok(serde_json::json!({
+                "saved": true,
+                "path": path.display().to_string(),
+                "entries": af.entries.len(),
+                "validation_issues": issues,
+            }))
+        }
+        Err(e) => api_error(&format!("Failed to save: {}", e)),
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Webhook Notifications
+// ---------------------------------------------------------------------------
+
+#[derive(Deserialize)]
+struct WebhookTestRequest {
+    url: String,
+    message: Option<String>,
+}
+
+async fn test_webhook(
+    Json(req): Json<WebhookTestRequest>,
+) -> Json<serde_json::Value> {
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(10))
+        .build()
+        .map_err(|e| format!("HTTP client error: {}", e));
+
+    let client = match client {
+        Ok(c) => c,
+        Err(e) => return api_error(&e),
+    };
+
+    let payload = serde_json::json!({
+        "source": "AutomateSTIG",
+        "event": "test",
+        "message": req.message.unwrap_or_else(|| "Test notification from AutomateSTIG".to_string()),
+        "timestamp": chrono::Utc::now().to_rfc3339(),
+    });
+
+    match client.post(&req.url).json(&payload).send().await {
+        Ok(resp) => {
+            let status = resp.status().as_u16();
+            api_ok(serde_json::json!({
+                "sent": true,
+                "status_code": status,
+                "success": status < 400,
+            }))
+        }
+        Err(e) => api_error(&format!("Webhook failed: {}", e)),
+    }
+}
+
+/// Send a webhook notification (used internally by the scheduler).
+#[allow(dead_code)] // Called by scheduler when implemented.
+pub async fn send_webhook_notification(url: &str, event: &str, data: &serde_json::Value) {
+    let client = match reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(10))
+        .build()
+    {
+        Ok(c) => c,
+        Err(_) => return,
+    };
+
+    let payload = serde_json::json!({
+        "source": "AutomateSTIG",
+        "event": event,
+        "data": data,
+        "timestamp": chrono::Utc::now().to_rfc3339(),
+    });
+
+    let _ = client.post(url).json(&payload).send().await;
 }
 
 // ---------------------------------------------------------------------------
