@@ -1,0 +1,112 @@
+{
+  "stig_id": "Windows_10_Application_Security_STIG",
+  "platform": "windows",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-260950",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer", "value_name": "AlwaysInstallElevated" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Windows Installer AlwaysInstallElevated must be disabled"
+    },
+    {
+      "vuln_id": "V-260951",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer", "value_name": "DisableUserInstalls" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Windows Installer must disable user installs"
+    },
+    {
+      "vuln_id": "V-260952",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer", "value_name": "EnableUserControl" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Windows Installer must not allow user control over installations"
+    },
+    {
+      "vuln_id": "V-260960",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System", "value_name": "EnableSmartScreen" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Windows SmartScreen must be enabled"
+    },
+    {
+      "vuln_id": "V-260961",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System", "value_name": "ShellSmartScreenLevel" },
+      "expected": { "type": "equals", "value": "Block" },
+      "description": "SmartScreen must be set to block unrecognized apps"
+    },
+    {
+      "vuln_id": "V-260962",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer", "value_name": "SmartScreenEnabled" },
+      "expected": { "type": "equals", "value": "RequireAdmin" },
+      "description": "SmartScreen for Windows Store apps must require admin approval"
+    },
+    {
+      "vuln_id": "V-260970",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat", "value_name": "DisableInventory" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Application Compatibility Inventory must be disabled"
+    },
+    {
+      "vuln_id": "V-260971",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat", "value_name": "DisableUAR" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Steps Recorder must be disabled"
+    },
+    {
+      "vuln_id": "V-260975",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR", "value_name": "ExploitGuard_ASR_Rules" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Windows Defender Exploit Guard ASR rules must be enabled"
+    },
+    {
+      "vuln_id": "V-260976",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\Network Protection", "value_name": "EnableNetworkProtection" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Windows Defender Exploit Guard network protection must be enabled"
+    },
+    {
+      "vuln_id": "V-260977",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\Controlled Folder Access", "value_name": "EnableControlledFolderAccess" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Windows Defender controlled folder access must be enabled"
+    },
+    {
+      "vuln_id": "V-260980",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\safer\\codeidentifiers", "value_name": "DefaultLevel" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Software Restriction Policies default level must be Disallowed"
+    },
+    {
+      "vuln_id": "V-260981",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\safer\\codeidentifiers", "value_name": "PolicyScope" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Software Restriction Policies must apply to all users"
+    },
+    {
+      "vuln_id": "V-260985",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "value_name": "EnableVirtualization" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "UAC virtualization must be enabled for file and registry write failures"
+    },
+    {
+      "vuln_id": "V-260986",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel", "value_name": "MitigationAuditOptions" },
+      "expected": { "type": "matches", "pattern": ".+" },
+      "description": "Exploit protection mitigation audit options must be configured"
+    }
+  ]
+}
