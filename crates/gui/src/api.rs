@@ -46,6 +46,16 @@ pub fn routes() -> Router<AppState> {
         .route("/stigman/collections", get(stigman_list_collections))
         .route("/stigman/collections/{cid}/assets", get(stigman_list_assets))
         .route("/stigman/push/{checklist_id}", post(stigman_push_checklist))
+        // Batch evaluation
+        .route("/evaluate/batch", post(evaluate_batch))
+        // Finding editing
+        .route("/checklists/{id}/findings/{vuln_id}", axum::routing::patch(update_finding))
+        // Scan import (file upload -> evaluate)
+        .route("/evaluate/with-scan", post(evaluate_with_scan))
+        // Agent config
+        .route("/agent/config", get(get_agent_config))
+        .route("/agent/config", post(set_agent_config))
+        .route("/agent/drift/{id}", get(get_drift_report))
         // Export
         .route("/export/ckl/{id}", get(export_ckl))
         .route("/export/cklb/{id}", get(export_cklb))
@@ -947,6 +957,288 @@ fn load_stigman_config(db: &automatestig_storage::Database) -> crate::stigman::S
         .flatten()
         .and_then(|json| serde_json::from_str(&json).ok())
         .unwrap_or_default()
+}
+
+// ---------------------------------------------------------------------------
+// Batch Evaluation
+// ---------------------------------------------------------------------------
+
+#[derive(Deserialize)]
+struct BatchEvaluateRequest {
+    stig_id: String,
+    hostnames: Vec<String>,
+}
+
+async fn evaluate_batch(
+    State(state): State<AppState>,
+    Json(req): Json<BatchEvaluateRequest>,
+) -> Json<serde_json::Value> {
+    let library = match state.library() {
+        Ok(l) => l,
+        Err(e) => return api_error(&e.to_string()),
+    };
+
+    let benchmark = match library.load_benchmark(&req.stig_id) {
+        Ok(b) => b,
+        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
+    };
+
+    let engine = automatestig_core::engine::EvaluationEngine::with_defaults();
+    let mut results = Vec::new();
+
+    for hostname in &req.hostnames {
+        let asset = Asset::new(hostname);
+        match engine.evaluate(&benchmark, &asset, None, &[]) {
+            Ok(checklist) => {
+                let s = checklist.summary();
+                let db = state.db();
+                let _ = db.save_checklist(&checklist);
+                let _ = db.log_evaluation(&checklist, "gui-batch", None);
+                results.push(serde_json::json!({
+                    "hostname": hostname,
+                    "id": checklist.id.to_string(),
+                    "total": s.total,
+                    "open": s.open,
+                    "compliance_pct": s.compliance_pct(),
+                    "success": true,
+                }));
+            }
+            Err(e) => {
+                results.push(serde_json::json!({
+                    "hostname": hostname,
+                    "error": e.to_string(),
+                    "success": false,
+                }));
+            }
+        }
+    }
+
+    api_ok(serde_json::json!({
+        "evaluated": results.len(),
+        "results": results,
+    }))
+}
+
+// ---------------------------------------------------------------------------
+// Evaluate with Scan Upload
+// ---------------------------------------------------------------------------
+
+async fn evaluate_with_scan(
+    State(state): State<AppState>,
+    mut multipart: Multipart,
+) -> Json<serde_json::Value> {
+    let mut stig_id = String::new();
+    let mut hostname = String::new();
+    let mut scan_data: Option<Vec<u8>> = None;
+    let mut scan_filename = String::new();
+
+    // Parse multipart fields.
+    while let Ok(Some(field)) = multipart.next_field().await {
+        let name = field.name().unwrap_or("").to_string();
+        match name.as_str() {
+            "stig_id" => {
+                stig_id = field.text().await.unwrap_or_default();
+            }
+            "hostname" => {
+                hostname = field.text().await.unwrap_or_default();
+            }
+            "scan" => {
+                scan_filename = field.file_name().unwrap_or("scan").to_string();
+                scan_data = field.bytes().await.ok().map(|b| b.to_vec());
+            }
+            _ => {}
+        }
+    }
+
+    if stig_id.is_empty() {
+        return api_error("stig_id is required");
+    }
+
+    let library = match state.library() {
+        Ok(l) => l,
+        Err(e) => return api_error(&e.to_string()),
+    };
+
+    let benchmark = match library.load_benchmark(&stig_id) {
+        Ok(b) => b,
+        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
+    };
+
+    // Parse scan results if uploaded.
+    let scan_results = if let Some(data) = scan_data {
+        let text = String::from_utf8_lossy(&data);
+        let ext = std::path::Path::new(&scan_filename)
+            .extension()
+            .and_then(|e| e.to_str())
+            .unwrap_or("");
+        match ext {
+            "xml" => xccdf::parse_xccdf_results_str(&text).ok(),
+            _ => None,
+        }
+    } else {
+        None
+    };
+
+    // Detect hostname from scan if not provided.
+    if hostname.is_empty() {
+        hostname = scan_results
+            .as_ref()
+            .and_then(|s| s.source.target.clone())
+            .unwrap_or_else(|| "Unknown".to_string());
+    }
+
+    let asset = Asset::new(&hostname);
+    let engine = automatestig_core::engine::EvaluationEngine::with_defaults();
+
+    match engine.evaluate(&benchmark, &asset, scan_results.as_ref(), &[]) {
+        Ok(checklist) => {
+            let s = checklist.summary();
+            let db = state.db();
+            let _ = db.save_checklist(&checklist);
+            let _ = db.log_evaluation(&checklist, "gui-scan-import", None);
+
+            api_ok(serde_json::json!({
+                "id": checklist.id.to_string(),
+                "hostname": hostname,
+                "stig_id": stig_id,
+                "total": s.total,
+                "open": s.open,
+                "not_a_finding": s.not_a_finding,
+                "compliance_pct": s.compliance_pct(),
+            }))
+        }
+        Err(e) => api_error(&format!("Evaluation failed: {}", e)),
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Finding Editing
+// ---------------------------------------------------------------------------
+
+#[derive(Deserialize)]
+struct UpdateFindingRequest {
+    status: Option<String>,
+    finding_details: Option<String>,
+    comments: Option<String>,
+}
+
+async fn update_finding(
+    State(state): State<AppState>,
+    axum::extract::Path((id, vuln_id)): axum::extract::Path<(String, String)>,
+    Json(req): Json<UpdateFindingRequest>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+
+    let mut checklist = match db.load_checklist(&id) {
+        Ok(cl) => cl,
+        Err(e) => return api_error(&format!("Checklist not found: {}", e)),
+    };
+
+    {
+        let finding = match checklist.find_by_vuln_id_mut(&vuln_id) {
+            Some(f) => f,
+            None => return api_error(&format!("Finding not found: {}", vuln_id)),
+        };
+
+        if let Some(ref status_str) = req.status {
+            if let Some(status) = automatestig_core::models::finding::FindingStatus::from_ckl_str(status_str) {
+                finding.status = status;
+                finding.source = automatestig_core::models::finding::FindingSource::Manual;
+                finding.evaluated_at = chrono::Utc::now();
+            }
+        }
+        if let Some(ref details) = req.finding_details {
+            finding.finding_details = details.clone();
+        }
+        if let Some(ref comments) = req.comments {
+            finding.comments = comments.clone();
+        }
+    }
+
+    checklist.touch();
+
+    let result_status = checklist
+        .find_by_vuln_id(&vuln_id)
+        .map(|f| f.status.to_string())
+        .unwrap_or_default();
+
+    if let Err(e) = db.save_checklist(&checklist) {
+        return api_error(&format!("Failed to save: {}", e));
+    }
+
+    api_ok(serde_json::json!({
+        "vuln_id": vuln_id,
+        "status": result_status,
+        "updated": true,
+    }))
+}
+
+// ---------------------------------------------------------------------------
+// Agent Configuration
+// ---------------------------------------------------------------------------
+
+async fn get_agent_config(State(state): State<AppState>) -> Json<serde_json::Value> {
+    let db = state.db();
+    let config: automatestig_core::agent::AgentConfig = db
+        .get_config("agent_config")
+        .ok()
+        .flatten()
+        .and_then(|json| serde_json::from_str(&json).ok())
+        .unwrap_or_default();
+    api_ok(config)
+}
+
+async fn set_agent_config(
+    State(state): State<AppState>,
+    Json(config): Json<automatestig_core::agent::AgentConfig>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    match serde_json::to_string(&config) {
+        Ok(json) => {
+            if let Err(e) = db.set_config("agent_config", &json) {
+                return api_error(&format!("Failed to save: {}", e));
+            }
+            api_ok("Agent configuration saved")
+        }
+        Err(e) => api_error(&format!("Serialization error: {}", e)),
+    }
+}
+
+async fn get_drift_report(
+    State(state): State<AppState>,
+    axum::extract::Path(id): axum::extract::Path<String>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+
+    // Load current checklist.
+    let current = match db.load_checklist(&id) {
+        Ok(cl) => cl,
+        Err(e) => return api_error(&format!("Checklist not found: {}", e)),
+    };
+
+    // Find the previous checklist for the same asset+STIG.
+    let all = db.list_checklists().unwrap_or_default();
+    let previous = all
+        .iter()
+        .rfind(|row| {
+            row.asset_hostname == current.asset.hostname
+                && row.stig_id == current.stig_info.stig_id
+                && row.id != id
+        });
+
+    match previous {
+        Some(prev_row) => match db.load_checklist(&prev_row.id) {
+            Ok(prev) => {
+                let report = automatestig_core::agent::detect_drift(&prev, &current);
+                api_ok(report)
+            }
+            Err(e) => api_error(&format!("Could not load previous checklist: {}", e)),
+        },
+        None => api_ok(serde_json::json!({
+            "message": "No previous checklist found for comparison",
+            "has_changes": false,
+        })),
+    }
 }
 
 // ---------------------------------------------------------------------------

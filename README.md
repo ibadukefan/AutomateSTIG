@@ -1,253 +1,155 @@
-<p align="center">
-  <strong>AutomateSTIG</strong><br>
-  <em>Cross-platform STIG evaluation and compliance automation</em>
-</p>
+# AutomateSTIG
 
-<p align="center">
-  <a href="#features">Features</a> &middot;
-  <a href="#quick-start">Quick Start</a> &middot;
-  <a href="#architecture">Architecture</a> &middot;
-  <a href="#cli-reference">CLI Reference</a> &middot;
-  <a href="#comparison">Comparison</a> &middot;
-  <a href="#contributing">Contributing</a>
-</p>
+**Cross-platform, open-source STIG evaluation and compliance automation.**
 
----
-
-**AutomateSTIG** is a deterministic, air-gapped-first STIG evaluation platform that automates checklist population from scan results, provides a modern answer file system, and generates audit-ready compliance artifacts.
-
-- **100% Deterministic** &mdash; No AI, no ML, no probabilistic logic. Every result is reproducible.
-- **Air-gapped first** &mdash; No network calls, no auto-updates. Designed for sandbox/SCIF environments.
-- **Signed content** &mdash; All `.stigpack` files are SHA-256 verified with Ed25519 signatures.
-- **Cross-platform** &mdash; Native binaries for Windows, macOS, and Linux. No PowerShell dependency.
-- **Open source** &mdash; MIT licensed. Community contributions welcome.
-
----
-
-## Features
-
-**Core Evaluation**
-- Auto-populate `.ckl` / `.cklb` checklists from SCC, ACAS/Tenable, and OpenSCAP scan results
-- Parse XCCDF benchmarks directly from DISA downloads (`automatestig disa-import`)
-- Evaluate Cisco IOS/NX-OS/ASA configurations against network STIGs
-- JSON/YAML answer file system with validation, templates, and bulk operations
-- Merge previous checklists to preserve manual entries across re-evaluations
-
-**Output & Reporting**
-- CKL, CKLB, and JSON output formats
-- Professional HTML compliance reports with dark-mode styling
-- STIG-Manager export with Result Engine metadata (marks automated results correctly)
-- eMASS CSV export for POA&M and control assessment workflows
-
-**Content Management**
-- Signed `.stigpack` content packs with integrity verification and rollback
-- Direct DISA XCCDF import from `cyber.mil` ZIP downloads
-- STIG library with SHA-256 integrity checking on every load
-- Version-controlled answer file templates
-
-**Remediation**
-- PowerShell, Bash, and Ansible script generation
-- Risk levels (Low / Medium / High) and rollback support per script
-- Remediation plans with reboot tracking
+Zero to CKL in seconds. 100% deterministic. Air-gapped first. Built for DoD, Navy, NAVAIR, and contractor environments.
 
 ---
 
 ## Quick Start
 
-### Install
-
 ```bash
-# Build from source
+# Clone
 git clone https://github.com/ibadukefan/AutomateSTIG.git
 cd AutomateSTIG
-cargo build --release
 
-# The binary is at target/release/automatestig
+# Build
+cargo build --release --workspace
+
+# Launch the GUI
+cargo run --release --bin automatestig-gui
+
+# Or use the CLI
+cargo run --release --bin automatestig -- --help
 ```
 
-### Initialize
+The GUI opens in your browser automatically. No Node.js, no npm, no external dependencies.
 
-```bash
-# Set up the STIG library
-automatestig library init
+## What It Does
 
-# Import STIG content from a DISA XCCDF ZIP (downloaded from cyber.mil)
-automatestig disa-import --input U_MS_Windows_Server_2022_V1R4_STIG.zip
+AutomateSTIG automates STIG checklist population from scan results, provides a modern answer file system, and generates audit-ready compliance artifacts. It replaces the manual process of populating .ckl files (1-4 hours per asset) with seconds-fast automation.
 
-# Or import a signed .stigpack
-automatestig import --pack quarterly-stigs-2024q4.stigpack
-```
+### Key Features
 
-### Evaluate
-
-```bash
-# Evaluate a STIG against scan results
-automatestig evaluate \
-  --stig Windows_Server_2022_STIG \
-  --scan scc_results.xml \
-  --answer site-answers.yaml \
-  --output webserver01.ckl
-
-# View a summary
-automatestig summary --input webserver01.ckl --open-only
-
-# Generate an HTML report
-automatestig report \
-  --input webserver01.ckl \
-  --input dbserver01.ckl \
-  --output compliance-report.html \
-  --title "Q4 2024 STIG Assessment"
-```
-
-### Convert & Export
-
-```bash
-# Convert between formats
-automatestig convert --input old.ckl --output new.cklb
-
-# Export to STIG-Manager
-automatestig export \
-  --input webserver01.ckl \
-  --output results.json \
-  --format stig-manager \
-  --collection "NAVAIR Systems"
-
-# Export to eMASS
-automatestig export \
-  --input webserver01.ckl \
-  --output emass-results.csv \
-  --format emass-csv
-```
-
----
+- **Auto-populate checklists** from SCC, ACAS, OpenSCAP scans and device config dumps
+- **DISA auto-download** — fetches the latest STIGs directly from cyber.mil with one click
+- **STIG-Manager integration** — push results directly via REST API with Result Engine metadata
+- **Modern answer files** — JSON/YAML templates replace tedious XML
+- **Built-in remediation** — PowerShell, Bash, and Ansible scripts
+- **eMASS export** — CSV format for POA&M and control assessments
+- **Drift detection** — compare evaluations over time, detect compliance regressions
+- **Air-gapped mode** — generate offline .stigpack files for sandbox transfer
+- **Plugin system** — extend with custom checks for new STIGs/platforms
+- **Agent mode** — scheduled scans with automatic drift detection
+- **Batch processing** — evaluate multiple assets against multiple STIGs in one operation
+- **100% deterministic** — no AI, no ML, no probabilistic logic
 
 ## Architecture
 
+Rust workspace with 8 crates:
+
 ```
-AutomateSTIG/
-  crates/
-    core/           Data models, rule engine, answer files, STIG library
-    parsers/        CKL, CKLB, XCCDF, config dump parsers
-    storage/        SQLite persistence layer
-    stigpack/       .stigpack format (build, verify, import)
-    remediation/    Remediation script generation
-    integrations/   STIG-Manager, eMASS export
-    cli/            CLI binary (automatestig)
-    tests/          Cross-platform integration test suite
+crates/
+  core/           Data models, evaluation engine, automated check system,
+                  answer files, agent mode, drift detection, plugin system,
+                  remote data collection framework
+  parsers/        CKL, CKLB, XCCDF, Cisco config dump parsers
+  storage/        SQLite persistence + audit logs
+  stigpack/       .stigpack format (build, verify, import)
+  remediation/    Remediation script generation
+  integrations/   STIG-Manager API, eMASS export
+  cli/            CLI binary with 12+ commands
+  gui/            Desktop GUI (embedded web server + premium dark-mode frontend)
 ```
 
-**Key design decisions:**
+### Automated Check System
 
-| Decision | Rationale |
-|----------|-----------|
-| Rust | Memory safety, performance, single-binary distribution, no runtime dependency |
-| Data-driven rules | Content updates don't require code changes. Engine stays thin and stable. |
-| SQLite | Single-file database, no server, portable across platforms |
-| Signed packs | Zero-trust content model for air-gapped environments |
-| No AI/ML | 100% deterministic results. Strengthens ATO case for DoD environments. |
+Checks are data-driven JSON definitions — no code changes when DISA updates STIGs:
 
----
+```json
+{
+  "vuln_id": "V-254239",
+  "platform": "windows",
+  "check": {
+    "type": "registry",
+    "path": "HKLM\\SYSTEM\\...\\TLS 1.2\\Client",
+    "value_name": "Enabled"
+  },
+  "expected": { "type": "equals", "value": 1 }
+}
+```
 
-## CLI Reference
+Supports: Windows registry, security policy, audit policy, services, features | Linux file content, file permissions, sysctl, packages | Cisco IOS/NX-OS/ASA config lines | command output | compound AND/OR checks.
 
-| Command | Description |
-|---------|-------------|
-| `evaluate` | Evaluate a STIG against scan results and answer files |
-| `summary` | Show compliance summary of a checklist |
-| `report` | Generate HTML compliance report from checklists |
-| `convert` | Convert between CKL, CKLB, and JSON formats |
-| `export` | Export to STIG-Manager or eMASS formats |
-| `disa-import` | Import DISA STIG content from XCCDF files or ZIPs |
-| `import` | Import a signed `.stigpack` content pack |
-| `verify` | Verify a `.stigpack` file integrity and signature |
-| `build-pack` | Build a `.stigpack` from source files |
-| `gen-answer` | Generate answer file template from an existing checklist |
-| `library list` | List installed STIG benchmarks |
-| `library show` | Show details of a specific benchmark |
-| `library init` | Initialize the STIG library |
-| `status` | Show application and library status |
+## Desktop GUI
 
-Use `automatestig <command> --help` for detailed usage.
+Launch with `cargo run --bin automatestig-gui`. Premium dark-mode interface:
 
----
+| Page | Description |
+|------|-------------|
+| **Dashboard** | Compliance overview with stats grid, checklist table, progress bars |
+| **Evaluate** | Select STIG + hostname, upload scan results, batch evaluate multiple hosts |
+| **STIG Library** | Browse installed benchmarks, drill into individual rules by severity |
+| **Checklists** | View all checklists, edit findings inline, export CKL/CKLB, push to STIG-Manager |
+| **Get Content** | One-click download from DISA, browse available STIGs, export offline packs |
+| **Import Files** | Drag-and-drop for CKL, CKLB, .stigpack, and DISA ZIP files |
+| **Settings** | STIG-Manager OAuth2 config, agent mode, notifications |
 
-## Comparison
+## CLI
 
-See [docs/website/index.html](docs/website/index.html) for a thorough feature-by-feature comparison with Evaluate-STIG covering 50+ capabilities across core functionality, platform support, reliability, integrations, remediation, and architecture.
+```bash
+automatestig evaluate --stig Windows_Server_2022_STIG --scan results.xml --answer site-answers.yaml
+automatestig disa-import --input U_Windows_Server_2022_STIG.zip
+automatestig summary --input server01.ckl --open-only
+automatestig export --input server01.ckl --output results.json --format stig-manager
+automatestig convert --input old.ckl --output new.cklb
+automatestig report --input server01.ckl --input server02.ckl --output compliance.html
+automatestig build-pack --id my-pack --name "My Pack" --version 1.0.0 --source ./content --output my.stigpack
+automatestig verify --pack update.stigpack
+automatestig import --pack update.stigpack
+automatestig library list
+automatestig status
+```
 
-**Key advantages over Evaluate-STIG:**
+## Air-Gapped Workflow
 
-| | Evaluate-STIG | AutomateSTIG |
-|---|---|---|
-| Platform | PowerShell (Windows-centric) | Native binary (Windows/macOS/Linux) |
-| Distribution | CAC-only portals | Open source on GitHub |
-| Content updates | Wait for NSWC Crane | Import public DISA XCCDF directly |
-| Answer files | Tedious XML | JSON/YAML with validation |
-| STIG-Manager | No native support | Full API export with Result Engine |
-| Content signing | None | SHA-256 + Ed25519 |
-| Report generation | No | Professional HTML reports |
-| Remediation | Check only | Fix scripts with rollback |
+For SCIF/sandbox environments with no internet:
 
----
+1. **Connected machine**: run AutomateSTIG, click **Get Content** > **Get All STIGs**
+2. Click **Export Pack** — generates a signed `.stigpack` with all current benchmarks
+3. **Transfer** the `.stigpack` to the air-gapped system via USB/DVD
+4. **Air-gapped machine**: click **Import Files** > drop the `.stigpack`
+
+All content is SHA-256 verified on import.
+
+## STIG-Manager Integration
+
+One-click push from any checklist:
+
+1. **Settings** > enter STIG-Manager API URL + Keycloak OAuth2 credentials
+2. **Test Connection** to verify
+3. From any checklist, click **Push** to send results directly
+4. Results include **Result Engine metadata** — STIG-Manager shows them as automated evaluations
 
 ## Build & Test
 
 ```bash
-cargo build --workspace          # Build all crates
-cargo test --workspace           # Run all tests (70 tests across 8 crates)
-cargo clippy --workspace         # Lint (zero warnings)
-cargo fmt --all                  # Format
-cargo build --release            # Release build
+cargo build --workspace           # Build all crates
+cargo test --workspace            # Run 100+ tests
+cargo clippy --workspace          # Lint (zero warnings)
+cargo fmt --all                   # Format
+cargo build --release             # Release build
 ```
 
-The CI pipeline runs on **Windows, macOS, and Linux** via GitHub Actions.
+## Design Principles
 
----
+- **100% deterministic** — no AI/ML. Same inputs always produce same outputs.
+- **Air-gapped first** — designed for disconnected environments. Connected mode is optional.
+- **Signed content** — .stigpack files are SHA-256 + Ed25519 verified.
+- **Audit-ready** — full evaluation logs in SQLite with timestamps, sources, evidence.
+- **Data-driven** — checks are JSON definitions, not compiled code. Update content without updating the app.
+- **Cross-platform** — native on Windows, macOS, Linux. Single binary, no runtime deps.
 
-## Content Pipeline
+## License
 
-AutomateSTIG does **not** depend on government-provided software or CAC-protected portals for updates:
-
-```
-DISA publishes XCCDF on cyber.mil (public, quarterly)
-  |
-  v
-automatestig disa-import --input <DISA_ZIP>
-  |
-  v
-STIG Library updated with new benchmarks
-  |
-  v
-automatestig evaluate --stig <ID> --scan <results.xml>
-```
-
-For controlled distribution, build signed `.stigpack` archives:
-
-```bash
-automatestig build-pack \
-  --id quarterly-2024q4 \
-  --name "Q4 2024 STIGs" \
-  --version 2024.4.0 \
-  --source ./pack-content/ \
-  --output quarterly-2024q4.stigpack
-```
-
----
-
-## Contributing
-
-AutomateSTIG is MIT licensed and welcomes contributions. See [CLAUDE.md](CLAUDE.md) for development instructions.
-
-```bash
-# Clone and build
-git clone https://github.com/ibadukefan/AutomateSTIG.git
-cd AutomateSTIG
-cargo build --workspace
-cargo test --workspace
-```
-
----
-
-<p align="center">
-  <em>AutomateSTIG &mdash; Zero to CKL in seconds, with zero manual drudgery.</em>
-</p>
+MIT
