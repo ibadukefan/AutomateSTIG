@@ -1,0 +1,112 @@
+{
+  "stig_id": "Redis_6_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-267001",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/redis/redis.conf", "pattern": "^requirepass\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Redis must have requirepass configured for authentication"
+    },
+    {
+      "vuln_id": "V-267002",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/redis/redis.conf", "pattern": "^bind\\s+127\\.0\\.0\\.1", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Redis must bind to localhost or specific authorized interfaces"
+    },
+    {
+      "vuln_id": "V-267003",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/redis/redis.conf", "pattern": "^protected-mode\\s+yes", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Redis protected-mode must be enabled"
+    },
+    {
+      "vuln_id": "V-267004",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/redis/redis.conf", "pattern": "^tls-port\\s+[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Redis TLS port must be configured for encrypted connections"
+    },
+    {
+      "vuln_id": "V-267005",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/redis/redis.conf", "pattern": "^tls-cert-file\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Redis TLS certificate file must be configured"
+    },
+    {
+      "vuln_id": "V-267006",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/redis/redis.conf", "pattern": "^tls-key-file\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Redis TLS key file must be configured"
+    },
+    {
+      "vuln_id": "V-267007",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/redis/redis.conf", "pattern": "^tls-ca-cert-file\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Redis TLS CA certificate file must be configured"
+    },
+    {
+      "vuln_id": "V-267008",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/redis/redis.conf", "pattern": "^tls-protocols\\s+\"TLSv1\\.2", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Redis must use TLS 1.2 or higher"
+    },
+    {
+      "vuln_id": "V-267009",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/redis/redis.conf", "pattern": "^rename-command\\s+FLUSHALL\\s+\"\"", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Redis FLUSHALL command must be renamed or disabled"
+    },
+    {
+      "vuln_id": "V-267010",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/redis/redis.conf", "pattern": "^rename-command\\s+FLUSHDB\\s+\"\"", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Redis FLUSHDB command must be renamed or disabled"
+    },
+    {
+      "vuln_id": "V-267011",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/redis/redis.conf", "pattern": "^rename-command\\s+CONFIG\\s+\"\"", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Redis CONFIG command must be renamed or disabled"
+    },
+    {
+      "vuln_id": "V-267012",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/redis/redis.conf", "pattern": "^rename-command\\s+DEBUG\\s+\"\"", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Redis DEBUG command must be renamed or disabled"
+    },
+    {
+      "vuln_id": "V-267013",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/redis/redis.conf", "pattern": "^loglevel\\s+(notice|warning)", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Redis loglevel must be set to notice or warning"
+    },
+    {
+      "vuln_id": "V-267014",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/redis/redis.conf", "pattern": "^logfile\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Redis logfile must be configured to a file path"
+    },
+    {
+      "vuln_id": "V-267015",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/redis/redis.conf", "pattern": "^timeout\\s+[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Redis client idle timeout must be configured"
+    }
+  ]
+}
