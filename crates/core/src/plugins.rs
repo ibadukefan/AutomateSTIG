@@ -215,15 +215,6 @@ impl PluginRegistry {
             .collect()
     }
 
-    /// Get all check packs for a platform.
-    pub fn packs_for_platform(&self, platform: CheckPlatform) -> Vec<&CheckPack> {
-        self.plugins
-            .iter()
-            .flat_map(|p| p.check_packs.iter())
-            .filter(|pack| pack.platform == platform)
-            .collect()
-    }
-
     /// Total number of check definitions across all plugins.
     pub fn total_checks(&self) -> usize {
         self.plugins

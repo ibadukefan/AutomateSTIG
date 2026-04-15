@@ -184,18 +184,6 @@ impl StigLibrary {
         Ok(())
     }
 
-    /// Remove a benchmark from the library.
-    pub fn remove_benchmark(&mut self, id: &str) -> Result<()> {
-        if let Some(entry) = self.index.benchmarks.remove(id) {
-            let path = self.root.join(&entry.data_path);
-            if path.exists() {
-                std::fs::remove_file(&path)?;
-            }
-            self.save_index()?;
-        }
-        Ok(())
-    }
-
     /// Get the library root path.
     pub fn root(&self) -> &Path {
         &self.root

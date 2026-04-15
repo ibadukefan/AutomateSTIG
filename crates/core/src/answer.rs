@@ -115,11 +115,6 @@ impl AnswerFile {
         Ok(())
     }
 
-    /// Find an entry by Vuln ID.
-    pub fn find_entry(&self, vuln_id: &str) -> Option<&AnswerEntry> {
-        self.entries.iter().find(|e| e.vuln_id == vuln_id)
-    }
-
     /// Validate the answer file for consistency.
     pub fn validate(&self) -> Vec<String> {
         let mut issues = Vec::new();

@@ -202,11 +202,6 @@ impl CredentialVault {
         self.credentials.iter().find(|c| c.id == id)
     }
 
-    /// Get a mutable credential by ID (for updating last_used).
-    pub fn get_mut(&mut self, id: &str) -> Option<&mut StoredCredential> {
-        self.credentials.iter_mut().find(|c| c.id == id)
-    }
-
     /// Remove a credential by ID.
     pub fn remove(&mut self, id: &str) -> bool {
         let len_before = self.credentials.len();

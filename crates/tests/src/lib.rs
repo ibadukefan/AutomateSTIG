@@ -729,7 +729,6 @@ fn test_empty_checklist_operations() {
     assert_eq!(cl.summary().total, 0);
     assert_eq!(cl.summary().compliance_pct(), 0.0);
     assert!(cl.open_findings().is_empty());
-    assert!(cl.unreviewed_findings().is_empty());
 }
 
 #[test]

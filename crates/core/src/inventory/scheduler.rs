@@ -245,17 +245,6 @@ impl EvaluationSchedule {
         }
     }
 
-    /// Check if this schedule should run now.
-    pub fn should_run_now(&self) -> bool {
-        if !self.enabled {
-            return false;
-        }
-        match self.next_run {
-            Some(next) => Utc::now() >= next,
-            None => false,
-        }
-    }
-
     /// Mark as executed and calculate the next run.
     pub fn mark_executed(&mut self, status: ScheduleRunStatus) {
         let now = Utc::now();

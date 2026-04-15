@@ -56,13 +56,6 @@ impl FindingStatus {
         }
     }
 
-    pub fn is_open(&self) -> bool {
-        matches!(self, Self::Open)
-    }
-
-    pub fn is_resolved(&self) -> bool {
-        matches!(self, Self::NotAFinding | Self::NotApplicable)
-    }
 }
 
 impl std::fmt::Display for FindingStatus {

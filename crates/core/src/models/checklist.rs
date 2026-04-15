@@ -76,25 +76,6 @@ impl Checklist {
         self.findings.iter().filter(|f| f.status == FindingStatus::Open).collect()
     }
 
-    /// Get all open findings of a specific severity.
-    pub fn open_findings_by_severity(&self, severity: Severity) -> Vec<&Finding> {
-        self.findings
-            .iter()
-            .filter(|f| {
-                f.status == FindingStatus::Open
-                    && f.severity_override.unwrap_or(f.severity) == severity
-            })
-            .collect()
-    }
-
-    /// Get all findings that still need review.
-    pub fn unreviewed_findings(&self) -> Vec<&Finding> {
-        self.findings
-            .iter()
-            .filter(|f| f.status == FindingStatus::NotReviewed)
-            .collect()
-    }
-
     /// Mark this checklist as modified.
     pub fn touch(&mut self) {
         self.modified_at = Utc::now();

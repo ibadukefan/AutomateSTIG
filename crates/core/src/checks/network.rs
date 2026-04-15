@@ -84,48 +84,6 @@ pub fn config_line_in_context(config: &str, context: &str, pattern: &str) -> boo
     false
 }
 
-/// Find all interfaces that are missing a specific configuration.
-pub fn interfaces_missing_config(config: &str, required_pattern: &str) -> Vec<String> {
-    let mut missing = Vec::new();
-    let mut current_interface: Option<String> = None;
-    let mut has_pattern = false;
-
-    for line in config.lines() {
-        let trimmed = line.trim();
-
-        if trimmed.starts_with("interface ") {
-            if let Some(ref iface) = current_interface {
-                if !has_pattern {
-                    missing.push(iface.clone());
-                }
-            }
-            current_interface = Some(trimmed.to_string());
-            has_pattern = false;
-        } else if current_interface.is_some() {
-            if trimmed.contains(required_pattern) {
-                has_pattern = true;
-            }
-            if !line.starts_with(' ') && !line.starts_with('\t') && trimmed != "!" {
-                if let Some(ref iface) = current_interface {
-                    if !has_pattern {
-                        missing.push(iface.clone());
-                    }
-                }
-                current_interface = None;
-            }
-        }
-    }
-
-    // Flush the last interface if it wasn't terminated by a non-indented line.
-    if let Some(ref iface) = current_interface {
-        if !has_pattern {
-            missing.push(iface.clone());
-        }
-    }
-
-    missing
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

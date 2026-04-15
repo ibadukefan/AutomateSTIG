@@ -45,16 +45,6 @@ impl StigBenchmark {
         self.rules.iter().find(|r| r.vuln_id == vuln_id)
     }
 
-    /// Find a rule by its Rule ID (e.g., "SV-254239r958388_rule").
-    pub fn find_rule_by_rule_id(&self, rule_id: &str) -> Option<&StigRule> {
-        self.rules.iter().find(|r| r.rule_id == rule_id)
-    }
-
-    /// Find a rule by its Group ID (e.g., "V-254239").
-    pub fn find_rule_by_group_id(&self, group_id: &str) -> Option<&StigRule> {
-        self.rules.iter().find(|r| r.group_id == group_id)
-    }
-
     /// Get rules filtered by severity.
     pub fn rules_by_severity(&self, severity: Severity) -> Vec<&StigRule> {
         self.rules.iter().filter(|r| r.severity == severity).collect()
