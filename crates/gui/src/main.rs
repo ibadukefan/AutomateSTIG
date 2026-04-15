@@ -144,7 +144,10 @@ async fn main() {
         eprintln!("  Open {} manually.", url);
     }
 
-    axum::serve(listener, app).await.unwrap();
+    if let Err(e) = axum::serve(listener, app).await {
+        eprintln!("  Server error: {}", e);
+        std::process::exit(1);
+    }
 }
 
 /// Serve embedded frontend files.

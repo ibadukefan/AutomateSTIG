@@ -1668,18 +1668,44 @@ async fn delete_asset_inv(
 // Credential Vault
 // ---------------------------------------------------------------------------
 
-fn load_vault(db: &automatestig_storage::Database) -> automatestig_core::inventory::credentials::CredentialVault {
-    db.get_config("credential_vault")
+fn save_vault(db: &automatestig_storage::Database, vault: &automatestig_core::inventory::credentials::CredentialVault) {
+    let key_material = db
+        .get_config("_encryption_salt")
         .ok()
         .flatten()
-        .and_then(|json| serde_json::from_str(&json).ok())
-        .unwrap_or_default()
+        .unwrap_or_else(|| {
+            let salt = format!("{:x}", std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap_or_default()
+                .as_nanos());
+            let _ = db.set_config("_encryption_salt", &salt);
+            salt
+        });
+
+    if let Ok(json) = serde_json::to_string(vault) {
+        // Encrypt the entire vault JSON before storing.
+        match crate::secrets::encrypt_secret(&json, &key_material) {
+            Ok(encrypted) => { let _ = db.set_config("credential_vault", &format!("enc:{}", encrypted)); }
+            Err(_) => { let _ = db.set_config("credential_vault", &json); } // Fallback to plaintext if encryption fails.
+        }
+    }
 }
 
-fn save_vault(db: &automatestig_storage::Database, vault: &automatestig_core::inventory::credentials::CredentialVault) {
-    if let Ok(json) = serde_json::to_string(vault) {
-        let _ = db.set_config("credential_vault", &json);
+fn load_vault(db: &automatestig_storage::Database) -> automatestig_core::inventory::credentials::CredentialVault {
+    let raw = db.get_config("credential_vault").ok().flatten().unwrap_or_default();
+    if raw.is_empty() {
+        return automatestig_core::inventory::credentials::CredentialVault::default();
     }
+
+    // Decrypt if encrypted.
+    let json = if let Some(encrypted) = raw.strip_prefix("enc:") {
+        let key_material = db.get_config("_encryption_salt").ok().flatten().unwrap_or_default();
+        crate::secrets::decrypt_secret(encrypted, &key_material).unwrap_or(raw)
+    } else {
+        raw
+    };
+
+    serde_json::from_str(&json).unwrap_or_default()
 }
 
 async fn list_credentials(State(state): State<AppState>) -> Json<serde_json::Value> {
@@ -1935,7 +1961,7 @@ fn evaluate_with_system_data(
 
     // Load check packs from all sources: plugins, hand-written packs, and auto-generated.
     let mut plugin_registry = automatestig_core::plugins::PluginRegistry::new();
-    let plugins_dir = state.inner.library_path.join("../plugins");
+    let plugins_dir = state.inner.data_dir.join("plugins");
     let _ = plugin_registry.load_from_directory(&plugins_dir);
 
     let content_dir = std::path::Path::new("content/check_packs");
