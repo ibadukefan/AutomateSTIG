@@ -141,6 +141,7 @@ impl std::fmt::Display for Classification {
 mod tests {
     use super::*;
     use crate::models::asset::Asset;
+    use crate::models::stig::Severity;
 
     fn make_stig_info() -> ChecklistStigInfo {
         ChecklistStigInfo {
