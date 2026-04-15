@@ -84,6 +84,7 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
     let mut si_data = String::new();
     let mut vuln_attrs: std::collections::HashMap<String, String> =
         std::collections::HashMap::new();
+    let mut vuln_cci_refs: Vec<String> = Vec::new();
     let mut vuln_attr_name = String::new();
     let mut vuln_attr_data = String::new();
     let mut vuln_status = String::new();
@@ -106,6 +107,7 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
                     "VULN" => {
                         in_vuln = true;
                         vuln_attrs.clear();
+                        vuln_cci_refs.clear();
                         vuln_status.clear();
                         vuln_finding_details.clear();
                         vuln_comments.clear();
@@ -137,6 +139,7 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
                         // Build finding from accumulated data.
                         let finding = build_finding_from_attrs(
                             &vuln_attrs,
+                            &vuln_cci_refs,
                             &vuln_status,
                             &vuln_finding_details,
                             &vuln_comments,
@@ -154,7 +157,14 @@ pub fn parse_ckl(xml: &str) -> ParseResult<Checklist> {
                     "STIG_DATA" => {
                         in_stig_data = false;
                         if !vuln_attr_name.is_empty() {
-                            vuln_attrs.insert(vuln_attr_name.clone(), vuln_attr_data.clone());
+                            // Accumulate CCI_REF values separately (there can be multiple).
+                            if vuln_attr_name == "CCI_REF" {
+                                if !vuln_attr_data.is_empty() {
+                                    vuln_cci_refs.push(vuln_attr_data.clone());
+                                }
+                            } else {
+                                vuln_attrs.insert(vuln_attr_name.clone(), vuln_attr_data.clone());
+                            }
                         }
                     }
                     _ => {}
@@ -257,7 +267,7 @@ pub fn write_ckl(checklist: &Checklist) -> ParseResult<String> {
         .map_err(|e| ParseError::XmlError(e.to_string()))?;
 
     // <STIG_INFO>
-    write_stig_info_element(&mut writer, &checklist.stig_info)?;
+    write_stig_info_element(&mut writer, &checklist.stig_info, &checklist.classification)?;
 
     // <VULN> elements.
     for finding in &checklist.findings {
@@ -334,6 +344,7 @@ fn extract_release_date(release_info: &str) -> Option<String> {
 
 fn build_finding_from_attrs(
     attrs: &std::collections::HashMap<String, String>,
+    cci_refs_vec: &[String],
     status: &str,
     finding_details: &str,
     comments: &str,
@@ -342,7 +353,8 @@ fn build_finding_from_attrs(
 ) -> Finding {
     let vuln_id = attrs.get("Vuln_Num").cloned().unwrap_or_default();
     let rule_id = attrs.get("Rule_ID").cloned().unwrap_or_default();
-    let group_id = attrs.get("Group_Title").cloned().unwrap_or_default();
+    // Group ID should be the Vuln_Num, not the Group_Title (which is the SRG reference).
+    let group_id = attrs.get("Vuln_Num").cloned().unwrap_or_default();
     let title = attrs.get("Rule_Title").cloned().unwrap_or_default();
 
     let severity = attrs
@@ -350,10 +362,8 @@ fn build_finding_from_attrs(
         .and_then(|s| Severity::from_cat_str(s))
         .unwrap_or(Severity::Medium);
 
-    let cci_refs: Vec<String> = attrs
-        .get("CCI_REF")
-        .map(|s| s.split(',').map(|c| c.trim().to_string()).collect())
-        .unwrap_or_default();
+    // CCI refs are accumulated separately since CKL has multiple STIG_DATA blocks for them.
+    let cci_refs: Vec<String> = cci_refs_vec.to_vec();
 
     let legacy_ids: Vec<String> = ["LEGACY_ID", "STIGRef"]
         .iter()
@@ -442,13 +452,14 @@ fn write_si_data<W: Write>(writer: &mut Writer<W>, name: &str, data: &str) -> Pa
 fn write_stig_info_element<W: Write>(
     writer: &mut Writer<W>,
     info: &ChecklistStigInfo,
+    classification: &Classification,
 ) -> ParseResult<()> {
     writer
         .write_event(Event::Start(BytesStart::new("STIG_INFO")))
         .map_err(|e| ParseError::XmlError(e.to_string()))?;
 
     write_si_data(writer, "version", &info.version)?;
-    write_si_data(writer, "classification", "UNCLASSIFIED")?;
+    write_si_data(writer, "classification", &classification.to_string())?;
     write_si_data(writer, "customname", "")?;
     write_si_data(writer, "stigid", &info.stig_id)?;
     write_si_data(

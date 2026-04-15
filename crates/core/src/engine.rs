@@ -118,10 +118,14 @@ impl EvaluationEngine {
 
             if let Some(idx) = idx {
                 // Map the scan result to a finding status.
-                let status = match result.passed {
-                    Some(true) => FindingStatus::NotAFinding,
-                    Some(false) => FindingStatus::Open,
-                    None => FindingStatus::NotReviewed,
+                // Check raw_result first for richer status (e.g., "notapplicable").
+                let status = match result.raw_result.as_str() {
+                    "notapplicable" | "not_applicable" => FindingStatus::NotApplicable,
+                    _ => match result.passed {
+                        Some(true) => FindingStatus::NotAFinding,
+                        Some(false) => FindingStatus::Open,
+                        None => FindingStatus::NotReviewed,
+                    },
                 };
 
                 let finding = &mut checklist.findings[idx];

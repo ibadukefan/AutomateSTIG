@@ -116,6 +116,13 @@ pub fn interfaces_missing_config(config: &str, required_pattern: &str) -> Vec<St
         }
     }
 
+    // Flush the last interface if it wasn't terminated by a non-indented line.
+    if let Some(ref iface) = current_interface {
+        if !has_pattern {
+            missing.push(iface.clone());
+        }
+    }
+
     missing
 }
 

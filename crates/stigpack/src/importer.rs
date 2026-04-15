@@ -110,30 +110,54 @@ pub fn import_pack(pack_path: &Path, library: &mut StigLibrary) -> StigpackResul
 
         // Copy answer templates to library.
         if path.starts_with("answer_templates/") {
-            let dest = library.root().join(path);
-            if let Some(parent) = dest.parent() {
-                std::fs::create_dir_all(parent)?;
-            }
-            if let Ok(content) = read_zip_file(&mut archive, path) {
-                std::fs::write(&dest, &content)?;
-                result.answer_templates_imported += 1;
+            if let Some(dest) = safe_join_path(library.root(), path) {
+                if let Some(parent) = dest.parent() {
+                    std::fs::create_dir_all(parent)?;
+                }
+                if let Ok(content) = read_zip_file(&mut archive, path) {
+                    std::fs::write(&dest, &content)?;
+                    result.answer_templates_imported += 1;
+                }
+            } else {
+                result.warnings.push(format!("Rejected unsafe path: {}", path));
             }
         }
 
         // Copy remediation scripts to library.
         if path.starts_with("remediation/") {
-            let dest = library.root().join(path);
-            if let Some(parent) = dest.parent() {
-                std::fs::create_dir_all(parent)?;
-            }
-            if let Ok(content) = read_zip_file(&mut archive, path) {
-                std::fs::write(&dest, &content)?;
-                result.remediation_scripts_imported += 1;
+            if let Some(dest) = safe_join_path(library.root(), path) {
+                if let Some(parent) = dest.parent() {
+                    std::fs::create_dir_all(parent)?;
+                }
+                if let Ok(content) = read_zip_file(&mut archive, path) {
+                    std::fs::write(&dest, &content)?;
+                    result.remediation_scripts_imported += 1;
+                }
+            } else {
+                result.warnings.push(format!("Rejected unsafe path: {}", path));
             }
         }
     }
 
     Ok(result)
+}
+
+/// Safely join a path from a ZIP entry onto a root, preventing path traversal.
+/// Returns None if the resolved path would escape the root directory.
+fn safe_join_path(root: &Path, relative: &str) -> Option<std::path::PathBuf> {
+    // Reject paths containing ".." components or absolute paths.
+    if relative.contains("..") || relative.starts_with('/') || relative.starts_with('\\') {
+        return None;
+    }
+    let dest = root.join(relative);
+    // Canonicalize-style check: ensure the resolved path starts with root.
+    // Since the directories may not exist yet, we check component-by-component.
+    let root_canonical = root.to_path_buf();
+    if dest.starts_with(&root_canonical) {
+        Some(dest)
+    } else {
+        None
+    }
 }
 
 fn read_zip_file(

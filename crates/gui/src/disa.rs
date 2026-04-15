@@ -116,11 +116,32 @@ fn parse_disa_downloads_page(html: &str) -> Result<Vec<DisaStigEntry>, String> {
     Ok(entries)
 }
 
+/// Allowed URL prefixes for DISA content downloads.
+const ALLOWED_URL_PREFIXES: &[&str] = &[
+    "https://public.cyber.mil/",
+    "https://dl.dod.cyber.mil/",
+    "https://cyber.mil/",
+];
+
+/// Validate a URL is on the DISA allowlist. Prevents SSRF attacks.
+fn validate_disa_url(url: &str) -> Result<(), String> {
+    if ALLOWED_URL_PREFIXES.iter().any(|prefix| url.starts_with(prefix)) {
+        Ok(())
+    } else {
+        Err(format!(
+            "URL not on allowlist. Only DISA domains (public.cyber.mil, dl.dod.cyber.mil) are permitted. Got: {}",
+            url.chars().take(100).collect::<String>()
+        ))
+    }
+}
+
 /// Download a STIG ZIP from DISA and import it into the library.
 pub async fn download_and_import(
     url: &str,
     state: &AppState,
 ) -> Result<FetchResult, String> {
+    validate_disa_url(url)?;
+
     let client = reqwest::Client::builder()
         .timeout(Duration::from_secs(120))
         .user_agent("AutomateSTIG/0.1")

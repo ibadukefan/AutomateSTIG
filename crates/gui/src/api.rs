@@ -343,8 +343,13 @@ async fn import_stigpack(
         };
 
         // Write to temp file for the importer.
-        let tmp = tempfile::NamedTempFile::new().unwrap();
-        std::fs::write(tmp.path(), &data).unwrap();
+        let tmp = match tempfile::NamedTempFile::new() {
+            Ok(f) => f,
+            Err(e) => return api_error(&format!("Failed to create temp file: {}", e)),
+        };
+        if let Err(e) = std::fs::write(tmp.path(), &data) {
+            return api_error(&format!("Failed to write temp file: {}", e));
+        }
 
         let mut library = match state.library() {
             Ok(l) => l,
@@ -739,7 +744,16 @@ async fn generate_offline_pack(
         }
     }
 
-    let tmp = tempfile::NamedTempFile::new().unwrap();
+    let tmp = match tempfile::NamedTempFile::new() {
+        Ok(f) => f,
+        Err(e) => {
+            return (
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Failed to create temp file: {}", e),
+            )
+                .into_response();
+        }
+    };
     if let Err(e) = builder.build(tmp.path()) {
         return (
             axum::http::StatusCode::INTERNAL_SERVER_ERROR,
@@ -748,7 +762,16 @@ async fn generate_offline_pack(
             .into_response();
     }
 
-    let data = std::fs::read(tmp.path()).unwrap();
+    let data = match std::fs::read(tmp.path()) {
+        Ok(d) => d,
+        Err(e) => {
+            return (
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Failed to read pack: {}", e),
+            )
+                .into_response();
+        }
+    };
     let filename = format!(
         "automatestig-offline-{}.stigpack",
         chrono::Utc::now().format("%Y%m%d")

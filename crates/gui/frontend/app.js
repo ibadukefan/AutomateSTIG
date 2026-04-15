@@ -679,10 +679,12 @@ async function testStigManagerConnection() {
 
   try {
     const result = await api('/stigman/test', { method: 'POST' });
-    if (el) el.innerHTML = `<span style="color: var(--green); font-weight: 600">\u2713 ${result}</span>`;
+    el.textContent = '';
+    el.appendChild(h('span', { style: 'color: var(--green); font-weight: 600' }, '\u2713 ' + result));
     toast('STIG-Manager connection successful', 'success');
   } catch (e) {
-    if (el) el.innerHTML = `<span style="color: var(--red); font-weight: 600">\u2717 ${e.message}</span>`;
+    el.textContent = '';
+    el.appendChild(h('span', { style: 'color: var(--red); font-weight: 600' }, '\u2717 ' + e.message));
     toast(`Connection failed: ${e.message}`, 'error');
   }
 }

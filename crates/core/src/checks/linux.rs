@@ -77,16 +77,43 @@ pub fn parse_systemctl_output(output: &str) -> HashMap<String, String> {
     results
 }
 
-/// Parse `rpm -qa` or `dpkg -l` output into installed packages.
+/// Parse `rpm -qa --queryformat '%{NAME}\n'` output into installed packages.
+/// If given raw `rpm -qa` output (name-version-release.arch), extracts the
+/// name portion by splitting from the right at version boundaries.
 pub fn parse_rpm_packages(output: &str) -> HashMap<String, bool> {
     let mut packages = HashMap::new();
     for line in output.lines() {
-        let name = line.split('-').next().unwrap_or(line).trim();
-        if !name.is_empty() {
-            packages.insert(name.to_string(), true);
+        let trimmed = line.trim();
+        if trimmed.is_empty() {
+            continue;
         }
+        // If the output is from `rpm -qa --queryformat '%{NAME}\n'`, each line is
+        // just the package name. If it's raw `rpm -qa`, it's name-version-release.arch.
+        // Heuristic: if the line contains no '.', it's likely just a name.
+        // Otherwise, try to extract name by finding the last segment that starts
+        // with a digit (version), and take everything before it.
+        let name = extract_rpm_name(trimmed);
+        packages.insert(name, true);
     }
     packages
+}
+
+/// Extract the package name from an RPM NVRA string (e.g., "openssh-server-8.7p1-34.el9.x86_64").
+fn extract_rpm_name(nvra: &str) -> String {
+    // If there's no digit after a hyphen, treat the whole string as the name
+    // (it's likely from --queryformat '%{NAME}\n').
+    let bytes = nvra.as_bytes();
+    let mut last_name_end = nvra.len();
+
+    // Walk backwards looking for `-<digit>` which marks the start of the version.
+    for i in (1..nvra.len()).rev() {
+        if bytes[i - 1] == b'-' && bytes[i].is_ascii_digit() {
+            last_name_end = i - 1;
+            break;
+        }
+    }
+
+    nvra[..last_name_end].to_string()
 }
 
 /// Parse `dpkg -l` output.

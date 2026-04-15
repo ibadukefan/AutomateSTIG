@@ -232,7 +232,7 @@ impl FindingSummary {
 
     /// Compliance percentage (findings that are resolved / total evaluated).
     pub fn compliance_pct(&self) -> f64 {
-        let evaluated = self.total - self.not_reviewed;
+        let evaluated = self.total.saturating_sub(self.not_reviewed);
         if evaluated == 0 {
             return 0.0;
         }
