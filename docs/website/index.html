@@ -255,8 +255,12 @@
         </div>
         <div class="cta-group">
             <a href="https://github.com/ibadukefan/AutomateSTIG" class="btn btn-primary">Get Started</a>
+            <a id="demo-btn" href="#" class="btn btn-primary" style="background: var(--green)">Try the Demo</a>
             <a href="#comparison" class="btn btn-secondary">See the Comparison</a>
         </div>
+        <p style="margin-top: 12px; font-size: 0.8rem; color: var(--text-muted);">
+            Demo runs the full app in your browser — no install required.
+        </p>
     </div>
 </section>
 
@@ -701,5 +705,19 @@
     </div>
 </footer>
 
+<script>
+// Set your Railway demo URL here after deploying.
+// Example: const DEMO_URL = 'https://automatestig-production.up.railway.app';
+const DEMO_URL = '';
+const demoBtn = document.getElementById('demo-btn');
+if (DEMO_URL) {
+    demoBtn.href = DEMO_URL;
+    demoBtn.target = '_blank';
+} else {
+    demoBtn.style.opacity = '0.5';
+    demoBtn.title = 'Demo coming soon';
+    demoBtn.addEventListener('click', (e) => { e.preventDefault(); alert('Demo URL not configured yet. Deploy to Railway first, then set DEMO_URL in index.html.'); });
+}
+</script>
 </body>
 </html>

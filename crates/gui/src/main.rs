@@ -39,16 +39,26 @@ async fn main() {
     // Clone for background checker before moving into router.
     let bg_state = state.clone();
 
-    // Bind to a random available port on localhost.
-    let addr = SocketAddr::from(([127, 0, 0, 1], 0));
+    // Bind address: use PORT env var for hosted/demo mode, otherwise random localhost port.
+    let (bind_ip, bind_port) = if let Ok(port) = std::env::var("PORT") {
+        ([0, 0, 0, 0], port.parse::<u16>().unwrap_or(8080))
+    } else {
+        ([127, 0, 0, 1], 0)
+    };
+    let demo_mode = bind_ip == [0, 0, 0, 0];
+
+    let addr = SocketAddr::from((bind_ip, bind_port));
     let listener = tokio::net::TcpListener::bind(addr)
         .await
         .expect("Failed to bind to address");
     let local_addr = listener.local_addr().expect("Failed to get local address");
     let url = format!("http://{}", local_addr);
 
-    // Generate a cryptographically random auth token for this session.
-    let auth_token: String = {
+    // Generate auth token. In demo mode (PORT env set), use a fixed demo token
+    // so the embedded frontend works without injection.
+    let auth_token: String = if demo_mode {
+        "demo".to_string()
+    } else {
         let rng = ring::rand::SystemRandom::new();
         let mut bytes = [0u8; 32];
         ring::rand::SecureRandom::fill(&rng, &mut bytes)
@@ -103,18 +113,24 @@ async fn main() {
             }
         })
         .layer(RequestBodyLimitLayer::new(100 * 1024 * 1024)) // 100 MB
-        .layer(
+        .layer(if demo_mode {
+            // Demo mode: allow any origin (Railway/Fly proxies use different origins).
+            CorsLayer::permissive()
+        } else {
             CorsLayer::new()
                 .allow_origin(AllowOrigin::exact(
                     url.parse().expect("Failed to parse origin"),
                 ))
                 .allow_methods(tower_http::cors::Any)
-                .allow_headers(tower_http::cors::Any),
-        )
+                .allow_headers(tower_http::cors::Any)
+        })
         .with_state(state);
     eprintln!();
     eprintln!("  AutomateSTIG v{}", env!("CARGO_PKG_VERSION"));
     eprintln!("  GUI running at: {}", url);
+    if demo_mode {
+        eprintln!("  Demo mode: auth=demo, CORS=permissive");
+    }
     eprintln!("  Press Ctrl+C to stop.");
     eprintln!();
 
@@ -138,10 +154,12 @@ async fn main() {
         }
     });
 
-    // Open browser.
-    if let Err(e) = open::that(&url) {
-        eprintln!("  Could not open browser: {}", e);
-        eprintln!("  Open {} manually.", url);
+    // Open browser (skip in demo/hosted mode).
+    if !demo_mode {
+        if let Err(e) = open::that(&url) {
+            eprintln!("  Could not open browser: {}", e);
+            eprintln!("  Open {} manually.", url);
+        }
     }
 
     if let Err(e) = axum::serve(listener, app).await {
