@@ -1,0 +1,182 @@
+{
+  "stig_id": "Windows_DNS_Server_STIG",
+  "platform": "windows",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-215590",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "EventLogLevel" },
+      "expected": { "type": "greater_or_equal", "value": 2 },
+      "description": "DNS server event logging must be set to at least level 2"
+    },
+    {
+      "vuln_id": "V-215591",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "LogLevel" },
+      "expected": { "type": "greater_or_equal", "value": 1 },
+      "description": "DNS debug logging must be enabled"
+    },
+    {
+      "vuln_id": "V-215592",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "NoRecursion" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "DNS recursion must be disabled on authoritative name servers"
+    },
+    {
+      "vuln_id": "V-215593",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "SecureResponses" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "DNS server must secure cache against pollution"
+    },
+    {
+      "vuln_id": "V-215594",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "MaxCacheTTL" },
+      "expected": { "type": "less_or_equal", "value": 86400 },
+      "description": "DNS maximum cache TTL must not exceed 86400 seconds (1 day)"
+    },
+    {
+      "vuln_id": "V-215595",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "MaxNegativeCacheTTL" },
+      "expected": { "type": "less_or_equal", "value": 900 },
+      "description": "DNS maximum negative cache TTL must not exceed 900 seconds"
+    },
+    {
+      "vuln_id": "V-215596",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Zones", "value_name": "SecureSecondaries" },
+      "expected": { "type": "greater_or_equal", "value": 1 },
+      "description": "Zone transfers must be restricted"
+    },
+    {
+      "vuln_id": "V-215597",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "BindSecondaries" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "BIND secondaries must be disabled unless required"
+    },
+    {
+      "vuln_id": "V-215600",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "EnableDnsSec" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "DNSSEC must be enabled"
+    },
+    {
+      "vuln_id": "V-215601",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "EnableDnsSec" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "DNSSEC validation must be enabled for recursive resolvers"
+    },
+    {
+      "vuln_id": "V-215605",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "SocketPoolSize" },
+      "expected": { "type": "greater_or_equal", "value": 2500 },
+      "description": "DNS socket pool size must be at least 2500"
+    },
+    {
+      "vuln_id": "V-215606",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "SocketPoolExcludedPortRanges" },
+      "expected": { "type": "matches", "pattern": ".*" },
+      "description": "DNS socket pool excluded port ranges must be configured"
+    },
+    {
+      "vuln_id": "V-215610",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "AdminConfigured" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "DNS server must be administratively configured"
+    },
+    {
+      "vuln_id": "V-215611",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "ForwardDelegations" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Forward delegations must be disabled"
+    },
+    {
+      "vuln_id": "V-215615",
+      "platform": "windows",
+      "check": { "type": "service", "name": "DNS", "expected_status": "running" },
+      "expected": { "type": "is_true" },
+      "description": "DNS service must be running"
+    },
+    {
+      "vuln_id": "V-215616",
+      "platform": "windows",
+      "check": { "type": "audit_policy", "subcategory": "Account Logon", "setting": "Success and Failure" },
+      "expected": { "type": "contains", "substring": "Success" },
+      "description": "Account logon events must be audited on the DNS server"
+    },
+    {
+      "vuln_id": "V-215620",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "RpcProtocol" },
+      "expected": { "type": "equals", "value": 4 },
+      "description": "DNS RPC protocol must restrict to TCP only"
+    },
+    {
+      "vuln_id": "V-215621",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "RemoteIPv4RankAuthorityMode" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "DNS must prioritize local authoritative data over remote"
+    },
+    {
+      "vuln_id": "V-215625",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\DNS\\Parameters", "value_name": "EnableEDnsProbes" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "DNS EDNS probes must be disabled if not required"
+    },
+    {
+      "vuln_id": "V-215626",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "AllowUpdate" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Dynamic updates must be disabled or restricted to secure only"
+    },
+    {
+      "vuln_id": "V-215627",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "XfrConnectTimeout" },
+      "expected": { "type": "less_or_equal", "value": 30 },
+      "description": "DNS zone transfer connection timeout must not exceed 30 seconds"
+    },
+    {
+      "vuln_id": "V-215630",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "StrictFileParsing" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "DNS must enforce strict file parsing for zone files"
+    },
+    {
+      "vuln_id": "V-215631",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "EnableVersionQuery" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "DNS version query responses must be disabled"
+    },
+    {
+      "vuln_id": "V-215632",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\DNS Server\\Parameters", "value_name": "IsSlave" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "DNS server must not be configured as a slave unless authorized"
+    },
+    {
+      "vuln_id": "V-215635",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "value_name": "LegalNoticeText" },
+      "expected": { "type": "matches", "pattern": ".{10,}" },
+      "description": "DNS server must display legal notice text before logon"
+    }
+  ]
+}

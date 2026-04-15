@@ -1,0 +1,378 @@
+{
+  "stig_id": "RHEL_8_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-230223",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "PermitRootLogin\\s+no", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "RHEL 8 SSH must not allow direct root login"
+    },
+    {
+      "vuln_id": "V-230224",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "PermitEmptyPasswords\\s+no", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH must not allow empty passwords"
+    },
+    {
+      "vuln_id": "V-230225",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "ClientAliveInterval\\s+[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH ClientAliveInterval must be set"
+    },
+    {
+      "vuln_id": "V-230226",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "ClientAliveCountMax\\s+[01]$", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH ClientAliveCountMax must be 1 or less"
+    },
+    {
+      "vuln_id": "V-230227",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "MaxAuthTries\\s+[1-4]$", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH MaxAuthTries must be 4 or fewer"
+    },
+    {
+      "vuln_id": "V-230228",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "Banner\\s+/etc/issue", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH must display a login banner"
+    },
+    {
+      "vuln_id": "V-230229",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "X11Forwarding\\s+no", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH X11 forwarding must be disabled"
+    },
+    {
+      "vuln_id": "V-230230",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "Ciphers\\s+.*aes256-ctr", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH must use FIPS 140-2 compliant ciphers"
+    },
+    {
+      "vuln_id": "V-230231",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "MACs\\s+.*hmac-sha2-256", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH must use FIPS 140-2 compliant MACs"
+    },
+    {
+      "vuln_id": "V-230232",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "GSSAPIAuthentication\\s+no", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH GSSAPI authentication must be disabled"
+    },
+    {
+      "vuln_id": "V-230233",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "KerberosAuthentication\\s+no", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH Kerberos authentication must be disabled"
+    },
+    {
+      "vuln_id": "V-230240",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "net.ipv4.ip_forward" },
+      "expected": { "type": "equals", "value": "0" },
+      "description": "IP forwarding must be disabled"
+    },
+    {
+      "vuln_id": "V-230241",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "net.ipv4.conf.all.accept_source_route" },
+      "expected": { "type": "equals", "value": "0" },
+      "description": "Source-routed packets must not be accepted"
+    },
+    {
+      "vuln_id": "V-230242",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "net.ipv4.conf.default.accept_source_route" },
+      "expected": { "type": "equals", "value": "0" },
+      "description": "Default source route acceptance must be disabled"
+    },
+    {
+      "vuln_id": "V-230243",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "net.ipv4.conf.all.accept_redirects" },
+      "expected": { "type": "equals", "value": "0" },
+      "description": "ICMP redirects must not be accepted"
+    },
+    {
+      "vuln_id": "V-230244",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "net.ipv4.conf.default.accept_redirects" },
+      "expected": { "type": "equals", "value": "0" },
+      "description": "Default ICMP redirect acceptance must be disabled"
+    },
+    {
+      "vuln_id": "V-230245",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "net.ipv4.conf.all.send_redirects" },
+      "expected": { "type": "equals", "value": "0" },
+      "description": "System must not send ICMP redirects"
+    },
+    {
+      "vuln_id": "V-230246",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "net.ipv4.conf.default.send_redirects" },
+      "expected": { "type": "equals", "value": "0" },
+      "description": "Default ICMP redirect sending must be disabled"
+    },
+    {
+      "vuln_id": "V-230247",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "net.ipv4.icmp_echo_ignore_broadcasts" },
+      "expected": { "type": "equals", "value": "1" },
+      "description": "System must ignore ICMP broadcast echo requests"
+    },
+    {
+      "vuln_id": "V-230248",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "net.ipv4.conf.all.rp_filter" },
+      "expected": { "type": "equals", "value": "1" },
+      "description": "Reverse path filtering must be enabled"
+    },
+    {
+      "vuln_id": "V-230249",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "net.ipv4.tcp_syncookies" },
+      "expected": { "type": "equals", "value": "1" },
+      "description": "TCP SYN cookies must be enabled"
+    },
+    {
+      "vuln_id": "V-230250",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "kernel.randomize_va_space" },
+      "expected": { "type": "equals", "value": "2" },
+      "description": "ASLR must be fully enabled"
+    },
+    {
+      "vuln_id": "V-230251",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "kernel.dmesg_restrict" },
+      "expected": { "type": "equals", "value": "1" },
+      "description": "Kernel message buffer must be restricted"
+    },
+    {
+      "vuln_id": "V-230252",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "kernel.kptr_restrict" },
+      "expected": { "type": "equals", "value": "1" },
+      "description": "Kernel pointer addresses must be restricted"
+    },
+    {
+      "vuln_id": "V-230253",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "net.ipv6.conf.all.accept_source_route" },
+      "expected": { "type": "equals", "value": "0" },
+      "description": "IPv6 source routing must be disabled"
+    },
+    {
+      "vuln_id": "V-230254",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "net.ipv6.conf.all.accept_redirects" },
+      "expected": { "type": "equals", "value": "0" },
+      "description": "IPv6 ICMP redirects must not be accepted"
+    },
+    {
+      "vuln_id": "V-230260",
+      "platform": "linux",
+      "check": { "type": "file_permission", "path": "/etc/shadow", "owner": "root", "group": null, "mode": "0000" },
+      "expected": { "type": "is_true" },
+      "description": "/etc/shadow must be mode 0000 and owned by root"
+    },
+    {
+      "vuln_id": "V-230261",
+      "platform": "linux",
+      "check": { "type": "file_permission", "path": "/etc/passwd", "owner": "root", "group": null, "mode": "0644" },
+      "expected": { "type": "is_true" },
+      "description": "/etc/passwd must be mode 0644 and owned by root"
+    },
+    {
+      "vuln_id": "V-230262",
+      "platform": "linux",
+      "check": { "type": "file_permission", "path": "/etc/group", "owner": "root", "group": null, "mode": "0644" },
+      "expected": { "type": "is_true" },
+      "description": "/etc/group must be mode 0644 and owned by root"
+    },
+    {
+      "vuln_id": "V-230263",
+      "platform": "linux",
+      "check": { "type": "file_permission", "path": "/etc/gshadow", "owner": "root", "group": null, "mode": "0000" },
+      "expected": { "type": "is_true" },
+      "description": "/etc/gshadow must be mode 0000 and owned by root"
+    },
+    {
+      "vuln_id": "V-230264",
+      "platform": "linux",
+      "check": { "type": "file_permission", "path": "/etc/ssh/sshd_config", "owner": "root", "group": null, "mode": "0600" },
+      "expected": { "type": "is_true" },
+      "description": "sshd_config must be mode 0600 and owned by root"
+    },
+    {
+      "vuln_id": "V-230270",
+      "platform": "linux",
+      "check": { "type": "package", "name": "aide", "should_be_installed": true },
+      "expected": { "type": "is_true" },
+      "description": "AIDE must be installed for file integrity checking"
+    },
+    {
+      "vuln_id": "V-230271",
+      "platform": "linux",
+      "check": { "type": "package", "name": "audit", "should_be_installed": true },
+      "expected": { "type": "is_true" },
+      "description": "Audit package must be installed"
+    },
+    {
+      "vuln_id": "V-230272",
+      "platform": "linux",
+      "check": { "type": "package", "name": "firewalld", "should_be_installed": true },
+      "expected": { "type": "is_true" },
+      "description": "Firewalld must be installed"
+    },
+    {
+      "vuln_id": "V-230273",
+      "platform": "linux",
+      "check": { "type": "package", "name": "openssl-pkcs11", "should_be_installed": true },
+      "expected": { "type": "is_true" },
+      "description": "openssl-pkcs11 must be installed for smart card support"
+    },
+    {
+      "vuln_id": "V-230275",
+      "platform": "linux",
+      "check": { "type": "package", "name": "telnet-server", "should_be_installed": false },
+      "expected": { "type": "is_true" },
+      "description": "Telnet server must not be installed"
+    },
+    {
+      "vuln_id": "V-230276",
+      "platform": "linux",
+      "check": { "type": "package", "name": "rsh-server", "should_be_installed": false },
+      "expected": { "type": "is_true" },
+      "description": "RSH server must not be installed"
+    },
+    {
+      "vuln_id": "V-230277",
+      "platform": "linux",
+      "check": { "type": "package", "name": "tftp-server", "should_be_installed": false },
+      "expected": { "type": "is_true" },
+      "description": "TFTP server must not be installed"
+    },
+    {
+      "vuln_id": "V-230278",
+      "platform": "linux",
+      "check": { "type": "package", "name": "vsftpd", "should_be_installed": false },
+      "expected": { "type": "is_true" },
+      "description": "vsftpd must not be installed unless required"
+    },
+    {
+      "vuln_id": "V-230280",
+      "platform": "linux",
+      "check": { "type": "service", "name": "auditd", "expected_status": "running" },
+      "expected": { "type": "is_true" },
+      "description": "Audit daemon must be running"
+    },
+    {
+      "vuln_id": "V-230281",
+      "platform": "linux",
+      "check": { "type": "service", "name": "firewalld", "expected_status": "running" },
+      "expected": { "type": "is_true" },
+      "description": "Firewall must be active"
+    },
+    {
+      "vuln_id": "V-230282",
+      "platform": "linux",
+      "check": { "type": "service", "name": "sshd", "expected_status": "running" },
+      "expected": { "type": "is_true" },
+      "description": "SSH daemon must be running"
+    },
+    {
+      "vuln_id": "V-230290",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/login.defs", "pattern": "PASS_MIN_LEN\\s+1[5-9]|PASS_MIN_LEN\\s+[2-9][0-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Minimum password length must be 15 or more characters"
+    },
+    {
+      "vuln_id": "V-230291",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/login.defs", "pattern": "PASS_MAX_DAYS\\s+60", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Maximum password age must be 60 days or less"
+    },
+    {
+      "vuln_id": "V-230292",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/login.defs", "pattern": "PASS_MIN_DAYS\\s+[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Minimum password age must be at least 1 day"
+    },
+    {
+      "vuln_id": "V-230293",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/login.defs", "pattern": "ENCRYPT_METHOD\\s+SHA512", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Passwords must be hashed with SHA-512"
+    },
+    {
+      "vuln_id": "V-230294",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/security/pwquality.conf", "pattern": "minlen\\s*=\\s*1[5-9]|minlen\\s*=\\s*[2-9][0-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Password quality must require minimum length of 15"
+    },
+    {
+      "vuln_id": "V-230295",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/security/pwquality.conf", "pattern": "dcredit\\s*=\\s*-1", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Password quality must require at least one digit"
+    },
+    {
+      "vuln_id": "V-230296",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/security/pwquality.conf", "pattern": "ucredit\\s*=\\s*-1", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Password quality must require at least one uppercase character"
+    },
+    {
+      "vuln_id": "V-230297",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/security/pwquality.conf", "pattern": "lcredit\\s*=\\s*-1", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Password quality must require at least one lowercase character"
+    },
+    {
+      "vuln_id": "V-230298",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/security/pwquality.conf", "pattern": "ocredit\\s*=\\s*-1", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Password quality must require at least one special character"
+    },
+    {
+      "vuln_id": "V-230300",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "net.ipv4.conf.all.log_martians" },
+      "expected": { "type": "equals", "value": "1" },
+      "description": "Martian packets must be logged"
+    },
+    {
+      "vuln_id": "V-230301",
+      "platform": "linux",
+      "check": { "type": "sysctl", "key": "kernel.core_pattern" },
+      "expected": { "type": "contains", "substring": "|/bin/false" },
+      "description": "Core dumps must be disabled or piped to /bin/false"
+    }
+  ]
+}

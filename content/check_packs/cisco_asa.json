@@ -1,0 +1,189 @@
+{
+  "stig_id": "Cisco_ASA_STIG",
+  "platform": "cisco_asa",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-239850",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "aaa-server.*protocol tacacs\\+", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "AAA server group using TACACS+ must be configured"
+    },
+    {
+      "vuln_id": "V-239851",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "aaa authentication serial console", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "AAA authentication for serial console must be configured"
+    },
+    {
+      "vuln_id": "V-239852",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "aaa authentication ssh console", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "AAA authentication for SSH console must be configured"
+    },
+    {
+      "vuln_id": "V-239853",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "aaa authentication enable console", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "AAA authentication for enable mode must be configured"
+    },
+    {
+      "vuln_id": "V-239854",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "aaa authorization command", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "AAA command authorization must be configured"
+    },
+    {
+      "vuln_id": "V-239855",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "aaa accounting", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "AAA accounting must be configured"
+    },
+    {
+      "vuln_id": "V-239860",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "ssh version 2", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH version 2 must be configured"
+    },
+    {
+      "vuln_id": "V-239861",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "ssh timeout", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH timeout must be configured"
+    },
+    {
+      "vuln_id": "V-239862",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "ssh key-exchange group dh-group14-sha256", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH must use FIPS-compliant key exchange"
+    },
+    {
+      "vuln_id": "V-239865",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "ntp server", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "NTP server must be configured"
+    },
+    {
+      "vuln_id": "V-239866",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "ntp authenticate", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "NTP authentication must be enabled"
+    },
+    {
+      "vuln_id": "V-239870",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "logging enable", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Logging must be enabled"
+    },
+    {
+      "vuln_id": "V-239871",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "logging host", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Remote syslog server must be configured"
+    },
+    {
+      "vuln_id": "V-239872",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "logging timestamp", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Log timestamps must be enabled"
+    },
+    {
+      "vuln_id": "V-239873",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "logging buffered informational", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Logging buffer must be set to at least informational level"
+    },
+    {
+      "vuln_id": "V-239875",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "banner motd", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "MOTD banner must display DoD-approved warning"
+    },
+    {
+      "vuln_id": "V-239876",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "banner login", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Login banner must be configured"
+    },
+    {
+      "vuln_id": "V-239880",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "threat-detection basic-threat", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Basic threat detection must be enabled"
+    },
+    {
+      "vuln_id": "V-239881",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "threat-detection statistics access-list", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Threat detection statistics for access lists must be enabled"
+    },
+    {
+      "vuln_id": "V-239882",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "threat-detection statistics tcp-intercept", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "TCP intercept statistics must be enabled"
+    },
+    {
+      "vuln_id": "V-239885",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "failover", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Failover must be configured for high availability"
+    },
+    {
+      "vuln_id": "V-239886",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "failover ipsec", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Failover communication must use IPsec encryption"
+    },
+    {
+      "vuln_id": "V-239890",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "console timeout", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Console timeout must be configured"
+    },
+    {
+      "vuln_id": "V-239891",
+      "platform": "cisco_asa",
+      "check": { "type": "config_line", "pattern": "no http server enable", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "HTTP server must be disabled unless ASDM is required"
+    },
+    {
+      "vuln_id": "V-239895",
+      "platform": "cisco_asa",
+      "check": {
+        "type": "all",
+        "checks": [
+          { "type": "config_line", "pattern": "ssh version 2", "context": null, "should_exist": true },
+          { "type": "config_line", "pattern": "aaa authentication ssh console", "context": null, "should_exist": true },
+          { "type": "config_line", "pattern": "logging enable", "context": null, "should_exist": true }
+        ]
+      },
+      "expected": { "type": "all_pass" },
+      "description": "SSHv2, AAA SSH authentication, and logging must all be enabled"
+    }
+  ]
+}

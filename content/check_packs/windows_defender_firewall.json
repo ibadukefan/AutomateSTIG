@@ -1,0 +1,147 @@
+{
+  "stig_id": "Windows_Defender_Firewall_STIG",
+  "platform": "windows",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-241989",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\DomainProfile", "value_name": "EnableFirewall" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Windows Defender Firewall must be enabled for the Domain profile"
+    },
+    {
+      "vuln_id": "V-241990",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile", "value_name": "EnableFirewall" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Windows Defender Firewall must be enabled for the Private profile"
+    },
+    {
+      "vuln_id": "V-241991",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile", "value_name": "EnableFirewall" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Windows Defender Firewall must be enabled for the Public profile"
+    },
+    {
+      "vuln_id": "V-241992",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\DomainProfile", "value_name": "DefaultInboundAction" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Domain profile must block inbound connections by default"
+    },
+    {
+      "vuln_id": "V-241993",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile", "value_name": "DefaultInboundAction" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Private profile must block inbound connections by default"
+    },
+    {
+      "vuln_id": "V-241994",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile", "value_name": "DefaultInboundAction" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Public profile must block inbound connections by default"
+    },
+    {
+      "vuln_id": "V-241995",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\DomainProfile", "value_name": "DefaultOutboundAction" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Domain profile must allow outbound connections by default"
+    },
+    {
+      "vuln_id": "V-241996",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\DomainProfile\\Logging", "value_name": "LogDroppedPackets" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Domain profile must log dropped packets"
+    },
+    {
+      "vuln_id": "V-241997",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging", "value_name": "LogDroppedPackets" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Private profile must log dropped packets"
+    },
+    {
+      "vuln_id": "V-241998",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging", "value_name": "LogDroppedPackets" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Public profile must log dropped packets"
+    },
+    {
+      "vuln_id": "V-241999",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\DomainProfile\\Logging", "value_name": "LogSuccessfulConnections" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Domain profile must log successful connections"
+    },
+    {
+      "vuln_id": "V-242000",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging", "value_name": "LogSuccessfulConnections" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Private profile must log successful connections"
+    },
+    {
+      "vuln_id": "V-242001",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging", "value_name": "LogSuccessfulConnections" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Public profile must log successful connections"
+    },
+    {
+      "vuln_id": "V-242002",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\DomainProfile\\Logging", "value_name": "LogFileSize" },
+      "expected": { "type": "greater_or_equal", "value": 16384 },
+      "description": "Domain profile log file size must be at least 16384 KB"
+    },
+    {
+      "vuln_id": "V-242003",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging", "value_name": "LogFileSize" },
+      "expected": { "type": "greater_or_equal", "value": 16384 },
+      "description": "Private profile log file size must be at least 16384 KB"
+    },
+    {
+      "vuln_id": "V-242004",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging", "value_name": "LogFileSize" },
+      "expected": { "type": "greater_or_equal", "value": 16384 },
+      "description": "Public profile log file size must be at least 16384 KB"
+    },
+    {
+      "vuln_id": "V-242005",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\DomainProfile", "value_name": "DisableNotifications" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Domain profile must suppress notifications"
+    },
+    {
+      "vuln_id": "V-242006",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile", "value_name": "AllowLocalPolicyMerge" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Public profile must not allow local firewall rule merging"
+    },
+    {
+      "vuln_id": "V-242007",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile", "value_name": "AllowLocalIPsecPolicyMerge" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Public profile must not allow local IPsec policy merging"
+    },
+    {
+      "vuln_id": "V-242010",
+      "platform": "windows",
+      "check": { "type": "service", "name": "mpssvc", "expected_status": "running" },
+      "expected": { "type": "is_true" },
+      "description": "Windows Defender Firewall service must be running"
+    }
+  ]
+}
