@@ -180,38 +180,6 @@
             font-size: 0.85rem;
         }
 
-        /* CLI Preview */
-        .cli-preview {
-            padding: 60px 0;
-        }
-        .cli-preview h2 {
-            text-align: center; font-size: 2rem; margin-bottom: 40px;
-        }
-        .terminal {
-            background: #0d1117; border: 1px solid var(--border);
-            border-radius: 12px; overflow: hidden; max-width: 800px;
-            margin: 0 auto;
-        }
-        .terminal-header {
-            background: var(--bg-surface); padding: 10px 16px;
-            display: flex; gap: 8px; align-items: center;
-        }
-        .terminal-dot {
-            width: 12px; height: 12px; border-radius: 50%;
-        }
-        .terminal-dot.red { background: #ff5f57; }
-        .terminal-dot.yellow { background: #febc2e; }
-        .terminal-dot.green { background: #28c840; }
-        .terminal-body {
-            padding: 20px; font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 0.85rem; line-height: 1.8; overflow-x: auto;
-        }
-        .terminal-body .prompt { color: var(--green); }
-        .terminal-body .cmd { color: var(--text); }
-        .terminal-body .output { color: var(--text-muted); }
-        .terminal-body .highlight { color: var(--accent); }
-        .terminal-body .warn { color: var(--yellow); }
-
         /* Footer */
         footer {
             border-top: 1px solid var(--border);
@@ -647,49 +615,6 @@
                 <h3>Remediation</h3>
                 <p>PowerShell, Bash, and Ansible scripts with risk levels, admin requirements, and optional rollback support.</p>
                 <p><code>crates/remediation</code></p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="cli-preview" id="cli">
-    <div class="container">
-        <h2>CLI Preview</h2>
-        <div class="terminal">
-            <div class="terminal-header">
-                <span class="terminal-dot red"></span>
-                <span class="terminal-dot yellow"></span>
-                <span class="terminal-dot green"></span>
-            </div>
-            <div class="terminal-body">
-<span class="prompt">$</span> <span class="cmd">automatestig evaluate --stig Windows_Server_2022_STIG --scan results.xml --answer site-answers.yaml</span>
-<span class="output">Evaluating: Microsoft Windows Server 2022 STIG (V1R4) — 287 rules</span>
-<span class="output">  Loading XCCDF results from: results.xml</span>
-<span class="output">  Loading answer file: site-answers.yaml</span>
-
-<span class="output">  Results for webserver01 (Windows_Server_2022_STIG):</span>
-<span class="output">  &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;</span>
-<span class="output">  &#9474; Total Rules:       287              &#9474;</span>
-<span class="output">  &#9474; <span class="warn">Open:                8</span>  (CAT I: 1)  &#9474;</span>
-<span class="output">  &#9474; Not a Finding:     241              &#9474;</span>
-<span class="output">  &#9474; Not Applicable:     34              &#9474;</span>
-<span class="output">  &#9474; Not Reviewed:        4              &#9474;</span>
-<span class="output">  &#9474; Compliance:       <span class="highlight">97.2%</span>              &#9474;</span>
-<span class="output">  &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;</span>
-
-<span class="output">  Output written to: webserver01_Windows_Server_2022_STIG.ckl (CKL format)</span>
-
-<span class="prompt">$</span> <span class="cmd">automatestig export --input webserver01_Windows_Server_2022_STIG.ckl --output results.json --format stig-manager --collection "NAVAIR Systems"</span>
-<span class="output">Exported to STIG-Manager format: results.json</span>
-<span class="output">  Collection: NAVAIR Systems</span>
-
-<span class="prompt">$</span> <span class="cmd">automatestig summary --input webserver01_Windows_Server_2022_STIG.ckl --open-only</span>
-<span class="output">  Filtered Findings (8):</span>
-<span class="output">  Vuln ID      Sev      Status          Title</span>
-<span class="output">  --------------------------------------------------------------------------</span>
-<span class="output">  V-254239     <span class="warn">CAT I</span>    Open            Windows Server 2022 must use TLS 1.2</span>
-<span class="output">  V-254281     CAT II   Open            Audit policy must cover logon events</span>
-<span class="output">  ...</span>
             </div>
         </div>
     </div>
