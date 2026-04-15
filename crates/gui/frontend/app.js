@@ -1297,6 +1297,7 @@ async function loadAssets() {
         h('button', { className: 'btn btn-primary', onClick: addAssetDialog }, 'Add Asset'),
         h('button', { className: 'btn btn-secondary', onClick: addCredentialDialog }, 'Add Credential'),
         h('button', { className: 'btn btn-secondary', onClick: addScheduleDialog }, 'Add Schedule'),
+        h('button', { className: 'btn btn-secondary', onClick: syncFromStigManager }, 'Sync from STIG-Manager'),
       ),
       assets.length > 0 ? h('div', { className: 'card' },
         h('div', { className: 'card-header' }, h('h2', {}, 'Asset Inventory')),
@@ -1424,6 +1425,35 @@ async function scanAsset(asset) {
       : { host: asset.address, stig_id: asset.assigned_stigs[0], username: 'Administrator', password: '', port: asset.port };
     toast('Enter credentials in the Evaluate > Remote Scan form for now', 'info');
   } catch (e) { toast(e.message, 'error'); }
+}
+
+async function syncFromStigManager() {
+  let config;
+  try { config = await api('/stigman/config'); } catch (_) {
+    toast('STIG-Manager not configured. Go to Settings.', 'error'); nav('settings'); return;
+  }
+  if (!config.configured) {
+    toast('STIG-Manager not configured. Go to Settings.', 'error'); nav('settings'); return;
+  }
+
+  toast('Loading collections from STIG-Manager...', 'info');
+  try {
+    const collections = await api('/stigman/collections');
+    if (!collections || collections.length === 0) {
+      toast('No collections found', 'error'); return;
+    }
+
+    const selectedId = await pickCollection(collections);
+    if (!selectedId) return;
+
+    toast('Syncing assets from STIG-Manager...', 'info');
+    const result = await api(`/stigman/sync/${selectedId}`, { method: 'POST' });
+    toast(`Synced ${result.synced} assets (${result.total_assets} total in inventory)`, 'success');
+    result.details.forEach(d => toast(d, 'info'));
+    loadAssets();
+  } catch (e) {
+    toast(`Sync failed: ${e.message}`, 'error');
+  }
 }
 
 async function removeAsset(id, name) {

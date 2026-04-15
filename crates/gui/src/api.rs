@@ -47,6 +47,7 @@ pub fn routes() -> Router<AppState> {
         .route("/stigman/test", post(stigman_test_connection))
         .route("/stigman/collections", get(stigman_list_collections))
         .route("/stigman/collections/{cid}/assets", get(stigman_list_assets))
+        .route("/stigman/sync/{cid}", post(stigman_sync_assets))
         .route("/stigman/push/{checklist_id}", post(stigman_push_checklist))
         // Batch evaluation
         .route("/evaluate/batch", post(evaluate_batch))
@@ -967,6 +968,91 @@ async fn stigman_list_assets(
         Ok(assets) => api_ok(assets),
         Err(e) => api_error(&e),
     }
+}
+
+/// Sync assets from a STIG-Manager collection into local inventory.
+async fn stigman_sync_assets(
+    State(state): State<AppState>,
+    axum::extract::Path(cid): axum::extract::Path<String>,
+) -> Json<serde_json::Value> {
+    let config = {
+        let db = state.db();
+        load_stigman_config(&db)
+    };
+    if !config.is_configured() {
+        return api_error("STIG-Manager is not configured");
+    }
+
+    let client = match crate::stigman::StigManagerClient::new(config) {
+        Ok(c) => c,
+        Err(e) => return api_error(&e),
+    };
+
+    // Fetch assets from STIG-Manager.
+    let sm_assets = match client.list_assets(&cid).await {
+        Ok(a) => a,
+        Err(e) => return api_error(&format!("Failed to fetch assets: {}", e)),
+    };
+
+    // Load local assets, then drop the DB lock before async work.
+    let mut local_assets = {
+        let db = state.db();
+        load_assets(&db)
+    };
+    let mut synced = 0;
+    let mut details = Vec::new();
+
+    for sm_asset in &sm_assets {
+        // Check if asset already exists locally (by name).
+        let existing = local_assets.iter().position(|a| a.name == sm_asset.name);
+
+        // Fetch STIGs assigned to this asset in STIG-Manager.
+        let stig_ids: Vec<String> = match client.list_asset_stigs(&cid, &sm_asset.asset_id).await {
+            Ok(stigs) => stigs.iter().map(|s| s.benchmark_id.clone()).collect(),
+            Err(_) => Vec::new(),
+        };
+
+        if let Some(idx) = existing {
+            // Update existing asset with STIG-Manager data.
+            local_assets[idx].assigned_stigs = stig_ids.clone();
+            if let Some(ref ip) = sm_asset.ip {
+                if !ip.is_empty() {
+                    local_assets[idx].address = ip.clone();
+                }
+            }
+            details.push(format!("Updated: {} ({} STIGs)", sm_asset.name, stig_ids.len()));
+        } else {
+            // Create new local asset from STIG-Manager data.
+            let mut asset = automatestig_core::inventory::assets::ManagedAsset::new(
+                &sm_asset.name,
+                sm_asset.ip.as_deref().unwrap_or(&sm_asset.name),
+                automatestig_core::checks::CheckPlatform::Generic,
+                automatestig_core::inventory::assets::ScanProtocol::Ssh,
+            );
+            asset.assigned_stigs = stig_ids.clone();
+            if let Some(ref fqdn) = sm_asset.fqdn {
+                if !fqdn.is_empty() {
+                    asset.address = fqdn.clone();
+                }
+            }
+            asset.notes = sm_asset.description.clone();
+            asset.tags = vec!["stigman-sync".to_string()];
+            details.push(format!("Created: {} ({} STIGs)", sm_asset.name, stig_ids.len()));
+            local_assets.push(asset);
+        }
+        synced += 1;
+    }
+
+    {
+        let db = state.db();
+        save_assets(&db, &local_assets);
+    }
+
+    api_ok(serde_json::json!({
+        "synced": synced,
+        "total_assets": local_assets.len(),
+        "details": details,
+    }))
 }
 
 /// Push a checklist's results to STIG-Manager.
