@@ -86,6 +86,7 @@ function loadPage(page) {
     case 'evaluate': loadEvaluate(); break;
     case 'library': loadLibrary(); break;
     case 'checklists': loadChecklists(); break;
+    case 'assets': loadAssets(); break;
     case 'content': loadGetContent(); break;
     case 'import': loadImport(); break;
     case 'settings': loadSettings(); break;
@@ -1245,6 +1246,297 @@ function downloadOfflinePack() {
 }
 
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Assets Page
+// ---------------------------------------------------------------------------
+async function loadAssets() {
+  try {
+    const [assets, creds, schedConfig] = await Promise.all([
+      api('/assets'),
+      api('/credentials'),
+      api('/schedules'),
+    ]);
+
+    const schedules = schedConfig.schedules || [];
+
+    // Asset table.
+    const rows = assets.map(a => {
+      const compColor = a.last_compliance_pct != null ? complianceColor(a.last_compliance_pct) : '';
+      return h('tr', { style: 'cursor: pointer', onClick: (e) => { if (e.target.tagName !== 'BUTTON') editAsset(a); } },
+        h('td', {},
+          h('div', { style: 'font-weight: 600' }, a.name),
+          h('div', { style: 'font-size: 0.75rem; color: var(--text-muted)' }, a.address),
+        ),
+        h('td', {}, a.platform),
+        h('td', {}, a.protocol),
+        h('td', {},
+          a.assigned_stigs.length > 0
+            ? h('span', { style: 'font-size: 0.8rem' }, `${a.assigned_stigs.length} STIG(s)`)
+            : h('span', { style: 'color: var(--text-muted); font-size: 0.8rem' }, 'None'),
+        ),
+        h('td', {},
+          a.last_compliance_pct != null
+            ? h('span', { className: `stat-value ${compColor}`, style: 'font-size: 1rem' }, `${a.last_compliance_pct.toFixed(1)}%`)
+            : h('span', { style: 'color: var(--text-muted)' }, '\u2014'),
+        ),
+        h('td', {},
+          h('div', { className: 'btn-group' },
+            h('button', { className: 'btn btn-primary btn-sm', onClick: (e) => { e.stopPropagation(); scanAsset(a); } }, 'Scan'),
+            h('button', { className: 'btn btn-danger btn-sm', onClick: (e) => { e.stopPropagation(); removeAsset(a.id, a.name); } }, '\u00D7'),
+          ),
+        ),
+      );
+    });
+
+    setPage('assets',
+      h('div', { className: 'page-header' },
+        h('h1', {}, `Assets (${assets.length})`),
+        h('p', {}, 'Managed hosts, credentials, and evaluation schedules'),
+      ),
+      h('div', { className: 'btn-group', style: 'margin-bottom: 20px' },
+        h('button', { className: 'btn btn-primary', onClick: addAssetDialog }, 'Add Asset'),
+        h('button', { className: 'btn btn-secondary', onClick: addCredentialDialog }, 'Add Credential'),
+        h('button', { className: 'btn btn-secondary', onClick: addScheduleDialog }, 'Add Schedule'),
+      ),
+      assets.length > 0 ? h('div', { className: 'card' },
+        h('div', { className: 'card-header' }, h('h2', {}, 'Asset Inventory')),
+        h('table', { className: 'data-table' },
+          h('thead', {}, h('tr', {},
+            h('th', {}, 'Host'), h('th', {}, 'Platform'), h('th', {}, 'Protocol'),
+            h('th', {}, 'STIGs'), h('th', {}, 'Compliance'), h('th', {}, 'Actions'),
+          )),
+          h('tbody', {}, ...rows),
+        ),
+      ) : emptyState('No Assets', 'Add hosts to manage and schedule evaluations.'),
+      // Credentials section.
+      h('div', { className: 'card', style: 'margin-top: 20px' },
+        h('div', { className: 'card-header' }, h('h2', {}, `Credentials (${creds.length})`)),
+        creds.length > 0
+          ? h('table', { className: 'data-table' },
+              h('thead', {}, h('tr', {},
+                h('th', {}, 'Label'), h('th', {}, 'Type'), h('th', {}, 'Username'), h('th', {}, ''),
+              )),
+              h('tbody', {}, ...creds.map(c =>
+                h('tr', {},
+                  h('td', { style: 'font-weight: 600' }, c.label),
+                  h('td', {}, sevBadge(c.credential_type)),
+                  h('td', {}, c.username || '\u2014'),
+                  h('td', {},
+                    h('button', { className: 'btn btn-danger btn-sm', onClick: () => removeCred(c.id, c.label) }, '\u00D7'),
+                  ),
+                ),
+              )),
+            )
+          : h('p', { style: 'color: var(--text-muted); padding: 16px' }, 'No credentials stored.'),
+      ),
+      // Schedules section.
+      h('div', { className: 'card', style: 'margin-top: 20px' },
+        h('div', { className: 'card-header' }, h('h2', {}, `Schedules (${schedules.length})`)),
+        schedules.length > 0
+          ? h('table', { className: 'data-table' },
+              h('thead', {}, h('tr', {},
+                h('th', {}, 'Name'), h('th', {}, 'Frequency'), h('th', {}, 'Assets'),
+                h('th', {}, 'Next Run'), h('th', {}, 'Last Status'), h('th', {}, ''),
+              )),
+              h('tbody', {}, ...schedules.map(s =>
+                h('tr', {},
+                  h('td', { style: 'font-weight: 600' }, s.name),
+                  h('td', {}, s.frequency?.type || 'unknown'),
+                  h('td', {}, `${(s.asset_ids?.length || 0) + (s.asset_tags?.length || 0)}`),
+                  h('td', { style: 'font-size: 0.8rem' }, s.next_run ? new Date(s.next_run).toLocaleString() : '\u2014'),
+                  h('td', {},
+                    s.last_run_status
+                      ? h('span', { style: s.last_run_status.assets_failed > 0 ? 'color: var(--red)' : 'color: var(--green)' },
+                          `${s.last_run_status.assets_scanned} scanned, ${s.last_run_status.avg_compliance.toFixed(0)}%`)
+                      : h('span', { style: 'color: var(--text-muted)' }, 'Never run'),
+                  ),
+                  h('td', {},
+                    h('div', { className: 'btn-group' },
+                      h('button', { className: 'btn btn-primary btn-sm', onClick: () => runScheduleNow(s.id) }, 'Run Now'),
+                      h('button', { className: 'btn btn-danger btn-sm', onClick: () => removeSchedule(s.id, s.name) }, '\u00D7'),
+                    ),
+                  ),
+                ),
+              )),
+            )
+          : h('p', { style: 'color: var(--text-muted); padding: 16px' }, 'No schedules configured.'),
+      ),
+    );
+  } catch (e) {
+    setPage('assets', errorCard(e.message));
+  }
+}
+
+function addAssetDialog() {
+  const overlay = h('div', { className: 'modal-overlay' },
+    h('div', { className: 'modal', style: 'max-width: 500px' },
+      h('h3', {}, 'Add Asset'),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Name'), h('input', { className: 'form-input', id: 'aa-name', placeholder: 'server01' })),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Address'), h('input', { className: 'form-input', id: 'aa-addr', placeholder: '10.0.1.50' })),
+      h('div', { className: 'grid-2' },
+        h('div', { className: 'form-group' },
+          h('label', { className: 'form-label' }, 'Platform'),
+          h('select', { className: 'form-select', id: 'aa-platform' },
+            h('option', { value: 'linux' }, 'Linux'), h('option', { value: 'windows' }, 'Windows'),
+            h('option', { value: 'cisco_ios' }, 'Cisco IOS'), h('option', { value: 'generic' }, 'Other'))),
+        h('div', { className: 'form-group' },
+          h('label', { className: 'form-label' }, 'Protocol'),
+          h('select', { className: 'form-select', id: 'aa-proto' },
+            h('option', { value: 'ssh' }, 'SSH'), h('option', { value: 'winrm' }, 'WinRM'),
+            h('option', { value: 'winrm_https' }, 'WinRM HTTPS')))),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Tags (comma-separated)'),
+        h('input', { className: 'form-input', id: 'aa-tags', placeholder: 'production, web-tier' })),
+      h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
+        h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Cancel'),
+        h('button', { className: 'btn btn-primary', onClick: async () => {
+          const asset = {
+            id: crypto.randomUUID(), name: document.getElementById('aa-name')?.value,
+            address: document.getElementById('aa-addr')?.value,
+            platform: document.getElementById('aa-platform')?.value,
+            protocol: document.getElementById('aa-proto')?.value,
+            tags: (document.getElementById('aa-tags')?.value || '').split(',').map(t => t.trim()).filter(t => t),
+            assigned_stigs: [], enabled: true, port: null, credential_id: null,
+            os_info: null, notes: null, last_evaluated: null, last_compliance_pct: null,
+            last_checklist_ids: [], created_at: new Date().toISOString(),
+          };
+          try { await api('/assets', { method: 'POST', body: JSON.stringify(asset) }); overlay.remove(); toast('Asset added', 'success'); loadAssets(); }
+          catch (e) { toast(e.message, 'error'); }
+        }}, 'Add'),
+      ),
+    ),
+  );
+  document.body.appendChild(overlay);
+}
+
+function editAsset(a) { toast(`Editing ${a.name} — click Scan to evaluate`, 'info'); }
+
+async function scanAsset(asset) {
+  if (!asset.assigned_stigs.length) { toast('Assign STIGs to this asset first', 'error'); return; }
+  toast(`Scanning ${asset.name}...`, 'info');
+  // Use the first assigned STIG for now.
+  try {
+    const endpoint = asset.protocol === 'ssh' ? '/scan/ssh' : '/scan/winrm';
+    const body = asset.protocol === 'ssh'
+      ? { host: asset.address, stig_id: asset.assigned_stigs[0], username: 'admin', auth: { type: 'password', password: '' }, port: asset.port }
+      : { host: asset.address, stig_id: asset.assigned_stigs[0], username: 'Administrator', password: '', port: asset.port };
+    toast('Enter credentials in the Evaluate > Remote Scan form for now', 'info');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function removeAsset(id, name) {
+  if (!(await confirm('Delete Asset', `Remove "${name}" from the inventory?`))) return;
+  try { await api(`/assets/${id}`, { method: 'DELETE' }); toast('Asset removed', 'success'); loadAssets(); }
+  catch (e) { toast(e.message, 'error'); }
+}
+
+function addCredentialDialog() {
+  const overlay = h('div', { className: 'modal-overlay' },
+    h('div', { className: 'modal', style: 'max-width: 500px' },
+      h('h3', {}, 'Add Credential'),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Label'), h('input', { className: 'form-input', id: 'ac-label', placeholder: 'Linux admin account' })),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Type'),
+        h('select', { className: 'form-select', id: 'ac-type' },
+          h('option', { value: 'password' }, 'Password'), h('option', { value: 'ssh_key' }, 'SSH Key'),
+          h('option', { value: 'kerberos' }, 'Kerberos'), h('option', { value: 'token' }, 'Token'))),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Username'), h('input', { className: 'form-input', id: 'ac-user', placeholder: 'admin' })),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Password / Key / Token'), h('input', { className: 'form-input', id: 'ac-secret', type: 'password' })),
+      h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
+        h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Cancel'),
+        h('button', { className: 'btn btn-primary', onClick: async () => {
+          const type = document.getElementById('ac-type')?.value;
+          const cred = {
+            id: crypto.randomUUID(), label: document.getElementById('ac-label')?.value,
+            credential: type === 'password' ? { type: 'password', username: document.getElementById('ac-user')?.value, password: document.getElementById('ac-secret')?.value }
+              : type === 'ssh_key' ? { type: 'ssh_key', username: document.getElementById('ac-user')?.value, private_key: document.getElementById('ac-secret')?.value, passphrase: null }
+              : type === 'kerberos' ? { type: 'kerberos', username: document.getElementById('ac-user')?.value, domain: 'DOMAIN', password: document.getElementById('ac-secret')?.value }
+              : { type: 'token', token: document.getElementById('ac-secret')?.value, token_type: 'bearer' },
+            description: null, created_at: new Date().toISOString(), last_used: null, expires_at: null,
+          };
+          try { await api('/credentials', { method: 'POST', body: JSON.stringify(cred) }); overlay.remove(); toast('Credential saved', 'success'); loadAssets(); }
+          catch (e) { toast(e.message, 'error'); }
+        }}, 'Save'),
+      ),
+    ),
+  );
+  document.body.appendChild(overlay);
+}
+
+async function removeCred(id, label) {
+  if (!(await confirm('Delete Credential', `Remove "${label}"?`))) return;
+  try { await api(`/credentials/${id}`, { method: 'DELETE' }); toast('Credential removed', 'success'); loadAssets(); }
+  catch (e) { toast(e.message, 'error'); }
+}
+
+function addScheduleDialog() {
+  const overlay = h('div', { className: 'modal-overlay' },
+    h('div', { className: 'modal', style: 'max-width: 500px' },
+      h('h3', {}, 'Add Schedule'),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Name'), h('input', { className: 'form-input', id: 'as-name', placeholder: 'Weekly Windows scan' })),
+      h('div', { className: 'grid-2' },
+        h('div', { className: 'form-group' },
+          h('label', { className: 'form-label' }, 'Frequency'),
+          h('select', { className: 'form-select', id: 'as-freq' },
+            h('option', { value: 'daily' }, 'Daily'), h('option', { value: 'weekly' }, 'Weekly'),
+            h('option', { value: 'monthly' }, 'Monthly'), h('option', { value: 'once' }, 'One-time'))),
+        h('div', { className: 'form-group' },
+          h('label', { className: 'form-label' }, 'Run at (UTC hour)'),
+          h('input', { className: 'form-input', id: 'as-hour', type: 'number', value: '2', min: '0', max: '23' }))),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Asset tags (comma-separated)'),
+        h('input', { className: 'form-input', id: 'as-tags', placeholder: 'production, windows' })),
+      h('div', { className: 'form-group', style: 'display: flex; align-items: center; gap: 10px' },
+        h('input', { type: 'checkbox', id: 'as-stigman' }),
+        h('label', { for: 'as-stigman' }, 'Auto-push to STIG-Manager')),
+      h('div', { className: 'form-group', style: 'display: flex; align-items: center; gap: 10px' },
+        h('input', { type: 'checkbox', id: 'as-alert', checked: true }),
+        h('label', { for: 'as-alert' }, 'Alert on new CAT I findings')),
+      h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
+        h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Cancel'),
+        h('button', { className: 'btn btn-primary', onClick: async () => {
+          const freq = document.getElementById('as-freq')?.value;
+          const frequency = freq === 'daily' ? { type: 'daily' }
+            : freq === 'weekly' ? { type: 'weekly', days: ['monday'] }
+            : freq === 'monthly' ? { type: 'monthly', day_of_month: 1 }
+            : { type: 'once' };
+          const schedule = {
+            id: crypto.randomUUID(), name: document.getElementById('as-name')?.value, description: null,
+            asset_ids: [], asset_tags: (document.getElementById('as-tags')?.value || '').split(',').map(t => t.trim()).filter(t => t),
+            enabled: true, frequency, run_at_hour: parseInt(document.getElementById('as-hour')?.value) || 2, run_at_minute: 0,
+            max_parallel: 5, stagger_seconds: 10, retry_count: 2, retry_delay_seconds: 30,
+            post_actions: { push_to_stigman: document.getElementById('as-stigman')?.checked, alert_on_cat_i: document.getElementById('as-alert')?.checked,
+              generate_report: false, alert_on_drift: true, alert_below_compliance: null, stigman_collection_id: null },
+            last_run: null, last_run_status: null, next_run: null, created_at: new Date().toISOString(),
+          };
+          try { await api('/schedules', { method: 'POST', body: JSON.stringify(schedule) }); overlay.remove(); toast('Schedule created', 'success'); loadAssets(); }
+          catch (e) { toast(e.message, 'error'); }
+        }}, 'Create'),
+      ),
+    ),
+  );
+  document.body.appendChild(overlay);
+}
+
+async function removeSchedule(id, name) {
+  if (!(await confirm('Delete Schedule', `Remove schedule "${name}"?`))) return;
+  try { await api(`/schedules/${id}`, { method: 'DELETE' }); toast('Schedule removed', 'success'); loadAssets(); }
+  catch (e) { toast(e.message, 'error'); }
+}
+
+async function runScheduleNow(id) {
+  try {
+    const result = await api(`/schedules/${id}/run`, { method: 'POST' });
+    toast(`Triggered: ${result.assets_matched} assets matched`, 'success');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
 // ---------------------------------------------------------------------------
 // Delete Checklist (Fix #6)
 // ---------------------------------------------------------------------------

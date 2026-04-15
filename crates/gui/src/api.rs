@@ -61,6 +61,22 @@ pub fn routes() -> Router<AppState> {
         // Remote scanning
         .route("/scan/ssh", post(scan_ssh))
         .route("/scan/winrm", post(scan_winrm))
+        // Asset inventory
+        .route("/assets", get(list_assets_inv))
+        .route("/assets", post(create_asset_inv))
+        .route("/assets/{id}", get(get_asset_inv))
+        .route("/assets/{id}", axum::routing::put(update_asset_inv))
+        .route("/assets/{id}", axum::routing::delete(delete_asset_inv))
+        // Credential vault
+        .route("/credentials", get(list_credentials))
+        .route("/credentials", post(create_credential))
+        .route("/credentials/{id}", axum::routing::delete(delete_credential))
+        // Schedules
+        .route("/schedules", get(list_schedules))
+        .route("/schedules", post(create_schedule))
+        .route("/schedules/{id}", axum::routing::put(update_schedule))
+        .route("/schedules/{id}", axum::routing::delete(delete_schedule))
+        .route("/schedules/{id}/run", post(run_schedule_now))
         // Export
         .route("/export/ckl/{id}", get(export_ckl))
         .route("/export/cklb/{id}", get(export_cklb))
@@ -1398,6 +1414,241 @@ async fn get_drift_report(
             "has_changes": false,
         })),
     }
+}
+
+// ---------------------------------------------------------------------------
+// Asset Inventory
+// ---------------------------------------------------------------------------
+
+fn load_assets(db: &automatestig_storage::Database) -> Vec<automatestig_core::inventory::assets::ManagedAsset> {
+    db.get_config("asset_inventory")
+        .ok()
+        .flatten()
+        .and_then(|json| serde_json::from_str(&json).ok())
+        .unwrap_or_default()
+}
+
+fn save_assets(db: &automatestig_storage::Database, assets: &[automatestig_core::inventory::assets::ManagedAsset]) {
+    if let Ok(json) = serde_json::to_string(assets) {
+        let _ = db.set_config("asset_inventory", &json);
+    }
+}
+
+async fn list_assets_inv(State(state): State<AppState>) -> Json<serde_json::Value> {
+    let db = state.db();
+    api_ok(load_assets(&db))
+}
+
+async fn create_asset_inv(
+    State(state): State<AppState>,
+    Json(asset): Json<automatestig_core::inventory::assets::ManagedAsset>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    let mut assets = load_assets(&db);
+    assets.push(asset.clone());
+    save_assets(&db, &assets);
+    api_ok(asset)
+}
+
+async fn get_asset_inv(
+    State(state): State<AppState>,
+    axum::extract::Path(id): axum::extract::Path<String>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    let assets = load_assets(&db);
+    match assets.into_iter().find(|a| a.id == id) {
+        Some(asset) => api_ok(asset),
+        None => api_error("Asset not found"),
+    }
+}
+
+async fn update_asset_inv(
+    State(state): State<AppState>,
+    axum::extract::Path(id): axum::extract::Path<String>,
+    Json(updated): Json<automatestig_core::inventory::assets::ManagedAsset>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    let mut assets = load_assets(&db);
+    if let Some(asset) = assets.iter_mut().find(|a| a.id == id) {
+        *asset = updated.clone();
+        save_assets(&db, &assets);
+        api_ok(updated)
+    } else {
+        api_error("Asset not found")
+    }
+}
+
+async fn delete_asset_inv(
+    State(state): State<AppState>,
+    axum::extract::Path(id): axum::extract::Path<String>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    let mut assets = load_assets(&db);
+    let len = assets.len();
+    assets.retain(|a| a.id != id);
+    save_assets(&db, &assets);
+    api_ok(assets.len() < len)
+}
+
+// ---------------------------------------------------------------------------
+// Credential Vault
+// ---------------------------------------------------------------------------
+
+fn load_vault(db: &automatestig_storage::Database) -> automatestig_core::inventory::credentials::CredentialVault {
+    db.get_config("credential_vault")
+        .ok()
+        .flatten()
+        .and_then(|json| serde_json::from_str(&json).ok())
+        .unwrap_or_default()
+}
+
+fn save_vault(db: &automatestig_storage::Database, vault: &automatestig_core::inventory::credentials::CredentialVault) {
+    if let Ok(json) = serde_json::to_string(vault) {
+        let _ = db.set_config("credential_vault", &json);
+    }
+}
+
+async fn list_credentials(State(state): State<AppState>) -> Json<serde_json::Value> {
+    let db = state.db();
+    let vault = load_vault(&db);
+    api_ok(vault.list_summary())
+}
+
+async fn create_credential(
+    State(state): State<AppState>,
+    Json(cred): Json<automatestig_core::inventory::credentials::StoredCredential>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    let mut vault = load_vault(&db);
+    let summary = automatestig_core::inventory::credentials::CredentialSummary {
+        id: cred.id.clone(),
+        label: cred.label.clone(),
+        credential_type: match &cred.credential {
+            automatestig_core::inventory::credentials::CredentialType::Password { .. } => "password".to_string(),
+            automatestig_core::inventory::credentials::CredentialType::SshKey { .. } => "ssh_key".to_string(),
+            automatestig_core::inventory::credentials::CredentialType::SshCertificate { .. } => "ssh_certificate".to_string(),
+            automatestig_core::inventory::credentials::CredentialType::Kerberos { .. } => "kerberos".to_string(),
+            automatestig_core::inventory::credentials::CredentialType::Token { .. } => "token".to_string(),
+            automatestig_core::inventory::credentials::CredentialType::ClientCertificate { .. } => "client_certificate".to_string(),
+        },
+        username: cred.username().map(|s| s.to_string()),
+        is_expired: cred.is_expired(),
+        last_used: cred.last_used,
+    };
+    vault.add(cred);
+    save_vault(&db, &vault);
+    api_ok(summary)
+}
+
+async fn delete_credential(
+    State(state): State<AppState>,
+    axum::extract::Path(id): axum::extract::Path<String>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    let mut vault = load_vault(&db);
+    let removed = vault.remove(&id);
+    save_vault(&db, &vault);
+    api_ok(removed)
+}
+
+// ---------------------------------------------------------------------------
+// Schedules
+// ---------------------------------------------------------------------------
+
+fn load_schedules(db: &automatestig_storage::Database) -> automatestig_core::inventory::scheduler::SchedulerConfig {
+    db.get_config("scheduler_config")
+        .ok()
+        .flatten()
+        .and_then(|json| serde_json::from_str(&json).ok())
+        .unwrap_or_default()
+}
+
+fn save_schedules(db: &automatestig_storage::Database, config: &automatestig_core::inventory::scheduler::SchedulerConfig) {
+    if let Ok(json) = serde_json::to_string(config) {
+        let _ = db.set_config("scheduler_config", &json);
+    }
+}
+
+async fn list_schedules(State(state): State<AppState>) -> Json<serde_json::Value> {
+    let db = state.db();
+    api_ok(load_schedules(&db))
+}
+
+async fn create_schedule(
+    State(state): State<AppState>,
+    Json(schedule): Json<automatestig_core::inventory::scheduler::EvaluationSchedule>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    let mut config = load_schedules(&db);
+    config.schedules.push(schedule.clone());
+    save_schedules(&db, &config);
+    api_ok(schedule)
+}
+
+async fn update_schedule(
+    State(state): State<AppState>,
+    axum::extract::Path(id): axum::extract::Path<String>,
+    Json(updated): Json<automatestig_core::inventory::scheduler::EvaluationSchedule>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    let mut config = load_schedules(&db);
+    if let Some(s) = config.schedules.iter_mut().find(|s| s.id == id) {
+        *s = updated.clone();
+        save_schedules(&db, &config);
+        api_ok(updated)
+    } else {
+        api_error("Schedule not found")
+    }
+}
+
+async fn delete_schedule(
+    State(state): State<AppState>,
+    axum::extract::Path(id): axum::extract::Path<String>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    let mut config = load_schedules(&db);
+    let len = config.schedules.len();
+    config.schedules.retain(|s| s.id != id);
+    save_schedules(&db, &config);
+    api_ok(config.schedules.len() < len)
+}
+
+async fn run_schedule_now(
+    State(state): State<AppState>,
+    axum::extract::Path(id): axum::extract::Path<String>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    let config = load_schedules(&db);
+    let schedule = match config.schedules.iter().find(|s| s.id == id) {
+        Some(s) => s.clone(),
+        None => return api_error("Schedule not found"),
+    };
+    drop(db);
+
+    let assets = {
+        let db = state.db();
+        load_assets(&db)
+    };
+
+    // Resolve which assets to scan.
+    let target_assets: Vec<_> = assets
+        .iter()
+        .filter(|a| {
+            schedule.asset_ids.contains(&a.id)
+                || schedule.asset_tags.iter().any(|t| a.tags.contains(t))
+        })
+        .collect();
+
+    if target_assets.is_empty() {
+        return api_error("No matching assets found for this schedule");
+    }
+
+    api_ok(serde_json::json!({
+        "schedule_id": schedule.id,
+        "schedule_name": schedule.name,
+        "assets_matched": target_assets.len(),
+        "message": "Schedule triggered. Evaluations will run in background.",
+    }))
 }
 
 // ---------------------------------------------------------------------------

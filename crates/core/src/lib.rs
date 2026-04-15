@@ -21,5 +21,6 @@ pub mod remote;
 pub mod agent;
 pub mod plugins;
 pub mod converter;
+pub mod inventory;
 
 pub use error::{Error, Result};
