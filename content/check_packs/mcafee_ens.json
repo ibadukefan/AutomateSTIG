@@ -1,0 +1,112 @@
+{
+  "stig_id": "McAfee_ENS_STIG",
+  "platform": "windows",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-260800",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\McAfee\\Endpoint\\AV\\OAS", "value_name": "bEnabled" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "McAfee ENS on-access scanner must be enabled"
+    },
+    {
+      "vuln_id": "V-260801",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\McAfee\\Endpoint\\AV\\OAS", "value_name": "uScanWrites" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "McAfee ENS on-access scanner must scan on write operations"
+    },
+    {
+      "vuln_id": "V-260802",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\McAfee\\Endpoint\\AV\\OAS", "value_name": "uScanReads" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "McAfee ENS on-access scanner must scan on read operations"
+    },
+    {
+      "vuln_id": "V-260803",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\McAfee\\Endpoint\\AV\\OAS", "value_name": "bScanArchives" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "McAfee ENS must scan archive files during on-access scanning"
+    },
+    {
+      "vuln_id": "V-260804",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\McAfee\\Endpoint\\AV\\OAS", "value_name": "bScanNetwork" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "McAfee ENS must scan network drives during on-access scanning"
+    },
+    {
+      "vuln_id": "V-260810",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\McAfee\\Endpoint\\AV\\EP", "value_name": "bEnabled" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "McAfee ENS exploit prevention must be enabled"
+    },
+    {
+      "vuln_id": "V-260811",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\McAfee\\Endpoint\\AV\\EP", "value_name": "uActionOnDetect" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "McAfee ENS exploit prevention must be set to block on detection"
+    },
+    {
+      "vuln_id": "V-260812",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\McAfee\\Endpoint\\AV\\EP", "value_name": "bNXEnabled" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "McAfee ENS NX exploit prevention (DEP) must be enabled"
+    },
+    {
+      "vuln_id": "V-260820",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\McAfee\\Endpoint\\FW", "value_name": "bEnabled" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "McAfee ENS firewall must be enabled"
+    },
+    {
+      "vuln_id": "V-260821",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\McAfee\\Endpoint\\FW", "value_name": "bBlockInbound" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "McAfee ENS firewall must block unsolicited inbound connections"
+    },
+    {
+      "vuln_id": "V-260822",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\McAfee\\Endpoint\\FW", "value_name": "bLogTraffic" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "McAfee ENS firewall must log traffic events"
+    },
+    {
+      "vuln_id": "V-260830",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\McAfee\\Endpoint\\AV\\Update", "value_name": "uDATUpdateInterval" },
+      "expected": { "type": "less_or_equal", "value": 4 },
+      "description": "McAfee ENS DAT update interval must be at most 4 hours"
+    },
+    {
+      "vuln_id": "V-260831",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\McAfee\\Endpoint\\AV\\Update", "value_name": "bAutoUpdate" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "McAfee ENS automatic DAT updates must be enabled"
+    },
+    {
+      "vuln_id": "V-260835",
+      "platform": "windows",
+      "check": { "type": "service", "name": "mfemms", "expected_status": "running" },
+      "expected": { "type": "is_true" },
+      "description": "McAfee ENS McAfee Management Service must be running"
+    },
+    {
+      "vuln_id": "V-260836",
+      "platform": "windows",
+      "check": { "type": "service", "name": "mfefire", "expected_status": "running" },
+      "expected": { "type": "is_true" },
+      "description": "McAfee ENS Firewall Core Service must be running"
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "stig_id": "Splunk_Enterprise_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-271301",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/splunk/etc/system/local/server.conf", "pattern": "sslVersions\\s*=\\s*tls1\\.2", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Splunk must use TLS 1.2 for inter-forwarder communication"
+    },
+    {
+      "vuln_id": "V-271302",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/splunk/etc/system/local/server.conf", "pattern": "requireClientCert\\s*=\\s*true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Splunk must require client certificates for mutual TLS"
+    },
+    {
+      "vuln_id": "V-271303",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/splunk/etc/system/local/server.conf", "pattern": "sslPassword\\s*=", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Splunk must have an SSL password configured for certificate encryption"
+    },
+    {
+      "vuln_id": "V-271304",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/splunk/etc/system/local/web.conf", "pattern": "enableSplunkWebSSL\\s*=\\s*true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Splunk Web must have SSL enabled"
+    },
+    {
+      "vuln_id": "V-271305",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/splunk/etc/system/local/web.conf", "pattern": "sslVersions\\s*=\\s*tls1\\.2", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Splunk Web must use TLS 1.2"
+    },
+    {
+      "vuln_id": "V-271306",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/splunk/etc/system/local/web.conf", "pattern": "cipherSuite\\s*=", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Splunk Web must configure an approved cipher suite"
+    },
+    {
+      "vuln_id": "V-271307",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/splunk/etc/system/local/web.conf", "pattern": "tools\\.sessions\\.timeout\\s*=\\s*[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Splunk Web session timeout must be configured"
+    },
+    {
+      "vuln_id": "V-271308",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/splunk/etc/system/local/web.conf", "pattern": "httponly\\s*=\\s*true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Splunk Web session cookies must be HttpOnly"
+    },
+    {
+      "vuln_id": "V-271309",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/splunk/etc/system/local/web.conf", "pattern": "secure\\s*=\\s*true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Splunk Web session cookies must be marked Secure"
+    },
+    {
+      "vuln_id": "V-271310",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/splunk/etc/system/local/authentication.conf", "pattern": "authType\\s*=\\s*(LDAP|SAML|Scripted)", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Splunk must use an external authentication provider (LDAP, SAML, or scripted)"
+    },
+    {
+      "vuln_id": "V-271311",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/splunk/etc/system/local/authentication.conf", "pattern": "lockoutAttempts\\s*=\\s*[1-5]$", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Splunk must lock accounts after 5 or fewer failed login attempts"
+    },
+    {
+      "vuln_id": "V-271312",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/splunk/etc/system/local/authentication.conf", "pattern": "lockoutThresholdMins\\s*=\\s*[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Splunk account lockout duration must be configured"
+    },
+    {
+      "vuln_id": "V-271313",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/splunk/etc/system/local/audit.conf", "pattern": "enableEditAudit\\s*=\\s*true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Splunk configuration change auditing must be enabled"
+    },
+    {
+      "vuln_id": "V-271314",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/splunk/etc/system/local/server.conf", "pattern": "serverCert\\s*=", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Splunk must have a server certificate configured"
+    },
+    {
+      "vuln_id": "V-271315",
+      "platform": "linux",
+      "check": { "type": "file_permission", "path": "/opt/splunk/etc/system/local/server.conf", "owner": "splunk", "group": null, "mode": "0600" },
+      "expected": { "type": "is_true" },
+      "description": "Splunk server.conf must be mode 0600 and owned by splunk user"
+    }
+  ]
+}

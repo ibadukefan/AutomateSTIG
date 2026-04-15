@@ -1,0 +1,112 @@
+{
+  "stig_id": "Java_Runtime_Environment_8_STIG",
+  "platform": "windows",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-234680",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\JavaSoft\\Java Runtime Environment", "value_name": "CurrentVersion" },
+      "expected": { "type": "matches", "pattern": "1\\.8" },
+      "description": "Java Runtime Environment must be at version 8"
+    },
+    {
+      "vuln_id": "V-234681",
+      "platform": "windows",
+      "check": { "type": "file_content", "path": "C:\\Windows\\Sun\\Java\\Deployment\\deployment.properties", "pattern": "deployment.security.level=VERY_HIGH", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "JRE deployment security level must be set to VERY_HIGH"
+    },
+    {
+      "vuln_id": "V-234682",
+      "platform": "windows",
+      "check": { "type": "file_content", "path": "C:\\Windows\\Sun\\Java\\Deployment\\deployment.properties", "pattern": "deployment.security.level.locked", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "JRE deployment security level must be locked"
+    },
+    {
+      "vuln_id": "V-234683",
+      "platform": "windows",
+      "check": { "type": "file_content", "path": "C:\\Windows\\Sun\\Java\\Deployment\\deployment.properties", "pattern": "deployment.security.validation.ocsp=true", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "JRE must enable OCSP certificate validation"
+    },
+    {
+      "vuln_id": "V-234684",
+      "platform": "windows",
+      "check": { "type": "file_content", "path": "C:\\Windows\\Sun\\Java\\Deployment\\deployment.properties", "pattern": "deployment.security.validation.ocsp.locked", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "JRE OCSP certificate validation must be locked"
+    },
+    {
+      "vuln_id": "V-234685",
+      "platform": "windows",
+      "check": { "type": "file_content", "path": "C:\\Windows\\Sun\\Java\\Deployment\\deployment.properties", "pattern": "deployment.security.validation.crl=true", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "JRE must enable CRL certificate revocation checking"
+    },
+    {
+      "vuln_id": "V-234686",
+      "platform": "windows",
+      "check": { "type": "file_content", "path": "C:\\Windows\\Sun\\Java\\Deployment\\deployment.properties", "pattern": "deployment.security.validation.crl.locked", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "JRE CRL certificate revocation checking must be locked"
+    },
+    {
+      "vuln_id": "V-234690",
+      "platform": "windows",
+      "check": { "type": "file_content", "path": "C:\\Windows\\Sun\\Java\\Deployment\\deployment.properties", "pattern": "deployment.security.TLSv1=false", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "JRE must disable TLS 1.0"
+    },
+    {
+      "vuln_id": "V-234691",
+      "platform": "windows",
+      "check": { "type": "file_content", "path": "C:\\Windows\\Sun\\Java\\Deployment\\deployment.properties", "pattern": "deployment.security.TLSv1.1=false", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "JRE must disable TLS 1.1"
+    },
+    {
+      "vuln_id": "V-234692",
+      "platform": "windows",
+      "check": { "type": "file_content", "path": "C:\\Windows\\Sun\\Java\\Deployment\\deployment.properties", "pattern": "deployment.security.TLSv1.2=true", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "JRE must enable TLS 1.2"
+    },
+    {
+      "vuln_id": "V-234695",
+      "platform": "windows",
+      "check": { "type": "file_content", "path": "C:\\Windows\\Sun\\Java\\Deployment\\deployment.properties", "pattern": "deployment.security.SSLv2Hello=false", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "JRE must disable SSLv2Hello protocol"
+    },
+    {
+      "vuln_id": "V-234696",
+      "platform": "windows",
+      "check": { "type": "file_content", "path": "C:\\Windows\\Sun\\Java\\Deployment\\deployment.properties", "pattern": "deployment.security.SSLv3=false", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "JRE must disable SSLv3 protocol"
+    },
+    {
+      "vuln_id": "V-234700",
+      "platform": "windows",
+      "check": { "type": "file_content", "path": "C:\\Windows\\Sun\\Java\\Deployment\\deployment.properties", "pattern": "deployment.webjava.enabled=false", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "JRE must disable web Java unless required"
+    },
+    {
+      "vuln_id": "V-234701",
+      "platform": "windows",
+      "check": { "type": "file_content", "path": "C:\\Windows\\Sun\\Java\\Deployment\\deployment.properties", "pattern": "deployment.webjava.enabled.locked", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "JRE web Java setting must be locked"
+    },
+    {
+      "vuln_id": "V-234705",
+      "platform": "windows",
+      "check": { "type": "file_content", "path": "C:\\Windows\\Sun\\Java\\Deployment\\deployment.config", "pattern": "deployment.system.config=", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "JRE deployment.config must specify the system-level deployment.properties path"
+    }
+  ]
+}
