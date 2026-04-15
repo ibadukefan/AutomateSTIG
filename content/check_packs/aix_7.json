@@ -1,0 +1,22 @@
+{
+  "stig_id": "AIX_7_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    { "vuln_id": "V-215500", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "PermitRootLogin\\s+no", "is_regex": true }, "expected": { "type": "is_true" }, "description": "AIX 7 SSH must not allow direct root login" },
+    { "vuln_id": "V-215501", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "PermitEmptyPasswords\\s+no", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH must not allow empty passwords" },
+    { "vuln_id": "V-215502", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "ClientAliveInterval\\s+[1-9]", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH ClientAliveInterval must be set" },
+    { "vuln_id": "V-215503", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "Banner\\s+/etc/issue", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH must display a login banner" },
+    { "vuln_id": "V-215504", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "X11Forwarding\\s+no", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH X11 forwarding must be disabled" },
+    { "vuln_id": "V-215510", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/security/passwd", "owner": "root", "group": "security", "mode": "0640" }, "expected": { "type": "is_true" }, "description": "/etc/security/passwd must be mode 0640, owned by root:security" },
+    { "vuln_id": "V-215511", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/passwd", "owner": "root", "group": null, "mode": "0644" }, "expected": { "type": "is_true" }, "description": "/etc/passwd must be mode 0644 and owned by root" },
+    { "vuln_id": "V-215512", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/group", "owner": "root", "group": null, "mode": "0644" }, "expected": { "type": "is_true" }, "description": "/etc/group must be mode 0644 and owned by root" },
+    { "vuln_id": "V-215513", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/ssh/sshd_config", "owner": "root", "group": null, "mode": "0600" }, "expected": { "type": "is_true" }, "description": "sshd_config must be mode 0600 and owned by root" },
+    { "vuln_id": "V-215520", "platform": "linux", "check": { "type": "command", "command": "audit query", "pattern": "auditing on", "is_regex": false }, "expected": { "type": "is_true" }, "description": "Auditing must be enabled" },
+    { "vuln_id": "V-215521", "platform": "linux", "check": { "type": "command", "command": "lssec -f /etc/security/login.cfg -s default -a loginretries", "pattern": "loginretries=\\d+", "is_regex": true }, "expected": { "type": "is_true" }, "description": "Login retry limit must be configured" },
+    { "vuln_id": "V-215522", "platform": "linux", "check": { "type": "command", "command": "lsuser -a account_locked root", "pattern": "account_locked=false", "is_regex": false }, "expected": { "type": "is_true" }, "description": "Root account must not be locked" },
+    { "vuln_id": "V-215523", "platform": "linux", "check": { "type": "command", "command": "lssec -f /etc/security/user -s default -a minlen", "pattern": "minlen=1[5-9]|minlen=[2-9][0-9]", "is_regex": true }, "expected": { "type": "is_true" }, "description": "Minimum password length must be 15 characters" },
+    { "vuln_id": "V-215524", "platform": "linux", "check": { "type": "command", "command": "lssec -f /etc/security/user -s default -a maxage", "pattern": "maxage=[1-8]$", "is_regex": true }, "expected": { "type": "is_true" }, "description": "Maximum password age must be set (in weeks)" },
+    { "vuln_id": "V-215525", "platform": "linux", "check": { "type": "command", "command": "lssec -f /etc/security/user -s default -a minage", "pattern": "minage=[1-9]", "is_regex": true }, "expected": { "type": "is_true" }, "description": "Minimum password age must be set" }
+  ]
+}

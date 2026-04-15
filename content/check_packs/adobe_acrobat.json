@@ -1,0 +1,112 @@
+{
+  "stig_id": "Adobe_Acrobat_Reader_STIG",
+  "platform": "windows",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-253410",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown", "value_name": "bEnableJS" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Adobe Acrobat Reader must disable JavaScript execution"
+    },
+    {
+      "vuln_id": "V-253411",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown", "value_name": "bProtectedMode" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Adobe Acrobat Reader must enable Protected Mode"
+    },
+    {
+      "vuln_id": "V-253412",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown", "value_name": "iProtectedView" },
+      "expected": { "type": "equals", "value": 2 },
+      "description": "Adobe Acrobat Reader must enable Protected View for all files"
+    },
+    {
+      "vuln_id": "V-253413",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown", "value_name": "bEnableFlash" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Adobe Acrobat Reader must disable Flash Player content"
+    },
+    {
+      "vuln_id": "V-253414",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown", "value_name": "bEnable3D" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Adobe Acrobat Reader must disable 3D content rendering"
+    },
+    {
+      "vuln_id": "V-253420",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cCloud", "value_name": "bAdobeSendPluginToggle" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Adobe Acrobat Reader must disable Adobe Send cloud service integration"
+    },
+    {
+      "vuln_id": "V-253421",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cCloud", "value_name": "bDisableADCFileStore" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Adobe Acrobat Reader must disable Adobe Document Cloud file storage"
+    },
+    {
+      "vuln_id": "V-253422",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cCloud", "value_name": "bToggleShareFeedback" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Adobe Acrobat Reader must disable cloud-based share and feedback"
+    },
+    {
+      "vuln_id": "V-253425",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cWebmailProfiles", "value_name": "bDisableWebmail" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Adobe Acrobat Reader must disable webmail integration"
+    },
+    {
+      "vuln_id": "V-253426",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cSharePoint", "value_name": "bDisableSharePointFeatures" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Adobe Acrobat Reader must disable SharePoint integration"
+    },
+    {
+      "vuln_id": "V-253430",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown", "value_name": "bUpdater" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Adobe Acrobat Reader automatic updates must be disabled (managed by enterprise)"
+    },
+    {
+      "vuln_id": "V-253431",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown", "value_name": "bUsageMeasurement" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Adobe Acrobat Reader must disable usage measurement (telemetry)"
+    },
+    {
+      "vuln_id": "V-253432",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cServices", "value_name": "bToggleAdobeDocumentServices" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Adobe Acrobat Reader must disable Adobe Document Services"
+    },
+    {
+      "vuln_id": "V-253433",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cServices", "value_name": "bToggleAdobeSign" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Adobe Acrobat Reader must disable Adobe Sign integration"
+    },
+    {
+      "vuln_id": "V-253435",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown", "value_name": "bEnhancedSecurityStandalone" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Adobe Acrobat Reader must enable Enhanced Security in standalone mode"
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "stig_id": "BIND_9_DNS_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-270201",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "recursion\\s+no", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must disable recursion on authoritative name servers"
+    },
+    {
+      "vuln_id": "V-270202",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "allow-recursion\\s*\\{", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must restrict recursion to authorized clients via allow-recursion"
+    },
+    {
+      "vuln_id": "V-270203",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "dnssec-enable\\s+yes", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must have DNSSEC enabled"
+    },
+    {
+      "vuln_id": "V-270204",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "dnssec-validation\\s+yes", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must have DNSSEC validation enabled"
+    },
+    {
+      "vuln_id": "V-270205",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "allow-transfer\\s*\\{", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must restrict zone transfers via allow-transfer"
+    },
+    {
+      "vuln_id": "V-270206",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "allow-query\\s*\\{", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must restrict queries via allow-query"
+    },
+    {
+      "vuln_id": "V-270207",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "version\\s+\"[^\"]+\"", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must set a non-default version string to prevent information disclosure"
+    },
+    {
+      "vuln_id": "V-270208",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "logging\\s*\\{", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must have logging configured"
+    },
+    {
+      "vuln_id": "V-270209",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "channel\\s+\\S+\\s*\\{\\s*file", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND logging must write to a file channel"
+    },
+    {
+      "vuln_id": "V-270210",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "category\\s+security\\s*\\{", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must log security events"
+    },
+    {
+      "vuln_id": "V-270211",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "category\\s+queries\\s*\\{", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must log query events"
+    },
+    {
+      "vuln_id": "V-270212",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "category\\s+xfer-in\\s*\\{", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must log zone transfer events"
+    },
+    {
+      "vuln_id": "V-270213",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "listen-on\\s+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must be configured with listen-on to restrict interfaces"
+    },
+    {
+      "vuln_id": "V-270214",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "notify\\s+(yes|explicit)", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND zone notify must be configured"
+    },
+    {
+      "vuln_id": "V-270215",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "also-notify\\s*\\{", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must configure also-notify for secondary servers"
+    },
+    {
+      "vuln_id": "V-270216",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "rate-limit\\s*\\{", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must have response rate limiting configured"
+    },
+    {
+      "vuln_id": "V-270217",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "minimal-responses\\s+yes", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must enable minimal responses to reduce information leakage"
+    },
+    {
+      "vuln_id": "V-270218",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "empty-zones-enable\\s+yes", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must enable empty zones"
+    },
+    {
+      "vuln_id": "V-270219",
+      "platform": "linux",
+      "check": { "type": "file_permission", "path": "/etc/named.conf", "owner": "named", "group": null, "mode": "0640" },
+      "expected": { "type": "is_true" },
+      "description": "BIND named.conf must be mode 0640 and owned by named user"
+    },
+    {
+      "vuln_id": "V-270220",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/named.conf", "pattern": "directory\\s+\"/var/named\"", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "BIND must use a dedicated directory for zone files"
+    }
+  ]
+}

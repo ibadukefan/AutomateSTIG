@@ -1,0 +1,112 @@
+{
+  "stig_id": "Postfix_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-263501",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postfix/main.cf", "pattern": "smtpd_tls_cert_file\\s*=\\s*\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Postfix must have a TLS certificate file configured"
+    },
+    {
+      "vuln_id": "V-263502",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postfix/main.cf", "pattern": "smtpd_tls_key_file\\s*=\\s*\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Postfix must have a TLS key file configured"
+    },
+    {
+      "vuln_id": "V-263503",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postfix/main.cf", "pattern": "smtpd_tls_security_level\\s*=\\s*(may|encrypt)", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Postfix must enable TLS for inbound SMTP connections"
+    },
+    {
+      "vuln_id": "V-263504",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postfix/main.cf", "pattern": "smtp_tls_security_level\\s*=\\s*(may|encrypt)", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Postfix must enable TLS for outbound SMTP connections"
+    },
+    {
+      "vuln_id": "V-263505",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postfix/main.cf", "pattern": "smtpd_tls_mandatory_protocols\\s*=\\s*!SSLv2,\\s*!SSLv3,\\s*!TLSv1,\\s*!TLSv1\\.1", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Postfix must disable SSLv2, SSLv3, TLS 1.0, and TLS 1.1"
+    },
+    {
+      "vuln_id": "V-263506",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postfix/main.cf", "pattern": "smtpd_relay_restrictions\\s*=", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Postfix must configure smtpd_relay_restrictions to prevent open relay"
+    },
+    {
+      "vuln_id": "V-263507",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postfix/main.cf", "pattern": "smtpd_recipient_restrictions\\s*=", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Postfix must configure smtpd_recipient_restrictions"
+    },
+    {
+      "vuln_id": "V-263508",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postfix/main.cf", "pattern": "smtpd_helo_required\\s*=\\s*yes", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Postfix must require HELO/EHLO handshake"
+    },
+    {
+      "vuln_id": "V-263509",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postfix/main.cf", "pattern": "smtpd_banner\\s*=", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Postfix must configure a custom SMTP banner"
+    },
+    {
+      "vuln_id": "V-263510",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postfix/main.cf", "pattern": "smtpd_sasl_auth_enable\\s*=\\s*yes", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Postfix must enable SASL authentication for SMTP"
+    },
+    {
+      "vuln_id": "V-263511",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postfix/main.cf", "pattern": "smtpd_sasl_security_options\\s*=\\s*noanonymous", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Postfix must disallow anonymous SASL authentication"
+    },
+    {
+      "vuln_id": "V-263512",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postfix/main.cf", "pattern": "disable_vrfy_command\\s*=\\s*yes", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Postfix must disable the VRFY command"
+    },
+    {
+      "vuln_id": "V-263513",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postfix/main.cf", "pattern": "message_size_limit\\s*=\\s*[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Postfix must limit message size"
+    },
+    {
+      "vuln_id": "V-263514",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postfix/main.cf", "pattern": "smtpd_client_connection_rate_limit\\s*=\\s*[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Postfix must limit client connection rate"
+    },
+    {
+      "vuln_id": "V-263515",
+      "platform": "linux",
+      "check": { "type": "file_permission", "path": "/etc/postfix/main.cf", "owner": "root", "group": null, "mode": "0644" },
+      "expected": { "type": "is_true" },
+      "description": "Postfix main.cf must be mode 0644 and owned by root"
+    }
+  ]
+}
