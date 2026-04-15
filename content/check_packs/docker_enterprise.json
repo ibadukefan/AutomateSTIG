@@ -1,0 +1,154 @@
+{
+  "stig_id": "Docker_Enterprise_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-235800",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/docker/daemon.json", "pattern": "\"tls\":\\s*true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Docker daemon must be configured to use TLS"
+    },
+    {
+      "vuln_id": "V-235801",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/docker/daemon.json", "pattern": "\"tlscacert\":", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Docker daemon TLS CA certificate must be configured"
+    },
+    {
+      "vuln_id": "V-235802",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/docker/daemon.json", "pattern": "\"tlscert\":", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Docker daemon TLS server certificate must be configured"
+    },
+    {
+      "vuln_id": "V-235803",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/docker/daemon.json", "pattern": "\"tlskey\":", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Docker daemon TLS private key must be configured"
+    },
+    {
+      "vuln_id": "V-235804",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/docker/daemon.json", "pattern": "\"userns-remap\":", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Docker daemon must enable user namespace remapping"
+    },
+    {
+      "vuln_id": "V-235805",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/docker/daemon.json", "pattern": "\"no-new-privileges\":\\s*true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Docker daemon must set no-new-privileges by default"
+    },
+    {
+      "vuln_id": "V-235806",
+      "platform": "linux",
+      "check": { "type": "command", "command": "docker info --format '{{ .SecurityOptions }}'", "pattern": "no-new-privileges", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Docker runtime must enforce no-new-privileges security option"
+    },
+    {
+      "vuln_id": "V-235807",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/docker/daemon.json", "pattern": "\"log-driver\":\\s*\"(syslog|journald|json-file|splunk|fluentd)\"", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Docker daemon must configure a centralized logging driver"
+    },
+    {
+      "vuln_id": "V-235808",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/docker/daemon.json", "pattern": "\"log-opts\":", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Docker daemon logging options must be configured"
+    },
+    {
+      "vuln_id": "V-235809",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/docker/daemon.json", "pattern": "\"icc\":\\s*false", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Docker daemon must disable inter-container communication by default"
+    },
+    {
+      "vuln_id": "V-235810",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/docker/daemon.json", "pattern": "\"live-restore\":\\s*true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Docker daemon must enable live restore to keep containers running during daemon downtime"
+    },
+    {
+      "vuln_id": "V-235811",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/docker/daemon.json", "pattern": "\"userland-proxy\":\\s*false", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Docker daemon must disable userland proxy for port forwarding"
+    },
+    {
+      "vuln_id": "V-235812",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/docker/daemon.json", "pattern": "\"default-ulimits\":", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Docker daemon must configure default ulimits for containers"
+    },
+    {
+      "vuln_id": "V-235813",
+      "platform": "linux",
+      "check": { "type": "command", "command": "docker ps --quiet --all | xargs docker inspect --format '{{ .HostConfig.ReadonlyRootfs }}'", "pattern": "true", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Containers should use read-only root filesystems where possible"
+    },
+    {
+      "vuln_id": "V-235814",
+      "platform": "linux",
+      "check": { "type": "command", "command": "docker info --format '{{ .ServerVersion }}'", "pattern": "\\d+\\.\\d+\\.\\d+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Docker Engine must be a supported and current version"
+    },
+    {
+      "vuln_id": "V-235815",
+      "platform": "linux",
+      "check": { "type": "command", "command": "docker ps --quiet --all | xargs docker inspect --format '{{ .HostConfig.Privileged }}'", "pattern": "true", "is_regex": false },
+      "expected": { "type": "is_false" },
+      "description": "No containers must be running in privileged mode"
+    },
+    {
+      "vuln_id": "V-235816",
+      "platform": "linux",
+      "check": { "type": "command", "command": "docker ps --quiet --all | xargs docker inspect --format '{{ .HostConfig.PidMode }}'", "pattern": "host", "is_regex": false },
+      "expected": { "type": "is_false" },
+      "description": "Containers must not share the host PID namespace"
+    },
+    {
+      "vuln_id": "V-235817",
+      "platform": "linux",
+      "check": { "type": "command", "command": "docker ps --quiet --all | xargs docker inspect --format '{{ .HostConfig.NetworkMode }}'", "pattern": "^host$", "is_regex": true },
+      "expected": { "type": "is_false" },
+      "description": "Containers must not use the host network mode"
+    },
+    {
+      "vuln_id": "V-235818",
+      "platform": "linux",
+      "check": { "type": "command", "command": "docker info --format '{{ .DockerRootDir }}'", "pattern": "/var/lib/docker", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Docker root directory must be on a dedicated partition"
+    },
+    {
+      "vuln_id": "V-235819",
+      "platform": "linux",
+      "check": {
+        "type": "all",
+        "checks": [
+          { "type": "file_content", "path": "/etc/docker/daemon.json", "pattern": "\"tls\":\\s*true", "is_regex": true },
+          { "type": "file_content", "path": "/etc/docker/daemon.json", "pattern": "\"no-new-privileges\":\\s*true", "is_regex": true },
+          { "type": "file_content", "path": "/etc/docker/daemon.json", "pattern": "\"icc\":\\s*false", "is_regex": true }
+        ]
+      },
+      "expected": { "type": "all_pass" },
+      "description": "TLS, no-new-privileges, and inter-container communication restrictions must all be configured"
+    }
+  ]
+}
