@@ -1,0 +1,147 @@
+{
+  "stig_id": "Nginx_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-274801",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "server_tokens\\s+off", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must set server_tokens to off to suppress version information"
+    },
+    {
+      "vuln_id": "V-274802",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "ssl_protocols\\s+TLSv1\\.2\\s+TLSv1\\.3", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must only enable TLS 1.2 and TLS 1.3"
+    },
+    {
+      "vuln_id": "V-274803",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "ssl_ciphers\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must configure ssl_ciphers with approved cipher suites"
+    },
+    {
+      "vuln_id": "V-274804",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "ssl_prefer_server_ciphers\\s+on", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must prefer server ciphers over client ciphers"
+    },
+    {
+      "vuln_id": "V-274805",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "ssl_certificate\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must have an SSL certificate configured"
+    },
+    {
+      "vuln_id": "V-274806",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "ssl_certificate_key\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must have an SSL certificate key configured"
+    },
+    {
+      "vuln_id": "V-274807",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "access_log\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must have access_log configured"
+    },
+    {
+      "vuln_id": "V-274808",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "error_log\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must have error_log configured"
+    },
+    {
+      "vuln_id": "V-274809",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "add_header\\s+X-Frame-Options\\s+\"SAMEORIGIN\"", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must set X-Frame-Options header to SAMEORIGIN"
+    },
+    {
+      "vuln_id": "V-274810",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "add_header\\s+X-Content-Type-Options\\s+\"nosniff\"", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must set X-Content-Type-Options header to nosniff"
+    },
+    {
+      "vuln_id": "V-274811",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "add_header\\s+X-XSS-Protection\\s+\"1;\\s*mode=block\"", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must set X-XSS-Protection header"
+    },
+    {
+      "vuln_id": "V-274812",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "add_header\\s+Strict-Transport-Security", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must set Strict-Transport-Security header"
+    },
+    {
+      "vuln_id": "V-274813",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "add_header\\s+Content-Security-Policy", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must set Content-Security-Policy header"
+    },
+    {
+      "vuln_id": "V-274814",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "client_max_body_size\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must configure client_max_body_size to limit request body size"
+    },
+    {
+      "vuln_id": "V-274815",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "keepalive_timeout\\s+[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must configure keepalive_timeout"
+    },
+    {
+      "vuln_id": "V-274816",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "client_body_timeout\\s+[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must configure client_body_timeout"
+    },
+    {
+      "vuln_id": "V-274817",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "client_header_timeout\\s+[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must configure client_header_timeout"
+    },
+    {
+      "vuln_id": "V-274818",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "autoindex\\s+off", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must disable directory listing (autoindex off)"
+    },
+    {
+      "vuln_id": "V-274819",
+      "platform": "linux",
+      "check": { "type": "file_permission", "path": "/etc/nginx/nginx.conf", "owner": "root", "group": null, "mode": "0644" },
+      "expected": { "type": "is_true" },
+      "description": "Nginx configuration file must be mode 0644 and owned by root"
+    },
+    {
+      "vuln_id": "V-274820",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/nginx/nginx.conf", "pattern": "ssl_session_timeout\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Nginx must configure ssl_session_timeout"
+    }
+  ]
+}

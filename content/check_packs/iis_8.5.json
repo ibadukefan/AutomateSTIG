@@ -1,0 +1,147 @@
+{
+  "stig_id": "IIS_8.5_Server_STIG",
+  "platform": "windows",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-218720",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.2\\Server", "value_name": "Enabled" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "IIS 8.5 must have TLS 1.2 enabled (server-side)"
+    },
+    {
+      "vuln_id": "V-218721",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\SSL 2.0\\Server", "value_name": "Enabled" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "SSL 2.0 must be disabled on the IIS 8.5 server"
+    },
+    {
+      "vuln_id": "V-218722",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\SSL 3.0\\Server", "value_name": "Enabled" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "SSL 3.0 must be disabled on the IIS 8.5 server"
+    },
+    {
+      "vuln_id": "V-218723",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.0\\Server", "value_name": "Enabled" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "TLS 1.0 must be disabled on the IIS 8.5 server"
+    },
+    {
+      "vuln_id": "V-218724",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.1\\Server", "value_name": "Enabled" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "TLS 1.1 must be disabled on the IIS 8.5 server"
+    },
+    {
+      "vuln_id": "V-218725",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.2\\Server", "value_name": "DisabledByDefault" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "TLS 1.2 must not be disabled by default on the IIS 8.5 server"
+    },
+    {
+      "vuln_id": "V-218730",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\InetStp", "value_name": "EnableLogging" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "IIS 8.5 logging must be enabled"
+    },
+    {
+      "vuln_id": "V-218731",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\InetStp\\Configuration", "value_name": "LogExtFileDate" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "IIS 8.5 log files must include date"
+    },
+    {
+      "vuln_id": "V-218732",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\InetStp\\Configuration", "value_name": "LogExtFileTime" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "IIS 8.5 log files must include time"
+    },
+    {
+      "vuln_id": "V-218733",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\InetStp\\Configuration", "value_name": "LogExtFileClientIp" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "IIS 8.5 log files must include client IP"
+    },
+    {
+      "vuln_id": "V-218734",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\InetStp\\Configuration", "value_name": "LogExtFileUserName" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "IIS 8.5 log files must include user name"
+    },
+    {
+      "vuln_id": "V-218735",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\InetStp\\Configuration", "value_name": "LogExtFileMethod" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "IIS 8.5 log files must include request method"
+    },
+    {
+      "vuln_id": "V-218736",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\InetStp\\Configuration", "value_name": "LogExtFileHttpStatus" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "IIS 8.5 log files must include HTTP status"
+    },
+    {
+      "vuln_id": "V-218740",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\HTTP\\Parameters", "value_name": "MaxFieldLength" },
+      "expected": { "type": "less_or_equal", "value": 65534 },
+      "description": "IIS 8.5 MaxFieldLength must be configured to limit header size"
+    },
+    {
+      "vuln_id": "V-218741",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\HTTP\\Parameters", "value_name": "MaxRequestBytes" },
+      "expected": { "type": "less_or_equal", "value": 16777216 },
+      "description": "IIS 8.5 MaxRequestBytes must be configured to limit request size"
+    },
+    {
+      "vuln_id": "V-218745",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\HTTP\\Parameters", "value_name": "EnableNonUTF8" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "IIS 8.5 must not allow non-UTF8 URLs"
+    },
+    {
+      "vuln_id": "V-218746",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\HTTP\\Parameters", "value_name": "FavorUTF8" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "IIS 8.5 must favor UTF-8 encoding"
+    },
+    {
+      "vuln_id": "V-218750",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\HTTP\\Parameters", "value_name": "DisableServerHeader" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "IIS 8.5 must suppress the server version in HTTP headers"
+    },
+    {
+      "vuln_id": "V-218755",
+      "platform": "windows",
+      "check": { "type": "service", "name": "W3SVC", "expected_status": "running" },
+      "expected": { "type": "is_true" },
+      "description": "World Wide Web Publishing Service must be running on IIS 8.5 server"
+    },
+    {
+      "vuln_id": "V-218756",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\InetStp", "value_name": "MajorVersion" },
+      "expected": { "type": "greater_or_equal", "value": 8 },
+      "description": "IIS must be version 8.5 or later"
+    }
+  ]
+}
