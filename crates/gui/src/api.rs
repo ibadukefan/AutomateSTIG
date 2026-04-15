@@ -48,6 +48,7 @@ pub fn routes() -> Router<AppState> {
         .route("/stigman/collections", get(stigman_list_collections))
         .route("/stigman/collections/{cid}/assets", get(stigman_list_assets))
         .route("/stigman/sync/{cid}", post(stigman_sync_assets))
+        .route("/stigman/diff/{cid}", get(stigman_diff_assets))
         .route("/stigman/push/{checklist_id}", post(stigman_push_checklist))
         // Batch evaluation
         .route("/evaluate/batch", post(evaluate_batch))
@@ -1052,6 +1053,86 @@ async fn stigman_sync_assets(
         "synced": synced,
         "total_assets": local_assets.len(),
         "details": details,
+    }))
+}
+
+/// Check for differences between STIG-Manager and local inventory.
+async fn stigman_diff_assets(
+    State(state): State<AppState>,
+    axum::extract::Path(cid): axum::extract::Path<String>,
+) -> Json<serde_json::Value> {
+    let config = {
+        let db = state.db();
+        load_stigman_config(&db)
+    };
+    if !config.is_configured() {
+        return api_error("STIG-Manager is not configured");
+    }
+
+    let client = match crate::stigman::StigManagerClient::new(config) {
+        Ok(c) => c,
+        Err(e) => return api_error(&e),
+    };
+
+    let sm_assets = match client.list_assets(&cid).await {
+        Ok(a) => a,
+        Err(e) => return api_error(&format!("Failed to fetch: {}", e)),
+    };
+
+    let local_assets = {
+        let db = state.db();
+        load_assets(&db)
+    };
+
+    let local_names: std::collections::HashSet<String> =
+        local_assets.iter().map(|a| a.name.clone()).collect();
+    let sm_names: std::collections::HashSet<String> =
+        sm_assets.iter().map(|a| a.name.clone()).collect();
+
+    // Assets in SM but not local.
+    let new_in_sm: Vec<&str> = sm_names.difference(&local_names).map(|s| s.as_str()).collect();
+
+    // Assets local but not in SM.
+    let removed_from_sm: Vec<&str> = local_names
+        .iter()
+        .filter(|n| !sm_names.contains(*n) && local_assets.iter().any(|a| a.name == **n && a.tags.contains(&"stigman-sync".to_string())))
+        .map(|s| s.as_str())
+        .collect();
+
+    // Assets in both — check for STIG assignment changes.
+    let mut stig_changes = Vec::new();
+    for sm_asset in &sm_assets {
+        if let Some(local) = local_assets.iter().find(|a| a.name == sm_asset.name) {
+            let sm_stigs: Vec<String> = match client.list_asset_stigs(&cid, &sm_asset.asset_id).await {
+                Ok(stigs) => stigs.iter().map(|s| s.benchmark_id.clone()).collect(),
+                Err(_) => continue,
+            };
+
+            let local_set: std::collections::HashSet<&String> = local.assigned_stigs.iter().collect();
+            let sm_set: std::collections::HashSet<&String> = sm_stigs.iter().collect();
+
+            let added: Vec<&String> = sm_set.difference(&local_set).copied().collect();
+            let removed: Vec<&String> = local_set.difference(&sm_set).copied().collect();
+
+            if !added.is_empty() || !removed.is_empty() {
+                stig_changes.push(serde_json::json!({
+                    "asset": sm_asset.name,
+                    "stigs_added": added,
+                    "stigs_removed": removed,
+                }));
+            }
+        }
+    }
+
+    let has_changes = !new_in_sm.is_empty() || !removed_from_sm.is_empty() || !stig_changes.is_empty();
+
+    api_ok(serde_json::json!({
+        "has_changes": has_changes,
+        "new_assets_in_stigman": new_in_sm,
+        "removed_from_stigman": removed_from_sm,
+        "stig_assignment_changes": stig_changes,
+        "local_count": local_assets.len(),
+        "stigman_count": sm_assets.len(),
     }))
 }
 

@@ -1298,6 +1298,7 @@ async function loadAssets() {
         h('button', { className: 'btn btn-secondary', onClick: addCredentialDialog }, 'Add Credential'),
         h('button', { className: 'btn btn-secondary', onClick: addScheduleDialog }, 'Add Schedule'),
         h('button', { className: 'btn btn-secondary', onClick: syncFromStigManager }, 'Sync from STIG-Manager'),
+        h('button', { className: 'btn btn-secondary', onClick: checkStigManagerDiff }, 'Check for SM Updates'),
       ),
       assets.length > 0 ? h('div', { className: 'card' },
         h('div', { className: 'card-header' }, h('h2', {}, 'Asset Inventory')),
@@ -1425,6 +1426,70 @@ async function scanAsset(asset) {
       : { host: asset.address, stig_id: asset.assigned_stigs[0], username: 'Administrator', password: '', port: asset.port };
     toast('Enter credentials in the Evaluate > Remote Scan form for now', 'info');
   } catch (e) { toast(e.message, 'error'); }
+}
+
+async function checkStigManagerDiff() {
+  let config;
+  try { config = await api('/stigman/config'); } catch (_) {
+    toast('STIG-Manager not configured. Go to Settings.', 'error'); nav('settings'); return;
+  }
+  if (!config.configured) {
+    toast('STIG-Manager not configured. Go to Settings.', 'error'); nav('settings'); return;
+  }
+
+  toast('Checking STIG-Manager for changes...', 'info');
+  try {
+    const collections = await api('/stigman/collections');
+    if (!collections || collections.length === 0) { toast('No collections found', 'error'); return; }
+
+    const selectedId = await pickCollection(collections);
+    if (!selectedId) return;
+
+    const diff = await api(`/stigman/diff/${selectedId}`);
+
+    if (!diff.has_changes) {
+      toast('Everything is in sync \u2014 no changes detected.', 'success');
+      return;
+    }
+
+    // Show diff results in a modal.
+    const items = [];
+    if (diff.new_assets_in_stigman.length > 0) {
+      items.push(h('div', { style: 'margin-bottom: 12px' },
+        h('h4', { style: 'color: var(--green); margin-bottom: 4px' }, `${diff.new_assets_in_stigman.length} New Assets in STIG-Manager`),
+        ...diff.new_assets_in_stigman.map(a => h('div', { style: 'font-size: 0.85rem; padding: 2px 0' }, `+ ${a}`)),
+      ));
+    }
+    if (diff.removed_from_stigman.length > 0) {
+      items.push(h('div', { style: 'margin-bottom: 12px' },
+        h('h4', { style: 'color: var(--red); margin-bottom: 4px' }, `${diff.removed_from_stigman.length} Removed from STIG-Manager`),
+        ...diff.removed_from_stigman.map(a => h('div', { style: 'font-size: 0.85rem; padding: 2px 0' }, `- ${a}`)),
+      ));
+    }
+    if (diff.stig_assignment_changes.length > 0) {
+      items.push(h('div', { style: 'margin-bottom: 12px' },
+        h('h4', { style: 'color: var(--yellow); margin-bottom: 4px' }, `${diff.stig_assignment_changes.length} STIG Assignment Changes`),
+        ...diff.stig_assignment_changes.map(c => h('div', { style: 'font-size: 0.85rem; padding: 2px 0' },
+          `${c.asset}: +${c.stigs_added.length} / -${c.stigs_removed.length} STIGs`)),
+      ));
+    }
+
+    const overlay = h('div', { className: 'modal-overlay' },
+      h('div', { className: 'modal', style: 'max-width: 500px' },
+        h('h3', {}, 'STIG-Manager Changes Detected'),
+        h('p', { style: 'color: var(--text-secondary); margin-bottom: 16px' },
+          `Local: ${diff.local_count} assets | STIG-Manager: ${diff.stigman_count} assets`),
+        ...items,
+        h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
+          h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Close'),
+          h('button', { className: 'btn btn-primary', onClick: () => { overlay.remove(); syncFromStigManager(); } }, 'Sync Now'),
+        ),
+      ),
+    );
+    document.body.appendChild(overlay);
+  } catch (e) {
+    toast(`Check failed: ${e.message}`, 'error');
+  }
 }
 
 async function syncFromStigManager() {
