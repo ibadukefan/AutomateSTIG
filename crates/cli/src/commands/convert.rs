@@ -3,6 +3,8 @@ use std::path::Path;
 use anyhow::{Context, Result};
 use automatestig_parsers::{ckl, cklb};
 
+use crate::ui;
+
 pub fn run(input: &str, output: &str, format: Option<&str>) -> Result<()> {
     let in_path = Path::new(input);
     let out_path = Path::new(output);
@@ -16,14 +18,15 @@ pub fn run(input: &str, output: &str, format: Option<&str>) -> Result<()> {
         .or_else(|| out_path.extension().and_then(|e| e.to_str()))
         .unwrap_or("ckl");
 
-    println!("Converting: {} -> {} ({})", input, output, out_format);
+    ui::print_banner();
+    ui::section("Convert Checklist");
+    ui::detail("Input", input);
+    ui::detail("Output format", out_format);
 
     // Load input.
     let checklist = match in_ext {
-        "ckl" => ckl::parse_ckl_file(in_path)
-            .context("Failed to parse CKL file")?,
-        "cklb" => cklb::parse_cklb_file(in_path)
-            .context("Failed to parse CKLB file")?,
+        "ckl" => ckl::parse_ckl_file(in_path).context("Failed to parse CKL file")?,
+        "cklb" => cklb::parse_cklb_file(in_path).context("Failed to parse CKLB file")?,
         "json" => {
             let content = std::fs::read_to_string(in_path)?;
             serde_json::from_str(&content)?
@@ -33,12 +36,8 @@ pub fn run(input: &str, output: &str, format: Option<&str>) -> Result<()> {
 
     // Write output.
     match out_format {
-        "ckl" => {
-            ckl::write_ckl_file(&checklist, out_path)?;
-        }
-        "cklb" => {
-            cklb::write_cklb_file(&checklist, out_path)?;
-        }
+        "ckl" => ckl::write_ckl_file(&checklist, out_path)?,
+        "cklb" => cklb::write_cklb_file(&checklist, out_path)?,
         "json" => {
             let json = serde_json::to_string_pretty(&checklist)?;
             std::fs::write(out_path, json)?;
@@ -46,8 +45,10 @@ pub fn run(input: &str, output: &str, format: Option<&str>) -> Result<()> {
         _ => anyhow::bail!("Unsupported output format: {}", out_format),
     }
 
-    println!("  Converted {} findings.", checklist.findings.len());
-    println!("  Output: {}", output);
+    eprintln!();
+    ui::success(&format!("Converted {} findings", checklist.findings.len()));
+    ui::output_file("Output", output, out_format);
+    eprintln!();
 
     Ok(())
 }

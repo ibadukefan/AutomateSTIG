@@ -327,11 +327,9 @@ fn extract_release_number(release_info: &str) -> String {
 
 fn extract_release_date(release_info: &str) -> Option<String> {
     // Format: "Release: 4 Benchmark Date: 24 Jul 2024"
-    if let Some(pos) = release_info.find("Benchmark Date:") {
-        Some(release_info[pos + 15..].trim().to_string())
-    } else {
-        None
-    }
+    release_info
+        .find("Benchmark Date:")
+        .map(|pos| release_info[pos + 15..].trim().to_string())
 }
 
 fn build_finding_from_attrs(

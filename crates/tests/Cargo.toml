@@ -1,0 +1,17 @@
+[package]
+name = "automatestig-tests"
+version.workspace = true
+edition.workspace = true
+publish = false
+description = "Integration tests for AutomateSTIG"
+
+[dependencies]
+automatestig-core = { workspace = true }
+automatestig-parsers = { workspace = true }
+automatestig-storage = { workspace = true }
+automatestig-stigpack = { workspace = true }
+automatestig-remediation = { workspace = true }
+automatestig-integrations = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+tempfile = { workspace = true }

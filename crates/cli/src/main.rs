@@ -9,6 +9,7 @@
 //!   automatestig summary --input <CKL_FILE>
 
 mod commands;
+pub mod ui;
 
 use clap::{Parser, Subcommand};
 
@@ -181,6 +182,29 @@ enum Commands {
         output: String,
     },
 
+    /// Import DISA STIG content directly from XCCDF files or ZIP archives.
+    #[command(name = "disa-import")]
+    DisaImport {
+        /// Path to DISA STIG ZIP archive or XCCDF XML file.
+        #[arg(short, long)]
+        input: String,
+    },
+
+    /// Generate an HTML compliance report from one or more checklists.
+    Report {
+        /// Input checklist file(s) (.ckl, .cklb, .json).
+        #[arg(short, long, required = true)]
+        input: Vec<String>,
+
+        /// Output HTML file path.
+        #[arg(short, long)]
+        output: String,
+
+        /// Report title.
+        #[arg(long)]
+        title: Option<String>,
+    },
+
     /// Show application version and library status.
     Status,
 }
@@ -223,13 +247,15 @@ fn main() {
             ref format,
             ref merge,
         } => commands::evaluate::run(
-            stig.clone(),
-            scan.clone(),
-            answer.clone(),
-            host.clone(),
-            output.clone(),
-            format.clone(),
-            merge.clone(),
+            commands::evaluate::EvaluateArgs {
+                stig_id: stig.clone(),
+                scan: scan.clone(),
+                answer_paths: answer.clone(),
+                host: host.clone(),
+                output: output.clone(),
+                format: format.clone(),
+                merge: merge.clone(),
+            },
             &cli,
         ),
         Commands::Import { ref pack } => commands::import::run(pack, &cli),
@@ -267,11 +293,17 @@ fn main() {
             ref source,
             ref output,
         } => commands::build_pack::run(id, name, version, source, output),
+        Commands::DisaImport { ref input } => commands::disa_import::run(input, &cli),
+        Commands::Report {
+            ref input,
+            ref output,
+            ref title,
+        } => commands::report::run(input, output, title.as_deref()),
         Commands::Status => commands::status::run(&cli),
     };
 
     if let Err(e) = result {
-        eprintln!("Error: {}", e);
+        ui::error(&format!("{:#}", e));
         std::process::exit(1);
     }
 }

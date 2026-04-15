@@ -5,6 +5,8 @@ use automatestig_core::models::finding::FindingStatus;
 use automatestig_core::models::stig::Severity;
 use automatestig_parsers::{ckl, cklb};
 
+use crate::ui;
+
 pub fn run(input: &str, open_only: bool, severity: Option<&str>) -> Result<()> {
     let path = Path::new(input);
     if !path.exists() {
@@ -24,32 +26,32 @@ pub fn run(input: &str, open_only: bool, severity: Option<&str>) -> Result<()> {
 
     let severity_filter = severity.and_then(Severity::from_cat_str);
 
-    println!("Checklist Summary: {}", checklist.stig_info.title);
-    println!("  Asset: {}", checklist.asset.hostname);
-    println!(
-        "  STIG: {} {}",
-        checklist.stig_info.stig_id,
-        format!(
-            "V{}R{}",
-            checklist.stig_info.version, checklist.stig_info.release
-        )
+    ui::print_banner();
+    ui::section(&checklist.stig_info.title);
+    ui::detail("Asset", &checklist.asset.hostname);
+    ui::detail(
+        "STIG",
+        &format!(
+            "{} V{}R{}",
+            checklist.stig_info.stig_id,
+            checklist.stig_info.version,
+            checklist.stig_info.release,
+        ),
     );
+    ui::detail("Source", input);
 
     let summary = checklist.summary();
-    println!("\n  ┌──────────────────────────────────────────┐");
-    println!("  │ Total Rules:      {:>6}                 │", summary.total);
-    println!(
-        "  │ Open:             {:>6}  (I:{} II:{} III:{}) │",
-        summary.open, summary.cat_i_open, summary.cat_ii_open, summary.cat_iii_open
+    ui::print_summary_table(
+        summary.total,
+        summary.open,
+        summary.not_a_finding,
+        summary.not_applicable,
+        summary.not_reviewed,
+        summary.cat_i_open,
+        summary.cat_ii_open,
+        summary.cat_iii_open,
+        summary.compliance_pct(),
     );
-    println!("  │ Not a Finding:    {:>6}                 │", summary.not_a_finding);
-    println!("  │ Not Applicable:   {:>6}                 │", summary.not_applicable);
-    println!("  │ Not Reviewed:     {:>6}                 │", summary.not_reviewed);
-    println!(
-        "  │ Compliance:       {:>5.1}%                 │",
-        summary.compliance_pct()
-    );
-    println!("  └──────────────────────────────────────────┘");
 
     // Show findings list.
     let findings: Vec<_> = checklist
@@ -70,24 +72,19 @@ pub fn run(input: &str, open_only: bool, severity: Option<&str>) -> Result<()> {
         .collect();
 
     if open_only || severity.is_some() {
-        println!("\n  Filtered Findings ({}):", findings.len());
-        println!(
-            "  {:<12} {:<8} {:<15} {}",
-            "Vuln ID", "Sev", "Status", "Title"
-        );
-        println!("  {}", "-".repeat(70));
+        ui::section(&format!("Filtered Findings ({})", findings.len()));
+        ui::print_findings_header();
 
         for f in &findings {
             let sev = f.severity_override.unwrap_or(f.severity);
-            let title: String = f.rule_title.chars().take(40).collect();
-            println!(
-                "  {:<12} {:<8} {:<15} {}",
-                f.vuln_id,
+            ui::print_finding_row(
+                &f.vuln_id,
                 sev.as_cat_str(),
-                f.status,
-                title,
+                &f.status.to_string(),
+                &f.rule_title,
             );
         }
+        eprintln!();
     }
 
     Ok(())

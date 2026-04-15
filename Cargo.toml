@@ -8,6 +8,7 @@ members = [
     "crates/remediation",
     "crates/integrations",
     "crates/cli",
+    "crates/tests",
 ]
 
 [workspace.package]
@@ -30,6 +31,8 @@ rusqlite = { version = "0.32", features = ["bundled"] }
 
 # CLI
 clap = { version = "4", features = ["derive"] }
+console = "0.15"
+indicatif = "0.17"
 
 # Crypto / Hashing
 sha2 = "0.10"

@@ -130,8 +130,9 @@ pub struct ChecklistStigInfo {
 }
 
 /// Classification marking for checklists and reports.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Classification {
+    #[default]
     #[serde(rename = "UNCLASSIFIED")]
     Unclassified,
     #[serde(rename = "CUI")]
@@ -142,12 +143,6 @@ pub enum Classification {
     Secret,
     #[serde(rename = "TOP SECRET")]
     TopSecret,
-}
-
-impl Default for Classification {
-    fn default() -> Self {
-        Self::Unclassified
-    }
 }
 
 impl std::fmt::Display for Classification {

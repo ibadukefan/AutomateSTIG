@@ -1,7 +1,10 @@
 use std::path::Path;
 
 use anyhow::{Context, Result};
+use console::style;
 use automatestig_stigpack::verifier;
+
+use crate::ui;
 
 pub fn run(pack_path: &str) -> Result<()> {
     let path = Path::new(pack_path);
@@ -9,39 +12,72 @@ pub fn run(pack_path: &str) -> Result<()> {
         anyhow::bail!("Pack file not found: {}", pack_path);
     }
 
-    println!("Verifying pack: {}", pack_path);
+    ui::print_banner();
+    ui::section("Verify Content Pack");
+    ui::detail("File", pack_path);
+    eprintln!();
 
     let result = verifier::verify_pack(path)
         .context("Failed to verify pack")?;
 
-    println!("  Manifest valid: {}", if result.manifest_valid { "YES" } else { "NO" });
-    println!("  Integrity valid: {}", if result.integrity_valid { "YES" } else { "NO" });
-
-    match result.signature_valid {
-        Some(true) => println!("  Signature valid: YES"),
-        Some(false) => println!("  Signature valid: NO"),
-        None => println!("  Signature: Not present (unsigned pack)"),
+    // Manifest.
+    if result.manifest_valid {
+        ui::success("Manifest: valid");
+    } else {
+        ui::error("Manifest: INVALID");
     }
 
+    // Integrity.
+    if result.integrity_valid {
+        ui::success("Integrity: all hashes match");
+    } else {
+        ui::error("Integrity: FAILED");
+    }
+
+    // Signature.
+    match result.signature_valid {
+        Some(true) => ui::success("Signature: verified"),
+        Some(false) => ui::error("Signature: INVALID"),
+        None => ui::detail("Signature", "not present (unsigned pack)"),
+    }
+
+    // File details.
     if !result.file_results.is_empty() {
-        println!("\n  Files ({}):", result.file_results.len());
+        eprintln!();
+        ui::section(&format!("Files ({})", result.file_results.len()));
         for f in &result.file_results {
-            let status = if f.hash_match { "OK" } else { "FAIL" };
-            println!("    [{}] {}", status, f.path);
+            if f.hash_match {
+                eprintln!(
+                    "    {} {}",
+                    style("✓").green(),
+                    style(&f.path).dim(),
+                );
+            } else {
+                eprintln!(
+                    "    {} {}",
+                    style("✗").red().bold(),
+                    style(&f.path).red(),
+                );
+            }
         }
     }
 
     if !result.issues.is_empty() {
-        println!("\n  Issues:");
+        eprintln!();
         for issue in &result.issues {
-            println!("    - {}", issue);
+            ui::warn(issue);
         }
     }
 
+    eprintln!();
+
     if result.manifest_valid && result.integrity_valid {
-        println!("\n  Pack verification: PASSED");
+        ui::success("Pack verification passed");
+        eprintln!();
         Ok(())
     } else {
-        anyhow::bail!("Pack verification: FAILED");
+        ui::error("Pack verification FAILED");
+        eprintln!();
+        anyhow::bail!("Pack verification failed");
     }
 }

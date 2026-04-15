@@ -111,7 +111,7 @@ pub fn checklist_to_stig_manager(checklist: &Checklist) -> StigManagerImport {
     let reviews: Vec<StigManagerReview> = checklist
         .findings
         .iter()
-        .map(|f| finding_to_review(f))
+        .map(finding_to_review)
         .collect();
 
     StigManagerImport {

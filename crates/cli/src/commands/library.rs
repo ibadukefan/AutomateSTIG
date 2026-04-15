@@ -1,7 +1,10 @@
 use anyhow::{Context, Result};
+use console::style;
 use automatestig_core::library::StigLibrary;
+use automatestig_core::models::stig::Severity;
 
 use super::library_path;
+use crate::ui;
 
 pub fn list(cli: &crate::Cli) -> Result<()> {
     let lib_path = library_path(cli);
@@ -10,25 +13,39 @@ pub fn list(cli: &crate::Cli) -> Result<()> {
 
     let benchmarks = library.list_benchmarks();
 
+    ui::print_banner();
+
     if benchmarks.is_empty() {
-        println!("STIG Library is empty. Import a .stigpack to add benchmarks.");
-        println!("  Usage: automatestig import --pack <FILE.stigpack>");
+        ui::section("STIG Library (empty)");
+        eprintln!();
+        ui::warn("No benchmarks installed. Import a .stigpack to add benchmarks:");
+        eprintln!("    automatestig import --pack <FILE.stigpack>");
+        eprintln!();
         return Ok(());
     }
 
-    println!("Available STIG Benchmarks ({}):\n", benchmarks.len());
-    println!(
+    ui::section(&format!("STIG Library ({} benchmarks)", benchmarks.len()));
+    eprintln!();
+
+    eprintln!(
         "  {:<40} {:<10} {:<15} {:>6}",
-        "ID", "Version", "Platform", "Rules"
+        style("ID").bold().underlined(),
+        style("Version").bold().underlined(),
+        style("Platform").bold().underlined(),
+        style("Rules").bold().underlined(),
     );
-    println!("  {}", "-".repeat(75));
 
     for b in &benchmarks {
-        println!(
+        eprintln!(
             "  {:<40} {:<10} {:<15} {:>6}",
-            b.id, b.version, b.platform_family, b.rule_count
+            style(&b.id).cyan(),
+            style(&b.version).dim(),
+            &b.platform_family,
+            b.rule_count,
         );
     }
+
+    eprintln!();
 
     Ok(())
 }
@@ -39,25 +56,41 @@ pub fn show(id: &str, cli: &crate::Cli) -> Result<()> {
 
     let benchmark = library.load_benchmark(id)?;
 
-    println!("Benchmark: {}", benchmark.title);
-    println!("  ID: {}", benchmark.id);
-    println!("  Version: {}", benchmark.version_string());
-    println!("  Platform: {} ({})", benchmark.platform.name, benchmark.platform.family);
-    println!("  Rules: {}", benchmark.rules.len());
+    ui::print_banner();
+    ui::section(&benchmark.title);
+    ui::detail("ID", &benchmark.id);
+    ui::detail("Version", &benchmark.version_string());
+    ui::detail("Platform", &format!("{} ({})", benchmark.platform.name, benchmark.platform.family));
+    ui::detail("Total rules", &benchmark.rules.len().to_string());
 
-    let cat_i = benchmark.rules_by_severity(automatestig_core::models::stig::Severity::High);
-    let cat_ii = benchmark.rules_by_severity(automatestig_core::models::stig::Severity::Medium);
-    let cat_iii = benchmark.rules_by_severity(automatestig_core::models::stig::Severity::Low);
+    let cat_i = benchmark.rules_by_severity(Severity::High);
+    let cat_ii = benchmark.rules_by_severity(Severity::Medium);
+    let cat_iii = benchmark.rules_by_severity(Severity::Low);
 
-    println!("    CAT I (High):   {}", cat_i.len());
-    println!("    CAT II (Medium): {}", cat_ii.len());
-    println!("    CAT III (Low):  {}", cat_iii.len());
+    eprintln!();
+    eprintln!(
+        "    {} CAT I (High)    {}",
+        style("■").red(),
+        style(cat_i.len()).bold(),
+    );
+    eprintln!(
+        "    {} CAT II (Medium) {}",
+        style("■").yellow(),
+        style(cat_ii.len()).bold(),
+    );
+    eprintln!(
+        "    {} CAT III (Low)   {}",
+        style("■").dim(),
+        style(cat_iii.len()).bold(),
+    );
 
-    if let Some(ref desc) = benchmark.description.chars().take(200).collect::<String>().into() {
-        if !benchmark.description.is_empty() {
-            println!("\n  Description: {}...", desc);
-        }
+    if !benchmark.description.is_empty() {
+        let desc: String = benchmark.description.chars().take(200).collect();
+        eprintln!();
+        ui::detail("Description", &desc);
     }
+
+    eprintln!();
 
     Ok(())
 }
@@ -65,15 +98,20 @@ pub fn show(id: &str, cli: &crate::Cli) -> Result<()> {
 pub fn init(cli: &crate::Cli) -> Result<()> {
     let lib_path = library_path(cli);
 
+    ui::print_banner();
+
     if lib_path.join("index.json").exists() {
-        println!("STIG Library already exists at: {}", lib_path.display());
+        ui::success(&format!("STIG Library already exists at: {}", lib_path.display()));
+        eprintln!();
         return Ok(());
     }
 
     StigLibrary::init(&lib_path)?;
-    println!("STIG Library initialized at: {}", lib_path.display());
-    println!("  Import .stigpack files to add benchmarks:");
-    println!("  automatestig import --pack <FILE.stigpack>");
+    ui::success(&format!("STIG Library initialized at: {}", lib_path.display()));
+    eprintln!();
+    ui::detail("Next step", "Import a .stigpack to add benchmarks:");
+    eprintln!("    automatestig import --pack <FILE.stigpack>");
+    eprintln!();
 
     Ok(())
 }

@@ -61,7 +61,7 @@ pub fn import_pack(pack_path: &Path, library: &mut StigLibrary) -> StigpackResul
 
     // Read manifest.
     let manifest = {
-        let mut mf = archive.by_name("manifest.json").map_err(|e| StigpackError::Zip(e))?;
+        let mut mf = archive.by_name("manifest.json").map_err(StigpackError::Zip)?;
         let mut json = String::new();
         mf.read_to_string(&mut json)?;
         crate::manifest::PackManifest::from_json(&json)
@@ -78,7 +78,7 @@ pub fn import_pack(pack_path: &Path, library: &mut StigLibrary) -> StigpackResul
     };
 
     // Import benchmarks.
-    for (path, _entry) in &manifest.files {
+    for path in manifest.files.keys() {
         if path.starts_with("benchmarks/") && path.ends_with(".json") {
             match read_zip_file(&mut archive, path) {
                 Ok(content) => {

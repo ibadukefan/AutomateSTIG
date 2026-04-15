@@ -7,6 +7,8 @@ pub mod summary;
 pub mod gen_answer;
 pub mod export;
 pub mod build_pack;
+pub mod disa_import;
+pub mod report;
 pub mod status;
 
 use std::path::PathBuf;

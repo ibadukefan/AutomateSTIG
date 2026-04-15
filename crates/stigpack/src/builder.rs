@@ -104,17 +104,17 @@ impl PackBuilder {
             .map_err(|e| StigpackError::ManifestError(e.to_string()))?;
 
         zip.start_file("manifest.json", options)
-            .map_err(|e| StigpackError::Zip(e))?;
+            .map_err(StigpackError::Zip)?;
         zip.write_all(manifest_json.as_bytes())?;
 
         // Write all content files.
         for (path, data) in &self.files {
             zip.start_file(path.as_str(), options)
-                .map_err(|e| StigpackError::Zip(e))?;
+                .map_err(StigpackError::Zip)?;
             zip.write_all(data)?;
         }
 
-        zip.finish().map_err(|e| StigpackError::Zip(e))?;
+        zip.finish().map_err(StigpackError::Zip)?;
         Ok(())
     }
 
