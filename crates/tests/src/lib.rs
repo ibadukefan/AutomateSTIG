@@ -768,4 +768,316 @@ fn test_large_benchmark_performance() {
     assert!(elapsed.as_secs() < 1, "Evaluation took too long: {:?}", elapsed);
 }
 
+// ---------------------------------------------------------------------------
+// Check executor E2E
+// ---------------------------------------------------------------------------
+
+#[test]
+fn test_check_executor_windows_registry() {
+    use automatestig_core::checks::*;
+    use automatestig_core::checks::executor::execute_check;
+
+    let mut data = SystemData::default();
+    data.registry.insert(
+        r"HKLM\SYSTEM\CurrentControlSet\Control\Lsa\LmCompatibilityLevel".to_string(),
+        serde_json::json!(5),
+    );
+
+    let check = CheckDefinition {
+        vuln_id: "V-254270".to_string(),
+        platform: CheckPlatform::Windows,
+        check: Check::Registry {
+            path: r"HKLM\SYSTEM\CurrentControlSet\Control\Lsa".to_string(),
+            value_name: "LmCompatibilityLevel".to_string(),
+            value_type: None,
+        },
+        expected: ExpectedResult::Equals { value: serde_json::json!(5) },
+        description: Some("NTLMv2 only".to_string()),
+    };
+
+    let result = execute_check(&check, &data);
+    assert!(result.passed);
+    assert!(result.error.is_none());
+}
+
+#[test]
+fn test_check_executor_linux_compound() {
+    use automatestig_core::checks::*;
+    use automatestig_core::checks::executor::execute_check;
+
+    let mut data = SystemData::default();
+    data.file_contents.insert(
+        "/etc/ssh/sshd_config".to_string(),
+        "PermitRootLogin no\nMaxAuthTries 3\n".to_string(),
+    );
+    data.services.insert("sshd".to_string(), "active".to_string());
+
+    let check = CheckDefinition {
+        vuln_id: "V-COMPOUND".to_string(),
+        platform: CheckPlatform::Linux,
+        check: Check::All {
+            checks: vec![
+                Check::FileContent {
+                    path: "/etc/ssh/sshd_config".to_string(),
+                    pattern: "PermitRootLogin no".to_string(),
+                    is_regex: false,
+                },
+                Check::Service {
+                    name: "sshd".to_string(),
+                    expected_status: ServiceStatus::Running,
+                },
+            ],
+        },
+        expected: ExpectedResult::AllPass,
+        description: None,
+    };
+
+    let result = execute_check(&check, &data);
+    assert!(result.passed);
+}
+
+// ---------------------------------------------------------------------------
+// XCCDF converter E2E
+// ---------------------------------------------------------------------------
+
+#[test]
+fn test_xccdf_converter_auto_generates_checks() {
+    use automatestig_core::converter;
+
+    let benchmark = StigBenchmark {
+        id: "Test_Converter_STIG".to_string(),
+        title: "Test Linux STIG for Converter".to_string(),
+        description: "Test".to_string(),
+        version: "1".to_string(),
+        release: "1".to_string(),
+        release_date: None,
+        xccdf_id: None,
+        platform: Platform::default(),
+        rules: vec![
+            StigRule {
+                vuln_id: "V-1".to_string(),
+                rule_id: "SV-1".to_string(),
+                group_id: "V-1".to_string(),
+                title: "IP forwarding".to_string(),
+                discussion: "".to_string(),
+                severity: Severity::Medium,
+                check_content: "Verify sysctl net.ipv4.ip_forward is not 0.".to_string(),
+                fix_text: "".to_string(),
+                cci_refs: vec![],
+                legacy_ids: vec![],
+                stig_ref: None,
+                weight: 8.0,
+                automatable: CheckAutomation::Full,
+                automated_check: None,
+                remediation_ids: vec![],
+            },
+            StigRule {
+                vuln_id: "V-2".to_string(),
+                rule_id: "SV-2".to_string(),
+                group_id: "V-2".to_string(),
+                title: "Manual check".to_string(),
+                discussion: "".to_string(),
+                severity: Severity::Low,
+                check_content: "Interview the ISSO and verify policy exists.".to_string(),
+                fix_text: "".to_string(),
+                cci_refs: vec![],
+                legacy_ids: vec![],
+                stig_ref: None,
+                weight: 2.0,
+                automatable: CheckAutomation::Manual,
+                automated_check: None,
+                remediation_ids: vec![],
+            },
+            StigRule {
+                vuln_id: "V-3".to_string(),
+                rule_id: "SV-3".to_string(),
+                group_id: "V-3".to_string(),
+                title: "Package check".to_string(),
+                discussion: "".to_string(),
+                severity: Severity::Medium,
+                check_content: "Verify the package telnet-server must not be installed.".to_string(),
+                fix_text: "".to_string(),
+                cci_refs: vec![],
+                legacy_ids: vec![],
+                stig_ref: None,
+                weight: 8.0,
+                automatable: CheckAutomation::Full,
+                automated_check: None,
+                remediation_ids: vec![],
+            },
+        ],
+    };
+
+    let result = converter::convert_benchmark(&benchmark);
+    assert_eq!(result.automated, 2); // sysctl + package
+    assert_eq!(result.manual, 1); // interview
+    assert_eq!(result.check_pack.checks.len(), 2);
+    assert_eq!(result.check_pack.platform, automatestig_core::checks::CheckPlatform::Linux);
+}
+
+// ---------------------------------------------------------------------------
+// Drift detection E2E
+// ---------------------------------------------------------------------------
+
+#[test]
+fn test_drift_detection_e2e() {
+    use automatestig_core::agent::detect_drift;
+
+    let benchmark = make_benchmark("Drift_Test", 10);
+    let asset = Asset::new("drifthost");
+    let engine = EvaluationEngine::with_defaults();
+
+    // First evaluation: 80% pass.
+    let scan1 = make_scan_results(&benchmark, 0.8);
+    let cl1 = engine.evaluate(&benchmark, &asset, Some(&scan1), &[]).unwrap();
+
+    // Second evaluation: 90% pass (improvement).
+    let scan2 = make_scan_results(&benchmark, 0.9);
+    let cl2 = engine.evaluate(&benchmark, &asset, Some(&scan2), &[]).unwrap();
+
+    let drift = detect_drift(&cl1, &cl2);
+    assert!(!drift.is_regression()); // Compliance improved.
+    assert!(drift.compliance_delta > 0.0);
+    assert!(!drift.newly_resolved.is_empty()); // Some findings were fixed.
+}
+
+// ---------------------------------------------------------------------------
+// Inventory and credentials E2E
+// ---------------------------------------------------------------------------
+
+#[test]
+fn test_asset_inventory_roundtrip() {
+    use automatestig_core::inventory::assets::*;
+    use automatestig_core::checks::CheckPlatform;
+
+    let mut asset = ManagedAsset::new("web01", "10.0.1.50", CheckPlatform::Linux, ScanProtocol::Ssh);
+    asset.assigned_stigs = vec!["RHEL_9_STIG".to_string(), "Apache_2.4_STIG".to_string()];
+    asset.tags = vec!["production".to_string(), "web-tier".to_string()];
+
+    let json = serde_json::to_string(&asset).unwrap();
+    let loaded: ManagedAsset = serde_json::from_str(&json).unwrap();
+
+    assert_eq!(loaded.name, "web01");
+    assert_eq!(loaded.assigned_stigs.len(), 2);
+    assert_eq!(loaded.tags.len(), 2);
+    assert_eq!(loaded.effective_port(), 22);
+}
+
+#[test]
+fn test_credential_vault_lifecycle() {
+    use automatestig_core::inventory::credentials::*;
+
+    let mut vault = CredentialVault::new();
+
+    let cred1 = StoredCredential::new_password("Admin", "admin", "P@ssw0rd");
+    let cred2 = StoredCredential::new_ssh_key("Deploy", "deploy", "-----BEGIN KEY-----", None);
+    let cred3 = StoredCredential::new_kerberos("Domain SA", "svc_stig", "NAVY.MIL", "DomainPass");
+    let cred4 = StoredCredential::new_token("API Key", "sk-abc123", Some("bearer"));
+
+    let id1 = cred1.id.clone();
+
+    vault.add(cred1);
+    vault.add(cred2);
+    vault.add(cred3);
+    vault.add(cred4);
+
+    assert_eq!(vault.credentials.len(), 4);
+
+    // Summaries should not expose secrets.
+    let summaries = vault.list_summary();
+    assert_eq!(summaries[0].credential_type, "password");
+    assert_eq!(summaries[1].credential_type, "ssh_key");
+    assert_eq!(summaries[2].credential_type, "kerberos");
+    assert_eq!(summaries[3].credential_type, "token");
+
+    // Remove and verify.
+    assert!(vault.remove(&id1));
+    assert_eq!(vault.credentials.len(), 3);
+}
+
+// ---------------------------------------------------------------------------
+// Scheduler E2E
+// ---------------------------------------------------------------------------
+
+#[test]
+fn test_scheduler_lifecycle() {
+    use automatestig_core::inventory::scheduler::*;
+
+    let mut schedule = EvaluationSchedule::new(
+        "Weekly Windows Scan",
+        ScheduleFrequency::Weekly { days: vec!["monday".to_string(), "thursday".to_string()] },
+    );
+    schedule.asset_tags = vec!["windows".to_string()];
+    schedule.post_actions.push_to_stigman = true;
+    schedule.post_actions.alert_on_cat_i = true;
+
+    assert!(schedule.enabled);
+    assert!(schedule.next_run.is_some());
+
+    // Simulate execution.
+    schedule.mark_executed(ScheduleRunStatus {
+        completed_at: chrono::Utc::now(),
+        assets_scanned: 10,
+        assets_failed: 1,
+        total_findings: 2870,
+        total_open: 45,
+        avg_compliance: 96.2,
+        errors: vec!["server07: connection timeout".to_string()],
+    });
+
+    assert!(schedule.enabled); // Weekly should stay enabled.
+    assert!(schedule.next_run.is_some()); // Should have next run calculated.
+    assert!(schedule.last_run.is_some());
+
+    let status = schedule.last_run_status.as_ref().unwrap();
+    assert_eq!(status.assets_scanned, 10);
+    assert_eq!(status.assets_failed, 1);
+}
+
+// ---------------------------------------------------------------------------
+// Signed stigpack E2E
+// ---------------------------------------------------------------------------
+
+#[test]
+fn test_signed_stigpack_pipeline() {
+    use automatestig_stigpack::signing;
+    use automatestig_stigpack::builder::PackBuilder;
+    use automatestig_stigpack::verifier;
+
+    let dir = TempDir::new().unwrap();
+    let pack_path = dir.path().join("signed.stigpack");
+
+    // Generate keypair.
+    let (private_key, public_key) = signing::generate_keypair();
+
+    // Build a signed pack.
+    let benchmark = make_benchmark("Signed_Test", 5);
+    let json = serde_json::to_string(&benchmark).unwrap();
+
+    PackBuilder::new("signed-pack", "Signed Pack", "1.0.0")
+        .signing_key(private_key)
+        .add_file_bytes("benchmarks/Signed_Test.json", json.as_bytes())
+        .build(&pack_path)
+        .unwrap();
+
+    // Verify with correct key — should pass.
+    let mut trust_store = signing::TrustStore::new();
+    trust_store.add_key("official", public_key);
+
+    let result = verifier::verify_pack_with_trust(&pack_path, Some(&trust_store)).unwrap();
+    assert!(result.manifest_valid);
+    assert!(result.integrity_valid);
+    assert_eq!(result.signature_valid, Some(true));
+
+    // Verify with wrong key — should fail signature.
+    let (_, other_pub) = signing::generate_keypair();
+    let mut bad_store = signing::TrustStore::new();
+    bad_store.add_key("wrong", other_pub);
+
+    let result2 = verifier::verify_pack_with_trust(&pack_path, Some(&bad_store)).unwrap();
+    assert!(result2.manifest_valid);
+    assert!(result2.integrity_valid);
+    assert_eq!(result2.signature_valid, Some(false));
+}
+
 } // mod integration
