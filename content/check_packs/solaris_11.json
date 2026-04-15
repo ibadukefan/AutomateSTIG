@@ -1,0 +1,27 @@
+{
+  "stig_id": "Solaris_11_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    { "vuln_id": "V-216000", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "PermitRootLogin\\s+no", "is_regex": true }, "expected": { "type": "is_true" }, "description": "Solaris 11 SSH must not allow direct root login" },
+    { "vuln_id": "V-216001", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "PermitEmptyPasswords\\s+no", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH must not allow empty passwords" },
+    { "vuln_id": "V-216002", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "ClientAliveInterval\\s+[1-9]", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH ClientAliveInterval must be set" },
+    { "vuln_id": "V-216003", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "Banner\\s+/etc/issue", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH must display a login banner" },
+    { "vuln_id": "V-216004", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "X11Forwarding\\s+no", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH X11 forwarding must be disabled" },
+    { "vuln_id": "V-216010", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/shadow", "owner": "root", "group": null, "mode": "0400" }, "expected": { "type": "is_true" }, "description": "/etc/shadow must be mode 0400 and owned by root" },
+    { "vuln_id": "V-216011", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/passwd", "owner": "root", "group": null, "mode": "0644" }, "expected": { "type": "is_true" }, "description": "/etc/passwd must be mode 0644 and owned by root" },
+    { "vuln_id": "V-216012", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/group", "owner": "root", "group": null, "mode": "0644" }, "expected": { "type": "is_true" }, "description": "/etc/group must be mode 0644 and owned by root" },
+    { "vuln_id": "V-216013", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/ssh/sshd_config", "owner": "root", "group": null, "mode": "0600" }, "expected": { "type": "is_true" }, "description": "sshd_config must be mode 0600 and owned by root" },
+    { "vuln_id": "V-216020", "platform": "linux", "check": { "type": "command", "command": "svcs -H svc:/network/ssh:default", "pattern": "online", "is_regex": false }, "expected": { "type": "is_true" }, "description": "SSH service must be online" },
+    { "vuln_id": "V-216021", "platform": "linux", "check": { "type": "command", "command": "svcs -H svc:/system/auditd:default", "pattern": "online", "is_regex": false }, "expected": { "type": "is_true" }, "description": "Audit service must be online" },
+    { "vuln_id": "V-216022", "platform": "linux", "check": { "type": "command", "command": "inetadm -p | grep tcp_trace", "pattern": "tcp_trace=TRUE", "is_regex": false }, "expected": { "type": "is_true" }, "description": "TCP connection tracing must be enabled via inetadm" },
+    { "vuln_id": "V-216023", "platform": "linux", "check": { "type": "command", "command": "ipadm show-prop -p forwarding -co current ipv4", "pattern": "off", "is_regex": false }, "expected": { "type": "is_true" }, "description": "IPv4 forwarding must be disabled via ipadm" },
+    { "vuln_id": "V-216024", "platform": "linux", "check": { "type": "command", "command": "ipadm show-prop -p forwarding -co current ipv6", "pattern": "off", "is_regex": false }, "expected": { "type": "is_true" }, "description": "IPv6 forwarding must be disabled via ipadm" },
+    { "vuln_id": "V-216025", "platform": "linux", "check": { "type": "command", "command": "ipadm show-prop -p _respond_to_echo_broadcast -co current ipv4", "pattern": "0", "is_regex": false }, "expected": { "type": "is_true" }, "description": "System must not respond to ICMP broadcast echo requests" },
+    { "vuln_id": "V-216026", "platform": "linux", "check": { "type": "command", "command": "ipadm show-prop -p _ignore_redirect -co current ipv4", "pattern": "1", "is_regex": false }, "expected": { "type": "is_true" }, "description": "System must ignore ICMP redirect messages" },
+    { "vuln_id": "V-216030", "platform": "linux", "check": { "type": "command", "command": "pkg list audit", "pattern": "audit", "is_regex": false }, "expected": { "type": "is_true" }, "description": "Audit package must be installed" },
+    { "vuln_id": "V-216031", "platform": "linux", "check": { "type": "command", "command": "inetadm | grep telnet", "pattern": "disabled", "is_regex": false }, "expected": { "type": "is_true" }, "description": "Telnet service must be disabled via inetadm" },
+    { "vuln_id": "V-216032", "platform": "linux", "check": { "type": "command", "command": "inetadm | grep ftp", "pattern": "disabled", "is_regex": false }, "expected": { "type": "is_true" }, "description": "FTP service must be disabled via inetadm" },
+    { "vuln_id": "V-216033", "platform": "linux", "check": { "type": "file_content", "path": "/etc/default/login", "pattern": "CONSOLE=/dev/console", "is_regex": false }, "expected": { "type": "is_true" }, "description": "Root login must be restricted to the system console" }
+  ]
+}

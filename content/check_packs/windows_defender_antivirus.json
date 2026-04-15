@@ -1,0 +1,147 @@
+{
+  "stig_id": "Windows_Defender_AV_STIG",
+  "platform": "windows",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-253260",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection", "value_name": "DisableRealtimeMonitoring" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Windows Defender real-time protection must be enabled"
+    },
+    {
+      "vuln_id": "V-253261",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection", "value_name": "DisableBehaviorMonitoring" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Windows Defender behavior monitoring must be enabled"
+    },
+    {
+      "vuln_id": "V-253262",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection", "value_name": "DisableOnAccessProtection" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Windows Defender on-access protection must be enabled"
+    },
+    {
+      "vuln_id": "V-253263",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection", "value_name": "DisableScanOnRealtimeEnable" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Windows Defender must scan files when real-time protection is re-enabled"
+    },
+    {
+      "vuln_id": "V-253264",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection", "value_name": "DisableIOAVProtection" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Windows Defender must scan all downloaded files and attachments"
+    },
+    {
+      "vuln_id": "V-253270",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Spynet", "value_name": "SpynetReporting" },
+      "expected": { "type": "equals", "value": 2 },
+      "description": "Windows Defender cloud-delivered protection (MAPS) must be configured for advanced membership"
+    },
+    {
+      "vuln_id": "V-253271",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Spynet", "value_name": "SubmitSamplesConsent" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Windows Defender must automatically submit samples for cloud analysis"
+    },
+    {
+      "vuln_id": "V-253272",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\MpEngine", "value_name": "MpCloudBlockLevel" },
+      "expected": { "type": "greater_or_equal", "value": 2 },
+      "description": "Windows Defender cloud block level must be set to High"
+    },
+    {
+      "vuln_id": "V-253273",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\MpEngine", "value_name": "MpBafsExtendedTimeout" },
+      "expected": { "type": "greater_or_equal", "value": 50 },
+      "description": "Windows Defender cloud extended timeout must be at least 50 seconds"
+    },
+    {
+      "vuln_id": "V-253280",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender", "value_name": "PUAProtection" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Windows Defender potentially unwanted application (PUA) protection must be enabled"
+    },
+    {
+      "vuln_id": "V-253281",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender", "value_name": "DisableAntiSpyware" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Windows Defender AntiSpyware must not be disabled"
+    },
+    {
+      "vuln_id": "V-253282",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender", "value_name": "DisableAntiVirus" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Windows Defender AntiVirus must not be disabled"
+    },
+    {
+      "vuln_id": "V-253290",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Scan", "value_name": "ScheduleDay" },
+      "expected": { "type": "less_or_equal", "value": 7 },
+      "description": "Windows Defender scheduled scan day must be configured"
+    },
+    {
+      "vuln_id": "V-253291",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Scan", "value_name": "ScheduleTime" },
+      "expected": { "type": "matches", "pattern": "\\d+" },
+      "description": "Windows Defender scheduled scan time must be configured"
+    },
+    {
+      "vuln_id": "V-253292",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Scan", "value_name": "ScanParameters" },
+      "expected": { "type": "equals", "value": 2 },
+      "description": "Windows Defender scheduled scan must be a full scan"
+    },
+    {
+      "vuln_id": "V-253293",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Scan", "value_name": "DisableArchiveScanning" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Windows Defender must scan archive files"
+    },
+    {
+      "vuln_id": "V-253294",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Scan", "value_name": "DisableRemovableDriveScanning" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Windows Defender must scan removable drives"
+    },
+    {
+      "vuln_id": "V-253295",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Scan", "value_name": "DisableEmailScanning" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "Windows Defender must scan email content"
+    },
+    {
+      "vuln_id": "V-253300",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Signature Updates", "value_name": "SignatureUpdateInterval" },
+      "expected": { "type": "less_or_equal", "value": 24 },
+      "description": "Windows Defender signature updates must occur at least every 24 hours"
+    },
+    {
+      "vuln_id": "V-253301",
+      "platform": "windows",
+      "check": { "type": "service", "name": "WinDefend", "expected_status": "running" },
+      "expected": { "type": "is_true" },
+      "description": "Windows Defender Antivirus Service must be running"
+    }
+  ]
+}
