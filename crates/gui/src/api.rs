@@ -79,9 +79,16 @@ pub fn routes() -> Router<AppState> {
         .route("/schedules/{id}", axum::routing::put(update_schedule))
         .route("/schedules/{id}", axum::routing::delete(delete_schedule))
         .route("/schedules/{id}/run", post(run_schedule_now))
+        // Bulk operations
+        .route("/assets/bulk-assign-stig", post(bulk_assign_stig))
+        .route("/checklists/{id}/re-evaluate", post(re_evaluate))
+        .route("/checklists/{id}/findings/{vuln_id}/poam", axum::routing::patch(update_poam))
+        .route("/checklists/compare", post(compare_checklists))
+        .route("/trends/{hostname}", get(compliance_trends))
         // Export
         .route("/export/ckl/{id}", get(export_ckl))
         .route("/export/cklb/{id}", get(export_cklb))
+        .route("/export/all-zip", get(export_all_zip))
 }
 
 // ---------------------------------------------------------------------------
@@ -1986,6 +1993,230 @@ fn evaluate_with_system_data(
 }
 
 // ---------------------------------------------------------------------------
+// Bulk STIG Assignment
+// ---------------------------------------------------------------------------
+
+#[derive(Deserialize)]
+struct BulkAssignRequest {
+    asset_ids: Vec<String>,
+    stig_id: String,
+}
+
+async fn bulk_assign_stig(
+    State(state): State<AppState>,
+    Json(req): Json<BulkAssignRequest>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    let mut assets = load_assets(&db);
+    let mut count = 0;
+    for asset in assets.iter_mut() {
+        if req.asset_ids.contains(&asset.id) && !asset.assigned_stigs.contains(&req.stig_id) {
+            asset.assigned_stigs.push(req.stig_id.clone());
+            count += 1;
+        }
+    }
+    save_assets(&db, &assets);
+    api_ok(serde_json::json!({ "assigned": count, "stig_id": req.stig_id }))
+}
+
+// ---------------------------------------------------------------------------
+// Quick Re-evaluate
+// ---------------------------------------------------------------------------
+
+async fn re_evaluate(
+    State(state): State<AppState>,
+    axum::extract::Path(id): axum::extract::Path<String>,
+) -> Json<serde_json::Value> {
+    let (hostname, stig_id) = {
+        let db = state.db();
+        match db.load_checklist(&id) {
+            Ok(cl) => (cl.asset.hostname.clone(), cl.stig_info.stig_id.clone()),
+            Err(e) => return api_error(&format!("Checklist not found: {}", e)),
+        }
+    };
+
+    let library = match state.library() {
+        Ok(l) => l,
+        Err(e) => return api_error(&e.to_string()),
+    };
+
+    let benchmark = match library.load_benchmark(&stig_id) {
+        Ok(b) => b,
+        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
+    };
+
+    let asset = Asset::new(&hostname);
+    let engine = automatestig_core::engine::EvaluationEngine::with_defaults();
+
+    // Load previous checklist for merging manual findings.
+    let previous = {
+        let db = state.db();
+        db.load_checklist(&id).ok()
+    };
+
+    match engine.evaluate(&benchmark, &asset, None, &[]) {
+        Ok(mut checklist) => {
+            // Merge manual findings from the previous checklist.
+            if let Some(ref prev) = previous {
+                let _ = engine.merge_previous(&mut checklist, prev);
+            }
+
+            let s = checklist.summary();
+            let new_id = checklist.id.to_string();
+            let db = state.db();
+            let _ = db.save_checklist(&checklist);
+            let _ = db.log_evaluation(&checklist, "re-evaluate", Some(&hostname));
+
+            api_ok(serde_json::json!({
+                "id": new_id,
+                "hostname": hostname,
+                "stig_id": stig_id,
+                "total": s.total,
+                "open": s.open,
+                "compliance_pct": s.compliance_pct(),
+            }))
+        }
+        Err(e) => api_error(&format!("Re-evaluation failed: {}", e)),
+    }
+}
+
+// ---------------------------------------------------------------------------
+// POA&M Tracking
+// ---------------------------------------------------------------------------
+
+#[derive(Deserialize)]
+struct PoamUpdate {
+    poam_milestone: Option<String>,
+    poam_date: Option<String>,
+}
+
+async fn update_poam(
+    State(state): State<AppState>,
+    axum::extract::Path((id, vuln_id)): axum::extract::Path<(String, String)>,
+    Json(req): Json<PoamUpdate>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    let mut checklist = match db.load_checklist(&id) {
+        Ok(cl) => cl,
+        Err(e) => return api_error(&format!("Checklist not found: {}", e)),
+    };
+
+    // Store POA&M data in the finding's comments field (prefixed for parsing).
+    if let Some(finding) = checklist.find_by_vuln_id_mut(&vuln_id) {
+        let poam_text = match (&req.poam_milestone, &req.poam_date) {
+            (Some(milestone), Some(date)) => format!("[POA&M: {} by {}]", milestone, date),
+            (Some(milestone), None) => format!("[POA&M: {}]", milestone),
+            _ => String::new(),
+        };
+
+        // Append POA&M to comments, replacing any existing POA&M tag.
+        let existing = finding.comments.clone();
+        let cleaned = existing
+            .lines()
+            .filter(|l| !l.starts_with("[POA&M:"))
+            .collect::<Vec<_>>()
+            .join("\n");
+        finding.comments = if poam_text.is_empty() {
+            cleaned
+        } else {
+            format!("{}\n{}", poam_text, cleaned).trim().to_string()
+        };
+    }
+
+    checklist.touch();
+    let _ = db.save_checklist(&checklist);
+
+    api_ok(serde_json::json!({ "vuln_id": vuln_id, "updated": true }))
+}
+
+// ---------------------------------------------------------------------------
+// Checklist Comparison
+// ---------------------------------------------------------------------------
+
+#[derive(Deserialize)]
+struct CompareRequest {
+    checklist_a: String,
+    checklist_b: String,
+}
+
+async fn compare_checklists(
+    State(state): State<AppState>,
+    Json(req): Json<CompareRequest>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    let cl_a = match db.load_checklist(&req.checklist_a) {
+        Ok(c) => c,
+        Err(e) => return api_error(&format!("Checklist A not found: {}", e)),
+    };
+    let cl_b = match db.load_checklist(&req.checklist_b) {
+        Ok(c) => c,
+        Err(e) => return api_error(&format!("Checklist B not found: {}", e)),
+    };
+
+    let sum_a = cl_a.summary();
+    let sum_b = cl_b.summary();
+
+    // Find differences.
+    let mut differences = Vec::new();
+    for fa in &cl_a.findings {
+        if let Some(fb) = cl_b.findings.iter().find(|f| f.vuln_id == fa.vuln_id) {
+            if fa.status != fb.status {
+                differences.push(serde_json::json!({
+                    "vuln_id": fa.vuln_id,
+                    "title": fa.rule_title,
+                    "severity": fa.severity.as_cat_str(),
+                    "status_a": fa.status.to_string(),
+                    "status_b": fb.status.to_string(),
+                }));
+            }
+        }
+    }
+
+    api_ok(serde_json::json!({
+        "checklist_a": { "id": req.checklist_a, "hostname": cl_a.asset.hostname, "stig": cl_a.stig_info.stig_id, "compliance": sum_a.compliance_pct(), "open": sum_a.open },
+        "checklist_b": { "id": req.checklist_b, "hostname": cl_b.asset.hostname, "stig": cl_b.stig_info.stig_id, "compliance": sum_b.compliance_pct(), "open": sum_b.open },
+        "differences": differences,
+        "total_differences": differences.len(),
+    }))
+}
+
+// ---------------------------------------------------------------------------
+// Compliance Trends
+// ---------------------------------------------------------------------------
+
+async fn compliance_trends(
+    State(state): State<AppState>,
+    axum::extract::Path(hostname): axum::extract::Path<String>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    let all = db.list_checklists().unwrap_or_default();
+
+    // Find all checklists for this hostname, sorted by time.
+    let mut points: Vec<serde_json::Value> = Vec::new();
+    for row in &all {
+        if row.asset_hostname == hostname {
+            if let Ok(cl) = db.load_checklist(&row.id) {
+                let s = cl.summary();
+                points.push(serde_json::json!({
+                    "date": row.modified_at,
+                    "stig_id": row.stig_id,
+                    "compliance_pct": s.compliance_pct(),
+                    "open": s.open,
+                    "total": s.total,
+                }));
+            }
+        }
+    }
+
+    points.sort_by(|a, b| a["date"].as_str().cmp(&b["date"].as_str()));
+
+    api_ok(serde_json::json!({
+        "hostname": hostname,
+        "data_points": points,
+    }))
+}
+
+// ---------------------------------------------------------------------------
 // Export
 // ---------------------------------------------------------------------------
 
@@ -2057,6 +2288,45 @@ async fn export_cklb(
         )
             .into_response(),
     }
+}
+
+async fn export_all_zip(State(state): State<AppState>) -> impl IntoResponse {
+    let db = state.db();
+    let rows = db.list_checklists().unwrap_or_default();
+
+    if rows.is_empty() {
+        return (axum::http::StatusCode::BAD_REQUEST, "No checklists to export").into_response();
+    }
+
+    let mut zip_buffer = std::io::Cursor::new(Vec::new());
+    {
+        let mut zip = zip::ZipWriter::new(&mut zip_buffer);
+        let options = zip::write::SimpleFileOptions::default()
+            .compression_method(zip::CompressionMethod::Deflated);
+
+        for row in &rows {
+            if let Ok(cl) = db.load_checklist(&row.id) {
+                let filename = sanitize_filename(&format!("{}_{}.ckl", cl.asset.hostname, cl.stig_info.stig_id));
+                if let Ok(xml) = ckl::write_ckl(&cl) {
+                    let _ = zip.start_file(&filename, options);
+                    let _ = std::io::Write::write_all(&mut zip, xml.as_bytes());
+                }
+            }
+        }
+        let _ = zip.finish();
+    }
+
+    let data = zip_buffer.into_inner();
+    let filename = format!("automatestig-export-{}.zip", chrono::Utc::now().format("%Y%m%d-%H%M"));
+
+    (
+        [
+            (axum::http::header::CONTENT_TYPE, "application/zip".to_string()),
+            (axum::http::header::CONTENT_DISPOSITION, format!("attachment; filename=\"{}\"", filename)),
+        ],
+        data,
+    )
+        .into_response()
 }
 
 use axum::response::IntoResponse;

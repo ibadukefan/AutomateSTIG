@@ -5,6 +5,54 @@ const API = '/api';
 const AUTH_TOKEN = window.__AUTH_TOKEN__ || '';
 
 // ---------------------------------------------------------------------------
+// Theme Toggle
+// ---------------------------------------------------------------------------
+const LIGHT_THEME = {
+  '--bg-base': '#f8f9fa', '--bg-surface': '#ffffff', '--bg-elevated': '#f1f3f5',
+  '--bg-hover': '#e9ecef', '--bg-active': '#dee2e6', '--border': '#dee2e6',
+  '--border-subtle': '#e9ecef', '--text': '#212529', '--text-secondary': '#495057',
+  '--text-muted': '#868e96', '--accent-dim': 'rgba(59,130,246,0.08)',
+  '--green-dim': 'rgba(34,197,94,0.08)', '--red-dim': 'rgba(239,68,68,0.08)',
+  '--yellow-dim': 'rgba(234,179,8,0.08)',
+};
+const DARK_THEME = {
+  '--bg-base': '#0a0e14', '--bg-surface': '#11151c', '--bg-elevated': '#1a1f2e',
+  '--bg-hover': '#1e2538', '--bg-active': '#252d3f', '--border': '#2a3040',
+  '--border-subtle': '#1e2430', '--text': '#e2e8f0', '--text-secondary': '#94a3b8',
+  '--text-muted': '#64748b', '--accent-dim': 'rgba(59,130,246,0.12)',
+  '--green-dim': 'rgba(34,197,94,0.12)', '--red-dim': 'rgba(239,68,68,0.12)',
+  '--yellow-dim': 'rgba(234,179,8,0.12)',
+};
+
+function toggleTheme() {
+  const isDark = document.documentElement.style.getPropertyValue('--bg-base') !== LIGHT_THEME['--bg-base'];
+  const theme = isDark ? LIGHT_THEME : DARK_THEME;
+  Object.entries(theme).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+  localStorage.setItem('theme', isDark ? 'light' : 'dark');
+}
+
+// Restore saved theme.
+if (localStorage.getItem('theme') === 'light') {
+  Object.entries(LIGHT_THEME).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+}
+
+// ---------------------------------------------------------------------------
+// Keyboard Shortcuts
+// ---------------------------------------------------------------------------
+document.addEventListener('keydown', (e) => {
+  // Escape closes modals.
+  if (e.key === 'Escape') {
+    const modal = document.querySelector('.modal-overlay');
+    if (modal) { modal.remove(); e.preventDefault(); }
+  }
+  // "/" focuses search (if visible and not already in an input).
+  if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) {
+    const search = document.querySelector('.search-input');
+    if (search) { search.focus(); e.preventDefault(); }
+  }
+});
+
+// ---------------------------------------------------------------------------
 // API Client
 // ---------------------------------------------------------------------------
 async function api(path, opts = {}) {
@@ -161,7 +209,13 @@ async function loadDashboard() {
         statCard('Open Findings', totalOpen, totalOpen > 0 ? 'red' : 'green'),
         statCard('Avg Compliance', `${avgCompliance.toFixed(1)}%`, complianceColor(avgCompliance)),
       ),
-      checklists.length ? checklistsTable(checklists) : emptyState(
+      checklists.length ? h('div', {},
+        h('div', { className: 'btn-group', style: 'margin-bottom: 16px' },
+          h('button', { className: 'btn btn-secondary btn-sm', onClick: exportAllZip }, 'Export All as ZIP'),
+          h('button', { className: 'btn btn-secondary btn-sm', onClick: compareChecklistsDialog }, 'Compare Two'),
+        ),
+        checklistsTable(checklists),
+      ) : emptyState(
         'No Checklists Yet',
         'Import a checklist or run an evaluation to get started.',
         h('div', { className: 'btn-group' },
@@ -344,6 +398,7 @@ async function viewChecklist(id) {
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCkl(id) }, 'Export CKL'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCklb(id) }, 'Export CKLB'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => viewDriftReport(id) }, 'Drift'),
+          h('button', { className: 'btn btn-primary btn-sm', onClick: () => reEvaluate(id) }, 'Re-evaluate'),
           h('button', { className: 'btn btn-danger btn-sm', onClick: () => deleteChecklist(id, cl.hostname) }, 'Delete'),
         ),
       ),
@@ -698,12 +753,32 @@ async function editFinding(checklistId, finding) {
           style: 'resize: vertical; min-height: 60px',
         }, finding.comments || ''),
       ),
+      h('div', { className: 'grid-2' },
+        h('div', { className: 'form-group' },
+          h('label', { className: 'form-label' }, 'POA&M Milestone'),
+          h('input', { className: 'form-input', id: 'edit-poam', type: 'text',
+            placeholder: 'e.g., Patch scheduled for next maintenance window',
+            value: (finding.comments || '').match(/\[POA&M: (.+?)\]/)?.[1] || '' }),
+        ),
+        h('div', { className: 'form-group' },
+          h('label', { className: 'form-label' }, 'POA&M Target Date'),
+          h('input', { className: 'form-input', id: 'edit-poam-date', type: 'date' }),
+        ),
+      ),
       h('div', { className: 'btn-group', style: 'justify-content: flex-end' },
         h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Cancel'),
         h('button', { className: 'btn btn-primary', onClick: async () => {
           const status = document.getElementById('edit-status')?.value;
           const details = document.getElementById('edit-details')?.value;
           const comments = document.getElementById('edit-comments')?.value;
+          const poam = document.getElementById('edit-poam')?.value;
+          const poamDate = document.getElementById('edit-poam-date')?.value;
+
+          // Save POA&M if provided.
+          if (poam) {
+            try { await api(`/checklists/${checklistId}/findings/${finding.vuln_id}/poam`, {
+              method: 'PATCH', body: JSON.stringify({ poam_milestone: poam, poam_date: poamDate || null }) }); } catch (_) {}
+          }
           try {
             await api(`/checklists/${checklistId}/findings/${finding.vuln_id}`, {
               method: 'PATCH',
@@ -1633,7 +1708,119 @@ async function runScheduleNow(id) {
 }
 
 // ---------------------------------------------------------------------------
-// Delete Checklist (Fix #6)
+// Export All ZIP
+// ---------------------------------------------------------------------------
+function exportAllZip() {
+  window.open(`${API}/export/all-zip?token=${AUTH_TOKEN}`, '_blank');
+  toast('Exporting all checklists as ZIP...', 'info');
+}
+
+// ---------------------------------------------------------------------------
+// Re-evaluate
+// ---------------------------------------------------------------------------
+async function reEvaluate(checklistId) {
+  toast('Re-evaluating...', 'info');
+  try {
+    const result = await api(`/checklists/${checklistId}/re-evaluate`, { method: 'POST' });
+    toast(`Re-evaluation complete: ${result.compliance_pct.toFixed(1)}% compliance`, 'success');
+    viewChecklist(result.id);
+  } catch (e) {
+    toast(`Re-evaluation failed: ${e.message}`, 'error');
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Compare Checklists
+// ---------------------------------------------------------------------------
+async function compareChecklistsDialog() {
+  try {
+    const checklists = await api('/checklists');
+    if (checklists.length < 2) { toast('Need at least 2 checklists to compare', 'error'); return; }
+
+    const options = checklists.map(c => h('option', { value: c.id }, `${c.hostname} — ${c.stig_id} (${c.stig_version})`));
+
+    const overlay = h('div', { className: 'modal-overlay' },
+      h('div', { className: 'modal', style: 'max-width: 500px' },
+        h('h3', {}, 'Compare Checklists'),
+        h('div', { className: 'form-group' },
+          h('label', { className: 'form-label' }, 'Checklist A'),
+          h('select', { className: 'form-select', id: 'cmp-a' }, ...options),
+        ),
+        h('div', { className: 'form-group' },
+          h('label', { className: 'form-label' }, 'Checklist B'),
+          h('select', { className: 'form-select', id: 'cmp-b' }, ...options.map(o => o.cloneNode(true))),
+        ),
+        h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
+          h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Cancel'),
+          h('button', { className: 'btn btn-primary', onClick: async () => {
+            const a = document.getElementById('cmp-a')?.value;
+            const b = document.getElementById('cmp-b')?.value;
+            if (a === b) { toast('Select two different checklists', 'error'); return; }
+            overlay.remove();
+            try {
+              const result = await api('/checklists/compare', {
+                method: 'POST', body: JSON.stringify({ checklist_a: a, checklist_b: b }),
+              });
+              showComparisonResult(result);
+            } catch (e) { toast(e.message, 'error'); }
+          }}, 'Compare'),
+        ),
+      ),
+    );
+    document.body.appendChild(overlay);
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+function showComparisonResult(result) {
+  const diffRows = result.differences.map(d =>
+    h('tr', {},
+      h('td', { className: 'mono' }, d.vuln_id),
+      h('td', {}, sevBadge(d.severity)),
+      h('td', {}, statusBadge(d.status_a)),
+      h('td', {}, statusBadge(d.status_b)),
+      h('td', { style: 'max-width: 300px' }, d.title),
+    ),
+  );
+
+  const overlay = h('div', { className: 'modal-overlay' },
+    h('div', { className: 'modal', style: 'max-width: 800px; max-height: 80vh; overflow-y: auto' },
+      h('h3', {}, 'Checklist Comparison'),
+      h('div', { className: 'grid-2', style: 'margin-bottom: 16px' },
+        h('div', { className: 'stat-card' },
+          h('div', { className: 'stat-label' }, `A: ${result.checklist_a.hostname}`),
+          h('div', { className: `stat-value ${complianceColor(result.checklist_a.compliance)}` },
+            `${result.checklist_a.compliance.toFixed(1)}%`),
+          h('div', { className: 'stat-sub' }, `${result.checklist_a.open} open`),
+        ),
+        h('div', { className: 'stat-card' },
+          h('div', { className: 'stat-label' }, `B: ${result.checklist_b.hostname}`),
+          h('div', { className: `stat-value ${complianceColor(result.checklist_b.compliance)}` },
+            `${result.checklist_b.compliance.toFixed(1)}%`),
+          h('div', { className: 'stat-sub' }, `${result.checklist_b.open} open`),
+        ),
+      ),
+      result.total_differences > 0
+        ? h('div', {},
+            h('h4', { style: 'margin-bottom: 8px' }, `${result.total_differences} Differences`),
+            h('table', { className: 'data-table' },
+              h('thead', {}, h('tr', {},
+                h('th', {}, 'Vuln ID'), h('th', {}, 'Sev'),
+                h('th', {}, 'Status A'), h('th', {}, 'Status B'), h('th', {}, 'Title'),
+              )),
+              h('tbody', {}, ...diffRows),
+            ),
+          )
+        : h('p', { style: 'color: var(--green); font-weight: 600; padding: 20px; text-align: center' }, 'No differences found — checklists are identical.'),
+      h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
+        h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Close'),
+      ),
+    ),
+  );
+  document.body.appendChild(overlay);
+}
+
+// ---------------------------------------------------------------------------
+// Delete Checklist
 // ---------------------------------------------------------------------------
 async function deleteChecklist(id, hostname) {
   const confirmed = await confirm('Delete Checklist', `Delete the checklist for "${hostname}"? This cannot be undone.`);
