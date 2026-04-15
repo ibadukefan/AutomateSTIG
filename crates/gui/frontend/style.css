@@ -393,25 +393,6 @@ body {
   color: var(--text-muted);
 }
 
-/* --- Compliance Ring --- */
-.compliance-ring {
-  position: relative;
-  width: 120px;
-  height: 120px;
-}
-
-.compliance-ring svg { transform: rotate(-90deg); }
-
-.compliance-ring .value {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
 /* --- Toasts --- */
 #toasts {
   position: fixed;

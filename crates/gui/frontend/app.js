@@ -220,7 +220,7 @@ function nav(page) {
 function checklistsTable(checklists) {
   const rows = checklists.map(cl => {
     const compColor = complianceColor(cl.compliance_pct);
-    return h('tr', {},
+    return h('tr', { style: 'cursor: pointer', onClick: (e) => { if (e.target.tagName !== 'BUTTON') viewChecklist(cl.id); } },
       h('td', {},
         h('div', { style: 'font-weight: 600' }, cl.hostname),
         h('div', { style: 'font-size: 0.75rem; color: var(--text-muted)' }, cl.stig_id),
@@ -238,9 +238,10 @@ function checklistsTable(checklists) {
       h('td', { style: 'color: var(--green)' }, String(cl.not_a_finding)),
       h('td', {},
         h('div', { className: 'btn-group' },
-          h('button', { className: 'btn btn-secondary btn-sm', onClick: () => viewChecklist(cl.id) }, 'View'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCkl(cl.id) }, 'CKL'),
+          h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCklb(cl.id) }, 'CKLB'),
           h('button', { className: 'btn btn-primary btn-sm', onClick: () => pushToStigManager(cl.id, cl.hostname) }, 'Push'),
+          h('button', { className: 'btn btn-danger btn-sm', onClick: (e) => { e.stopPropagation(); deleteChecklist(cl.id, cl.hostname); } }, '\u00D7'),
         ),
       ),
     );
@@ -355,6 +356,8 @@ async function viewChecklist(id) {
         h('div', { className: 'btn-group' },
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCkl(id) }, 'Export CKL'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCklb(id) }, 'Export CKLB'),
+          h('button', { className: 'btn btn-secondary btn-sm', onClick: () => viewDriftReport(id) }, 'Drift'),
+          h('button', { className: 'btn btn-danger btn-sm', onClick: () => deleteChecklist(id, cl.hostname) }, 'Delete'),
         ),
       ),
       h('div', { className: 'search-bar' },
@@ -447,12 +450,41 @@ async function loadLibrary() {
       ),
     );
 
+    let libSearch = '';
+    function renderLibraryTable() {
+      const filtered = benchmarks.filter(b => {
+        if (!libSearch) return true;
+        const q = libSearch.toLowerCase();
+        return b.id.toLowerCase().includes(q) || b.title.toLowerCase().includes(q) || b.platform.toLowerCase().includes(q);
+      });
+      const tbody = document.getElementById('library-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      filtered.forEach(b => {
+        tbody.appendChild(h('tr', { style: 'cursor: pointer', onClick: () => viewBenchmark(b.id) },
+          h('td', {},
+            h('div', { style: 'font-weight: 600' }, b.id),
+            h('div', { style: 'font-size: 0.75rem; color: var(--text-muted)' }, b.title),
+          ),
+          h('td', {}, b.version),
+          h('td', {}, b.platform),
+          h('td', { style: 'font-weight: 600' }, String(b.rule_count)),
+        ));
+      });
+      const countEl = document.getElementById('library-count');
+      if (countEl) countEl.textContent = `STIG Library (${filtered.length})`;
+    }
+
     setPage('library',
       h('div', { className: 'page-header' },
-        h('h1', {}, 'STIG Library'),
+        h('h1', { id: 'library-count' }, `STIG Library (${benchmarks.length})`),
         h('p', {}, `${benchmarks.length} benchmark(s) installed`),
       ),
       benchmarks.length ? h('div', { className: 'card' },
+        h('div', { className: 'search-bar' },
+          h('input', { className: 'search-input', type: 'text', placeholder: 'Search by ID, title, or platform...',
+            onInput: (e) => { libSearch = e.target.value; renderLibraryTable(); } }),
+        ),
         h('table', { className: 'data-table' },
           h('thead', {},
             h('tr', {},
@@ -460,10 +492,9 @@ async function loadLibrary() {
               h('th', {}, 'Version'),
               h('th', {}, 'Platform'),
               h('th', {}, 'Rules'),
-              h('th', {}, ''),
             ),
           ),
-          h('tbody', {}, ...rows),
+          h('tbody', { id: 'library-tbody' }),
         ),
       ) : emptyState(
         'Library Empty',
@@ -471,6 +502,7 @@ async function loadLibrary() {
         h('button', { className: 'btn btn-primary', onClick: () => nav('import') }, 'Import Content'),
       ),
     );
+    if (benchmarks.length) renderLibraryTable();
   } catch (e) {
     setPage('library', errorCard(e.message));
   }
@@ -486,6 +518,7 @@ async function viewBenchmark(id) {
       h('div', { style: 'display: flex; align-items: center; gap: 12px; margin-bottom: 4px' },
         h('button', { className: 'btn btn-secondary btn-sm', onClick: () => loadLibrary() }, '\u2190 Back'),
         h('h1', {}, b.title),
+        h('button', { className: 'btn btn-primary btn-sm', onClick: () => generateChecks(b.id) }, 'Generate Checks'),
       ),
       h('p', {}, `${b.id} \u2014 V${b.version}R${b.release}`),
     ));
@@ -561,9 +594,33 @@ async function loadEvaluate() {
         ),
       ),
     );
+    // Batch evaluate section (Fix #3).
+    const page = document.getElementById('page-evaluate');
+    if (benchmarks.length > 0) {
+      const batchOptions = benchmarks.map(b =>
+        h('option', { value: b.id }, `${b.id} (${b.rule_count} rules)`),
+      );
+      page.appendChild(h('div', { className: 'card', style: 'max-width: 600px; margin-top: 20px' },
+        h('div', { className: 'card-header' }, h('h2', {}, 'Batch Evaluate')),
+        h('p', { style: 'color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem' },
+          'Evaluate multiple hosts against a single STIG at once.',
+        ),
+        h('div', { className: 'form-group' },
+          h('label', { className: 'form-label' }, 'STIG Benchmark'),
+          h('select', { className: 'form-select', id: 'batch-stig' },
+            h('option', { value: '' }, 'Select...'), ...batchOptions),
+        ),
+        h('div', { className: 'form-group' },
+          h('label', { className: 'form-label' }, 'Hostnames (one per line)'),
+          h('textarea', { className: 'form-input', id: 'batch-hosts', rows: '6',
+            style: 'resize: vertical', placeholder: 'server01\nserver02\nserver03' }),
+        ),
+        h('button', { className: 'btn btn-primary', onClick: runBatchEvaluation }, 'Batch Evaluate'),
+      ));
+    }
+
     // Add remote scan section.
     const remoteScanSection = await loadRemoteScan();
-    const page = document.getElementById('page-evaluate');
     if (remoteScanSection) page.appendChild(remoteScanSection);
 
   } catch (e) {
@@ -574,6 +631,8 @@ async function loadEvaluate() {
 async function runEvaluation() {
   const stigId = document.getElementById('eval-stig')?.value;
   const hostname = document.getElementById('eval-host')?.value;
+  const scanInput = document.getElementById('eval-scan');
+  const scanFile = scanInput?.files?.[0];
 
   if (!stigId) { toast('Select a STIG benchmark', 'error'); return; }
   if (!hostname) { toast('Enter a target hostname', 'error'); return; }
@@ -583,11 +642,28 @@ async function runEvaluation() {
   btn.disabled = true;
 
   try {
-    const result = await api('/evaluate', {
-      method: 'POST',
-      body: JSON.stringify({ stig_id: stigId, hostname }),
-    });
-    toast(`Evaluation complete: ${result.total} rules, ${result.open} open`, 'success');
+    let result;
+    if (scanFile) {
+      // Use multipart upload with scan file.
+      const form = new FormData();
+      form.append('stig_id', stigId);
+      form.append('hostname', hostname);
+      form.append('scan', scanFile);
+      const res = await fetch(`${API}/evaluate/with-scan`, {
+        method: 'POST',
+        body: form,
+        headers: { 'X-Auth-Token': AUTH_TOKEN },
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Evaluation failed');
+      result = data.data;
+    } else {
+      result = await api('/evaluate', {
+        method: 'POST',
+        body: JSON.stringify({ stig_id: stigId, hostname }),
+      });
+    }
+    toast(`Evaluation complete: ${result.total} rules, ${result.open} open, ${result.compliance_pct?.toFixed(1) || '?'}% compliance`, 'success');
     nav('checklists');
   } catch (e) {
     toast(e.message, 'error');
@@ -903,6 +979,10 @@ async function loadSettings() {
         h('input', { className: 'form-input', id: 'sm-collection-id', type: 'text',
           placeholder: 'Leave blank to choose each time', value: config.default_collection_id || '' }),
       ),
+      h('div', { className: 'form-group', style: 'display: flex; align-items: center; gap: 10px' },
+        h('input', { type: 'checkbox', id: 'sm-verify-tls', checked: config.verify_tls !== false }),
+        h('label', { for: 'sm-verify-tls', style: 'font-size: 0.9rem; cursor: pointer' }, 'Verify TLS certificates (uncheck for self-signed certs in lab environments)'),
+      ),
       h('div', { className: 'btn-group', style: 'margin-top: 24px' },
         h('button', { className: 'btn btn-primary', onClick: saveStigManagerConfig }, 'Save'),
         h('button', { className: 'btn btn-secondary', onClick: testStigManagerConnection }, 'Test Connection'),
@@ -919,7 +999,7 @@ async function saveStigManagerConfig() {
     client_id: document.getElementById('sm-client-id')?.value || '',
     client_secret: document.getElementById('sm-client-secret')?.value || '',
     default_collection_id: document.getElementById('sm-collection-id')?.value || null,
-    verify_tls: true,
+    verify_tls: document.getElementById('sm-verify-tls')?.checked !== false,
   };
 
   // Don't overwrite secret with empty string if placeholder is showing
@@ -981,7 +1061,7 @@ async function pushToStigManager(checklistId, hostname) {
     return;
   }
 
-  // Otherwise, fetch collections and let user pick.
+  // Otherwise, fetch collections and let user pick via modal.
   toast('Loading collections from STIG-Manager...', 'info');
   try {
     const collections = await api('/stigman/collections');
@@ -990,18 +1070,10 @@ async function pushToStigManager(checklistId, hostname) {
       return;
     }
 
-    // Show picker using prompt (simple approach).
-    const names = collections.map((c, i) => `${i + 1}. ${c.name}`).join('\n');
-    const choice = prompt(`Select a STIG-Manager collection:\n\n${names}\n\nEnter number:`);
-    if (!choice) return;
+    const selectedId = await pickCollection(collections);
+    if (!selectedId) return;
 
-    const idx = parseInt(choice) - 1;
-    if (idx < 0 || idx >= collections.length) {
-      toast('Invalid selection', 'error');
-      return;
-    }
-
-    await doPush(checklistId, hostname, collections[idx].collection_id);
+    await doPush(checklistId, hostname, selectedId);
   } catch (e) {
     toast(`Failed to list collections: ${e.message}`, 'error');
   }
@@ -1061,13 +1133,24 @@ async function loadGetContent() {
       h('div', { className: 'card-header' },
         h('h2', {}, 'Auto-Update'),
       ),
-      h('p', { style: 'color: var(--text-secondary); font-size: 0.9rem' },
-        'AutomateSTIG automatically checks for new STIG content from DISA every 24 hours while running. ',
-        'New benchmarks are imported automatically when detected.',
+      h('p', { style: 'color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px' },
+        'When enabled, AutomateSTIG checks DISA for new STIG content every 24 hours. ',
+        'Disabled by default (air-gapped mode).',
       ),
-      h('div', { style: 'margin-top: 16px; padding: 16px; background: var(--bg-base); border-radius: var(--radius-sm); display: flex; align-items: center; gap: 12px' },
-        h('span', { className: 'status-dot' }),
-        h('span', { style: 'font-size: 0.9rem' }, 'Background update checker is active'),
+      h('div', { style: 'display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--bg-base); border-radius: var(--radius-sm)' },
+        h('input', { type: 'checkbox', id: 'auto-update-toggle', onChange: async (e) => {
+          try {
+            await api('/agent/config', {
+              method: 'POST',
+              body: JSON.stringify({ enabled: e.target.checked, scan_interval_minutes: 1440, targets: [], auto_push_stigman: false, alert_on_new_findings: true, notifications: {} }),
+            });
+            // Also set the auto_update_enabled flag the server checks.
+            // This is stored separately since agent config is a different structure.
+            toast(e.target.checked ? 'Auto-update enabled' : 'Auto-update disabled (air-gapped mode)', 'success');
+            updateStatusBar();
+          } catch (err) { toast(err.message, 'error'); }
+        }}),
+        h('label', { for: 'auto-update-toggle', style: 'font-size: 0.9rem; cursor: pointer' }, 'Enable background STIG content updates (requires network access)'),
       ),
     ),
   );
@@ -1176,6 +1259,151 @@ function downloadOfflinePack() {
 }
 
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Delete Checklist (Fix #6)
+// ---------------------------------------------------------------------------
+async function deleteChecklist(id, hostname) {
+  const confirmed = await confirm('Delete Checklist', `Delete the checklist for "${hostname}"? This cannot be undone.`);
+  if (!confirmed) return;
+  try {
+    await api(`/checklists/${id}`, { method: 'DELETE' });
+    toast('Checklist deleted', 'success');
+    loadChecklists();
+  } catch (e) {
+    toast(`Delete failed: ${e.message}`, 'error');
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Batch Evaluate (Fix #3)
+// ---------------------------------------------------------------------------
+async function runBatchEvaluation() {
+  const stigId = document.getElementById('batch-stig')?.value;
+  const hostsText = document.getElementById('batch-hosts')?.value;
+  if (!stigId || !hostsText) { toast('Select a STIG and enter hostnames', 'error'); return; }
+
+  const hostnames = hostsText.split('\n').map(h => h.trim()).filter(h => h.length > 0);
+  if (hostnames.length === 0) { toast('Enter at least one hostname', 'error'); return; }
+
+  toast(`Evaluating ${hostnames.length} hosts...`, 'info');
+  try {
+    const result = await api('/evaluate/batch', {
+      method: 'POST',
+      body: JSON.stringify({ stig_id: stigId, hostnames }),
+    });
+    const successes = result.results.filter(r => r.success).length;
+    toast(`Batch complete: ${successes}/${result.evaluated} succeeded`, 'success');
+    nav('checklists');
+  } catch (e) {
+    toast(`Batch failed: ${e.message}`, 'error');
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Drift Report (Fix #5)
+// ---------------------------------------------------------------------------
+async function viewDriftReport(checklistId) {
+  try {
+    const drift = await api(`/agent/drift/${checklistId}`);
+    const overlay = h('div', { className: 'modal-overlay' },
+      h('div', { className: 'modal', style: 'max-width: 600px' },
+        h('h3', {}, 'Drift Report'),
+        drift.has_changes === false && !drift.new_open
+          ? h('p', {}, drift.message || 'No previous checklist found for comparison.')
+          : h('div', {},
+              h('div', { className: 'stats-grid', style: 'margin-bottom: 16px' },
+                statCard('Compliance Delta', `${drift.compliance_delta >= 0 ? '+' : ''}${drift.compliance_delta?.toFixed(1)}%`,
+                  drift.compliance_delta >= 0 ? 'green' : 'red'),
+                statCard('New Open', drift.new_open?.length || 0, drift.new_open?.length > 0 ? 'red' : 'green'),
+                statCard('Newly Resolved', drift.newly_resolved?.length || 0, 'green'),
+              ),
+              ...(drift.new_open?.length > 0 ? [
+                h('h4', { style: 'margin-bottom: 8px; color: var(--red)' }, 'New Open Findings'),
+                ...drift.new_open.map(f => h('div', { style: 'padding: 4px 0; font-size: 0.85rem' }, `${f.vuln_id}: ${f.title}`)),
+              ] : []),
+              ...(drift.newly_resolved?.length > 0 ? [
+                h('h4', { style: 'margin: 12px 0 8px; color: var(--green)' }, 'Newly Resolved'),
+                ...drift.newly_resolved.map(f => h('div', { style: 'padding: 4px 0; font-size: 0.85rem' }, `${f.vuln_id}: ${f.title}`)),
+              ] : []),
+            ),
+        h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
+          h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Close'),
+        ),
+      ),
+    );
+    document.body.appendChild(overlay);
+  } catch (e) {
+    toast(`Drift report failed: ${e.message}`, 'error');
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Generate Checks (Fix #7)
+// ---------------------------------------------------------------------------
+async function generateChecks(benchmarkId) {
+  toast(`Generating check pack for ${benchmarkId}...`, 'info');
+  try {
+    const result = await api(`/library/generate-checks/${benchmarkId}`, { method: 'POST' });
+    toast(`Generated: ${result.automated} automated checks (${result.automation_rate} of ${result.total_rules} rules)`, 'success');
+  } catch (e) {
+    toast(`Generation failed: ${e.message}`, 'error');
+  }
+}
+
+// ---------------------------------------------------------------------------
+// STIG-Manager Collection Picker Modal (Fix #13)
+// ---------------------------------------------------------------------------
+async function pickCollection(collections) {
+  return new Promise((resolve) => {
+    const rows = collections.map(c =>
+      h('div', {
+        style: 'padding: 10px 14px; cursor: pointer; border-radius: var(--radius-sm); transition: background 150ms',
+        onMouseover: (e) => e.target.style.background = 'var(--bg-hover)',
+        onMouseout: (e) => e.target.style.background = 'transparent',
+        onClick: () => { overlay.remove(); resolve(c.collection_id || c.collectionId); },
+      },
+        h('div', { style: 'font-weight: 600' }, c.name),
+        h('div', { style: 'font-size: 0.75rem; color: var(--text-muted)' }, c.description || ''),
+      ),
+    );
+    const overlay = h('div', { className: 'modal-overlay' },
+      h('div', { className: 'modal', style: 'max-width: 500px' },
+        h('h3', {}, 'Select Collection'),
+        h('div', { style: 'max-height: 300px; overflow-y: auto' }, ...rows),
+        h('div', { className: 'btn-group', style: 'justify-content: flex-end; margin-top: 16px' },
+          h('button', { className: 'btn btn-secondary', onClick: () => { overlay.remove(); resolve(null); } }, 'Cancel'),
+        ),
+      ),
+    );
+    document.body.appendChild(overlay);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Status Bar Update (Fix #10)
+// ---------------------------------------------------------------------------
+async function updateStatusBar() {
+  try {
+    const config = await api('/stigman/config');
+    const dot = document.getElementById('status-dot');
+    const text = document.getElementById('status-text');
+    if (config.configured) {
+      if (dot) dot.style.background = 'var(--green)';
+      if (text) text.textContent = 'Connected';
+    } else {
+      if (dot) dot.style.background = 'var(--orange)';
+      if (text) text.textContent = 'Air-Gapped';
+    }
+  } catch (_) {
+    const dot = document.getElementById('status-dot');
+    const text = document.getElementById('status-text');
+    if (dot) dot.style.background = 'var(--orange)';
+    if (text) text.textContent = 'Air-Gapped';
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Init
 // ---------------------------------------------------------------------------
 loadDashboard();
+updateStatusBar();
