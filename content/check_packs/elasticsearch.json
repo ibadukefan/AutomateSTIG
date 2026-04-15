@@ -1,0 +1,112 @@
+{
+  "stig_id": "Elasticsearch_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-272101",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/elasticsearch/elasticsearch.yml", "pattern": "xpack\\.security\\.enabled:\\s*true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Elasticsearch must have xpack.security.enabled set to true"
+    },
+    {
+      "vuln_id": "V-272102",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/elasticsearch/elasticsearch.yml", "pattern": "xpack\\.security\\.transport\\.ssl\\.enabled:\\s*true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Elasticsearch must enable TLS for transport layer communication"
+    },
+    {
+      "vuln_id": "V-272103",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/elasticsearch/elasticsearch.yml", "pattern": "xpack\\.security\\.http\\.ssl\\.enabled:\\s*true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Elasticsearch must enable TLS for HTTP layer communication"
+    },
+    {
+      "vuln_id": "V-272104",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/elasticsearch/elasticsearch.yml", "pattern": "xpack\\.security\\.transport\\.ssl\\.verification_mode:\\s*(full|certificate)", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Elasticsearch transport TLS must verify certificates"
+    },
+    {
+      "vuln_id": "V-272105",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/elasticsearch/elasticsearch.yml", "pattern": "xpack\\.security\\.transport\\.ssl\\.key:\\s*\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Elasticsearch transport TLS key must be configured"
+    },
+    {
+      "vuln_id": "V-272106",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/elasticsearch/elasticsearch.yml", "pattern": "xpack\\.security\\.transport\\.ssl\\.certificate:\\s*\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Elasticsearch transport TLS certificate must be configured"
+    },
+    {
+      "vuln_id": "V-272107",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/elasticsearch/elasticsearch.yml", "pattern": "xpack\\.security\\.http\\.ssl\\.key:\\s*\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Elasticsearch HTTP TLS key must be configured"
+    },
+    {
+      "vuln_id": "V-272108",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/elasticsearch/elasticsearch.yml", "pattern": "xpack\\.security\\.http\\.ssl\\.certificate:\\s*\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Elasticsearch HTTP TLS certificate must be configured"
+    },
+    {
+      "vuln_id": "V-272109",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/elasticsearch/elasticsearch.yml", "pattern": "xpack\\.security\\.audit\\.enabled:\\s*true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Elasticsearch must have audit logging enabled"
+    },
+    {
+      "vuln_id": "V-272110",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/elasticsearch/elasticsearch.yml", "pattern": "xpack\\.security\\.audit\\.outputs:\\s*\\[?.*index", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Elasticsearch audit output must be configured to index"
+    },
+    {
+      "vuln_id": "V-272111",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/elasticsearch/elasticsearch.yml", "pattern": "network\\.host:\\s*\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Elasticsearch must bind to a specific network host"
+    },
+    {
+      "vuln_id": "V-272112",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/elasticsearch/elasticsearch.yml", "pattern": "http\\.port:\\s*\\d+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Elasticsearch HTTP port must be explicitly configured"
+    },
+    {
+      "vuln_id": "V-272113",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/elasticsearch/elasticsearch.yml", "pattern": "discovery\\.seed_hosts:", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Elasticsearch must configure discovery seed hosts"
+    },
+    {
+      "vuln_id": "V-272114",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/elasticsearch/elasticsearch.yml", "pattern": "xpack\\.security\\.authc\\.anonymous\\.roles:", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Elasticsearch anonymous access must be restricted to authorized roles only"
+    },
+    {
+      "vuln_id": "V-272115",
+      "platform": "linux",
+      "check": { "type": "file_permission", "path": "/etc/elasticsearch/elasticsearch.yml", "owner": "elasticsearch", "group": null, "mode": "0600" },
+      "expected": { "type": "is_true" },
+      "description": "Elasticsearch configuration file must be mode 0600 and owned by elasticsearch user"
+    }
+  ]
+}

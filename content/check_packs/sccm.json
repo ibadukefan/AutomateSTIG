@@ -1,0 +1,112 @@
+{
+  "stig_id": "SCCM_STIG",
+  "platform": "windows",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-260900",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\CCM", "value_name": "AllowUserUIInteraction" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "SCCM must restrict user interaction with the client UI"
+    },
+    {
+      "vuln_id": "V-260901",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\CCM\\Security", "value_name": "UsePKICert" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "SCCM client must use PKI certificates for communication"
+    },
+    {
+      "vuln_id": "V-260902",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\CCM\\Security", "value_name": "ClientAlwaysOnInternet" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "SCCM client must not be configured as Always On Internet unless required"
+    },
+    {
+      "vuln_id": "V-260903",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\SMS\\Client\\Configuration\\Client Properties", "value_name": "EnableAutoAssignment" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "SCCM client auto-assignment to site must be enabled"
+    },
+    {
+      "vuln_id": "V-260910",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\CCM\\ClientHealth", "value_name": "Enabled" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "SCCM client health evaluation must be enabled"
+    },
+    {
+      "vuln_id": "V-260911",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\CCM\\ClientHealth", "value_name": "RemedyEnabled" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "SCCM client health automatic remediation must be enabled"
+    },
+    {
+      "vuln_id": "V-260912",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\CCM\\ClientHealth", "value_name": "Schedule" },
+      "expected": { "type": "matches", "pattern": ".+" },
+      "description": "SCCM client health evaluation schedule must be configured"
+    },
+    {
+      "vuln_id": "V-260920",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\SMS\\Mobile Client", "value_name": "AllowSilentInstall" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "SCCM must not allow silent push installation without approval"
+    },
+    {
+      "vuln_id": "V-260921",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\SMS\\Mobile Client", "value_name": "EnablePeerDistribution" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "SCCM peer distribution must be disabled unless authorized"
+    },
+    {
+      "vuln_id": "V-260925",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\CCM\\SoftwareMetering", "value_name": "Enabled" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "SCCM software metering must be enabled"
+    },
+    {
+      "vuln_id": "V-260926",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\CCM\\SoftwareMetering", "value_name": "ReportOnEvents" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "SCCM software metering must report on usage events"
+    },
+    {
+      "vuln_id": "V-260930",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\CCM\\LocationServices", "value_name": "SiteBoundaryType" },
+      "expected": { "type": "matches", "pattern": "\\d+" },
+      "description": "SCCM boundary groups must be configured"
+    },
+    {
+      "vuln_id": "V-260931",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\CCM\\LocationServices", "value_name": "SiteCode" },
+      "expected": { "type": "matches", "pattern": ".{3}" },
+      "description": "SCCM site code must be properly assigned"
+    },
+    {
+      "vuln_id": "V-260935",
+      "platform": "windows",
+      "check": { "type": "service", "name": "CcmExec", "expected_status": "running" },
+      "expected": { "type": "is_true" },
+      "description": "SCCM SMS Agent Host service must be running"
+    },
+    {
+      "vuln_id": "V-260936",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "value_name": "LegalNoticeText" },
+      "expected": { "type": "matches", "pattern": ".{10,}" },
+      "description": "SCCM host must display legal notice text before logon"
+    }
+  ]
+}
