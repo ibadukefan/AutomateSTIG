@@ -4,6 +4,7 @@
 //! All communication is localhost-only — no external network calls.
 
 mod api;
+pub mod disa;
 mod state;
 
 use std::net::SocketAddr;
@@ -27,6 +28,9 @@ async fn main() {
     // Initialize application state.
     let state = AppState::init().expect("Failed to initialize application state");
 
+    // Clone for background checker before moving into router.
+    let bg_state = state.clone();
+
     // Build the router.
     let app = Router::new()
         .nest("/api", api::routes())
@@ -47,6 +51,11 @@ async fn main() {
     eprintln!("  GUI running at: {}", url);
     eprintln!("  Press Ctrl+C to stop.");
     eprintln!();
+
+    // Start background STIG update checker (every 24 hours).
+    tokio::spawn(async move {
+        disa::start_background_checker(bg_state, 24).await;
+    });
 
     // Open browser.
     if let Err(e) = open::that(&url) {

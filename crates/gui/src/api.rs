@@ -32,6 +32,13 @@ pub fn routes() -> Router<AppState> {
         .route("/checklists/import", post(import_checklist))
         // Evaluate
         .route("/evaluate", post(evaluate))
+        // DISA content fetching
+        .route("/disa/available", get(disa_list_available))
+        .route("/disa/fetch", post(disa_fetch))
+        .route("/disa/fetch-all", post(disa_fetch_all))
+        .route("/disa/check-updates", get(disa_check_updates))
+        // Offline pack for air-gapped transfer
+        .route("/offline-pack", get(generate_offline_pack))
         // Export
         .route("/export/ckl/{id}", get(export_ckl))
         .route("/export/cklb/{id}", get(export_cklb))
@@ -307,7 +314,12 @@ async fn import_stigpack(
     State(state): State<AppState>,
     mut multipart: Multipart,
 ) -> Json<serde_json::Value> {
-    while let Ok(Some(field)) = multipart.next_field().await {
+    let field = match multipart.next_field().await {
+        Ok(Some(f)) => f,
+        Ok(None) => return api_error("No file uploaded"),
+        Err(e) => return api_error(&format!("Upload error: {}", e)),
+    };
+    {
         let data = match field.bytes().await {
             Ok(d) => d,
             Err(e) => return api_error(&format!("Failed to read upload: {}", e)),
@@ -323,24 +335,20 @@ async fn import_stigpack(
         };
 
         match automatestig_stigpack::importer::import_pack(tmp.path(), &mut library) {
-            Ok(result) => {
-                return api_ok(ImportResult {
-                    imported: result.benchmarks_imported,
-                    skipped: 0,
-                    details: vec![format!(
-                        "Pack {} v{}: {} benchmarks, {} templates",
-                        result.pack_id,
-                        result.pack_version,
-                        result.benchmarks_imported,
-                        result.answer_templates_imported
-                    )],
-                });
-            }
-            Err(e) => return api_error(&format!("Import failed: {}", e)),
+            Ok(result) => api_ok(ImportResult {
+                imported: result.benchmarks_imported,
+                skipped: 0,
+                details: vec![format!(
+                    "Pack {} v{}: {} benchmarks, {} templates",
+                    result.pack_id,
+                    result.pack_version,
+                    result.benchmarks_imported,
+                    result.answer_templates_imported
+                )],
+            }),
+            Err(e) => api_error(&format!("Import failed: {}", e)),
         }
     }
-
-    api_error("No file uploaded")
 }
 
 // ---------------------------------------------------------------------------
@@ -493,7 +501,12 @@ async fn import_checklist(
     State(state): State<AppState>,
     mut multipart: Multipart,
 ) -> Json<serde_json::Value> {
-    while let Ok(Some(field)) = multipart.next_field().await {
+    let field = match multipart.next_field().await {
+        Ok(Some(f)) => f,
+        Ok(None) => return api_error("No file uploaded"),
+        Err(e) => return api_error(&format!("Upload error: {}", e)),
+    };
+    {
         let filename = field.file_name().unwrap_or("upload").to_string();
         let data = match field.bytes().await {
             Ok(d) => d,
@@ -549,10 +562,8 @@ async fn import_checklist(
             return api_error(&format!("Failed to save: {}", e));
         }
 
-        return api_ok(info);
+        api_ok(info)
     }
-
-    api_error("No file uploaded")
 }
 
 // ---------------------------------------------------------------------------
@@ -615,6 +626,131 @@ async fn evaluate(
         }
         Err(e) => api_error(&format!("Evaluation failed: {}", e)),
     }
+}
+
+// ---------------------------------------------------------------------------
+// DISA Content Fetching
+// ---------------------------------------------------------------------------
+
+/// List available STIGs from DISA's public download page.
+async fn disa_list_available() -> Json<serde_json::Value> {
+    match crate::disa::list_available_stigs().await {
+        Ok(stigs) => api_ok(stigs),
+        Err(e) => api_error(&e),
+    }
+}
+
+/// Fetch and import a specific STIG from DISA by URL.
+#[derive(Deserialize)]
+struct DisaFetchRequest {
+    url: String,
+}
+
+async fn disa_fetch(
+    State(state): State<AppState>,
+    Json(req): Json<DisaFetchRequest>,
+) -> Json<serde_json::Value> {
+    match crate::disa::download_and_import(&req.url, &state).await {
+        Ok(result) => api_ok(result),
+        Err(e) => api_error(&e),
+    }
+}
+
+/// Fetch all available STIGs from DISA.
+async fn disa_fetch_all(
+    State(state): State<AppState>,
+) -> Json<serde_json::Value> {
+    match crate::disa::fetch_all_content(&state).await {
+        Ok(result) => api_ok(result),
+        Err(e) => api_error(&e),
+    }
+}
+
+/// Check for updates without downloading.
+async fn disa_check_updates(
+    State(state): State<AppState>,
+) -> Json<serde_json::Value> {
+    match crate::disa::check_for_updates(&state).await {
+        Ok(result) => api_ok(result),
+        Err(e) => api_error(&e),
+    }
+}
+
+/// Generate an offline update package (.stigpack) from the current library
+/// for transfer to air-gapped systems.
+async fn generate_offline_pack(
+    State(state): State<AppState>,
+) -> impl IntoResponse {
+    let library = match state.library() {
+        Ok(l) => l,
+        Err(e) => {
+            return (
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Library error: {}", e),
+            )
+                .into_response();
+        }
+    };
+
+    let benchmarks = library.list_benchmarks();
+    if benchmarks.is_empty() {
+        return (
+            axum::http::StatusCode::BAD_REQUEST,
+            "No benchmarks in library to package",
+        )
+            .into_response();
+    }
+
+    // Build a stigpack with all current library content.
+    let mut builder = automatestig_stigpack::builder::PackBuilder::new(
+        &format!("automatestig-offline-{}", chrono::Utc::now().format("%Y%m%d")),
+        "AutomateSTIG Offline Update",
+        &chrono::Utc::now().format("%Y.%m.%d").to_string(),
+    )
+    .author("AutomateSTIG")
+    .description("Offline update package for air-gapped AutomateSTIG installations");
+
+    for entry in &benchmarks {
+        match library.load_benchmark(&entry.id) {
+            Ok(benchmark) => {
+                if let Ok(json) = serde_json::to_string_pretty(&benchmark) {
+                    let pack_path = format!("benchmarks/{}.json", entry.id);
+                    builder = builder.add_file_bytes(&pack_path, json.as_bytes());
+                }
+            }
+            Err(_) => continue,
+        }
+    }
+
+    let tmp = tempfile::NamedTempFile::new().unwrap();
+    if let Err(e) = builder.build(tmp.path()) {
+        return (
+            axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Failed to build pack: {}", e),
+        )
+            .into_response();
+    }
+
+    let data = std::fs::read(tmp.path()).unwrap();
+    let filename = format!(
+        "automatestig-offline-{}.stigpack",
+        chrono::Utc::now().format("%Y%m%d")
+    );
+
+    (
+        [
+            (
+                axum::http::header::CONTENT_TYPE,
+                "application/octet-stream".to_string(),
+            ),
+            (
+                axum::http::header::CONTENT_DISPOSITION,
+                format!("attachment; filename=\"{}\"", filename),
+            ),
+        ],
+        data,
+    )
+        .into_response()
 }
 
 // ---------------------------------------------------------------------------

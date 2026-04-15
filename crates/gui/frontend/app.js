@@ -58,6 +58,7 @@ function loadPage(page) {
     case 'evaluate': loadEvaluate(); break;
     case 'library': loadLibrary(); break;
     case 'checklists': loadChecklists(); break;
+    case 'content': loadGetContent(); break;
     case 'import': loadImport(); break;
   }
 }
@@ -579,6 +580,161 @@ function exportCkl(id) {
 
 function exportCklb(id) {
   window.open(`${API}/export/cklb/${id}`, '_blank');
+}
+
+// ---------------------------------------------------------------------------
+// Get Content Page (DISA auto-download)
+// ---------------------------------------------------------------------------
+async function loadGetContent() {
+  setPage('content',
+    h('div', { className: 'page-header' },
+      h('h1', {}, 'Get STIG Content'),
+      h('p', {}, 'Download the latest STIG benchmarks directly from DISA (public.cyber.mil)'),
+    ),
+    h('div', { className: 'stats-grid' },
+      h('div', { className: 'stat-card', style: 'cursor: pointer', onClick: fetchAllContent },
+        h('div', { className: 'stat-label' }, 'Quick Action'),
+        h('div', { className: 'stat-value accent', style: 'font-size: 1.2rem' }, 'Get All STIGs'),
+        h('div', { className: 'stat-sub' }, 'Download everything from DISA'),
+      ),
+      h('div', { className: 'stat-card', style: 'cursor: pointer', onClick: checkForUpdates },
+        h('div', { className: 'stat-label' }, 'Check'),
+        h('div', { className: 'stat-value', style: 'font-size: 1.2rem' }, 'Check Updates'),
+        h('div', { className: 'stat-sub' }, 'See what\'s available'),
+      ),
+      h('div', { className: 'stat-card', style: 'cursor: pointer', onClick: downloadOfflinePack },
+        h('div', { className: 'stat-label' }, 'Air-Gapped'),
+        h('div', { className: 'stat-value', style: 'font-size: 1.2rem' }, 'Export Pack'),
+        h('div', { className: 'stat-sub' }, 'Generate .stigpack for sandbox transfer'),
+      ),
+    ),
+    h('div', { id: 'content-results' }),
+    h('div', { id: 'content-available', className: 'card', style: 'margin-top: 20px' },
+      h('div', { className: 'card-header' },
+        h('h2', {}, 'Available STIGs'),
+        h('button', { className: 'btn btn-secondary btn-sm', onClick: browseAvailable }, 'Browse DISA'),
+      ),
+      h('div', { id: 'available-list' },
+        h('p', { style: 'color: var(--text-muted); padding: 20px; text-align: center' },
+          'Click "Browse DISA" or "Check Updates" to see available content.'),
+      ),
+    ),
+    h('div', { className: 'card', style: 'margin-top: 20px' },
+      h('div', { className: 'card-header' },
+        h('h2', {}, 'Auto-Update'),
+      ),
+      h('p', { style: 'color: var(--text-secondary); font-size: 0.9rem' },
+        'AutomateSTIG automatically checks for new STIG content from DISA every 24 hours while running. ',
+        'New benchmarks are imported automatically when detected.',
+      ),
+      h('div', { style: 'margin-top: 16px; padding: 16px; background: var(--bg-base); border-radius: var(--radius-sm); display: flex; align-items: center; gap: 12px' },
+        h('span', { className: 'status-dot' }),
+        h('span', { style: 'font-size: 0.9rem' }, 'Background update checker is active'),
+      ),
+    ),
+  );
+}
+
+async function fetchAllContent() {
+  toast('Fetching all STIG content from DISA... this may take a few minutes.', 'info');
+  try {
+    const result = await api('/disa/fetch-all', { method: 'POST' });
+    const el = document.getElementById('content-results');
+    if (el) {
+      el.innerHTML = '';
+      el.appendChild(h('div', { className: 'card', style: 'margin-top: 20px' },
+        h('div', { className: 'card-header' },
+          h('h2', {}, 'Fetch Results'),
+        ),
+        h('div', { className: 'stats-grid', style: 'margin-bottom: 16px' },
+          statCard('New', result.new_benchmarks, 'green'),
+          statCard('Updated', result.updated_benchmarks, 'accent'),
+          statCard('Current', result.already_current, ''),
+          statCard('Errors', result.errors.length, result.errors.length > 0 ? 'red' : 'green'),
+        ),
+        ...(result.details.length ? [h('div', { style: 'max-height: 300px; overflow-y: auto' },
+          ...result.details.map(d => h('div', { style: 'padding: 4px 0; font-size: 0.85rem; color: var(--text-secondary)' }, d)),
+        )] : []),
+        ...(result.errors.length ? [h('div', { style: 'margin-top: 12px' },
+          ...result.errors.map(e => h('div', { style: 'padding: 4px 0; font-size: 0.85rem; color: var(--red)' }, e)),
+        )] : []),
+      ));
+    }
+    toast(`Done! ${result.new_benchmarks} new, ${result.updated_benchmarks} updated.`, 'success');
+  } catch (e) {
+    toast(`Fetch failed: ${e.message}`, 'error');
+  }
+}
+
+async function checkForUpdates() {
+  toast('Checking DISA for updates...', 'info');
+  try {
+    const result = await api('/disa/check-updates');
+    toast(`${result.available_count} STIGs available, ${result.installed_count} installed locally.`, 'info');
+    showAvailableList(result.available_stigs);
+  } catch (e) {
+    toast(`Check failed: ${e.message}`, 'error');
+  }
+}
+
+async function browseAvailable() {
+  toast('Loading available STIGs from DISA...', 'info');
+  try {
+    const stigs = await api('/disa/available');
+    showAvailableList(stigs);
+    toast(`Found ${stigs.length} STIG packages on DISA.`, 'success');
+  } catch (e) {
+    toast(`Failed to browse: ${e.message}`, 'error');
+  }
+}
+
+function showAvailableList(stigs) {
+  const el = document.getElementById('available-list');
+  if (!el) return;
+  el.innerHTML = '';
+
+  if (!stigs || stigs.length === 0) {
+    el.appendChild(h('p', { style: 'color: var(--text-muted); padding: 20px; text-align: center' },
+      'No STIGs found. The DISA site may be unreachable.'));
+    return;
+  }
+
+  const rows = stigs.map(s =>
+    h('tr', {},
+      h('td', { style: 'max-width: 400px' }, s.title),
+      h('td', {},
+        h('button', { className: 'btn btn-primary btn-sm', onClick: () => fetchSingleStig(s) }, 'Download'),
+      ),
+    ),
+  );
+
+  el.appendChild(h('table', { className: 'data-table' },
+    h('thead', {}, h('tr', {},
+      h('th', {}, 'STIG Package'),
+      h('th', {}, 'Action'),
+    )),
+    h('tbody', {}, ...rows),
+  ));
+}
+
+async function fetchSingleStig(stig) {
+  toast(`Downloading: ${stig.title}...`, 'info');
+  try {
+    const result = await api('/disa/fetch', {
+      method: 'POST',
+      body: JSON.stringify({ url: stig.download_url }),
+    });
+    toast(`Imported: ${result.new_benchmarks} new, ${result.updated_benchmarks} updated.`, 'success');
+    result.details.forEach(d => toast(d, 'info'));
+  } catch (e) {
+    toast(`Download failed: ${e.message}`, 'error');
+  }
+}
+
+function downloadOfflinePack() {
+  toast('Generating offline update pack...', 'info');
+  window.open(`${API}/offline-pack`, '_blank');
+  setTimeout(() => toast('Offline .stigpack downloaded. Transfer to air-gapped systems via USB/DVD.', 'success'), 2000);
 }
 
 // ---------------------------------------------------------------------------
