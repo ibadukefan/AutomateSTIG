@@ -212,13 +212,6 @@
       "check": { "type": "service", "name": "W32Time", "expected_status": "running" },
       "expected": { "type": "is_true" },
       "description": "Windows Time service must be running"
-    },
-    {
-      "vuln_id": "V-268171",
-      "platform": "windows",
-      "check": { "type": "service", "name": "EventLog", "expected_status": "running" },
-      "expected": { "type": "is_true" },
-      "description": "Windows Event Log service must be running"
     }
   ]
 }

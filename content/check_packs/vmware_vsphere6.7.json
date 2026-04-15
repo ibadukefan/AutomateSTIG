@@ -1,0 +1,147 @@
+{
+  "stig_id": "VMware_vSphere_6.7_ESXi_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-239258",
+      "platform": "linux",
+      "check": { "type": "command", "command": "esxcli system settings advanced list -o /Security/AccountLockFailures", "pattern": "Int Value:\\s+[1-5]$", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 account lockout must be set to 5 or fewer failed attempts"
+    },
+    {
+      "vuln_id": "V-239259",
+      "platform": "linux",
+      "check": { "type": "command", "command": "esxcli system settings advanced list -o /Security/AccountUnlockTime", "pattern": "Int Value:\\s+900", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 account unlock time must be at least 900 seconds"
+    },
+    {
+      "vuln_id": "V-239260",
+      "platform": "linux",
+      "check": { "type": "command", "command": "esxcli system settings advanced list -o /Security/PasswordQualityControl", "pattern": "retry=3 min=disabled,disabled,disabled,disabled,15", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 password complexity must meet requirements"
+    },
+    {
+      "vuln_id": "V-239261",
+      "platform": "linux",
+      "check": { "type": "command", "command": "vim-cmd hostsvc/advopt/view Config.HostAgent.plugins.solo.enableMob", "pattern": "false", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 Managed Object Browser must be disabled"
+    },
+    {
+      "vuln_id": "V-239262",
+      "platform": "linux",
+      "check": { "type": "command", "command": "esxcli system settings advanced list -o /UserVars/ESXiShellTimeOut", "pattern": "Int Value:\\s+[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 shell idle timeout must be configured"
+    },
+    {
+      "vuln_id": "V-239263",
+      "platform": "linux",
+      "check": { "type": "command", "command": "esxcli system settings advanced list -o /UserVars/ESXiShellInteractiveTimeOut", "pattern": "Int Value:\\s+[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 shell interactive timeout must be configured"
+    },
+    {
+      "vuln_id": "V-239264",
+      "platform": "linux",
+      "check": { "type": "command", "command": "esxcli system settings advanced list -o /UserVars/SuppressShellWarning", "pattern": "Int Value:\\s+0", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 must not suppress shell warning"
+    },
+    {
+      "vuln_id": "V-239265",
+      "platform": "linux",
+      "check": { "type": "command", "command": "esxcli network firewall get", "pattern": "Enabled:\\s+true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 host firewall must be enabled"
+    },
+    {
+      "vuln_id": "V-239266",
+      "platform": "linux",
+      "check": { "type": "command", "command": "esxcli network firewall get", "pattern": "Default Action:\\s+DROP", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 host firewall default policy must be set to DROP"
+    },
+    {
+      "vuln_id": "V-239267",
+      "platform": "linux",
+      "check": { "type": "command", "command": "esxcli system ntp get", "pattern": "Enabled:\\s+true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 NTP service must be enabled"
+    },
+    {
+      "vuln_id": "V-239268",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/ntp.conf", "pattern": "server\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 must configure NTP with an authoritative time source"
+    },
+    {
+      "vuln_id": "V-239269",
+      "platform": "linux",
+      "check": { "type": "command", "command": "esxcli system settings advanced list -o /Syslog/global/logHost", "pattern": "String Value:\\s+.+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 must configure a remote syslog host"
+    },
+    {
+      "vuln_id": "V-239270",
+      "platform": "linux",
+      "check": { "type": "command", "command": "esxcli system syslog config get", "pattern": "Remote Host:", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 syslog must have a remote host configured"
+    },
+    {
+      "vuln_id": "V-239271",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "PermitRootLogin\\s+no", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 SSH must not permit root login directly"
+    },
+    {
+      "vuln_id": "V-239272",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "Banner\\s+/etc/issue", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 SSH must display a login banner"
+    },
+    {
+      "vuln_id": "V-239273",
+      "platform": "linux",
+      "check": { "type": "command", "command": "vim-cmd hostsvc/advopt/view Config.Etc.motd", "pattern": ".{10,}", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 must display a DoD-approved login banner (MOTD)"
+    },
+    {
+      "vuln_id": "V-239274",
+      "platform": "linux",
+      "check": { "type": "command", "command": "esxcli system settings advanced list -o /DCUI/Access", "pattern": "String Value:\\s+root$", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 DCUI access must be restricted to root only"
+    },
+    {
+      "vuln_id": "V-239275",
+      "platform": "linux",
+      "check": { "type": "command", "command": "esxcli software acceptance get", "pattern": "PartnerSupported|VMwareCertified|VMwareAccepted", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 software acceptance level must be PartnerSupported or higher"
+    },
+    {
+      "vuln_id": "V-239276",
+      "platform": "linux",
+      "check": { "type": "command", "command": "esxcli system settings advanced list -o /Mem/ShareForceSalting", "pattern": "Int Value:\\s+2", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 must enable TPS salting to prevent inter-VM memory page sharing"
+    },
+    {
+      "vuln_id": "V-239277",
+      "platform": "linux",
+      "check": { "type": "command", "command": "esxcli system settings advanced list -o /Net/BlockGuestBPDU", "pattern": "Int Value:\\s+1", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "ESXi 6.7 must block guest BPDU transmissions"
+    }
+  ]
+}

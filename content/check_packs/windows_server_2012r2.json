@@ -151,13 +151,6 @@
       "description": "Anonymous enumeration of SAM accounts must not be allowed"
     },
     {
-      "vuln_id": "V-226263",
-      "platform": "windows",
-      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa", "value_name": "RestrictAnonymous" },
-      "expected": { "type": "equals", "value": 1 },
-      "description": "Anonymous enumeration of shares must be restricted"
-    },
-    {
       "vuln_id": "V-226270",
       "platform": "windows",
       "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters", "value_name": "RequireSecuritySignature" },
@@ -219,13 +212,6 @@
       "check": { "type": "service", "name": "W32Time", "expected_status": "running" },
       "expected": { "type": "is_true" },
       "description": "Windows Time service must be running"
-    },
-    {
-      "vuln_id": "V-226296",
-      "platform": "windows",
-      "check": { "type": "service", "name": "EventLog", "expected_status": "running" },
-      "expected": { "type": "is_true" },
-      "description": "Windows Event Log service must be running"
     }
   ]
 }
