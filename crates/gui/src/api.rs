@@ -70,6 +70,13 @@ pub fn routes() -> Router<AppState> {
 // Response types
 // ---------------------------------------------------------------------------
 
+/// Sanitize a filename for Content-Disposition headers.
+fn sanitize_filename(s: &str) -> String {
+    s.chars()
+        .map(|c| if c.is_alphanumeric() || c == '_' || c == '-' || c == '.' { c } else { '_' })
+        .collect()
+}
+
 fn api_ok(data: impl Serialize) -> Json<serde_json::Value> {
     Json(serde_json::json!({
         "success": true,
@@ -1118,6 +1125,13 @@ async fn evaluate_batch(
     State(state): State<AppState>,
     Json(req): Json<BatchEvaluateRequest>,
 ) -> Json<serde_json::Value> {
+    if req.hostnames.len() > 100 {
+        return api_error("Batch limit exceeded: maximum 100 hostnames per request");
+    }
+    if req.hostnames.iter().any(|h| h.len() > 255) {
+        return api_error("Hostname exceeds maximum length of 255 characters");
+    }
+
     let library = match state.library() {
         Ok(l) => l,
         Err(e) => return api_error(&e.to_string()),
@@ -1564,7 +1578,7 @@ async fn export_ckl(
     let db = state.db();
     match db.load_checklist(&id) {
         Ok(cl) => {
-            let filename = format!("{}_{}.ckl", cl.asset.hostname, cl.stig_info.stig_id);
+            let filename = sanitize_filename(&format!("{}_{}.ckl", cl.asset.hostname, cl.stig_info.stig_id));
             match ckl::write_ckl(&cl) {
                 Ok(xml) => (
                     [
@@ -1599,7 +1613,7 @@ async fn export_cklb(
     let db = state.db();
     match db.load_checklist(&id) {
         Ok(cl) => {
-            let filename = format!("{}_{}.cklb", cl.asset.hostname, cl.stig_info.stig_id);
+            let filename = sanitize_filename(&format!("{}_{}.cklb", cl.asset.hostname, cl.stig_info.stig_id));
             match cklb::write_cklb(&cl) {
                 Ok(json) => (
                     [

@@ -18,30 +18,6 @@ pub fn parse_sysctl_output(output: &str) -> HashMap<String, String> {
     results
 }
 
-/// Parse `ls -la` output for file permissions.
-pub fn parse_ls_permissions(output: &str, _file_path: &str) -> FilePermData {
-    for line in output.lines() {
-        let parts: Vec<&str> = line.split_whitespace().collect();
-        if parts.len() >= 9 {
-            let mode_str = parts[0];
-            let owner = parts[2].to_string();
-            let group = parts[3].to_string();
-
-            return FilePermData {
-                owner: Some(owner),
-                group: Some(group),
-                mode: Some(parse_symbolic_to_octal(mode_str)),
-                exists: true,
-            };
-        }
-    }
-
-    FilePermData {
-        exists: false,
-        ..Default::default()
-    }
-}
-
 /// Parse `stat -c '%a %U %G'` output.
 pub fn parse_stat_output(output: &str) -> FilePermData {
     let parts: Vec<&str> = output.split_whitespace().collect();
@@ -131,6 +107,7 @@ pub fn parse_dpkg_packages(output: &str) -> HashMap<String, bool> {
 }
 
 /// Convert symbolic permissions (e.g., "-rw-r-----") to octal (e.g., "0640").
+#[cfg(test)]
 fn parse_symbolic_to_octal(symbolic: &str) -> String {
     if symbolic.len() < 10 {
         return symbolic.to_string();
@@ -144,6 +121,7 @@ fn parse_symbolic_to_octal(symbolic: &str) -> String {
     format!("0{}{}{}", owner, group, other)
 }
 
+#[cfg(test)]
 fn perm_bits(r: char, w: char, x: char) -> u8 {
     let mut bits = 0u8;
     if r != '-' { bits += 4; }

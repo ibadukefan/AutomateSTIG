@@ -37,11 +37,6 @@ pub fn parse_reg_query_output(output: &str) -> HashMap<String, serde_json::Value
     results
 }
 
-/// Parse PowerShell Get-ItemProperty JSON output.
-pub fn parse_powershell_registry(json: &str) -> HashMap<String, serde_json::Value> {
-    serde_json::from_str(json).unwrap_or_default()
-}
-
 fn parse_reg_value(reg_type: &str, data: &str) -> serde_json::Value {
     match reg_type {
         "REG_DWORD" => {

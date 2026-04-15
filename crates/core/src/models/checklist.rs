@@ -157,43 +157,6 @@ impl std::fmt::Display for Classification {
     }
 }
 
-/// A collection of checklists, typically for a single assessment.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ChecklistCollection {
-    /// Collection name/label.
-    pub name: String,
-
-    /// Description.
-    pub description: Option<String>,
-
-    /// All checklists in the collection.
-    pub checklists: Vec<Checklist>,
-
-    /// When this collection was created.
-    pub created_at: DateTime<Utc>,
-}
-
-impl ChecklistCollection {
-    pub fn new(name: &str) -> Self {
-        Self {
-            name: name.to_string(),
-            description: None,
-            checklists: Vec::new(),
-            created_at: Utc::now(),
-        }
-    }
-
-    /// Overall summary across all checklists.
-    pub fn overall_summary(&self) -> FindingSummary {
-        let all_findings: Vec<Finding> = self
-            .checklists
-            .iter()
-            .flat_map(|c| c.findings.clone())
-            .collect();
-        FindingSummary::from_findings(&all_findings)
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -66,20 +66,6 @@ function confirm(title, message) {
 }
 
 // ---------------------------------------------------------------------------
-// Loading Helpers
-// ---------------------------------------------------------------------------
-function showLoading(containerId, msg = 'Loading...') {
-  const el = document.getElementById(containerId);
-  if (el) {
-    el.innerHTML = '';
-    el.appendChild(h('div', { className: 'loading-overlay' },
-      h('span', { className: 'spinner' }),
-      h('span', {}, msg),
-    ));
-  }
-}
-
-// ---------------------------------------------------------------------------
 // Navigation
 // ---------------------------------------------------------------------------
 document.querySelectorAll('.nav-item').forEach(item => {
@@ -921,11 +907,11 @@ function makeDropZone(id, text, hint, onFile) {
 // Export Helpers
 // ---------------------------------------------------------------------------
 function exportCkl(id) {
-  window.open(`${API}/export/ckl/${id}`, '_blank');
+  window.open(`${API}/export/ckl/${id}?token=${AUTH_TOKEN}`, '_blank');
 }
 
 function exportCklb(id) {
-  window.open(`${API}/export/cklb/${id}`, '_blank');
+  window.open(`${API}/export/cklb/${id}?token=${AUTH_TOKEN}`, '_blank');
 }
 
 // ---------------------------------------------------------------------------
@@ -1254,7 +1240,7 @@ async function fetchSingleStig(stig) {
 
 function downloadOfflinePack() {
   toast('Generating offline update pack...', 'info');
-  window.open(`${API}/offline-pack`, '_blank');
+  window.open(`${API}/offline-pack?token=${AUTH_TOKEN}`, '_blank');
   setTimeout(() => toast('Offline .stigpack downloaded. Transfer to air-gapped systems via USB/DVD.', 'success'), 2000);
 }
 

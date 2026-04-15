@@ -234,59 +234,6 @@ impl PluginRegistry {
     }
 }
 
-/// Cloud provider types for cloud STIG checks.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum CloudProvider {
-    Aws,
-    Azure,
-    Gcp,
-}
-
-/// Cloud resource check definition.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CloudCheck {
-    /// Vuln ID.
-    pub vuln_id: String,
-
-    /// Cloud provider.
-    pub provider: CloudProvider,
-
-    /// Resource type (e.g., "ec2_instance", "s3_bucket", "security_group").
-    pub resource_type: String,
-
-    /// Property to check.
-    pub property: String,
-
-    /// Expected value or condition.
-    pub expected: crate::checks::ExpectedResult,
-
-    /// Description.
-    pub description: Option<String>,
-}
-
-/// Kubernetes check definition.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct K8sCheck {
-    /// Vuln ID.
-    pub vuln_id: String,
-
-    /// Resource kind (e.g., "Pod", "Deployment", "NetworkPolicy").
-    pub kind: String,
-
-    /// Namespace (None = all namespaces).
-    pub namespace: Option<String>,
-
-    /// JSONPath expression to check.
-    pub jsonpath: String,
-
-    /// Expected value.
-    pub expected: crate::checks::ExpectedResult,
-
-    /// Description.
-    pub description: Option<String>,
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

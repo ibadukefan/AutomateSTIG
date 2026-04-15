@@ -58,19 +58,6 @@ pub fn detail(key: &str, value: &str) {
     eprintln!("    {} {}", style(format!("{}:", key)).dim(), value);
 }
 
-/// Summary table data.
-pub struct SummaryData {
-    pub total: usize,
-    pub open: usize,
-    pub naf: usize,
-    pub na: usize,
-    pub nr: usize,
-    pub cat_i: usize,
-    pub cat_ii: usize,
-    pub cat_iii: usize,
-    pub compliance_pct: f64,
-}
-
 /// Print a finding summary table.
 #[allow(clippy::too_many_arguments)]
 pub fn print_summary_table(

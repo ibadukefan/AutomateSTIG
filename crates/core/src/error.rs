@@ -9,17 +9,8 @@ pub enum Error {
     #[error("STIG not found: {0}")]
     StigNotFound(String),
 
-    #[error("Rule not found: {vuln_id}")]
-    RuleNotFound { vuln_id: String },
-
-    #[error("Invalid checklist: {0}")]
-    InvalidChecklist(String),
-
     #[error("Parse error: {format} - {message}")]
     ParseError { format: String, message: String },
-
-    #[error("Validation error: {0}")]
-    ValidationError(String),
 
     #[error("Answer file error: {0}")]
     AnswerFileError(String),

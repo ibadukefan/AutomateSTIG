@@ -12,7 +12,7 @@ use russh::client;
 use russh_keys::key;
 use serde::{Deserialize, Serialize};
 /// SSH connection configuration.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct SshConfig {
     pub host: String,
     pub port: u16,
@@ -22,7 +22,7 @@ pub struct SshConfig {
 }
 
 /// SSH authentication method.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum SshAuth {
     Password { password: String },
@@ -118,17 +118,19 @@ async fn execute_single_command(
     let mut stdout = String::new();
     let mut stderr = String::new();
     let mut exit_code = None;
+    const MAX_OUTPUT: usize = 50 * 1024 * 1024; // 50 MB cap
 
     // Read channel output.
     loop {
         let msg = channel.wait().await;
         match msg {
             Some(russh::ChannelMsg::Data { data }) => {
-                stdout.push_str(&String::from_utf8_lossy(&data));
+                if stdout.len() < MAX_OUTPUT {
+                    stdout.push_str(&String::from_utf8_lossy(&data));
+                }
             }
             Some(russh::ChannelMsg::ExtendedData { data, ext }) => {
-                if ext == 1 {
-                    // stderr
+                if ext == 1 && stderr.len() < MAX_OUTPUT {
                     stderr.push_str(&String::from_utf8_lossy(&data));
                 }
             }

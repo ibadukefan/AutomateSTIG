@@ -10,7 +10,8 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 
 /// WinRM connection configuration.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+/// WinRM connection configuration. Debug intentionally omitted to prevent password logging.
+#[derive(Clone, Serialize, Deserialize)]
 pub struct WinrmConfig {
     pub host: String,
     pub port: u16,
