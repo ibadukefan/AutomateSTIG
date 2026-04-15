@@ -1,0 +1,112 @@
+{
+  "stig_id": "DotNet_Framework_4_STIG",
+  "platform": "windows",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-225223",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\.NETFramework", "value_name": "AllowStrongNameBypass" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": ".NET Framework must not allow strong name bypass"
+    },
+    {
+      "vuln_id": "V-225224",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\.NETFramework", "value_name": "SchUseStrongCrypto" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": ".NET Framework must use strong cryptography"
+    },
+    {
+      "vuln_id": "V-225225",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Wow6432Node\\Microsoft\\.NETFramework", "value_name": "SchUseStrongCrypto" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": ".NET Framework 32-bit must use strong cryptography"
+    },
+    {
+      "vuln_id": "V-225226",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\.NETFramework\\v4.0.30319", "value_name": "SystemDefaultTlsVersions" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": ".NET Framework must use system default TLS versions"
+    },
+    {
+      "vuln_id": "V-225227",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Wow6432Node\\Microsoft\\.NETFramework\\v4.0.30319", "value_name": "SystemDefaultTlsVersions" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": ".NET Framework 32-bit must use system default TLS versions"
+    },
+    {
+      "vuln_id": "V-225230",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\.NETFramework\\Security\\TrustManager\\PromptingLevel", "value_name": "MyComputer" },
+      "expected": { "type": "equals", "value": "Disabled" },
+      "description": "CAS policy must disable prompting for MyComputer zone"
+    },
+    {
+      "vuln_id": "V-225231",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\.NETFramework\\Security\\TrustManager\\PromptingLevel", "value_name": "LocalIntranet" },
+      "expected": { "type": "equals", "value": "Disabled" },
+      "description": "CAS policy must disable prompting for LocalIntranet zone"
+    },
+    {
+      "vuln_id": "V-225232",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\.NETFramework\\Security\\TrustManager\\PromptingLevel", "value_name": "Internet" },
+      "expected": { "type": "equals", "value": "Disabled" },
+      "description": "CAS policy must disable prompting for Internet zone"
+    },
+    {
+      "vuln_id": "V-225233",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\.NETFramework\\Security\\TrustManager\\PromptingLevel", "value_name": "TrustedSites" },
+      "expected": { "type": "equals", "value": "Disabled" },
+      "description": "CAS policy must disable prompting for TrustedSites zone"
+    },
+    {
+      "vuln_id": "V-225234",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\.NETFramework\\Security\\TrustManager\\PromptingLevel", "value_name": "UntrustedSites" },
+      "expected": { "type": "equals", "value": "Disabled" },
+      "description": "CAS policy must disable prompting for UntrustedSites zone"
+    },
+    {
+      "vuln_id": "V-225240",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\FipsAlgorithmPolicy", "value_name": "Enabled" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "FIPS compliant algorithms must be enabled for .NET cryptographic operations"
+    },
+    {
+      "vuln_id": "V-225241",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application", "value_name": "MaxSize" },
+      "expected": { "type": "greater_or_equal", "value": 32768 },
+      "description": "Application event log size must be at least 32768 KB for .NET event tracing"
+    },
+    {
+      "vuln_id": "V-225242",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security", "value_name": "MaxSize" },
+      "expected": { "type": "greater_or_equal", "value": 196608 },
+      "description": "Security event log size must be at least 196608 KB for .NET event tracing"
+    },
+    {
+      "vuln_id": "V-225243",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System", "value_name": "MaxSize" },
+      "expected": { "type": "greater_or_equal", "value": 32768 },
+      "description": "System event log size must be at least 32768 KB for .NET event tracing"
+    },
+    {
+      "vuln_id": "V-225250",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\.NETFramework\\v4.0.30319", "value_name": "AspNetEnforceViewStateMac" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": ".NET must enforce ViewState MAC validation for ASP.NET"
+    }
+  ]
+}
