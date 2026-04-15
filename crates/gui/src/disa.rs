@@ -273,16 +273,26 @@ fn import_zip_bytes(data: &[u8], state: &AppState) -> Result<FetchResult, String
 
                 match library.add_benchmark(&benchmark) {
                     Ok(()) => {
+                        // Auto-generate check pack from check-content.
+                        let conv = automatestig_core::converter::convert_benchmark(&benchmark);
+                        if conv.automated > 0 {
+                            let packs_dir = library.root().join("auto_check_packs");
+                            let _ = std::fs::create_dir_all(&packs_dir);
+                            if let Ok(json) = automatestig_core::converter::check_pack_to_json(&conv.check_pack) {
+                                let _ = std::fs::write(packs_dir.join(format!("{}.json", id)), &json);
+                            }
+                        }
+
                         if is_update {
                             result.updated_benchmarks += 1;
                             result
                                 .details
-                                .push(format!("Updated: {} {} ({} rules)", id, ver, rules));
+                                .push(format!("Updated: {} {} ({} rules, {} auto-checks)", id, ver, rules, conv.automated));
                         } else {
                             result.new_benchmarks += 1;
                             result
                                 .details
-                                .push(format!("New: {} {} ({} rules)", id, ver, rules));
+                                .push(format!("New: {} {} ({} rules, {} auto-checks)", id, ver, rules, conv.automated));
                         }
                     }
                     Err(e) => {

@@ -20,5 +20,6 @@ pub mod checks;
 pub mod remote;
 pub mod agent;
 pub mod plugins;
+pub mod converter;
 
 pub use error::{Error, Result};

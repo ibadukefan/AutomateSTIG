@@ -32,6 +32,8 @@ pub fn routes() -> Router<AppState> {
         .route("/checklists/import", post(import_checklist))
         // Evaluate
         .route("/evaluate", post(evaluate))
+        // Auto-generate check packs from imported benchmarks
+        .route("/library/generate-checks/{id}", post(generate_checks))
         // DISA content fetching
         .route("/disa/available", get(disa_list_available))
         .route("/disa/fetch", post(disa_fetch))
@@ -273,7 +275,18 @@ async fn import_disa(
                                         );
                                         match library.add_benchmark(&benchmark) {
                                             Ok(()) => {
-                                                details.push(format!("Imported: {}", info));
+                                                // Auto-generate check pack from check-content text.
+                                                let conv = automatestig_core::converter::convert_benchmark(&benchmark);
+                                                if conv.automated > 0 {
+                                                    let packs_dir = library.root().join("auto_check_packs");
+                                                    let _ = std::fs::create_dir_all(&packs_dir);
+                                                    if let Ok(json) = automatestig_core::converter::check_pack_to_json(&conv.check_pack) {
+                                                        let _ = std::fs::write(packs_dir.join(format!("{}.json", benchmark.id)), &json);
+                                                    }
+                                                    details.push(format!("Imported: {} (auto-generated {} checks)", info, conv.automated));
+                                                } else {
+                                                    details.push(format!("Imported: {}", info));
+                                                }
                                                 imported += 1;
                                             }
                                             Err(e) => {
@@ -307,7 +320,17 @@ async fn import_disa(
                     );
                     match library.add_benchmark(&benchmark) {
                         Ok(()) => {
-                            details.push(format!("Imported: {}", info));
+                            let conv = automatestig_core::converter::convert_benchmark(&benchmark);
+                            if conv.automated > 0 {
+                                let packs_dir = library.root().join("auto_check_packs");
+                                let _ = std::fs::create_dir_all(&packs_dir);
+                                if let Ok(json) = automatestig_core::converter::check_pack_to_json(&conv.check_pack) {
+                                    let _ = std::fs::write(packs_dir.join(format!("{}.json", benchmark.id)), &json);
+                                }
+                                details.push(format!("Imported: {} (auto-generated {} checks)", info, conv.automated));
+                            } else {
+                                details.push(format!("Imported: {}", info));
+                            }
                             imported += 1;
                         }
                         Err(e) => {
@@ -1032,6 +1055,56 @@ fn load_stigman_config(db: &automatestig_storage::Database) -> crate::stigman::S
 }
 
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Auto-generate Check Packs from Benchmarks
+// ---------------------------------------------------------------------------
+
+async fn generate_checks(
+    State(state): State<AppState>,
+    axum::extract::Path(id): axum::extract::Path<String>,
+) -> Json<serde_json::Value> {
+    let library = match state.library() {
+        Ok(l) => l,
+        Err(e) => return api_error(&e.to_string()),
+    };
+
+    let benchmark = match library.load_benchmark(&id) {
+        Ok(b) => b,
+        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
+    };
+
+    let result = automatestig_core::converter::convert_benchmark(&benchmark);
+
+    // Save the generated check pack to disk.
+    let packs_dir = state.inner.library_path.join("auto_check_packs");
+    let _ = std::fs::create_dir_all(&packs_dir);
+
+    let filename = format!("{}.json", id);
+    let pack_path = packs_dir.join(&filename);
+
+    match automatestig_core::converter::check_pack_to_json(&result.check_pack) {
+        Ok(json) => {
+            if let Err(e) = std::fs::write(&pack_path, &json) {
+                return api_error(&format!("Failed to save check pack: {}", e));
+            }
+        }
+        Err(e) => return api_error(&format!("Serialization error: {}", e)),
+    }
+
+    api_ok(serde_json::json!({
+        "stig_id": id,
+        "automated": result.automated,
+        "manual": result.manual,
+        "total_rules": result.automated + result.manual,
+        "automation_rate": format!("{:.0}%", if result.automated + result.manual > 0 {
+            result.automated as f64 / (result.automated + result.manual) as f64 * 100.0
+        } else { 0.0 }),
+        "pack_path": pack_path.display().to_string(),
+        "log": result.log,
+    }))
+}
+
+// ---------------------------------------------------------------------------
 // Batch Evaluation
 // ---------------------------------------------------------------------------
 
@@ -1421,14 +1494,17 @@ fn evaluate_with_system_data(
         Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
     };
 
-    // Load check packs from plugins directory.
+    // Load check packs from all sources: plugins, hand-written packs, and auto-generated.
     let mut plugin_registry = automatestig_core::plugins::PluginRegistry::new();
     let plugins_dir = state.inner.library_path.join("../plugins");
     let _ = plugin_registry.load_from_directory(&plugins_dir);
 
-    // Also try loading from the content/check_packs directory.
     let content_dir = std::path::Path::new("content/check_packs");
     let _ = plugin_registry.load_from_directory(content_dir);
+
+    // Load auto-generated check packs from the converter.
+    let auto_dir = state.inner.library_path.join("auto_check_packs");
+    let _ = plugin_registry.load_from_directory(&auto_dir);
 
     // Execute checks.
     let check_results: Vec<automatestig_core::checks::CheckResult> = plugin_registry
