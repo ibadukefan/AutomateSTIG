@@ -1,0 +1,34 @@
+[package]
+name = "automatestig-gui"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "AutomateSTIG Desktop GUI — STIG evaluation and compliance automation"
+
+[[bin]]
+name = "automatestig-gui"
+path = "src/main.rs"
+
+[dependencies]
+automatestig-core = { workspace = true }
+automatestig-parsers = { workspace = true }
+automatestig-storage = { workspace = true }
+automatestig-stigpack = { workspace = true }
+automatestig-remediation = { workspace = true }
+automatestig-integrations = { workspace = true }
+axum = { workspace = true }
+tokio = { workspace = true }
+tower-http = { workspace = true }
+rust-embed = { workspace = true }
+mime_guess = { workspace = true }
+open = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+zip = { workspace = true }
+tempfile = { workspace = true }
