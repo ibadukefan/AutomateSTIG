@@ -1,0 +1,32 @@
+{
+  "stig_id": "Ubuntu_18.04_LTS_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    { "vuln_id": "V-219147", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "PermitRootLogin\\s+no", "is_regex": true }, "expected": { "type": "is_true" }, "description": "Ubuntu 18.04 SSH must not allow direct root login" },
+    { "vuln_id": "V-219148", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "PermitEmptyPasswords\\s+no", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH must not allow empty passwords" },
+    { "vuln_id": "V-219149", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "ClientAliveInterval\\s+[1-9]", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH ClientAliveInterval must be set" },
+    { "vuln_id": "V-219150", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "ClientAliveCountMax\\s+[01]$", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH ClientAliveCountMax must be 1 or less" },
+    { "vuln_id": "V-219151", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "Banner\\s+/etc/issue", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH must display a login banner" },
+    { "vuln_id": "V-219152", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "X11Forwarding\\s+no", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH X11 forwarding must be disabled" },
+    { "vuln_id": "V-219153", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "UsePAM\\s+yes", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH must use PAM" },
+    { "vuln_id": "V-219160", "platform": "linux", "check": { "type": "sysctl", "key": "net.ipv4.ip_forward" }, "expected": { "type": "equals", "value": "0" }, "description": "IP forwarding must be disabled" },
+    { "vuln_id": "V-219161", "platform": "linux", "check": { "type": "sysctl", "key": "net.ipv4.conf.all.accept_source_route" }, "expected": { "type": "equals", "value": "0" }, "description": "Source-routed packets must not be accepted" },
+    { "vuln_id": "V-219162", "platform": "linux", "check": { "type": "sysctl", "key": "net.ipv4.conf.all.accept_redirects" }, "expected": { "type": "equals", "value": "0" }, "description": "ICMP redirects must not be accepted" },
+    { "vuln_id": "V-219163", "platform": "linux", "check": { "type": "sysctl", "key": "net.ipv4.conf.all.send_redirects" }, "expected": { "type": "equals", "value": "0" }, "description": "System must not send ICMP redirects" },
+    { "vuln_id": "V-219164", "platform": "linux", "check": { "type": "sysctl", "key": "net.ipv4.tcp_syncookies" }, "expected": { "type": "equals", "value": "1" }, "description": "TCP SYN cookies must be enabled" },
+    { "vuln_id": "V-219165", "platform": "linux", "check": { "type": "sysctl", "key": "kernel.randomize_va_space" }, "expected": { "type": "equals", "value": "2" }, "description": "ASLR must be fully enabled" },
+    { "vuln_id": "V-219166", "platform": "linux", "check": { "type": "sysctl", "key": "kernel.dmesg_restrict" }, "expected": { "type": "equals", "value": "1" }, "description": "Kernel message buffer must be restricted" },
+    { "vuln_id": "V-219170", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/shadow", "owner": "root", "group": "shadow", "mode": "0640" }, "expected": { "type": "is_true" }, "description": "/etc/shadow must be mode 0640, owned by root:shadow" },
+    { "vuln_id": "V-219171", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/passwd", "owner": "root", "group": null, "mode": "0644" }, "expected": { "type": "is_true" }, "description": "/etc/passwd must be mode 0644 and owned by root" },
+    { "vuln_id": "V-219172", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/group", "owner": "root", "group": null, "mode": "0644" }, "expected": { "type": "is_true" }, "description": "/etc/group must be mode 0644 and owned by root" },
+    { "vuln_id": "V-219173", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/ssh/sshd_config", "owner": "root", "group": null, "mode": "0600" }, "expected": { "type": "is_true" }, "description": "sshd_config must be mode 0600 and owned by root" },
+    { "vuln_id": "V-219180", "platform": "linux", "check": { "type": "package", "name": "aide", "should_be_installed": true }, "expected": { "type": "is_true" }, "description": "AIDE must be installed for file integrity checking" },
+    { "vuln_id": "V-219181", "platform": "linux", "check": { "type": "package", "name": "auditd", "should_be_installed": true }, "expected": { "type": "is_true" }, "description": "Audit package must be installed" },
+    { "vuln_id": "V-219182", "platform": "linux", "check": { "type": "package", "name": "ufw", "should_be_installed": true }, "expected": { "type": "is_true" }, "description": "UFW must be installed" },
+    { "vuln_id": "V-219183", "platform": "linux", "check": { "type": "package", "name": "telnetd", "should_be_installed": false }, "expected": { "type": "is_true" }, "description": "Telnet server must not be installed" },
+    { "vuln_id": "V-219190", "platform": "linux", "check": { "type": "service", "name": "apparmor", "expected_status": "running" }, "expected": { "type": "is_true" }, "description": "AppArmor must be active" },
+    { "vuln_id": "V-219191", "platform": "linux", "check": { "type": "service", "name": "auditd", "expected_status": "running" }, "expected": { "type": "is_true" }, "description": "Audit daemon must be running" },
+    { "vuln_id": "V-219200", "platform": "linux", "check": { "type": "file_content", "path": "/etc/login.defs", "pattern": "PASS_MAX_DAYS\\s+60", "is_regex": true }, "expected": { "type": "is_true" }, "description": "Maximum password age must be 60 days or less" }
+  ]
+}

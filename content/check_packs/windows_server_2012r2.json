@@ -1,0 +1,231 @@
+{
+  "stig_id": "Windows_Server_2012_R2_STIG",
+  "platform": "windows",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-226232",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.2\\Client", "value_name": "Enabled" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Windows Server 2012 R2 must use TLS 1.2 (client-side enabled)"
+    },
+    {
+      "vuln_id": "V-226233",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.2\\Server", "value_name": "Enabled" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Windows Server 2012 R2 must use TLS 1.2 (server-side enabled)"
+    },
+    {
+      "vuln_id": "V-226234",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\SSL 2.0\\Server", "value_name": "Enabled" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "SSL 2.0 must be disabled on the server"
+    },
+    {
+      "vuln_id": "V-226235",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\SSL 3.0\\Server", "value_name": "Enabled" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "SSL 3.0 must be disabled on the server"
+    },
+    {
+      "vuln_id": "V-226236",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.0\\Server", "value_name": "Enabled" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "TLS 1.0 must be disabled"
+    },
+    {
+      "vuln_id": "V-226237",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.1\\Server", "value_name": "Enabled" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "TLS 1.1 must be disabled"
+    },
+    {
+      "vuln_id": "V-226238",
+      "platform": "windows",
+      "check": { "type": "security_policy", "section": "System Access", "key": "MinimumPasswordLength" },
+      "expected": { "type": "greater_or_equal", "value": 14 },
+      "description": "Minimum password length must be at least 14 characters"
+    },
+    {
+      "vuln_id": "V-226239",
+      "platform": "windows",
+      "check": { "type": "security_policy", "section": "System Access", "key": "PasswordComplexity" },
+      "expected": { "type": "equals", "value": "1" },
+      "description": "Password complexity requirements must be enabled"
+    },
+    {
+      "vuln_id": "V-226240",
+      "platform": "windows",
+      "check": { "type": "security_policy", "section": "System Access", "key": "MinimumPasswordAge" },
+      "expected": { "type": "greater_or_equal", "value": 1 },
+      "description": "Minimum password age must be at least 1 day"
+    },
+    {
+      "vuln_id": "V-226241",
+      "platform": "windows",
+      "check": { "type": "security_policy", "section": "System Access", "key": "MaximumPasswordAge" },
+      "expected": { "type": "less_or_equal", "value": 60 },
+      "description": "Maximum password age must not exceed 60 days"
+    },
+    {
+      "vuln_id": "V-226242",
+      "platform": "windows",
+      "check": { "type": "security_policy", "section": "System Access", "key": "PasswordHistorySize" },
+      "expected": { "type": "greater_or_equal", "value": 24 },
+      "description": "Password history must enforce 24 passwords remembered"
+    },
+    {
+      "vuln_id": "V-226243",
+      "platform": "windows",
+      "check": { "type": "security_policy", "section": "System Access", "key": "LockoutBadCount" },
+      "expected": { "type": "less_or_equal", "value": 3 },
+      "description": "Account lockout threshold must be 3 or fewer invalid attempts"
+    },
+    {
+      "vuln_id": "V-226244",
+      "platform": "windows",
+      "check": { "type": "security_policy", "section": "System Access", "key": "ClearTextPassword" },
+      "expected": { "type": "equals", "value": "0" },
+      "description": "Reversible password encryption must be disabled"
+    },
+    {
+      "vuln_id": "V-226250",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "value_name": "EnableLUA" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "User Account Control must be enabled"
+    },
+    {
+      "vuln_id": "V-226251",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "value_name": "ConsentPromptBehaviorAdmin" },
+      "expected": { "type": "equals", "value": 2 },
+      "description": "UAC must prompt for consent on the secure desktop for admins"
+    },
+    {
+      "vuln_id": "V-226252",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "value_name": "ConsentPromptBehaviorUser" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "UAC must auto-deny elevation requests for standard users"
+    },
+    {
+      "vuln_id": "V-226253",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "value_name": "PromptOnSecureDesktop" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "UAC must switch to secure desktop when prompting for elevation"
+    },
+    {
+      "vuln_id": "V-226254",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "value_name": "FilterAdministratorToken" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "UAC must apply admin approval mode to the built-in Administrator"
+    },
+    {
+      "vuln_id": "V-226260",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa", "value_name": "LmCompatibilityLevel" },
+      "expected": { "type": "equals", "value": 5 },
+      "description": "LAN Manager authentication must be set to NTLMv2 only, refuse LM and NTLM"
+    },
+    {
+      "vuln_id": "V-226261",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa", "value_name": "NoLMHash" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "LAN Manager hash value must not be stored"
+    },
+    {
+      "vuln_id": "V-226262",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa", "value_name": "RestrictAnonymousSAM" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Anonymous enumeration of SAM accounts must not be allowed"
+    },
+    {
+      "vuln_id": "V-226263",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa", "value_name": "RestrictAnonymous" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "Anonymous enumeration of shares must be restricted"
+    },
+    {
+      "vuln_id": "V-226270",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters", "value_name": "RequireSecuritySignature" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "SMB server must digitally sign communications"
+    },
+    {
+      "vuln_id": "V-226271",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters", "value_name": "EnableSecuritySignature" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "SMB server signing must be enabled"
+    },
+    {
+      "vuln_id": "V-226272",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters", "value_name": "RequireSecuritySignature" },
+      "expected": { "type": "equals", "value": 1 },
+      "description": "SMB client must digitally sign communications"
+    },
+    {
+      "vuln_id": "V-226280",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service", "value_name": "AllowBasic" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "WinRM service must not use Basic authentication"
+    },
+    {
+      "vuln_id": "V-226281",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client", "value_name": "AllowBasic" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "WinRM client must not use Basic authentication"
+    },
+    {
+      "vuln_id": "V-226282",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client", "value_name": "AllowUnencryptedTraffic" },
+      "expected": { "type": "equals", "value": 0 },
+      "description": "WinRM client must not allow unencrypted traffic"
+    },
+    {
+      "vuln_id": "V-226290",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "value_name": "LegalNoticeCaption" },
+      "expected": { "type": "matches", "pattern": ".+" },
+      "description": "Legal notice display before logon must be configured with a caption"
+    },
+    {
+      "vuln_id": "V-226291",
+      "platform": "windows",
+      "check": { "type": "registry", "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "value_name": "LegalNoticeText" },
+      "expected": { "type": "matches", "pattern": ".{10,}" },
+      "description": "Legal notice display before logon must be configured with text"
+    },
+    {
+      "vuln_id": "V-226295",
+      "platform": "windows",
+      "check": { "type": "service", "name": "W32Time", "expected_status": "running" },
+      "expected": { "type": "is_true" },
+      "description": "Windows Time service must be running"
+    },
+    {
+      "vuln_id": "V-226296",
+      "platform": "windows",
+      "check": { "type": "service", "name": "EventLog", "expected_status": "running" },
+      "expected": { "type": "is_true" },
+      "description": "Windows Event Log service must be running"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "stig_id": "SLES_12_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    { "vuln_id": "V-217100", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "PermitRootLogin\\s+no", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SLES 12 SSH must not allow direct root login" },
+    { "vuln_id": "V-217101", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "PermitEmptyPasswords\\s+no", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH must not allow empty passwords" },
+    { "vuln_id": "V-217102", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "ClientAliveInterval\\s+[1-9]", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH ClientAliveInterval must be set" },
+    { "vuln_id": "V-217103", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "ClientAliveCountMax\\s+[01]$", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH ClientAliveCountMax must be 1 or less" },
+    { "vuln_id": "V-217104", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "Banner\\s+/etc/issue", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH must display a login banner" },
+    { "vuln_id": "V-217105", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "X11Forwarding\\s+no", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH X11 forwarding must be disabled" },
+    { "vuln_id": "V-217106", "platform": "linux", "check": { "type": "file_content", "path": "/etc/ssh/sshd_config", "pattern": "Protocol\\s+2", "is_regex": true }, "expected": { "type": "is_true" }, "description": "SSH must use protocol version 2" },
+    { "vuln_id": "V-217110", "platform": "linux", "check": { "type": "sysctl", "key": "net.ipv4.ip_forward" }, "expected": { "type": "equals", "value": "0" }, "description": "IP forwarding must be disabled" },
+    { "vuln_id": "V-217111", "platform": "linux", "check": { "type": "sysctl", "key": "net.ipv4.conf.all.accept_source_route" }, "expected": { "type": "equals", "value": "0" }, "description": "Source-routed packets must not be accepted" },
+    { "vuln_id": "V-217112", "platform": "linux", "check": { "type": "sysctl", "key": "net.ipv4.conf.all.accept_redirects" }, "expected": { "type": "equals", "value": "0" }, "description": "ICMP redirects must not be accepted" },
+    { "vuln_id": "V-217113", "platform": "linux", "check": { "type": "sysctl", "key": "net.ipv4.conf.all.send_redirects" }, "expected": { "type": "equals", "value": "0" }, "description": "System must not send ICMP redirects" },
+    { "vuln_id": "V-217114", "platform": "linux", "check": { "type": "sysctl", "key": "net.ipv4.tcp_syncookies" }, "expected": { "type": "equals", "value": "1" }, "description": "TCP SYN cookies must be enabled" },
+    { "vuln_id": "V-217115", "platform": "linux", "check": { "type": "sysctl", "key": "kernel.randomize_va_space" }, "expected": { "type": "equals", "value": "2" }, "description": "ASLR must be fully enabled" },
+    { "vuln_id": "V-217116", "platform": "linux", "check": { "type": "sysctl", "key": "net.ipv4.icmp_echo_ignore_broadcasts" }, "expected": { "type": "equals", "value": "1" }, "description": "System must ignore ICMP broadcast echo requests" },
+    { "vuln_id": "V-217120", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/shadow", "owner": "root", "group": null, "mode": "0000" }, "expected": { "type": "is_true" }, "description": "/etc/shadow must be mode 0000 and owned by root" },
+    { "vuln_id": "V-217121", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/passwd", "owner": "root", "group": null, "mode": "0644" }, "expected": { "type": "is_true" }, "description": "/etc/passwd must be mode 0644 and owned by root" },
+    { "vuln_id": "V-217122", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/group", "owner": "root", "group": null, "mode": "0644" }, "expected": { "type": "is_true" }, "description": "/etc/group must be mode 0644 and owned by root" },
+    { "vuln_id": "V-217123", "platform": "linux", "check": { "type": "file_permission", "path": "/etc/ssh/sshd_config", "owner": "root", "group": null, "mode": "0600" }, "expected": { "type": "is_true" }, "description": "sshd_config must be mode 0600 and owned by root" },
+    { "vuln_id": "V-217130", "platform": "linux", "check": { "type": "package", "name": "aide", "should_be_installed": true }, "expected": { "type": "is_true" }, "description": "AIDE must be installed for file integrity checking" },
+    { "vuln_id": "V-217131", "platform": "linux", "check": { "type": "package", "name": "audit", "should_be_installed": true }, "expected": { "type": "is_true" }, "description": "Audit package must be installed" },
+    { "vuln_id": "V-217132", "platform": "linux", "check": { "type": "package", "name": "SuSEfirewall2", "should_be_installed": true }, "expected": { "type": "is_true" }, "description": "SuSEfirewall2 must be installed" },
+    { "vuln_id": "V-217133", "platform": "linux", "check": { "type": "package", "name": "telnet-server", "should_be_installed": false }, "expected": { "type": "is_true" }, "description": "Telnet server must not be installed" },
+    { "vuln_id": "V-217140", "platform": "linux", "check": { "type": "service", "name": "auditd", "expected_status": "running" }, "expected": { "type": "is_true" }, "description": "Audit daemon must be running" },
+    { "vuln_id": "V-217141", "platform": "linux", "check": { "type": "service", "name": "sshd", "expected_status": "running" }, "expected": { "type": "is_true" }, "description": "SSH daemon must be running" },
+    { "vuln_id": "V-217150", "platform": "linux", "check": { "type": "file_content", "path": "/etc/login.defs", "pattern": "ENCRYPT_METHOD\\s+SHA512", "is_regex": true }, "expected": { "type": "is_true" }, "description": "Passwords must be hashed with SHA-512" }
+  ]
+}

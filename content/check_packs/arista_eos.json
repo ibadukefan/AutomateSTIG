@@ -1,0 +1,147 @@
+{
+  "stig_id": "Arista_EOS_STIG",
+  "platform": "cisco_ios",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-268310",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "aaa authentication login default", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "AAA authentication for login must be configured"
+    },
+    {
+      "vuln_id": "V-268311",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "aaa authentication enable default", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "AAA authentication for enable mode must be configured"
+    },
+    {
+      "vuln_id": "V-268312",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "aaa authorization exec default", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "AAA authorization for exec must be configured"
+    },
+    {
+      "vuln_id": "V-268313",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "aaa authorization commands all default", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "AAA authorization for commands must be configured"
+    },
+    {
+      "vuln_id": "V-268314",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "aaa accounting commands all default", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "AAA accounting for commands must be configured"
+    },
+    {
+      "vuln_id": "V-268315",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "ip ssh version 2", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH version 2 must be enabled"
+    },
+    {
+      "vuln_id": "V-268316",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "management ssh", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Management SSH must be configured"
+    },
+    {
+      "vuln_id": "V-268317",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "no management telnet", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Telnet management access must be disabled"
+    },
+    {
+      "vuln_id": "V-268318",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "ntp server", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "NTP server must be configured"
+    },
+    {
+      "vuln_id": "V-268319",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "ntp authenticate", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "NTP authentication must be enabled"
+    },
+    {
+      "vuln_id": "V-268320",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "logging host", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Remote syslog server must be configured"
+    },
+    {
+      "vuln_id": "V-268321",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "logging buffered", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Buffered logging must be enabled"
+    },
+    {
+      "vuln_id": "V-268322",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "logging trap", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Logging trap level must be configured for syslog"
+    },
+    {
+      "vuln_id": "V-268323",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "snmp-server community", "context": null, "should_exist": false },
+      "expected": { "type": "is_true" },
+      "description": "SNMP community strings must not be configured (use SNMPv3)"
+    },
+    {
+      "vuln_id": "V-268324",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "snmp-server group", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "SNMPv3 group must be configured with auth and priv"
+    },
+    {
+      "vuln_id": "V-268325",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "snmp-server user", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "SNMPv3 user must be configured"
+    },
+    {
+      "vuln_id": "V-268326",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "banner login", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Login banner must be configured"
+    },
+    {
+      "vuln_id": "V-268327",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "banner motd", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "MOTD banner must be configured"
+    },
+    {
+      "vuln_id": "V-268328",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "service password-encryption", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Service password-encryption must be enabled"
+    },
+    {
+      "vuln_id": "V-268329",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "enable secret", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Enable secret must be configured"
+    }
+  ]
+}
