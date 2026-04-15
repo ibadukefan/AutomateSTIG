@@ -38,7 +38,7 @@ indicatif = "0.17"
 # GUI / Web server
 axum = { version = "0.8", features = ["multipart"] }
 tokio = { version = "1", features = ["full"] }
-tower-http = { version = "0.6", features = ["fs", "cors"] }
+tower-http = { version = "0.6", features = ["fs", "cors", "limit"] }
 rust-embed = { version = "8", features = ["compression"] }
 mime_guess = "2"
 open = "5"

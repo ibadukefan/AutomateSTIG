@@ -2,13 +2,18 @@
 'use strict';
 
 const API = '/api';
+const AUTH_TOKEN = window.__AUTH_TOKEN__ || '';
 
 // ---------------------------------------------------------------------------
 // API Client
 // ---------------------------------------------------------------------------
 async function api(path, opts = {}) {
   const res = await fetch(`${API}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...opts.headers },
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Auth-Token': AUTH_TOKEN,
+      ...opts.headers,
+    },
     ...opts,
   });
   if (opts.raw) return res;
@@ -20,7 +25,11 @@ async function api(path, opts = {}) {
 async function apiUpload(path, file) {
   const form = new FormData();
   form.append('file', file);
-  const res = await fetch(`${API}${path}`, { method: 'POST', body: form });
+  const res = await fetch(`${API}${path}`, {
+    method: 'POST',
+    body: form,
+    headers: { 'X-Auth-Token': AUTH_TOKEN },
+  });
   const data = await res.json();
   if (!data.success) throw new Error(data.error || 'Upload failed');
   return data.data;

@@ -15,6 +15,7 @@ use crate::{StigpackError, StigpackResult};
 pub struct PackBuilder {
     manifest: PackManifest,
     files: Vec<(String, Vec<u8>)>,
+    signing_key: Option<[u8; 32]>,
 }
 
 impl PackBuilder {
@@ -23,6 +24,7 @@ impl PackBuilder {
         Self {
             manifest: PackManifest::new(pack_id, name, version),
             files: Vec::new(),
+            signing_key: None,
         }
     }
 
@@ -41,6 +43,12 @@ impl PackBuilder {
     /// Set the pack type.
     pub fn pack_type(mut self, pack_type: PackType) -> Self {
         self.manifest.pack_type = pack_type;
+        self
+    }
+
+    /// Set an Ed25519 signing key for this pack.
+    pub fn signing_key(mut self, key: [u8; 32]) -> Self {
+        self.signing_key = Some(key);
         self
     }
 
@@ -106,6 +114,14 @@ impl PackBuilder {
         zip.start_file("manifest.json", options)
             .map_err(StigpackError::Zip)?;
         zip.write_all(manifest_json.as_bytes())?;
+
+        // Sign the manifest if a signing key is provided.
+        if let Some(ref key) = self.signing_key {
+            let signature = crate::signing::sign_manifest(manifest_json.as_bytes(), key)?;
+            zip.start_file("signature.sig", options)
+                .map_err(StigpackError::Zip)?;
+            zip.write_all(&signature)?;
+        }
 
         // Write all content files.
         for (path, data) in &self.files {

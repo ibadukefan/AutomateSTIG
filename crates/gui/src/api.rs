@@ -815,9 +815,34 @@ async fn stigman_get_config(State(state): State<AppState>) -> Json<serde_json::V
 /// Save STIG-Manager configuration.
 async fn stigman_set_config(
     State(state): State<AppState>,
-    Json(body): Json<crate::stigman::StigManagerConfig>,
+    Json(mut body): Json<crate::stigman::StigManagerConfig>,
 ) -> Json<serde_json::Value> {
     let db = state.db();
+
+    // Encrypt the client secret before storing.
+    if !body.client_secret.is_empty() {
+        let key_material = db
+            .get_config("_encryption_salt")
+            .ok()
+            .flatten()
+            .unwrap_or_else(|| {
+                // Generate a random salt on first use.
+                let salt = format!("{:x}", std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .unwrap_or_default()
+                    .as_nanos());
+                let _ = db.set_config("_encryption_salt", &salt);
+                salt
+            });
+
+        match crate::secrets::encrypt_secret(&body.client_secret, &key_material) {
+            Ok(encrypted) => {
+                body.client_secret = format!("enc:{}", encrypted);
+            }
+            Err(e) => return api_error(&format!("Encryption failed: {}", e)),
+        }
+    }
+
     match serde_json::to_string(&body) {
         Ok(json) => {
             if let Err(e) = db.set_config("stigman_config", &json) {
@@ -973,13 +998,34 @@ async fn stigman_push_checklist(
     }
 }
 
-/// Load STIG-Manager config from the database.
+/// Load STIG-Manager config from the database, decrypting the client secret.
 fn load_stigman_config(db: &automatestig_storage::Database) -> crate::stigman::StigManagerConfig {
-    db.get_config("stigman_config")
+    let mut config: crate::stigman::StigManagerConfig = db
+        .get_config("stigman_config")
         .ok()
         .flatten()
         .and_then(|json| serde_json::from_str(&json).ok())
-        .unwrap_or_default()
+        .unwrap_or_default();
+
+    // Decrypt client secret if it's encrypted.
+    if config.client_secret.starts_with("enc:") {
+        let encrypted = &config.client_secret[4..];
+        let key_material = db
+            .get_config("_encryption_salt")
+            .ok()
+            .flatten()
+            .unwrap_or_default();
+
+        match crate::secrets::decrypt_secret(encrypted, &key_material) {
+            Ok(decrypted) => config.client_secret = decrypted,
+            Err(_) => {
+                tracing::warn!("Failed to decrypt STIG-Manager client secret");
+                config.client_secret.clear();
+            }
+        }
+    }
+
+    config
 }
 
 // ---------------------------------------------------------------------------

@@ -38,7 +38,17 @@ pub struct FileVerification {
 }
 
 /// Verify a .stigpack file for integrity and (optionally) signature.
+/// If a trust_store is provided, signature verification uses it.
+/// If None, signature presence is noted but not verified against a key.
 pub fn verify_pack(path: &Path) -> StigpackResult<VerificationResult> {
+    verify_pack_with_trust(path, None)
+}
+
+/// Verify a .stigpack with an optional trust store for signature checking.
+pub fn verify_pack_with_trust(
+    path: &Path,
+    trust_store: Option<&crate::signing::TrustStore>,
+) -> StigpackResult<VerificationResult> {
     let file = std::fs::File::open(path)?;
     let mut archive = zip::ZipArchive::new(file)?;
 
@@ -116,10 +126,57 @@ pub fn verify_pack(path: &Path) -> StigpackResult<VerificationResult> {
     }
 
     // Check for signature.
-    if archive.by_name("signature.sig").is_ok() {
-        // Signature verification would use Ed25519 with an embedded public key.
-        // For now, mark as present but not verified (key management TBD).
-        result.signature_valid = Some(true); // Placeholder
+    // Re-read manifest for signature verification (need raw bytes).
+    let manifest_json = {
+        let file = std::fs::File::open(path)?;
+        let mut archive2 = zip::ZipArchive::new(file)?;
+        let mut mf = archive2
+            .by_name("manifest.json")
+            .map_err(|_| StigpackError::MissingFile("manifest.json".to_string()))?;
+        let mut data = Vec::new();
+        mf.read_to_end(&mut data)?;
+        data
+    };
+
+    // Read signature if present.
+    let sig_bytes: Option<Vec<u8>> = std::fs::File::open(path)
+        .ok()
+        .and_then(|file| zip::ZipArchive::new(file).ok())
+        .and_then(|mut archive3| {
+            let mut sig_file = archive3.by_name("signature.sig").ok()?;
+            let mut bytes = Vec::new();
+            sig_file.read_to_end(&mut bytes).ok()?;
+            Some(bytes)
+        });
+
+    if let Some(sig_bytes) = sig_bytes {
+        if let Some(store) = trust_store {
+                match store.verify_against_trusted(&manifest_json, &sig_bytes) {
+                    Ok(Some(key_label)) => {
+                        result.signature_valid = Some(true);
+                        result.issues.push(format!(
+                            "Signature verified with trusted key: {}",
+                            key_label
+                        ));
+                    }
+                    Ok(None) => {
+                        result.signature_valid = Some(false);
+                        result.issues.push(
+                            "Signature present but not verified: no matching trusted key".to_string(),
+                        );
+                    }
+                    Err(e) => {
+                        result.signature_valid = Some(false);
+                        result.issues.push(format!("Signature verification error: {}", e));
+                    }
+                }
+            } else {
+                // No trust store provided — note signature is present but unverified.
+                result.signature_valid = None;
+                result.issues.push(
+                    "Signature present but no trust store configured for verification".to_string(),
+                );
+            }
     }
 
     Ok(result)

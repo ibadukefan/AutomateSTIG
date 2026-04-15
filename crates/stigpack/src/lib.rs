@@ -28,6 +28,7 @@ pub mod manifest;
 pub mod builder;
 pub mod verifier;
 pub mod importer;
+pub mod signing;
 
 use thiserror::Error;
 
