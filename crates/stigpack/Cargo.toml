@@ -1,0 +1,23 @@
+[package]
+name = "automatestig-stigpack"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "STIG content pack format - packaging, signing, verification, and import"
+
+[dependencies]
+automatestig-core = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+ed25519-dalek = { workspace = true }
+zip = { workspace = true }
+chrono = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+walkdir = { workspace = true }
+tempfile = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }

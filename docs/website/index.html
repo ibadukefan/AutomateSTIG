@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutomateSTIG — STIG Evaluation &amp; Compliance Automation</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --bg-surface: #161b22;
+            --bg-card: #1c2128;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --orange: #db6d28;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* Header */
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+        }
+        header .container {
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--text); }
+        .logo span { color: var(--accent); }
+        nav a {
+            margin-left: 24px; color: var(--text-muted); font-size: 0.95rem;
+        }
+        nav a:hover { color: var(--text); text-decoration: none; }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 80px 0 60px;
+        }
+        .hero h1 {
+            font-size: 3rem; font-weight: 800; margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--accent), var(--green));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.25rem; color: var(--text-muted); max-width: 700px;
+            margin: 0 auto 32px;
+        }
+        .hero-badges {
+            display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+        }
+        .badge {
+            display: inline-block; padding: 6px 14px; border-radius: 20px;
+            font-size: 0.85rem; font-weight: 600; border: 1px solid var(--border);
+            background: var(--bg-surface);
+        }
+        .badge.green { border-color: var(--green); color: var(--green); }
+        .badge.blue { border-color: var(--accent); color: var(--accent); }
+        .badge.orange { border-color: var(--orange); color: var(--orange); }
+
+        .cta-group {
+            display: flex; gap: 16px; justify-content: center; margin-top: 32px;
+        }
+        .btn {
+            display: inline-block; padding: 12px 28px; border-radius: 8px;
+            font-size: 1rem; font-weight: 600; transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--accent); color: #fff;
+        }
+        .btn-primary:hover { background: var(--accent-hover); text-decoration: none; }
+        .btn-secondary {
+            border: 1px solid var(--border); color: var(--text);
+        }
+        .btn-secondary:hover { border-color: var(--text-muted); text-decoration: none; }
+
+        /* Features */
+        .features {
+            padding: 60px 0;
+        }
+        .features h2 {
+            text-align: center; font-size: 2rem; margin-bottom: 40px;
+        }
+        .feature-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .feature-card {
+            background: var(--bg-surface); border: 1px solid var(--border);
+            border-radius: 12px; padding: 28px;
+        }
+        .feature-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+        .feature-card p { color: var(--text-muted); font-size: 0.95rem; }
+        .feature-icon {
+            font-size: 1.8rem; margin-bottom: 12px; display: block;
+        }
+
+        /* Comparison Table */
+        .comparison {
+            padding: 60px 0;
+        }
+        .comparison h2 {
+            text-align: center; font-size: 2rem; margin-bottom: 12px;
+        }
+        .comparison > p {
+            text-align: center; color: var(--text-muted); max-width: 700px;
+            margin: 0 auto 40px; font-size: 1rem;
+        }
+        .comparison-table {
+            width: 100%; border-collapse: collapse; font-size: 0.95rem;
+        }
+        .comparison-table th, .comparison-table td {
+            padding: 14px 16px; text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .comparison-table thead th {
+            background: var(--bg-surface); font-weight: 700;
+            position: sticky; top: 0;
+        }
+        .comparison-table thead th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+        .comparison-table thead th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+        .comparison-table tbody tr:hover {
+            background: var(--bg-surface);
+        }
+        .comparison-table .col-feature { width: 35%; }
+        .comparison-table .col-eval { width: 32%; }
+        .comparison-table .col-auto { width: 33%; }
+        .yes { color: var(--green); font-weight: 600; }
+        .no { color: var(--red); }
+        .partial { color: var(--yellow); }
+        .better { color: var(--green); font-weight: 600; }
+
+        .category-row td {
+            background: var(--bg-card); font-weight: 700; font-size: 0.9rem;
+            text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent);
+            padding: 10px 16px;
+        }
+
+        /* Architecture */
+        .architecture {
+            padding: 60px 0;
+        }
+        .architecture h2 {
+            text-align: center; font-size: 2rem; margin-bottom: 40px;
+        }
+        .arch-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .arch-card {
+            background: var(--bg-surface); border: 1px solid var(--border);
+            border-radius: 8px; padding: 20px;
+        }
+        .arch-card h3 {
+            font-size: 1rem; color: var(--accent); margin-bottom: 6px;
+        }
+        .arch-card code {
+            background: var(--bg-card); padding: 2px 6px; border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* CLI Preview */
+        .cli-preview {
+            padding: 60px 0;
+        }
+        .cli-preview h2 {
+            text-align: center; font-size: 2rem; margin-bottom: 40px;
+        }
+        .terminal {
+            background: #0d1117; border: 1px solid var(--border);
+            border-radius: 12px; overflow: hidden; max-width: 800px;
+            margin: 0 auto;
+        }
+        .terminal-header {
+            background: var(--bg-surface); padding: 10px 16px;
+            display: flex; gap: 8px; align-items: center;
+        }
+        .terminal-dot {
+            width: 12px; height: 12px; border-radius: 50%;
+        }
+        .terminal-dot.red { background: #ff5f57; }
+        .terminal-dot.yellow { background: #febc2e; }
+        .terminal-dot.green { background: #28c840; }
+        .terminal-body {
+            padding: 20px; font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.85rem; line-height: 1.8; overflow-x: auto;
+        }
+        .terminal-body .prompt { color: var(--green); }
+        .terminal-body .cmd { color: var(--text); }
+        .terminal-body .output { color: var(--text-muted); }
+        .terminal-body .highlight { color: var(--accent); }
+        .terminal-body .warn { color: var(--yellow); }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0; text-align: center;
+            color: var(--text-muted); font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .comparison-table { font-size: 0.85rem; }
+            .comparison-table th, .comparison-table td { padding: 10px 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="logo">Automate<span>STIG</span></div>
+        <nav>
+            <a href="#features">Features</a>
+            <a href="#comparison">Comparison</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#cli">CLI</a>
+            <a href="https://github.com/ibadukefan/AutomateSTIG">GitHub</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <h1>Zero to CKL in Seconds</h1>
+        <p>Cross-platform, open-source STIG evaluation and compliance automation.
+           100% deterministic. Air-gapped first. Built for DoD, Navy, NAVAIR, and contractor environments.</p>
+        <div class="hero-badges">
+            <span class="badge green">100% Deterministic</span>
+            <span class="badge blue">Air-Gapped First</span>
+            <span class="badge orange">Open Source (MIT)</span>
+            <span class="badge green">Zero AI / Zero ML</span>
+        </div>
+        <div class="cta-group">
+            <a href="https://github.com/ibadukefan/AutomateSTIG" class="btn btn-primary">Get Started</a>
+            <a href="#comparison" class="btn btn-secondary">See the Comparison</a>
+        </div>
+    </div>
+</section>
+
+<section class="features" id="features">
+    <div class="container">
+        <h2>Why AutomateSTIG?</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <span class="feature-icon">&#9889;</span>
+                <h3>Lightning Fast</h3>
+                <p>Populate checklists from SCC/ACAS/OpenSCAP scans in seconds, not hours. Evaluate hundreds of rules across multiple assets in a single command.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">&#128274;</span>
+                <h3>Air-Gapped by Design</h3>
+                <p>No network calls, no auto-updates, no external services. Import signed .stigpack files from USB/DVD. The only mode is offline mode.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">&#128196;</span>
+                <h3>Modern Answer Files</h3>
+                <p>JSON/YAML answer files replace tedious XML. Version-control your templates, bulk import/export, and generate templates from existing checklists.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">&#128736;</span>
+                <h3>Built-in Remediation</h3>
+                <p>Ansible playbooks, PowerShell scripts, and Bash scripts for common fixes. One-click "apply &amp; re-scan" for supported platforms.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">&#128640;</span>
+                <h3>Cross-Platform</h3>
+                <p>Native on Windows, macOS, and Linux. Single-file executable with all dependencies bundled. No PowerShell dependency on non-Windows systems.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">&#128200;</span>
+                <h3>Enterprise Integrations</h3>
+                <p>Native STIG-Manager API support with Result Engine metadata. eMASS CSV export. Full audit logs in SQLite for RMF compliance.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="comparison" id="comparison">
+    <div class="container">
+        <h2>AutomateSTIG vs. Evaluate-STIG</h2>
+        <p>A thorough, side-by-side comparison. AutomateSTIG keeps everything users love about Evaluate-STIG while fixing every documented pain point and adding modern capabilities.</p>
+
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th class="col-feature">Feature</th>
+                    <th class="col-eval">Evaluate-STIG</th>
+                    <th class="col-auto">AutomateSTIG</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Core Functionality -->
+                <tr class="category-row"><td colspan="3">Core Functionality</td></tr>
+                <tr>
+                    <td>Auto-populate .ckl from scans</td>
+                    <td class="yes">Yes</td>
+                    <td class="better">Yes + faster engine</td>
+                </tr>
+                <tr>
+                    <td>CKL output format</td>
+                    <td class="yes">Yes</td>
+                    <td class="better">Yes (CKL + CKLB + JSON)</td>
+                </tr>
+                <tr>
+                    <td>Answer file system</td>
+                    <td class="yes">Yes (XML only)</td>
+                    <td class="better">Yes (JSON/YAML with GUI editor, validation, bulk ops)</td>
+                </tr>
+                <tr>
+                    <td>SCC scan import</td>
+                    <td class="yes">Yes</td>
+                    <td class="better">Yes + XCCDF result mapping</td>
+                </tr>
+                <tr>
+                    <td>ACAS/Tenable import</td>
+                    <td class="yes">Yes</td>
+                    <td class="better">Yes + plugin-based extensibility</td>
+                </tr>
+                <tr>
+                    <td>OpenSCAP import</td>
+                    <td class="no">No</td>
+                    <td class="yes">Yes</td>
+                </tr>
+                <tr>
+                    <td>Config dump evaluation</td>
+                    <td class="yes">Yes (Cisco, some Linux)</td>
+                    <td class="better">Yes (Cisco IOS/NX-OS/ASA, Linux, ESXi, Trellix)</td>
+                </tr>
+                <tr>
+                    <td>Custom check extensibility</td>
+                    <td class="partial">Limited</td>
+                    <td class="better">Full plugin system with JSON/YAML definitions</td>
+                </tr>
+                <tr>
+                    <td>Evaluation determinism</td>
+                    <td class="yes">Yes</td>
+                    <td class="better">Yes — guaranteed 100%, no probabilistic code paths</td>
+                </tr>
+
+                <!-- Platform Support -->
+                <tr class="category-row"><td colspan="3">Platform Support</td></tr>
+                <tr>
+                    <td>Windows (runs on)</td>
+                    <td class="yes">Yes (PowerShell required)</td>
+                    <td class="better">Yes (native binary, no PS dependency)</td>
+                </tr>
+                <tr>
+                    <td>Linux (runs on)</td>
+                    <td class="partial">Via PowerShell Core</td>
+                    <td class="better">Native Linux binary</td>
+                </tr>
+                <tr>
+                    <td>macOS (runs on)</td>
+                    <td class="partial">Via PowerShell Core</td>
+                    <td class="better">Native macOS binary</td>
+                </tr>
+                <tr>
+                    <td>Windows STIGs evaluated</td>
+                    <td class="yes">Comprehensive</td>
+                    <td class="yes">Comprehensive</td>
+                </tr>
+                <tr>
+                    <td>Linux STIGs evaluated</td>
+                    <td class="partial">RHEL, some others</td>
+                    <td class="better">RHEL, Ubuntu, SLES, Rocky, Alma + SSH banner handling</td>
+                </tr>
+                <tr>
+                    <td>Cisco STIGs evaluated</td>
+                    <td class="yes">IOS/IOS-XE</td>
+                    <td class="better">IOS, IOS-XE, NX-OS, ASA</td>
+                </tr>
+                <tr>
+                    <td>ESXi STIGs</td>
+                    <td class="partial">Limited</td>
+                    <td class="better">Full support</td>
+                </tr>
+                <tr>
+                    <td>Docker/Kubernetes</td>
+                    <td class="no">No</td>
+                    <td class="yes">Planned (Phase 3)</td>
+                </tr>
+
+                <!-- Reliability & Known Issues -->
+                <tr class="category-row"><td colspan="3">Reliability &amp; Known Issues</td></tr>
+                <tr>
+                    <td>Integrity check failures</td>
+                    <td class="no">Documented bugs with false failures</td>
+                    <td class="better">Zero-tolerance: built-in validation + auto-retry</td>
+                </tr>
+                <tr>
+                    <td>Multi-STIG upload</td>
+                    <td class="no">Known issues with multiple STIGs</td>
+                    <td class="better">Handles multi-STIG/multi-asset in one operation</td>
+                </tr>
+                <tr>
+                    <td>SSH banner handling</td>
+                    <td class="no">Ubuntu SSH banners break collection</td>
+                    <td class="better">Robust banner stripping with fallback</td>
+                </tr>
+                <tr>
+                    <td>Legacy device support</td>
+                    <td class="partial">Some legacy Cisco issues</td>
+                    <td class="better">Broad legacy device support with config type detection</td>
+                </tr>
+                <tr>
+                    <td>Trellix/ESS handling</td>
+                    <td class="no">Known failures</td>
+                    <td class="better">Dedicated parser with proper handling</td>
+                </tr>
+                <tr>
+                    <td>Error handling</td>
+                    <td class="partial">Cryptic PS errors</td>
+                    <td class="better">Clear, actionable error messages with context</td>
+                </tr>
+
+                <!-- Answer Files & Workflow -->
+                <tr class="category-row"><td colspan="3">Answer Files &amp; Workflow</td></tr>
+                <tr>
+                    <td>Answer file format</td>
+                    <td>XML (tedious to edit)</td>
+                    <td class="better">JSON/YAML (human-readable, version-controllable)</td>
+                </tr>
+                <tr>
+                    <td>Answer file editor</td>
+                    <td class="no">Manual XML editing</td>
+                    <td class="better">CLI gen-answer + GUI builder (planned)</td>
+                </tr>
+                <tr>
+                    <td>Generate template from CKL</td>
+                    <td class="no">No</td>
+                    <td class="yes">Yes (automatestig gen-answer)</td>
+                </tr>
+                <tr>
+                    <td>Answer file validation</td>
+                    <td class="no">No</td>
+                    <td class="yes">Yes (duplicates, missing justifications, schema)</td>
+                </tr>
+                <tr>
+                    <td>Severity override in answer</td>
+                    <td class="partial">Limited</td>
+                    <td class="better">Full support with required justification</td>
+                </tr>
+                <tr>
+                    <td>Merge previous checklist</td>
+                    <td class="no">No</td>
+                    <td class="yes">Yes (--merge preserves manual entries)</td>
+                </tr>
+
+                <!-- Integrations -->
+                <tr class="category-row"><td colspan="3">Integrations</td></tr>
+                <tr>
+                    <td>STIG-Manager API</td>
+                    <td class="no">No native support</td>
+                    <td class="better">Native client with Client-ID/Secret, Result Engine metadata</td>
+                </tr>
+                <tr>
+                    <td>STIG-Manager "automated" marking</td>
+                    <td class="no">No</td>
+                    <td class="yes">Yes (auto-marks with full Result Engine metadata)</td>
+                </tr>
+                <tr>
+                    <td>eMASS export</td>
+                    <td class="no">No</td>
+                    <td class="yes">Yes (CSV format for POA&amp;M/control assessment)</td>
+                </tr>
+                <tr>
+                    <td>IaC integration (Terraform/Ansible)</td>
+                    <td class="no">No</td>
+                    <td class="yes">Planned (Phase 3)</td>
+                </tr>
+                <tr>
+                    <td>GitOps / CI/CD</td>
+                    <td class="no">No</td>
+                    <td class="yes">Planned (Phase 3)</td>
+                </tr>
+
+                <!-- Remediation -->
+                <tr class="category-row"><td colspan="3">Remediation</td></tr>
+                <tr>
+                    <td>Built-in fix scripts</td>
+                    <td class="no">No (check only)</td>
+                    <td class="better">Yes (PowerShell, Bash, Ansible)</td>
+                </tr>
+                <tr>
+                    <td>Fix &amp; re-validate</td>
+                    <td class="no">No</td>
+                    <td class="yes">Planned (one-click apply &amp; re-scan)</td>
+                </tr>
+                <tr>
+                    <td>Rollback support</td>
+                    <td class="no">No</td>
+                    <td class="yes">Reversible scripts with rollback</td>
+                </tr>
+                <tr>
+                    <td>Risk assessment</td>
+                    <td class="no">No</td>
+                    <td class="yes">Risk level per remediation (Low/Medium/High)</td>
+                </tr>
+
+                <!-- Architecture & Distribution -->
+                <tr class="category-row"><td colspan="3">Architecture &amp; Distribution</td></tr>
+                <tr>
+                    <td>Language / Runtime</td>
+                    <td>PowerShell</td>
+                    <td class="better">Rust (compiled, no runtime dependency)</td>
+                </tr>
+                <tr>
+                    <td>Packaging</td>
+                    <td>PS module + scripts</td>
+                    <td class="better">Single binary (&lt;80 MB target)</td>
+                </tr>
+                <tr>
+                    <td>STIG update mechanism</td>
+                    <td>Manual script updates</td>
+                    <td class="better">Signed .stigpack files with integrity verification</td>
+                </tr>
+                <tr>
+                    <td>Content signing</td>
+                    <td class="no">No</td>
+                    <td class="yes">SHA-256 + Ed25519 signatures</td>
+                </tr>
+                <tr>
+                    <td>Rollback on bad update</td>
+                    <td class="no">No</td>
+                    <td class="yes">Keeps last 2 versions, one-click rollback</td>
+                </tr>
+                <tr>
+                    <td>Local database</td>
+                    <td class="no">No (file-based)</td>
+                    <td class="yes">SQLite (evaluation history, audit logs)</td>
+                </tr>
+                <tr>
+                    <td>Audit trail</td>
+                    <td class="no">No</td>
+                    <td class="yes">Full evaluation log with timestamps and sources</td>
+                </tr>
+                <tr>
+                    <td>CLI interface</td>
+                    <td class="partial">PowerShell cmdlets</td>
+                    <td class="better">Modern CLI with subcommands (evaluate, import, export, etc.)</td>
+                </tr>
+                <tr>
+                    <td>GUI</td>
+                    <td class="no">No (STIG Viewer separate)</td>
+                    <td class="yes">Planned (Tauri desktop app)</td>
+                </tr>
+                <tr>
+                    <td>License</td>
+                    <td>Proprietary / unclear</td>
+                    <td class="better">MIT (fully open source)</td>
+                </tr>
+
+                <!-- Compliance & Security -->
+                <tr class="category-row"><td colspan="3">Compliance &amp; Security</td></tr>
+                <tr>
+                    <td>Self-STIG compliance</td>
+                    <td class="no">No</td>
+                    <td class="yes">Ships fully STIG'd (self-checklist generated by tool)</td>
+                </tr>
+                <tr>
+                    <td>FIPS crypto support</td>
+                    <td class="no">No</td>
+                    <td class="yes">FIPS-compliant crypto where required</td>
+                </tr>
+                <tr>
+                    <td>Signed binaries</td>
+                    <td class="no">No</td>
+                    <td class="yes">All releases signed and hashed</td>
+                </tr>
+                <tr>
+                    <td>AI / ML components</td>
+                    <td class="no">None</td>
+                    <td class="yes">None — 100% deterministic (strengthens ATO case)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="architecture" id="architecture">
+    <div class="container">
+        <h2>Architecture</h2>
+        <div class="arch-grid">
+            <div class="arch-card">
+                <h3>Core Engine</h3>
+                <p>Fully data-driven STIG evaluation. All rules, checks, and mappings live in a versioned STIG Library. The engine is thin, deterministic, and rarely needs updates.</p>
+                <p><code>crates/core</code></p>
+            </div>
+            <div class="arch-card">
+                <h3>Parsers</h3>
+                <p>Read/write CKL, CKLB, XCCDF/SCAP, and device config dumps with full fidelity. Roundtrip-safe — what goes in comes back out identical.</p>
+                <p><code>crates/parsers</code></p>
+            </div>
+            <div class="arch-card">
+                <h3>STIG Packs</h3>
+                <p>Signed .stigpack archives containing benchmarks, answer templates, and remediation scripts. SHA-256 integrity + Ed25519 signatures.</p>
+                <p><code>crates/stigpack</code></p>
+            </div>
+            <div class="arch-card">
+                <h3>Storage</h3>
+                <p>SQLite database for evaluation history, audit logs, and cached checklists. Single-file, portable, no server required.</p>
+                <p><code>crates/storage</code></p>
+            </div>
+            <div class="arch-card">
+                <h3>Integrations</h3>
+                <p>STIG-Manager API with Result Engine metadata. eMASS CSV export. Designed for seamless enterprise workflows.</p>
+                <p><code>crates/integrations</code></p>
+            </div>
+            <div class="arch-card">
+                <h3>Remediation</h3>
+                <p>PowerShell, Bash, and Ansible scripts with risk levels, admin requirements, and optional rollback support.</p>
+                <p><code>crates/remediation</code></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cli-preview" id="cli">
+    <div class="container">
+        <h2>CLI Preview</h2>
+        <div class="terminal">
+            <div class="terminal-header">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+            </div>
+            <div class="terminal-body">
+<span class="prompt">$</span> <span class="cmd">automatestig evaluate --stig Windows_Server_2022_STIG --scan results.xml --answer site-answers.yaml</span>
+<span class="output">Evaluating: Microsoft Windows Server 2022 STIG (V1R4) — 287 rules</span>
+<span class="output">  Loading XCCDF results from: results.xml</span>
+<span class="output">  Loading answer file: site-answers.yaml</span>
+
+<span class="output">  Results for webserver01 (Windows_Server_2022_STIG):</span>
+<span class="output">  &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;</span>
+<span class="output">  &#9474; Total Rules:       287              &#9474;</span>
+<span class="output">  &#9474; <span class="warn">Open:                8</span>  (CAT I: 1)  &#9474;</span>
+<span class="output">  &#9474; Not a Finding:     241              &#9474;</span>
+<span class="output">  &#9474; Not Applicable:     34              &#9474;</span>
+<span class="output">  &#9474; Not Reviewed:        4              &#9474;</span>
+<span class="output">  &#9474; Compliance:       <span class="highlight">97.2%</span>              &#9474;</span>
+<span class="output">  &#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;</span>
+
+<span class="output">  Output written to: webserver01_Windows_Server_2022_STIG.ckl (CKL format)</span>
+
+<span class="prompt">$</span> <span class="cmd">automatestig export --input webserver01_Windows_Server_2022_STIG.ckl --output results.json --format stig-manager --collection "NAVAIR Systems"</span>
+<span class="output">Exported to STIG-Manager format: results.json</span>
+<span class="output">  Collection: NAVAIR Systems</span>
+
+<span class="prompt">$</span> <span class="cmd">automatestig summary --input webserver01_Windows_Server_2022_STIG.ckl --open-only</span>
+<span class="output">  Filtered Findings (8):</span>
+<span class="output">  Vuln ID      Sev      Status          Title</span>
+<span class="output">  --------------------------------------------------------------------------</span>
+<span class="output">  V-254239     <span class="warn">CAT I</span>    Open            Windows Server 2022 must use TLS 1.2</span>
+<span class="output">  V-254281     CAT II   Open            Audit policy must cover logon events</span>
+<span class="output">  ...</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p>AutomateSTIG is open source under the MIT License.</p>
+        <p style="margin-top: 8px;">
+            <a href="https://github.com/ibadukefan/AutomateSTIG">GitHub</a>
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>

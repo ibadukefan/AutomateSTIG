@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://automatestig.dev/schemas/stigpack-manifest.schema.json",
+  "title": "Stigpack Manifest",
+  "description": "Schema for .stigpack manifest.json files",
+  "type": "object",
+  "required": ["format_version", "pack_id", "name", "version", "created_at", "pack_type", "files"],
+  "properties": {
+    "format_version": {
+      "type": "string",
+      "description": "Manifest format version"
+    },
+    "pack_id": {
+      "type": "string",
+      "description": "Unique pack identifier"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable pack name"
+    },
+    "description": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string",
+      "description": "Pack version (semver)"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "author": {
+      "type": "string"
+    },
+    "min_app_version": {
+      "type": ["string", "null"]
+    },
+    "pack_type": {
+      "type": "string",
+      "enum": ["stig_content", "app_update", "custom_checks", "remediation"]
+    },
+    "files": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/FileEntry"
+      }
+    }
+  },
+  "$defs": {
+    "FileEntry": {
+      "type": "object",
+      "required": ["path", "sha256", "size"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Relative path within the pack"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA-256 hash of the file"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "File size in bytes"
+        },
+        "content_type": {
+          "type": ["string", "null"]
+        }
+      }
+    }
+  }
+}

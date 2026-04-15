@@ -1,0 +1,19 @@
+[package]
+name = "automatestig-integrations"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "External integrations - STIG-Manager API, SCC, OpenSCAP, eMASS"
+
+[dependencies]
+automatestig-core = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }

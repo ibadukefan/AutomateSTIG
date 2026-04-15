@@ -1,0 +1,87 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/core",
+    "crates/parsers",
+    "crates/storage",
+    "crates/stigpack",
+    "crates/remediation",
+    "crates/integrations",
+    "crates/cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/ibadukefan/AutomateSTIG"
+description = "Cross-platform STIG evaluation and compliance automation platform"
+
+[workspace.dependencies]
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+quick-xml = { version = "0.37", features = ["serialize"] }
+toml = "0.8"
+
+# Database
+rusqlite = { version = "0.32", features = ["bundled"] }
+
+# CLI
+clap = { version = "4", features = ["derive"] }
+
+# Crypto / Hashing
+sha2 = "0.10"
+ed25519-dalek = { version = "2", features = ["pkcs8", "pem"] }
+ring = "0.17"
+
+# Compression
+zip = "2"
+
+# Error handling
+anyhow = "1"
+thiserror = "2"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Time
+chrono = { version = "0.4", features = ["serde"] }
+
+# UUID
+uuid = { version = "1", features = ["v4", "serde"] }
+
+# File system
+walkdir = "2"
+tempfile = "3"
+
+# SSH / Remote
+# ssh2 = "0.9"  # Enable when remote scanning is implemented
+
+# HTTP client (for STIG-Manager integration)
+# reqwest = { version = "0.12", features = ["json", "rustls-tls"] }
+
+# Regex
+regex = "1"
+
+# Glob patterns
+glob = "0.3"
+
+# Diff
+similar = "2"
+
+# Workspace crates
+automatestig-core = { path = "crates/core" }
+automatestig-parsers = { path = "crates/parsers" }
+automatestig-storage = { path = "crates/storage" }
+automatestig-stigpack = { path = "crates/stigpack" }
+automatestig-remediation = { path = "crates/remediation" }
+automatestig-integrations = { path = "crates/integrations" }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true

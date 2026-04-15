@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://automatestig.dev/schemas/answer-file.schema.json",
+  "title": "AutomateSTIG Answer File",
+  "description": "Schema for AutomateSTIG answer file templates (.json/.yaml)",
+  "type": "object",
+  "required": ["name", "version", "entries"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Human-readable name for this answer file"
+    },
+    "description": {
+      "type": ["string", "null"],
+      "description": "Description of what this answer file covers"
+    },
+    "stig_id": {
+      "type": ["string", "null"],
+      "description": "Target STIG ID (null = applies to any STIG)"
+    },
+    "version": {
+      "type": "string",
+      "description": "Answer file version"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/AnswerEntry"
+      }
+    }
+  },
+  "$defs": {
+    "AnswerEntry": {
+      "type": "object",
+      "required": ["vuln_id", "status"],
+      "properties": {
+        "vuln_id": {
+          "type": "string",
+          "pattern": "^V-\\d+$",
+          "description": "Vulnerability ID (e.g., V-254239)"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["NotAFinding", "Open", "Not_Applicable", "Not_Reviewed"],
+          "description": "Pre-determined finding status"
+        },
+        "finding_details": {
+          "type": ["string", "null"],
+          "description": "Finding details text"
+        },
+        "comments": {
+          "type": ["string", "null"],
+          "description": "Reviewer comments"
+        },
+        "severity_override": {
+          "type": ["string", "null"],
+          "enum": ["high", "medium", "low", null],
+          "description": "Override the default severity"
+        },
+        "severity_override_justification": {
+          "type": ["string", "null"],
+          "description": "Required if severity_override is set"
+        },
+        "force_override": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether to override even if a scan result already set the status"
+        }
+      }
+    }
+  }
+}

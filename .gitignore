@@ -1,0 +1,43 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test outputs
+tests/output/
+*.ckl.out
+*.cklb.out
+
+# SQLite databases (user data)
+*.db
+*.db-journal
+*.db-wal
+
+# STIG packs (user imported)
+imported_packs/
+
+# Credentials
+*.pem
+*.key
+!tests/fixtures/*.pem
