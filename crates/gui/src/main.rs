@@ -76,6 +76,11 @@ async fn main() {
         .layer(middleware::from_fn(move |req: Request, next: Next| {
             let token = auth_token_for_middleware.clone();
             async move {
+                // Allow unauthenticated health checks for hosted/demo deployments.
+                if req.uri().path() == "/api/status" {
+                    return Ok::<Response, std::convert::Infallible>(next.run(req).await);
+                }
+
                 // Only check auth on /api routes, not frontend static files.
                 if req.uri().path().starts_with("/api") {
                     // Check header first, then query param (for download links).
