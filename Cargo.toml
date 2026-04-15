@@ -74,7 +74,9 @@ walkdir = "2"
 tempfile = "3"
 
 # SSH / Remote
-# ssh2 = "0.9"  # Enable when remote scanning is implemented
+russh = "0.46"
+russh-keys = "0.46"
+async-trait = "0.1"
 
 # HTTP client (for STIG-Manager integration)
 # reqwest = { version = "0.12", features = ["json", "rustls-tls"] }

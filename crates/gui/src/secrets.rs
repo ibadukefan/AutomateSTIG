@@ -95,8 +95,9 @@ mod hex {
         data.iter().map(|b| format!("{:02x}", b)).collect()
     }
 
+    #[allow(clippy::manual_is_multiple_of)]
     pub fn decode(hex: &str) -> Result<Vec<u8>, String> {
-        if !hex.len().is_multiple_of(&2) {
+        if hex.len() % 2 != 0 {
             return Err("Odd-length hex string".to_string());
         }
         (0..hex.len())

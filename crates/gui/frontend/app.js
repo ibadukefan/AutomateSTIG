@@ -47,6 +47,39 @@ function toast(msg, type = 'info') {
 }
 
 // ---------------------------------------------------------------------------
+// Confirm Dialog
+// ---------------------------------------------------------------------------
+function confirm(title, message) {
+  return new Promise((resolve) => {
+    const overlay = h('div', { className: 'modal-overlay' },
+      h('div', { className: 'modal' },
+        h('h3', {}, title),
+        h('p', {}, message),
+        h('div', { className: 'btn-group' },
+          h('button', { className: 'btn btn-secondary', onClick: () => { overlay.remove(); resolve(false); } }, 'Cancel'),
+          h('button', { className: 'btn btn-danger', onClick: () => { overlay.remove(); resolve(true); } }, 'Confirm'),
+        ),
+      ),
+    );
+    document.body.appendChild(overlay);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Loading Helpers
+// ---------------------------------------------------------------------------
+function showLoading(containerId, msg = 'Loading...') {
+  const el = document.getElementById(containerId);
+  if (el) {
+    el.innerHTML = '';
+    el.appendChild(h('div', { className: 'loading-overlay' },
+      h('span', { className: 'spinner' }),
+      h('span', {}, msg),
+    ));
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Navigation
 // ---------------------------------------------------------------------------
 document.querySelectorAll('.nav-item').forEach(item => {
@@ -282,13 +315,68 @@ async function viewChecklist(id) {
       ),
     );
 
+    // Search and filter bar for findings.
+    let currentFilter = 'all';
+    let currentSearch = '';
+
+    function renderFindings() {
+      const filtered = cl.findings.filter(f => {
+        if (currentFilter === 'open' && f.status !== 'Open') return false;
+        if (currentFilter === 'naf' && !f.status.includes('Not a Finding')) return false;
+        if (currentFilter === 'na' && !f.status.includes('Not Applicable')) return false;
+        if (currentFilter === 'nr' && !f.status.includes('Not Reviewed')) return false;
+        if (currentSearch) {
+          const q = currentSearch.toLowerCase();
+          return f.vuln_id.toLowerCase().includes(q) || f.title.toLowerCase().includes(q) || f.finding_details.toLowerCase().includes(q);
+        }
+        return true;
+      });
+      const tbody = document.getElementById('findings-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      filtered.forEach(f => {
+        const tr = h('tr', { style: 'cursor: pointer', onClick: () => editFinding(id, f) },
+          h('td', { className: 'mono' }, f.vuln_id),
+          h('td', {}, sevBadge(f.severity)),
+          h('td', {}, statusBadge(f.status)),
+          h('td', { style: 'max-width: 400px' }, f.title),
+          h('td', { style: 'font-size: 0.8rem; color: var(--text-muted); max-width: 300px' },
+            f.finding_details.substring(0, 120) || '\u2014'),
+        );
+        tbody.appendChild(tr);
+      });
+      const countEl = document.getElementById('findings-count');
+      if (countEl) countEl.textContent = `Findings (${filtered.length}/${cl.findings.length})`;
+    }
+
     page.appendChild(h('div', { className: 'card' },
       h('div', { className: 'card-header' },
-        h('h2', {}, `All Findings (${cl.findings.length})`),
+        h('h2', { id: 'findings-count' }, `Findings (${cl.findings.length})`),
         h('div', { className: 'btn-group' },
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCkl(id) }, 'Export CKL'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCklb(id) }, 'Export CKLB'),
         ),
+      ),
+      h('div', { className: 'search-bar' },
+        h('input', {
+          className: 'search-input', type: 'text', placeholder: 'Search Vuln ID, title, or details...',
+          onInput: (e) => { currentSearch = e.target.value; renderFindings(); },
+        }),
+      ),
+      h('div', { className: 'filter-bar' },
+        ...['all', 'open', 'naf', 'na', 'nr'].map(f => {
+          const labels = { all: 'All', open: 'Open', naf: 'Not a Finding', na: 'N/A', nr: 'Not Reviewed' };
+          const cls = f === 'all' ? 'active' : '';
+          return h('button', {
+            className: `filter-pill ${cls}`,
+            onClick: (e) => {
+              currentFilter = f;
+              document.querySelectorAll('.filter-pill').forEach(p => p.className = 'filter-pill');
+              e.target.className = `filter-pill ${f === 'open' ? 'active-red' : f === 'naf' ? 'active-green' : 'active'}`;
+              renderFindings();
+            },
+          }, labels[f]);
+        }),
       ),
       h('table', { className: 'data-table' },
         h('thead', {},
@@ -300,9 +388,12 @@ async function viewChecklist(id) {
             h('th', {}, 'Details'),
           ),
         ),
-        h('tbody', {}, ...rows),
+        h('tbody', { id: 'findings-tbody' }),
       ),
     ));
+
+    // Initial render of findings.
+    renderFindings();
 
     // Show checklists page
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -470,6 +561,11 @@ async function loadEvaluate() {
         ),
       ),
     );
+    // Add remote scan section.
+    const remoteScanSection = await loadRemoteScan();
+    const page = document.getElementById('page-evaluate');
+    if (remoteScanSection) page.appendChild(remoteScanSection);
+
   } catch (e) {
     setPage('evaluate', errorCard(e.message));
   }
@@ -502,6 +598,170 @@ async function runEvaluation() {
 }
 
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Finding Editor (inline edit on click)
+// ---------------------------------------------------------------------------
+async function editFinding(checklistId, finding) {
+  const statuses = ['NotAFinding', 'Open', 'Not_Applicable', 'Not_Reviewed'];
+  const statusLabels = { NotAFinding: 'Not a Finding', Open: 'Open', Not_Applicable: 'Not Applicable', Not_Reviewed: 'Not Reviewed' };
+  const currentStatusKey = statuses.find(s =>
+    finding.status.replace(/\s/g, '').toLowerCase().includes(s.replace(/_/g, '').toLowerCase())
+  ) || 'Not_Reviewed';
+
+  const overlay = h('div', { className: 'modal-overlay' },
+    h('div', { className: 'modal', style: 'max-width: 600px' },
+      h('h3', {}, `${finding.vuln_id} — ${finding.title.substring(0, 60)}`),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Status'),
+        h('select', { className: 'form-select', id: 'edit-status' },
+          ...statuses.map(s => {
+            const opt = h('option', { value: s }, statusLabels[s] || s);
+            if (s === currentStatusKey) opt.selected = true;
+            return opt;
+          }),
+        ),
+      ),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Finding Details'),
+        h('textarea', {
+          className: 'form-input', id: 'edit-details', rows: '4',
+          style: 'resize: vertical; min-height: 80px',
+        }, finding.finding_details || ''),
+      ),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Comments'),
+        h('textarea', {
+          className: 'form-input', id: 'edit-comments', rows: '3',
+          style: 'resize: vertical; min-height: 60px',
+        }, finding.comments || ''),
+      ),
+      h('div', { className: 'btn-group', style: 'justify-content: flex-end' },
+        h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, 'Cancel'),
+        h('button', { className: 'btn btn-primary', onClick: async () => {
+          const status = document.getElementById('edit-status')?.value;
+          const details = document.getElementById('edit-details')?.value;
+          const comments = document.getElementById('edit-comments')?.value;
+          try {
+            await api(`/checklists/${checklistId}/findings/${finding.vuln_id}`, {
+              method: 'PATCH',
+              body: JSON.stringify({ status, finding_details: details, comments }),
+            });
+            overlay.remove();
+            toast('Finding updated', 'success');
+            viewChecklist(checklistId); // Reload.
+          } catch (e) {
+            toast(`Save failed: ${e.message}`, 'error');
+          }
+        }}, 'Save'),
+      ),
+    ),
+  );
+  document.body.appendChild(overlay);
+}
+
+// ---------------------------------------------------------------------------
+// Remote Scan (SSH/WinRM)
+// ---------------------------------------------------------------------------
+async function loadRemoteScan() {
+  try {
+    const benchmarks = await api('/library/benchmarks');
+    const options = benchmarks.map(b =>
+      h('option', { value: b.id }, `${b.id} (${b.rule_count} rules)`),
+    );
+
+    return h('div', { className: 'card', style: 'margin-top: 20px' },
+      h('div', { className: 'card-header' }, h('h2', {}, 'Remote Scan')),
+      h('p', { style: 'color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem' },
+        'Connect to a remote host via SSH (Linux/network) or WinRM (Windows) to collect data and evaluate.',
+      ),
+      h('div', { className: 'grid-2' },
+        h('div', {},
+          h('div', { className: 'form-group' },
+            h('label', { className: 'form-label' }, 'Protocol'),
+            h('select', { className: 'form-select', id: 'scan-protocol' },
+              h('option', { value: 'ssh' }, 'SSH (Linux / Network)'),
+              h('option', { value: 'winrm' }, 'WinRM (Windows)'),
+            ),
+          ),
+          h('div', { className: 'form-group' },
+            h('label', { className: 'form-label' }, 'Host'),
+            h('input', { className: 'form-input', id: 'scan-host', type: 'text', placeholder: '10.0.1.50' }),
+          ),
+          h('div', { className: 'form-group' },
+            h('label', { className: 'form-label' }, 'Username'),
+            h('input', { className: 'form-input', id: 'scan-user', type: 'text', placeholder: 'admin' }),
+          ),
+          h('div', { className: 'form-group' },
+            h('label', { className: 'form-label' }, 'Password'),
+            h('input', { className: 'form-input', id: 'scan-pass', type: 'password' }),
+          ),
+        ),
+        h('div', {},
+          h('div', { className: 'form-group' },
+            h('label', { className: 'form-label' }, 'STIG Benchmark'),
+            benchmarks.length
+              ? h('select', { className: 'form-select', id: 'scan-stig' },
+                  h('option', { value: '' }, 'Select...'), ...options)
+              : h('p', { style: 'color: var(--text-muted)' }, 'No benchmarks. Import content first.'),
+          ),
+          h('div', { className: 'form-group' },
+            h('label', { className: 'form-label' }, 'Port (optional)'),
+            h('input', { className: 'form-input', id: 'scan-port', type: 'number', placeholder: '22 / 5985' }),
+          ),
+          h('button', { className: 'btn btn-primary', style: 'margin-top: 24px', onClick: runRemoteScan }, 'Scan & Evaluate'),
+        ),
+      ),
+    );
+  } catch (_) {
+    return h('div', {});
+  }
+}
+
+async function runRemoteScan() {
+  const protocol = document.getElementById('scan-protocol')?.value;
+  const host = document.getElementById('scan-host')?.value;
+  const user = document.getElementById('scan-user')?.value;
+  const pass = document.getElementById('scan-pass')?.value;
+  const stigId = document.getElementById('scan-stig')?.value;
+  const port = document.getElementById('scan-port')?.value;
+
+  if (!host || !user || !stigId) {
+    toast('Fill in host, username, and STIG', 'error');
+    return;
+  }
+
+  toast(`Scanning ${host} via ${protocol.toUpperCase()}...`, 'info');
+
+  try {
+    let result;
+    if (protocol === 'ssh') {
+      result = await api('/scan/ssh', {
+        method: 'POST',
+        body: JSON.stringify({
+          host, username: user, stig_id: stigId,
+          port: port ? parseInt(port) : null,
+          auth: { type: 'password', password: pass },
+        }),
+      });
+    } else {
+      result = await api('/scan/winrm', {
+        method: 'POST',
+        body: JSON.stringify({
+          host, username: user, password: pass, stig_id: stigId,
+          port: port ? parseInt(port) : null,
+        }),
+      });
+    }
+    toast(
+      `Scan complete: ${result.checks_executed} checks, ${result.compliance_pct.toFixed(1)}% compliance`,
+      'success',
+    );
+    viewChecklist(result.id);
+  } catch (e) {
+    toast(`Scan failed: ${e.message}`, 'error');
+  }
+}
+
 // Import Page
 // ---------------------------------------------------------------------------
 function loadImport() {

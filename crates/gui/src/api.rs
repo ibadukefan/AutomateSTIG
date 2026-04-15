@@ -56,6 +56,9 @@ pub fn routes() -> Router<AppState> {
         .route("/agent/config", get(get_agent_config))
         .route("/agent/config", post(set_agent_config))
         .route("/agent/drift/{id}", get(get_drift_report))
+        // Remote scanning
+        .route("/scan/ssh", post(scan_ssh))
+        .route("/scan/winrm", post(scan_winrm))
         // Export
         .route("/export/ckl/{id}", get(export_ckl))
         .route("/export/cklb/{id}", get(export_cklb))
@@ -1308,6 +1311,170 @@ async fn get_drift_report(
             "has_changes": false,
         })),
     }
+}
+
+// ---------------------------------------------------------------------------
+// Remote Scanning
+// ---------------------------------------------------------------------------
+
+#[derive(Deserialize)]
+struct SshScanRequest {
+    host: String,
+    port: Option<u16>,
+    username: String,
+    auth: crate::ssh::SshAuth,
+    stig_id: String,
+}
+
+async fn scan_ssh(
+    State(state): State<AppState>,
+    Json(req): Json<SshScanRequest>,
+) -> Json<serde_json::Value> {
+    let ssh_config = crate::ssh::SshConfig {
+        host: req.host.clone(),
+        port: req.port.unwrap_or(22),
+        username: req.username,
+        auth: req.auth,
+        timeout_secs: 30,
+    };
+
+    // Collect data via SSH.
+    let raw_outputs = match crate::ssh::collect_linux_data(&ssh_config).await {
+        Ok(data) => data,
+        Err(e) => return api_error(&format!("SSH collection failed: {}", e)),
+    };
+
+    let hostname = raw_outputs
+        .get("hostname")
+        .map(|h| h.trim().to_string())
+        .unwrap_or_else(|| req.host.clone());
+
+    // Assemble into SystemData.
+    let system_data = automatestig_core::remote::assemble_system_data(
+        automatestig_core::checks::CheckPlatform::Linux,
+        &hostname,
+        &raw_outputs,
+    );
+
+    // Load check pack and evaluate.
+    evaluate_with_system_data(&state, &req.stig_id, &hostname, &system_data)
+}
+
+#[derive(Deserialize)]
+struct WinrmScanRequest {
+    host: String,
+    port: Option<u16>,
+    username: String,
+    password: String,
+    use_https: Option<bool>,
+    stig_id: String,
+}
+
+async fn scan_winrm(
+    State(state): State<AppState>,
+    Json(req): Json<WinrmScanRequest>,
+) -> Json<serde_json::Value> {
+    let winrm_config = crate::winrm::WinrmConfig {
+        host: req.host.clone(),
+        port: req.port.unwrap_or(5985),
+        username: req.username,
+        password: req.password,
+        use_https: req.use_https.unwrap_or(false),
+        verify_tls: true,
+        timeout_secs: 60,
+    };
+
+    let raw_outputs = match crate::winrm::collect_windows_data(&winrm_config).await {
+        Ok(data) => data,
+        Err(e) => return api_error(&format!("WinRM collection failed: {}", e)),
+    };
+
+    let hostname = raw_outputs
+        .get("hostname")
+        .map(|h| h.trim().to_string())
+        .unwrap_or_else(|| req.host.clone());
+
+    let system_data = automatestig_core::remote::assemble_system_data(
+        automatestig_core::checks::CheckPlatform::Windows,
+        &hostname,
+        &raw_outputs,
+    );
+
+    evaluate_with_system_data(&state, &req.stig_id, &hostname, &system_data)
+}
+
+/// Evaluate collected SystemData against check packs and STIG benchmark.
+fn evaluate_with_system_data(
+    state: &AppState,
+    stig_id: &str,
+    hostname: &str,
+    system_data: &automatestig_core::checks::SystemData,
+) -> Json<serde_json::Value> {
+    // Load benchmark.
+    let library = match state.library() {
+        Ok(l) => l,
+        Err(e) => return api_error(&e.to_string()),
+    };
+
+    let benchmark = match library.load_benchmark(stig_id) {
+        Ok(b) => b,
+        Err(e) => return api_error(&format!("Benchmark not found: {}", e)),
+    };
+
+    // Load check packs from plugins directory.
+    let mut plugin_registry = automatestig_core::plugins::PluginRegistry::new();
+    let plugins_dir = state.inner.library_path.join("../plugins");
+    let _ = plugin_registry.load_from_directory(&plugins_dir);
+
+    // Also try loading from the content/check_packs directory.
+    let content_dir = std::path::Path::new("content/check_packs");
+    let _ = plugin_registry.load_from_directory(content_dir);
+
+    // Execute checks.
+    let check_results: Vec<automatestig_core::checks::CheckResult> = plugin_registry
+        .checks_for_stig(stig_id)
+        .iter()
+        .map(|check_def| automatestig_core::checks::executor::execute_check(check_def, system_data))
+        .collect();
+
+    // Create checklist from benchmark + check results.
+    let asset = Asset::new(hostname);
+    let engine = automatestig_core::engine::EvaluationEngine::with_defaults();
+    let mut checklist = match engine.evaluate(&benchmark, &asset, None, &[]) {
+        Ok(cl) => cl,
+        Err(e) => return api_error(&format!("Evaluation failed: {}", e)),
+    };
+
+    // Apply check results to findings.
+    for cr in &check_results {
+        if let Some(finding) = checklist.find_by_vuln_id_mut(&cr.vuln_id) {
+            finding.status = cr.to_finding_status();
+            finding.source = automatestig_core::models::finding::FindingSource::Automated;
+            finding.finding_details = cr.evidence.clone();
+            finding.evaluated_at = chrono::Utc::now();
+            finding.evaluated_by = format!("AutomateSTIG {}", env!("CARGO_PKG_VERSION"));
+        }
+    }
+
+    checklist.touch();
+
+    let s = checklist.summary();
+    let db = state.db();
+    let _ = db.save_checklist(&checklist);
+    let _ = db.log_evaluation(&checklist, "remote-scan", Some(hostname));
+
+    api_ok(serde_json::json!({
+        "id": checklist.id.to_string(),
+        "hostname": hostname,
+        "stig_id": stig_id,
+        "total": s.total,
+        "open": s.open,
+        "not_a_finding": s.not_a_finding,
+        "not_reviewed": s.not_reviewed,
+        "compliance_pct": s.compliance_pct(),
+        "checks_executed": check_results.len(),
+        "checks_passed": check_results.iter().filter(|r| r.passed).count(),
+    }))
 }
 
 // ---------------------------------------------------------------------------

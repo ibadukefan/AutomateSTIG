@@ -6,8 +6,10 @@
 mod api;
 pub mod disa;
 pub mod secrets;
+pub mod ssh;
 mod state;
 pub mod stigman;
+pub mod winrm;
 
 use std::net::SocketAddr;
 
