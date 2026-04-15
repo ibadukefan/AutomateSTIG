@@ -6,6 +6,7 @@
 mod api;
 pub mod disa;
 mod state;
+pub mod stigman;
 
 use std::net::SocketAddr;
 

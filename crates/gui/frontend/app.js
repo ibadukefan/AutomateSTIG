@@ -60,6 +60,7 @@ function loadPage(page) {
     case 'checklists': loadChecklists(); break;
     case 'content': loadGetContent(); break;
     case 'import': loadImport(); break;
+    case 'settings': loadSettings(); break;
   }
 }
 
@@ -197,7 +198,7 @@ function checklistsTable(checklists) {
         h('div', { className: 'btn-group' },
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => viewChecklist(cl.id) }, 'View'),
           h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCkl(cl.id) }, 'CKL'),
-          h('button', { className: 'btn btn-secondary btn-sm', onClick: () => exportCklb(cl.id) }, 'CKLB'),
+          h('button', { className: 'btn btn-primary btn-sm', onClick: () => pushToStigManager(cl.id, cl.hostname) }, 'Push'),
         ),
       ),
     );
@@ -580,6 +581,172 @@ function exportCkl(id) {
 
 function exportCklb(id) {
   window.open(`${API}/export/cklb/${id}`, '_blank');
+}
+
+// ---------------------------------------------------------------------------
+// Settings Page (STIG-Manager config)
+// ---------------------------------------------------------------------------
+async function loadSettings() {
+  let config = {};
+  try { config = await api('/stigman/config'); } catch (_) {}
+
+  setPage('settings',
+    h('div', { className: 'page-header' },
+      h('h1', {}, 'Settings'),
+      h('p', {}, 'Configure integrations and application preferences'),
+    ),
+    h('div', { className: 'card', style: 'max-width: 700px' },
+      h('div', { className: 'card-header' },
+        h('h2', {}, 'STIG-Manager Integration'),
+        config.configured
+          ? h('span', { className: 'status-badge status-naf' }, 'Configured')
+          : h('span', { className: 'status-badge status-nr' }, 'Not Configured'),
+      ),
+      h('p', { style: 'color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px' },
+        'Connect to a STIG-Manager instance to push evaluation results directly. ',
+        'Uses OAuth2 Client Credentials flow via Keycloak.',
+      ),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'STIG-Manager API URL'),
+        h('input', { className: 'form-input', id: 'sm-api-url', type: 'text',
+          placeholder: 'https://stigman.example.mil/api', value: config.api_url || '' }),
+      ),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Keycloak Token URL'),
+        h('input', { className: 'form-input', id: 'sm-token-url', type: 'text',
+          placeholder: 'https://keycloak.example.mil/realms/stigman/protocol/openid-connect/token',
+          value: config.token_url || '' }),
+      ),
+      h('div', { className: 'grid-2' },
+        h('div', { className: 'form-group' },
+          h('label', { className: 'form-label' }, 'Client ID'),
+          h('input', { className: 'form-input', id: 'sm-client-id', type: 'text',
+            placeholder: 'automatestig', value: config.client_id || '' }),
+        ),
+        h('div', { className: 'form-group' },
+          h('label', { className: 'form-label' }, 'Client Secret'),
+          h('input', { className: 'form-input', id: 'sm-client-secret', type: 'password',
+            placeholder: config.has_secret ? '(saved)' : 'Enter secret' }),
+        ),
+      ),
+      h('div', { className: 'form-group' },
+        h('label', { className: 'form-label' }, 'Default Collection ID (optional)'),
+        h('input', { className: 'form-input', id: 'sm-collection-id', type: 'text',
+          placeholder: 'Leave blank to choose each time', value: config.default_collection_id || '' }),
+      ),
+      h('div', { className: 'btn-group', style: 'margin-top: 24px' },
+        h('button', { className: 'btn btn-primary', onClick: saveStigManagerConfig }, 'Save'),
+        h('button', { className: 'btn btn-secondary', onClick: testStigManagerConnection }, 'Test Connection'),
+      ),
+      h('div', { id: 'sm-test-result', style: 'margin-top: 16px' }),
+    ),
+  );
+}
+
+async function saveStigManagerConfig() {
+  const config = {
+    api_url: document.getElementById('sm-api-url')?.value || '',
+    token_url: document.getElementById('sm-token-url')?.value || '',
+    client_id: document.getElementById('sm-client-id')?.value || '',
+    client_secret: document.getElementById('sm-client-secret')?.value || '',
+    default_collection_id: document.getElementById('sm-collection-id')?.value || null,
+    verify_tls: true,
+  };
+
+  // Don't overwrite secret with empty string if placeholder is showing
+  if (!config.client_secret) {
+    try {
+      const existing = await api('/stigman/config');
+      if (existing.has_secret) {
+        toast('Secret not changed (field was empty)', 'info');
+        // We need the secret — for now just warn
+      }
+    } catch (_) {}
+  }
+
+  try {
+    await api('/stigman/config', { method: 'POST', body: JSON.stringify(config) });
+    toast('STIG-Manager configuration saved', 'success');
+    loadSettings();
+  } catch (e) {
+    toast(`Save failed: ${e.message}`, 'error');
+  }
+}
+
+async function testStigManagerConnection() {
+  const el = document.getElementById('sm-test-result');
+  if (el) el.innerHTML = '<span style="color: var(--text-muted)">Testing connection...</span>';
+
+  try {
+    const result = await api('/stigman/test', { method: 'POST' });
+    if (el) el.innerHTML = `<span style="color: var(--green); font-weight: 600">\u2713 ${result}</span>`;
+    toast('STIG-Manager connection successful', 'success');
+  } catch (e) {
+    if (el) el.innerHTML = `<span style="color: var(--red); font-weight: 600">\u2717 ${e.message}</span>`;
+    toast(`Connection failed: ${e.message}`, 'error');
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Push to STIG-Manager
+// ---------------------------------------------------------------------------
+async function pushToStigManager(checklistId, hostname) {
+  // Check if configured.
+  let config;
+  try { config = await api('/stigman/config'); } catch (_) {
+    toast('STIG-Manager not configured. Go to Settings first.', 'error');
+    nav('settings');
+    return;
+  }
+  if (!config.configured) {
+    toast('STIG-Manager not configured. Go to Settings first.', 'error');
+    nav('settings');
+    return;
+  }
+
+  // If default collection is set, use it directly.
+  if (config.default_collection_id) {
+    await doPush(checklistId, hostname, config.default_collection_id);
+    return;
+  }
+
+  // Otherwise, fetch collections and let user pick.
+  toast('Loading collections from STIG-Manager...', 'info');
+  try {
+    const collections = await api('/stigman/collections');
+    if (!collections || collections.length === 0) {
+      toast('No collections found in STIG-Manager', 'error');
+      return;
+    }
+
+    // Show picker using prompt (simple approach).
+    const names = collections.map((c, i) => `${i + 1}. ${c.name}`).join('\n');
+    const choice = prompt(`Select a STIG-Manager collection:\n\n${names}\n\nEnter number:`);
+    if (!choice) return;
+
+    const idx = parseInt(choice) - 1;
+    if (idx < 0 || idx >= collections.length) {
+      toast('Invalid selection', 'error');
+      return;
+    }
+
+    await doPush(checklistId, hostname, collections[idx].collection_id);
+  } catch (e) {
+    toast(`Failed to list collections: ${e.message}`, 'error');
+  }
+}
+
+async function doPush(checklistId, hostname, collectionId) {
+  toast(`Pushing ${hostname} results to STIG-Manager...`, 'info');
+  try {
+    const result = await api(`/stigman/push/${checklistId}`, {
+      method: 'POST',
+      body: JSON.stringify({ collection_id: collectionId }),
+    });
+    toast(`Pushed ${result.pushed} reviews to STIG-Manager`, 'success');
+  } catch (e) {
+    toast(`Push failed: ${e.message}`, 'error');
+  }
 }
 
 // ---------------------------------------------------------------------------

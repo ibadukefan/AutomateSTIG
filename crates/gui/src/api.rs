@@ -39,6 +39,13 @@ pub fn routes() -> Router<AppState> {
         .route("/disa/check-updates", get(disa_check_updates))
         // Offline pack for air-gapped transfer
         .route("/offline-pack", get(generate_offline_pack))
+        // STIG-Manager integration
+        .route("/stigman/config", get(stigman_get_config))
+        .route("/stigman/config", post(stigman_set_config))
+        .route("/stigman/test", post(stigman_test_connection))
+        .route("/stigman/collections", get(stigman_list_collections))
+        .route("/stigman/collections/{cid}/assets", get(stigman_list_assets))
+        .route("/stigman/push/{checklist_id}", post(stigman_push_checklist))
         // Export
         .route("/export/ckl/{id}", get(export_ckl))
         .route("/export/cklb/{id}", get(export_cklb))
@@ -751,6 +758,195 @@ async fn generate_offline_pack(
         data,
     )
         .into_response()
+}
+
+// ---------------------------------------------------------------------------
+// STIG-Manager Integration
+// ---------------------------------------------------------------------------
+
+/// Get current STIG-Manager configuration.
+async fn stigman_get_config(State(state): State<AppState>) -> Json<serde_json::Value> {
+    let db = state.db();
+    let config = load_stigman_config(&db);
+    api_ok(serde_json::json!({
+        "configured": config.is_configured(),
+        "api_url": config.api_url,
+        "token_url": config.token_url,
+        "client_id": config.client_id,
+        "has_secret": !config.client_secret.is_empty(),
+        "default_collection_id": config.default_collection_id,
+        "verify_tls": config.verify_tls,
+    }))
+}
+
+/// Save STIG-Manager configuration.
+async fn stigman_set_config(
+    State(state): State<AppState>,
+    Json(body): Json<crate::stigman::StigManagerConfig>,
+) -> Json<serde_json::Value> {
+    let db = state.db();
+    match serde_json::to_string(&body) {
+        Ok(json) => {
+            if let Err(e) = db.set_config("stigman_config", &json) {
+                return api_error(&format!("Failed to save config: {}", e));
+            }
+            api_ok("Configuration saved")
+        }
+        Err(e) => api_error(&format!("Serialization error: {}", e)),
+    }
+}
+
+/// Test STIG-Manager connection.
+async fn stigman_test_connection(State(state): State<AppState>) -> Json<serde_json::Value> {
+    let config = {
+        let db = state.db();
+        load_stigman_config(&db)
+    };
+    if !config.is_configured() {
+        return api_error("STIG-Manager is not configured");
+    }
+
+    let client = match crate::stigman::StigManagerClient::new(config) {
+        Ok(c) => c,
+        Err(e) => return api_error(&e),
+    };
+
+    match client.test_connection().await {
+        Ok(msg) => api_ok(msg),
+        Err(e) => api_error(&e),
+    }
+}
+
+/// List collections from STIG-Manager.
+async fn stigman_list_collections(State(state): State<AppState>) -> Json<serde_json::Value> {
+    let config = {
+        let db = state.db();
+        load_stigman_config(&db)
+    };
+    if !config.is_configured() {
+        return api_error("STIG-Manager is not configured");
+    }
+
+    let client = match crate::stigman::StigManagerClient::new(config) {
+        Ok(c) => c,
+        Err(e) => return api_error(&e),
+    };
+
+    match client.list_collections().await {
+        Ok(collections) => api_ok(collections),
+        Err(e) => api_error(&e),
+    }
+}
+
+/// List assets in a STIG-Manager collection.
+async fn stigman_list_assets(
+    State(state): State<AppState>,
+    axum::extract::Path(cid): axum::extract::Path<String>,
+) -> Json<serde_json::Value> {
+    let config = {
+        let db = state.db();
+        load_stigman_config(&db)
+    };
+    if !config.is_configured() {
+        return api_error("STIG-Manager is not configured");
+    }
+
+    let client = match crate::stigman::StigManagerClient::new(config) {
+        Ok(c) => c,
+        Err(e) => return api_error(&e),
+    };
+
+    match client.list_assets(&cid).await {
+        Ok(assets) => api_ok(assets),
+        Err(e) => api_error(&e),
+    }
+}
+
+/// Push a checklist's results to STIG-Manager.
+#[derive(Deserialize)]
+struct PushRequest {
+    collection_id: String,
+    asset_id: Option<String>,
+}
+
+async fn stigman_push_checklist(
+    State(state): State<AppState>,
+    axum::extract::Path(checklist_id): axum::extract::Path<String>,
+    Json(req): Json<PushRequest>,
+) -> Json<serde_json::Value> {
+    // Load the checklist.
+    let checklist = {
+        let db = state.db();
+        match db.load_checklist(&checklist_id) {
+            Ok(cl) => cl,
+            Err(e) => return api_error(&format!("Checklist not found: {}", e)),
+        }
+    };
+
+    let config = {
+        let db = state.db();
+        load_stigman_config(&db)
+    };
+
+    if !config.is_configured() {
+        return api_error("STIG-Manager is not configured");
+    }
+
+    let client = match crate::stigman::StigManagerClient::new(config) {
+        Ok(c) => c,
+        Err(e) => return api_error(&e),
+    };
+
+    // If no asset_id provided, try to create the asset.
+    let asset_id = match req.asset_id {
+        Some(id) => id,
+        None => {
+            match client
+                .create_asset(
+                    &req.collection_id,
+                    &checklist.asset.hostname,
+                    checklist.asset.fqdn.as_deref(),
+                    checklist.asset.ip_address.as_deref(),
+                )
+                .await
+            {
+                Ok(asset) => asset.asset_id,
+                Err(e) => return api_error(&format!("Failed to create asset: {}", e)),
+            }
+        }
+    };
+
+    // Convert findings to STIG-Manager reviews.
+    let reviews = crate::stigman::StigManagerClient::checklist_to_reviews(&checklist);
+    let review_count = reviews.len();
+
+    // Push to STIG-Manager.
+    match client
+        .push_reviews(
+            &req.collection_id,
+            &asset_id,
+            &checklist.stig_info.stig_id,
+            reviews,
+        )
+        .await
+    {
+        Ok(result) => api_ok(serde_json::json!({
+            "pushed": review_count,
+            "asset_id": asset_id,
+            "collection_id": req.collection_id,
+            "result": result,
+        })),
+        Err(e) => api_error(&format!("Push failed: {}", e)),
+    }
+}
+
+/// Load STIG-Manager config from the database.
+fn load_stigman_config(db: &automatestig_storage::Database) -> crate::stigman::StigManagerConfig {
+    db.get_config("stigman_config")
+        .ok()
+        .flatten()
+        .and_then(|json| serde_json::from_str(&json).ok())
+        .unwrap_or_default()
 }
 
 // ---------------------------------------------------------------------------
