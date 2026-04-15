@@ -1,0 +1,112 @@
+{
+  "stig_id": "WebLogic_12c_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-235951",
+      "platform": "linux",
+      "check": { "type": "command", "command": "java weblogic.WLST -e \"connect(); cd('/SecurityConfiguration'); ls(); disconnect()\"", "pattern": "ConnectionFilter", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "WebLogic must have a connection filter configured"
+    },
+    {
+      "vuln_id": "V-235952",
+      "platform": "linux",
+      "check": { "type": "command", "command": "java weblogic.WLST -e \"connect(); cd('/Servers/AdminServer/SSL/AdminServer'); get('Enabled'); disconnect()\"", "pattern": "true", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "WebLogic AdminServer must have SSL enabled"
+    },
+    {
+      "vuln_id": "V-235953",
+      "platform": "linux",
+      "check": { "type": "command", "command": "java weblogic.WLST -e \"connect(); cd('/Servers/AdminServer/SSL/AdminServer'); get('MinimumTLSProtocolVersion'); disconnect()\"", "pattern": "1\\.2", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "WebLogic must use TLS 1.2 as minimum protocol version"
+    },
+    {
+      "vuln_id": "V-235954",
+      "platform": "linux",
+      "check": { "type": "command", "command": "java weblogic.WLST -e \"connect(); cd('/SecurityConfiguration'); get('NodeManagerUsername'); disconnect()\"", "pattern": "\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "WebLogic Node Manager must have a username configured"
+    },
+    {
+      "vuln_id": "V-235955",
+      "platform": "linux",
+      "check": { "type": "command", "command": "java weblogic.WLST -e \"connect(); cd('/Servers/AdminServer/Log/AdminServer'); get('LoggingEnabled'); disconnect()\"", "pattern": "true", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "WebLogic server logging must be enabled"
+    },
+    {
+      "vuln_id": "V-235956",
+      "platform": "linux",
+      "check": { "type": "command", "command": "java weblogic.WLST -e \"connect(); cd('/Servers/AdminServer/Log/AdminServer'); get('LogFileSeverity'); disconnect()\"", "pattern": "Info|Debug|Warning", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "WebLogic log file severity must be Info or higher"
+    },
+    {
+      "vuln_id": "V-235957",
+      "platform": "linux",
+      "check": { "type": "command", "command": "java weblogic.WLST -e \"connect(); cd('/SecurityConfiguration'); get('AuditProviders'); disconnect()\"", "pattern": "\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "WebLogic must have an audit provider configured"
+    },
+    {
+      "vuln_id": "V-235958",
+      "platform": "linux",
+      "check": { "type": "command", "command": "java weblogic.WLST -e \"connect(); cd('/Servers/AdminServer/WebServer/AdminServer'); get('SendServerHeaderEnabled'); disconnect()\"", "pattern": "false", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "WebLogic must not send server header information"
+    },
+    {
+      "vuln_id": "V-235959",
+      "platform": "linux",
+      "check": { "type": "command", "command": "java weblogic.WLST -e \"connect(); cd('/Servers/AdminServer'); get('SessionTimeout'); disconnect()\"", "pattern": "\\d+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "WebLogic session timeout must be configured"
+    },
+    {
+      "vuln_id": "V-235960",
+      "platform": "linux",
+      "check": { "type": "command", "command": "java weblogic.WLST -e \"connect(); cd('/SecurityConfiguration'); get('Realms'); disconnect()\"", "pattern": "myrealm", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "WebLogic must have a security realm configured"
+    },
+    {
+      "vuln_id": "V-235961",
+      "platform": "linux",
+      "check": { "type": "command", "command": "java weblogic.WLST -e \"connect(); cd('/Servers/AdminServer'); get('ListenPort'); disconnect()\"", "pattern": "\\d+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "WebLogic AdminServer listen port must be configured"
+    },
+    {
+      "vuln_id": "V-235962",
+      "platform": "linux",
+      "check": { "type": "command", "command": "java weblogic.WLST -e \"connect(); cd('/Servers/AdminServer/SSL/AdminServer'); get('HostnameVerificationIgnored'); disconnect()\"", "pattern": "false", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "WebLogic must not ignore hostname verification for SSL"
+    },
+    {
+      "vuln_id": "V-235963",
+      "platform": "linux",
+      "check": { "type": "command", "command": "java weblogic.WLST -e \"connect(); cd('/SecurityConfiguration'); get('EnforceStrictURLPattern'); disconnect()\"", "pattern": "true", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "WebLogic must enforce strict URL pattern matching"
+    },
+    {
+      "vuln_id": "V-235964",
+      "platform": "linux",
+      "check": { "type": "command", "command": "java weblogic.WLST -e \"connect(); cd('/Servers/AdminServer'); get('StagingMode'); disconnect()\"", "pattern": "stage|nostage", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "WebLogic staging mode must be explicitly configured"
+    },
+    {
+      "vuln_id": "V-235965",
+      "platform": "linux",
+      "check": { "type": "file_permission", "path": "/opt/weblogic/user_projects/domains/base_domain/config/config.xml", "owner": "oracle", "group": null, "mode": "0600" },
+      "expected": { "type": "is_true" },
+      "description": "WebLogic config.xml must be mode 0600 and owned by oracle user"
+    }
+  ]
+}
