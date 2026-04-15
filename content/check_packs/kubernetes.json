@@ -1,0 +1,189 @@
+{
+  "stig_id": "Kubernetes_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-242376",
+      "platform": "linux",
+      "check": { "type": "command", "command": "kubectl get clusterrolebinding -o jsonpath='{.items[?(@.subjects[0].name==\"system:anonymous\")].metadata.name}'", "pattern": ".+", "is_regex": true },
+      "expected": { "type": "is_false" },
+      "description": "Anonymous authentication must not have any cluster role bindings"
+    },
+    {
+      "vuln_id": "V-242377",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--anonymous-auth=false", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes API server must have anonymous authentication disabled"
+    },
+    {
+      "vuln_id": "V-242378",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--authorization-mode=.*RBAC", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes API server must use RBAC authorization mode"
+    },
+    {
+      "vuln_id": "V-242379",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--authorization-mode=.*Node", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes API server must use Node authorization mode"
+    },
+    {
+      "vuln_id": "V-242380",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--audit-log-path=", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes API server must have audit logging path configured"
+    },
+    {
+      "vuln_id": "V-242381",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--audit-log-maxage=\\d+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes audit log maximum age must be configured"
+    },
+    {
+      "vuln_id": "V-242382",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--audit-log-maxbackup=\\d+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes audit log maximum backup count must be configured"
+    },
+    {
+      "vuln_id": "V-242383",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--audit-log-maxsize=\\d+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes audit log maximum size must be configured"
+    },
+    {
+      "vuln_id": "V-242384",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--audit-policy-file=", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes audit policy file must be configured"
+    },
+    {
+      "vuln_id": "V-242385",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--tls-cert-file=", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes API server TLS certificate must be configured"
+    },
+    {
+      "vuln_id": "V-242386",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--tls-private-key-file=", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes API server TLS private key must be configured"
+    },
+    {
+      "vuln_id": "V-242387",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--client-ca-file=", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes API server client CA file must be configured"
+    },
+    {
+      "vuln_id": "V-242388",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--etcd-cafile=", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes API server must verify etcd server certificate"
+    },
+    {
+      "vuln_id": "V-242389",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--etcd-certfile=", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes API server must present a client certificate to etcd"
+    },
+    {
+      "vuln_id": "V-242390",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--etcd-keyfile=", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes API server must present a client key to etcd"
+    },
+    {
+      "vuln_id": "V-242391",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--encryption-provider-config=", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes etcd encryption at rest must be configured"
+    },
+    {
+      "vuln_id": "V-242392",
+      "platform": "linux",
+      "check": { "type": "command", "command": "kubectl get networkpolicies --all-namespaces", "pattern": "NAME", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes network policies must be defined"
+    },
+    {
+      "vuln_id": "V-242393",
+      "platform": "linux",
+      "check": { "type": "command", "command": "kubectl get podsecuritypolicies", "pattern": "NAME|PodSecurity", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes pod security standards must be enforced"
+    },
+    {
+      "vuln_id": "V-242394",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/var/lib/kubelet/config.yaml", "pattern": "authentication:\\s*\\n\\s*anonymous:\\s*\\n\\s*enabled:\\s*false", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Kubelet anonymous authentication must be disabled"
+    },
+    {
+      "vuln_id": "V-242395",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/var/lib/kubelet/config.yaml", "pattern": "tlsCertFile:\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Kubelet TLS certificate must be configured"
+    },
+    {
+      "vuln_id": "V-242396",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/var/lib/kubelet/config.yaml", "pattern": "tlsPrivateKeyFile:\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Kubelet TLS private key must be configured"
+    },
+    {
+      "vuln_id": "V-242397",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/var/lib/kubelet/config.yaml", "pattern": "authorization:\\s*\\n\\s*mode:\\s*Webhook", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Kubelet authorization mode must be set to Webhook"
+    },
+    {
+      "vuln_id": "V-242398",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--service-account-key-file=", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes API server service account key file must be configured"
+    },
+    {
+      "vuln_id": "V-242399",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--insecure-port=0", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Kubernetes API server insecure port must be set to 0 (disabled)"
+    },
+    {
+      "vuln_id": "V-242400",
+      "platform": "linux",
+      "check": {
+        "type": "all",
+        "checks": [
+          { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--anonymous-auth=false", "is_regex": false },
+          { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--authorization-mode=.*RBAC", "is_regex": true },
+          { "type": "file_content", "path": "/etc/kubernetes/manifests/kube-apiserver.yaml", "pattern": "--audit-log-path=", "is_regex": false }
+        ]
+      },
+      "expected": { "type": "all_pass" },
+      "description": "Anonymous auth disabled, RBAC enabled, and audit logging must all be configured"
+    }
+  ]
+}

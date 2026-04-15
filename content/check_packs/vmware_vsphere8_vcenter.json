@@ -1,0 +1,189 @@
+{
+  "stig_id": "VMware_vSphere_8_vCenter_STIG",
+  "platform": "generic",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-258800",
+      "platform": "generic",
+      "check": { "type": "command", "command": "/opt/vmware/bin/sso-config.sh -get_password_policy", "pattern": "Maximum password length:\\s+[0-9]+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSO password policy maximum length must be configured"
+    },
+    {
+      "vuln_id": "V-258801",
+      "platform": "generic",
+      "check": { "type": "command", "command": "/opt/vmware/bin/sso-config.sh -get_password_policy", "pattern": "Minimum password length:\\s+1[5-9]|Minimum password length:\\s+[2-9][0-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSO password policy must require minimum length of 15 characters"
+    },
+    {
+      "vuln_id": "V-258802",
+      "platform": "generic",
+      "check": { "type": "command", "command": "/opt/vmware/bin/sso-config.sh -get_password_policy", "pattern": "Special characters:\\s+[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSO password policy must require at least one special character"
+    },
+    {
+      "vuln_id": "V-258803",
+      "platform": "generic",
+      "check": { "type": "command", "command": "/opt/vmware/bin/sso-config.sh -get_password_policy", "pattern": "Uppercase characters:\\s+[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSO password policy must require at least one uppercase character"
+    },
+    {
+      "vuln_id": "V-258804",
+      "platform": "generic",
+      "check": { "type": "command", "command": "/opt/vmware/bin/sso-config.sh -get_password_policy", "pattern": "Numeric characters:\\s+[1-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSO password policy must require at least one numeric character"
+    },
+    {
+      "vuln_id": "V-258805",
+      "platform": "generic",
+      "check": { "type": "command", "command": "/opt/vmware/bin/sso-config.sh -get_password_policy", "pattern": "Password history:\\s+[5-9]|Password history:\\s+[1-9][0-9]", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSO password history must prohibit reuse of at least 5 previous passwords"
+    },
+    {
+      "vuln_id": "V-258806",
+      "platform": "generic",
+      "check": { "type": "command", "command": "/opt/vmware/bin/sso-config.sh -get_lockout_policy", "pattern": "Maximum failed login attempts:\\s+[1-5]$", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSO lockout must trigger after 5 or fewer failed login attempts"
+    },
+    {
+      "vuln_id": "V-258807",
+      "platform": "generic",
+      "check": { "type": "command", "command": "/opt/vmware/bin/sso-config.sh -get_lockout_policy", "pattern": "Time interval between failures:\\s+[0-9]+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSO lockout failure time interval must be configured"
+    },
+    {
+      "vuln_id": "V-258808",
+      "platform": "generic",
+      "check": { "type": "command", "command": "/opt/vmware/bin/sso-config.sh -get_lockout_policy", "pattern": "Unlock time:\\s+[0-9]+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSO account unlock time must be configured"
+    },
+    {
+      "vuln_id": "V-258809",
+      "platform": "generic",
+      "check": { "type": "command", "command": "cat /etc/vmware/vsphere-ui/webclient.properties | grep session.timeout", "pattern": "session.timeout\\s*=\\s*[1-9][0-9]?$", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "vSphere Client session timeout must be configured"
+    },
+    {
+      "vuln_id": "V-258810",
+      "platform": "generic",
+      "check": { "type": "command", "command": "/opt/vmware/bin/sso-config.sh -get_authn_policy -t vsphere.local", "pattern": "SmartCard Authentication:\\s+true|Certificate Authentication:\\s+true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "SSO must be configured for smart card or certificate-based authentication"
+    },
+    {
+      "vuln_id": "V-258811",
+      "platform": "generic",
+      "check": { "type": "command", "command": "cat /etc/vmware-syslog/syslog.conf", "pattern": "\\*\\.\\*\\s+@@", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "vCenter must forward logs to a remote syslog server over TCP"
+    },
+    {
+      "vuln_id": "V-258812",
+      "platform": "generic",
+      "check": { "type": "command", "command": "cat /etc/chrony.conf", "pattern": "^server\\s+\\S+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "NTP must be configured with an authoritative time source"
+    },
+    {
+      "vuln_id": "V-258813",
+      "platform": "generic",
+      "check": { "type": "command", "command": "systemctl status chronyd", "pattern": "active \\(running\\)", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Chrony NTP daemon must be running"
+    },
+    {
+      "vuln_id": "V-258814",
+      "platform": "generic",
+      "check": { "type": "command", "command": "cat /etc/applmgmt/appliance/filebackup.json", "pattern": "\"schedule\":", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "File-based backup schedule must be configured"
+    },
+    {
+      "vuln_id": "V-258815",
+      "platform": "generic",
+      "check": { "type": "command", "command": "/usr/lib/vmware-vmon/vmon-cli --list", "pattern": "STOPPED", "is_regex": false },
+      "expected": { "type": "is_false" },
+      "description": "All required vCenter services must be running"
+    },
+    {
+      "vuln_id": "V-258816",
+      "platform": "generic",
+      "check": { "type": "command", "command": "cat /etc/vmware/vsphere-ui/webclient.properties | grep show.alarmStatusChangedEvent", "pattern": "show.alarmStatusChangedEvent\\s*=\\s*true", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Alarm status change events must be displayed"
+    },
+    {
+      "vuln_id": "V-258817",
+      "platform": "generic",
+      "check": { "type": "command", "command": "openssl x509 -in /etc/vmware-vpx/ssl/rui.crt -noout -dates", "pattern": "notAfter=", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "vCenter TLS certificate must be valid and not expired"
+    },
+    {
+      "vuln_id": "V-258818",
+      "platform": "generic",
+      "check": { "type": "command", "command": "openssl x509 -in /etc/vmware-vpx/ssl/rui.crt -noout -text | grep 'Signature Algorithm'", "pattern": "sha256|sha384|sha512", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "vCenter TLS certificate must use SHA-256 or stronger signature algorithm"
+    },
+    {
+      "vuln_id": "V-258819",
+      "platform": "generic",
+      "check": { "type": "command", "command": "cat /etc/vmware-vpx/vpxd.cfg | grep -i 'task.maxAge'", "pattern": "task.maxAge", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "vCenter task retention must be configured"
+    },
+    {
+      "vuln_id": "V-258820",
+      "platform": "generic",
+      "check": { "type": "command", "command": "cat /etc/vmware-vpx/vpxd.cfg | grep -i 'event.maxAge'", "pattern": "event.maxAge", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "vCenter event retention must be configured"
+    },
+    {
+      "vuln_id": "V-258821",
+      "platform": "generic",
+      "check": { "type": "command", "command": "cat /etc/vmware-vpx/vpxd.cfg | grep -i 'config.vpxd.filter.hostRescanFilter'", "pattern": "true", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "vCenter must limit host rescan operations"
+    },
+    {
+      "vuln_id": "V-258822",
+      "platform": "generic",
+      "check": { "type": "command", "command": "/usr/lib/vmware-vmon/vmon-cli --list | grep -i plugin", "pattern": "RUNNING", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Required vCenter plugins must be running"
+    },
+    {
+      "vuln_id": "V-258823",
+      "platform": "generic",
+      "check": { "type": "command", "command": "cat /etc/vmware/vsphere-ui/webclient.properties | grep login.banner", "pattern": "login.banner\\s*=\\s*.+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "vSphere Client must display a DoD-approved login banner"
+    },
+    {
+      "vuln_id": "V-258824",
+      "platform": "generic",
+      "check": {
+        "type": "all",
+        "checks": [
+          { "type": "command", "command": "/opt/vmware/bin/sso-config.sh -get_password_policy", "pattern": "Minimum password length:\\s+1[5-9]|Minimum password length:\\s+[2-9][0-9]", "is_regex": true },
+          { "type": "command", "command": "/opt/vmware/bin/sso-config.sh -get_lockout_policy", "pattern": "Maximum failed login attempts:\\s+[1-5]$", "is_regex": true },
+          { "type": "command", "command": "systemctl status chronyd", "pattern": "active \\(running\\)", "is_regex": false }
+        ]
+      },
+      "expected": { "type": "all_pass" },
+      "description": "SSO password policy, lockout policy, and NTP must all be properly configured"
+    }
+  ]
+}

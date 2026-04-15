@@ -1,0 +1,189 @@
+{
+  "stig_id": "Juniper_JunOS_Router_STIG",
+  "platform": "cisco_ios",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-253999",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system login class.*permissions", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "System login classes must be configured with appropriate permissions"
+    },
+    {
+      "vuln_id": "V-254000",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system login retry-options tries-before-disconnect", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Login retry options must limit failed attempts before disconnect"
+    },
+    {
+      "vuln_id": "V-254001",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system login retry-options lockout-period", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Account lockout period must be configured after failed login attempts"
+    },
+    {
+      "vuln_id": "V-254002",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system login password minimum-length", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Minimum password length must be configured"
+    },
+    {
+      "vuln_id": "V-254003",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system services ssh protocol-version v2", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH must be configured to use protocol version 2"
+    },
+    {
+      "vuln_id": "V-254004",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system services ssh root-login deny", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH root login must be denied"
+    },
+    {
+      "vuln_id": "V-254005",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system services ssh connection-limit", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH connection limit must be configured"
+    },
+    {
+      "vuln_id": "V-254006",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system services ssh rate-limit", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "SSH rate limit must be configured to protect against brute force"
+    },
+    {
+      "vuln_id": "V-254007",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system ntp authentication-key", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "NTP authentication key must be configured"
+    },
+    {
+      "vuln_id": "V-254008",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system ntp server.*key", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "NTP server must use authentication"
+    },
+    {
+      "vuln_id": "V-254009",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system ntp trusted-key", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "NTP trusted key must be configured"
+    },
+    {
+      "vuln_id": "V-254010",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system syslog host", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Remote syslog server must be configured"
+    },
+    {
+      "vuln_id": "V-254011",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system syslog file messages any info", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Syslog must log messages at info level or higher"
+    },
+    {
+      "vuln_id": "V-254012",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system syslog time-stamp", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Syslog timestamps must be enabled"
+    },
+    {
+      "vuln_id": "V-254013",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set snmp v3 usm", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "SNMPv3 USM must be configured for authentication and privacy"
+    },
+    {
+      "vuln_id": "V-254014",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set snmp community", "context": null, "should_exist": false },
+      "expected": { "type": "is_true" },
+      "description": "SNMP community strings must not be configured (use SNMPv3)"
+    },
+    {
+      "vuln_id": "V-254015",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system login message", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Login banner must be configured with DoD-approved text"
+    },
+    {
+      "vuln_id": "V-254016",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system login announcement", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Login announcement banner must be configured"
+    },
+    {
+      "vuln_id": "V-254017",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system root-authentication encrypted-password", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Root authentication must use an encrypted password"
+    },
+    {
+      "vuln_id": "V-254018",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system services telnet", "context": null, "should_exist": false },
+      "expected": { "type": "is_true" },
+      "description": "Telnet service must be disabled"
+    },
+    {
+      "vuln_id": "V-254019",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system services finger", "context": null, "should_exist": false },
+      "expected": { "type": "is_true" },
+      "description": "Finger service must be disabled"
+    },
+    {
+      "vuln_id": "V-254020",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set system services web-management http", "context": null, "should_exist": false },
+      "expected": { "type": "is_true" },
+      "description": "HTTP web management must be disabled (use HTTPS only)"
+    },
+    {
+      "vuln_id": "V-254021",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set protocols ospf area.*authentication-type md5", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "OSPF routing authentication must use MD5 or stronger"
+    },
+    {
+      "vuln_id": "V-254022",
+      "platform": "cisco_ios",
+      "check": { "type": "config_line", "pattern": "set firewall family inet filter", "context": null, "should_exist": true },
+      "expected": { "type": "is_true" },
+      "description": "Firewall filters must be configured for traffic control"
+    },
+    {
+      "vuln_id": "V-254023",
+      "platform": "cisco_ios",
+      "check": {
+        "type": "all",
+        "checks": [
+          { "type": "config_line", "pattern": "set system services ssh protocol-version v2", "context": null, "should_exist": true },
+          { "type": "config_line", "pattern": "set system services telnet", "context": null, "should_exist": false },
+          { "type": "config_line", "pattern": "set system services finger", "context": null, "should_exist": false }
+        ]
+      },
+      "expected": { "type": "all_pass" },
+      "description": "SSH v2 must be enabled and insecure services (telnet, finger) must be disabled"
+    }
+  ]
+}

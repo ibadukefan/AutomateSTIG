@@ -1,0 +1,182 @@
+{
+  "stig_id": "PostgreSQL_14_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-259730",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "ssl\\s*=\\s*on", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must have SSL enabled in postgresql.conf"
+    },
+    {
+      "vuln_id": "V-259731",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "ssl_cert_file\\s*=\\s*'\\S+'", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must have ssl_cert_file configured"
+    },
+    {
+      "vuln_id": "V-259732",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "ssl_key_file\\s*=\\s*'\\S+'", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must have ssl_key_file configured"
+    },
+    {
+      "vuln_id": "V-259733",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "ssl_min_protocol_version\\s*=\\s*'TLSv1\\.2'", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must require TLS 1.2 as minimum protocol version"
+    },
+    {
+      "vuln_id": "V-259734",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "password_encryption\\s*=\\s*scram-sha-256", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must use scram-sha-256 for password encryption"
+    },
+    {
+      "vuln_id": "V-259735",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "logging_collector\\s*=\\s*on", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must enable the logging collector"
+    },
+    {
+      "vuln_id": "V-259736",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "log_connections\\s*=\\s*on", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must log all connection attempts"
+    },
+    {
+      "vuln_id": "V-259737",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "log_disconnections\\s*=\\s*on", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must log all disconnections"
+    },
+    {
+      "vuln_id": "V-259738",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "log_line_prefix\\s*=\\s*'.*%m.*%u.*%d.*%p'", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 log_line_prefix must include timestamp, user, database, and PID"
+    },
+    {
+      "vuln_id": "V-259739",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "log_statement\\s*=\\s*'ddl'", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must log DDL statements at minimum"
+    },
+    {
+      "vuln_id": "V-259740",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "log_destination\\s*=\\s*'(stderr|syslog|csvlog)'", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must have log_destination configured"
+    },
+    {
+      "vuln_id": "V-259741",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "log_directory\\s*=\\s*'\\S+'", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must have log_directory configured"
+    },
+    {
+      "vuln_id": "V-259742",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "max_connections\\s*=\\s*\\d+", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must have max_connections explicitly set"
+    },
+    {
+      "vuln_id": "V-259743",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "idle_in_transaction_session_timeout\\s*=\\s*[1-9]\\d*", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must set idle_in_transaction_session_timeout to terminate idle sessions"
+    },
+    {
+      "vuln_id": "V-259744",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "statement_timeout\\s*=\\s*[1-9]\\d*", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must set statement_timeout to prevent long-running queries"
+    },
+    {
+      "vuln_id": "V-259745",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - postgres -c \"psql -t -c \\\"SELECT setting FROM pg_settings WHERE name='shared_preload_libraries';\\\"\"", "pattern": "pgaudit", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must have pgaudit extension loaded in shared_preload_libraries"
+    },
+    {
+      "vuln_id": "V-259746",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - postgres -c \"psql -t -c \\\"SELECT setting FROM pg_settings WHERE name='pgaudit.log';\\\"\"", "pattern": "ddl|write|role|all", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 pgaudit.log must be configured to log DDL and role changes"
+    },
+    {
+      "vuln_id": "V-259747",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/pg_hba.conf", "pattern": "^\\s*host\\s+.*\\s+0\\.0\\.0\\.0/0\\s+", "is_regex": true },
+      "expected": { "type": "matches", "pattern": "^$" },
+      "description": "PostgreSQL 14 pg_hba.conf must not allow unrestricted connections from 0.0.0.0/0"
+    },
+    {
+      "vuln_id": "V-259748",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/pg_hba.conf", "pattern": "^\\s*(local|host)\\s+.*\\s+trust", "is_regex": true },
+      "expected": { "type": "matches", "pattern": "^$" },
+      "description": "PostgreSQL 14 pg_hba.conf must not use trust authentication for any connection"
+    },
+    {
+      "vuln_id": "V-259749",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/pg_hba.conf", "pattern": "^\\s*(local|host)\\s+.*\\s+password\\s*$", "is_regex": true },
+      "expected": { "type": "matches", "pattern": "^$" },
+      "description": "PostgreSQL 14 pg_hba.conf must not use plaintext password authentication"
+    },
+    {
+      "vuln_id": "V-259750",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/pg_hba.conf", "pattern": "^\\s*host.*scram-sha-256", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 pg_hba.conf host entries must use scram-sha-256 authentication"
+    },
+    {
+      "vuln_id": "V-259751",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - postgres -c \"psql -t -c \\\"SELECT count(*) FROM pg_roles WHERE rolsuper AND rolname != 'postgres';\\\"\"", "pattern": "^\\s*0\\s*$", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must not have unauthorized superuser accounts"
+    },
+    {
+      "vuln_id": "V-259752",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - postgres -c \"psql -t -c \\\"SELECT setting FROM pg_settings WHERE name='log_hostname';\\\"\"", "pattern": "on", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must log hostnames for connection auditing"
+    },
+    {
+      "vuln_id": "V-259753",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "log_file_mode\\s*=\\s*0600", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 log files must have restrictive permissions (0600)"
+    },
+    {
+      "vuln_id": "V-259754",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/etc/postgresql/14/main/postgresql.conf", "pattern": "listen_addresses\\s*=\\s*'(localhost|127\\.0\\.0\\.1|\\S+)'", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "PostgreSQL 14 must have listen_addresses explicitly configured"
+    }
+  ]
+}

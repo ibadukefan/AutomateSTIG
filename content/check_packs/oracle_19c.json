@@ -1,0 +1,182 @@
+{
+  "stig_id": "Oracle_Database_19c_STIG",
+  "platform": "linux",
+  "version": "1.0.0",
+  "checks": [
+    {
+      "vuln_id": "V-270490",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT VALUE FROM V\\$PARAMETER WHERE NAME='audit_trail';\nEOF\"", "pattern": "DB|DB,EXTENDED|XML|OS", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c must enable audit_trail to DB, XML, or OS"
+    },
+    {
+      "vuln_id": "V-270491",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT VALUE FROM V\\$PARAMETER WHERE NAME='unified_audit_systemlog';\nEOF\"", "pattern": "TRUE", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c must enable unified audit syslog"
+    },
+    {
+      "vuln_id": "V-270492",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT UNIFIED_AUDIT_TRAIL FROM V\\$OPTION WHERE PARAMETER='Unified Auditing';\nEOF\"", "pattern": "TRUE", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c must have unified auditing enabled"
+    },
+    {
+      "vuln_id": "V-270493",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT VALUE FROM V\\$PARAMETER WHERE NAME='remote_login_passwordfile';\nEOF\"", "pattern": "EXCLUSIVE", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c REMOTE_LOGIN_PASSWORDFILE must be set to EXCLUSIVE"
+    },
+    {
+      "vuln_id": "V-270494",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT TABLESPACE_NAME, ENCRYPTED FROM DBA_TABLESPACES WHERE ENCRYPTED='NO' AND TABLESPACE_NAME NOT IN ('SYSTEM','SYSAUX','TEMP');\nEOF\"", "pattern": "no rows selected", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c user tablespaces must be encrypted (TABLESPACE_ENCRYPTION)"
+    },
+    {
+      "vuln_id": "V-270495",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT VALUE FROM V\\$PARAMETER WHERE NAME='encrypt_new_tablespaces';\nEOF\"", "pattern": "ALWAYS|CLOUD_ONLY", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c must encrypt new tablespaces by default"
+    },
+    {
+      "vuln_id": "V-270496",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT VALUE FROM V\\$PARAMETER WHERE NAME='sec_case_sensitive_logon';\nEOF\"", "pattern": "TRUE", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c must enforce case-sensitive passwords"
+    },
+    {
+      "vuln_id": "V-270497",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT PROFILE, RESOURCE_NAME, LIMIT FROM DBA_PROFILES WHERE RESOURCE_NAME='FAILED_LOGIN_ATTEMPTS' AND LIMIT='UNLIMITED';\nEOF\"", "pattern": "no rows selected", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c must not have FAILED_LOGIN_ATTEMPTS set to UNLIMITED in any profile"
+    },
+    {
+      "vuln_id": "V-270498",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT PROFILE, RESOURCE_NAME, LIMIT FROM DBA_PROFILES WHERE RESOURCE_NAME='PASSWORD_LOCK_TIME' AND LIMIT='UNLIMITED';\nEOF\"", "pattern": "no rows selected", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c must not have PASSWORD_LOCK_TIME set to UNLIMITED in any profile"
+    },
+    {
+      "vuln_id": "V-270499",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT PROFILE, RESOURCE_NAME, LIMIT FROM DBA_PROFILES WHERE RESOURCE_NAME='PASSWORD_LIFE_TIME' AND LIMIT='UNLIMITED';\nEOF\"", "pattern": "no rows selected", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c must not have PASSWORD_LIFE_TIME set to UNLIMITED in any profile"
+    },
+    {
+      "vuln_id": "V-270500",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT PROFILE, RESOURCE_NAME, LIMIT FROM DBA_PROFILES WHERE RESOURCE_NAME='PASSWORD_REUSE_MAX' AND LIMIT='UNLIMITED';\nEOF\"", "pattern": "no rows selected", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c must not have PASSWORD_REUSE_MAX set to UNLIMITED in any profile"
+    },
+    {
+      "vuln_id": "V-270501",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT PROFILE, RESOURCE_NAME, LIMIT FROM DBA_PROFILES WHERE RESOURCE_NAME='PASSWORD_REUSE_TIME' AND LIMIT='UNLIMITED';\nEOF\"", "pattern": "no rows selected", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c must not have PASSWORD_REUSE_TIME set to UNLIMITED in any profile"
+    },
+    {
+      "vuln_id": "V-270502",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT PROFILE, RESOURCE_NAME, LIMIT FROM DBA_PROFILES WHERE RESOURCE_NAME='PASSWORD_GRACE_TIME' AND (LIMIT='UNLIMITED' OR TO_NUMBER(LIMIT)>7);\nEOF\"", "pattern": "no rows selected", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c PASSWORD_GRACE_TIME must be 7 days or less in all profiles"
+    },
+    {
+      "vuln_id": "V-270503",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT PROFILE, RESOURCE_NAME, LIMIT FROM DBA_PROFILES WHERE RESOURCE_NAME='PASSWORD_VERIFY_FUNCTION' AND LIMIT='NULL';\nEOF\"", "pattern": "no rows selected", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c must have PASSWORD_VERIFY_FUNCTION defined for all profiles"
+    },
+    {
+      "vuln_id": "V-270504",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT PROFILE, RESOURCE_NAME, LIMIT FROM DBA_PROFILES WHERE RESOURCE_NAME='IDLE_TIME' AND LIMIT='UNLIMITED';\nEOF\"", "pattern": "no rows selected", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c must not have IDLE_TIME set to UNLIMITED in any profile"
+    },
+    {
+      "vuln_id": "V-270505",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT VALUE FROM V\\$PARAMETER WHERE NAME='sec_max_failed_login_attempts';\nEOF\"", "pattern": "^\\s*[1-5]\\s*$", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c SEC_MAX_FAILED_LOGIN_ATTEMPTS must be 5 or less"
+    },
+    {
+      "vuln_id": "V-270506",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT VALUE FROM V\\$PARAMETER WHERE NAME='os_authent_prefix';\nEOF\"", "pattern": "^\\s*$", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c OS_AUTHENT_PREFIX must be set to an empty string"
+    },
+    {
+      "vuln_id": "V-270507",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT VALUE FROM V\\$PARAMETER WHERE NAME='remote_os_authent';\nEOF\"", "pattern": "FALSE", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c REMOTE_OS_AUTHENT must be set to FALSE"
+    },
+    {
+      "vuln_id": "V-270508",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT VALUE FROM V\\$PARAMETER WHERE NAME='remote_os_roles';\nEOF\"", "pattern": "FALSE", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c REMOTE_OS_ROLES must be set to FALSE"
+    },
+    {
+      "vuln_id": "V-270509",
+      "platform": "linux",
+      "check": { "type": "command", "command": "su - oracle -c \"sqlplus -s / as sysdba <<EOF\nSELECT VALUE FROM V\\$PARAMETER WHERE NAME='sql92_security';\nEOF\"", "pattern": "TRUE", "is_regex": false },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c SQL92_SECURITY must be set to TRUE"
+    },
+    {
+      "vuln_id": "V-270510",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/oracle/product/19c/dbhome_1/network/admin/listener.ora", "pattern": "SECURE_REGISTER_LISTENER\\s*=\\s*\\(IPC\\)", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c listener must use SECURE_REGISTER to prevent TNS listener hijacking"
+    },
+    {
+      "vuln_id": "V-270511",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/oracle/product/19c/dbhome_1/network/admin/listener.ora", "pattern": "ADMIN_RESTRICTIONS_LISTENER\\s*=\\s*ON", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c listener must have ADMIN_RESTRICTIONS enabled"
+    },
+    {
+      "vuln_id": "V-270512",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/oracle/product/19c/dbhome_1/network/admin/sqlnet.ora", "pattern": "SQLNET\\.ENCRYPTION_SERVER\\s*=\\s*REQUIRED", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c must require network encryption (SQLNET.ENCRYPTION_SERVER=REQUIRED)"
+    },
+    {
+      "vuln_id": "V-270513",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/oracle/product/19c/dbhome_1/network/admin/sqlnet.ora", "pattern": "SQLNET\\.CRYPTO_CHECKSUM_SERVER\\s*=\\s*REQUIRED", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c must require crypto checksums (SQLNET.CRYPTO_CHECKSUM_SERVER=REQUIRED)"
+    },
+    {
+      "vuln_id": "V-270514",
+      "platform": "linux",
+      "check": { "type": "file_content", "path": "/opt/oracle/product/19c/dbhome_1/network/admin/sqlnet.ora", "pattern": "SQLNET\\.ENCRYPTION_TYPES_SERVER\\s*=\\s*\\(AES256\\)", "is_regex": true },
+      "expected": { "type": "is_true" },
+      "description": "Oracle 19c must use AES256 for network encryption algorithm"
+    }
+  ]
+}
