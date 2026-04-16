@@ -130,13 +130,12 @@ document.querySelectorAll('.nav-item').forEach(item => {
 
 function loadPage(page) {
   switch (page) {
-    case 'dashboard': loadDashboard(); break;
-    case 'evaluate': loadEvaluate(); break;
-    case 'library': loadLibrary(); break;
-    case 'checklists': loadChecklists(); break;
-    case 'assets': loadAssets(); break;
-    case 'content': loadGetContent(); break;
-    case 'import': loadImport(); break;
+    case 'overview': loadOverview(); break;
+    case 'assessments': loadAssessments(); break;
+    case 'assets': loadAssetsPage(); break;
+    case 'standards': loadStandards(); break;
+    case 'findings': loadFindings(); break;
+    case 'reports': loadReports(); break;
     case 'settings': loadSettings(); break;
   }
 }
@@ -2043,5 +2042,533 @@ async function openAnswerEditor() {
 // ---------------------------------------------------------------------------
 // Init
 // ---------------------------------------------------------------------------
-loadDashboard();
+loadOverview();
 updateStatusBar();
+
+// ---------------------------------------------------------------------------
+// Workflow-first UI overlays
+// ---------------------------------------------------------------------------
+async function getOverviewData() {
+  const [status, checklists, assets, benchmarks] = await Promise.all([
+    api('/status'),
+    api('/checklists'),
+    api('/assets').catch(() => []),
+    api('/library/benchmarks').catch(() => []),
+  ]);
+
+  const findings = flattenFindings(checklists);
+  return { status, checklists, assets, benchmarks, findings };
+}
+
+function flattenFindings(checklists) {
+  const rows = [];
+  for (const checklist of checklists || []) {
+    const findings = checklist.findings || [];
+    for (const finding of findings) {
+      rows.push({
+        checklistId: checklist.id,
+        hostname: checklist.hostname || checklist.asset?.hostname || 'Unknown asset',
+        benchmark: checklist.stig_title || checklist.title || checklist.stig_id || 'Unknown standard',
+        stigId: checklist.stig_id || checklist.stigInfo?.stig_id || '',
+        compliance: checklist.compliance_pct,
+        vulnId: finding.vuln_id || finding.group_id || 'Unknown',
+        title: finding.rule_title || finding.title || 'Untitled finding',
+        severity: finding.severity || 'Unknown',
+        status: finding.status || 'Not Reviewed',
+        comments: finding.comments || '',
+        details: finding.finding_details || '',
+        evaluatedBy: finding.evaluated_by || '',
+        evaluatedAt: finding.evaluated_at || checklist.modified_at || checklist.created_at || '',
+      });
+    }
+  }
+  return rows;
+}
+
+function severityRank(sev) {
+  const value = String(sev || '').toLowerCase();
+  if (value.includes('cat i') || value.includes('high')) return 3;
+  if (value.includes('cat ii') || value.includes('medium')) return 2;
+  if (value.includes('cat iii') || value.includes('low')) return 1;
+  return 0;
+}
+
+function severityTone(sev) {
+  const rank = severityRank(sev);
+  return rank === 3 ? 'red' : rank === 2 ? 'yellow' : rank === 1 ? 'green' : 'accent';
+}
+
+function groupedCounts(items, keyFn) {
+  const counts = new Map();
+  for (const item of items) {
+    const key = keyFn(item);
+    counts.set(key, (counts.get(key) || 0) + 1);
+  }
+  return [...counts.entries()].sort((a, b) => b[1] - a[1]);
+}
+
+async function loadOverview() {
+  try {
+    const { status, checklists, assets, benchmarks, findings } = await getOverviewData();
+    document.getElementById('app-version').textContent = `v${status.version}`;
+
+    const openFindings = findings.filter(f => String(f.status).toLowerCase() === 'open');
+    const catOne = openFindings.filter(f => severityRank(f.severity) === 3);
+    const avgCompliance = checklists.length
+      ? checklists.reduce((sum, checklist) => sum + (checklist.compliance_pct || 0), 0) / checklists.length
+      : 0;
+
+    const topAssets = groupedCounts(openFindings, f => f.hostname).slice(0, 5);
+    const topStandards = groupedCounts(openFindings, f => f.benchmark).slice(0, 5);
+    const recentActivity = [...checklists]
+      .sort((a, b) => new Date(b.modified_at || b.created_at || 0) - new Date(a.modified_at || a.created_at || 0))
+      .slice(0, 6);
+
+    setPage('overview',
+      h('div', { className: 'page-header page-header-with-actions' },
+        h('div', {},
+          h('h1', {}, 'Overview'),
+          h('p', {}, 'Current compliance posture across assets, standards, and review activity'),
+        ),
+        h('div', { className: 'btn-group' },
+          h('button', { className: 'btn btn-primary', onClick: () => nav('assessments') }, 'New Assessment'),
+          h('button', { className: 'btn btn-secondary', onClick: () => nav('reports') }, 'Import Results'),
+        ),
+      ),
+      h('div', { className: 'stats-grid' },
+        statCard('Assets in scope', assets.length, 'accent'),
+        statCard('Active assessments', Math.max(checklists.length, groupedCounts(checklists, c => c.hostname).length), 'accent'),
+        statCard('Open findings', openFindings.length, openFindings.length ? 'red' : 'green'),
+        statCard('CAT I / High', catOne.length, catOne.length ? 'red' : 'green'),
+        statCard('Installed standards', benchmarks.length, 'accent'),
+        statCard('Average compliance', `${avgCompliance.toFixed(1)}%`, complianceColor(avgCompliance)),
+      ),
+      h('div', { className: 'overview-grid' },
+        h('div', { className: 'card' },
+          h('div', { className: 'card-header' }, h('h2', {}, 'Needs attention')),
+          topAssets.length
+            ? h('div', { className: 'stack-list' }, ...topAssets.map(([asset, count]) =>
+                h('div', { className: 'list-row' },
+                  h('div', {},
+                    h('div', { className: 'list-title' }, asset),
+                    h('div', { className: 'list-subtitle' }, `${count} open finding${count === 1 ? '' : 's'}`),
+                  ),
+                  h('span', { className: 'mini-pill mini-pill-red' }, `${count} open`),
+                ),
+              ))
+            : emptyState('No urgent assets', 'Run an assessment or import results to see priority assets.'),
+        ),
+        h('div', { className: 'card' },
+          h('div', { className: 'card-header' }, h('h2', {}, 'Recent activity')),
+          recentActivity.length
+            ? h('div', { className: 'stack-list' }, ...recentActivity.map(item =>
+                h('div', { className: 'list-row' },
+                  h('div', {},
+                    h('div', { className: 'list-title' }, item.hostname || item.asset?.hostname || 'Checklist run'),
+                    h('div', { className: 'list-subtitle' }, item.stig_title || item.stig_id || 'Assessment result'),
+                  ),
+                  h('span', { className: `mini-pill mini-pill-${complianceColor(item.compliance_pct || 0)}` }, `${(item.compliance_pct || 0).toFixed(1)}%`),
+                ),
+              ))
+            : emptyState('No recent activity', 'Generated checklists and imports will appear here.'),
+        ),
+      ),
+      h('div', { className: 'overview-grid' },
+        h('div', { className: 'card' },
+          h('div', { className: 'card-header' }, h('h2', {}, 'Compliance by standard')),
+          topStandards.length
+            ? h('div', { className: 'stack-list' }, ...topStandards.map(([name, count]) =>
+                h('div', { className: 'list-row' },
+                  h('div', {},
+                    h('div', { className: 'list-title' }, name),
+                    h('div', { className: 'list-subtitle' }, `${count} open finding${count === 1 ? '' : 's'}`),
+                  ),
+                ),
+              ))
+            : emptyState('No standards in review', 'Import benchmark content to start tracking standard-level posture.'),
+        ),
+        h('div', { className: 'card' },
+          h('div', { className: 'card-header' }, h('h2', {}, 'Next best actions')),
+          h('div', { className: 'stack-list' },
+            actionRow('Create an assessment', 'Group assets and standards into a repeatable run.', () => nav('assessments')),
+            actionRow('Review findings', 'Triage open controls across imported and generated checklists.', () => nav('findings')),
+            actionRow('Manage standards', 'Import or refresh benchmark content from DISA or .stigpack.', () => nav('standards')),
+          ),
+        ),
+      ),
+    );
+  } catch (e) {
+    setPage('overview', errorCard(e.message));
+  }
+}
+
+function actionRow(title, subtitle, onClick) {
+  return h('button', { className: 'action-row', onClick },
+    h('div', {},
+      h('div', { className: 'list-title' }, title),
+      h('div', { className: 'list-subtitle' }, subtitle),
+    ),
+    h('span', { className: 'action-arrow' }, '→'),
+  );
+}
+
+async function loadAssessments() {
+  try {
+    const [checklists, assets, benchmarks] = await Promise.all([
+      api('/checklists'),
+      api('/assets').catch(() => []),
+      api('/library/benchmarks').catch(() => []),
+    ]);
+
+    const grouped = new Map();
+    for (const checklist of checklists) {
+      const key = checklist.hostname || checklist.asset?.hostname || 'Imported results';
+      if (!grouped.has(key)) grouped.set(key, []);
+      grouped.get(key).push(checklist);
+    }
+
+    const assessments = [...grouped.entries()].map(([name, items], index) => {
+      const standards = [...new Set(items.map(item => item.stig_title || item.stig_id).filter(Boolean))];
+      const compliance = items.length ? items.reduce((sum, item) => sum + (item.compliance_pct || 0), 0) / items.length : 0;
+      const open = items.reduce((sum, item) => sum + (item.open || 0), 0);
+      return { id: `assessment-${index}`, name, items, standards, compliance, open, lastRun: items[0]?.modified_at || items[0]?.created_at || null };
+    });
+
+    setPage('assessments',
+      h('div', { className: 'page-header page-header-with-actions' },
+        h('div', {},
+          h('h1', {}, 'Assessments'),
+          h('p', {}, 'Manage assessment scope, runs, and outputs as grouped workspaces'),
+        ),
+        h('div', { className: 'btn-group' },
+          h('button', { className: 'btn btn-primary', onClick: () => nav('assets') }, 'New Assessment'),
+          h('button', { className: 'btn btn-secondary', onClick: () => nav('reports') }, 'Import Existing Results'),
+        ),
+      ),
+      assessments.length
+        ? h('div', { className: 'card' },
+            h('table', { className: 'data-table' },
+              h('thead', {}, h('tr', {},
+                h('th', {}, 'Assessment'),
+                h('th', {}, 'Scope'),
+                h('th', {}, 'Last run'),
+                h('th', {}, 'Open findings'),
+                h('th', {}, 'Compliance'),
+                h('th', {}, 'Status'),
+              )),
+              h('tbody', {}, ...assessments.map(assessment =>
+                h('tr', {},
+                  h('td', {},
+                    h('div', { className: 'list-title' }, assessment.name),
+                    h('div', { className: 'list-subtitle' }, `${assessment.items.length} checklist${assessment.items.length === 1 ? '' : 's'}`),
+                  ),
+                  h('td', {}, `${assessment.name !== 'Imported results' ? 1 : assets.length || 0} asset • ${assessment.standards.length} standard${assessment.standards.length === 1 ? '' : 's'}`),
+                  h('td', {}, formatDate(assessment.lastRun)),
+                  h('td', {}, h('span', { className: `mini-pill mini-pill-${assessment.open ? 'red' : 'green'}` }, assessment.open)),
+                  h('td', {}, h('span', { className: `mini-pill mini-pill-${complianceColor(assessment.compliance)}` }, `${assessment.compliance.toFixed(1)}%`)),
+                  h('td', {}, h('span', { className: 'mini-pill mini-pill-accent' }, assessment.open ? 'Needs review' : 'Healthy')),
+                ),
+              )),
+            ),
+          )
+        : emptyState('No assessments yet', 'Assessments group assets, standards, findings, and exports into one workflow.',
+            h('button', { className: 'btn btn-primary', onClick: () => nav('reports') }, 'Import Results')),
+      h('div', { className: 'card' },
+        h('div', { className: 'card-header' }, h('h2', {}, 'Recommended flow')),
+        h('div', { className: 'stack-list' },
+          actionRow('1. Add or review assets', 'Make sure scope and tags reflect the environment you want to assess.', () => nav('assets')),
+          actionRow('2. Install standards', 'Load current benchmark content before you run or import assessments.', () => nav('standards')),
+          actionRow('3. Import or run results', 'Use reports to bring in checklist files or export new results.', () => nav('reports')),
+        ),
+      ),
+    );
+  } catch (e) {
+    setPage('assessments', errorCard(e.message));
+  }
+}
+
+async function loadStandards() {
+  try {
+    const [benchmarks] = await Promise.all([
+      api('/library/benchmarks').catch(() => []),
+    ]);
+
+    const rows = benchmarks.map(benchmark => h('tr', {},
+      h('td', {},
+        h('div', { className: 'list-title' }, benchmark.title || benchmark.stig_id || benchmark.id),
+        h('div', { className: 'list-subtitle' }, benchmark.stig_id || benchmark.id || 'Standard identifier'),
+      ),
+      h('td', {}, benchmark.platform || 'Unknown'),
+      h('td', {}, `${benchmark.version || '—'} / ${benchmark.release || '—'}`),
+      h('td', {}, benchmark.rule_count ?? benchmark.rules ?? '—'),
+      h('td', {}, formatDate(benchmark.imported_at || benchmark.created_at)),
+    ));
+
+    setPage('standards',
+      h('div', { className: 'page-header page-header-with-actions' },
+        h('div', {},
+          h('h1', {}, 'Standards'),
+          h('p', {}, 'Installed benchmark content, imports, updates, and DISA content operations'),
+        ),
+        h('div', { className: 'btn-group' },
+          h('button', { className: 'btn btn-primary', onClick: () => nav('reports') }, 'Import Benchmark Pack'),
+          h('button', { className: 'btn btn-secondary', onClick: () => nav('reports') }, 'Import XCCDF ZIP'),
+        ),
+      ),
+      h('div', { className: 'stats-grid' },
+        statCard('Installed', benchmarks.length, 'accent'),
+        statCard('Available actions', 4, 'accent'),
+        statCard('Offline packs', 'Ready', 'green'),
+        statCard('Source', 'DISA + local packs', 'accent'),
+      ),
+      h('div', { className: 'overview-grid' },
+        h('div', { className: 'card' },
+          h('div', { className: 'card-header' }, h('h2', {}, `Installed standards (${benchmarks.length})`)),
+          benchmarks.length
+            ? h('table', { className: 'data-table' },
+                h('thead', {}, h('tr', {},
+                  h('th', {}, 'Standard'),
+                  h('th', {}, 'Platform'),
+                  h('th', {}, 'Version / Release'),
+                  h('th', {}, 'Rules'),
+                  h('th', {}, 'Imported'),
+                )),
+                h('tbody', {}, ...rows),
+              )
+            : emptyState('No standards installed', 'Import a benchmark pack or fetch content from DISA to begin.'),
+        ),
+        h('div', { className: 'card' },
+          h('div', { className: 'card-header' }, h('h2', {}, 'Content operations')),
+          h('div', { className: 'stack-list' },
+            actionRow('Fetch from DISA', 'Download the latest public benchmark content.', fetchAllContent),
+            actionRow('Check for updates', 'Compare installed standards with available upstream content.', checkForUpdates),
+            actionRow('Browse available content', 'Inspect available DISA packages before importing.', browseAvailable),
+            actionRow('Generate offline pack', 'Create a .stigpack for transfer into air-gapped environments.', downloadOfflinePack),
+          ),
+        ),
+      ),
+      h('div', { id: 'content-results' }),
+      h('div', { id: 'content-available', className: 'card' },
+        h('div', { className: 'card-header' }, h('h2', {}, 'Available content')), 
+        h('div', { id: 'available-list' },
+          h('p', { style: 'color: var(--text-muted); padding: 20px; text-align: center' }, 'Use Check Updates or Browse available content to populate this list.'),
+        ),
+      ),
+    );
+  } catch (e) {
+    setPage('standards', errorCard(e.message));
+  }
+}
+
+async function loadFindings() {
+  try {
+    const checklists = await api('/checklists');
+    const findings = flattenFindings(checklists);
+    const openOnly = findings.filter(f => String(f.status).toLowerCase() === 'open');
+    const rows = (openOnly.length ? openOnly : findings).sort((a, b) => severityRank(b.severity) - severityRank(a.severity));
+
+    setPage('findings',
+      h('div', { className: 'page-header page-header-with-actions' },
+        h('div', {},
+          h('h1', {}, 'Findings'),
+          h('p', {}, 'Review and triage checklist results across all imported and generated assessments'),
+        ),
+        h('div', { className: 'btn-group' },
+          h('button', { className: 'btn btn-primary', onClick: compareChecklistsDialog }, 'Compare Results'),
+          h('button', { className: 'btn btn-secondary', onClick: exportAllZip }, 'Export All ZIP'),
+        ),
+      ),
+      rows.length
+        ? h('div', { className: 'card' },
+            h('table', { className: 'data-table' },
+              h('thead', {}, h('tr', {},
+                h('th', {}, 'Vuln ID'),
+                h('th', {}, 'Title'),
+                h('th', {}, 'Severity'),
+                h('th', {}, 'Asset'),
+                h('th', {}, 'Standard'),
+                h('th', {}, 'Status'),
+                h('th', {}, 'Updated'),
+              )),
+              h('tbody', {}, ...rows.map(row =>
+                h('tr', {},
+                  h('td', {}, row.vulnId),
+                  h('td', {},
+                    h('div', { className: 'list-title' }, row.title),
+                    h('div', { className: 'list-subtitle' }, row.comments || row.details || 'No analyst notes yet'),
+                  ),
+                  h('td', {}, h('span', { className: `mini-pill mini-pill-${severityTone(row.severity)}` }, row.severity)),
+                  h('td', {}, row.hostname),
+                  h('td', {}, row.benchmark),
+                  h('td', {}, statusBadge(row.status)),
+                  h('td', {}, formatDate(row.evaluatedAt)),
+                ),
+              )),
+            ),
+          )
+        : emptyState('No findings yet', 'Run an assessment or import existing results to review compliance status.',
+            h('button', { className: 'btn btn-primary', onClick: () => nav('reports') }, 'Import Results')),
+    );
+  } catch (e) {
+    setPage('findings', errorCard(e.message));
+  }
+}
+
+async function loadAssetsPage() {
+  try {
+    const assets = await api('/assets');
+    const rows = assets.map(asset => h('tr', {},
+      h('td', {},
+        h('div', { className: 'list-title' }, asset.name),
+        h('div', { className: 'list-subtitle' }, asset.address),
+      ),
+      h('td', {}, asset.platform),
+      h('td', {}, asset.protocol),
+      h('td', {}, asset.tags?.length ? asset.tags.join(', ') : '—'),
+      h('td', {}, asset.assigned_stigs?.length || 0),
+      h('td', {}, asset.last_compliance_pct != null
+        ? h('span', { className: `mini-pill mini-pill-${complianceColor(asset.last_compliance_pct)}` }, `${asset.last_compliance_pct.toFixed(1)}%`)
+        : '—'),
+      h('td', {}, formatDate(asset.last_evaluated)),
+    ));
+
+    setPage('assets',
+      h('div', { className: 'page-header page-header-with-actions' },
+        h('div', {},
+          h('h1', {}, `Assets (${assets.length})`),
+          h('p', {}, 'Inventory-first view of managed hosts, assigned standards, and current compliance posture'),
+        ),
+        h('div', { className: 'btn-group' },
+          h('button', { className: 'btn btn-primary', onClick: addAssetDialog }, 'Add Asset'),
+          h('button', { className: 'btn btn-secondary', onClick: () => nav('settings') }, 'Credentials & Automation'),
+        ),
+      ),
+      assets.length
+        ? h('div', { className: 'card' },
+            h('table', { className: 'data-table' },
+              h('thead', {}, h('tr', {},
+                h('th', {}, 'Asset'),
+                h('th', {}, 'Platform'),
+                h('th', {}, 'Protocol'),
+                h('th', {}, 'Tags'),
+                h('th', {}, 'Standards'),
+                h('th', {}, 'Compliance'),
+                h('th', {}, 'Last assessed'),
+              )),
+              h('tbody', {}, ...rows),
+            ),
+          )
+        : emptyState('No assets yet', 'Add systems manually or sync them from STIG-Manager.'),
+      h('div', { className: 'overview-grid' },
+        h('div', { className: 'card' },
+          h('div', { className: 'card-header' }, h('h2', {}, 'Asset actions')),
+          h('div', { className: 'stack-list' },
+            actionRow('Add asset', 'Register a host for ongoing review and assessment grouping.', addAssetDialog),
+            actionRow('Sync from STIG-Manager', 'Bring collections or assets into the local inventory.', syncFromStigManager),
+            actionRow('Check STIG-Manager diff', 'See changes before you synchronize inventory.', checkStigManagerDiff),
+          ),
+        ),
+        h('div', { className: 'card' },
+          h('div', { className: 'card-header' }, h('h2', {}, 'Administrative surfaces moved')),
+          h('p', { className: 'list-subtitle' }, 'Credentials and schedules still exist, but they should live under Settings / Automation instead of crowding the inventory view.'),
+        ),
+      ),
+    );
+  } catch (e) {
+    setPage('assets', errorCard(e.message));
+  }
+}
+
+async function loadReports() {
+  setPage('reports',
+    h('div', { className: 'page-header page-header-with-actions' },
+      h('div', {},
+        h('h1', {}, 'Reports'),
+        h('p', {}, 'Import, export, and transfer checklist and benchmark content as outcomes instead of separate tools'),
+      ),
+      h('div', { className: 'btn-group' },
+        h('button', { className: 'btn btn-primary', onClick: exportAllZip }, 'Export All ZIP'),
+        h('button', { className: 'btn btn-secondary', onClick: () => nav('findings') }, 'Review Findings'),
+      ),
+    ),
+    h('div', { className: 'overview-grid' },
+      h('div', { className: 'card' },
+        h('div', { className: 'card-header' }, h('h2', {}, 'Import content and results')),
+        h('div', { className: 'stack-list' },
+          actionRow('Import checklist file', 'Bring in CKL, CKLB, or JSON results for review.', () => nav('reports-import-checklists')),
+          actionRow('Import benchmark pack', 'Load signed .stigpack content for standards and templates.', () => nav('reports-import-pack')),
+          actionRow('Import DISA XCCDF ZIP', 'Add raw benchmark content directly from downloaded DISA archives.', () => nav('reports-import-xccdf')),
+        ),
+      ),
+      h('div', { className: 'card' },
+        h('div', { className: 'card-header' }, h('h2', {}, 'Export and transfer')),
+        h('div', { className: 'stack-list' },
+          actionRow('Export all checklists', 'Download all current checklists as a ZIP bundle.', exportAllZip),
+          actionRow('Generate offline pack', 'Create a .stigpack for transfer into an air-gapped environment.', downloadOfflinePack),
+          actionRow('Push to STIG-Manager', 'Open checklist detail pages to push accepted results upstream.', () => nav('findings')),
+        ),
+      ),
+    ),
+    h('div', { className: 'card' },
+      h('div', { className: 'card-header' }, h('h2', {}, 'Import workspace')),
+      h('p', { className: 'list-subtitle', style: 'margin-bottom: 16px' }, 'These controls preserve the working import functionality while moving it under a reports/outcomes framing.'),
+      h('div', { className: 'report-import-grid' },
+        importCard('Import DISA ZIP', 'Import XCCDF benchmarks directly from DISA ZIP archives downloaded from cyber.mil.', handleDisaZipImport),
+        importCard('Import Checklist', 'Import an existing CKL, CKLB, or JSON checklist file.', handleChecklistImport),
+        importCard('Import .stigpack', 'Import a signed .stigpack content pack with benchmarks and templates.', handleStigpackImport),
+      ),
+    ),
+  );
+}
+
+function importCard(title, description, handler) {
+  const inputId = `input-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+  return h('div', { className: 'card compact-card' },
+    h('h3', {}, title),
+    h('p', { className: 'list-subtitle', style: 'margin: 8px 0 14px' }, description),
+    h('input', { id: inputId, type: 'file', style: 'display:none', onChange: handler }),
+    h('button', { className: 'btn btn-primary', onClick: () => document.getElementById(inputId)?.click() }, 'Choose file'),
+  );
+}
+
+async function handleDisaZipImport(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  try {
+    const result = await apiUpload('/import/xccdf-zip', file);
+    toast(`Imported ${result.imported} benchmark(s)`, 'success');
+    nav('standards');
+  } catch (err) {
+    toast(err.message, 'error');
+  }
+}
+
+async function handleChecklistImport(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  try {
+    const result = await apiUpload('/import/checklist', file);
+    toast(`Imported checklist: ${result.hostname} (${result.total} rules)`, 'success');
+    nav('findings');
+  } catch (err) {
+    toast(err.message, 'error');
+  }
+}
+
+async function handleStigpackImport(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  try {
+    const result = await apiUpload('/import/stigpack', file);
+    toast(`Imported pack: ${result.imported} benchmark(s)`, 'success');
+    nav('standards');
+  } catch (err) {
+    toast(err.message, 'error');
+  }
+}
+
+function formatDate(value) {
+  if (!value) return '—';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString();
+}
