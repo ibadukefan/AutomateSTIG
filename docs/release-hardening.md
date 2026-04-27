@@ -10,7 +10,9 @@ The CI release build job now:
 - uses least-privilege default workflow permissions (`contents: read`);
 - builds Linux, Windows, and macOS CLI artifacts;
 - emits a SHA-256 checksum beside each uploaded artifact;
-- fails upload if an expected artifact or checksum is missing;
+- uploads a dependency inventory (`cargo metadata --locked`) as a lightweight SBOM scaffold;
+- uploads a provenance scaffold that ties each artifact to repository, ref, commit SHA, workflow, run ID, and run attempt;
+- fails upload if an expected artifact, checksum, SBOM scaffold, or provenance scaffold is missing;
 - limits transient CI artifact retention to 14 days.
 
 ## Not yet sufficient for production release claims

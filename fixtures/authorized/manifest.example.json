@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "corpus": "automatestig-sanitized-scaffold",
+  "status": "sanitized_scaffold",
+  "generated_at": "2026-04-27T00:00:00Z",
+  "fixtures": [
+    {
+      "id": "disa_xccdf_windows_server_2022_sanitized_xccdf",
+      "kind": "disa-xccdf",
+      "path": "fixtures/disa-xccdf/windows_server_2022_sanitized_xccdf.xml",
+      "sha256": "449df4a16ebca6062116c0fb3e1a12782f1d56356ff99c2710abec27b64704a1",
+      "source": "sanitized scaffold fixture; replace with authorized real DISA/SCC/OpenSCAP/CKL/CKLB artifact before production claim",
+      "authorization": "sanitized_public_scaffold",
+      "classification": "sanitized",
+      "notes": "Contains no operational system data or credentials."
+    },
+    {
+      "id": "scc_results_windows_server_2022_scc_results",
+      "kind": "scc-results",
+      "path": "fixtures/scc-results/windows_server_2022_scc_results.xml",
+      "sha256": "c94a748cd10f4abf597fa68ae246cadcff1a14724736e3a908cd04ab4479be3e",
+      "source": "sanitized scaffold fixture; replace with authorized real DISA/SCC/OpenSCAP/CKL/CKLB artifact before production claim",
+      "authorization": "sanitized_public_scaffold",
+      "classification": "sanitized",
+      "notes": "Contains no operational system data or credentials."
+    },
+    {
+      "id": "openscap_results_rhel8_openscap_results",
+      "kind": "openscap-results",
+      "path": "fixtures/openscap-results/rhel8_openscap_results.xml",
+      "sha256": "2d5f2099dc0f56f519118419c6527bd468a568750d9ad37ff8456f27fbda32d5",
+      "source": "sanitized scaffold fixture; replace with authorized real DISA/SCC/OpenSCAP/CKL/CKLB artifact before production claim",
+      "authorization": "sanitized_public_scaffold",
+      "classification": "sanitized",
+      "notes": "Contains no operational system data or credentials."
+    },
+    {
+      "id": "ckl_windows_server_2022_sanitized",
+      "kind": "ckl",
+      "path": "fixtures/ckl/windows_server_2022_sanitized.ckl",
+      "sha256": "fc69c4478c8f8e85dce67e9da8f62cfffaef0fabb0040641656d8d6f386390fd",
+      "source": "sanitized scaffold fixture; replace with authorized real DISA/SCC/OpenSCAP/CKL/CKLB artifact before production claim",
+      "authorization": "sanitized_public_scaffold",
+      "classification": "sanitized",
+      "notes": "Contains no operational system data or credentials."
+    },
+    {
+      "id": "cklb_windows_server_2022_sanitized",
+      "kind": "cklb",
+      "path": "fixtures/cklb/windows_server_2022_sanitized.cklb",
+      "sha256": "fe95f2402f7191e26e13949c7538ca8d884fe35547c8bf7d9faa0c8158e403a0",
+      "source": "sanitized scaffold fixture; replace with authorized real DISA/SCC/OpenSCAP/CKL/CKLB artifact before production claim",
+      "authorization": "sanitized_public_scaffold",
+      "classification": "sanitized",
+      "notes": "Contains no operational system data or credentials."
+    },
+    {
+      "id": "stig_manager_stig_manager_golden",
+      "kind": "stig-manager",
+      "path": "fixtures/exports/stig_manager_golden.json",
+      "sha256": "6177570af9b8bad042b103656271fbedca721f3e2f3d5a1a4bf1007f7f638af4",
+      "source": "golden export fixture generated from sanitized scaffold checklist",
+      "authorization": "sanitized_public_scaffold",
+      "classification": "sanitized",
+      "notes": "Contains no operational system data or credentials."
+    },
+    {
+      "id": "emass_emass_golden",
+      "kind": "emass",
+      "path": "fixtures/exports/emass_golden.csv",
+      "sha256": "fe1111bae1c9e583341e46049063330cf86b7bb4fd2eca7c198684b9161325f5",
+      "source": "golden export fixture generated from sanitized scaffold checklist",
+      "authorization": "sanitized_public_scaffold",
+      "classification": "sanitized",
+      "notes": "Contains no operational system data or credentials."
+    }
+  ]
+}

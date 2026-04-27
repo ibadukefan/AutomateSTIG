@@ -9,3 +9,5 @@ A supported manifest answers three questions for every DISA rule:
 3. What tests prove the behavior?
 
 Check packs without matching manifests are experimental/community content.
+
+`*.example.json` manifests exercise sanitized fixture workflows. `*.full.json` manifests enumerate every rule currently represented in the corresponding AutomateSTIG check pack for flagship targets, but remain `experimental` until cross-checked against authorized real DISA benchmark releases and scanner/checklist fixture corpora.

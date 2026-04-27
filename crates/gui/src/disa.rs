@@ -70,43 +70,53 @@ pub async fn list_available_stigs() -> Result<Vec<DisaStigEntry>, String> {
 
 /// Parse the DISA downloads HTML page to extract STIG download links.
 fn parse_disa_downloads_page(html: &str) -> Result<Vec<DisaStigEntry>, String> {
-    let document = scraper::Html::parse_document(html);
     let mut entries = Vec::new();
+    let mut cursor = html;
 
-    // DISA's download page uses links to ZIP files.
-    // Look for all links that point to STIG ZIP files.
-    let link_selector = scraper::Selector::parse("a[href]").unwrap();
+    while let Some(anchor_start) = cursor.find("<a") {
+        cursor = &cursor[anchor_start + 2..];
+        let Some(tag_end) = cursor.find('>') else {
+            break;
+        };
+        let tag = &cursor[..tag_end];
+        let remainder = &cursor[tag_end + 1..];
+        let Some(close_anchor) = remainder.find("</a>") else {
+            cursor = remainder;
+            continue;
+        };
+        let label_html = &remainder[..close_anchor];
+        cursor = &remainder[close_anchor + 4..];
 
-    for element in document.select(&link_selector) {
-        if let Some(href) = element.value().attr("href") {
-            let href_lower = href.to_lowercase();
-            // Filter for STIG-related ZIP downloads.
-            if (href_lower.contains("stig") || href_lower.contains("benchmark"))
-                && href_lower.ends_with(".zip")
-            {
-                let title = element.text().collect::<String>().trim().to_string();
-                let title = if title.is_empty() {
-                    // Extract filename from URL.
-                    href.rsplit('/')
-                        .next()
-                        .unwrap_or("Unknown STIG")
-                        .to_string()
-                } else {
-                    title
-                };
-
-                entries.push(DisaStigEntry {
-                    title,
-                    download_url: if href.starts_with("http") {
-                        href.to_string()
-                    } else {
-                        format!("https://public.cyber.mil{}", href)
-                    },
-                    size: None,
-                    updated: None,
-                });
-            }
+        let Some(href) = extract_href(tag) else {
+            continue;
+        };
+        let href_lower = href.to_lowercase();
+        if !(href_lower.contains("stig") || href_lower.contains("benchmark"))
+            || !href_lower.ends_with(".zip")
+        {
+            continue;
         }
+
+        let title = strip_html(label_html).trim().to_string();
+        let title = if title.is_empty() {
+            href.rsplit('/')
+                .next()
+                .unwrap_or("Unknown STIG")
+                .to_string()
+        } else {
+            title
+        };
+
+        entries.push(DisaStigEntry {
+            title,
+            download_url: if href.starts_with("http") {
+                href
+            } else {
+                format!("https://public.cyber.mil{}", href)
+            },
+            size: None,
+            updated: None,
+        });
     }
 
     // Deduplicate by URL.
@@ -114,6 +124,40 @@ fn parse_disa_downloads_page(html: &str) -> Result<Vec<DisaStigEntry>, String> {
     entries.dedup_by(|a, b| a.download_url == b.download_url);
 
     Ok(entries)
+}
+
+fn extract_href(anchor_tag: &str) -> Option<String> {
+    let href_pos = anchor_tag.to_lowercase().find("href")?;
+    let after_href = &anchor_tag[href_pos + 4..];
+    let equals_pos = after_href.find('=')?;
+    let value = after_href[equals_pos + 1..].trim_start();
+    let quote = value.chars().next()?;
+    if quote == '"' || quote == '\'' {
+        let rest = &value[quote.len_utf8()..];
+        let end = rest.find(quote)?;
+        Some(rest[..end].to_string())
+    } else {
+        let end = value
+            .find(|c: char| c.is_whitespace())
+            .unwrap_or(value.len());
+        Some(value[..end].trim_end_matches('/').to_string())
+    }
+}
+
+fn strip_html(input: &str) -> String {
+    let mut out = String::new();
+    let mut in_tag = false;
+    for ch in input.chars() {
+        match ch {
+            '<' => in_tag = true,
+            '>' => in_tag = false,
+            _ if !in_tag => out.push(ch),
+            _ => {}
+        }
+    }
+    out.replace("&amp;", "&")
+        .replace("&quot;", "\"")
+        .replace("&#39;", "'")
 }
 
 /// Allowed URL prefixes for DISA content downloads.
@@ -379,4 +423,47 @@ pub struct UpdateCheckResult {
     pub new_benchmarks: usize,
     pub updated_benchmarks: usize,
     pub available_stigs: Vec<DisaStigEntry>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parses_disa_download_links_without_html_parser_dependency() {
+        let html = r#"
+            <html><body>
+              <a href="/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_STIG.zip">
+                <span>Windows Server 2022 STIG</span>
+              </a>
+              <a class='download' href='https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_RHEL_8_STIG.zip'>RHEL 8 STIG</a>
+              <a href="/not-a-stig.txt">Ignore me</a>
+              <a href="/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_STIG.zip">Duplicate</a>
+            </body></html>
+        "#;
+
+        let entries = parse_disa_downloads_page(html).unwrap();
+
+        assert_eq!(entries.len(), 2);
+        assert_eq!(entries[0].title, "RHEL 8 STIG");
+        assert_eq!(
+            entries[0].download_url,
+            "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_RHEL_8_STIG.zip"
+        );
+        assert_eq!(entries[1].title, "Windows Server 2022 STIG");
+        assert_eq!(
+            entries[1].download_url,
+            "https://public.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_STIG.zip"
+        );
+    }
+
+    #[test]
+    fn parses_empty_anchor_title_from_filename() {
+        let html = r#"<a href=/wp-content/uploads/stigs/zip/U_Benchmark.zip></a>"#;
+
+        let entries = parse_disa_downloads_page(html).unwrap();
+
+        assert_eq!(entries.len(), 1);
+        assert_eq!(entries[0].title, "U_Benchmark.zip");
+    }
 }

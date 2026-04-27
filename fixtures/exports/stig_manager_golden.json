@@ -1,0 +1,31 @@
+{
+  "collection": "Golden Collection",
+  "assets": [
+    {
+      "name": "golden-host",
+      "ip": null,
+      "fqdn": null,
+      "mac": null,
+      "stigs": [
+        {
+          "benchmarkId": "Golden_STIG",
+          "reviews": [
+            {
+              "ruleId": "SV-1r1_rule",
+              "result": "fail",
+              "detail": "Scanner evidence: registry value missing",
+              "comment": "Scanner: SCC\nRaw result: fail",
+              "autoResult": true,
+              "resultEngine": {
+                "type": "script",
+                "product": "AutomateSTIG",
+                "version": "0.1.0"
+              },
+              "status": "saved"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

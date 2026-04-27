@@ -74,6 +74,9 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: cargo run -p automatestig -- coverage validate --manifest content/coverage/windows_server_2022.example.json
       - run: cargo run -p automatestig -- coverage validate --manifest content/coverage/rhel8.example.json
+      - run: cargo run -p automatestig -- coverage validate --manifest content/coverage/windows_server_2022.full.json
+      - run: cargo run -p automatestig -- coverage validate --manifest content/coverage/rhel8.full.json
+      - run: python3 scripts/validate-authorized-fixtures.py fixtures/authorized/manifest.example.json --repo-root .
 
   dependency-audit:
     name: Dependency audit
@@ -109,6 +112,23 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: cargo build --release --bin automatestig
+      - name: Generate SBOM and provenance scaffold
+        shell: bash
+        run: |
+          mkdir -p target/release/provenance
+          cargo metadata --locked --format-version 1 > target/release/provenance/cargo-metadata-${{ matrix.target }}.json
+          cat > target/release/provenance/provenance-${{ matrix.target }}.json <<EOF
+          {
+            "artifact": "${{ matrix.artifact }}",
+            "target": "${{ matrix.target }}",
+            "repository": "${{ github.repository }}",
+            "ref": "${{ github.ref }}",
+            "sha": "${{ github.sha }}",
+            "workflow": "${{ github.workflow }}",
+            "run_id": "${{ github.run_id }}",
+            "run_attempt": "${{ github.run_attempt }}"
+          }
+          EOF
       - name: Generate SHA-256 checksum
         shell: bash
         run: |
@@ -124,5 +144,7 @@ jobs:
           path: |
             target/release/${{ matrix.artifact }}
             target/release/${{ matrix.artifact }}.sha256
+            target/release/provenance/cargo-metadata-${{ matrix.target }}.json
+            target/release/provenance/provenance-${{ matrix.target }}.json
           retention-days: 14
           if-no-files-found: error
