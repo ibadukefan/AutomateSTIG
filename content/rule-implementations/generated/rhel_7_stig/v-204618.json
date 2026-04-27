@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify network interfaces are not in promiscuous mode unless approved by the ISSO and documented.\n\nCheck for the status with the following command:\n\n# ip link | grep -i promisc\n\nIf network interfaces are found on the system in promiscuous mode and their use has not been approved by the ISSO and documented, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure network interfaces to turn off promiscuous mode unless approved by the ISSO and documented.\n\nSet the promiscuous mode of an interface to off with the following command:\n\n#ip link set dev <devicename> multicast off promisc off",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204618r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "Network interfaces configured on the Red Hat Enterprise Linux operating system must not be in promiscuous mode.",
+  "tracking_issue": "TODO-V-204618",
+  "vuln_id": "V-204618"
+}

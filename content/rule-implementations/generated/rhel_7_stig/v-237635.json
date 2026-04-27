@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system requires re-authentication when using the \"sudo\" command to elevate privileges.\n\n$ sudo grep -ir 'timestamp_timeout' /etc/sudoers /etc/sudoers.d\n/etc/sudoers:Defaults timestamp_timeout=0\n\nIf conflicting results are returned, this is a finding.\n\nIf \"timestamp_timeout\" is set to a negative number, is commented out, or no results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the \"sudo\" command to require re-authentication.\nEdit the /etc/sudoers file:\n$ sudo visudo\n\nAdd or modify the following line:\nDefaults timestamp_timeout=[value]\nNote: The \"[value]\" must be a number that is greater than or equal to \"0\".\n\nRemove any duplicate or conflicting lines from /etc/sudoers and /etc/sudoers.d/ files.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-237635r987879_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must require re-authentication when using the \"sudo\" command.",
+  "tracking_issue": "TODO-V-237635",
+  "vuln_id": "V-237635"
+}

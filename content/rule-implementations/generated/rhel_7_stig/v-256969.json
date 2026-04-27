@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the operating system is configured to disable the login screen user list for graphical user interfaces.\n\nNote: If the system does not have the GNOME Desktop installed, this requirement is Not Applicable.\n\nVerify that the login screen user list for the GNOME Desktop is disabled with the following command:\n\n     $ sudo grep -is disable-user-list /etc/dconf/db/gdm.d/*\n     \n     /etc/dconf/db/gdm.d/00-login-screen:disable-user-list=true\n\t \nIf the variable \"disable-user-list\" is not defined in a file under \"/etc/dconf/db/gdm.d/\", is not set to \"true\", is missing or commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable the login screen user list for graphical user interfaces.\n\nCreate or edit the gdm profile in \"/etc/dconf/profile/\" to contain the following lines:\n\n     $ sudo vi /etc/dconf/profile/gdm\n\t \n     user-db:user\n     system-db:gdm\n     file-db:/usr/share/gdm/greeter-dconf-defaults\n\t \nCreate or edit the gdm database for machine-wide settings in \"/etc/dconf/db/gdm.d/\" with the following lines:\n\n     $ sudo vi /etc/dconf/db/gdm.d/00-login-screen\n\t \n     [org/gnome/login-screen]\n     disable-user-list=true\n\t \nUpdate the system databases by updating the dconf utility:\n\n     $ sudo dconf update\n\t \nIf the login screen user list persists after updating the system databases, you can restart the GNOME Desktop without rebooting the system:\n\n     $ sudo systemctl restart gdm",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-256969r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must disable the login screen user list for graphical user interfaces.",
+  "tracking_issue": "TODO-V-256969",
+  "vuln_id": "V-256969"
+}

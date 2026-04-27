@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the \"cron.allow\" file is group-owned by root.\n\nCheck the group owner of the \"cron.allow\" file with the following command:\n\n# ls -al /etc/cron.allow\n-rw------- 1 root root 6 Mar  5  2011 /etc/cron.allow\n\nIf the \"cron.allow\" file exists and has a group owner other than root, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the group owner on the \"/etc/cron.allow\" file to root with the following command:\n\n# chgrp root /etc/cron.allow",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204491r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must be configured so that the cron.allow file, if it exists, is group-owned by root.",
+  "tracking_issue": "TODO-V-204491",
+  "vuln_id": "V-204491"
+}

@@ -1,14 +1,12 @@
 {
-  "authoritative_manifests": 10,
+  "authoritative_manifests": 14,
+  "authoritative_rules_tracked": 3828,
+  "automated_or_mapped_rules": 1794,
   "current_check_definitions": 2215,
   "current_check_packs": 100,
-  "fixture_backed_candidate_rules": 451,
-  "goal": "every public DISA STIG rule has a non-unsupported automation path",
-  "known_authoritative_rules": 2944,
-  "known_machine_automated_rules": 705,
-  "known_manual_workflow_rules": 0,
-  "known_unsupported_rules": 2239,
-  "maturity": "expanded-corpus-fixture-backed-candidate-burndown",
-  "tracked_authorized_public_artifacts": 10,
-  "unsupported_rules_allowed_for_production": 0
+  "fixture_backed_candidate_rules": 611,
+  "goal": "every public DISA STIG rule has a non-unsupported disposition",
+  "public_disa_artifacts_tracked": 14,
+  "status": "expanded seed corpus plus fixture-backed candidate mapping; not production complete",
+  "unsupported_rules_remaining": 2034
 }

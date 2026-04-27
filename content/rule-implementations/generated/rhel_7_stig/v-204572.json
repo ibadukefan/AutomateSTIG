@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system generates audit records upon successful/unsuccessful attempts to use the \"unlink\", \"unlinkat\", \"rename\", \"renameat\", and \"rmdir\" syscalls.\n\nCheck the file system rules in \"/etc/audit/audit.rules\" with the following commands:\n\n# grep 'unlink\\|rename\\|rmdir' /etc/audit/audit.rules\n\n-a always,exit -F arch=b32 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=unset -k delete\n\n-a always,exit -F arch=b64 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=unset -k delete\n\nIf both the \"b32\" and \"b64\" audit rules are not defined for the \"unlink\", \"unlinkat\", \"rename\", \"renameat\", and \"rmdir\" syscalls, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to generate audit records upon successful/unsuccessful attempts to use the \"unlink\", \"unlinkat\", \"rename\", \"renameat\", and \"rmdir\" syscalls.\n\nAdd the following rules in \"/etc/audit/rules.d/audit.rules\":\n\n-a always,exit -F arch=b32 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=unset -k delete\n\n-a always,exit -F arch=b64 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=unset -k delete\n\nThe audit daemon must be restarted for the changes to take effect.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204572r991575_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must audit all uses of the unlink, unlinkat, rename, renameat, and rmdir syscalls.",
+  "tracking_issue": "TODO-V-204572",
+  "vuln_id": "V-204572"
+}

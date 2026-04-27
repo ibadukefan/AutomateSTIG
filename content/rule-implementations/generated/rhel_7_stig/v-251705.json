@@ -1,0 +1,46 @@
+{
+  "candidate_check": {
+    "check": {
+      "name": "aide",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must use a file integrity tool to verify correct operation of all security functions.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-251705"
+  },
+  "check_content_excerpt": "Verify that Advanced Intrusion Detection Environment (AIDE) is installed and verifies the correct operation of all security functions.\n\nCheck that the AIDE package is installed with the following command:\n     $ sudo rpm -q aide\n\n     aide-0.15.1-13.el7.x86_64\n\nIf AIDE is not installed, ask the System Administrator how file integrity checks are performed on the system. \n\nIf there is no application installed to perform integrity checks, this is a finding.\n\nIf AIDE is installed, check if it has been initialized with the following command:\n     $ sudo /usr/sbin/aide --check\n\nIf the output is \"Couldn't open file /var/lib/aide/aide.db.gz for reading\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install AIDE, initialize it, and perform a manual check.\n\nInstall AIDE:\n     $ sudo yum install aide\n\nInitialize it:\n     $ sudo /usr/sbin/aide --init\n\n     AIDE, version 0.15.1\n     ### AIDE database at /var/lib/aide/aide.db.new.gz initialized.\n\nThe new database will need to be renamed to be read by AIDE:\n     $ sudo mv /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz\n\nPerform a manual check:\n     $ sudo /usr/sbin/aide --check\n\n     AIDE, version 0.15.1\n     ### All files match AIDE database. Looks okay!\n\nDone.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "package",
+  "remediation": "planned",
+  "rule_id": "SV-251705r958944_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must use a file integrity tool to verify correct operation of all security functions.",
+  "tracking_issue": "TODO-V-251705",
+  "vuln_id": "V-251705"
+}

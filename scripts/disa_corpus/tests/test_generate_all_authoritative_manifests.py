@@ -52,6 +52,32 @@ class GenerateAllAuthoritativeManifestsTests(unittest.TestCase):
 
             self.assertNotIn('V-1', ids)
 
+    def test_scap_xccdf_group_ids_map_to_canonical_vuln_candidates(self):
+        check_ids = {
+            'V-230239': {
+                'name': 'generated-candidates/rhel_8_stig.candidates',
+                'path': 'content/check_packs/generated-candidates/rhel_8_stig.candidates.json',
+                'fixture_validated': True,
+            }
+        }
+        inv = {
+            'benchmark_id': 'SCAP_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark',
+            'rules': [{
+                'vuln_id': 'xccdf_mil.disa.stig_group_V-230239',
+                'rule_id': 'xccdf_mil.disa.stig_rule_SV-230239r1_rule',
+                'title': 'RHEL 8 must configure a kernel setting.',
+                'severity': 'medium',
+            }],
+        }
+
+        manifest = mod.manifest_from_inventory(inv, 'fixtures/u_rhel_8_scap.zip', check_ids)
+
+        rule = manifest['rules'][0]
+        self.assertEqual(rule['vuln_id'], 'V-230239')
+        self.assertEqual(rule['classification'], 'automated')
+        self.assertEqual(rule['check_id'], 'V-230239')
+        self.assertIn('canonical DISA Vuln ID', rule['reason'])
+
 
 if __name__ == '__main__':
     unittest.main()

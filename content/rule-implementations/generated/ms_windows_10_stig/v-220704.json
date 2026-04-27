@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\FVE",
+      "type": "registry",
+      "value_name": "MinimumPIN"
+    },
+    "description": "Windows 10 systems must use a BitLocker PIN with a minimum length of six digits for pre-boot authentication.",
+    "expected": {
+      "type": "equals",
+      "value": 6
+    },
+    "platform": "windows",
+    "vuln_id": "V-220704"
+  },
+  "check_content_excerpt": "If the following registry value does not exist or is not configured as specified, this is a finding.\n\nFor virtual desktop implementations (VDIs) in which the virtual desktop instance is deleted or refreshed upon logoff, this is NA.\n\nFor Azure Virtual Desktop (AVD) implementations with no data at rest, this is NA.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Policies\\Microsoft\\FVE\\\n\nValue Name: MinimumPIN\nType: REG_DWORD\nValue: 0x00000006 (6) or greater",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 6
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> BitLocker Drive Encryption >> Operating System Drives \"Configure minimum PIN length for startup\" to \"Enabled\" with \"Minimum characters:\" set to \"6\" or greater.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-220704r958552_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_10_stig/u_ms_windows_10_v3r4_stig.json",
+  "source_version": "U_MS_Windows_10_V3R4_STIG.zip",
+  "stig_id": "MS_Windows_10_STIG",
+  "title": "Windows 10 systems must use a BitLocker PIN with a minimum length of six digits for pre-boot authentication.",
+  "tracking_issue": "TODO-V-220704",
+  "vuln_id": "V-220704"
+}

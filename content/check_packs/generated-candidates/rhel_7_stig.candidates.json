@@ -1,0 +1,606 @@
+{
+  "checks": [
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "usb-storage",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured to disable USB mass storage.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204449"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "dccp",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the Datagram Congestion Control Protocol (DCCP) kernel module is disabled unless required.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204450"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "cron",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must have cron logging implemented.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204489"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/sbin/semanage",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the semanage command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204536"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/sbin/setsebool",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the setsebool command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204537"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/bin/chcon",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the chcon command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204538"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/sbin/setfiles",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the setfiles command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204539"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/sbin/unix_chkpwd",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the unix_chkpwd command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204543"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/bin/gpasswd",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the gpasswd command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204544"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/bin/chage",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the chage command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204545"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/sbin/userhelper",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the userhelper command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204546"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/bin/su",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the su command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204547"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/bin/sudo",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the sudo command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204548"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/sbin/postqueue",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the postqueue command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204555"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/libexec/openssh/ssh-keysign",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the ssh-keysign command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204556"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/bin/crontab",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the crontab command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204557"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/sbin/pam_timestamp_check",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the pam_timestamp_check command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204558"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/bin/kmod",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the kmod command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204563"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/passwd",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/passwd.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204564"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/group",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204565"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/gshadow",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/gshadow.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204566"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/shadow",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/shadow.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204567"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/security/opasswd",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/security/opasswd.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204568"
+    },
+    {
+      "check": {
+        "key": "-a",
+        "type": "sysctl"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must implement virtual address space randomization.",
+      "expected": {
+        "type": "equals",
+        "value": "2"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204584"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "RhostsRSAAuthentication",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon does not allow authentication using RSA rhosts authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204588"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "IgnoreRhosts",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon does not allow authentication using rhosts authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204590"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "IgnoreUserKnownHosts",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon does not allow authentication using known hosts authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204593"
+    },
+    {
+      "check": {
+        "key": "-a",
+        "type": "sysctl"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not forward Internet Protocol version 4 (IPv4) source-routed packets.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204609"
+    },
+    {
+      "check": {
+        "key": "-a",
+        "type": "sysctl"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must use a reverse-path filter for IPv4 network traffic when possible on all interfaces.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204610"
+    },
+    {
+      "check": {
+        "key": "-a",
+        "type": "sysctl"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must use a reverse-path filter for IPv4 network traffic when possible by default.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204611"
+    },
+    {
+      "check": {
+        "key": "-a",
+        "type": "sysctl"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not forward Internet Protocol version 4 (IPv4) source-routed packets by default.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204612"
+    },
+    {
+      "check": {
+        "key": "-a",
+        "type": "sysctl"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not respond to Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) echoes sent to a broadcast address.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204613"
+    },
+    {
+      "check": {
+        "key": "-a",
+        "type": "sysctl"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must prevent Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204614"
+    },
+    {
+      "check": {
+        "key": "-a",
+        "type": "sysctl"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must ignore Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204615"
+    },
+    {
+      "check": {
+        "key": "-a",
+        "type": "sysctl"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not allow interfaces to perform Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirects by default.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204616"
+    },
+    {
+      "check": {
+        "key": "-a",
+        "type": "sysctl"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not send Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirects.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204617"
+    },
+    {
+      "check": {
+        "key": "-a",
+        "type": "sysctl"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not be performing packet forwarding unless the system is a router.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204625"
+    },
+    {
+      "check": {
+        "key": "-a",
+        "type": "sysctl"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not forward IPv6 source-routed packets.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204630"
+    },
+    {
+      "check": {
+        "name": "following",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must implement the Endpoint Security for Linux Threat Prevention tool.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-214800"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must prevent a user from overriding the screensaver lock-enabled setting for the graphical user interface.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-214937"
+    },
+    {
+      "check": {
+        "name": "aide",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must use a file integrity tool to verify correct operation of all security functions.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-251705"
+    },
+    {
+      "check": {
+        "name": "screen",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must have the screen package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-255926"
+    },
+    {
+      "check": {
+        "key": "kernel.dmesg_restrict",
+        "type": "sysctl"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must restrict access to the kernel message buffer.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-255927"
+    },
+    {
+      "check": {
+        "name": "--queryformat",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must ensure cryptographic verification of vendor software packages.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-256968"
+    }
+  ],
+  "platform": "linux",
+  "stig_id": "RHEL_7_STIG",
+  "version": "candidate-planned"
+}

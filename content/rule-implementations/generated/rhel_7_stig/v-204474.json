@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the local initialization files of all local interactive users are owned by that user.\n\nCheck the home directory assignment for all nonprivileged users on the system with the following command:\n\nNote: The example will be for the smithj user, who has a home directory of \"/home/smithj\".\n\n     # awk -F: '($3>=1000)&&($7 !~ /nologin/){print $1, $3, $6}' /etc/passwd\n     \n     smithj 1000 /home/smithj\n\nNote: This may miss interactive users that have been assigned a privileged User Identifier (UID). Evidence of interactive use may be obtained from a number of log files containing system logon information.\n\nCheck the owner of all local interactive users' initialization files with the following command:\n\n     # ls -al /home/smithj/.[^.]* | more\n\n     -rw-------. 1 smithj users 2984 Apr 27 19:02 .bash_history\n     -rw-r--r--. 1 smithj users   18 Aug 21  2019 .bash_logout\n     -rw-r--r--. 1 smithj users  193 Aug 21  2019 .bash_profile\n\nIf all local interactive users' initialization files are not owned by that user or root, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the owner of the local initialization files for interactive users to either the directory owner or root with the following command:\n\nNote: The example will be for the smithj user, who has a home directory of \"/home/smithj\".\n\n     # chown smithj /home/smithj/.[^.]*",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204474r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must be configured so that all local initialization files for interactive users are owned by the home directory user or root.",
+  "tracking_issue": "TODO-V-204474",
+  "vuln_id": "V-204474"
+}

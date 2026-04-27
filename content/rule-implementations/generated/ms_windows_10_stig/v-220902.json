@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\Software\\Policies\\Microsoft\\Windows\\Kernel DMA Protection",
+      "type": "registry",
+      "value_name": "DeviceEnumerationPolicy"
+    },
+    "description": "Windows 10 Kernel (Direct Memory Access) DMA Protection must be enabled.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-220902"
+  },
+  "check_content_excerpt": "This is NA prior to v1803 of Windows 10.\n\nIf the following registry value does not exist or is not configured as specified, this is a finding.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\Software\\Policies\\Microsoft\\Windows\\Kernel DMA Protection\n\nValue Name: DeviceEnumerationPolicy\nValue Type: REG_DWORD\nValue: 0",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> System >> Kernel DMA Protection >> \"Enumeration policy for external devices incompatible with Kernel DMA Protection\" to \"Enabled\" with \"Enumeration Policy\" set to \"Block All\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-220902r958524_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_10_stig/u_ms_windows_10_v3r4_stig.json",
+  "source_version": "U_MS_Windows_10_V3R4_STIG.zip",
+  "stig_id": "MS_Windows_10_STIG",
+  "title": "Windows 10 Kernel (Direct Memory Access) DMA Protection must be enabled.",
+  "tracking_issue": "TODO-V-220902",
+  "vuln_id": "V-220902"
+}

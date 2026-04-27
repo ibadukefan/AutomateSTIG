@@ -17,40 +17,36 @@ This roadmap implements the factory required to pursue every-DISA-STIG coverage.
 Completed factory layers:
 
 - current check-pack coverage gates for all existing AutomateSTIG check packs;
-- expanded seed authoritative DISA corpus for Windows Server 2022, Windows Server 2019, Windows 11, RHEL 8, and RHEL 9 manual/SCAP artifacts;
+- expanded seed authoritative DISA corpus for Windows 10, Windows 11, Windows Server 2019, Windows Server 2022, RHEL 7, RHEL 8, and RHEL 9 manual/SCAP artifacts;
 - corpus indexing/fetch/extraction/diff scripts;
 - scheduled corpus freshness workflow;
 - generated per-rule implementation backlog specs for every currently unsupported authoritative DISA rule;
 - conservative candidate check-template extraction from authoritative DISA prose for Windows registry, Windows Feature, Linux sysctl, Linux package, and Linux file-content patterns;
 - deterministic pass/fail fixture evidence for generated Windows and Linux candidate check packs;
+- canonical SCAP/manual Vuln ID alignment so SCAP XCCDF IDs such as `xccdf_mil.disa.stig_group_V-230239` map back to fixture-backed generated candidates for `V-230239` instead of remaining artificially unsupported;
 - fixture-backed promotion of those candidates into experimental authoritative coverage without claiming live-asset production validation.
 
 Current authoritative corpus tracked in-repo:
 
-- authorized public DISA artifacts: 10
-- authoritative rules: 2,944
-- mapped automated checks after fixture-backed candidate promotion: 705
-  - mapped before this expansion/promotion pass: 207
-  - generated candidate checks with deterministic pass/fail fixture evidence: 451
-    - registry candidates: 286
-    - Windows Feature candidates: 7
-    - Linux sysctl candidates: 49
-    - Linux package candidates: 38
-    - Linux file-content candidates: 71
-- remaining unsupported authoritative rules: 2,239
-- generated planned specs for remaining unsupported rules: 2,239
-- planned automated implementations remaining: 2,051
-- planned manual-evidence workflows: 188
+- authorized public DISA artifacts: 14
+- authoritative coverage manifests: 14
+- authoritative rules: 3,828
+- mapped automated checks after fixture-backed candidate and SCAP/manual canonical promotion: 1,794
+  - mapped before Linux/corpus expansion: 207
+  - mapped before SCAP/manual canonical alignment and Windows 10/RHEL 7 expansion: 705
+  - generated candidate checks with deterministic pass/fail fixture evidence: 611
+- remaining unsupported authoritative rules: 2,034
+- generated planned specs for remaining unsupported rules: 2,034
 
-The corpus grew substantially in this pass, so the absolute unsupported count increased even though fixture-backed automation also increased from 207 to 705 mapped rules. This is expected and more honest: every newly indexed authoritative DISA rule is tracked, either mapped or explicitly unsupported, and the production target remains zero unsupported rules.
+The corpus grew again in this pass, but SCAP/manual canonical Vuln ID alignment and new candidate packs moved measured tracked coverage from 705/2,944 (~23.9%) to 1,794/3,828 (~46.9%). This is still not production-complete or all-DISA complete. The production target remains zero unsupported rules across the full tracked public DISA corpus, with every rule classified as machine-verifiable automated, scanner-import-verifiable, automated manual-evidence workflow, or not-applicable-with-proof.
 
-The next burn-down phase is to map SCAP/OVAL machine-check content and infer/fixture-validate additional reusable Linux and Windows templates, including service state, file permissions/ownership, auditd, sshd, PAM, crypto policy, local security policy, audit policy, local users/groups, file ACLs, PowerShell, and WMI/CIM. Live-asset validation is still required before claiming any generated candidate as production validated.
+The next burn-down phase is to deepen SCAP/OVAL semantics and infer/fixture-validate additional reusable Linux and Windows templates, including service state, file permissions/ownership, auditd, sshd, PAM, crypto policy, local security policy, audit policy, local users/groups, file ACLs, PowerShell, and WMI/CIM. Live-asset validation is still required before claiming any generated candidate as production validated.
 
 ## Immediate next implementation sequence
 
 1. Implement a Windows collector spec compiler for registry, security policy, local/group membership, audit policy, service, and file-system evidence.
 2. Implement a Linux collector spec compiler for file content, permissions, package, service, sysctl, auditd, sshd, and PAM evidence.
-3. Map SCAP/OVAL benchmark checks as scanner-import-verifiable or directly machine-verifiable coverage where feasible.
+3. Expand SCAP/OVAL handling from canonical Vuln ID mapping into scanner-import-verifiable OVAL semantic extraction.
 4. Generate executable check definitions from implementation specs where collector/evaluator templates are known-safe.
 5. Attach pass/fail/NA fixture requirements to every generated check.
 6. Promote a rule from `planned` to `implemented` only when generated check execution passes fixtures.

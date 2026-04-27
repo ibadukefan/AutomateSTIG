@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/rsyslog.conf",
+      "pattern": "cron",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must have cron logging implemented.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204489"
+  },
+  "check_content_excerpt": "Verify that \"rsyslog\" is configured to log cron events.\n\nCheck the configuration of \"/etc/rsyslog.conf\" or \"/etc/rsyslog.d/*.conf\" files for the cron facility with the following command:\n\nNote: If another logging package is used, substitute the utility configuration file for \"/etc/rsyslog.conf\" or \"/etc/rsyslog.d/*.conf\" files.\n\n# grep cron /etc/rsyslog.conf  /etc/rsyslog.d/*.conf\ncron.* /var/log/cron\n\nIf the command does not return a response, check for cron logging all facilities by inspecting the \"/etc/rsyslog.conf\" or \"/etc/rsyslog.d/*.conf\" files.\n\nLook for the following entry:\n\n*.* /var/log/messages\n\nIf \"rsyslog\" is not logging messages for the cron facility or all facilities, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure \"rsyslog\" to log all cron messages by adding or updating the following line to \"/etc/rsyslog.conf\" or a configuration file in the /etc/rsyslog.d/ directory:\n\ncron.* /var/log/cron\n\nThe rsyslog daemon must be restarted for the changes to take effect:\n$ sudo systemctl restart rsyslog.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-204489r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must have cron logging implemented.",
+  "tracking_issue": "TODO-V-204489",
+  "vuln_id": "V-204489"
+}

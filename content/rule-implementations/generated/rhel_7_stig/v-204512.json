@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the action the operating system takes if there is an error sending audit records to a remote system.\n\nCheck the action that takes place if there is an error sending audit records to a remote system with the following command:\n\n# grep -i network_failure_action /etc/audisp/audisp-remote.conf\nnetwork_failure_action = syslog\n\nIf the value of the \"network_failure_action\" option is not \"syslog\", \"single\", or \"halt\", or the line is commented out, ask the System Administrator to indicate how the audit logs are off-loaded to a different system or storage media, and to indicate the action taken if there is an error sending audit records to the remote system.\n\nIf there is no evidence that the system is configured to off-load audit logs to a different system or storage media, or if the configuration does not take appropriate action if there is an error sending audit records to the remote system, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the action the operating system takes if there is an error sending audit records to a remote system.\n\nUncomment the \"network_failure_action\" option in \"/etc/audisp/audisp-remote.conf\" and set it to \"syslog\", \"single\", or \"halt\".\n\nnetwork_failure_action = syslog",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204512r958754_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must be configured so that the audit system takes appropriate action when there is an error sending audit records to a remote system.",
+  "tracking_issue": "TODO-V-204512",
+  "vuln_id": "V-204512"
+}

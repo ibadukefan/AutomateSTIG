@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "-a",
+      "type": "sysctl"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must implement virtual address space randomization.",
+    "expected": {
+      "type": "equals",
+      "value": "2"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204584"
+  },
+  "check_content_excerpt": "Verify the operating system implements virtual address space randomization.\n\n     # grep -r kernel.randomize_va_space /run/sysctl.d/* /etc/sysctl.d/* /usr/local/lib/sysctl.d/* /usr/lib/sysctl.d/* /lib/sysctl.d/* /etc/sysctl.conf 2> /dev/null\n     kernel.randomize_va_space = 2\n\nIf \"kernel.randomize_va_space\" is not configured in the /etc/sysctl.conf file or or in any of the other sysctl.d directories, is commented out or does not have a value of \"2\", this is a finding.\n\nCheck that the operating system implements virtual address space randomization with the following command:\n\n     # /sbin/sysctl -a | grep kernel.randomize_va_space \n     kernel.randomize_va_space = 2\n\nIf \"kernel.randomize_va_space\" does not have a value of \"2\", this is a finding.\n\nIf conflicting results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "2"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system implement virtual address space randomization.\n\nSet the system to the required kernel parameter by adding the following line to \"/etc/sysctl.conf\" or a config file in the /etc/sysctl.d/ directory (or modify the line to have the required value):\n\n     kernel.randomize_va_space = 2\n\nIssue the following command to make the changes take effect:\n\n     # sysctl --system",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-204584r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must implement virtual address space randomization.",
+  "tracking_issue": "TODO-V-204584",
+  "vuln_id": "V-204584"
+}

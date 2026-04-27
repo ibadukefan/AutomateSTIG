@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify all files and directories on the system have a valid owner.\n\nCheck the owner of all files and directories with the following command:\n\nNote: The value after -fstype must be replaced with the filesystem type. XFS is used as an example.\n\n# find / -fstype xfs -nouser\n\nIf any files on the system do not have an assigned owner, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Either remove all files and directories from the system that do not have a valid user, or assign a valid user to all unowned files and directories on the system with the \"chown\" command:\n\n# chown <user> <file>",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204463r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must be configured so that all files and directories have a valid owner.",
+  "tracking_issue": "TODO-V-204463",
+  "vuln_id": "V-204463"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SSH daemon does not permit GSSAPI authentication unless approved.\n\nCheck that the SSH daemon does not permit GSSAPI authentication with the following command:\n\n# grep -i gssapiauth /etc/ssh/sshd_config\nGSSAPIAuthentication no\n\nIf the \"GSSAPIAuthentication\" keyword is missing, is set to \"yes\" and is not documented with the Information System Security Officer (ISSO), or the returned line is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Uncomment the \"GSSAPIAuthentication\" keyword in \"/etc/ssh/sshd_config\" (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor) and set the value to \"no\": \n\nGSSAPIAuthentication no\n\nThe SSH service must be restarted for changes to take effect.\n\nIf GSSAPI authentication is required, it must be documented, to include the location of the configuration file, with the ISSO.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204598r958796_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon does not permit Generic Security Service Application Program Interface (GSSAPI) authentication unless needed.",
+  "tracking_issue": "TODO-V-204598",
+  "vuln_id": "V-204598"
+}

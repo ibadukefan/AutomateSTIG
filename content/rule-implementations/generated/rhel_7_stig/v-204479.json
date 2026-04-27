@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that all system device files are correctly labeled to prevent unauthorized modification.\n\nList all device files on the system that are incorrectly labeled with the following commands:\n\nNote: Device files are normally found under \"/dev\", but applications may place device files in other directories and may necessitate a search of the entire system.\n\n#find /dev -context *:device_t:* \\( -type c -o -type b \\) -printf \"%p %Z\\n\"\n\n#find /dev -context *:unlabeled_t:* \\( -type c -o -type b \\) -printf \"%p %Z\\n\"\n\nNote: There are device files, such as \"/dev/vmci\", that are used when the operating system is a host virtual machine. They will not be owned by a user on the system and require the \"device_t\" label to operate. These device files are not a finding.\n\nIf there is output from either of these commands, other than already noted, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Run the following command to determine which package owns the device file:\n\n# rpm -qf <filename>\n\nThe package can be reinstalled from a yum repository using the command:\n\n# sudo yum reinstall <packagename>\n\nAlternatively, the package can be reinstalled from trusted media using the command:\n\n# sudo rpm -Uvh <packagename>",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204479r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must be configured so that all system device files are correctly labeled to prevent unauthorized modification.",
+  "tracking_issue": "TODO-V-204479",
+  "vuln_id": "V-204479"
+}

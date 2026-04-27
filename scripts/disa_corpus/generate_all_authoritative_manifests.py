@@ -8,6 +8,10 @@ from extract_xccdf_inventory import extract
 
 def norm(s): return re.sub(r'[^a-z0-9]+','_',s.lower()).strip('_') or 'unknown'
 
+def canonical_vuln_id(vuln: str) -> str:
+    match = re.search(r'V-\d+', vuln or '', re.IGNORECASE)
+    return match.group(0).upper() if match else vuln
+
 def _repo_rel(repo: Path, path: Path) -> str:
     try:
         return str(path.relative_to(repo)).replace('\\','/')
@@ -56,13 +60,15 @@ def load_check_ids(repo):
 def manifest_from_inventory(inv, fixture_path, check_ids):
     rules=[]
     for r in inv['rules']:
-        vuln=r['vuln_id']; pack=check_ids.get(vuln)
+        raw_vuln=r['vuln_id']; vuln=canonical_vuln_id(raw_vuln); pack=check_ids.get(vuln) or check_ids.get(raw_vuln)
         if pack:
             cls='automated'
             if pack.get('fixture_validated'):
                 reason='Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.'
             else:
                 reason='Mapped to existing AutomateSTIG check definition.'
+            if vuln != raw_vuln:
+                reason += f' Matched via canonical DISA Vuln ID {vuln} from source identifier {raw_vuln}.'
             validated=[pack['path'], fixture_path]
             check_pack=pack['name']; check_id=vuln; issue=''
         else:

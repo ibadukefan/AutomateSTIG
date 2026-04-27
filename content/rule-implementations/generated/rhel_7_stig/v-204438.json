@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "For systems that use UEFI, this is Not Applicable.\n\nFor systems that are running a version of RHEL prior to 7.2, this is Not Applicable.\n\nCheck to see if an encrypted grub superusers password is set. On systems that use a BIOS, use the following command:\n\n$ sudo grep -iw grub2_password /boot/grub2/user.cfg\nGRUB2_PASSWORD=grub.pbkdf2.sha512.[password_hash]\n\nIf the grub superusers password does not begin with \"grub.pbkdf2.sha512\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system to encrypt the boot password for the grub superusers account with the grub2-setpassword command, which creates/overwrites the /boot/grub2/user.cfg file.\n\nGenerate an encrypted grub2 password for the grub superusers account with the following command:\n  \n$ sudo grub2-setpassword\nEnter password:\nConfirm password:",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204438r958472_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "Red Hat Enterprise Linux operating systems version 7.2 or newer with a Basic Input/Output System (BIOS) must require authentication upon booting into single-user and maintenance modes.",
+  "tracking_issue": "TODO-V-204438",
+  "vuln_id": "V-204438"
+}

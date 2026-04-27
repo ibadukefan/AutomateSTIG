@@ -4,11 +4,35 @@
     {
       "authorization": "public DISA Cyber Exchange download metadata",
       "classification": "public",
+      "id": "U_MS_Windows_10_V3R4_STIG",
+      "kind": "manual_stig_zip",
+      "notes": "Microsoft Windows 10 STIG V3R4",
+      "path": "content/disa-corpus/artifacts/4da62c3fa6643e6ce71bfbba1fdd99d5813f5e2c4ba86376f8b2cd1416e47671/U_MS_Windows_10_V3R4_STIG.zip",
+      "retrieved_at": "2026-04-27T20:53:02.594988+00:00",
+      "sha256": "4da62c3fa6643e6ce71bfbba1fdd99d5813f5e2c4ba86376f8b2cd1416e47671",
+      "size_bytes": 1337740,
+      "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_10_V3R4_STIG.zip"
+    },
+    {
+      "authorization": "public DISA Cyber Exchange download metadata",
+      "classification": "public",
+      "id": "U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark",
+      "kind": "scap_benchmark_zip",
+      "notes": "Microsoft Windows 10 STIG SCAP 1.3 Benchmark V3R4",
+      "path": "content/disa-corpus/artifacts/83cfd98b3f06b000e15e310272e3afdd3e7e8052112aa5cc36325950f3038230/U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark.zip",
+      "retrieved_at": "2026-04-27T20:53:02.731629+00:00",
+      "sha256": "83cfd98b3f06b000e15e310272e3afdd3e7e8052112aa5cc36325950f3038230",
+      "size_bytes": 108639,
+      "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+    },
+    {
+      "authorization": "public DISA Cyber Exchange download metadata",
+      "classification": "public",
       "id": "U_MS_Windows_11_V2R4_STIG",
       "kind": "manual_stig_zip",
       "notes": "Microsoft Windows 11 STIG V2R4",
       "path": "content/disa-corpus/artifacts/e54bb1eadc995ee26f8976c8a516dab75c8da61dc97127488b36847f7b0943ac/U_MS_Windows_11_V2R4_STIG.zip",
-      "retrieved_at": "2026-04-27T20:30:44.941263+00:00",
+      "retrieved_at": "2026-04-27T20:53:03.011196+00:00",
       "sha256": "e54bb1eadc995ee26f8976c8a516dab75c8da61dc97127488b36847f7b0943ac",
       "size_bytes": 1414458,
       "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_11_V2R4_STIG.zip"
@@ -20,7 +44,7 @@
       "kind": "scap_benchmark_zip",
       "notes": "Microsoft Windows 11 STIG SCAP 1.3 Benchmark V2R4",
       "path": "content/disa-corpus/artifacts/0148c1eb48c789a3f6fa9284da0b4285b0f9d78b75d1062f0f03fba120ab052f/U_MS_Windows_11_V2R4_STIG_SCAP_1-3_Benchmark.zip",
-      "retrieved_at": "2026-04-27T20:30:45.050435+00:00",
+      "retrieved_at": "2026-04-27T20:53:03.136216+00:00",
       "sha256": "0148c1eb48c789a3f6fa9284da0b4285b0f9d78b75d1062f0f03fba120ab052f",
       "size_bytes": 98772,
       "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_11_V2R4_STIG_SCAP_1-3_Benchmark.zip"
@@ -32,7 +56,7 @@
       "kind": "manual_stig_zip",
       "notes": "Microsoft Windows Server 2019 STIG V3R4",
       "path": "content/disa-corpus/artifacts/0c05c55d9c1f719f623e1995d5a19442f9112f2a21c26e1f07b3a46edcdae92a/U_MS_Windows_Server_2019_V3R4_STIG.zip",
-      "retrieved_at": "2026-04-27T20:30:45.262549+00:00",
+      "retrieved_at": "2026-04-27T20:53:03.354680+00:00",
       "sha256": "0c05c55d9c1f719f623e1995d5a19442f9112f2a21c26e1f07b3a46edcdae92a",
       "size_bytes": 1208556,
       "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2019_V3R4_STIG.zip"
@@ -44,7 +68,7 @@
       "kind": "scap_benchmark_zip",
       "notes": "Microsoft Windows Server 2019 STIG SCAP 1.3 Benchmark V3R4",
       "path": "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip",
-      "retrieved_at": "2026-04-27T20:30:45.379424+00:00",
+      "retrieved_at": "2026-04-27T20:53:03.481271+00:00",
       "sha256": "be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8",
       "size_bytes": 100170,
       "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
@@ -56,7 +80,7 @@
       "kind": "manual_stig_zip",
       "notes": "Microsoft Windows Server 2022 STIG V2R8",
       "path": "content/disa-corpus/artifacts/7681561809403e3f48c26bcf72e1273b3713b6327cf8dfdc5427977a1ee5967d/U_MS_Windows_Server_2022_V2R8_STIG.zip",
-      "retrieved_at": "2026-04-27T20:30:45.672052+00:00",
+      "retrieved_at": "2026-04-27T20:53:03.770291+00:00",
       "sha256": "7681561809403e3f48c26bcf72e1273b3713b6327cf8dfdc5427977a1ee5967d",
       "size_bytes": 2105936,
       "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_V2R8_STIG.zip"
@@ -68,10 +92,34 @@
       "kind": "scap_benchmark_zip",
       "notes": "Microsoft Windows Server 2022 STIG SCAP 1.3 Benchmark V2R8",
       "path": "content/disa-corpus/artifacts/5459c32c9f0d5581bc9f6d28c451a3ab0b63e4db7c444d5b4c83ca878772f33d/U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark.zip",
-      "retrieved_at": "2026-04-27T20:30:45.787749+00:00",
+      "retrieved_at": "2026-04-27T20:53:03.880397+00:00",
       "sha256": "5459c32c9f0d5581bc9f6d28c451a3ab0b63e4db7c444d5b4c83ca878772f33d",
       "size_bytes": 99684,
       "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark.zip"
+    },
+    {
+      "authorization": "public DISA Cyber Exchange download metadata",
+      "classification": "public",
+      "id": "U_RHEL_7_V3R15_STIG",
+      "kind": "manual_stig_zip",
+      "notes": "Red Hat Enterprise Linux 7 STIG V3R15",
+      "path": "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip",
+      "retrieved_at": "2026-04-27T20:53:04.203522+00:00",
+      "sha256": "89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f",
+      "size_bytes": 1178303,
+      "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_RHEL_7_V3R15_STIG.zip"
+    },
+    {
+      "authorization": "public DISA Cyber Exchange download metadata",
+      "classification": "public",
+      "id": "U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark",
+      "kind": "scap_benchmark_zip",
+      "notes": "Red Hat Enterprise Linux 7 STIG SCAP 1.3 Benchmark V3R15",
+      "path": "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip",
+      "retrieved_at": "2026-04-27T20:53:04.461448+00:00",
+      "sha256": "617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41",
+      "size_bytes": 95683,
+      "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
     },
     {
       "authorization": "public DISA Cyber Exchange download metadata",
@@ -80,7 +128,7 @@
       "kind": "manual_stig_zip",
       "notes": "Red Hat Enterprise Linux 8 STIG V2R7",
       "path": "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip",
-      "retrieved_at": "2026-04-27T20:30:46.077727+00:00",
+      "retrieved_at": "2026-04-27T20:53:04.724269+00:00",
       "sha256": "613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd",
       "size_bytes": 1588378,
       "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_RHEL_8_V2R7_STIG.zip"
@@ -92,7 +140,7 @@
       "kind": "scap_benchmark_zip",
       "notes": "Red Hat Enterprise Linux 8 STIG SCAP 1.3 Benchmark V2R7",
       "path": "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip",
-      "retrieved_at": "2026-04-27T20:30:46.214312+00:00",
+      "retrieved_at": "2026-04-27T20:53:04.872133+00:00",
       "sha256": "12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3",
       "size_bytes": 169683,
       "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
@@ -104,7 +152,7 @@
       "kind": "manual_stig_zip",
       "notes": "Red Hat Enterprise Linux 9 STIG V2R4",
       "path": "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip",
-      "retrieved_at": "2026-04-27T20:30:46.638304+00:00",
+      "retrieved_at": "2026-04-27T20:53:05.134596+00:00",
       "sha256": "0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de",
       "size_bytes": 2117573,
       "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_RHEL_9_V2R4_STIG.zip"
@@ -116,13 +164,13 @@
       "kind": "scap_benchmark_zip",
       "notes": "Red Hat Enterprise Linux 9 STIG SCAP 1.3 Benchmark V2R4",
       "path": "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip",
-      "retrieved_at": "2026-04-27T20:30:46.765109+00:00",
+      "retrieved_at": "2026-04-27T20:53:05.271558+00:00",
       "sha256": "903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810",
       "size_bytes": 208996,
       "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
     }
   ],
-  "generated_at": "2026-04-27T20:30:46.765148+00:00",
+  "generated_at": "2026-04-27T20:53:05.271595+00:00",
   "schema_version": "1.0",
   "status": "authorized-public-artifacts"
 }

@@ -1,0 +1,3143 @@
+{
+  "candidate_checks": 116,
+  "cases": [
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\FVE",
+        "type": "registry",
+        "value_name": "UseAdvancedStartup"
+      },
+      "description": "Windows 10 systems must use a BitLocker PIN for pre-boot authentication.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\FVE\\UseAdvancedStartup": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\FVE\\UseAdvancedStartup": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220703"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\FVE",
+        "type": "registry",
+        "value_name": "MinimumPIN"
+      },
+      "description": "Windows 10 systems must use a BitLocker PIN with a minimum length of six digits for pre-boot authentication.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 6
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\FVE\\MinimumPIN": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\FVE\\MinimumPIN": 6
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220704"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application",
+        "type": "registry",
+        "value_name": "MaxSize"
+      },
+      "description": "The Application event log size must be configured to 32768 KB or greater.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 32768
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application\\MaxSize": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application\\MaxSize": 32768
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220779"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System",
+        "type": "registry",
+        "value_name": "MaxSize"
+      },
+      "description": "The System event log size must be configured to 32768 KB or greater.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 32768
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System\\MaxSize": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System\\MaxSize": 32768
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220781"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization",
+        "type": "registry",
+        "value_name": "NoLockScreenCamera"
+      },
+      "description": "Camera access from the lock screen must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization\\NoLockScreenCamera": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization\\NoLockScreenCamera": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220792"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization",
+        "type": "registry",
+        "value_name": "NoLockScreenSlideshow"
+      },
+      "description": "The display of slide shows on the lock screen must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization\\NoLockScreenSlideshow": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization\\NoLockScreenSlideshow": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220794"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters",
+        "type": "registry",
+        "value_name": "DisableIpSourceRouting"
+      },
+      "description": "IPv6 source routing must be configured to highest protection.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters\\DisableIpSourceRouting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters\\DisableIpSourceRouting": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220795"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters",
+        "type": "registry",
+        "value_name": "DisableIPSourceRouting"
+      },
+      "description": "The system must be configured to prevent IP source routing.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\DisableIPSourceRouting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\DisableIPSourceRouting": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220796"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters",
+        "type": "registry",
+        "value_name": "EnableICMPRedirect"
+      },
+      "description": "The system must be configured to prevent Internet Control Message Protocol (ICMP) redirects from overriding Open Shortest Path First (OSPF) generated routes.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\EnableICMPRedirect": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\EnableICMPRedirect": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220797"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netbt\\Parameters",
+        "type": "registry",
+        "value_name": "NoNameReleaseOnDemand"
+      },
+      "description": "The system must be configured to ignore NetBIOS name release requests except from WINS servers.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netbt\\Parameters\\NoNameReleaseOnDemand": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netbt\\Parameters\\NoNameReleaseOnDemand": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220798"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "LocalAccountTokenFilterPolicy"
+      },
+      "description": "Local administrator accounts must have their privileged token filtered to prevent elevated privileges from being used over the network on domain systems.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\LocalAccountTokenFilterPolicy": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\LocalAccountTokenFilterPolicy": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220799"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\Wdigest",
+        "type": "registry",
+        "value_name": "UseLogonCredential"
+      },
+      "description": "WDigest Authentication must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\Wdigest\\UseLogonCredential": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\Wdigest\\UseLogonCredential": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220800"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation",
+        "type": "registry",
+        "value_name": "AllowInsecureGuestAuth"
+      },
+      "description": "Insecure logons to an SMB server must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation\\AllowInsecureGuestAuth": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation\\AllowInsecureGuestAuth": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220802"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Network Connections",
+        "type": "registry",
+        "value_name": "NC_ShowSharedAccessUI"
+      },
+      "description": "Internet connection sharing must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Network Connections\\NC_ShowSharedAccessUI": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Network Connections\\NC_ShowSharedAccessUI": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220803"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy",
+        "type": "registry",
+        "value_name": "fMinimizeConnections"
+      },
+      "description": "Simultaneous connections to the internet or a Windows domain must be limited.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 3
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy\\fMinimizeConnections": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy\\fMinimizeConnections": 3
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220806"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy",
+        "type": "registry",
+        "value_name": "fBlockNonDomain"
+      },
+      "description": "Connections to non-domain networks when connected to a domain authenticated network must be blocked.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy\\fBlockNonDomain": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy\\fBlockNonDomain": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220807"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\WcmSvc\\wifinetworkmanager\\config",
+        "type": "registry",
+        "value_name": "AutoConnectAllowedOEM"
+      },
+      "description": "Wi-Fi Sense must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\WcmSvc\\wifinetworkmanager\\config\\AutoConnectAllowedOEM": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\WcmSvc\\wifinetworkmanager\\config\\AutoConnectAllowedOEM": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220808"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit",
+        "type": "registry",
+        "value_name": "ProcessCreationIncludeCmdLine_Enabled"
+      },
+      "description": "Command line data must be included in process creation events.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit\\ProcessCreationIncludeCmdLine_Enabled": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit\\ProcessCreationIncludeCmdLine_Enabled": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220809"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CredentialsDelegation",
+        "type": "registry",
+        "value_name": "AllowProtectedCreds"
+      },
+      "description": "Windows 10 must be configured to enable Remote host allows delegation of non-exportable credentials.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CredentialsDelegation\\AllowProtectedCreds": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CredentialsDelegation\\AllowProtectedCreds": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220810"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard",
+        "type": "registry",
+        "value_name": "EnableVirtualizationBasedSecurity"
+      },
+      "description": "Virtualization Based Security must be enabled on Windows 10 with the platform security level configured to Secure Boot or Secure Boot with DMA Protection.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard\\EnableVirtualizationBasedSecurity": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard\\EnableVirtualizationBasedSecurity": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220811"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard",
+        "type": "registry",
+        "value_name": "LsaCfgFlags"
+      },
+      "description": "Credential Guard must be running on Windows 10 domain-joined systems.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard\\LsaCfgFlags": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard\\LsaCfgFlags": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220812"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch",
+        "type": "registry",
+        "value_name": "DriverLoadPolicy"
+      },
+      "description": "Early Launch Antimalware, Boot-Start Driver Initialization Policy must prevent boot drivers.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch\\DriverLoadPolicy": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch\\DriverLoadPolicy": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220813"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Group Policy\\{35378EAC-683F-11D2-A89A-00C04FBBCFA2}",
+        "type": "registry",
+        "value_name": "NoGPOListChanges"
+      },
+      "description": "Group Policy objects must be reprocessed even if they have not changed.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Group Policy\\{35378EAC-683F-11D2-A89A-00C04FBBCFA2}\\NoGPOListChanges": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Group Policy\\{35378EAC-683F-11D2-A89A-00C04FBBCFA2}\\NoGPOListChanges": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220814"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers",
+        "type": "registry",
+        "value_name": "DisableWebPnPDownload"
+      },
+      "description": "Downloading print driver packages over HTTP must be prevented.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\DisableWebPnPDownload": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\DisableWebPnPDownload": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220815"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+        "type": "registry",
+        "value_name": "NoWebServices"
+      },
+      "description": "Web publishing and online ordering wizards must be prevented from downloading a list of providers.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\NoWebServices": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\NoWebServices": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220816"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers",
+        "type": "registry",
+        "value_name": "DisableHTTPPrinting"
+      },
+      "description": "Printing over HTTP must be prevented.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\DisableHTTPPrinting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\DisableHTTPPrinting": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220817"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters",
+        "type": "registry",
+        "value_name": "DevicePKInitEnabled"
+      },
+      "description": "Systems must at least attempt device authentication using certificates.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters\\DevicePKInitEnabled": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters\\DevicePKInitEnabled": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220818"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "type": "registry",
+        "value_name": "DontDisplayNetworkSelectionUI"
+      },
+      "description": "The network selection user interface (UI) must not be displayed on the logon screen.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\DontDisplayNetworkSelectionUI": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\DontDisplayNetworkSelectionUI": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220819"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "type": "registry",
+        "value_name": "EnumerateLocalUsers"
+      },
+      "description": "Local users on domain-joined computers must not be enumerated.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\EnumerateLocalUsers": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\EnumerateLocalUsers": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220820"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51",
+        "type": "registry",
+        "value_name": "DCSettingIndex"
+      },
+      "description": "Users must be prompted for a password on resume from sleep (on battery).",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51\\DCSettingIndex": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51\\DCSettingIndex": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220821"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51",
+        "type": "registry",
+        "value_name": "ACSettingIndex"
+      },
+      "description": "The user must be prompted for a password on resume from sleep (plugged in).",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51\\ACSettingIndex": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51\\ACSettingIndex": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220822"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "fAllowToGetHelp"
+      },
+      "description": "Solicited Remote Assistance must not be allowed.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\fAllowToGetHelp": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\fAllowToGetHelp": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220823"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc",
+        "type": "registry",
+        "value_name": "RestrictRemoteClients"
+      },
+      "description": "Unauthenticated RPC clients must be restricted from connecting to the RPC server.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc\\RestrictRemoteClients": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc\\RestrictRemoteClients": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220824"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "MSAOptional"
+      },
+      "description": "The setting to allow Microsoft accounts to be optional for modern style apps must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\MSAOptional": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\MSAOptional": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220825"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat",
+        "type": "registry",
+        "value_name": "DisableInventory"
+      },
+      "description": "The Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat\\DisableInventory": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat\\DisableInventory": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220826"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer",
+        "type": "registry",
+        "value_name": "NoAutoplayfornonVolume"
+      },
+      "description": "Autoplay must be turned off for non-volume devices.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\NoAutoplayfornonVolume": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\NoAutoplayfornonVolume": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220827"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+        "type": "registry",
+        "value_name": "NoAutorun"
+      },
+      "description": "The default autorun behavior must be configured to prevent autorun commands.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\NoAutorun": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\NoAutorun": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220828"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\policies\\Explorer",
+        "type": "registry",
+        "value_name": "NoDriveTypeAutoRun"
+      },
+      "description": "Autoplay must be disabled for all drives.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 255
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\policies\\Explorer\\NoDriveTypeAutoRun": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\policies\\Explorer\\NoDriveTypeAutoRun": 255
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220829"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Biometrics\\FacialFeatures",
+        "type": "registry",
+        "value_name": "EnhancedAntiSpoofing"
+      },
+      "description": "Enhanced anti-spoofing for facial recognition must be enabled on Window 10.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Biometrics\\FacialFeatures\\EnhancedAntiSpoofing": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Biometrics\\FacialFeatures\\EnhancedAntiSpoofing": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220830"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent",
+        "type": "registry",
+        "value_name": "DisableWindowsConsumerFeatures"
+      },
+      "description": "Microsoft consumer experiences must be turned off.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent\\DisableWindowsConsumerFeatures": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent\\DisableWindowsConsumerFeatures": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220831"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI",
+        "type": "registry",
+        "value_name": "EnumerateAdministrators"
+      },
+      "description": "Administrator accounts must not be enumerated during elevation.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI\\EnumerateAdministrators": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI\\EnumerateAdministrators": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220832"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+        "type": "registry",
+        "value_name": "LimitEnhancedDiagnosticDataWindowsAnalytics"
+      },
+      "description": "If Enhanced diagnostic data is enabled it must be limited to the minimum required to support Windows Analytics.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\\LimitEnhancedDiagnosticDataWindowsAnalytics": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\\LimitEnhancedDiagnosticDataWindowsAnalytics": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220833"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+        "type": "registry",
+        "value_name": "AllowTelemetry"
+      },
+      "description": "Windows Telemetry must not be configured to Full.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\\AllowTelemetry": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\\AllowTelemetry": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220834"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization",
+        "type": "registry",
+        "value_name": "DODownloadMode"
+      },
+      "description": "Windows Update must not obtain updates from other PCs on the internet.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization\\DODownloadMode": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization\\DODownloadMode": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220835"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "type": "registry",
+        "value_name": "EnableSmartScreen"
+      },
+      "description": "The Windows Defender SmartScreen for Explorer must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\EnableSmartScreen": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\EnableSmartScreen": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220836"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer",
+        "type": "registry",
+        "value_name": "NoDataExecutionPrevention"
+      },
+      "description": "Explorer Data Execution Prevention must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\NoDataExecutionPrevention": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\NoDataExecutionPrevention": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220837"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer",
+        "type": "registry",
+        "value_name": "NoHeapTerminationOnCorruption"
+      },
+      "description": "Turning off File Explorer heap termination on corruption must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\NoHeapTerminationOnCorruption": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\NoHeapTerminationOnCorruption": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220838"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+        "type": "registry",
+        "value_name": "PreXPSP2ShellProtocolBehavior"
+      },
+      "description": "File Explorer shell protocol must run in protected mode.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\PreXPSP2ShellProtocolBehavior": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\PreXPSP2ShellProtocolBehavior": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220839"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftEdge\\PhishingFilter",
+        "type": "registry",
+        "value_name": "PreventOverride"
+      },
+      "description": "Users must not be allowed to ignore Windows Defender SmartScreen filter warnings for malicious websites in Microsoft Edge.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftEdge\\PhishingFilter\\PreventOverride": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftEdge\\PhishingFilter\\PreventOverride": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220840"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftEdge\\PhishingFilter",
+        "type": "registry",
+        "value_name": "PreventOverrideAppRepUnknown"
+      },
+      "description": "Users must not be allowed to ignore Windows Defender SmartScreen filter warnings for unverified files in Microsoft Edge.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftEdge\\PhishingFilter\\PreventOverrideAppRepUnknown": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftEdge\\PhishingFilter\\PreventOverrideAppRepUnknown": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220841"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftEdge\\Internet Settings",
+        "type": "registry",
+        "value_name": "PreventCertErrorOverrides"
+      },
+      "description": "Windows 10 must be configured to prevent certificate error overrides in Microsoft Edge.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftEdge\\Internet Settings\\PreventCertErrorOverrides": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftEdge\\Internet Settings\\PreventCertErrorOverrides": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220842"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftEdge\\PhishingFilter",
+        "type": "registry",
+        "value_name": "EnabledV9"
+      },
+      "description": "The Windows Defender SmartScreen filter for Microsoft Edge must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftEdge\\PhishingFilter\\EnabledV9": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftEdge\\PhishingFilter\\EnabledV9": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220844"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR",
+        "type": "registry",
+        "value_name": "AllowGameDVR"
+      },
+      "description": "Windows 10 must be configured to disable Windows Game Recording and Broadcasting.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR\\AllowGameDVR": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR\\AllowGameDVR": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220845"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\PassportForWork",
+        "type": "registry",
+        "value_name": "RequireSecurityDevice"
+      },
+      "description": "The use of a hardware security device with Windows Hello for Business must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\PassportForWork\\RequireSecurityDevice": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\PassportForWork\\RequireSecurityDevice": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220846"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\PassportForWork\\PINComplexity",
+        "type": "registry",
+        "value_name": "MinimumPINLength"
+      },
+      "description": "Windows 10 must be configured to require a minimum pin length of six characters or greater.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 6
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\PassportForWork\\PINComplexity\\MinimumPINLength": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\PassportForWork\\PINComplexity\\MinimumPINLength": 6
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220847"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "DisablePasswordSaving"
+      },
+      "description": "Passwords must not be saved in the Remote Desktop Client.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\DisablePasswordSaving": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\DisablePasswordSaving": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220848"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "fDisableCdm"
+      },
+      "description": "Local drives must be prevented from sharing with Remote Desktop Session Hosts.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\fDisableCdm": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\fDisableCdm": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220849"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "fPromptForPassword"
+      },
+      "description": "Remote Desktop Services must always prompt a client for passwords upon connection.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\fPromptForPassword": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\fPromptForPassword": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220850"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "fEncryptRPCTraffic"
+      },
+      "description": "The Remote Desktop Session Host must require secure RPC communications.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\fEncryptRPCTraffic": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\fEncryptRPCTraffic": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220851"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "MinEncryptionLevel"
+      },
+      "description": "Remote Desktop Services must be configured with the client connection encryption set to the required level.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 3
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\MinEncryptionLevel": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\MinEncryptionLevel": 3
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220852"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds",
+        "type": "registry",
+        "value_name": "DisableEnclosureDownload"
+      },
+      "description": "Attachments must be prevented from being downloaded from RSS feeds.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds\\DisableEnclosureDownload": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds\\DisableEnclosureDownload": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220853"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds",
+        "type": "registry",
+        "value_name": "AllowBasicAuthInClear"
+      },
+      "description": "Basic authentication for RSS feeds over HTTP must not be used.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds\\AllowBasicAuthInClear": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds\\AllowBasicAuthInClear": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220854"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search",
+        "type": "registry",
+        "value_name": "AllowIndexingEncryptedStoresOrItems"
+      },
+      "description": "Indexing of encrypted files must be turned off.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search\\AllowIndexingEncryptedStoresOrItems": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search\\AllowIndexingEncryptedStoresOrItems": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220855"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer",
+        "type": "registry",
+        "value_name": "EnableUserControl"
+      },
+      "description": "Users must be prevented from changing installation options.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\\EnableUserControl": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\\EnableUserControl": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220856"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer",
+        "type": "registry",
+        "value_name": "AlwaysInstallElevated"
+      },
+      "description": "The Windows Installer Always install with elevated privileges must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\\AlwaysInstallElevated": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\\AlwaysInstallElevated": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220857"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer",
+        "type": "registry",
+        "value_name": "SafeForScripting"
+      },
+      "description": "Users must be notified if a web-based program attempts to install software.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\\SafeForScripting": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\\SafeForScripting": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220858"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "DisableAutomaticRestartSignOn"
+      },
+      "description": "Automatically signing in the last interactive user after a system-initiated restart must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\DisableAutomaticRestartSignOn": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\DisableAutomaticRestartSignOn": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220859"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging",
+        "type": "registry",
+        "value_name": "EnableScriptBlockLogging"
+      },
+      "description": "PowerShell script block logging must be enabled on Windows 10.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging\\EnableScriptBlockLogging": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging\\EnableScriptBlockLogging": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220860"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client",
+        "type": "registry",
+        "value_name": "AllowBasic"
+      },
+      "description": "The Windows Remote Management (WinRM) client must not use Basic authentication.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client\\AllowBasic": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client\\AllowBasic": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220862"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client",
+        "type": "registry",
+        "value_name": "AllowUnencryptedTraffic"
+      },
+      "description": "The Windows Remote Management (WinRM) client must not allow unencrypted traffic.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client\\AllowUnencryptedTraffic": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client\\AllowUnencryptedTraffic": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220863"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service",
+        "type": "registry",
+        "value_name": "AllowBasic"
+      },
+      "description": "The Windows Remote Management (WinRM) service must not use Basic authentication.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\AllowBasic": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\AllowBasic": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220865"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service",
+        "type": "registry",
+        "value_name": "AllowUnencryptedTraffic"
+      },
+      "description": "The Windows Remote Management (WinRM) service must not allow unencrypted traffic.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\AllowUnencryptedTraffic": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\AllowUnencryptedTraffic": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220866"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service",
+        "type": "registry",
+        "value_name": "DisableRunAs"
+      },
+      "description": "The Windows Remote Management (WinRM) service must not store RunAs credentials.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\DisableRunAs": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\DisableRunAs": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220867"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client",
+        "type": "registry",
+        "value_name": "AllowDigest"
+      },
+      "description": "The Windows Remote Management (WinRM) client must not use Digest authentication.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client\\AllowDigest": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client\\AllowDigest": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220868"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppPrivacy",
+        "type": "registry",
+        "value_name": "LetAppsActivateWithVoiceAboveLock"
+      },
+      "description": "Windows 10 must be configured to prevent Windows apps from being activated by voice while the system is locked.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppPrivacy\\LetAppsActivateWithVoiceAboveLock": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppPrivacy\\LetAppsActivateWithVoiceAboveLock": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220869"
+    },
+    {
+      "check": {
+        "path": "HKCU\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent",
+        "type": "registry",
+        "value_name": "DisableThirdPartySuggestions"
+      },
+      "description": "Windows 10 should be configured to prevent users from receiving suggestions for third-party or additional applications.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent\\DisableThirdPartySuggestions": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent\\DisableThirdPartySuggestions": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220872"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows\\Kernel DMA Protection",
+        "type": "registry",
+        "value_name": "DeviceEnumerationPolicy"
+      },
+      "description": "Windows 10 Kernel (Direct Memory Access) DMA Protection must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows\\Kernel DMA Protection\\DeviceEnumerationPolicy": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows\\Kernel DMA Protection\\DeviceEnumerationPolicy": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220902"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "LimitBlankPasswordUse"
+      },
+      "description": "Local accounts with blank passwords must be restricted to prevent access from the network.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LimitBlankPasswordUse": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LimitBlankPasswordUse": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220910"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "SCENoApplyLegacyAuditPolicy"
+      },
+      "description": "Audit policy using subcategories must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\SCENoApplyLegacyAuditPolicy": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\SCENoApplyLegacyAuditPolicy": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220913"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "RequireSignOrSeal"
+      },
+      "description": "Outgoing secure channel traffic must be encrypted or signed.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\RequireSignOrSeal": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\RequireSignOrSeal": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220914"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "SealSecureChannel"
+      },
+      "description": "Outgoing secure channel traffic must be encrypted when possible.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\SealSecureChannel": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\SealSecureChannel": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220915"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "SignSecureChannel"
+      },
+      "description": "Outgoing secure channel traffic must be signed when possible.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\SignSecureChannel": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\SignSecureChannel": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220916"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "DisablePasswordChange"
+      },
+      "description": "The computer account password must not be prevented from being reset.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\DisablePasswordChange": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\DisablePasswordChange": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220917"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "MaximumPasswordAge"
+      },
+      "description": "The maximum age for machine account passwords must be configured to 30 days or less.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 30
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\MaximumPasswordAge": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\MaximumPasswordAge": 30
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220918"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "RequireStrongKey"
+      },
+      "description": "The system must be configured to require a strong session key.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\RequireStrongKey": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\RequireStrongKey": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220919"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "InactivityTimeoutSecs"
+      },
+      "description": "The machine inactivity limit must be set to 15 minutes, locking the system with the screensaver.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 900
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\InactivityTimeoutSecs": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\InactivityTimeoutSecs": 900
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220920"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon",
+        "type": "registry",
+        "value_name": "CachedLogonsCount"
+      },
+      "description": "Caching of logon credentials must be limited.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 10
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\CachedLogonsCount": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\CachedLogonsCount": 10
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220923"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon",
+        "type": "registry",
+        "value_name": "SCRemoveOption"
+      },
+      "description": "The Smart Card removal option must be configured to Force Logoff or Lock Workstation.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\SCRemoveOption": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\SCRemoveOption": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220924"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters",
+        "type": "registry",
+        "value_name": "RequireSecuritySignature"
+      },
+      "description": "The Windows SMB client must be configured to always perform SMB packet signing.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\\RequireSecuritySignature": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\\RequireSecuritySignature": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220925"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters",
+        "type": "registry",
+        "value_name": "EnablePlainTextPassword"
+      },
+      "description": "Unencrypted passwords must not be sent to third-party SMB Servers.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\\EnablePlainTextPassword": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\\EnablePlainTextPassword": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220926"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters",
+        "type": "registry",
+        "value_name": "RequireSecuritySignature"
+      },
+      "description": "The Windows SMB server must be configured to always perform SMB packet signing.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters\\RequireSecuritySignature": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters\\RequireSecuritySignature": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220927"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "RestrictAnonymousSAM"
+      },
+      "description": "Anonymous enumeration of SAM accounts must not be allowed.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\RestrictAnonymousSAM": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\RestrictAnonymousSAM": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220929"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "RestrictAnonymous"
+      },
+      "description": "Anonymous enumeration of shares must be restricted.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\RestrictAnonymous": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\RestrictAnonymous": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220930"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "EveryoneIncludesAnonymous"
+      },
+      "description": "The system must be configured to prevent anonymous users from having the same rights as the Everyone group.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\EveryoneIncludesAnonymous": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\EveryoneIncludesAnonymous": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220931"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters",
+        "type": "registry",
+        "value_name": "RestrictNullSessAccess"
+      },
+      "description": "Anonymous access to Named Pipes and Shares must be restricted.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters\\RestrictNullSessAccess": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters\\RestrictNullSessAccess": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220932"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0",
+        "type": "registry",
+        "value_name": "allownullsessionfallback"
+      },
+      "description": "NTLM must be prevented from falling back to a Null session.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0\\allownullsessionfallback": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0\\allownullsessionfallback": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220934"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\pku2u",
+        "type": "registry",
+        "value_name": "AllowOnlineID"
+      },
+      "description": "PKU2U authentication using online identities must be prevented.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\pku2u\\AllowOnlineID": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\pku2u\\AllowOnlineID": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220935"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters",
+        "type": "registry",
+        "value_name": "SupportedEncryptionTypes"
+      },
+      "description": "Kerberos encryption types must be configured to prevent the use of DES and RC4 encryption suites.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2147483640
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters\\SupportedEncryptionTypes": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters\\SupportedEncryptionTypes": 2147483640
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220936"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "NoLMHash"
+      },
+      "description": "The system must be configured to prevent the storage of the LAN Manager hash of passwords.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\NoLMHash": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\NoLMHash": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220937"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "LmCompatibilityLevel"
+      },
+      "description": "The LanMan authentication level must be set to send NTLMv2 response only, and to refuse LM and NTLM.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 5
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LmCompatibilityLevel": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LmCompatibilityLevel": 5
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220938"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LDAP",
+        "type": "registry",
+        "value_name": "LDAPClientIntegrity"
+      },
+      "description": "The system must be configured to the required LDAP client signing level.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LDAP\\LDAPClientIntegrity": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LDAP\\LDAPClientIntegrity": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220939"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0",
+        "type": "registry",
+        "value_name": "NTLMMinClientSec"
+      },
+      "description": "The system must be configured to meet the minimum session security requirement for NTLM SSP based clients.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 537395200
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0\\NTLMMinClientSec": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0\\NTLMMinClientSec": 537395200
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220940"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0",
+        "type": "registry",
+        "value_name": "NTLMMinServerSec"
+      },
+      "description": "The system must be configured to meet the minimum session security requirement for NTLM SSP based servers.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 537395200
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0\\NTLMMinServerSec": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0\\NTLMMinServerSec": 537395200
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220941"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\FIPSAlgorithmPolicy",
+        "type": "registry",
+        "value_name": "Enabled"
+      },
+      "description": "The system must be configured to use FIPS-compliant algorithms for encryption, hashing, and signing.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\FIPSAlgorithmPolicy\\Enabled": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\FIPSAlgorithmPolicy\\Enabled": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220942"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager",
+        "type": "registry",
+        "value_name": "ProtectionMode"
+      },
+      "description": "The default permissions of global system objects must be increased.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\ProtectionMode": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\ProtectionMode": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220943"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "FilterAdministratorToken"
+      },
+      "description": "User Account Control approval mode for the built-in Administrator must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\FilterAdministratorToken": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\FilterAdministratorToken": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220944"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "ConsentPromptBehaviorAdmin"
+      },
+      "description": "User Account Control must, at minimum, prompt administrators for consent on the secure desktop.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\ConsentPromptBehaviorAdmin": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\ConsentPromptBehaviorAdmin": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220945"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "ConsentPromptBehaviorUser"
+      },
+      "description": "User Account Control must automatically deny elevation requests for standard users.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\ConsentPromptBehaviorUser": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\ConsentPromptBehaviorUser": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220947"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableInstallerDetection"
+      },
+      "description": "User Account Control must be configured to detect application installations and prompt for elevation.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableInstallerDetection": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableInstallerDetection": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220948"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableSecureUIAPaths"
+      },
+      "description": "User Account Control must only elevate UIAccess applications that are installed in secure locations.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableSecureUIAPaths": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableSecureUIAPaths": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220949"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableLUA"
+      },
+      "description": "User Account Control must run all administrators in Admin Approval Mode, enabling UAC.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableLUA": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableLUA": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220950"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableVirtualization"
+      },
+      "description": "User Account Control must virtualize file and registry write failures to per-user locations.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableVirtualization": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableVirtualization": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220951"
+    },
+    {
+      "check": {
+        "path": "HKCU\\SOFTWARE\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications",
+        "type": "registry",
+        "value_name": "NoToastApplicationNotificationOnLockScreen"
+      },
+      "description": "Toast notifications to the lock screen must be turned off.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\SOFTWARE\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications\\NoToastApplicationNotificationOnLockScreen": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\SOFTWARE\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications\\NoToastApplicationNotificationOnLockScreen": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220954"
+    },
+    {
+      "check": {
+        "path": "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments",
+        "type": "registry",
+        "value_name": "SaveZoneInformation"
+      },
+      "description": "Zone information must be preserved when saving attachments.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments\\SaveZoneInformation": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments\\SaveZoneInformation": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220955"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription",
+        "type": "registry",
+        "value_name": "EnableTranscripting"
+      },
+      "description": "PowerShell Transcription must be enabled on Windows 10.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription\\EnableTranscripting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription\\EnableTranscripting": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-252896"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard",
+        "type": "registry",
+        "value_name": "HypervisorEnforcedCodeIntegrity"
+      },
+      "description": "Virtualization-based protection of code integrity must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard\\HypervisorEnforcedCodeIntegrity": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard\\HypervisorEnforcedCodeIntegrity": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-252903"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "MS_Windows_10_STIG",
+  "validated_candidates": 116
+}
