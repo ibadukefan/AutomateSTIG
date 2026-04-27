@@ -163,24 +163,40 @@ impl EvaluationEngine {
         benchmark: &StigBenchmark,
     ) -> Option<usize> {
         // Direct match on Vuln ID.
-        if let Some(idx) = checklist.findings.iter().position(|f| f.vuln_id == rule_ref) {
+        if let Some(idx) = checklist
+            .findings
+            .iter()
+            .position(|f| f.vuln_id == rule_ref)
+        {
             return Some(idx);
         }
 
         // Match on Rule ID.
-        if let Some(idx) = checklist.findings.iter().position(|f| f.rule_id == rule_ref) {
+        if let Some(idx) = checklist
+            .findings
+            .iter()
+            .position(|f| f.rule_id == rule_ref)
+        {
             return Some(idx);
         }
 
         // Match on Group ID.
-        if let Some(idx) = checklist.findings.iter().position(|f| f.group_id == rule_ref) {
+        if let Some(idx) = checklist
+            .findings
+            .iter()
+            .position(|f| f.group_id == rule_ref)
+        {
             return Some(idx);
         }
 
         // Match via legacy IDs in the benchmark.
         for rule in &benchmark.rules {
             if rule.legacy_ids.iter().any(|lid| lid == rule_ref) {
-                if let Some(idx) = checklist.findings.iter().position(|f| f.vuln_id == rule.vuln_id) {
+                if let Some(idx) = checklist
+                    .findings
+                    .iter()
+                    .position(|f| f.vuln_id == rule.vuln_id)
+                {
                     return Some(idx);
                 }
             }
@@ -229,11 +245,7 @@ impl EvaluationEngine {
 
     /// Merge findings from a previous checklist into a new one.
     /// Used when re-evaluating — preserves manual overrides and comments.
-    pub fn merge_previous(
-        &self,
-        current: &mut Checklist,
-        previous: &Checklist,
-    ) -> Result<()> {
+    pub fn merge_previous(&self, current: &mut Checklist, previous: &Checklist) -> Result<()> {
         for prev_finding in &previous.findings {
             if let Some(curr_finding) = current.find_by_vuln_id_mut(&prev_finding.vuln_id) {
                 // Keep the previous manual findings if current is still Not_Reviewed.
@@ -357,9 +369,14 @@ mod tests {
             ],
         };
 
-        let checklist = engine.evaluate(&benchmark, &asset, Some(&scan), &[]).unwrap();
+        let checklist = engine
+            .evaluate(&benchmark, &asset, Some(&scan), &[])
+            .unwrap();
 
-        assert_eq!(checklist.find_by_vuln_id("V-100001").unwrap().status, FindingStatus::Open);
+        assert_eq!(
+            checklist.find_by_vuln_id("V-100001").unwrap().status,
+            FindingStatus::Open
+        );
         assert_eq!(
             checklist.find_by_vuln_id("V-100002").unwrap().status,
             FindingStatus::NotAFinding
@@ -388,7 +405,9 @@ mod tests {
             }],
         };
 
-        let checklist = engine.evaluate(&benchmark, &asset, None, &[answer]).unwrap();
+        let checklist = engine
+            .evaluate(&benchmark, &asset, None, &[answer])
+            .unwrap();
 
         let f = checklist.find_by_vuln_id("V-100001").unwrap();
         assert_eq!(f.status, FindingStatus::NotApplicable);
@@ -437,7 +456,9 @@ mod tests {
             }],
         };
 
-        let checklist = engine.evaluate(&benchmark, &asset, Some(&scan), &[answer]).unwrap();
+        let checklist = engine
+            .evaluate(&benchmark, &asset, Some(&scan), &[answer])
+            .unwrap();
 
         // Scan result (Open) should prevail because the answer file has force_override=false
         // and the finding was set by SCC scan (not Manual source).
@@ -469,7 +490,9 @@ mod tests {
             }],
         };
 
-        let checklist = engine.evaluate(&benchmark, &asset, Some(&scan), &[]).unwrap();
+        let checklist = engine
+            .evaluate(&benchmark, &asset, Some(&scan), &[])
+            .unwrap();
         assert_eq!(
             checklist.find_by_vuln_id("V-100001").unwrap().status,
             FindingStatus::NotAFinding

@@ -25,8 +25,13 @@ pub struct SshConfig {
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum SshAuth {
-    Password { password: String },
-    KeyFile { path: String, passphrase: Option<String> },
+    Password {
+        password: String,
+    },
+    KeyFile {
+        path: String,
+        passphrase: Option<String>,
+    },
 }
 
 /// Result of a remote command execution.
@@ -51,13 +56,14 @@ pub async fn execute_commands(
     });
 
     let handler = SshHandler::new();
-    let mut session = client::connect(
-        russh_config,
-        (config.host.as_str(), config.port),
-        handler,
-    )
-    .await
-    .map_err(|e| format!("SSH connection failed to {}:{}: {}", config.host, config.port, e))?;
+    let mut session = client::connect(russh_config, (config.host.as_str(), config.port), handler)
+        .await
+        .map_err(|e| {
+            format!(
+                "SSH connection failed to {}:{}: {}",
+                config.host, config.port, e
+            )
+        })?;
 
     // Authenticate.
     let auth_result = match &config.auth {
@@ -152,9 +158,7 @@ async fn execute_single_command(
 }
 
 /// Collect system data from a remote Linux host.
-pub async fn collect_linux_data(
-    config: &SshConfig,
-) -> Result<HashMap<String, String>, String> {
+pub async fn collect_linux_data(config: &SshConfig) -> Result<HashMap<String, String>, String> {
     let commands: Vec<(&str, &str)> = vec![
         ("sysctl_raw", "sysctl -a 2>/dev/null"),
         ("file:/etc/ssh/sshd_config", "cat /etc/ssh/sshd_config 2>/dev/null"),
@@ -171,9 +175,7 @@ pub async fn collect_linux_data(
 }
 
 /// Collect running config from a network device.
-pub async fn collect_network_config(
-    config: &SshConfig,
-) -> Result<HashMap<String, String>, String> {
+pub async fn collect_network_config(config: &SshConfig) -> Result<HashMap<String, String>, String> {
     let commands: Vec<(&str, &str)> = vec![
         ("running_config", "show running-config"),
         ("show_version", "show version"),
@@ -192,7 +194,9 @@ struct SshHandler {
 impl SshHandler {
     fn new() -> Self {
         Self {
-            accept_unknown: true, // Default: accept on first connect, log the key.
+            accept_unknown: std::env::var("AUTOMATESTIG_SSH_TRUST_ON_FIRST_USE")
+                .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
+                .unwrap_or(false),
         }
     }
 }
@@ -207,7 +211,10 @@ impl client::Handler for SshHandler {
     ) -> Result<bool, Self::Error> {
         // Log the server's public key fingerprint for auditing.
         let fingerprint = format!("{:?}", server_public_key);
-        tracing::info!("SSH server key: {}", &fingerprint[..fingerprint.len().min(80)]);
+        tracing::info!(
+            "SSH server key: {}",
+            &fingerprint[..fingerprint.len().min(80)]
+        );
 
         // Check known_hosts file if it exists.
         let known_hosts_path = dirs_or_home().join(".automatestig").join("known_hosts");
@@ -226,17 +233,25 @@ impl client::Handler for SshHandler {
 
         // First connection or accept_unknown mode: save the key and accept.
         if self.accept_unknown {
-            let _ = std::fs::create_dir_all(known_hosts_path.parent().unwrap_or(std::path::Path::new(".")));
+            let _ = std::fs::create_dir_all(
+                known_hosts_path
+                    .parent()
+                    .unwrap_or(std::path::Path::new(".")),
+            );
             let key_str = format!("{:?}\n", server_public_key);
             let _ = std::fs::OpenOptions::new()
                 .create(true)
                 .append(true)
                 .open(&known_hosts_path)
                 .and_then(|mut f| std::io::Write::write_all(&mut f, key_str.as_bytes()));
-            tracing::info!("SSH server key saved to known_hosts (trust-on-first-use)");
+            tracing::info!(
+                "SSH server key saved to known_hosts (explicit trust-on-first-use override)"
+            );
+            Ok(true)
+        } else {
+            tracing::warn!("SSH server key is not trusted; set AUTOMATESTIG_SSH_TRUST_ON_FIRST_USE=1 only for explicit enrollment");
+            Ok(false)
         }
-
-        Ok(true)
     }
 }
 

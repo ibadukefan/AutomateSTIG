@@ -219,10 +219,7 @@ impl StigManagerClient {
         if !resp.status().is_success() {
             let status = resp.status();
             let body = resp.text().await.unwrap_or_default();
-            return Err(format!(
-                "Authentication failed ({}): {}",
-                status, body
-            ));
+            return Err(format!("Authentication failed ({}): {}", status, body));
         }
 
         let token_resp: TokenResponse = resp
@@ -268,9 +265,7 @@ impl StigManagerClient {
 
         if resp.status().is_success() {
             let body: serde_json::Value = resp.json().await.unwrap_or_default();
-            let username = body["username"]
-                .as_str()
-                .unwrap_or("unknown");
+            let username = body["username"].as_str().unwrap_or("unknown");
             Ok(format!("Connected as: {}", username))
         } else {
             Err(format!("API returned {}", resp.status()))
@@ -289,16 +284,11 @@ impl StigManagerClient {
             .await
             .map_err(|e| format!("Request failed: {}", e))?;
 
-        resp.json()
-            .await
-            .map_err(|e| format!("Parse error: {}", e))
+        resp.json().await.map_err(|e| format!("Parse error: {}", e))
     }
 
     /// List assets in a collection.
-    pub async fn list_assets(
-        &self,
-        collection_id: &str,
-    ) -> Result<Vec<SmAsset>, String> {
+    pub async fn list_assets(&self, collection_id: &str) -> Result<Vec<SmAsset>, String> {
         let token = self.get_token().await?;
 
         let resp = self
@@ -312,9 +302,7 @@ impl StigManagerClient {
             .await
             .map_err(|e| format!("Request failed: {}", e))?;
 
-        resp.json()
-            .await
-            .map_err(|e| format!("Parse error: {}", e))
+        resp.json().await.map_err(|e| format!("Parse error: {}", e))
     }
 
     /// List STIGs assigned to an asset.
@@ -336,9 +324,7 @@ impl StigManagerClient {
             .await
             .map_err(|e| format!("Request failed: {}", e))?;
 
-        resp.json()
-            .await
-            .map_err(|e| format!("Parse error: {}", e))
+        resp.json().await.map_err(|e| format!("Parse error: {}", e))
     }
 
     /// Create an asset in a collection.
@@ -376,9 +362,7 @@ impl StigManagerClient {
             return Err(format!("Create asset failed ({}): {}", status, body));
         }
 
-        resp.json()
-            .await
-            .map_err(|e| format!("Parse error: {}", e))
+        resp.json().await.map_err(|e| format!("Parse error: {}", e))
     }
 
     /// Push reviews (evaluation results) for an asset+STIG in a collection.
@@ -414,9 +398,7 @@ impl StigManagerClient {
         }
 
         // STIG-Manager returns stats on success.
-        resp.json()
-            .await
-            .map_err(|e| format!("Parse error: {}", e))
+        resp.json().await.map_err(|e| format!("Parse error: {}", e))
     }
 
     /// Convert an AutomateSTIG checklist to STIG-Manager reviews.
@@ -471,7 +453,8 @@ mod tests {
 
         let configured = StigManagerConfig {
             api_url: "https://stigman.example.mil/api".to_string(),
-            token_url: "https://keycloak.example.mil/realms/stigman/protocol/openid-connect/token".to_string(),
+            token_url: "https://keycloak.example.mil/realms/stigman/protocol/openid-connect/token"
+                .to_string(),
             client_id: "automatestig".to_string(),
             client_secret: "secret123".to_string(),
             default_collection_id: None,
@@ -505,7 +488,8 @@ mod tests {
         f.finding_details = "Not configured".to_string();
         cl.findings.push(f);
 
-        let mut f2 = Finding::new_not_reviewed("V-2", "SV-2r1_rule", "V-2", "Test2", Severity::Medium);
+        let mut f2 =
+            Finding::new_not_reviewed("V-2", "SV-2r1_rule", "V-2", "Test2", Severity::Medium);
         f2.status = FindingStatus::NotAFinding;
         f2.source = FindingSource::Manual;
         cl.findings.push(f2);

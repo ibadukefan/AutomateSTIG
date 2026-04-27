@@ -6,7 +6,8 @@ use std::path::Path;
 use automatestig_core::library::StigLibrary;
 use automatestig_core::models::stig::StigBenchmark;
 
-use crate::verifier::verify_pack;
+use crate::signing::TrustStore;
+use crate::verifier::{verify_pack, verify_pack_with_trust};
 use crate::{StigpackError, StigpackResult};
 
 /// Import result with details about what was imported.
@@ -40,8 +41,34 @@ pub struct ImportResult {
 /// 3. Extract benchmarks and add to library.
 /// 4. Extract answer templates and remediation scripts.
 pub fn import_pack(pack_path: &Path, library: &mut StigLibrary) -> StigpackResult<ImportResult> {
+    // Existing programmatic/import tests use integrity verification only. UI and
+    // production callers should use import_pack_trusted when policy requires
+    // trusted signatures.
+    import_pack_with_verification(pack_path, library, verify_pack(pack_path)?)
+}
+
+/// Import a .stigpack file after verifying its signature against a trust store.
+pub fn import_pack_trusted(
+    pack_path: &Path,
+    library: &mut StigLibrary,
+    trust_store: &TrustStore,
+) -> StigpackResult<ImportResult> {
+    let verification = verify_pack_with_trust(pack_path, Some(trust_store))?;
+    if verification.signature_valid != Some(true) {
+        return Err(StigpackError::SignatureError(format!(
+            "trusted signature required for .stigpack import: {:?}",
+            verification.issues
+        )));
+    }
+    import_pack_with_verification(pack_path, library, verification)
+}
+
+fn import_pack_with_verification(
+    pack_path: &Path,
+    library: &mut StigLibrary,
+    verification: crate::verifier::VerificationResult,
+) -> StigpackResult<ImportResult> {
     // Step 1 & 2: Verify.
-    let verification = verify_pack(pack_path)?;
     if !verification.manifest_valid {
         return Err(StigpackError::ManifestError(
             "Failed to parse manifest".to_string(),
@@ -61,7 +88,9 @@ pub fn import_pack(pack_path: &Path, library: &mut StigLibrary) -> StigpackResul
 
     // Read manifest.
     let manifest = {
-        let mut mf = archive.by_name("manifest.json").map_err(StigpackError::Zip)?;
+        let mut mf = archive
+            .by_name("manifest.json")
+            .map_err(StigpackError::Zip)?;
         let mut json = String::new();
         mf.read_to_string(&mut json)?;
         crate::manifest::PackManifest::from_json(&json)
@@ -119,7 +148,9 @@ pub fn import_pack(pack_path: &Path, library: &mut StigLibrary) -> StigpackResul
                     result.answer_templates_imported += 1;
                 }
             } else {
-                result.warnings.push(format!("Rejected unsafe path: {}", path));
+                result
+                    .warnings
+                    .push(format!("Rejected unsafe path: {}", path));
             }
         }
 
@@ -134,7 +165,9 @@ pub fn import_pack(pack_path: &Path, library: &mut StigLibrary) -> StigpackResul
                     result.remediation_scripts_imported += 1;
                 }
             } else {
-                result.warnings.push(format!("Rejected unsafe path: {}", path));
+                result
+                    .warnings
+                    .push(format!("Rejected unsafe path: {}", path));
             }
         }
     }
@@ -175,8 +208,8 @@ fn read_zip_file(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use automatestig_core::models::stig::*;
     use crate::builder::PackBuilder;
+    use automatestig_core::models::stig::*;
 
     fn make_test_benchmark() -> StigBenchmark {
         StigBenchmark {

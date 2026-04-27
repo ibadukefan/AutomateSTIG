@@ -125,7 +125,10 @@ const ALLOWED_URL_PREFIXES: &[&str] = &[
 
 /// Validate a URL is on the DISA allowlist. Prevents SSRF attacks.
 fn validate_disa_url(url: &str) -> Result<(), String> {
-    if ALLOWED_URL_PREFIXES.iter().any(|prefix| url.starts_with(prefix)) {
+    if ALLOWED_URL_PREFIXES
+        .iter()
+        .any(|prefix| url.starts_with(prefix))
+    {
         Ok(())
     } else {
         Err(format!(
@@ -136,10 +139,7 @@ fn validate_disa_url(url: &str) -> Result<(), String> {
 }
 
 /// Download a STIG ZIP from DISA and import it into the library.
-pub async fn download_and_import(
-    url: &str,
-    state: &AppState,
-) -> Result<FetchResult, String> {
+pub async fn download_and_import(url: &str, state: &AppState) -> Result<FetchResult, String> {
     validate_disa_url(url)?;
 
     let client = reqwest::Client::builder()
@@ -156,7 +156,10 @@ pub async fn download_and_import(
         .map_err(|e| format!("Download failed: {}", e))?;
 
     if !response.status().is_success() {
-        return Err(format!("Download failed with status: {}", response.status()));
+        return Err(format!(
+            "Download failed with status: {}",
+            response.status()
+        ));
     }
 
     let bytes = response
@@ -200,9 +203,7 @@ pub async fn fetch_all_content(state: &AppState) -> Result<FetchResult, String> 
                 combined.details.extend(result.details);
             }
             Err(e) => {
-                combined
-                    .errors
-                    .push(format!("{}: {}", entry.title, e));
+                combined.errors.push(format!("{}: {}", entry.title, e));
             }
         }
     }
@@ -213,8 +214,7 @@ pub async fn fetch_all_content(state: &AppState) -> Result<FetchResult, String> 
 /// Import STIG content from in-memory ZIP bytes.
 fn import_zip_bytes(data: &[u8], state: &AppState) -> Result<FetchResult, String> {
     let cursor = std::io::Cursor::new(data);
-    let mut archive =
-        zip::ZipArchive::new(cursor).map_err(|e| format!("Invalid ZIP: {}", e))?;
+    let mut archive = zip::ZipArchive::new(cursor).map_err(|e| format!("Invalid ZIP: {}", e))?;
 
     let mut result = FetchResult {
         new_benchmarks: 0,
@@ -278,21 +278,26 @@ fn import_zip_bytes(data: &[u8], state: &AppState) -> Result<FetchResult, String
                         if conv.automated > 0 {
                             let packs_dir = library.root().join("auto_check_packs");
                             let _ = std::fs::create_dir_all(&packs_dir);
-                            if let Ok(json) = automatestig_core::converter::check_pack_to_json(&conv.check_pack) {
-                                let _ = std::fs::write(packs_dir.join(format!("{}.json", id)), &json);
+                            if let Ok(json) =
+                                automatestig_core::converter::check_pack_to_json(&conv.check_pack)
+                            {
+                                let _ =
+                                    std::fs::write(packs_dir.join(format!("{}.json", id)), &json);
                             }
                         }
 
                         if is_update {
                             result.updated_benchmarks += 1;
-                            result
-                                .details
-                                .push(format!("Updated: {} {} ({} rules, {} auto-checks)", id, ver, rules, conv.automated));
+                            result.details.push(format!(
+                                "Updated: {} {} ({} rules, {} auto-checks)",
+                                id, ver, rules, conv.automated
+                            ));
                         } else {
                             result.new_benchmarks += 1;
-                            result
-                                .details
-                                .push(format!("New: {} {} ({} rules, {} auto-checks)", id, ver, rules, conv.automated));
+                            result.details.push(format!(
+                                "New: {} {} ({} rules, {} auto-checks)",
+                                id, ver, rules, conv.automated
+                            ));
                         }
                     }
                     Err(e) => {

@@ -21,8 +21,7 @@ pub fn run(id: &str, name: &str, version: &str, source: &str, output: &str) -> R
     ui::detail("Source", source);
     eprintln!();
 
-    let mut builder = PackBuilder::new(id, name, version)
-        .author("AutomateSTIG CLI");
+    let mut builder = PackBuilder::new(id, name, version).author("AutomateSTIG CLI");
 
     let benchmarks_dir = source_path.join("benchmarks");
     if benchmarks_dir.exists() {

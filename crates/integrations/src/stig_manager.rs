@@ -108,11 +108,8 @@ pub struct CheckContent {
 
 /// Convert a Checklist to STIG-Manager import format.
 pub fn checklist_to_stig_manager(checklist: &Checklist) -> StigManagerImport {
-    let reviews: Vec<StigManagerReview> = checklist
-        .findings
-        .iter()
-        .map(finding_to_review)
-        .collect();
+    let reviews: Vec<StigManagerReview> =
+        checklist.findings.iter().map(finding_to_review).collect();
 
     StigManagerImport {
         collection: String::new(), // Set by caller.

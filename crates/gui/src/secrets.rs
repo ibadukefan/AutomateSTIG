@@ -46,8 +46,7 @@ pub fn encrypt_secret(plaintext: &str, db_key_material: &str) -> Result<String, 
 /// Decrypt a secret string from storage.
 /// Input is the hex-encoded string from encrypt_secret.
 pub fn decrypt_secret(hex_ciphertext: &str, db_key_material: &str) -> Result<String, String> {
-    let data = hex::decode(hex_ciphertext)
-        .map_err(|e| format!("Invalid hex: {}", e))?;
+    let data = hex::decode(hex_ciphertext).map_err(|e| format!("Invalid hex: {}", e))?;
 
     if data.len() < 12 + 16 {
         return Err("Ciphertext too short".to_string());
@@ -60,7 +59,9 @@ pub fn decrypt_secret(hex_ciphertext: &str, db_key_material: &str) -> Result<Str
 
     let (nonce_bytes, ciphertext) = data.split_at(12);
     let nonce = Nonce::assume_unique_for_key(
-        nonce_bytes.try_into().map_err(|_| "Invalid nonce".to_string())?,
+        nonce_bytes
+            .try_into()
+            .map_err(|_| "Invalid nonce".to_string())?,
     );
 
     let mut in_out = ciphertext.to_vec();

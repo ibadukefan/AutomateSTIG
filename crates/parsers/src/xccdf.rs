@@ -58,8 +58,7 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
                         in_benchmark = true;
                         for attr in e.attributes().flatten() {
                             if attr.key.as_ref() == b"id" {
-                                benchmark.id =
-                                    String::from_utf8_lossy(&attr.value).to_string();
+                                benchmark.id = String::from_utf8_lossy(&attr.value).to_string();
                                 benchmark.xccdf_id = Some(benchmark.id.clone());
                             }
                         }
@@ -68,8 +67,7 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
                         in_group = true;
                         for attr in e.attributes().flatten() {
                             if attr.key.as_ref() == b"id" {
-                                current_group_id =
-                                    String::from_utf8_lossy(&attr.value).to_string();
+                                current_group_id = String::from_utf8_lossy(&attr.value).to_string();
                             }
                         }
                     }
@@ -85,8 +83,7 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
                                         String::from_utf8_lossy(&attr.value).to_string();
                                 }
                                 b"severity" => {
-                                    let sev_str =
-                                        String::from_utf8_lossy(&attr.value).to_string();
+                                    let sev_str = String::from_utf8_lossy(&attr.value).to_string();
                                     if let Some(sev) = Severity::from_cat_str(&sev_str) {
                                         current_rule.severity = sev;
                                         current_rule.weight = sev.default_weight();
@@ -110,8 +107,7 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
                         if in_benchmark && !in_group {
                             for attr in e.attributes().flatten() {
                                 if attr.key.as_ref() == b"idref" {
-                                    let cpe =
-                                        String::from_utf8_lossy(&attr.value).to_string();
+                                    let cpe = String::from_utf8_lossy(&attr.value).to_string();
                                     benchmark.platform.cpe.push(cpe);
                                 }
                             }
@@ -176,11 +172,8 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
                         "release-info" | "plain-text" => {
                             if text.contains("Release:") {
                                 if let Some(r) = text.split("Release:").nth(1) {
-                                    benchmark.release = r
-                                        .split_whitespace()
-                                        .next()
-                                        .unwrap_or("0")
-                                        .to_string();
+                                    benchmark.release =
+                                        r.split_whitespace().next().unwrap_or("0").to_string();
                                 }
                             }
                         }
@@ -274,8 +267,7 @@ pub fn parse_xccdf_results_str(xml: &str) -> ParseResult<ScanResultSet> {
                         for attr in e.attributes().flatten() {
                             match attr.key.as_ref() {
                                 b"test-system" => {
-                                    let sys =
-                                        String::from_utf8_lossy(&attr.value).to_string();
+                                    let sys = String::from_utf8_lossy(&attr.value).to_string();
                                     if sys.contains("openscap") {
                                         source.scanner = ScannerType::OpenScap;
                                     }
@@ -293,8 +285,7 @@ pub fn parse_xccdf_results_str(xml: &str) -> ParseResult<ScanResultSet> {
                         current_result.clear();
                         for attr in e.attributes().flatten() {
                             if attr.key.as_ref() == b"idref" {
-                                current_rule_ref =
-                                    String::from_utf8_lossy(&attr.value).to_string();
+                                current_rule_ref = String::from_utf8_lossy(&attr.value).to_string();
                             }
                         }
                     }
@@ -343,7 +334,10 @@ pub fn parse_xccdf_results_str(xml: &str) -> ParseResult<ScanResultSet> {
 
             Ok(Event::Eof) => break,
             Err(e) => {
-                return Err(ParseError::XmlError(format!("XCCDF result parse error: {}", e)));
+                return Err(ParseError::XmlError(format!(
+                    "XCCDF result parse error: {}",
+                    e
+                )));
             }
             _ => {}
         }

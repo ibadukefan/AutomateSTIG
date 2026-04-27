@@ -5,5 +5,5 @@
 //! - eMASS export format
 //! - STIG-Manager result engine metadata
 
-pub mod stig_manager;
 pub mod emass;
+pub mod stig_manager;

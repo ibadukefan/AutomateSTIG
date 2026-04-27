@@ -13,16 +13,16 @@ pub mod winrm;
 
 use std::net::SocketAddr;
 
-use axum::extract::Request;
-use axum::middleware::{self, Next};
-use axum::response::Response;
-use axum::Router;
 use automatestig_core::checks::CheckPlatform;
 use automatestig_core::inventory::assets::{ManagedAsset, ScanProtocol};
 use automatestig_core::models::asset::Asset;
 use automatestig_core::models::checklist::{Checklist, ChecklistStigInfo};
 use automatestig_core::models::finding::{Finding, FindingSource, FindingStatus};
 use automatestig_core::models::stig::Severity;
+use axum::extract::Request;
+use axum::middleware::{self, Next};
+use axum::response::Response;
+use axum::Router;
 use chrono::Utc;
 use tower_http::cors::{AllowOrigin, CorsLayer};
 use tower_http::limit::RequestBodyLimitLayer;
@@ -34,8 +34,7 @@ use state::AppState;
 async fn main() {
     tracing_subscriber::fmt()
         .with_env_filter(
-            EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| EnvFilter::new("info")),
+            EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info")),
         )
         .with_target(false)
         .init();
@@ -47,31 +46,44 @@ async fn main() {
     // Clone for background checker before moving into router.
     let bg_state = state.clone();
 
-    // Bind address: use PORT env var for hosted/demo mode, otherwise random localhost port.
-    let (bind_ip, bind_port) = if let Ok(port) = std::env::var("PORT") {
-        ([0, 0, 0, 0], port.parse::<u16>().unwrap_or(8080))
-    } else {
-        ([127, 0, 0, 1], 0)
-    };
-    let demo_mode = bind_ip == [0, 0, 0, 0];
+    // Bind address: PORT may set the port for hosted platforms, but it does not
+    // enable demo mode. Network exposure and demo behavior must be explicit.
+    let port = std::env::var("PORT")
+        .ok()
+        .and_then(|p| p.parse::<u16>().ok())
+        .unwrap_or(0);
+    let bind_host = std::env::var("AUTOMATESTIG_BIND").unwrap_or_else(|_| "127.0.0.1".to_string());
+    let bind_ip: std::net::IpAddr = bind_host
+        .parse()
+        .expect("AUTOMATESTIG_BIND must be an IP address such as 127.0.0.1 or 0.0.0.0");
+    let demo_mode = std::env::var("AUTOMATESTIG_DEMO")
+        .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
+        .unwrap_or(false);
 
-    let addr = SocketAddr::from((bind_ip, bind_port));
+    let addr = SocketAddr::from((bind_ip, port));
     let listener = tokio::net::TcpListener::bind(addr)
         .await
         .expect("Failed to bind to address");
     let local_addr = listener.local_addr().expect("Failed to get local address");
     let url = format!("http://{}", local_addr);
 
-    // Generate auth token. In demo mode (PORT env set), use a fixed demo token
-    // so the embedded frontend works without injection.
-    let auth_token: String = if demo_mode {
-        "demo".to_string()
-    } else {
+    // Generate auth token. Server/non-loopback mode requires an explicit token;
+    // desktop localhost mode gets a random per-session token.
+    let is_loopback = bind_ip.is_loopback();
+    let auth_token: String = if let Ok(token) = std::env::var("AUTOMATESTIG_AUTH_TOKEN") {
+        if token.len() < 16 && !is_loopback {
+            panic!(
+                "AUTOMATESTIG_AUTH_TOKEN must be at least 16 characters for non-localhost binds"
+            );
+        }
+        token
+    } else if is_loopback {
         let rng = ring::rand::SystemRandom::new();
         let mut bytes = [0u8; 32];
-        ring::rand::SecureRandom::fill(&rng, &mut bytes)
-            .expect("Failed to generate random token");
+        ring::rand::SecureRandom::fill(&rng, &mut bytes).expect("Failed to generate random token");
         bytes.iter().map(|b| format!("{:02x}", b)).collect()
+    } else {
+        panic!("AUTOMATESTIG_AUTH_TOKEN is required when binding outside localhost");
     };
     let auth_token_for_middleware = auth_token.clone();
 
@@ -101,10 +113,7 @@ async fn main() {
                     let query_token = req
                         .uri()
                         .query()
-                        .and_then(|q| {
-                            q.split('&')
-                                .find_map(|p| p.strip_prefix("token="))
-                        })
+                        .and_then(|q| q.split('&').find_map(|p| p.strip_prefix("token=")))
                         .unwrap_or("")
                         .to_string();
 
@@ -126,23 +135,23 @@ async fn main() {
             }
         })
         .layer(RequestBodyLimitLayer::new(100 * 1024 * 1024)) // 100 MB
-        .layer(if demo_mode {
-            // Demo mode: allow any origin (Railway/Fly proxies use different origins).
-            CorsLayer::permissive()
-        } else {
-            CorsLayer::new()
-                .allow_origin(AllowOrigin::exact(
-                    url.parse().expect("Failed to parse origin"),
-                ))
+        .layer({
+            let mut cors = CorsLayer::new()
                 .allow_methods(tower_http::cors::Any)
-                .allow_headers(tower_http::cors::Any)
+                .allow_headers(tower_http::cors::Any);
+            if is_loopback {
+                cors = cors.allow_origin(AllowOrigin::exact(
+                    url.parse().expect("Failed to parse origin"),
+                ));
+            }
+            cors
         })
         .with_state(state);
     eprintln!();
     eprintln!("  AutomateSTIG v{}", env!("CARGO_PKG_VERSION"));
     eprintln!("  GUI running at: {}", url);
     if demo_mode {
-        eprintln!("  Demo mode: auth=demo, CORS=permissive");
+        eprintln!("  Demo data: enabled via AUTOMATESTIG_DEMO");
     }
     eprintln!("  Press Ctrl+C to stop.");
     eprintln!();
@@ -163,7 +172,9 @@ async fn main() {
             tracing::info!("Background STIG update checker enabled");
             disa::start_background_checker(bg_state, 24).await;
         } else {
-            tracing::info!("Background update checker disabled (air-gapped mode). Enable in Settings.");
+            tracing::info!(
+                "Background update checker disabled (air-gapped mode). Enable in Settings."
+            );
         }
     });
 
@@ -194,14 +205,36 @@ fn seed_demo_data(state: &AppState) {
     }
 
     let mut assets = vec![
-        ManagedAsset::new("WEB-APP-01", "10.10.20.15", CheckPlatform::Windows, ScanProtocol::Winrm),
-        ManagedAsset::new("DB-CORE-01", "10.10.30.22", CheckPlatform::Linux, ScanProtocol::Ssh),
-        ManagedAsset::new("EDGE-GW-01", "10.10.1.1", CheckPlatform::CiscoIos, ScanProtocol::Ssh),
+        ManagedAsset::new(
+            "WEB-APP-01",
+            "10.10.20.15",
+            CheckPlatform::Windows,
+            ScanProtocol::Winrm,
+        ),
+        ManagedAsset::new(
+            "DB-CORE-01",
+            "10.10.30.22",
+            CheckPlatform::Linux,
+            ScanProtocol::Ssh,
+        ),
+        ManagedAsset::new(
+            "EDGE-GW-01",
+            "10.10.1.1",
+            CheckPlatform::CiscoIos,
+            ScanProtocol::Ssh,
+        ),
     ];
 
     assets[0].id = "demo-asset-web-01".to_string();
-    assets[0].assigned_stigs = vec!["Windows_Server_2022_STIG".to_string(), "IIS_10.0_STIG".to_string()];
-    assets[0].tags = vec!["production".to_string(), "web".to_string(), "windows".to_string()];
+    assets[0].assigned_stigs = vec![
+        "Windows_Server_2022_STIG".to_string(),
+        "IIS_10.0_STIG".to_string(),
+    ];
+    assets[0].tags = vec![
+        "production".to_string(),
+        "web".to_string(),
+        "windows".to_string(),
+    ];
     assets[0].os_info = Some("Windows Server 2022 Datacenter".to_string());
     assets[0].notes = Some("Demo IIS web application server".to_string());
     assets[0].last_compliance_pct = Some(91.2);
@@ -209,7 +242,11 @@ fn seed_demo_data(state: &AppState) {
 
     assets[1].id = "demo-asset-db-01".to_string();
     assets[1].assigned_stigs = vec!["RHEL_9_STIG".to_string(), "PostgreSQL_14_STIG".to_string()];
-    assets[1].tags = vec!["production".to_string(), "database".to_string(), "linux".to_string()];
+    assets[1].tags = vec![
+        "production".to_string(),
+        "database".to_string(),
+        "linux".to_string(),
+    ];
     assets[1].os_info = Some("Red Hat Enterprise Linux 9".to_string());
     assets[1].notes = Some("Demo PostgreSQL database host".to_string());
     assets[1].last_compliance_pct = Some(87.4);
@@ -217,7 +254,11 @@ fn seed_demo_data(state: &AppState) {
 
     assets[2].id = "demo-asset-net-01".to_string();
     assets[2].assigned_stigs = vec!["Cisco_IOS_STIG".to_string()];
-    assets[2].tags = vec!["network".to_string(), "edge".to_string(), "production".to_string()];
+    assets[2].tags = vec![
+        "network".to_string(),
+        "edge".to_string(),
+        "production".to_string(),
+    ];
     assets[2].os_info = Some("Cisco IOS XE 17.x".to_string());
     assets[2].notes = Some("Demo branch edge gateway".to_string());
     assets[2].last_compliance_pct = Some(94.8);
@@ -228,11 +269,163 @@ fn seed_demo_data(state: &AppState) {
     }
 
     let checklists = vec![
-        sample_checklist("WEB-APP-01", "Windows_Server_2022_STIG", "Microsoft Windows Server 2022 STIG", "1", "4", vec![("V-254239", "SV-254239r958388_rule", "TLS 1.2 must be enabled", Severity::High, FindingStatus::Open), ("V-254281", "SV-254281r958514_rule", "Audit logon events must be configured", Severity::Medium, FindingStatus::Open), ("V-254300", "SV-254300r958570_rule", "SMB signing must be required", Severity::Medium, FindingStatus::NotAFinding), ("V-254333", "SV-254333r958669_rule", "PowerShell transcription must be enabled", Severity::Low, FindingStatus::NotApplicable)]),
-        sample_checklist("WEB-APP-01", "IIS_10.0_STIG", "Microsoft IIS 10.0 STIG", "2", "1", vec![("V-218796", "SV-218796r603267_rule", "Directory browsing must be disabled", Severity::Medium, FindingStatus::Open), ("V-218801", "SV-218801r603282_rule", "Sample content must be removed", Severity::Medium, FindingStatus::NotAFinding), ("V-218804", "SV-218804r603291_rule", "Request filtering must be configured", Severity::Low, FindingStatus::NotAFinding)]),
-        sample_checklist("DB-CORE-01", "RHEL_9_STIG", "Red Hat Enterprise Linux 9 STIG", "1", "2", vec![("V-258095", "SV-258095r986512_rule", "FIPS mode must be enabled", Severity::High, FindingStatus::Open), ("V-258101", "SV-258101r986530_rule", "Auditd must be configured", Severity::Medium, FindingStatus::NotAFinding), ("V-258144", "SV-258144r986679_rule", "USB storage must be disabled when not required", Severity::Low, FindingStatus::NotReviewed)]),
-        sample_checklist("DB-CORE-01", "PostgreSQL_14_STIG", "PostgreSQL 14 STIG", "1", "1", vec![("V-260001", "SV-260001r990001_rule", "Logging collector must be enabled", Severity::Medium, FindingStatus::Open), ("V-260014", "SV-260014r990044_rule", "SSL must be enforced", Severity::High, FindingStatus::NotAFinding), ("V-260028", "SV-260028r990088_rule", "Untrusted extensions must be removed", Severity::Low, FindingStatus::NotApplicable)]),
-        sample_checklist("EDGE-GW-01", "Cisco_IOS_STIG", "Cisco IOS STIG", "3", "5", vec![("V-220501", "SV-220501r604001_rule", "Unused services must be disabled", Severity::Medium, FindingStatus::NotAFinding), ("V-220544", "SV-220544r604118_rule", "AAA must be configured", Severity::High, FindingStatus::Open), ("V-220590", "SV-220590r604240_rule", "SNMP community strings must be secured", Severity::Medium, FindingStatus::NotAFinding)])
+        sample_checklist(
+            "WEB-APP-01",
+            "Windows_Server_2022_STIG",
+            "Microsoft Windows Server 2022 STIG",
+            "1",
+            "4",
+            vec![
+                (
+                    "V-254239",
+                    "SV-254239r958388_rule",
+                    "TLS 1.2 must be enabled",
+                    Severity::High,
+                    FindingStatus::Open,
+                ),
+                (
+                    "V-254281",
+                    "SV-254281r958514_rule",
+                    "Audit logon events must be configured",
+                    Severity::Medium,
+                    FindingStatus::Open,
+                ),
+                (
+                    "V-254300",
+                    "SV-254300r958570_rule",
+                    "SMB signing must be required",
+                    Severity::Medium,
+                    FindingStatus::NotAFinding,
+                ),
+                (
+                    "V-254333",
+                    "SV-254333r958669_rule",
+                    "PowerShell transcription must be enabled",
+                    Severity::Low,
+                    FindingStatus::NotApplicable,
+                ),
+            ],
+        ),
+        sample_checklist(
+            "WEB-APP-01",
+            "IIS_10.0_STIG",
+            "Microsoft IIS 10.0 STIG",
+            "2",
+            "1",
+            vec![
+                (
+                    "V-218796",
+                    "SV-218796r603267_rule",
+                    "Directory browsing must be disabled",
+                    Severity::Medium,
+                    FindingStatus::Open,
+                ),
+                (
+                    "V-218801",
+                    "SV-218801r603282_rule",
+                    "Sample content must be removed",
+                    Severity::Medium,
+                    FindingStatus::NotAFinding,
+                ),
+                (
+                    "V-218804",
+                    "SV-218804r603291_rule",
+                    "Request filtering must be configured",
+                    Severity::Low,
+                    FindingStatus::NotAFinding,
+                ),
+            ],
+        ),
+        sample_checklist(
+            "DB-CORE-01",
+            "RHEL_9_STIG",
+            "Red Hat Enterprise Linux 9 STIG",
+            "1",
+            "2",
+            vec![
+                (
+                    "V-258095",
+                    "SV-258095r986512_rule",
+                    "FIPS mode must be enabled",
+                    Severity::High,
+                    FindingStatus::Open,
+                ),
+                (
+                    "V-258101",
+                    "SV-258101r986530_rule",
+                    "Auditd must be configured",
+                    Severity::Medium,
+                    FindingStatus::NotAFinding,
+                ),
+                (
+                    "V-258144",
+                    "SV-258144r986679_rule",
+                    "USB storage must be disabled when not required",
+                    Severity::Low,
+                    FindingStatus::NotReviewed,
+                ),
+            ],
+        ),
+        sample_checklist(
+            "DB-CORE-01",
+            "PostgreSQL_14_STIG",
+            "PostgreSQL 14 STIG",
+            "1",
+            "1",
+            vec![
+                (
+                    "V-260001",
+                    "SV-260001r990001_rule",
+                    "Logging collector must be enabled",
+                    Severity::Medium,
+                    FindingStatus::Open,
+                ),
+                (
+                    "V-260014",
+                    "SV-260014r990044_rule",
+                    "SSL must be enforced",
+                    Severity::High,
+                    FindingStatus::NotAFinding,
+                ),
+                (
+                    "V-260028",
+                    "SV-260028r990088_rule",
+                    "Untrusted extensions must be removed",
+                    Severity::Low,
+                    FindingStatus::NotApplicable,
+                ),
+            ],
+        ),
+        sample_checklist(
+            "EDGE-GW-01",
+            "Cisco_IOS_STIG",
+            "Cisco IOS STIG",
+            "3",
+            "5",
+            vec![
+                (
+                    "V-220501",
+                    "SV-220501r604001_rule",
+                    "Unused services must be disabled",
+                    Severity::Medium,
+                    FindingStatus::NotAFinding,
+                ),
+                (
+                    "V-220544",
+                    "SV-220544r604118_rule",
+                    "AAA must be configured",
+                    Severity::High,
+                    FindingStatus::Open,
+                ),
+                (
+                    "V-220590",
+                    "SV-220590r604240_rule",
+                    "SNMP community strings must be secured",
+                    Severity::Medium,
+                    FindingStatus::NotAFinding,
+                ),
+            ],
+        ),
     ];
 
     for checklist in &checklists {
@@ -243,7 +436,14 @@ fn seed_demo_data(state: &AppState) {
     let _ = db.set_config("demo_seeded", "true");
 }
 
-fn sample_checklist(hostname: &str, stig_id: &str, title: &str, version: &str, release: &str, findings_spec: Vec<(&str, &str, &str, Severity, FindingStatus)>) -> Checklist {
+fn sample_checklist(
+    hostname: &str,
+    stig_id: &str,
+    title: &str,
+    version: &str,
+    release: &str,
+    findings_spec: Vec<(&str, &str, &str, Severity, FindingStatus)>,
+) -> Checklist {
     let mut asset = Asset::new(hostname);
     asset.os = Some(hostname.to_string());
 
@@ -261,21 +461,31 @@ fn sample_checklist(hostname: &str, stig_id: &str, title: &str, version: &str, r
         },
     );
 
-    checklist.findings = findings_spec.into_iter().enumerate().map(|(idx, (vuln, rule, title, severity, status))| {
-        let mut f = Finding::new_not_reviewed(vuln, rule, vuln, title, severity);
-        f.status = status;
-        f.source = FindingSource::Manual;
-        f.finding_details = match status {
-            FindingStatus::Open => format!("Demo finding evidence for {} on {}", vuln, hostname),
-            FindingStatus::NotAFinding => format!("Validated compliant for {} on {}", vuln, hostname),
-            FindingStatus::NotApplicable => format!("Marked not applicable for {} in demo scenario", vuln),
-            FindingStatus::NotReviewed => format!("Pending analyst review for {}", vuln),
-        };
-        f.comments = format!("Demo seeded item {} for presentation purposes", idx + 1);
-        f.evaluated_at = Utc::now();
-        f.evaluated_by = "AutomateSTIG demo seed".to_string();
-        f
-    }).collect();
+    checklist.findings = findings_spec
+        .into_iter()
+        .enumerate()
+        .map(|(idx, (vuln, rule, title, severity, status))| {
+            let mut f = Finding::new_not_reviewed(vuln, rule, vuln, title, severity);
+            f.status = status;
+            f.source = FindingSource::Manual;
+            f.finding_details = match status {
+                FindingStatus::Open => {
+                    format!("Demo finding evidence for {} on {}", vuln, hostname)
+                }
+                FindingStatus::NotAFinding => {
+                    format!("Validated compliant for {} on {}", vuln, hostname)
+                }
+                FindingStatus::NotApplicable => {
+                    format!("Marked not applicable for {} in demo scenario", vuln)
+                }
+                FindingStatus::NotReviewed => format!("Pending analyst review for {}", vuln),
+            };
+            f.comments = format!("Demo seeded item {} for presentation purposes", idx + 1);
+            f.evaluated_at = Utc::now();
+            f.evaluated_by = "AutomateSTIG demo seed".to_string();
+            f
+        })
+        .collect();
     checklist.touch();
     checklist
 }
@@ -289,7 +499,8 @@ fn serve_frontend_with_token(uri: axum::http::Uri, token: &str) -> axum::respons
     let inject_token = |body: &[u8], token: &str| -> Vec<u8> {
         let script = format!("<script>window.__AUTH_TOKEN__='{}';</script>", token);
         let html = String::from_utf8_lossy(body);
-        html.replace("</head>", &format!("{}</head>", script)).into_bytes()
+        html.replace("</head>", &format!("{}</head>", script))
+            .into_bytes()
     };
 
     match FrontendAssets::get(path) {
@@ -298,18 +509,24 @@ fn serve_frontend_with_token(uri: axum::http::Uri, token: &str) -> axum::respons
                 .first_or_octet_stream()
                 .to_string();
             let raw = content.data.into_owned();
-            let body = if path == "index.html" { inject_token(&raw, token) } else { raw };
+            let body = if path == "index.html" {
+                inject_token(&raw, token)
+            } else {
+                raw
+            };
             ([(axum::http::header::CONTENT_TYPE, mime)], body).into_response()
         }
-        None => {
-            match FrontendAssets::get("index.html") {
-                Some(content) => {
-                    let body = inject_token(&content.data, token);
-                    ([(axum::http::header::CONTENT_TYPE, "text/html".to_string())], body).into_response()
-                }
-                None => (axum::http::StatusCode::NOT_FOUND, "Frontend not found").into_response(),
+        None => match FrontendAssets::get("index.html") {
+            Some(content) => {
+                let body = inject_token(&content.data, token);
+                (
+                    [(axum::http::header::CONTENT_TYPE, "text/html".to_string())],
+                    body,
+                )
+                    .into_response()
             }
-        }
+            None => (axum::http::StatusCode::NOT_FOUND, "Frontend not found").into_response(),
+        },
     }
 }
 

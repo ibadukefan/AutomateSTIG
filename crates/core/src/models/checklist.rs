@@ -72,7 +72,10 @@ impl Checklist {
 
     /// Get all open findings.
     pub fn open_findings(&self) -> Vec<&Finding> {
-        self.findings.iter().filter(|f| f.status == FindingStatus::Open).collect()
+        self.findings
+            .iter()
+            .filter(|f| f.status == FindingStatus::Open)
+            .collect()
     }
 
     /// Mark this checklist as modified.

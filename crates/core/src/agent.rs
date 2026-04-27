@@ -6,9 +6,9 @@
 //! 3. Generates alerts and reports when compliance changes
 //! 4. Optionally pushes results to STIG-Manager automatically
 
+use crate::models::finding::FindingStatus;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use crate::models::finding::FindingStatus;
 
 /// Agent configuration.
 #[derive(Debug, Clone, Serialize, Deserialize)]

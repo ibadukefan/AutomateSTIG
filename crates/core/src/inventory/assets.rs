@@ -116,7 +116,12 @@ mod tests {
 
     #[test]
     fn test_create_asset() {
-        let asset = ManagedAsset::new("server01", "10.0.1.50", CheckPlatform::Linux, ScanProtocol::Ssh);
+        let asset = ManagedAsset::new(
+            "server01",
+            "10.0.1.50",
+            CheckPlatform::Linux,
+            ScanProtocol::Ssh,
+        );
         assert_eq!(asset.name, "server01");
         assert_eq!(asset.effective_port(), 22);
         assert!(asset.enabled);
@@ -124,7 +129,12 @@ mod tests {
 
     #[test]
     fn test_effective_port() {
-        let mut asset = ManagedAsset::new("win01", "10.0.1.60", CheckPlatform::Windows, ScanProtocol::Winrm);
+        let mut asset = ManagedAsset::new(
+            "win01",
+            "10.0.1.60",
+            CheckPlatform::Windows,
+            ScanProtocol::Winrm,
+        );
         assert_eq!(asset.effective_port(), 5985);
         asset.port = Some(5986);
         assert_eq!(asset.effective_port(), 5986);
@@ -132,7 +142,12 @@ mod tests {
 
     #[test]
     fn test_asset_json_roundtrip() {
-        let mut asset = ManagedAsset::new("rtr01", "10.0.1.1", CheckPlatform::CiscoIos, ScanProtocol::Ssh);
+        let mut asset = ManagedAsset::new(
+            "rtr01",
+            "10.0.1.1",
+            CheckPlatform::CiscoIos,
+            ScanProtocol::Ssh,
+        );
         asset.assigned_stigs = vec!["Cisco_IOS_XE_Router_STIG".to_string()];
         asset.tags = vec!["network".to_string(), "core".to_string()];
 

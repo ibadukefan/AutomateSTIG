@@ -33,9 +33,7 @@ pub fn run(input: &str, open_only: bool, severity: Option<&str>) -> Result<()> {
         "STIG",
         &format!(
             "{} V{}R{}",
-            checklist.stig_info.stig_id,
-            checklist.stig_info.version,
-            checklist.stig_info.release,
+            checklist.stig_info.stig_id, checklist.stig_info.version, checklist.stig_info.release,
         ),
     );
     ui::detail("Source", input);

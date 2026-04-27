@@ -251,7 +251,13 @@ fn generate_html_report(checklists: &[Checklist], title: &str) -> String {
         total_open = total_open,
         total_naf = total_naf,
         total_na = total_na,
-        compliance_class = if compliance_pct >= 95.0 { "good" } else if compliance_pct >= 80.0 { "warn" } else { "bad" },
+        compliance_class = if compliance_pct >= 95.0 {
+            "good"
+        } else if compliance_pct >= 80.0 {
+            "warn"
+        } else {
+            "bad"
+        },
         compliance = compliance_pct,
         sections = checklist_sections,
     )
@@ -290,7 +296,8 @@ mod tests {
         f.finding_details = "Not configured".to_string();
         cl.findings.push(f);
 
-        let mut f2 = Finding::new_not_reviewed("V-2", "SV-2", "V-2", "Test Rule 2", Severity::Medium);
+        let mut f2 =
+            Finding::new_not_reviewed("V-2", "SV-2", "V-2", "Test Rule 2", Severity::Medium);
         f2.status = FindingStatus::NotAFinding;
         cl.findings.push(f2);
 

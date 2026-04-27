@@ -204,9 +204,7 @@ impl EvaluationSchedule {
                 for offset in 0..8 {
                     let candidate_date = after.date_naive() + chrono::Duration::days(offset);
                     let candidate = candidate_date.and_time(target_time).and_utc();
-                    if candidate > after
-                        && target_weekdays.contains(&candidate_date.weekday())
-                    {
+                    if candidate > after && target_weekdays.contains(&candidate_date.weekday()) {
                         return candidate;
                     }
                 }
@@ -229,7 +227,10 @@ impl EvaluationSchedule {
 
                 // Next month.
                 let next_month = if after.month() == 12 {
-                    after.date_naive().with_month(1).and_then(|d| d.with_year(after.year() + 1))
+                    after
+                        .date_naive()
+                        .with_month(1)
+                        .and_then(|d| d.with_year(after.year() + 1))
                 } else {
                     after.date_naive().with_month(after.month() + 1)
                 };

@@ -63,7 +63,13 @@ pub fn parse_cisco_config(raw: &str, config_type: ConfigType) -> ParseResult<Dev
 
         // Extract hostname.
         if trimmed.starts_with("hostname ") {
-            hostname = Some(trimmed.strip_prefix("hostname ").unwrap().trim().to_string());
+            hostname = Some(
+                trimmed
+                    .strip_prefix("hostname ")
+                    .unwrap()
+                    .trim()
+                    .to_string(),
+            );
         }
 
         // Track context (top-level blocks).
@@ -94,10 +100,7 @@ pub fn parse_cisco_config(raw: &str, config_type: ConfigType) -> ParseResult<Dev
 
 /// Check if a configuration section/line is present.
 pub fn config_contains(config: &DeviceConfig, pattern: &str) -> bool {
-    config
-        .lines
-        .iter()
-        .any(|l| l.text.contains(pattern))
+    config.lines.iter().any(|l| l.text.contains(pattern))
 }
 
 /// Find all lines matching a pattern, optionally within a context.
@@ -112,12 +115,7 @@ pub fn find_config_lines<'a>(
         .filter(|l| {
             let matches_pattern = l.text.contains(pattern);
             let matches_context = context
-                .map(|ctx| {
-                    l.context
-                        .as_ref()
-                        .map(|c| c.contains(ctx))
-                        .unwrap_or(false)
-                })
+                .map(|ctx| l.context.as_ref().map(|c| c.contains(ctx)).unwrap_or(false))
                 .unwrap_or(true);
             matches_pattern && matches_context
         })
@@ -147,8 +145,7 @@ pub fn evaluate_config_check(
         } else {
             evidence_parts.push(format!(
                 "FOUND: '{}' at line {}",
-                pattern,
-                found_lines[0].line_number
+                pattern, found_lines[0].line_number
             ));
         }
     }
@@ -159,8 +156,7 @@ pub fn evaluate_config_check(
             all_absent = false;
             evidence_parts.push(format!(
                 "UNEXPECTED: '{}' found at line {}",
-                pattern,
-                found_lines[0].line_number
+                pattern, found_lines[0].line_number
             ));
         }
     }
@@ -194,7 +190,9 @@ fn is_context_line(line: &str) -> bool {
         "logging ",
         "banner ",
     ];
-    context_prefixes.iter().any(|prefix| line.starts_with(prefix))
+    context_prefixes
+        .iter()
+        .any(|prefix| line.starts_with(prefix))
 }
 
 #[cfg(test)]

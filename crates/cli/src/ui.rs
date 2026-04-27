@@ -31,11 +31,7 @@ pub fn section(title: &str) {
 
 /// Print an info line.
 pub fn info(label: &str, value: &str) {
-    eprintln!(
-        "    {:<20} {}",
-        style(label).dim(),
-        value,
-    );
+    eprintln!("    {:<20} {}", style(label).dim(), value,);
 }
 
 /// Print a success message.
@@ -92,7 +88,10 @@ pub fn print_summary_table(
     };
 
     eprintln!();
-    eprintln!("  {}", style("┌──────────────────────────────────────────────────┐").dim());
+    eprintln!(
+        "  {}",
+        style("┌──────────────────────────────────────────────────┐").dim()
+    );
     eprintln!(
         "  {}  Total Rules:        {:<6}                      {}",
         style("│").dim(),
@@ -138,14 +137,20 @@ pub fn print_summary_table(
         },
         style("│").dim(),
     );
-    eprintln!("  {}", style("│──────────────────────────────────────────────────│").dim());
+    eprintln!(
+        "  {}",
+        style("│──────────────────────────────────────────────────│").dim()
+    );
     eprintln!(
         "  {}  Compliance:         {:<6}                      {}",
         style("│").dim(),
         compliance_style.apply_to(format!("{:.1}%", compliance_pct)),
         style("│").dim(),
     );
-    eprintln!("  {}", style("└──────────────────────────────────────────────────┘").dim());
+    eprintln!(
+        "  {}",
+        style("└──────────────────────────────────────────────────┘").dim()
+    );
     eprintln!();
 }
 
@@ -171,8 +176,12 @@ pub fn print_finding_row(vuln_id: &str, severity: &str, status: &str, title: &st
 
     let status_styled = match status {
         "Open" => style(format!("{:<17}", status)).red().bold().to_string(),
-        "Not a Finding" | "NotAFinding" => style(format!("{:<17}", "Not a Finding")).green().to_string(),
-        "Not Applicable" | "Not_Applicable" => style(format!("{:<17}", "Not Applicable")).dim().to_string(),
+        "Not a Finding" | "NotAFinding" => style(format!("{:<17}", "Not a Finding"))
+            .green()
+            .to_string(),
+        "Not Applicable" | "Not_Applicable" => {
+            style(format!("{:<17}", "Not Applicable")).dim().to_string()
+        }
         _ => style(format!("{:<17}", status)).yellow().to_string(),
     };
 

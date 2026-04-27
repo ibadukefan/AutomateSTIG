@@ -45,7 +45,10 @@ impl AppState {
     pub fn db(&self) -> std::sync::MutexGuard<'_, Database> {
         // Use expect here — a poisoned mutex means a handler panicked,
         // which is a programming error we want to surface clearly.
-        self.inner.db.lock().expect("Database mutex poisoned — a previous operation panicked")
+        self.inner
+            .db
+            .lock()
+            .expect("Database mutex poisoned — a previous operation panicked")
     }
 
     /// Open the STIG library.

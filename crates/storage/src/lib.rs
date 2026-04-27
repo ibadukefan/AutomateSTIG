@@ -331,7 +331,8 @@ mod tests {
         let cl = make_test_checklist();
 
         db.save_checklist(&cl).unwrap();
-        db.log_evaluation(&cl, "test", Some("Test evaluation")).unwrap();
+        db.log_evaluation(&cl, "test", Some("Test evaluation"))
+            .unwrap();
         // No assertion needed — just verifying it doesn't error.
     }
 

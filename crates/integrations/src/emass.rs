@@ -68,9 +68,7 @@ pub fn export_to_emass(checklist: &Checklist) -> Vec<EmassTestResult> {
                 result_comment: finding.finding_details.clone(),
                 stig_reference: format!(
                     "{} {} {}",
-                    checklist.stig_info.title,
-                    finding.vuln_id,
-                    finding.rule_id,
+                    checklist.stig_info.title, finding.vuln_id, finding.rule_id,
                 ),
                 severity: severity.to_string(),
                 system_name: checklist.asset.hostname.clone(),

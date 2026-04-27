@@ -113,7 +113,12 @@ impl StoredCredential {
     }
 
     /// Create a new SSH key credential.
-    pub fn new_ssh_key(label: &str, username: &str, private_key: &str, passphrase: Option<&str>) -> Self {
+    pub fn new_ssh_key(
+        label: &str,
+        username: &str,
+        private_key: &str,
+        passphrase: Option<&str>,
+    ) -> Self {
         Self {
             id: Uuid::new_v4().to_string(),
             label: label.to_string(),
@@ -251,10 +256,28 @@ mod tests {
     fn test_credential_vault() {
         let mut vault = CredentialVault::new();
 
-        vault.add(StoredCredential::new_password("Linux admin", "admin", "secret123"));
-        vault.add(StoredCredential::new_ssh_key("Deploy key", "deploy", "-----BEGIN OPENSSH PRIVATE KEY-----\n...", None));
-        vault.add(StoredCredential::new_kerberos("Domain SA", "svc_stig", "NAVY.MIL", "DomainP@ss"));
-        vault.add(StoredCredential::new_token("API Key", "sk-12345abcdef", Some("bearer")));
+        vault.add(StoredCredential::new_password(
+            "Linux admin",
+            "admin",
+            "secret123",
+        ));
+        vault.add(StoredCredential::new_ssh_key(
+            "Deploy key",
+            "deploy",
+            "-----BEGIN OPENSSH PRIVATE KEY-----\n...",
+            None,
+        ));
+        vault.add(StoredCredential::new_kerberos(
+            "Domain SA",
+            "svc_stig",
+            "NAVY.MIL",
+            "DomainP@ss",
+        ));
+        vault.add(StoredCredential::new_token(
+            "API Key",
+            "sk-12345abcdef",
+            Some("bearer"),
+        ));
 
         assert_eq!(vault.credentials.len(), 4);
 

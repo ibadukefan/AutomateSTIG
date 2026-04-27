@@ -11,16 +11,17 @@
 //! - Agent mode with drift detection
 //! - Plugin system for extensibility
 
-pub mod models;
-pub mod engine;
-pub mod answer;
-pub mod error;
-pub mod library;
-pub mod checks;
-pub mod remote;
 pub mod agent;
-pub mod plugins;
+pub mod answer;
+pub mod checks;
 pub mod converter;
+pub mod engine;
+pub mod error;
 pub mod inventory;
+pub mod library;
+pub mod models;
+pub mod path_safety;
+pub mod plugins;
+pub mod remote;
 
 pub use error::{Error, Result};

@@ -151,32 +151,34 @@ pub fn verify_pack_with_trust(
 
     if let Some(sig_bytes) = sig_bytes {
         if let Some(store) = trust_store {
-                match store.verify_against_trusted(&manifest_json, &sig_bytes) {
-                    Ok(Some(key_label)) => {
-                        result.signature_valid = Some(true);
-                        result.issues.push(format!(
-                            "Signature verified with trusted key: {}",
-                            key_label
-                        ));
-                    }
-                    Ok(None) => {
-                        result.signature_valid = Some(false);
-                        result.issues.push(
-                            "Signature present but not verified: no matching trusted key".to_string(),
-                        );
-                    }
-                    Err(e) => {
-                        result.signature_valid = Some(false);
-                        result.issues.push(format!("Signature verification error: {}", e));
-                    }
+            match store.verify_against_trusted(&manifest_json, &sig_bytes) {
+                Ok(Some(key_label)) => {
+                    result.signature_valid = Some(true);
+                    result.issues.push(format!(
+                        "Signature verified with trusted key: {}",
+                        key_label
+                    ));
                 }
-            } else {
-                // No trust store provided — note signature is present but unverified.
-                result.signature_valid = None;
-                result.issues.push(
-                    "Signature present but no trust store configured for verification".to_string(),
-                );
+                Ok(None) => {
+                    result.signature_valid = Some(false);
+                    result.issues.push(
+                        "Signature present but not verified: no matching trusted key".to_string(),
+                    );
+                }
+                Err(e) => {
+                    result.signature_valid = Some(false);
+                    result
+                        .issues
+                        .push(format!("Signature verification error: {}", e));
+                }
             }
+        } else {
+            // No trust store provided — note signature is present but unverified.
+            result.signature_valid = None;
+            result.issues.push(
+                "Signature present but no trust store configured for verification".to_string(),
+            );
+        }
     }
 
     Ok(result)

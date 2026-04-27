@@ -24,11 +24,11 @@
 //!     └── bash/
 //! ```
 
-pub mod manifest;
 pub mod builder;
-pub mod verifier;
 pub mod importer;
+pub mod manifest;
 pub mod signing;
+pub mod verifier;
 
 use thiserror::Error;
 

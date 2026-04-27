@@ -22,7 +22,10 @@ pub fn generate_keypair() -> ([u8; 32], [u8; 32]) {
 }
 
 /// Sign manifest content with an Ed25519 private key.
-pub fn sign_manifest(manifest_json: &[u8], private_key_bytes: &[u8; 32]) -> StigpackResult<Vec<u8>> {
+pub fn sign_manifest(
+    manifest_json: &[u8],
+    private_key_bytes: &[u8; 32],
+) -> StigpackResult<Vec<u8>> {
     let signing_key = SigningKey::from_bytes(private_key_bytes);
 
     // Sign the SHA-256 hash of the manifest (deterministic).

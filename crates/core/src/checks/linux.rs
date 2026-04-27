@@ -124,9 +124,15 @@ fn parse_symbolic_to_octal(symbolic: &str) -> String {
 #[cfg(test)]
 fn perm_bits(r: char, w: char, x: char) -> u8 {
     let mut bits = 0u8;
-    if r != '-' { bits += 4; }
-    if w != '-' { bits += 2; }
-    if x != '-' && x != 'S' && x != 'T' { bits += 1; }
+    if r != '-' {
+        bits += 4;
+    }
+    if w != '-' {
+        bits += 2;
+    }
+    if x != '-' && x != 'S' && x != 'T' {
+        bits += 1;
+    }
     bits
 }
 
@@ -139,7 +145,10 @@ mod tests {
         let output = "net.ipv4.ip_forward = 0\nkernel.randomize_va_space = 2\n";
         let result = parse_sysctl_output(output);
         assert_eq!(result.get("net.ipv4.ip_forward"), Some(&"0".to_string()));
-        assert_eq!(result.get("kernel.randomize_va_space"), Some(&"2".to_string()));
+        assert_eq!(
+            result.get("kernel.randomize_va_space"),
+            Some(&"2".to_string())
+        );
     }
 
     #[test]

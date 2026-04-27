@@ -1,8 +1,8 @@
 use std::path::Path;
 
 use anyhow::{Context, Result};
-use console::style;
 use automatestig_stigpack::verifier;
+use console::style;
 
 use crate::ui;
 
@@ -17,8 +17,7 @@ pub fn run(pack_path: &str) -> Result<()> {
     ui::detail("File", pack_path);
     eprintln!();
 
-    let result = verifier::verify_pack(path)
-        .context("Failed to verify pack")?;
+    let result = verifier::verify_pack(path).context("Failed to verify pack")?;
 
     // Manifest.
     if result.manifest_valid {
@@ -47,17 +46,9 @@ pub fn run(pack_path: &str) -> Result<()> {
         ui::section(&format!("Files ({})", result.file_results.len()));
         for f in &result.file_results {
             if f.hash_match {
-                eprintln!(
-                    "    {} {}",
-                    style("✓").green(),
-                    style(&f.path).dim(),
-                );
+                eprintln!("    {} {}", style("✓").green(), style(&f.path).dim(),);
             } else {
-                eprintln!(
-                    "    {} {}",
-                    style("✗").red().bold(),
-                    style(&f.path).red(),
-                );
+                eprintln!("    {} {}", style("✗").red().bold(), style(&f.path).red(),);
             }
         }
     }

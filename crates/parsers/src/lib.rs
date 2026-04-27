@@ -8,8 +8,8 @@
 
 pub mod ckl;
 pub mod cklb;
-pub mod xccdf;
 pub mod config_dump;
 pub mod error;
+pub mod xccdf;
 
 pub use error::{ParseError, ParseResult};

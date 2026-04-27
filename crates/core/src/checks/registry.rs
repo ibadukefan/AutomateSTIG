@@ -91,7 +91,10 @@ pub fn parse_audit_policy(content: &str) -> HashMap<String, String> {
     for line in content.lines() {
         let trimmed = line.trim();
         // Format: "  Subcategory                  Setting"
-        if trimmed.contains("Success") || trimmed.contains("Failure") || trimmed.contains("No Auditing") {
+        if trimmed.contains("Success")
+            || trimmed.contains("Failure")
+            || trimmed.contains("No Auditing")
+        {
             let parts: Vec<&str> = trimmed.rsplitn(2, "  ").collect();
             if parts.len() == 2 {
                 let setting = parts[0].trim().to_string();
@@ -120,7 +123,10 @@ PasswordComplexity = 1
 AuditLogonEvents = 3
 "#;
         let result = parse_security_policy(input);
-        assert_eq!(result.get("System Access\\MinimumPasswordLength"), Some(&"14".to_string()));
+        assert_eq!(
+            result.get("System Access\\MinimumPasswordLength"),
+            Some(&"14".to_string())
+        );
         assert_eq!(result.get("MinimumPasswordLength"), Some(&"14".to_string()));
     }
 

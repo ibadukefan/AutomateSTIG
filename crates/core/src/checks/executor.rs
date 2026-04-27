@@ -38,7 +38,9 @@ pub fn execute_check_pack(pack: &CheckPack, data: &SystemData) -> Vec<CheckResul
 /// Run a check and return the actual value as a string.
 fn run_check(check: &Check, data: &SystemData) -> Result<String, String> {
     match check {
-        Check::Registry { path, value_name, .. } => {
+        Check::Registry {
+            path, value_name, ..
+        } => {
             let key = format!("{}\\{}", path, value_name);
             match data.registry.get(&key) {
                 Some(val) => Ok(format!("{}", val)),
@@ -69,7 +71,10 @@ fn run_check(check: &Check, data: &SystemData) -> Result<String, String> {
             .cloned()
             .ok_or_else(|| format!("Audit policy not found: {}", subcategory)),
 
-        Check::Service { name, expected_status } => {
+        Check::Service {
+            name,
+            expected_status,
+        } => {
             let status = data
                 .services
                 .get(name)
@@ -98,13 +103,20 @@ fn run_check(check: &Check, data: &SystemData) -> Result<String, String> {
             Ok(if is_match { "true" } else { "false" }.to_string())
         }
 
-        Check::WindowsFeature { name, should_be_installed } => {
+        Check::WindowsFeature {
+            name,
+            should_be_installed,
+        } => {
             let installed = data.packages.get(name).copied().unwrap_or(false);
             let matches = installed == *should_be_installed;
             Ok(if matches { "true" } else { "false" }.to_string())
         }
 
-        Check::FileContent { path, pattern, is_regex } => {
+        Check::FileContent {
+            path,
+            pattern,
+            is_regex,
+        } => {
             let content = data
                 .file_contents
                 .get(path)
@@ -128,7 +140,12 @@ fn run_check(check: &Check, data: &SystemData) -> Result<String, String> {
             }
         }
 
-        Check::FilePermission { path, owner, group, mode } => {
+        Check::FilePermission {
+            path,
+            owner,
+            group,
+            mode,
+        } => {
             let perms = data
                 .file_permissions
                 .get(path)
@@ -145,7 +162,10 @@ fn run_check(check: &Check, data: &SystemData) -> Result<String, String> {
                 let actual = perms.owner.as_deref().unwrap_or("unknown");
                 if actual != expected_owner {
                     matches = false;
-                    details.push(format!("owner: expected {}, got {}", expected_owner, actual));
+                    details.push(format!(
+                        "owner: expected {}, got {}",
+                        expected_owner, actual
+                    ));
                 }
             }
 
@@ -153,7 +173,10 @@ fn run_check(check: &Check, data: &SystemData) -> Result<String, String> {
                 let actual = perms.group.as_deref().unwrap_or("unknown");
                 if actual != expected_group {
                     matches = false;
-                    details.push(format!("group: expected {}, got {}", expected_group, actual));
+                    details.push(format!(
+                        "group: expected {}, got {}",
+                        expected_group, actual
+                    ));
                 }
             }
 
@@ -178,13 +201,20 @@ fn run_check(check: &Check, data: &SystemData) -> Result<String, String> {
             .cloned()
             .ok_or_else(|| format!("Sysctl key not found: {}", key)),
 
-        Check::Package { name, should_be_installed } => {
+        Check::Package {
+            name,
+            should_be_installed,
+        } => {
             let installed = data.packages.get(name).copied().unwrap_or(false);
             let matches = installed == *should_be_installed;
             Ok(if matches { "true" } else { "false" }.to_string())
         }
 
-        Check::ConfigLine { pattern, context, should_exist } => {
+        Check::ConfigLine {
+            pattern,
+            context,
+            should_exist,
+        } => {
             let config = data
                 .network_config
                 .as_deref()
@@ -248,17 +278,21 @@ fn evaluate_expected(actual: &str, expected: &ExpectedResult) -> bool {
             actual == expected_str || actual.trim() == expected_str.trim()
         }
 
-        ExpectedResult::Matches { pattern } => {
-            Regex::new(pattern).map(|re| re.is_match(actual)).unwrap_or(false)
-        }
+        ExpectedResult::Matches { pattern } => Regex::new(pattern)
+            .map(|re| re.is_match(actual))
+            .unwrap_or(false),
 
-        ExpectedResult::GreaterOrEqual { value } => {
-            actual.trim().parse::<f64>().map(|v| v >= *value).unwrap_or(false)
-        }
+        ExpectedResult::GreaterOrEqual { value } => actual
+            .trim()
+            .parse::<f64>()
+            .map(|v| v >= *value)
+            .unwrap_or(false),
 
-        ExpectedResult::LessOrEqual { value } => {
-            actual.trim().parse::<f64>().map(|v| v <= *value).unwrap_or(false)
-        }
+        ExpectedResult::LessOrEqual { value } => actual
+            .trim()
+            .parse::<f64>()
+            .map(|v| v <= *value)
+            .unwrap_or(false),
 
         ExpectedResult::Contains { substring } => actual.contains(substring),
 
@@ -277,9 +311,11 @@ mod tests {
     use super::*;
 
     fn make_windows_data() -> SystemData {
-        let mut data = SystemData::default();
-        data.platform = "windows".to_string();
-        data.hostname = "testhost".to_string();
+        let mut data = SystemData {
+            platform: "windows".to_string(),
+            hostname: "testhost".to_string(),
+            ..Default::default()
+        };
 
         // Registry values.
         data.registry.insert(
@@ -287,13 +323,16 @@ mod tests {
             serde_json::json!(1),
         );
         data.registry.insert(
-            r"HKLM\SOFTWARE\Policies\Microsoft\Windows\System\DontDisplayNetworkSelectionUI".to_string(),
+            r"HKLM\SOFTWARE\Policies\Microsoft\Windows\System\DontDisplayNetworkSelectionUI"
+                .to_string(),
             serde_json::json!(1),
         );
 
         // Services.
-        data.services.insert("W32Time".to_string(), "Running".to_string());
-        data.services.insert("Fax".to_string(), "Stopped".to_string());
+        data.services
+            .insert("W32Time".to_string(), "Running".to_string());
+        data.services
+            .insert("Fax".to_string(), "Stopped".to_string());
 
         // Security policy.
         data.security_policy.insert(
@@ -311,9 +350,11 @@ mod tests {
     }
 
     fn make_linux_data() -> SystemData {
-        let mut data = SystemData::default();
-        data.platform = "linux".to_string();
-        data.hostname = "linuxhost".to_string();
+        let mut data = SystemData {
+            platform: "linux".to_string(),
+            hostname: "linuxhost".to_string(),
+            ..Default::default()
+        };
 
         data.file_contents.insert(
             "/etc/ssh/sshd_config".to_string(),
@@ -330,11 +371,15 @@ mod tests {
             },
         );
 
-        data.sysctl.insert("net.ipv4.ip_forward".to_string(), "0".to_string());
-        data.sysctl.insert("kernel.randomize_va_space".to_string(), "2".to_string());
+        data.sysctl
+            .insert("net.ipv4.ip_forward".to_string(), "0".to_string());
+        data.sysctl
+            .insert("kernel.randomize_va_space".to_string(), "2".to_string());
 
-        data.services.insert("sshd".to_string(), "active".to_string());
-        data.services.insert("firewalld".to_string(), "active".to_string());
+        data.services
+            .insert("sshd".to_string(), "active".to_string());
+        data.services
+            .insert("firewalld".to_string(), "active".to_string());
 
         data.packages.insert("aide".to_string(), true);
         data.packages.insert("telnet-server".to_string(), false);
@@ -373,7 +418,9 @@ mod tests {
                 value_name: "Value".to_string(),
                 value_type: None,
             },
-            expected: ExpectedResult::Equals { value: serde_json::json!(1) },
+            expected: ExpectedResult::Equals {
+                value: serde_json::json!(1),
+            },
             description: None,
         };
 
@@ -464,8 +511,12 @@ mod tests {
         let check = CheckDefinition {
             vuln_id: "V-5".to_string(),
             platform: CheckPlatform::Linux,
-            check: Check::Sysctl { key: "net.ipv4.ip_forward".to_string() },
-            expected: ExpectedResult::Equals { value: serde_json::json!("0") },
+            check: Check::Sysctl {
+                key: "net.ipv4.ip_forward".to_string(),
+            },
+            expected: ExpectedResult::Equals {
+                value: serde_json::json!("0"),
+            },
             description: None,
         };
 

@@ -10,10 +10,10 @@
 //! - Network: Cisco IOS/NX-OS/ASA config line checks
 //! - Generic: command output matching, file existence
 
-pub mod registry;
+pub mod executor;
 pub mod linux;
 pub mod network;
-pub mod executor;
+pub mod registry;
 
 use serde::{Deserialize, Serialize};
 
@@ -63,10 +63,7 @@ pub enum Check {
     },
 
     /// Check a Windows security policy setting (secedit).
-    SecurityPolicy {
-        section: String,
-        key: String,
-    },
+    SecurityPolicy { section: String, key: String },
 
     /// Check a Windows audit policy setting (auditpol).
     AuditPolicy {
@@ -103,9 +100,7 @@ pub enum Check {
     },
 
     /// Check a Linux sysctl value.
-    Sysctl {
-        key: String,
-    },
+    Sysctl { key: String },
 
     /// Check if a Linux package is installed.
     Package {
@@ -129,14 +124,10 @@ pub enum Check {
     },
 
     /// Multiple checks that must all pass (AND logic).
-    All {
-        checks: Vec<Check>,
-    },
+    All { checks: Vec<Check> },
 
     /// Multiple checks where any can pass (OR logic).
-    Any {
-        checks: Vec<Check>,
-    },
+    Any { checks: Vec<Check> },
 }
 
 /// Expected service status.
