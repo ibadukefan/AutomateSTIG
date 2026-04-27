@@ -41,7 +41,6 @@ async fn main() {
 
     // Initialize application state.
     let state = AppState::init().expect("Failed to initialize application state");
-    seed_demo_data(&state);
 
     // Clone for background checker before moving into router.
     let bg_state = state.clone();
@@ -59,6 +58,7 @@ async fn main() {
     let demo_mode = std::env::var("AUTOMATESTIG_DEMO")
         .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
         .unwrap_or(false);
+    seed_demo_data(&state, demo_mode);
 
     let addr = SocketAddr::from((bind_ip, port));
     let listener = tokio::net::TcpListener::bind(addr)
@@ -128,10 +128,14 @@ async fn main() {
             }
         }))
         .fallback({
-            let token = auth_token.clone();
+            let token = if is_loopback {
+                Some(auth_token.clone())
+            } else {
+                None
+            };
             move |uri: axum::http::Uri| {
                 let t = token.clone();
-                async move { serve_frontend_with_token(uri, &t) }
+                async move { serve_frontend_with_token(uri, t.as_deref()) }
             }
         })
         .layer(RequestBodyLimitLayer::new(100 * 1024 * 1024)) // 100 MB
@@ -179,7 +183,7 @@ async fn main() {
     });
 
     // Open browser (skip in demo/hosted mode).
-    if !demo_mode {
+    if !demo_mode && is_loopback {
         if let Err(e) = open::that(&url) {
             eprintln!("  Could not open browser: {}", e);
             eprintln!("  Open {} manually.", url);
@@ -192,8 +196,7 @@ async fn main() {
     }
 }
 
-fn seed_demo_data(state: &AppState) {
-    let demo_mode = std::env::var("PORT").is_ok();
+fn seed_demo_data(state: &AppState, demo_mode: bool) {
     if !demo_mode {
         return;
     }
@@ -492,11 +495,17 @@ fn sample_checklist(
 
 /// Serve embedded frontend files.
 /// For index.html, injects the session auth token so the JS can authenticate API calls.
-fn serve_frontend_with_token(uri: axum::http::Uri, token: &str) -> axum::response::Response {
+fn serve_frontend_with_token(
+    uri: axum::http::Uri,
+    token: Option<&str>,
+) -> axum::response::Response {
     let path = uri.path().trim_start_matches('/');
     let path = if path.is_empty() { "index.html" } else { path };
 
-    let inject_token = |body: &[u8], token: &str| -> Vec<u8> {
+    let inject_token = |body: &[u8], token: Option<&str>| -> Vec<u8> {
+        let Some(token) = token else {
+            return body.to_vec();
+        };
         let script = format!("<script>window.__AUTH_TOKEN__='{}';</script>", token);
         let html = String::from_utf8_lossy(body);
         html.replace("</head>", &format!("{}</head>", script))

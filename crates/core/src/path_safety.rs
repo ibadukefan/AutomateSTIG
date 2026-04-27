@@ -63,10 +63,12 @@ pub fn ensure_under_base(base: &Path, candidate: &Path) -> Result<()> {
                 )));
             }
             Component::Prefix(_) => {
-                return Err(Error::Other(format!(
-                    "platform path prefixes are not allowed: {}",
-                    candidate.display()
-                )));
+                if !(candidate.is_absolute() && candidate.starts_with(base)) {
+                    return Err(Error::Other(format!(
+                        "platform path prefixes are not allowed: {}",
+                        candidate.display()
+                    )));
+                }
             }
             _ => {}
         }

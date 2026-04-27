@@ -103,13 +103,11 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
                     "ident" => {
                         in_ident = true;
                     }
-                    "platform" => {
-                        if in_benchmark && !in_group {
-                            for attr in e.attributes().flatten() {
-                                if attr.key.as_ref() == b"idref" {
-                                    let cpe = String::from_utf8_lossy(&attr.value).to_string();
-                                    benchmark.platform.cpe.push(cpe);
-                                }
+                    "platform" if in_benchmark && !in_group => {
+                        for attr in e.attributes().flatten() {
+                            if attr.key.as_ref() == b"idref" {
+                                let cpe = String::from_utf8_lossy(&attr.value).to_string();
+                                benchmark.platform.cpe.push(cpe);
                             }
                         }
                     }
@@ -169,12 +167,10 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
                         "title" => benchmark.title = text,
                         "description" => benchmark.description = text,
                         "version" => benchmark.version = text,
-                        "release-info" | "plain-text" => {
-                            if text.contains("Release:") {
-                                if let Some(r) = text.split("Release:").nth(1) {
-                                    benchmark.release =
-                                        r.split_whitespace().next().unwrap_or("0").to_string();
-                                }
+                        "release-info" | "plain-text" if text.contains("Release:") => {
+                            if let Some(r) = text.split("Release:").nth(1) {
+                                benchmark.release =
+                                    r.split_whitespace().next().unwrap_or("0").to_string();
                             }
                         }
                         _ => {}

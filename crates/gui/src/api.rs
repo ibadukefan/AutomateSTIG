@@ -2238,10 +2238,10 @@ async fn scan_winrm(
 ) -> Json<serde_json::Value> {
     let winrm_config = crate::winrm::WinrmConfig {
         host: req.host.clone(),
-        port: req.port.unwrap_or(5985),
+        port: req.port.unwrap_or(5986),
         username: req.username,
         password: req.password,
-        use_https: req.use_https.unwrap_or(false),
+        use_https: req.use_https.unwrap_or(true),
         verify_tls: true,
         timeout_secs: 60,
     };
