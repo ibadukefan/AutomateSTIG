@@ -130,15 +130,13 @@ async fn execute_single_command(
     loop {
         let msg = channel.wait().await;
         match msg {
-            Some(russh::ChannelMsg::Data { data }) => {
-                if stdout.len() < MAX_OUTPUT {
-                    stdout.push_str(&String::from_utf8_lossy(&data));
-                }
+            Some(russh::ChannelMsg::Data { data }) if stdout.len() < MAX_OUTPUT => {
+                stdout.push_str(&String::from_utf8_lossy(&data));
             }
-            Some(russh::ChannelMsg::ExtendedData { data, ext }) => {
-                if ext == 1 && stderr.len() < MAX_OUTPUT {
-                    stderr.push_str(&String::from_utf8_lossy(&data));
-                }
+            Some(russh::ChannelMsg::ExtendedData { data, ext })
+                if ext == 1 && stderr.len() < MAX_OUTPUT =>
+            {
+                stderr.push_str(&String::from_utf8_lossy(&data));
             }
             Some(russh::ChannelMsg::ExitStatus { exit_status }) => {
                 exit_code = Some(exit_status);
