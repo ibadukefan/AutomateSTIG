@@ -6,6 +6,7 @@
     "rule_id",
     "stig_id",
     "classification",
+    "implementation_status",
     "evidence_fields",
     "fixtures"
   ],
@@ -28,6 +29,29 @@
       ]
     },
     "platform_family": {
+      "type": "string"
+    },
+    "implementation_status": {
+      "enum": [
+        "planned",
+        "implemented",
+        "validated",
+        "deferred"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "severity": {
+      "type": "string"
+    },
+    "source_coverage_manifest": {
+      "type": "string"
+    },
+    "source_benchmark": {
+      "type": "string"
+    },
+    "source_version": {
       "type": "string"
     },
     "collector_type": {
@@ -74,6 +98,9 @@
       "items": {
         "type": "string"
       }
+    },
+    "tracking_issue": {
+      "type": "string"
     }
   },
   "additionalProperties": false

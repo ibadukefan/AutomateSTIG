@@ -1,0 +1,29 @@
+{
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-254482r1051108_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2022_stig/u_ms_windows_server_2022_v2r8_stig.json",
+  "source_version": "U_MS_Windows_Server_2022_V2R8_STIG.zip",
+  "stig_id": "MS_Windows_Server_2022_STIG",
+  "title": "Windows Server 2022 User Account Control (UAC) approval mode for the built-in Administrator must be enabled.",
+  "tracking_issue": "TODO-V-254482",
+  "vuln_id": "V-254482"
+}
