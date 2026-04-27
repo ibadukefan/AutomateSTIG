@@ -1,0 +1,271 @@
+{
+  "stig_id": "BIND_9_DNS_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/bind_9.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/bind_9.json",
+  "total_rules": 20,
+  "rules": [
+    {
+      "vuln_id": "V-270201",
+      "rule_id": "V-270201_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must disable recursion on authoritative name servers",
+      "check_pack": "bind_9",
+      "check_id": "V-270201",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270202",
+      "rule_id": "V-270202_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must restrict recursion to authorized clients via allow-recursion",
+      "check_pack": "bind_9",
+      "check_id": "V-270202",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270203",
+      "rule_id": "V-270203_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must have DNSSEC enabled",
+      "check_pack": "bind_9",
+      "check_id": "V-270203",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270204",
+      "rule_id": "V-270204_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must have DNSSEC validation enabled",
+      "check_pack": "bind_9",
+      "check_id": "V-270204",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270205",
+      "rule_id": "V-270205_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must restrict zone transfers via allow-transfer",
+      "check_pack": "bind_9",
+      "check_id": "V-270205",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270206",
+      "rule_id": "V-270206_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must restrict queries via allow-query",
+      "check_pack": "bind_9",
+      "check_id": "V-270206",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270207",
+      "rule_id": "V-270207_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must set a non-default version string to prevent information disclosure",
+      "check_pack": "bind_9",
+      "check_id": "V-270207",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270208",
+      "rule_id": "V-270208_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must have logging configured",
+      "check_pack": "bind_9",
+      "check_id": "V-270208",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270209",
+      "rule_id": "V-270209_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND logging must write to a file channel",
+      "check_pack": "bind_9",
+      "check_id": "V-270209",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270210",
+      "rule_id": "V-270210_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must log security events",
+      "check_pack": "bind_9",
+      "check_id": "V-270210",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270211",
+      "rule_id": "V-270211_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must log query events",
+      "check_pack": "bind_9",
+      "check_id": "V-270211",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270212",
+      "rule_id": "V-270212_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must log zone transfer events",
+      "check_pack": "bind_9",
+      "check_id": "V-270212",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270213",
+      "rule_id": "V-270213_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must be configured with listen-on to restrict interfaces",
+      "check_pack": "bind_9",
+      "check_id": "V-270213",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270214",
+      "rule_id": "V-270214_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND zone notify must be configured",
+      "check_pack": "bind_9",
+      "check_id": "V-270214",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270215",
+      "rule_id": "V-270215_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must configure also-notify for secondary servers",
+      "check_pack": "bind_9",
+      "check_id": "V-270215",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270216",
+      "rule_id": "V-270216_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must have response rate limiting configured",
+      "check_pack": "bind_9",
+      "check_id": "V-270216",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270217",
+      "rule_id": "V-270217_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must enable minimal responses to reduce information leakage",
+      "check_pack": "bind_9",
+      "check_id": "V-270217",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270218",
+      "rule_id": "V-270218_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must enable empty zones",
+      "check_pack": "bind_9",
+      "check_id": "V-270218",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270219",
+      "rule_id": "V-270219_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND named.conf must be mode 0640 and owned by named user",
+      "check_pack": "bind_9",
+      "check_id": "V-270219",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-270220",
+      "rule_id": "V-270220_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND must use a dedicated directory for zone files",
+      "check_pack": "bind_9",
+      "check_id": "V-270220",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/bind_9.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

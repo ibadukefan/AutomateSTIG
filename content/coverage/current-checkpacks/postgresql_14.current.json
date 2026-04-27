@@ -1,0 +1,336 @@
+{
+  "stig_id": "PostgreSQL_14_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/postgresql_14.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/postgresql_14.json",
+  "total_rules": 25,
+  "rules": [
+    {
+      "vuln_id": "V-259730",
+      "rule_id": "V-259730_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must have SSL enabled in postgresql.conf",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259730",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259731",
+      "rule_id": "V-259731_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must have ssl_cert_file configured",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259731",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259732",
+      "rule_id": "V-259732_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must have ssl_key_file configured",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259732",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259733",
+      "rule_id": "V-259733_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must require TLS 1.2 as minimum protocol version",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259733",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259734",
+      "rule_id": "V-259734_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must use scram-sha-256 for password encryption",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259734",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259735",
+      "rule_id": "V-259735_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must enable the logging collector",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259735",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259736",
+      "rule_id": "V-259736_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must log all connection attempts",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259736",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259737",
+      "rule_id": "V-259737_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must log all disconnections",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259737",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259738",
+      "rule_id": "V-259738_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 log_line_prefix must include timestamp, user, database, and PID",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259738",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259739",
+      "rule_id": "V-259739_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must log DDL statements at minimum",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259739",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259740",
+      "rule_id": "V-259740_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must have log_destination configured",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259740",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259741",
+      "rule_id": "V-259741_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must have log_directory configured",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259741",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259742",
+      "rule_id": "V-259742_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must have max_connections explicitly set",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259742",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259743",
+      "rule_id": "V-259743_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must set idle_in_transaction_session_timeout to terminate idle sessions",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259743",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259744",
+      "rule_id": "V-259744_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must set statement_timeout to prevent long-running queries",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259744",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259745",
+      "rule_id": "V-259745_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must have pgaudit extension loaded in shared_preload_libraries",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259745",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259746",
+      "rule_id": "V-259746_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 pgaudit.log must be configured to log DDL and role changes",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259746",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259747",
+      "rule_id": "V-259747_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 pg_hba.conf must not allow unrestricted connections from 0.0.0.0/0",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259747",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259748",
+      "rule_id": "V-259748_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 pg_hba.conf must not use trust authentication for any connection",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259748",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259749",
+      "rule_id": "V-259749_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 pg_hba.conf must not use plaintext password authentication",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259749",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259750",
+      "rule_id": "V-259750_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 pg_hba.conf host entries must use scram-sha-256 authentication",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259750",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259751",
+      "rule_id": "V-259751_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must not have unauthorized superuser accounts",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259751",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259752",
+      "rule_id": "V-259752_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must log hostnames for connection auditing",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259752",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259753",
+      "rule_id": "V-259753_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 log files must have restrictive permissions (0600)",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259753",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-259754",
+      "rule_id": "V-259754_automatestig_check",
+      "classification": "automated",
+      "reason": "PostgreSQL 14 must have listen_addresses explicitly configured",
+      "check_pack": "postgresql_14",
+      "check_id": "V-259754",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/postgresql_14.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

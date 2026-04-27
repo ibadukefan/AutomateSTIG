@@ -1,0 +1,271 @@
+{
+  "stig_id": "IIS_8.5_Server_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/iis_8.5.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/iis_8.5.json",
+  "total_rules": 20,
+  "rules": [
+    {
+      "vuln_id": "V-218720",
+      "rule_id": "V-218720_automatestig_check",
+      "classification": "automated",
+      "reason": "IIS 8.5 must have TLS 1.2 enabled (server-side)",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218720",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218721",
+      "rule_id": "V-218721_automatestig_check",
+      "classification": "automated",
+      "reason": "SSL 2.0 must be disabled on the IIS 8.5 server",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218721",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218722",
+      "rule_id": "V-218722_automatestig_check",
+      "classification": "automated",
+      "reason": "SSL 3.0 must be disabled on the IIS 8.5 server",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218722",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218723",
+      "rule_id": "V-218723_automatestig_check",
+      "classification": "automated",
+      "reason": "TLS 1.0 must be disabled on the IIS 8.5 server",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218723",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218724",
+      "rule_id": "V-218724_automatestig_check",
+      "classification": "automated",
+      "reason": "TLS 1.1 must be disabled on the IIS 8.5 server",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218724",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218725",
+      "rule_id": "V-218725_automatestig_check",
+      "classification": "automated",
+      "reason": "TLS 1.2 must not be disabled by default on the IIS 8.5 server",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218725",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218730",
+      "rule_id": "V-218730_automatestig_check",
+      "classification": "automated",
+      "reason": "IIS 8.5 logging must be enabled",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218730",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218731",
+      "rule_id": "V-218731_automatestig_check",
+      "classification": "automated",
+      "reason": "IIS 8.5 log files must include date",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218731",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218732",
+      "rule_id": "V-218732_automatestig_check",
+      "classification": "automated",
+      "reason": "IIS 8.5 log files must include time",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218732",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218733",
+      "rule_id": "V-218733_automatestig_check",
+      "classification": "automated",
+      "reason": "IIS 8.5 log files must include client IP",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218733",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218734",
+      "rule_id": "V-218734_automatestig_check",
+      "classification": "automated",
+      "reason": "IIS 8.5 log files must include user name",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218734",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218735",
+      "rule_id": "V-218735_automatestig_check",
+      "classification": "automated",
+      "reason": "IIS 8.5 log files must include request method",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218735",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218736",
+      "rule_id": "V-218736_automatestig_check",
+      "classification": "automated",
+      "reason": "IIS 8.5 log files must include HTTP status",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218736",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218740",
+      "rule_id": "V-218740_automatestig_check",
+      "classification": "automated",
+      "reason": "IIS 8.5 MaxFieldLength must be configured to limit header size",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218740",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218741",
+      "rule_id": "V-218741_automatestig_check",
+      "classification": "automated",
+      "reason": "IIS 8.5 MaxRequestBytes must be configured to limit request size",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218741",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218745",
+      "rule_id": "V-218745_automatestig_check",
+      "classification": "automated",
+      "reason": "IIS 8.5 must not allow non-UTF8 URLs",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218745",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218746",
+      "rule_id": "V-218746_automatestig_check",
+      "classification": "automated",
+      "reason": "IIS 8.5 must favor UTF-8 encoding",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218746",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218750",
+      "rule_id": "V-218750_automatestig_check",
+      "classification": "automated",
+      "reason": "IIS 8.5 must suppress the server version in HTTP headers",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218750",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218755",
+      "rule_id": "V-218755_automatestig_check",
+      "classification": "automated",
+      "reason": "World Wide Web Publishing Service must be running on IIS 8.5 server",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218755",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-218756",
+      "rule_id": "V-218756_automatestig_check",
+      "classification": "automated",
+      "reason": "IIS must be version 8.5 or later",
+      "check_pack": "iis_8.5",
+      "check_id": "V-218756",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/iis_8.5.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

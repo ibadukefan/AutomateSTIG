@@ -1,0 +1,271 @@
+{
+  "stig_id": "F5_BIG-IP_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/f5_bigip.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/f5_bigip.json",
+  "total_rules": 20,
+  "rules": [
+    {
+      "vuln_id": "V-217399",
+      "rule_id": "V-217399_automatestig_check",
+      "classification": "automated",
+      "reason": "NTP servers must be configured for time synchronization",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217399",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217400",
+      "rule_id": "V-217400_automatestig_check",
+      "classification": "automated",
+      "reason": "NTP timezone must be set to UTC for consistent log correlation",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217400",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217401",
+      "rule_id": "V-217401_automatestig_check",
+      "classification": "automated",
+      "reason": "Remote syslog servers must be configured for audit logging",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217401",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217402",
+      "rule_id": "V-217402_automatestig_check",
+      "classification": "automated",
+      "reason": "Default SNMP community strings must be removed or changed",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217402",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217403",
+      "rule_id": "V-217403_automatestig_check",
+      "classification": "automated",
+      "reason": "Default SNMP community strings 'public' and 'private' must not exist",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217403",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217404",
+      "rule_id": "V-217404_automatestig_check",
+      "classification": "automated",
+      "reason": "SNMPv3 users must be configured with SHA authentication",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217404",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217405",
+      "rule_id": "V-217405_automatestig_check",
+      "classification": "automated",
+      "reason": "SNMPv3 users must be configured with AES privacy encryption",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217405",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217406",
+      "rule_id": "V-217406_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH inactivity timeout must be configured",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217406",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217407",
+      "rule_id": "V-217407_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH login banner must be enabled",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217407",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217408",
+      "rule_id": "V-217408_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH banner must display DoD-approved warning text",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217408",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217409",
+      "rule_id": "V-217409_automatestig_check",
+      "classification": "automated",
+      "reason": "Default remote user role must be set to no-access",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217409",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217410",
+      "rule_id": "V-217410_automatestig_check",
+      "classification": "automated",
+      "reason": "Password policy must enforce minimum length of 15 characters",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217410",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217411",
+      "rule_id": "V-217411_automatestig_check",
+      "classification": "automated",
+      "reason": "Password policy must require at least one uppercase character",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217411",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217412",
+      "rule_id": "V-217412_automatestig_check",
+      "classification": "automated",
+      "reason": "Password policy must require at least one lowercase character",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217412",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217413",
+      "rule_id": "V-217413_automatestig_check",
+      "classification": "automated",
+      "reason": "Password policy must require at least one numeric character",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217413",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217414",
+      "rule_id": "V-217414_automatestig_check",
+      "classification": "automated",
+      "reason": "Password policy must require at least one special character",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217414",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217415",
+      "rule_id": "V-217415_automatestig_check",
+      "classification": "automated",
+      "reason": "Server SSL profiles must be configured for backend encryption",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217415",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217416",
+      "rule_id": "V-217416_automatestig_check",
+      "classification": "automated",
+      "reason": "Client SSL profiles must disable TLS 1.0 and TLS 1.1",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217416",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217417",
+      "rule_id": "V-217417_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit forwarding must be enabled to remote log destination",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217417",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217418",
+      "rule_id": "V-217418_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH timeout, login banner, and remote syslog must all be configured",
+      "check_pack": "f5_bigip",
+      "check_id": "V-217418",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/f5_bigip.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

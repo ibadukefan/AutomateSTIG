@@ -1,0 +1,206 @@
+{
+  "stig_id": "MariaDB_10_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/mariadb_10.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/mariadb_10.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-266501",
+      "rule_id": "V-266501_automatestig_check",
+      "classification": "automated",
+      "reason": "MariaDB 10 must have SSL enabled",
+      "check_pack": "mariadb_10",
+      "check_id": "V-266501",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mariadb_10.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-266502",
+      "rule_id": "V-266502_automatestig_check",
+      "classification": "automated",
+      "reason": "MariaDB 10 must have ssl_cert configured",
+      "check_pack": "mariadb_10",
+      "check_id": "V-266502",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mariadb_10.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-266503",
+      "rule_id": "V-266503_automatestig_check",
+      "classification": "automated",
+      "reason": "MariaDB 10 must have ssl_key configured",
+      "check_pack": "mariadb_10",
+      "check_id": "V-266503",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mariadb_10.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-266504",
+      "rule_id": "V-266504_automatestig_check",
+      "classification": "automated",
+      "reason": "MariaDB 10 must use TLS 1.2 or higher",
+      "check_pack": "mariadb_10",
+      "check_id": "V-266504",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mariadb_10.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-266505",
+      "rule_id": "V-266505_automatestig_check",
+      "classification": "automated",
+      "reason": "MariaDB 10 server audit logging must be enabled",
+      "check_pack": "mariadb_10",
+      "check_id": "V-266505",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mariadb_10.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-266506",
+      "rule_id": "V-266506_automatestig_check",
+      "classification": "automated",
+      "reason": "MariaDB 10 server audit events must include CONNECT, QUERY, or TABLE",
+      "check_pack": "mariadb_10",
+      "check_id": "V-266506",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mariadb_10.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-266507",
+      "rule_id": "V-266507_automatestig_check",
+      "classification": "automated",
+      "reason": "MariaDB 10 must have the server_audit plugin installed and active",
+      "check_pack": "mariadb_10",
+      "check_id": "V-266507",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mariadb_10.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-266508",
+      "rule_id": "V-266508_automatestig_check",
+      "classification": "automated",
+      "reason": "MariaDB 10 must have the simple_password_check plugin installed and active",
+      "check_pack": "mariadb_10",
+      "check_id": "V-266508",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mariadb_10.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-266509",
+      "rule_id": "V-266509_automatestig_check",
+      "classification": "automated",
+      "reason": "MariaDB 10 minimum password length must be 15 or greater",
+      "check_pack": "mariadb_10",
+      "check_id": "V-266509",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mariadb_10.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-266510",
+      "rule_id": "V-266510_automatestig_check",
+      "classification": "automated",
+      "reason": "MariaDB 10 must have local_infile disabled",
+      "check_pack": "mariadb_10",
+      "check_id": "V-266510",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mariadb_10.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-266511",
+      "rule_id": "V-266511_automatestig_check",
+      "classification": "automated",
+      "reason": "MariaDB 10 must have binary logging enabled",
+      "check_pack": "mariadb_10",
+      "check_id": "V-266511",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mariadb_10.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-266512",
+      "rule_id": "V-266512_automatestig_check",
+      "classification": "automated",
+      "reason": "MariaDB 10 must have log_error configured to a file path",
+      "check_pack": "mariadb_10",
+      "check_id": "V-266512",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mariadb_10.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-266513",
+      "rule_id": "V-266513_automatestig_check",
+      "classification": "automated",
+      "reason": "MariaDB 10 must not have accounts with empty passwords",
+      "check_pack": "mariadb_10",
+      "check_id": "V-266513",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mariadb_10.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-266514",
+      "rule_id": "V-266514_automatestig_check",
+      "classification": "automated",
+      "reason": "MariaDB 10 must limit consecutive connection errors",
+      "check_pack": "mariadb_10",
+      "check_id": "V-266514",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mariadb_10.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-266515",
+      "rule_id": "V-266515_automatestig_check",
+      "classification": "automated",
+      "reason": "MariaDB 10 must use strict SQL mode",
+      "check_pack": "mariadb_10",
+      "check_id": "V-266515",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mariadb_10.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

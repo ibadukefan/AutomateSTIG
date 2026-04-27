@@ -14,6 +14,7 @@ Manifest tiers:
 
 - `*.example.json` manifests exercise sanitized fixture workflows.
 - `*.full.json` manifests enumerate every rule currently represented in the corresponding AutomateSTIG check pack for flagship targets, but remain `experimental` because they are not authoritative DISA inventories.
+- `current-checkpacks/*.current.json` manifests enumerate every rule in every current AutomateSTIG check pack. They prove 100% coverage of the current in-repository automated-check inventory: 100 manifests covering 2,215 automated checks. This is intentionally narrower than claiming 100% authoritative DISA benchmark automation.
 - `*.disa-*.json` manifests are generated from official public DISA XCCDF ZIPs stored under `fixtures/authorized/disa-public-2026-04/`. These are the authoritative rule inventories currently used for replacement-readiness accounting:
   - `windows_server_2022.disa-v2r8.json`: 282 DISA rules, 60 currently mapped to executable AutomateSTIG checks, 222 represented as manual-review workflow items.
   - `rhel8.disa-v2r7.json`: 366 DISA rules, 50 currently mapped to executable AutomateSTIG checks, 316 represented as manual-review workflow items.

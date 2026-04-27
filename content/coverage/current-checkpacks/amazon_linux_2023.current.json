@@ -1,0 +1,336 @@
+{
+  "stig_id": "Amazon_Linux_2023_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/amazon_linux_2023.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/amazon_linux_2023.json",
+  "total_rules": 25,
+  "rules": [
+    {
+      "vuln_id": "V-261400",
+      "rule_id": "V-261400_automatestig_check",
+      "classification": "automated",
+      "reason": "Amazon Linux 2023 SSH must not allow direct root login",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261400",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261401",
+      "rule_id": "V-261401_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must not allow empty passwords",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261401",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261402",
+      "rule_id": "V-261402_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveInterval must be set",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261402",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261403",
+      "rule_id": "V-261403_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveCountMax must be 1 or less",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261403",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261404",
+      "rule_id": "V-261404_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must display a login banner",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261404",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261405",
+      "rule_id": "V-261405_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH X11 forwarding must be disabled",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261405",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261406",
+      "rule_id": "V-261406_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must use FIPS 140-2 compliant MACs",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261406",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261410",
+      "rule_id": "V-261410_automatestig_check",
+      "classification": "automated",
+      "reason": "IP forwarding must be disabled",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261410",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261411",
+      "rule_id": "V-261411_automatestig_check",
+      "classification": "automated",
+      "reason": "Source-routed packets must not be accepted",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261411",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261412",
+      "rule_id": "V-261412_automatestig_check",
+      "classification": "automated",
+      "reason": "ICMP redirects must not be accepted",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261412",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261413",
+      "rule_id": "V-261413_automatestig_check",
+      "classification": "automated",
+      "reason": "System must not send ICMP redirects",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261413",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261414",
+      "rule_id": "V-261414_automatestig_check",
+      "classification": "automated",
+      "reason": "TCP SYN cookies must be enabled",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261414",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261415",
+      "rule_id": "V-261415_automatestig_check",
+      "classification": "automated",
+      "reason": "ASLR must be fully enabled",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261415",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261416",
+      "rule_id": "V-261416_automatestig_check",
+      "classification": "automated",
+      "reason": "Kernel message buffer must be restricted",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261416",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261420",
+      "rule_id": "V-261420_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit daemon must be running",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261420",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261421",
+      "rule_id": "V-261421_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH daemon must be running",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261421",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261422",
+      "rule_id": "V-261422_automatestig_check",
+      "classification": "automated",
+      "reason": "nftables firewall must be active",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261422",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261430",
+      "rule_id": "V-261430_automatestig_check",
+      "classification": "automated",
+      "reason": "AIDE must be installed for file integrity checking",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261430",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261431",
+      "rule_id": "V-261431_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit package must be installed",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261431",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261432",
+      "rule_id": "V-261432_automatestig_check",
+      "classification": "automated",
+      "reason": "Telnet server must not be installed",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261432",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261433",
+      "rule_id": "V-261433_automatestig_check",
+      "classification": "automated",
+      "reason": "RSH server must not be installed",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261433",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261440",
+      "rule_id": "V-261440_automatestig_check",
+      "classification": "automated",
+      "reason": "Maximum password age must be 60 days or less",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261440",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261441",
+      "rule_id": "V-261441_automatestig_check",
+      "classification": "automated",
+      "reason": "Minimum password age must be at least 1 day",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261441",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261442",
+      "rule_id": "V-261442_automatestig_check",
+      "classification": "automated",
+      "reason": "Passwords must be hashed with SHA-512",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261442",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261443",
+      "rule_id": "V-261443_automatestig_check",
+      "classification": "automated",
+      "reason": "Password quality must require minimum length of 15",
+      "check_pack": "amazon_linux_2023",
+      "check_id": "V-261443",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/amazon_linux_2023.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

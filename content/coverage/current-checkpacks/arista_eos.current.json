@@ -1,0 +1,271 @@
+{
+  "stig_id": "Arista_EOS_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/arista_eos.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/arista_eos.json",
+  "total_rules": 20,
+  "rules": [
+    {
+      "vuln_id": "V-268310",
+      "rule_id": "V-268310_automatestig_check",
+      "classification": "automated",
+      "reason": "AAA authentication for login must be configured",
+      "check_pack": "arista_eos",
+      "check_id": "V-268310",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268311",
+      "rule_id": "V-268311_automatestig_check",
+      "classification": "automated",
+      "reason": "AAA authentication for enable mode must be configured",
+      "check_pack": "arista_eos",
+      "check_id": "V-268311",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268312",
+      "rule_id": "V-268312_automatestig_check",
+      "classification": "automated",
+      "reason": "AAA authorization for exec must be configured",
+      "check_pack": "arista_eos",
+      "check_id": "V-268312",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268313",
+      "rule_id": "V-268313_automatestig_check",
+      "classification": "automated",
+      "reason": "AAA authorization for commands must be configured",
+      "check_pack": "arista_eos",
+      "check_id": "V-268313",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268314",
+      "rule_id": "V-268314_automatestig_check",
+      "classification": "automated",
+      "reason": "AAA accounting for commands must be configured",
+      "check_pack": "arista_eos",
+      "check_id": "V-268314",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268315",
+      "rule_id": "V-268315_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH version 2 must be enabled",
+      "check_pack": "arista_eos",
+      "check_id": "V-268315",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268316",
+      "rule_id": "V-268316_automatestig_check",
+      "classification": "automated",
+      "reason": "Management SSH must be configured",
+      "check_pack": "arista_eos",
+      "check_id": "V-268316",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268317",
+      "rule_id": "V-268317_automatestig_check",
+      "classification": "automated",
+      "reason": "Telnet management access must be disabled",
+      "check_pack": "arista_eos",
+      "check_id": "V-268317",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268318",
+      "rule_id": "V-268318_automatestig_check",
+      "classification": "automated",
+      "reason": "NTP server must be configured",
+      "check_pack": "arista_eos",
+      "check_id": "V-268318",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268319",
+      "rule_id": "V-268319_automatestig_check",
+      "classification": "automated",
+      "reason": "NTP authentication must be enabled",
+      "check_pack": "arista_eos",
+      "check_id": "V-268319",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268320",
+      "rule_id": "V-268320_automatestig_check",
+      "classification": "automated",
+      "reason": "Remote syslog server must be configured",
+      "check_pack": "arista_eos",
+      "check_id": "V-268320",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268321",
+      "rule_id": "V-268321_automatestig_check",
+      "classification": "automated",
+      "reason": "Buffered logging must be enabled",
+      "check_pack": "arista_eos",
+      "check_id": "V-268321",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268322",
+      "rule_id": "V-268322_automatestig_check",
+      "classification": "automated",
+      "reason": "Logging trap level must be configured for syslog",
+      "check_pack": "arista_eos",
+      "check_id": "V-268322",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268323",
+      "rule_id": "V-268323_automatestig_check",
+      "classification": "automated",
+      "reason": "SNMP community strings must not be configured (use SNMPv3)",
+      "check_pack": "arista_eos",
+      "check_id": "V-268323",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268324",
+      "rule_id": "V-268324_automatestig_check",
+      "classification": "automated",
+      "reason": "SNMPv3 group must be configured with auth and priv",
+      "check_pack": "arista_eos",
+      "check_id": "V-268324",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268325",
+      "rule_id": "V-268325_automatestig_check",
+      "classification": "automated",
+      "reason": "SNMPv3 user must be configured",
+      "check_pack": "arista_eos",
+      "check_id": "V-268325",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268326",
+      "rule_id": "V-268326_automatestig_check",
+      "classification": "automated",
+      "reason": "Login banner must be configured",
+      "check_pack": "arista_eos",
+      "check_id": "V-268326",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268327",
+      "rule_id": "V-268327_automatestig_check",
+      "classification": "automated",
+      "reason": "MOTD banner must be configured",
+      "check_pack": "arista_eos",
+      "check_id": "V-268327",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268328",
+      "rule_id": "V-268328_automatestig_check",
+      "classification": "automated",
+      "reason": "Service password-encryption must be enabled",
+      "check_pack": "arista_eos",
+      "check_id": "V-268328",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-268329",
+      "rule_id": "V-268329_automatestig_check",
+      "classification": "automated",
+      "reason": "Enable secret must be configured",
+      "check_pack": "arista_eos",
+      "check_id": "V-268329",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

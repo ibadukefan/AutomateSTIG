@@ -1,0 +1,206 @@
+{
+  "stig_id": "Istio_Service_Mesh_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/istio.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/istio.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-285001",
+      "rule_id": "V-285001_automatestig_check",
+      "classification": "automated",
+      "reason": "Istio must enforce STRICT mTLS mesh-wide via PeerAuthentication",
+      "check_pack": "istio",
+      "check_id": "V-285001",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/istio.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-285002",
+      "rule_id": "V-285002_automatestig_check",
+      "classification": "automated",
+      "reason": "Authorization policies must be defined across namespaces",
+      "check_pack": "istio",
+      "check_id": "V-285002",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/istio.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-285003",
+      "rule_id": "V-285003_automatestig_check",
+      "classification": "automated",
+      "reason": "All Envoy sidecars must be in SYNCED state with the control plane",
+      "check_pack": "istio",
+      "check_id": "V-285003",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/istio.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-285004",
+      "rule_id": "V-285004_automatestig_check",
+      "classification": "automated",
+      "reason": "Istio access logging must be enabled on all Envoy proxies",
+      "check_pack": "istio",
+      "check_id": "V-285004",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/istio.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-285005",
+      "rule_id": "V-285005_automatestig_check",
+      "classification": "automated",
+      "reason": "Distributed tracing must be enabled in the Istio mesh",
+      "check_pack": "istio",
+      "check_id": "V-285005",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/istio.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-285006",
+      "rule_id": "V-285006_automatestig_check",
+      "classification": "automated",
+      "reason": "Istio gateways must be configured with TLS",
+      "check_pack": "istio",
+      "check_id": "V-285006",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/istio.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-285007",
+      "rule_id": "V-285007_automatestig_check",
+      "classification": "automated",
+      "reason": "Istio gateways must enforce TLS 1.2 or higher",
+      "check_pack": "istio",
+      "check_id": "V-285007",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/istio.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-285008",
+      "rule_id": "V-285008_automatestig_check",
+      "classification": "automated",
+      "reason": "DestinationRules must enforce ISTIO_MUTUAL TLS for service-to-service traffic",
+      "check_pack": "istio",
+      "check_id": "V-285008",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/istio.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-285009",
+      "rule_id": "V-285009_automatestig_check",
+      "classification": "automated",
+      "reason": "Deny-by-default authorization policies must be configured",
+      "check_pack": "istio",
+      "check_id": "V-285009",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/istio.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-285010",
+      "rule_id": "V-285010_automatestig_check",
+      "classification": "automated",
+      "reason": "RequestAuthentication resources must be configured for JWT validation",
+      "check_pack": "istio",
+      "check_id": "V-285010",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/istio.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-285011",
+      "rule_id": "V-285011_automatestig_check",
+      "classification": "automated",
+      "reason": "Istiod must be deployed with multiple replicas for high availability",
+      "check_pack": "istio",
+      "check_id": "V-285011",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/istio.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-285012",
+      "rule_id": "V-285012_automatestig_check",
+      "classification": "automated",
+      "reason": "Istiod must run a supported and current version",
+      "check_pack": "istio",
+      "check_id": "V-285012",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/istio.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-285013",
+      "rule_id": "V-285013_automatestig_check",
+      "classification": "automated",
+      "reason": "EnvoyFilter resources must be reviewed and documented",
+      "check_pack": "istio",
+      "check_id": "V-285013",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/istio.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-285014",
+      "rule_id": "V-285014_automatestig_check",
+      "classification": "automated",
+      "reason": "Sidecar resources must be configured to limit egress traffic scope",
+      "check_pack": "istio",
+      "check_id": "V-285014",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/istio.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-285015",
+      "rule_id": "V-285015_automatestig_check",
+      "classification": "automated",
+      "reason": "Outbound traffic policy must be set to REGISTRY_ONLY to block unknown external services",
+      "check_pack": "istio",
+      "check_id": "V-285015",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/istio.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

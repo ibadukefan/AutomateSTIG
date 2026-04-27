@@ -1,0 +1,206 @@
+{
+  "stig_id": "Tanium_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/tanium.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/tanium.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-260001",
+      "rule_id": "V-260001_automatestig_check",
+      "classification": "automated",
+      "reason": "Tanium Server must enable FIPS mode",
+      "check_pack": "tanium",
+      "check_id": "V-260001",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/tanium.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260002",
+      "rule_id": "V-260002_automatestig_check",
+      "classification": "automated",
+      "reason": "Tanium Server must use TLS for communications",
+      "check_pack": "tanium",
+      "check_id": "V-260002",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/tanium.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260003",
+      "rule_id": "V-260003_automatestig_check",
+      "classification": "automated",
+      "reason": "Tanium Server must enforce TLS 1.2 as minimum version",
+      "check_pack": "tanium",
+      "check_id": "V-260003",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/tanium.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260004",
+      "rule_id": "V-260004_automatestig_check",
+      "classification": "automated",
+      "reason": "Tanium Server must enable audit history logging",
+      "check_pack": "tanium",
+      "check_id": "V-260004",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/tanium.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260005",
+      "rule_id": "V-260005_automatestig_check",
+      "classification": "automated",
+      "reason": "Tanium Server must enable activity audit logging",
+      "check_pack": "tanium",
+      "check_id": "V-260005",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/tanium.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260006",
+      "rule_id": "V-260006_automatestig_check",
+      "classification": "automated",
+      "reason": "Tanium Server must require user authentication",
+      "check_pack": "tanium",
+      "check_id": "V-260006",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/tanium.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260007",
+      "rule_id": "V-260007_automatestig_check",
+      "classification": "automated",
+      "reason": "Tanium Server must use LDAP for centralized authentication",
+      "check_pack": "tanium",
+      "check_id": "V-260007",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/tanium.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260008",
+      "rule_id": "V-260008_automatestig_check",
+      "classification": "automated",
+      "reason": "Tanium Server must lock accounts after 5 or fewer failed login attempts",
+      "check_pack": "tanium",
+      "check_id": "V-260008",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/tanium.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260009",
+      "rule_id": "V-260009_automatestig_check",
+      "classification": "automated",
+      "reason": "Tanium Server account lockout duration must be at least 15 minutes",
+      "check_pack": "tanium",
+      "check_id": "V-260009",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/tanium.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260010",
+      "rule_id": "V-260010_automatestig_check",
+      "classification": "automated",
+      "reason": "Tanium Server session timeout must be 15 minutes or less",
+      "check_pack": "tanium",
+      "check_id": "V-260010",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/tanium.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260011",
+      "rule_id": "V-260011_automatestig_check",
+      "classification": "automated",
+      "reason": "Tanium Server must require HTTPS for console access",
+      "check_pack": "tanium",
+      "check_id": "V-260011",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/tanium.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260012",
+      "rule_id": "V-260012_automatestig_check",
+      "classification": "automated",
+      "reason": "Tanium Server must enforce password complexity",
+      "check_pack": "tanium",
+      "check_id": "V-260012",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/tanium.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260013",
+      "rule_id": "V-260013_automatestig_check",
+      "classification": "automated",
+      "reason": "Tanium Server minimum password length must be 15 or greater",
+      "check_pack": "tanium",
+      "check_id": "V-260013",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/tanium.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260014",
+      "rule_id": "V-260014_automatestig_check",
+      "classification": "automated",
+      "reason": "Tanium Client must have a server name list configured",
+      "check_pack": "tanium",
+      "check_id": "V-260014",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/tanium.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260015",
+      "rule_id": "V-260015_automatestig_check",
+      "classification": "automated",
+      "reason": "Tanium Client must verify server certificate signatures",
+      "check_pack": "tanium",
+      "check_id": "V-260015",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/tanium.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "stig_id": "Adobe_Acrobat_Reader_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/adobe_acrobat.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/adobe_acrobat.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-253410",
+      "rule_id": "V-253410_automatestig_check",
+      "classification": "automated",
+      "reason": "Adobe Acrobat Reader must disable JavaScript execution",
+      "check_pack": "adobe_acrobat",
+      "check_id": "V-253410",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253411",
+      "rule_id": "V-253411_automatestig_check",
+      "classification": "automated",
+      "reason": "Adobe Acrobat Reader must enable Protected Mode",
+      "check_pack": "adobe_acrobat",
+      "check_id": "V-253411",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253412",
+      "rule_id": "V-253412_automatestig_check",
+      "classification": "automated",
+      "reason": "Adobe Acrobat Reader must enable Protected View for all files",
+      "check_pack": "adobe_acrobat",
+      "check_id": "V-253412",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253413",
+      "rule_id": "V-253413_automatestig_check",
+      "classification": "automated",
+      "reason": "Adobe Acrobat Reader must disable Flash Player content",
+      "check_pack": "adobe_acrobat",
+      "check_id": "V-253413",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253414",
+      "rule_id": "V-253414_automatestig_check",
+      "classification": "automated",
+      "reason": "Adobe Acrobat Reader must disable 3D content rendering",
+      "check_pack": "adobe_acrobat",
+      "check_id": "V-253414",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253420",
+      "rule_id": "V-253420_automatestig_check",
+      "classification": "automated",
+      "reason": "Adobe Acrobat Reader must disable Adobe Send cloud service integration",
+      "check_pack": "adobe_acrobat",
+      "check_id": "V-253420",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253421",
+      "rule_id": "V-253421_automatestig_check",
+      "classification": "automated",
+      "reason": "Adobe Acrobat Reader must disable Adobe Document Cloud file storage",
+      "check_pack": "adobe_acrobat",
+      "check_id": "V-253421",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253422",
+      "rule_id": "V-253422_automatestig_check",
+      "classification": "automated",
+      "reason": "Adobe Acrobat Reader must disable cloud-based share and feedback",
+      "check_pack": "adobe_acrobat",
+      "check_id": "V-253422",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253425",
+      "rule_id": "V-253425_automatestig_check",
+      "classification": "automated",
+      "reason": "Adobe Acrobat Reader must disable webmail integration",
+      "check_pack": "adobe_acrobat",
+      "check_id": "V-253425",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253426",
+      "rule_id": "V-253426_automatestig_check",
+      "classification": "automated",
+      "reason": "Adobe Acrobat Reader must disable SharePoint integration",
+      "check_pack": "adobe_acrobat",
+      "check_id": "V-253426",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253430",
+      "rule_id": "V-253430_automatestig_check",
+      "classification": "automated",
+      "reason": "Adobe Acrobat Reader automatic updates must be disabled (managed by enterprise)",
+      "check_pack": "adobe_acrobat",
+      "check_id": "V-253430",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253431",
+      "rule_id": "V-253431_automatestig_check",
+      "classification": "automated",
+      "reason": "Adobe Acrobat Reader must disable usage measurement (telemetry)",
+      "check_pack": "adobe_acrobat",
+      "check_id": "V-253431",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253432",
+      "rule_id": "V-253432_automatestig_check",
+      "classification": "automated",
+      "reason": "Adobe Acrobat Reader must disable Adobe Document Services",
+      "check_pack": "adobe_acrobat",
+      "check_id": "V-253432",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253433",
+      "rule_id": "V-253433_automatestig_check",
+      "classification": "automated",
+      "reason": "Adobe Acrobat Reader must disable Adobe Sign integration",
+      "check_pack": "adobe_acrobat",
+      "check_id": "V-253433",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253435",
+      "rule_id": "V-253435_automatestig_check",
+      "classification": "automated",
+      "reason": "Adobe Acrobat Reader must enable Enhanced Security in standalone mode",
+      "check_pack": "adobe_acrobat",
+      "check_id": "V-253435",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

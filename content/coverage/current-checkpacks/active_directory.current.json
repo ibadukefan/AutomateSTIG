@@ -1,0 +1,401 @@
+{
+  "stig_id": "Active_Directory_Domain_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/active_directory.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/active_directory.json",
+  "total_rules": 30,
+  "rules": [
+    {
+      "vuln_id": "V-243469",
+      "rule_id": "V-243469_automatestig_check",
+      "classification": "automated",
+      "reason": "LDAP server signing must be required",
+      "check_pack": "active_directory",
+      "check_id": "V-243469",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243470",
+      "rule_id": "V-243470_automatestig_check",
+      "classification": "automated",
+      "reason": "LDAP channel binding must be set to Always",
+      "check_pack": "active_directory",
+      "check_id": "V-243470",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243471",
+      "rule_id": "V-243471_automatestig_check",
+      "classification": "automated",
+      "reason": "Domain controller Netlogon must require signing or sealing",
+      "check_pack": "active_directory",
+      "check_id": "V-243471",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243472",
+      "rule_id": "V-243472_automatestig_check",
+      "classification": "automated",
+      "reason": "Domain controller secure channel traffic must be encrypted",
+      "check_pack": "active_directory",
+      "check_id": "V-243472",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243473",
+      "rule_id": "V-243473_automatestig_check",
+      "classification": "automated",
+      "reason": "Domain controller secure channel traffic must be signed",
+      "check_pack": "active_directory",
+      "check_id": "V-243473",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243474",
+      "rule_id": "V-243474_automatestig_check",
+      "classification": "automated",
+      "reason": "Domain controller must require strong session keys",
+      "check_pack": "active_directory",
+      "check_id": "V-243474",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243475",
+      "rule_id": "V-243475_automatestig_check",
+      "classification": "automated",
+      "reason": "LAN Manager authentication must be NTLMv2 with NTLMv1 refused",
+      "check_pack": "active_directory",
+      "check_id": "V-243475",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243476",
+      "rule_id": "V-243476_automatestig_check",
+      "classification": "automated",
+      "reason": "LM hash values must not be stored on domain controllers",
+      "check_pack": "active_directory",
+      "check_id": "V-243476",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243477",
+      "rule_id": "V-243477_automatestig_check",
+      "classification": "automated",
+      "reason": "Kerberos user ticket maximum lifetime must not exceed 10 hours",
+      "check_pack": "active_directory",
+      "check_id": "V-243477",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243478",
+      "rule_id": "V-243478_automatestig_check",
+      "classification": "automated",
+      "reason": "Kerberos service ticket maximum lifetime must not exceed 600 minutes",
+      "check_pack": "active_directory",
+      "check_id": "V-243478",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243479",
+      "rule_id": "V-243479_automatestig_check",
+      "classification": "automated",
+      "reason": "Kerberos user ticket renewal maximum lifetime must not exceed 7 days",
+      "check_pack": "active_directory",
+      "check_id": "V-243479",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243480",
+      "rule_id": "V-243480_automatestig_check",
+      "classification": "automated",
+      "reason": "Kerberos maximum tolerance for clock synchronization must be 5 minutes or less",
+      "check_pack": "active_directory",
+      "check_id": "V-243480",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243481",
+      "rule_id": "V-243481_automatestig_check",
+      "classification": "automated",
+      "reason": "Kerberos client ticket validation must be enforced",
+      "check_pack": "active_directory",
+      "check_id": "V-243481",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243482",
+      "rule_id": "V-243482_automatestig_check",
+      "classification": "automated",
+      "reason": "DS Heuristics must not be configured to allow anonymous access",
+      "check_pack": "active_directory",
+      "check_id": "V-243482",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243483",
+      "rule_id": "V-243483_automatestig_check",
+      "classification": "automated",
+      "reason": "Anonymous SAM enumeration must not be allowed on domain controllers",
+      "check_pack": "active_directory",
+      "check_id": "V-243483",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243484",
+      "rule_id": "V-243484_automatestig_check",
+      "classification": "automated",
+      "reason": "Anonymous enumeration of shares must be restricted",
+      "check_pack": "active_directory",
+      "check_id": "V-243484",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243485",
+      "rule_id": "V-243485_automatestig_check",
+      "classification": "automated",
+      "reason": "Everyone permissions must not apply to anonymous users",
+      "check_pack": "active_directory",
+      "check_id": "V-243485",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243486",
+      "rule_id": "V-243486_automatestig_check",
+      "classification": "automated",
+      "reason": "SMB server signing must be required on domain controllers",
+      "check_pack": "active_directory",
+      "check_id": "V-243486",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243487",
+      "rule_id": "V-243487_automatestig_check",
+      "classification": "automated",
+      "reason": "SMB client signing must be required on domain controllers",
+      "check_pack": "active_directory",
+      "check_id": "V-243487",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243488",
+      "rule_id": "V-243488_automatestig_check",
+      "classification": "automated",
+      "reason": "Domain password minimum length must be at least 14 characters",
+      "check_pack": "active_directory",
+      "check_id": "V-243488",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243489",
+      "rule_id": "V-243489_automatestig_check",
+      "classification": "automated",
+      "reason": "Domain passwords must meet complexity requirements",
+      "check_pack": "active_directory",
+      "check_id": "V-243489",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243490",
+      "rule_id": "V-243490_automatestig_check",
+      "classification": "automated",
+      "reason": "Domain password history must remember 24 passwords",
+      "check_pack": "active_directory",
+      "check_id": "V-243490",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243491",
+      "rule_id": "V-243491_automatestig_check",
+      "classification": "automated",
+      "reason": "Domain account lockout threshold must be 3 or fewer",
+      "check_pack": "active_directory",
+      "check_id": "V-243491",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243492",
+      "rule_id": "V-243492_automatestig_check",
+      "classification": "automated",
+      "reason": "Domain account lockout counter reset must be at least 15 minutes",
+      "check_pack": "active_directory",
+      "check_id": "V-243492",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243493",
+      "rule_id": "V-243493_automatestig_check",
+      "classification": "automated",
+      "reason": "Domain account lockout duration must be at least 15 minutes",
+      "check_pack": "active_directory",
+      "check_id": "V-243493",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243494",
+      "rule_id": "V-243494_automatestig_check",
+      "classification": "automated",
+      "reason": "AD tombstone lifetime must be at least 180 days",
+      "check_pack": "active_directory",
+      "check_id": "V-243494",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243495",
+      "rule_id": "V-243495_automatestig_check",
+      "classification": "automated",
+      "reason": "NTLM minimum server security must require NTLMv2 and 128-bit encryption",
+      "check_pack": "active_directory",
+      "check_id": "V-243495",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243496",
+      "rule_id": "V-243496_automatestig_check",
+      "classification": "automated",
+      "reason": "NTLM minimum client security must require NTLMv2 and 128-bit encryption",
+      "check_pack": "active_directory",
+      "check_id": "V-243496",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243497",
+      "rule_id": "V-243497_automatestig_check",
+      "classification": "automated",
+      "reason": "Domain controllers must display a legal notice before logon",
+      "check_pack": "active_directory",
+      "check_id": "V-243497",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-243498",
+      "rule_id": "V-243498_automatestig_check",
+      "classification": "automated",
+      "reason": "AD diagnostic logging for LDAP interface events must be enabled",
+      "check_pack": "active_directory",
+      "check_id": "V-243498",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/active_directory.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

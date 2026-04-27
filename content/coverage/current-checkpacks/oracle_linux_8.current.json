@@ -1,0 +1,401 @@
+{
+  "stig_id": "Oracle_Linux_8_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/oracle_linux_8.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/oracle_linux_8.json",
+  "total_rules": 30,
+  "rules": [
+    {
+      "vuln_id": "V-248500",
+      "rule_id": "V-248500_automatestig_check",
+      "classification": "automated",
+      "reason": "Oracle Linux 8 SSH must not allow direct root login",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248500",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248501",
+      "rule_id": "V-248501_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must not allow empty passwords",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248501",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248502",
+      "rule_id": "V-248502_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveInterval must be set",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248502",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248503",
+      "rule_id": "V-248503_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveCountMax must be 1 or less",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248503",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248504",
+      "rule_id": "V-248504_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH MaxAuthTries must be 4 or fewer",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248504",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248505",
+      "rule_id": "V-248505_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must display a login banner",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248505",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248506",
+      "rule_id": "V-248506_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH X11 forwarding must be disabled",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248506",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248507",
+      "rule_id": "V-248507_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must use FIPS 140-2 compliant ciphers",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248507",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248508",
+      "rule_id": "V-248508_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must use FIPS 140-2 compliant MACs",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248508",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248509",
+      "rule_id": "V-248509_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH GSSAPI authentication must be disabled",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248509",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248510",
+      "rule_id": "V-248510_automatestig_check",
+      "classification": "automated",
+      "reason": "IP forwarding must be disabled",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248510",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248511",
+      "rule_id": "V-248511_automatestig_check",
+      "classification": "automated",
+      "reason": "Source-routed packets must not be accepted",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248511",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248512",
+      "rule_id": "V-248512_automatestig_check",
+      "classification": "automated",
+      "reason": "Default source route acceptance must be disabled",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248512",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248513",
+      "rule_id": "V-248513_automatestig_check",
+      "classification": "automated",
+      "reason": "ICMP redirects must not be accepted",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248513",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248514",
+      "rule_id": "V-248514_automatestig_check",
+      "classification": "automated",
+      "reason": "System must not send ICMP redirects",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248514",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248515",
+      "rule_id": "V-248515_automatestig_check",
+      "classification": "automated",
+      "reason": "TCP SYN cookies must be enabled",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248515",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248516",
+      "rule_id": "V-248516_automatestig_check",
+      "classification": "automated",
+      "reason": "ASLR must be fully enabled",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248516",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248517",
+      "rule_id": "V-248517_automatestig_check",
+      "classification": "automated",
+      "reason": "Kernel message buffer must be restricted",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248517",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248520",
+      "rule_id": "V-248520_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/shadow must be mode 0000 and owned by root",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248520",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248521",
+      "rule_id": "V-248521_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/passwd must be mode 0644 and owned by root",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248521",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248522",
+      "rule_id": "V-248522_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/group must be mode 0644 and owned by root",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248522",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248523",
+      "rule_id": "V-248523_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/gshadow must be mode 0000 and owned by root",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248523",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248524",
+      "rule_id": "V-248524_automatestig_check",
+      "classification": "automated",
+      "reason": "sshd_config must be mode 0600 and owned by root",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248524",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248530",
+      "rule_id": "V-248530_automatestig_check",
+      "classification": "automated",
+      "reason": "AIDE must be installed for file integrity checking",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248530",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248531",
+      "rule_id": "V-248531_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit package must be installed",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248531",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248532",
+      "rule_id": "V-248532_automatestig_check",
+      "classification": "automated",
+      "reason": "Firewalld must be installed",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248532",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248533",
+      "rule_id": "V-248533_automatestig_check",
+      "classification": "automated",
+      "reason": "Telnet server must not be installed",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248533",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248540",
+      "rule_id": "V-248540_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit daemon must be running",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248540",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248541",
+      "rule_id": "V-248541_automatestig_check",
+      "classification": "automated",
+      "reason": "Firewall must be active",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248541",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-248542",
+      "rule_id": "V-248542_automatestig_check",
+      "classification": "automated",
+      "reason": "SELinux must be set to enforcing mode",
+      "check_pack": "oracle_linux_8",
+      "check_id": "V-248542",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_8.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

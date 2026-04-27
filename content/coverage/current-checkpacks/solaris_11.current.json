@@ -1,0 +1,271 @@
+{
+  "stig_id": "Solaris_11_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/solaris_11.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/solaris_11.json",
+  "total_rules": 20,
+  "rules": [
+    {
+      "vuln_id": "V-216000",
+      "rule_id": "V-216000_automatestig_check",
+      "classification": "automated",
+      "reason": "Solaris 11 SSH must not allow direct root login",
+      "check_pack": "solaris_11",
+      "check_id": "V-216000",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216001",
+      "rule_id": "V-216001_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must not allow empty passwords",
+      "check_pack": "solaris_11",
+      "check_id": "V-216001",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216002",
+      "rule_id": "V-216002_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveInterval must be set",
+      "check_pack": "solaris_11",
+      "check_id": "V-216002",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216003",
+      "rule_id": "V-216003_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must display a login banner",
+      "check_pack": "solaris_11",
+      "check_id": "V-216003",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216004",
+      "rule_id": "V-216004_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH X11 forwarding must be disabled",
+      "check_pack": "solaris_11",
+      "check_id": "V-216004",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216010",
+      "rule_id": "V-216010_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/shadow must be mode 0400 and owned by root",
+      "check_pack": "solaris_11",
+      "check_id": "V-216010",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216011",
+      "rule_id": "V-216011_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/passwd must be mode 0644 and owned by root",
+      "check_pack": "solaris_11",
+      "check_id": "V-216011",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216012",
+      "rule_id": "V-216012_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/group must be mode 0644 and owned by root",
+      "check_pack": "solaris_11",
+      "check_id": "V-216012",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216013",
+      "rule_id": "V-216013_automatestig_check",
+      "classification": "automated",
+      "reason": "sshd_config must be mode 0600 and owned by root",
+      "check_pack": "solaris_11",
+      "check_id": "V-216013",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216020",
+      "rule_id": "V-216020_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH service must be online",
+      "check_pack": "solaris_11",
+      "check_id": "V-216020",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216021",
+      "rule_id": "V-216021_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit service must be online",
+      "check_pack": "solaris_11",
+      "check_id": "V-216021",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216022",
+      "rule_id": "V-216022_automatestig_check",
+      "classification": "automated",
+      "reason": "TCP connection tracing must be enabled via inetadm",
+      "check_pack": "solaris_11",
+      "check_id": "V-216022",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216023",
+      "rule_id": "V-216023_automatestig_check",
+      "classification": "automated",
+      "reason": "IPv4 forwarding must be disabled via ipadm",
+      "check_pack": "solaris_11",
+      "check_id": "V-216023",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216024",
+      "rule_id": "V-216024_automatestig_check",
+      "classification": "automated",
+      "reason": "IPv6 forwarding must be disabled via ipadm",
+      "check_pack": "solaris_11",
+      "check_id": "V-216024",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216025",
+      "rule_id": "V-216025_automatestig_check",
+      "classification": "automated",
+      "reason": "System must not respond to ICMP broadcast echo requests",
+      "check_pack": "solaris_11",
+      "check_id": "V-216025",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216026",
+      "rule_id": "V-216026_automatestig_check",
+      "classification": "automated",
+      "reason": "System must ignore ICMP redirect messages",
+      "check_pack": "solaris_11",
+      "check_id": "V-216026",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216030",
+      "rule_id": "V-216030_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit package must be installed",
+      "check_pack": "solaris_11",
+      "check_id": "V-216030",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216031",
+      "rule_id": "V-216031_automatestig_check",
+      "classification": "automated",
+      "reason": "Telnet service must be disabled via inetadm",
+      "check_pack": "solaris_11",
+      "check_id": "V-216031",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216032",
+      "rule_id": "V-216032_automatestig_check",
+      "classification": "automated",
+      "reason": "FTP service must be disabled via inetadm",
+      "check_pack": "solaris_11",
+      "check_id": "V-216032",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-216033",
+      "rule_id": "V-216033_automatestig_check",
+      "classification": "automated",
+      "reason": "Root login must be restricted to the system console",
+      "check_pack": "solaris_11",
+      "check_id": "V-216033",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/solaris_11.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

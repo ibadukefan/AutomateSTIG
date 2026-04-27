@@ -11,6 +11,8 @@ env:
 
 permissions:
   contents: read
+  id-token: write
+  attestations: write
 
 jobs:
   check:
@@ -72,14 +74,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      - run: cargo run -p automatestig -- coverage validate --manifest content/coverage/windows_server_2022.example.json
-      - run: cargo run -p automatestig -- coverage validate --manifest content/coverage/rhel8.example.json
-      - run: cargo run -p automatestig -- coverage validate --manifest content/coverage/windows_server_2022.full.json
-      - run: cargo run -p automatestig -- coverage validate --manifest content/coverage/rhel8.full.json
-      - run: cargo run -p automatestig -- coverage validate --manifest content/coverage/windows_server_2022.disa-v2r8.json
-      - run: cargo run -p automatestig -- coverage validate --manifest content/coverage/rhel8.disa-v2r7.json
+      - run: python3 scripts/validate-all-coverage.py --repo-root .
       - run: python3 scripts/validate-authorized-fixtures.py fixtures/authorized/manifest.example.json --repo-root .
       - run: python3 scripts/validate-external-workflows.py --repo-root .
+      - run: python3 scripts/run-live-external-acceptance.py --repo-root .
 
   dependency-audit:
     name: Dependency audit
@@ -146,12 +144,27 @@ jobs:
           else
             shasum -a 256 "${{ matrix.artifact }}" > "${{ matrix.artifact }}.sha256"
           fi
+      - name: Generate GitHub artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: target/release/${{ matrix.artifact }}
+      - name: Install cosign for keyless blob signing
+        uses: sigstore/cosign-installer@v3
+      - name: Generate keyless Sigstore signature bundle
+        shell: bash
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+        run: |
+          cosign sign-blob --yes \
+            --bundle "target/release/${{ matrix.artifact }}.sigstore.bundle" \
+            "target/release/${{ matrix.artifact }}"
       - uses: actions/upload-artifact@v4
         with:
           name: automatestig-${{ matrix.target }}
           path: |
             target/release/${{ matrix.artifact }}
             target/release/${{ matrix.artifact }}.sha256
+            target/release/${{ matrix.artifact }}.sigstore.bundle
             target/release/provenance/cargo-metadata-${{ matrix.target }}.json
             target/release/provenance/automatestig-${{ matrix.target }}.cdx.json
             target/release/provenance/provenance-${{ matrix.target }}.json

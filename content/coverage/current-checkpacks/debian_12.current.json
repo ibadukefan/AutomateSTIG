@@ -1,0 +1,336 @@
+{
+  "stig_id": "Debian_12_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/debian_12.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/debian_12.json",
+  "total_rules": 25,
+  "rules": [
+    {
+      "vuln_id": "V-261200",
+      "rule_id": "V-261200_automatestig_check",
+      "classification": "automated",
+      "reason": "Debian 12 SSH must not allow direct root login",
+      "check_pack": "debian_12",
+      "check_id": "V-261200",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261201",
+      "rule_id": "V-261201_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must not allow empty passwords",
+      "check_pack": "debian_12",
+      "check_id": "V-261201",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261202",
+      "rule_id": "V-261202_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveInterval must be set",
+      "check_pack": "debian_12",
+      "check_id": "V-261202",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261203",
+      "rule_id": "V-261203_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveCountMax must be 1 or less",
+      "check_pack": "debian_12",
+      "check_id": "V-261203",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261204",
+      "rule_id": "V-261204_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must display a login banner",
+      "check_pack": "debian_12",
+      "check_id": "V-261204",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261205",
+      "rule_id": "V-261205_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH X11 forwarding must be disabled",
+      "check_pack": "debian_12",
+      "check_id": "V-261205",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261206",
+      "rule_id": "V-261206_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must use PAM",
+      "check_pack": "debian_12",
+      "check_id": "V-261206",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261210",
+      "rule_id": "V-261210_automatestig_check",
+      "classification": "automated",
+      "reason": "IP forwarding must be disabled",
+      "check_pack": "debian_12",
+      "check_id": "V-261210",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261211",
+      "rule_id": "V-261211_automatestig_check",
+      "classification": "automated",
+      "reason": "Source-routed packets must not be accepted",
+      "check_pack": "debian_12",
+      "check_id": "V-261211",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261212",
+      "rule_id": "V-261212_automatestig_check",
+      "classification": "automated",
+      "reason": "ICMP redirects must not be accepted",
+      "check_pack": "debian_12",
+      "check_id": "V-261212",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261213",
+      "rule_id": "V-261213_automatestig_check",
+      "classification": "automated",
+      "reason": "System must not send ICMP redirects",
+      "check_pack": "debian_12",
+      "check_id": "V-261213",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261214",
+      "rule_id": "V-261214_automatestig_check",
+      "classification": "automated",
+      "reason": "TCP SYN cookies must be enabled",
+      "check_pack": "debian_12",
+      "check_id": "V-261214",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261215",
+      "rule_id": "V-261215_automatestig_check",
+      "classification": "automated",
+      "reason": "ASLR must be fully enabled",
+      "check_pack": "debian_12",
+      "check_id": "V-261215",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261216",
+      "rule_id": "V-261216_automatestig_check",
+      "classification": "automated",
+      "reason": "Kernel message buffer must be restricted",
+      "check_pack": "debian_12",
+      "check_id": "V-261216",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261217",
+      "rule_id": "V-261217_automatestig_check",
+      "classification": "automated",
+      "reason": "IPv6 source routing must be disabled",
+      "check_pack": "debian_12",
+      "check_id": "V-261217",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261220",
+      "rule_id": "V-261220_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/shadow must be mode 0640, owned by root:shadow",
+      "check_pack": "debian_12",
+      "check_id": "V-261220",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261221",
+      "rule_id": "V-261221_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/passwd must be mode 0644 and owned by root",
+      "check_pack": "debian_12",
+      "check_id": "V-261221",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261222",
+      "rule_id": "V-261222_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/group must be mode 0644 and owned by root",
+      "check_pack": "debian_12",
+      "check_id": "V-261222",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261223",
+      "rule_id": "V-261223_automatestig_check",
+      "classification": "automated",
+      "reason": "sshd_config must be mode 0600 and owned by root",
+      "check_pack": "debian_12",
+      "check_id": "V-261223",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261230",
+      "rule_id": "V-261230_automatestig_check",
+      "classification": "automated",
+      "reason": "AIDE must be installed for file integrity checking",
+      "check_pack": "debian_12",
+      "check_id": "V-261230",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261231",
+      "rule_id": "V-261231_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit package must be installed",
+      "check_pack": "debian_12",
+      "check_id": "V-261231",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261232",
+      "rule_id": "V-261232_automatestig_check",
+      "classification": "automated",
+      "reason": "AppArmor must be installed",
+      "check_pack": "debian_12",
+      "check_id": "V-261232",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261233",
+      "rule_id": "V-261233_automatestig_check",
+      "classification": "automated",
+      "reason": "Telnet server must not be installed",
+      "check_pack": "debian_12",
+      "check_id": "V-261233",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261240",
+      "rule_id": "V-261240_automatestig_check",
+      "classification": "automated",
+      "reason": "AppArmor must be active",
+      "check_pack": "debian_12",
+      "check_id": "V-261240",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261241",
+      "rule_id": "V-261241_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit daemon must be running",
+      "check_pack": "debian_12",
+      "check_id": "V-261241",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/debian_12.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

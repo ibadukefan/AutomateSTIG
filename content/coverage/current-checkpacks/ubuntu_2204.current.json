@@ -1,0 +1,466 @@
+{
+  "stig_id": "Ubuntu_22.04_LTS_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/ubuntu_2204.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/ubuntu_2204.json",
+  "total_rules": 35,
+  "rules": [
+    {
+      "vuln_id": "V-260473",
+      "rule_id": "V-260473_automatestig_check",
+      "classification": "automated",
+      "reason": "Ubuntu 22.04 SSH must not allow direct root login",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260473",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260474",
+      "rule_id": "V-260474_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must not allow empty passwords",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260474",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260475",
+      "rule_id": "V-260475_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveInterval must be set",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260475",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260476",
+      "rule_id": "V-260476_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveCountMax must be 1 or less",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260476",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260477",
+      "rule_id": "V-260477_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH MaxAuthTries must be 4 or fewer",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260477",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260478",
+      "rule_id": "V-260478_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must display a login banner",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260478",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260479",
+      "rule_id": "V-260479_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH X11 forwarding must be disabled",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260479",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260480",
+      "rule_id": "V-260480_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must use PAM",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260480",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260490",
+      "rule_id": "V-260490_automatestig_check",
+      "classification": "automated",
+      "reason": "IP forwarding must be disabled",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260490",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260491",
+      "rule_id": "V-260491_automatestig_check",
+      "classification": "automated",
+      "reason": "Source-routed packets must not be accepted",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260491",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260492",
+      "rule_id": "V-260492_automatestig_check",
+      "classification": "automated",
+      "reason": "Default source route acceptance must be disabled",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260492",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260493",
+      "rule_id": "V-260493_automatestig_check",
+      "classification": "automated",
+      "reason": "ICMP redirects must not be accepted",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260493",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260494",
+      "rule_id": "V-260494_automatestig_check",
+      "classification": "automated",
+      "reason": "System must not send ICMP redirects",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260494",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260495",
+      "rule_id": "V-260495_automatestig_check",
+      "classification": "automated",
+      "reason": "System must ignore ICMP broadcast echo requests",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260495",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260496",
+      "rule_id": "V-260496_automatestig_check",
+      "classification": "automated",
+      "reason": "TCP SYN cookies must be enabled",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260496",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260497",
+      "rule_id": "V-260497_automatestig_check",
+      "classification": "automated",
+      "reason": "ASLR must be fully enabled",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260497",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260498",
+      "rule_id": "V-260498_automatestig_check",
+      "classification": "automated",
+      "reason": "Kernel message buffer must be restricted",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260498",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260499",
+      "rule_id": "V-260499_automatestig_check",
+      "classification": "automated",
+      "reason": "IPv6 source routing must be disabled",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260499",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260510",
+      "rule_id": "V-260510_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/shadow must be mode 0640, owned by root:shadow",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260510",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260511",
+      "rule_id": "V-260511_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/passwd must be mode 0644 and owned by root",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260511",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260512",
+      "rule_id": "V-260512_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/group must be mode 0644 and owned by root",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260512",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260513",
+      "rule_id": "V-260513_automatestig_check",
+      "classification": "automated",
+      "reason": "sshd_config must be mode 0600 and owned by root",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260513",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260520",
+      "rule_id": "V-260520_automatestig_check",
+      "classification": "automated",
+      "reason": "Uncomplicated Firewall (UFW) must be active",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260520",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260521",
+      "rule_id": "V-260521_automatestig_check",
+      "classification": "automated",
+      "reason": "AppArmor must be active",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260521",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260522",
+      "rule_id": "V-260522_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit daemon must be running",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260522",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260523",
+      "rule_id": "V-260523_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH daemon must be running",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260523",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260530",
+      "rule_id": "V-260530_automatestig_check",
+      "classification": "automated",
+      "reason": "AIDE must be installed for file integrity checking",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260530",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260531",
+      "rule_id": "V-260531_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit package must be installed",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260531",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260532",
+      "rule_id": "V-260532_automatestig_check",
+      "classification": "automated",
+      "reason": "UFW must be installed",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260532",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260533",
+      "rule_id": "V-260533_automatestig_check",
+      "classification": "automated",
+      "reason": "AppArmor must be installed",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260533",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260534",
+      "rule_id": "V-260534_automatestig_check",
+      "classification": "automated",
+      "reason": "Telnet server must not be installed",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260534",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260540",
+      "rule_id": "V-260540_automatestig_check",
+      "classification": "automated",
+      "reason": "Maximum password age must be 60 days or less",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260540",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260541",
+      "rule_id": "V-260541_automatestig_check",
+      "classification": "automated",
+      "reason": "Minimum password age must be at least 1 day",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260541",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260542",
+      "rule_id": "V-260542_automatestig_check",
+      "classification": "automated",
+      "reason": "Passwords must be hashed with SHA-512",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260542",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260543",
+      "rule_id": "V-260543_automatestig_check",
+      "classification": "automated",
+      "reason": "Password quality must require minimum length of 15",
+      "check_pack": "ubuntu_2204",
+      "check_id": "V-260543",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2204.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

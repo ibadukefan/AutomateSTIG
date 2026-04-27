@@ -1,0 +1,271 @@
+{
+  "stig_id": "Apple_macOS_13_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/macos_13.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/macos_13.json",
+  "total_rules": 20,
+  "rules": [
+    {
+      "vuln_id": "V-257500",
+      "rule_id": "V-257500_automatestig_check",
+      "classification": "automated",
+      "reason": "FileVault full-disk encryption must be enabled",
+      "check_pack": "macos_13",
+      "check_id": "V-257500",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257501",
+      "rule_id": "V-257501_automatestig_check",
+      "classification": "automated",
+      "reason": "Gatekeeper must be enabled",
+      "check_pack": "macos_13",
+      "check_id": "V-257501",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257502",
+      "rule_id": "V-257502_automatestig_check",
+      "classification": "automated",
+      "reason": "System Integrity Protection (SIP) must be enabled",
+      "check_pack": "macos_13",
+      "check_id": "V-257502",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257503",
+      "rule_id": "V-257503_automatestig_check",
+      "classification": "automated",
+      "reason": "macOS application firewall must be enabled",
+      "check_pack": "macos_13",
+      "check_id": "V-257503",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257504",
+      "rule_id": "V-257504_automatestig_check",
+      "classification": "automated",
+      "reason": "Auto-login must be disabled",
+      "check_pack": "macos_13",
+      "check_id": "V-257504",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257505",
+      "rule_id": "V-257505_automatestig_check",
+      "classification": "automated",
+      "reason": "Screen saver must require a password to unlock",
+      "check_pack": "macos_13",
+      "check_id": "V-257505",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257506",
+      "rule_id": "V-257506_automatestig_check",
+      "classification": "automated",
+      "reason": "Screen saver password grace period must be 5 seconds or less",
+      "check_pack": "macos_13",
+      "check_id": "V-257506",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257507",
+      "rule_id": "V-257507_automatestig_check",
+      "classification": "automated",
+      "reason": "Screen saver must activate within 15 minutes of idle time",
+      "check_pack": "macos_13",
+      "check_id": "V-257507",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257508",
+      "rule_id": "V-257508_automatestig_check",
+      "classification": "automated",
+      "reason": "Password policy must enforce a minimum length",
+      "check_pack": "macos_13",
+      "check_id": "V-257508",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257509",
+      "rule_id": "V-257509_automatestig_check",
+      "classification": "automated",
+      "reason": "Password policy must enforce an account lockout threshold",
+      "check_pack": "macos_13",
+      "check_id": "V-257509",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257510",
+      "rule_id": "V-257510_automatestig_check",
+      "classification": "automated",
+      "reason": "Guest account must be disabled",
+      "check_pack": "macos_13",
+      "check_id": "V-257510",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257511",
+      "rule_id": "V-257511_automatestig_check",
+      "classification": "automated",
+      "reason": "A login window banner must be displayed",
+      "check_pack": "macos_13",
+      "check_id": "V-257511",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257512",
+      "rule_id": "V-257512_automatestig_check",
+      "classification": "automated",
+      "reason": "Login window must display name and password fields",
+      "check_pack": "macos_13",
+      "check_id": "V-257512",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257513",
+      "rule_id": "V-257513_automatestig_check",
+      "classification": "automated",
+      "reason": "Remote login (SSH) must be disabled unless required",
+      "check_pack": "macos_13",
+      "check_id": "V-257513",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257514",
+      "rule_id": "V-257514_automatestig_check",
+      "classification": "automated",
+      "reason": "Bluetooth sharing must be disabled",
+      "check_pack": "macos_13",
+      "check_id": "V-257514",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257515",
+      "rule_id": "V-257515_automatestig_check",
+      "classification": "automated",
+      "reason": "AirDrop must be disabled",
+      "check_pack": "macos_13",
+      "check_id": "V-257515",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257516",
+      "rule_id": "V-257516_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit service (auditd) must be running",
+      "check_pack": "macos_13",
+      "check_id": "V-257516",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257517",
+      "rule_id": "V-257517_automatestig_check",
+      "classification": "automated",
+      "reason": "Automatic software update check must be enabled",
+      "check_pack": "macos_13",
+      "check_id": "V-257517",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257518",
+      "rule_id": "V-257518_automatestig_check",
+      "classification": "automated",
+      "reason": "Critical security updates must install automatically",
+      "check_pack": "macos_13",
+      "check_id": "V-257518",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-257519",
+      "rule_id": "V-257519_automatestig_check",
+      "classification": "automated",
+      "reason": "Firewall stealth mode must be enabled",
+      "check_pack": "macos_13",
+      "check_id": "V-257519",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/macos_13.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

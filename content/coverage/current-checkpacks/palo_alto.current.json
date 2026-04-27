@@ -1,0 +1,336 @@
+{
+  "stig_id": "Palo_Alto_NDM_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/palo_alto.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/palo_alto.json",
+  "total_rules": 25,
+  "rules": [
+    {
+      "vuln_id": "V-228837",
+      "rule_id": "V-228837_automatestig_check",
+      "classification": "automated",
+      "reason": "Admin lockout must be configured after 3 or fewer failed login attempts",
+      "check_pack": "palo_alto",
+      "check_id": "V-228837",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228838",
+      "rule_id": "V-228838_automatestig_check",
+      "classification": "automated",
+      "reason": "Admin lockout duration must be configured",
+      "check_pack": "palo_alto",
+      "check_id": "V-228838",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228839",
+      "rule_id": "V-228839_automatestig_check",
+      "classification": "automated",
+      "reason": "Password complexity must be enabled",
+      "check_pack": "palo_alto",
+      "check_id": "V-228839",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228840",
+      "rule_id": "V-228840_automatestig_check",
+      "classification": "automated",
+      "reason": "Password minimum length must be 15 or greater",
+      "check_pack": "palo_alto",
+      "check_id": "V-228840",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228841",
+      "rule_id": "V-228841_automatestig_check",
+      "classification": "automated",
+      "reason": "Password complexity must require at least one uppercase letter",
+      "check_pack": "palo_alto",
+      "check_id": "V-228841",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228842",
+      "rule_id": "V-228842_automatestig_check",
+      "classification": "automated",
+      "reason": "Password complexity must require at least one lowercase letter",
+      "check_pack": "palo_alto",
+      "check_id": "V-228842",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228843",
+      "rule_id": "V-228843_automatestig_check",
+      "classification": "automated",
+      "reason": "Password complexity must require at least one numeric character",
+      "check_pack": "palo_alto",
+      "check_id": "V-228843",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228844",
+      "rule_id": "V-228844_automatestig_check",
+      "classification": "automated",
+      "reason": "Password complexity must require at least one special character",
+      "check_pack": "palo_alto",
+      "check_id": "V-228844",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228845",
+      "rule_id": "V-228845_automatestig_check",
+      "classification": "automated",
+      "reason": "Idle session timeout must be set to 10 minutes or less",
+      "check_pack": "palo_alto",
+      "check_id": "V-228845",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228846",
+      "rule_id": "V-228846_automatestig_check",
+      "classification": "automated",
+      "reason": "HTTP management access must be disabled (HTTPS only)",
+      "check_pack": "palo_alto",
+      "check_id": "V-228846",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228847",
+      "rule_id": "V-228847_automatestig_check",
+      "classification": "automated",
+      "reason": "Telnet management access must be disabled",
+      "check_pack": "palo_alto",
+      "check_id": "V-228847",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228848",
+      "rule_id": "V-228848_automatestig_check",
+      "classification": "automated",
+      "reason": "Syslog forwarding to a remote server must be configured",
+      "check_pack": "palo_alto",
+      "check_id": "V-228848",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228849",
+      "rule_id": "V-228849_automatestig_check",
+      "classification": "automated",
+      "reason": "Syslog forwarding must use encrypted transport (SSL/TLS)",
+      "check_pack": "palo_alto",
+      "check_id": "V-228849",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228850",
+      "rule_id": "V-228850_automatestig_check",
+      "classification": "automated",
+      "reason": "Primary NTP server must be configured",
+      "check_pack": "palo_alto",
+      "check_id": "V-228850",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228851",
+      "rule_id": "V-228851_automatestig_check",
+      "classification": "automated",
+      "reason": "NTP authentication must be enabled for time source",
+      "check_pack": "palo_alto",
+      "check_id": "V-228851",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228852",
+      "rule_id": "V-228852_automatestig_check",
+      "classification": "automated",
+      "reason": "SNMP must be configured to use version 3 with authentication and privacy",
+      "check_pack": "palo_alto",
+      "check_id": "V-228852",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228853",
+      "rule_id": "V-228853_automatestig_check",
+      "classification": "automated",
+      "reason": "Login banner must display DoD-approved warning text",
+      "check_pack": "palo_alto",
+      "check_id": "V-228853",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228854",
+      "rule_id": "V-228854_automatestig_check",
+      "classification": "automated",
+      "reason": "Admin accounts must use an authentication profile (certificate-based or external)",
+      "check_pack": "palo_alto",
+      "check_id": "V-228854",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228855",
+      "rule_id": "V-228855_automatestig_check",
+      "classification": "automated",
+      "reason": "Password history must prohibit reuse of at least 5 previous passwords",
+      "check_pack": "palo_alto",
+      "check_id": "V-228855",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228856",
+      "rule_id": "V-228856_automatestig_check",
+      "classification": "automated",
+      "reason": "Password change must be required on first login",
+      "check_pack": "palo_alto",
+      "check_id": "V-228856",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228857",
+      "rule_id": "V-228857_automatestig_check",
+      "classification": "automated",
+      "reason": "Software version must be current and supported",
+      "check_pack": "palo_alto",
+      "check_id": "V-228857",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228858",
+      "rule_id": "V-228858_automatestig_check",
+      "classification": "automated",
+      "reason": "Management interface must restrict access to permitted IP addresses",
+      "check_pack": "palo_alto",
+      "check_id": "V-228858",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228859",
+      "rule_id": "V-228859_automatestig_check",
+      "classification": "automated",
+      "reason": "Certificate profile must be configured for admin authentication",
+      "check_pack": "palo_alto",
+      "check_id": "V-228859",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228860",
+      "rule_id": "V-228860_automatestig_check",
+      "classification": "automated",
+      "reason": "Configuration audit trail must be enabled",
+      "check_pack": "palo_alto",
+      "check_id": "V-228860",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-228861",
+      "rule_id": "V-228861_automatestig_check",
+      "classification": "automated",
+      "reason": "Password complexity, session timeout, and HTTPS-only management must all be enabled",
+      "check_pack": "palo_alto",
+      "check_id": "V-228861",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/palo_alto.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

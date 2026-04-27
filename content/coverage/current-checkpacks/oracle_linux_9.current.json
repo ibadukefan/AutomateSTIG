@@ -1,0 +1,336 @@
+{
+  "stig_id": "Oracle_Linux_9_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/oracle_linux_9.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/oracle_linux_9.json",
+  "total_rules": 25,
+  "rules": [
+    {
+      "vuln_id": "V-261600",
+      "rule_id": "V-261600_automatestig_check",
+      "classification": "automated",
+      "reason": "Oracle Linux 9 SSH must not allow direct root login",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261600",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261601",
+      "rule_id": "V-261601_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must not allow empty passwords",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261601",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261602",
+      "rule_id": "V-261602_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveInterval must be set",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261602",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261603",
+      "rule_id": "V-261603_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveCountMax must be 1 or less",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261603",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261604",
+      "rule_id": "V-261604_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH MaxAuthTries must be 4 or fewer",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261604",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261605",
+      "rule_id": "V-261605_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must display a login banner",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261605",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261606",
+      "rule_id": "V-261606_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH X11 forwarding must be disabled",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261606",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261610",
+      "rule_id": "V-261610_automatestig_check",
+      "classification": "automated",
+      "reason": "IP forwarding must be disabled",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261610",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261611",
+      "rule_id": "V-261611_automatestig_check",
+      "classification": "automated",
+      "reason": "Source-routed packets must not be accepted",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261611",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261612",
+      "rule_id": "V-261612_automatestig_check",
+      "classification": "automated",
+      "reason": "ICMP redirects must not be accepted",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261612",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261613",
+      "rule_id": "V-261613_automatestig_check",
+      "classification": "automated",
+      "reason": "System must not send ICMP redirects",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261613",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261614",
+      "rule_id": "V-261614_automatestig_check",
+      "classification": "automated",
+      "reason": "TCP SYN cookies must be enabled",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261614",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261615",
+      "rule_id": "V-261615_automatestig_check",
+      "classification": "automated",
+      "reason": "ASLR must be fully enabled",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261615",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261616",
+      "rule_id": "V-261616_automatestig_check",
+      "classification": "automated",
+      "reason": "Kernel message buffer must be restricted",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261616",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261620",
+      "rule_id": "V-261620_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/shadow must be mode 0000 and owned by root",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261620",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261621",
+      "rule_id": "V-261621_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/passwd must be mode 0644 and owned by root",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261621",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261622",
+      "rule_id": "V-261622_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/group must be mode 0644 and owned by root",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261622",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261623",
+      "rule_id": "V-261623_automatestig_check",
+      "classification": "automated",
+      "reason": "sshd_config must be mode 0600 and owned by root",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261623",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261630",
+      "rule_id": "V-261630_automatestig_check",
+      "classification": "automated",
+      "reason": "AIDE must be installed for file integrity checking",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261630",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261631",
+      "rule_id": "V-261631_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit package must be installed",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261631",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261632",
+      "rule_id": "V-261632_automatestig_check",
+      "classification": "automated",
+      "reason": "Firewalld must be installed",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261632",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261633",
+      "rule_id": "V-261633_automatestig_check",
+      "classification": "automated",
+      "reason": "Telnet server must not be installed",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261633",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261640",
+      "rule_id": "V-261640_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit daemon must be running",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261640",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261641",
+      "rule_id": "V-261641_automatestig_check",
+      "classification": "automated",
+      "reason": "Firewall must be active",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261641",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-261642",
+      "rule_id": "V-261642_automatestig_check",
+      "classification": "automated",
+      "reason": "SELinux must be set to enforcing mode",
+      "check_pack": "oracle_linux_9",
+      "check_id": "V-261642",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/oracle_linux_9.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

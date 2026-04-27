@@ -1,0 +1,206 @@
+{
+  "stig_id": "JBoss_EAP_7_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/jboss_eap_7.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/jboss_eap_7.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-241040",
+      "rule_id": "V-241040_automatestig_check",
+      "classification": "automated",
+      "reason": "JBoss must use TLS 1.2 for HTTPS connections",
+      "check_pack": "jboss_eap_7",
+      "check_id": "V-241040",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/jboss_eap_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-241041",
+      "rule_id": "V-241041_automatestig_check",
+      "classification": "automated",
+      "reason": "JBoss must have an SSL certificate configured",
+      "check_pack": "jboss_eap_7",
+      "check_id": "V-241041",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/jboss_eap_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-241042",
+      "rule_id": "V-241042_automatestig_check",
+      "classification": "automated",
+      "reason": "JBoss management audit logging must be enabled",
+      "check_pack": "jboss_eap_7",
+      "check_id": "V-241042",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/jboss_eap_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-241043",
+      "rule_id": "V-241043_automatestig_check",
+      "classification": "automated",
+      "reason": "JBoss must have access logging configured for web subsystem",
+      "check_pack": "jboss_eap_7",
+      "check_id": "V-241043",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/jboss_eap_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-241044",
+      "rule_id": "V-241044_automatestig_check",
+      "classification": "automated",
+      "reason": "JBoss management interface must use a security realm",
+      "check_pack": "jboss_eap_7",
+      "check_id": "V-241044",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/jboss_eap_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-241045",
+      "rule_id": "V-241045_automatestig_check",
+      "classification": "automated",
+      "reason": "JBoss application interface must use a security realm",
+      "check_pack": "jboss_eap_7",
+      "check_id": "V-241045",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/jboss_eap_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-241046",
+      "rule_id": "V-241046_automatestig_check",
+      "classification": "automated",
+      "reason": "JBoss HTTP management interface must be secured with a security realm",
+      "check_pack": "jboss_eap_7",
+      "check_id": "V-241046",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/jboss_eap_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-241047",
+      "rule_id": "V-241047_automatestig_check",
+      "classification": "automated",
+      "reason": "JBoss must not auto-deploy applications on startup",
+      "check_pack": "jboss_eap_7",
+      "check_id": "V-241047",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/jboss_eap_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-241048",
+      "rule_id": "V-241048_automatestig_check",
+      "classification": "automated",
+      "reason": "JBoss auto-deploy of exploded content must be disabled",
+      "check_pack": "jboss_eap_7",
+      "check_id": "V-241048",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/jboss_eap_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-241049",
+      "rule_id": "V-241049_automatestig_check",
+      "classification": "automated",
+      "reason": "JBoss auto-deploy of zipped content must be disabled",
+      "check_pack": "jboss_eap_7",
+      "check_id": "V-241049",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/jboss_eap_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-241050",
+      "rule_id": "V-241050_automatestig_check",
+      "classification": "automated",
+      "reason": "JBoss session timeout must be configured",
+      "check_pack": "jboss_eap_7",
+      "check_id": "V-241050",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/jboss_eap_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-241051",
+      "rule_id": "V-241051_automatestig_check",
+      "classification": "automated",
+      "reason": "JBoss session cookies must be HttpOnly",
+      "check_pack": "jboss_eap_7",
+      "check_id": "V-241051",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/jboss_eap_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-241052",
+      "rule_id": "V-241052_automatestig_check",
+      "classification": "automated",
+      "reason": "JBoss session cookies must be marked Secure",
+      "check_pack": "jboss_eap_7",
+      "check_id": "V-241052",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/jboss_eap_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-241053",
+      "rule_id": "V-241053_automatestig_check",
+      "classification": "automated",
+      "reason": "JBoss standalone.xml must be mode 0600 and owned by jboss user",
+      "check_pack": "jboss_eap_7",
+      "check_id": "V-241053",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/jboss_eap_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-241054",
+      "rule_id": "V-241054_automatestig_check",
+      "classification": "automated",
+      "reason": "JBoss must configure approved cipher suites",
+      "check_pack": "jboss_eap_7",
+      "check_id": "V-241054",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/jboss_eap_7.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

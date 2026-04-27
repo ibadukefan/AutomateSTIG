@@ -1,0 +1,531 @@
+{
+  "stig_id": "RHEL_7_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/rhel7.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/rhel7.json",
+  "total_rules": 40,
+  "rules": [
+    {
+      "vuln_id": "V-204392",
+      "rule_id": "V-204392_automatestig_check",
+      "classification": "automated",
+      "reason": "RHEL 7 SSH must not allow direct root login",
+      "check_pack": "rhel7",
+      "check_id": "V-204392",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204393",
+      "rule_id": "V-204393_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must not allow empty passwords",
+      "check_pack": "rhel7",
+      "check_id": "V-204393",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204394",
+      "rule_id": "V-204394_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveInterval must be set to 600 seconds or less",
+      "check_pack": "rhel7",
+      "check_id": "V-204394",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204395",
+      "rule_id": "V-204395_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveCountMax must be set to 0",
+      "check_pack": "rhel7",
+      "check_id": "V-204395",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204396",
+      "rule_id": "V-204396_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must display a DoD-approved banner before login",
+      "check_pack": "rhel7",
+      "check_id": "V-204396",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204397",
+      "rule_id": "V-204397_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must use protocol version 2",
+      "check_pack": "rhel7",
+      "check_id": "V-204397",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204398",
+      "rule_id": "V-204398_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH X11 forwarding must be disabled",
+      "check_pack": "rhel7",
+      "check_id": "V-204398",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204399",
+      "rule_id": "V-204399_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must use FIPS 140-2 compliant ciphers",
+      "check_pack": "rhel7",
+      "check_id": "V-204399",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204400",
+      "rule_id": "V-204400_automatestig_check",
+      "classification": "automated",
+      "reason": "IP forwarding must be disabled unless acting as a router",
+      "check_pack": "rhel7",
+      "check_id": "V-204400",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204401",
+      "rule_id": "V-204401_automatestig_check",
+      "classification": "automated",
+      "reason": "Source-routed packets must not be accepted",
+      "check_pack": "rhel7",
+      "check_id": "V-204401",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204402",
+      "rule_id": "V-204402_automatestig_check",
+      "classification": "automated",
+      "reason": "Default source route acceptance must be disabled",
+      "check_pack": "rhel7",
+      "check_id": "V-204402",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204403",
+      "rule_id": "V-204403_automatestig_check",
+      "classification": "automated",
+      "reason": "ICMP redirects must not be accepted",
+      "check_pack": "rhel7",
+      "check_id": "V-204403",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204404",
+      "rule_id": "V-204404_automatestig_check",
+      "classification": "automated",
+      "reason": "Default ICMP redirect acceptance must be disabled",
+      "check_pack": "rhel7",
+      "check_id": "V-204404",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204405",
+      "rule_id": "V-204405_automatestig_check",
+      "classification": "automated",
+      "reason": "System must not send ICMP redirects",
+      "check_pack": "rhel7",
+      "check_id": "V-204405",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204406",
+      "rule_id": "V-204406_automatestig_check",
+      "classification": "automated",
+      "reason": "Default ICMP redirect sending must be disabled",
+      "check_pack": "rhel7",
+      "check_id": "V-204406",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204407",
+      "rule_id": "V-204407_automatestig_check",
+      "classification": "automated",
+      "reason": "System must ignore ICMP broadcast echo requests",
+      "check_pack": "rhel7",
+      "check_id": "V-204407",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204408",
+      "rule_id": "V-204408_automatestig_check",
+      "classification": "automated",
+      "reason": "Reverse path filtering must be enabled",
+      "check_pack": "rhel7",
+      "check_id": "V-204408",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204409",
+      "rule_id": "V-204409_automatestig_check",
+      "classification": "automated",
+      "reason": "TCP SYN cookies must be enabled",
+      "check_pack": "rhel7",
+      "check_id": "V-204409",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204410",
+      "rule_id": "V-204410_automatestig_check",
+      "classification": "automated",
+      "reason": "ASLR must be fully enabled",
+      "check_pack": "rhel7",
+      "check_id": "V-204410",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204411",
+      "rule_id": "V-204411_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/shadow must be mode 0000 and owned by root",
+      "check_pack": "rhel7",
+      "check_id": "V-204411",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204412",
+      "rule_id": "V-204412_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/passwd must be mode 0644 and owned by root",
+      "check_pack": "rhel7",
+      "check_id": "V-204412",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204413",
+      "rule_id": "V-204413_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/group must be mode 0644 and owned by root",
+      "check_pack": "rhel7",
+      "check_id": "V-204413",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204414",
+      "rule_id": "V-204414_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/gshadow must be mode 0000 and owned by root",
+      "check_pack": "rhel7",
+      "check_id": "V-204414",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204415",
+      "rule_id": "V-204415_automatestig_check",
+      "classification": "automated",
+      "reason": "sshd_config must be mode 0600 and owned by root",
+      "check_pack": "rhel7",
+      "check_id": "V-204415",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204416",
+      "rule_id": "V-204416_automatestig_check",
+      "classification": "automated",
+      "reason": "auditd.conf must be mode 0640 and owned by root",
+      "check_pack": "rhel7",
+      "check_id": "V-204416",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204420",
+      "rule_id": "V-204420_automatestig_check",
+      "classification": "automated",
+      "reason": "Minimum password length must be 15 or more characters",
+      "check_pack": "rhel7",
+      "check_id": "V-204420",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204421",
+      "rule_id": "V-204421_automatestig_check",
+      "classification": "automated",
+      "reason": "Maximum password age must be 60 days or less",
+      "check_pack": "rhel7",
+      "check_id": "V-204421",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204422",
+      "rule_id": "V-204422_automatestig_check",
+      "classification": "automated",
+      "reason": "Minimum password age must be at least 1 day",
+      "check_pack": "rhel7",
+      "check_id": "V-204422",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204423",
+      "rule_id": "V-204423_automatestig_check",
+      "classification": "automated",
+      "reason": "Passwords must be hashed with SHA-512",
+      "check_pack": "rhel7",
+      "check_id": "V-204423",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204424",
+      "rule_id": "V-204424_automatestig_check",
+      "classification": "automated",
+      "reason": "Password quality must require minimum length of 15",
+      "check_pack": "rhel7",
+      "check_id": "V-204424",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204425",
+      "rule_id": "V-204425_automatestig_check",
+      "classification": "automated",
+      "reason": "Password quality must require at least one digit",
+      "check_pack": "rhel7",
+      "check_id": "V-204425",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204426",
+      "rule_id": "V-204426_automatestig_check",
+      "classification": "automated",
+      "reason": "Password quality must require at least one uppercase character",
+      "check_pack": "rhel7",
+      "check_id": "V-204426",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204427",
+      "rule_id": "V-204427_automatestig_check",
+      "classification": "automated",
+      "reason": "Password quality must require at least one lowercase character",
+      "check_pack": "rhel7",
+      "check_id": "V-204427",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204428",
+      "rule_id": "V-204428_automatestig_check",
+      "classification": "automated",
+      "reason": "Password quality must require at least one special character",
+      "check_pack": "rhel7",
+      "check_id": "V-204428",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204430",
+      "rule_id": "V-204430_automatestig_check",
+      "classification": "automated",
+      "reason": "AIDE must be installed for file integrity checking",
+      "check_pack": "rhel7",
+      "check_id": "V-204430",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204431",
+      "rule_id": "V-204431_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit package must be installed",
+      "check_pack": "rhel7",
+      "check_id": "V-204431",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204432",
+      "rule_id": "V-204432_automatestig_check",
+      "classification": "automated",
+      "reason": "Firewalld service must be running",
+      "check_pack": "rhel7",
+      "check_id": "V-204432",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204433",
+      "rule_id": "V-204433_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit daemon must be running",
+      "check_pack": "rhel7",
+      "check_id": "V-204433",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204434",
+      "rule_id": "V-204434_automatestig_check",
+      "classification": "automated",
+      "reason": "FIPS mode must be enabled",
+      "check_pack": "rhel7",
+      "check_id": "V-204434",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204435",
+      "rule_id": "V-204435_automatestig_check",
+      "classification": "automated",
+      "reason": "SELinux must be set to enforcing mode",
+      "check_pack": "rhel7",
+      "check_id": "V-204435",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel7.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,466 @@
+{
+  "stig_id": "Windows_Server_2016_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/windows_server_2016.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/windows_server_2016.json",
+  "total_rules": 35,
+  "rules": [
+    {
+      "vuln_id": "V-224820",
+      "rule_id": "V-224820_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Server 2016 must use TLS 1.2 (client-side enabled)",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224820",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224821",
+      "rule_id": "V-224821_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Server 2016 must use TLS 1.2 (server-side enabled)",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224821",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224822",
+      "rule_id": "V-224822_automatestig_check",
+      "classification": "automated",
+      "reason": "SSL 2.0 must be disabled on the server",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224822",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224823",
+      "rule_id": "V-224823_automatestig_check",
+      "classification": "automated",
+      "reason": "SSL 3.0 must be disabled on the server",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224823",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224824",
+      "rule_id": "V-224824_automatestig_check",
+      "classification": "automated",
+      "reason": "TLS 1.0 must be disabled",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224824",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224825",
+      "rule_id": "V-224825_automatestig_check",
+      "classification": "automated",
+      "reason": "TLS 1.1 must be disabled",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224825",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224830",
+      "rule_id": "V-224830_automatestig_check",
+      "classification": "automated",
+      "reason": "Minimum password length must be at least 14 characters",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224830",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224831",
+      "rule_id": "V-224831_automatestig_check",
+      "classification": "automated",
+      "reason": "Password complexity requirements must be enabled",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224831",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224832",
+      "rule_id": "V-224832_automatestig_check",
+      "classification": "automated",
+      "reason": "Minimum password age must be at least 1 day",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224832",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224833",
+      "rule_id": "V-224833_automatestig_check",
+      "classification": "automated",
+      "reason": "Maximum password age must not exceed 60 days",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224833",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224834",
+      "rule_id": "V-224834_automatestig_check",
+      "classification": "automated",
+      "reason": "Password history must enforce 24 passwords remembered",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224834",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224835",
+      "rule_id": "V-224835_automatestig_check",
+      "classification": "automated",
+      "reason": "Account lockout threshold must be 3 or fewer invalid attempts",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224835",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224836",
+      "rule_id": "V-224836_automatestig_check",
+      "classification": "automated",
+      "reason": "Account lockout counter reset must be at least 15 minutes",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224836",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224837",
+      "rule_id": "V-224837_automatestig_check",
+      "classification": "automated",
+      "reason": "Account lockout duration must be at least 15 minutes",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224837",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224838",
+      "rule_id": "V-224838_automatestig_check",
+      "classification": "automated",
+      "reason": "Reversible password encryption must be disabled",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224838",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224840",
+      "rule_id": "V-224840_automatestig_check",
+      "classification": "automated",
+      "reason": "User Account Control must be enabled",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224840",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224841",
+      "rule_id": "V-224841_automatestig_check",
+      "classification": "automated",
+      "reason": "UAC must prompt for consent on the secure desktop for admins",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224841",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224842",
+      "rule_id": "V-224842_automatestig_check",
+      "classification": "automated",
+      "reason": "UAC must switch to secure desktop when prompting for elevation",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224842",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224850",
+      "rule_id": "V-224850_automatestig_check",
+      "classification": "automated",
+      "reason": "LAN Manager authentication must be set to NTLMv2 only, refuse LM and NTLM",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224850",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224851",
+      "rule_id": "V-224851_automatestig_check",
+      "classification": "automated",
+      "reason": "LAN Manager hash value must not be stored",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224851",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224852",
+      "rule_id": "V-224852_automatestig_check",
+      "classification": "automated",
+      "reason": "Anonymous enumeration of SAM accounts must not be allowed",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224852",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224853",
+      "rule_id": "V-224853_automatestig_check",
+      "classification": "automated",
+      "reason": "Anonymous enumeration of shares must be restricted",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224853",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224860",
+      "rule_id": "V-224860_automatestig_check",
+      "classification": "automated",
+      "reason": "SMB server must digitally sign communications",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224860",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224861",
+      "rule_id": "V-224861_automatestig_check",
+      "classification": "automated",
+      "reason": "SMB server signing must be enabled",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224861",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224862",
+      "rule_id": "V-224862_automatestig_check",
+      "classification": "automated",
+      "reason": "SMB client must digitally sign communications",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224862",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224870",
+      "rule_id": "V-224870_automatestig_check",
+      "classification": "automated",
+      "reason": "WinRM service must not use Basic authentication",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224870",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224871",
+      "rule_id": "V-224871_automatestig_check",
+      "classification": "automated",
+      "reason": "WinRM client must not use Basic authentication",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224871",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224875",
+      "rule_id": "V-224875_automatestig_check",
+      "classification": "automated",
+      "reason": "Legal notice display before logon must be configured with a caption",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224875",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224876",
+      "rule_id": "V-224876_automatestig_check",
+      "classification": "automated",
+      "reason": "Legal notice display before logon must be configured with text",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224876",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224880",
+      "rule_id": "V-224880_automatestig_check",
+      "classification": "automated",
+      "reason": "PowerShell script block logging must be enabled",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224880",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224881",
+      "rule_id": "V-224881_automatestig_check",
+      "classification": "automated",
+      "reason": "PowerShell transcription must be enabled",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224881",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224885",
+      "rule_id": "V-224885_automatestig_check",
+      "classification": "automated",
+      "reason": "Domain member: digitally encrypt or sign secure channel data must be enabled",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224885",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224886",
+      "rule_id": "V-224886_automatestig_check",
+      "classification": "automated",
+      "reason": "Domain member: digitally encrypt secure channel data must be enabled",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224886",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224887",
+      "rule_id": "V-224887_automatestig_check",
+      "classification": "automated",
+      "reason": "Domain member: digitally sign secure channel data must be enabled",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224887",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-224890",
+      "rule_id": "V-224890_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Time service must be running",
+      "check_pack": "windows_server_2016",
+      "check_id": "V-224890",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_server_2016.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

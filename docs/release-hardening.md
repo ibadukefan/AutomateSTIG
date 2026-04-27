@@ -11,9 +11,11 @@ The CI release build job now:
 - builds Linux, Windows, and macOS CLI artifacts;
 - emits a SHA-256 checksum beside each uploaded artifact;
 - uploads a dependency inventory (`cargo metadata --locked`) as a lightweight audit artifact;
-- uploads a CycloneDX SBOM (`cargo cyclonedx`) for each target artifact;
-- uploads a provenance scaffold that ties each artifact to repository, ref, commit SHA, workflow, run ID, run attempt, and SBOM filename;
-- fails upload if an expected artifact, checksum, SBOM scaffold, or provenance scaffold is missing;
+- uploads a CycloneDX SBOM for each target artifact;
+- uploads a provenance scaffold that ties each artifact to repository, ref, commit SHA, workflow, run ID, run attempt, target triple, and SBOM artifact;
+- generates GitHub artifact attestations through OIDC;
+- generates keyless Sigstore signature bundles for release binaries with cosign;
+
 - limits transient CI artifact retention to 14 days.
 
 ## Not yet sufficient for production release claims

@@ -1,0 +1,206 @@
+{
+  "stig_id": "Google_Chrome_Linux_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/google_chrome_linux.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/google_chrome_linux.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-290001",
+      "rule_id": "V-290001_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrome autoplay must be disabled",
+      "check_pack": "google_chrome_linux",
+      "check_id": "V-290001",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/google_chrome_linux.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-290002",
+      "rule_id": "V-290002_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrome must block pop-ups by default",
+      "check_pack": "google_chrome_linux",
+      "check_id": "V-290002",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/google_chrome_linux.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-290003",
+      "rule_id": "V-290003_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrome password manager must be disabled",
+      "check_pack": "google_chrome_linux",
+      "check_id": "V-290003",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/google_chrome_linux.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-290004",
+      "rule_id": "V-290004_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrome autofill for addresses must be disabled",
+      "check_pack": "google_chrome_linux",
+      "check_id": "V-290004",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/google_chrome_linux.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-290005",
+      "rule_id": "V-290005_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrome autofill for credit cards must be disabled",
+      "check_pack": "google_chrome_linux",
+      "check_id": "V-290005",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/google_chrome_linux.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-290006",
+      "rule_id": "V-290006_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrome minimum SSL version must be set to TLS 1.2",
+      "check_pack": "google_chrome_linux",
+      "check_id": "V-290006",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/google_chrome_linux.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-290007",
+      "rule_id": "V-290007_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrome Safe Browsing must be enabled",
+      "check_pack": "google_chrome_linux",
+      "check_id": "V-290007",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/google_chrome_linux.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-290008",
+      "rule_id": "V-290008_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrome metrics reporting must be disabled",
+      "check_pack": "google_chrome_linux",
+      "check_id": "V-290008",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/google_chrome_linux.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-290009",
+      "rule_id": "V-290009_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrome browser sign-in must be disabled",
+      "check_pack": "google_chrome_linux",
+      "check_id": "V-290009",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/google_chrome_linux.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-290010",
+      "rule_id": "V-290010_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrome sync must be disabled",
+      "check_pack": "google_chrome_linux",
+      "check_id": "V-290010",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/google_chrome_linux.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-290011",
+      "rule_id": "V-290011_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrome must block geolocation by default",
+      "check_pack": "google_chrome_linux",
+      "check_id": "V-290011",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/google_chrome_linux.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-290012",
+      "rule_id": "V-290012_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrome must block notifications by default",
+      "check_pack": "google_chrome_linux",
+      "check_id": "V-290012",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/google_chrome_linux.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-290013",
+      "rule_id": "V-290013_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrome search suggestions must be disabled",
+      "check_pack": "google_chrome_linux",
+      "check_id": "V-290013",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/google_chrome_linux.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-290014",
+      "rule_id": "V-290014_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrome must block third-party cookies",
+      "check_pack": "google_chrome_linux",
+      "check_id": "V-290014",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/google_chrome_linux.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-290015",
+      "rule_id": "V-290015_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrome incognito mode must be disabled",
+      "check_pack": "google_chrome_linux",
+      "check_id": "V-290015",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/google_chrome_linux.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}
