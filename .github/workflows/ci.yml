@@ -74,8 +74,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+      - run: python3 -m unittest discover -s scripts/disa_corpus/tests -v
+      - run: python3 scripts/disa_corpus/index_disa_downloads.py --seed-only --output /tmp/disa-download-index.json
       - run: python3 scripts/validate-all-coverage.py --repo-root .
       - run: python3 scripts/validate-authorized-fixtures.py fixtures/authorized/manifest.example.json --repo-root .
+      - run: python3 scripts/validate-authorized-fixtures.py content/disa-corpus/artifacts.manifest.json --repo-root .
+      - run: python3 scripts/validate-rule-implementations.py --coverage-root content/coverage/disa-authoritative --implementation-root content/rule-implementations
       - run: python3 scripts/validate-external-workflows.py --repo-root .
       - run: python3 scripts/run-live-external-acceptance.py --repo-root .
 

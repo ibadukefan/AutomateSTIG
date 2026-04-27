@@ -1,6 +1,8 @@
 # AutomateSTIG Evaluate-STIG Replacement Readiness
 
-AutomateSTIG should claim "Evaluate-STIG replacement" status only for capabilities backed by automated tests, sanitized fixtures, and rule-by-rule coverage manifests.
+AutomateSTIG should claim "Evaluate-STIG replacement" status only for capabilities backed by automated tests, sanitized fixtures, live acceptance where applicable, and rule-by-rule coverage manifests.
+
+The long-term product target is defined in [disa-100-percent-automation-charter.md](disa-100-percent-automation-charter.md): every current public DISA STIG rule must have a non-unsupported automation path before broad 100% replacement claims are made.
 
 ## Readiness Levels
 

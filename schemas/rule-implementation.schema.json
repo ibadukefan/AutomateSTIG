@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "vuln_id",
+    "rule_id",
+    "stig_id",
+    "classification",
+    "evidence_fields",
+    "fixtures"
+  ],
+  "properties": {
+    "vuln_id": {
+      "type": "string"
+    },
+    "rule_id": {
+      "type": "string"
+    },
+    "stig_id": {
+      "type": "string"
+    },
+    "classification": {
+      "enum": [
+        "automated",
+        "scanner_import",
+        "manual",
+        "not_applicable"
+      ]
+    },
+    "platform_family": {
+      "type": "string"
+    },
+    "collector_type": {
+      "type": "string"
+    },
+    "collector_commands": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "normalizer": {
+      "type": "string"
+    },
+    "evaluator": {
+      "type": "string"
+    },
+    "expected_values": {
+      "type": "object"
+    },
+    "evidence_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "na_conditions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "remediation": {
+      "type": "string"
+    },
+    "fixtures": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "external_acceptance_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}
