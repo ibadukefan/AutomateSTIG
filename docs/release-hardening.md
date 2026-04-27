@@ -10,8 +10,9 @@ The CI release build job now:
 - uses least-privilege default workflow permissions (`contents: read`);
 - builds Linux, Windows, and macOS CLI artifacts;
 - emits a SHA-256 checksum beside each uploaded artifact;
-- uploads a dependency inventory (`cargo metadata --locked`) as a lightweight SBOM scaffold;
-- uploads a provenance scaffold that ties each artifact to repository, ref, commit SHA, workflow, run ID, and run attempt;
+- uploads a dependency inventory (`cargo metadata --locked`) as a lightweight audit artifact;
+- uploads a CycloneDX SBOM (`cargo cyclonedx`) for each target artifact;
+- uploads a provenance scaffold that ties each artifact to repository, ref, commit SHA, workflow, run ID, run attempt, and SBOM filename;
 - fails upload if an expected artifact, checksum, SBOM scaffold, or provenance scaffold is missing;
 - limits transient CI artifact retention to 14 days.
 
@@ -21,7 +22,7 @@ Before AutomateSTIG claims production-ready replacement releases, add and valida
 
 1. signed release artifacts using a documented signing identity;
 2. SLSA/in-toto provenance or an equivalent attestation mechanism;
-3. SBOM generation and publication for each release artifact;
+3. publication and operator validation of the generated SBOM for each release artifact;
 4. SHA-pinned third-party GitHub Actions or an approved dependency-pinning policy;
 5. release workflow permissions scoped per job rather than only top-level read-only defaults;
 6. documented release verification instructions for operators in disconnected or DoD/STIG-adjacent environments;

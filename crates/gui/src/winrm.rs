@@ -72,8 +72,7 @@ pub async fn execute_powershell(
         }
     }
 
-    let scheme = if config.use_https { "https" } else { "http" };
-    let url = format!("{}://{}:{}/wsman", scheme, config.host, config.port);
+    let url = winrm_endpoint(config);
 
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(config.timeout_secs))
@@ -82,7 +81,7 @@ pub async fn execute_powershell(
         .map_err(|e| format!("HTTP client error: {}", e))?;
 
     // WinRM SOAP envelope for command execution.
-    let soap_body = build_winrm_soap_envelope(command, &config.host);
+    let soap_body = build_winrm_soap_envelope(command, &url);
 
     let response = client
         .post(&url)
@@ -168,8 +167,13 @@ pub async fn collect_windows_data(config: &WinrmConfig) -> Result<HashMap<String
     execute_commands(config, &commands).await
 }
 
+fn winrm_endpoint(config: &WinrmConfig) -> String {
+    let scheme = if config.use_https { "https" } else { "http" };
+    format!("{}://{}:{}/wsman", scheme, config.host, config.port)
+}
+
 /// Build a WinRM SOAP envelope for PowerShell command execution.
-fn build_winrm_soap_envelope(command: &str, host: &str) -> String {
+fn build_winrm_soap_envelope(command: &str, endpoint: &str) -> String {
     // Encode the PowerShell command as base64 for the -EncodedCommand parameter.
     let utf16_command: Vec<u8> = command
         .encode_utf16()
@@ -184,7 +188,7 @@ fn build_winrm_soap_envelope(command: &str, host: &str) -> String {
             xmlns:wsman="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"
             xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell">
   <s:Header>
-    <wsa:To>http://{host}:5985/wsman</wsa:To>
+    <wsa:To>{endpoint}</wsa:To>
     <wsman:ResourceURI>http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd</wsman:ResourceURI>
     <wsa:Action>http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Command</wsa:Action>
     <wsman:OperationTimeout>PT60S</wsman:OperationTimeout>
@@ -195,7 +199,7 @@ fn build_winrm_soap_envelope(command: &str, host: &str) -> String {
     </rsp:CommandLine>
   </s:Body>
 </s:Envelope>"#,
-        host = host,
+        endpoint = endpoint,
         encoded = encoded,
     )
 }
@@ -365,9 +369,20 @@ mod tests {
 
     #[test]
     fn test_soap_envelope_generation() {
-        let soap = build_winrm_soap_envelope("Get-Service", "10.0.1.50");
+        let config = WinrmConfig {
+            host: "10.0.1.50".to_string(),
+            port: 5986,
+            username: "Administrator".to_string(),
+            password: "[REDACTED]".to_string(),
+            use_https: true,
+            verify_tls: true,
+            timeout_secs: 30,
+        };
+        let endpoint = winrm_endpoint(&config);
+        let soap = build_winrm_soap_envelope("Get-Service", &endpoint);
         assert!(soap.contains("EncodedCommand"));
-        assert!(soap.contains("10.0.1.50"));
+        assert!(soap.contains("https://10.0.1.50:5986/wsman"));
+        assert!(!soap.contains("http://10.0.1.50:5985/wsman"));
     }
 
     #[test]

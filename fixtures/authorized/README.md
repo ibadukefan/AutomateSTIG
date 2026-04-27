@@ -19,7 +19,7 @@ This directory defines how AutomateSTIG proves compatibility with real DISA/SCC/
 python3 scripts/validate-authorized-fixtures.py fixtures/authorized/manifest.example.json --repo-root .
 ```
 
-The included `manifest.example.json` records the current sanitized scaffold fixtures only. It is useful for testing the harness, but it is **not** evidence of production replacement readiness.
+The included `manifest.example.json` now records both sanitized scaffold fixtures and official public DISA Cyber Exchange ZIPs for Windows Server 2022 V2R8 and RHEL 8 V2R7. The public DISA ZIPs are authorized benchmark fixtures for rule-inventory validation; sanitized SCC/OpenSCAP/CKL/CKLB fixtures still remain harness fixtures rather than production evidence from representative target systems.
 
 ## Production claim rule
 

@@ -76,7 +76,10 @@ jobs:
       - run: cargo run -p automatestig -- coverage validate --manifest content/coverage/rhel8.example.json
       - run: cargo run -p automatestig -- coverage validate --manifest content/coverage/windows_server_2022.full.json
       - run: cargo run -p automatestig -- coverage validate --manifest content/coverage/rhel8.full.json
+      - run: cargo run -p automatestig -- coverage validate --manifest content/coverage/windows_server_2022.disa-v2r8.json
+      - run: cargo run -p automatestig -- coverage validate --manifest content/coverage/rhel8.disa-v2r7.json
       - run: python3 scripts/validate-authorized-fixtures.py fixtures/authorized/manifest.example.json --repo-root .
+      - run: python3 scripts/validate-external-workflows.py --repo-root .
 
   dependency-audit:
     name: Dependency audit
@@ -112,11 +115,15 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: cargo build --release --bin automatestig
-      - name: Generate SBOM and provenance scaffold
+      - name: Generate formal SBOM, dependency inventory, and provenance scaffold
         shell: bash
         run: |
           mkdir -p target/release/provenance
           cargo metadata --locked --format-version 1 > target/release/provenance/cargo-metadata-${{ matrix.target }}.json
+          python3 scripts/generate-cyclonedx-sbom.py \
+            --metadata target/release/provenance/cargo-metadata-${{ matrix.target }}.json \
+            --output target/release/provenance/automatestig-${{ matrix.target }}.cdx.json \
+            --target ${{ matrix.target }}
           cat > target/release/provenance/provenance-${{ matrix.target }}.json <<EOF
           {
             "artifact": "${{ matrix.artifact }}",
@@ -126,7 +133,8 @@ jobs:
             "sha": "${{ github.sha }}",
             "workflow": "${{ github.workflow }}",
             "run_id": "${{ github.run_id }}",
-            "run_attempt": "${{ github.run_attempt }}"
+            "run_attempt": "${{ github.run_attempt }}",
+            "sbom": "automatestig-${{ matrix.target }}.cdx.json"
           }
           EOF
       - name: Generate SHA-256 checksum
@@ -145,6 +153,7 @@ jobs:
             target/release/${{ matrix.artifact }}
             target/release/${{ matrix.artifact }}.sha256
             target/release/provenance/cargo-metadata-${{ matrix.target }}.json
+            target/release/provenance/automatestig-${{ matrix.target }}.cdx.json
             target/release/provenance/provenance-${{ matrix.target }}.json
           retention-days: 14
           if-no-files-found: error

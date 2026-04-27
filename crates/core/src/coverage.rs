@@ -114,6 +114,13 @@ fn validate_coverage_manifest_internal(manifest: &CoverageManifest) -> CoverageV
             ),
         );
     }
+    if manifest.status == CoverageStatus::Production && manifest.generated_from.is_none() {
+        push_issue(
+            &mut report,
+            "generated_from",
+            "production coverage requires an authoritative generated_from benchmark fixture",
+        );
+    }
 
     let mut seen_vulns = HashSet::new();
     let mut seen_rules = HashSet::new();
@@ -210,6 +217,23 @@ fn validate_coverage_manifest_internal(manifest: &CoverageManifest) -> CoverageV
                 "unsupported rules require a tracking_issue",
             );
         }
+    }
+
+    if manifest.status == CoverageStatus::Production
+        && manifest.rules.iter().any(|rule| {
+            rule.evidence_required
+                && (rule.validated_by.is_empty()
+                    || rule
+                        .validated_by
+                        .iter()
+                        .any(|reference| reference.trim().is_empty()))
+        })
+    {
+        push_issue(
+            &mut report,
+            "rules[].validated_by",
+            "production coverage requires evidence references for every evidence-required rule",
+        );
     }
 
     report
@@ -430,6 +454,37 @@ mod tests {
             .issues
             .iter()
             .any(|i| i.message.contains("tracking_issue")));
+    }
+
+    #[test]
+    fn rejects_production_manifest_without_authoritative_fixture_and_rule_evidence() {
+        let manifest = parse_coverage_manifest(
+            r#"{
+              "stig_id": "Example_STIG",
+              "version": "1",
+              "source": "unit test",
+              "status": "production",
+              "total_rules": 1,
+              "rules": [
+                {
+                  "vuln_id": "V-1",
+                  "rule_id": "SV-1_rule",
+                  "classification": "manual",
+                  "reason": "manual workflow needs evidence"
+                }
+              ]
+            }"#,
+        )
+        .unwrap();
+
+        let report = validate_coverage_manifest(&manifest);
+
+        assert!(!report.is_valid());
+        assert!(report.issues.iter().any(|i| i.field == "generated_from"));
+        assert!(report
+            .issues
+            .iter()
+            .any(|i| i.field == "rules[].validated_by"));
     }
 
     #[test]

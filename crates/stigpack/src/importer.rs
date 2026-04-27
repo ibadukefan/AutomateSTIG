@@ -10,6 +10,10 @@ use crate::signing::TrustStore;
 use crate::verifier::{verify_pack, verify_pack_with_trust};
 use crate::{StigpackError, StigpackResult};
 
+const MAX_STIGPACK_ENTRIES: usize = 1_000;
+const MAX_STIGPACK_UNCOMPRESSED_BYTES: u64 = 256 * 1024 * 1024;
+const MAX_STIGPACK_MEMBER_BYTES: u64 = 50 * 1024 * 1024;
+
 /// Import result with details about what was imported.
 #[derive(Debug)]
 pub struct ImportResult {
@@ -85,6 +89,7 @@ fn import_pack_with_verification(
     // Step 3: Extract and import.
     let file = std::fs::File::open(pack_path)?;
     let mut archive = zip::ZipArchive::new(file)?;
+    validate_archive_resource_limits(&mut archive)?;
 
     // Read manifest.
     let manifest = {
@@ -211,6 +216,39 @@ fn validate_pack_member_path(relative: &str) -> StigpackResult<()> {
                     relative
                 )));
             }
+        }
+    }
+    Ok(())
+}
+
+fn validate_archive_resource_limits(
+    archive: &mut zip::ZipArchive<std::fs::File>,
+) -> StigpackResult<()> {
+    if archive.len() > MAX_STIGPACK_ENTRIES {
+        return Err(StigpackError::ManifestError(format!(
+            ".stigpack contains {} entries, exceeding limit of {}",
+            archive.len(),
+            MAX_STIGPACK_ENTRIES
+        )));
+    }
+
+    let mut total_uncompressed = 0u64;
+    for idx in 0..archive.len() {
+        let file = archive.by_index(idx).map_err(StigpackError::Zip)?;
+        validate_pack_member_path(file.name())?;
+        if file.size() > MAX_STIGPACK_MEMBER_BYTES {
+            return Err(StigpackError::ManifestError(format!(
+                ".stigpack member exceeds {} byte limit: {}",
+                MAX_STIGPACK_MEMBER_BYTES,
+                file.name()
+            )));
+        }
+        total_uncompressed = total_uncompressed.saturating_add(file.size());
+        if total_uncompressed > MAX_STIGPACK_UNCOMPRESSED_BYTES {
+            return Err(StigpackError::ManifestError(format!(
+                ".stigpack uncompressed size exceeds {} byte limit",
+                MAX_STIGPACK_UNCOMPRESSED_BYTES
+            )));
         }
     }
     Ok(())
