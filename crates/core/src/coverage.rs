@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
@@ -73,6 +74,19 @@ pub fn parse_coverage_manifest(json: &str) -> Result<CoverageManifest, serde_jso
 }
 
 pub fn validate_coverage_manifest(manifest: &CoverageManifest) -> CoverageValidationReport {
+    validate_coverage_manifest_internal(manifest)
+}
+
+pub fn validate_coverage_manifest_with_content_root(
+    manifest: &CoverageManifest,
+    content_root: &Path,
+) -> CoverageValidationReport {
+    let mut report = validate_coverage_manifest_internal(manifest);
+    validate_content_references(manifest, content_root, &mut report);
+    report
+}
+
+fn validate_coverage_manifest_internal(manifest: &CoverageManifest) -> CoverageValidationReport {
     let mut report = CoverageValidationReport {
         total_rules: manifest.rules.len(),
         automated: 0,
@@ -199,6 +213,131 @@ pub fn validate_coverage_manifest(manifest: &CoverageManifest) -> CoverageValida
     }
 
     report
+}
+
+fn validate_content_references(
+    manifest: &CoverageManifest,
+    content_root: &Path,
+    report: &mut CoverageValidationReport,
+) {
+    if let Some(generated_from) = manifest.generated_from.as_deref() {
+        if generated_from.trim().is_empty() {
+            push_issue(
+                report,
+                "generated_from",
+                "generated_from must not be blank when present",
+            );
+        } else if !content_root.join(generated_from).is_file() {
+            push_issue(
+                report,
+                "generated_from",
+                &format!(
+                    "generated_from does not exist under content root: {}",
+                    generated_from
+                ),
+            );
+        }
+    }
+
+    for (idx, rule) in manifest.rules.iter().enumerate() {
+        let prefix = format!("rules[{}]", idx);
+        if rule.classification == RuleCoverageClassification::Automated {
+            if let Some(check_pack) = rule.check_pack.as_deref() {
+                validate_check_pack_reference(rule, check_pack, content_root, report, &prefix);
+            }
+        }
+        for reference in &rule.validated_by {
+            validate_evidence_reference(reference, content_root, report, &prefix);
+        }
+    }
+}
+
+fn validate_check_pack_reference(
+    rule: &CoverageRule,
+    check_pack: &str,
+    content_root: &Path,
+    report: &mut CoverageValidationReport,
+    prefix: &str,
+) {
+    let path = content_root
+        .join("content")
+        .join("check_packs")
+        .join(format!("{}.json", check_pack.trim()));
+    if !path.is_file() {
+        push_issue(
+            report,
+            &format!("{}.check_pack", prefix),
+            &format!("check_pack file does not exist: {}", path.display()),
+        );
+        return;
+    }
+
+    let Ok(json) = std::fs::read_to_string(&path) else {
+        push_issue(
+            report,
+            &format!("{}.check_pack", prefix),
+            &format!("check_pack file is not readable: {}", path.display()),
+        );
+        return;
+    };
+    let Ok(value) = serde_json::from_str::<serde_json::Value>(&json) else {
+        push_issue(
+            report,
+            &format!("{}.check_pack", prefix),
+            &format!("check_pack file is not valid JSON: {}", path.display()),
+        );
+        return;
+    };
+    let has_vuln = value
+        .get("checks")
+        .and_then(|checks| checks.as_array())
+        .map(|checks| {
+            checks.iter().any(|check| {
+                check
+                    .get("vuln_id")
+                    .and_then(|v| v.as_str())
+                    .map(|v| v.trim() == rule.vuln_id.trim())
+                    .unwrap_or(false)
+            })
+        })
+        .unwrap_or(false);
+    if !has_vuln {
+        push_issue(
+            report,
+            &format!("{}.check_pack", prefix),
+            &format!(
+                "check_pack does not contain vuln_id {}",
+                rule.vuln_id.trim()
+            ),
+        );
+    }
+}
+
+fn validate_evidence_reference(
+    reference: &str,
+    content_root: &Path,
+    report: &mut CoverageValidationReport,
+    prefix: &str,
+) {
+    let reference = reference.trim();
+    if let Some(path) = reference.strip_prefix("fixture:") {
+        let path = match path {
+            "xccdf" => "fixtures/disa-xccdf",
+            "scc-results" => "fixtures/scc-results",
+            "openscap-results" => "fixtures/openscap-results",
+            "ckl" => "fixtures/ckl",
+            "cklb" => "fixtures/cklb",
+            other => other,
+        };
+        let full_path = content_root.join(path);
+        if !(full_path.is_file() || full_path.is_dir()) {
+            push_issue(
+                report,
+                &format!("{}.validated_by", prefix),
+                &format!("fixture evidence reference does not exist: {}", path),
+            );
+        }
+    }
 }
 
 impl CoverageValidationReport {

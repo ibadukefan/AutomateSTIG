@@ -2124,6 +2124,10 @@ struct WebhookTestRequest {
 }
 
 async fn test_webhook(Json(req): Json<WebhookTestRequest>) -> Json<serde_json::Value> {
+    if let Err(e) = validate_webhook_url(&req.url) {
+        return api_error(&e);
+    }
+
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(10))
         .build()
@@ -2157,6 +2161,10 @@ async fn test_webhook(Json(req): Json<WebhookTestRequest>) -> Json<serde_json::V
 /// Send a webhook notification (used internally by the scheduler).
 #[allow(dead_code)] // Called by scheduler when implemented.
 pub async fn send_webhook_notification(url: &str, event: &str, data: &serde_json::Value) {
+    if validate_webhook_url(url).is_err() {
+        return;
+    }
+
     let client = match reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(10))
         .build()
@@ -2173,6 +2181,57 @@ pub async fn send_webhook_notification(url: &str, event: &str, data: &serde_json
     });
 
     let _ = client.post(url).json(&payload).send().await;
+}
+
+fn validate_webhook_url(url: &str) -> Result<(), String> {
+    let parsed = reqwest::Url::parse(url).map_err(|e| format!("Invalid webhook URL: {}", e))?;
+    if parsed.scheme() != "https" {
+        return Err("Webhook URL must use HTTPS".to_string());
+    }
+    if !parsed.username().is_empty() || parsed.password().is_some() {
+        return Err("Webhook URL must not include embedded credentials".to_string());
+    }
+    let host = parsed
+        .host_str()
+        .ok_or_else(|| "Webhook URL must include a host".to_string())?;
+    if host.eq_ignore_ascii_case("localhost") || host.ends_with(".localhost") {
+        return Err("Webhook URL must not target localhost".to_string());
+    }
+    if let Ok(ip) = host
+        .trim_start_matches('[')
+        .trim_end_matches(']')
+        .parse::<std::net::IpAddr>()
+    {
+        let allow_private = std::env::var("AUTOMATESTIG_ALLOW_PRIVATE_WEBHOOKS")
+            .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
+            .unwrap_or(false);
+        if !allow_private && !is_public_ip(ip) {
+            return Err(
+                "Webhook URL resolves to a non-public address; set AUTOMATESTIG_ALLOW_PRIVATE_WEBHOOKS only for trusted lab deployments"
+                    .to_string(),
+            );
+        }
+    }
+    Ok(())
+}
+
+fn is_public_ip(ip: std::net::IpAddr) -> bool {
+    match ip {
+        std::net::IpAddr::V4(ip) => {
+            !(ip.is_private()
+                || ip.is_loopback()
+                || ip.is_link_local()
+                || ip.is_broadcast()
+                || ip.is_documentation()
+                || ip.octets()[0] == 0)
+        }
+        std::net::IpAddr::V6(ip) => {
+            !(ip.is_loopback()
+                || ip.is_unspecified()
+                || ip.is_unique_local()
+                || ip.is_unicast_link_local())
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -2708,3 +2767,31 @@ async fn export_all_zip(State(state): State<AppState>) -> impl IntoResponse {
 }
 
 use axum::response::IntoResponse;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn webhook_validation_rejects_ssrf_targets_by_default() {
+        for url in [
+            "http://example.com/hook",
+            "https://localhost/hook",
+            "https://127.0.0.1/hook",
+            "https://10.0.0.1/hook",
+            "https://[::1]/hook",
+            "https://user:pass@example.com/hook",
+        ] {
+            assert!(
+                validate_webhook_url(url).is_err(),
+                "{url} should be rejected"
+            );
+        }
+    }
+
+    #[test]
+    fn webhook_validation_allows_https_public_hosts() {
+        assert!(validate_webhook_url("https://example.com/hook").is_ok());
+        assert!(validate_webhook_url("https://8.8.8.8/hook").is_ok());
+    }
+}

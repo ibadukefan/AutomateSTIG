@@ -1,7 +1,7 @@
 //! Stigpack importer — extracts and imports .stigpack content into the STIG library.
 
 use std::io::Read;
-use std::path::Path;
+use std::path::{Component, Path};
 
 use automatestig_core::library::StigLibrary;
 use automatestig_core::models::stig::StigBenchmark;
@@ -108,6 +108,7 @@ fn import_pack_with_verification(
 
     // Import benchmarks.
     for path in manifest.files.keys() {
+        validate_pack_member_path(path)?;
         if path.starts_with("benchmarks/") && path.ends_with(".json") {
             match read_zip_file(&mut archive, path) {
                 Ok(content) => {
@@ -178,25 +179,48 @@ fn import_pack_with_verification(
 /// Safely join a path from a ZIP entry onto a root, preventing path traversal.
 /// Returns None if the resolved path would escape the root directory.
 fn safe_join_path(root: &Path, relative: &str) -> Option<std::path::PathBuf> {
-    // Reject paths containing ".." components or absolute paths.
-    if relative.contains("..") || relative.starts_with('/') || relative.starts_with('\\') {
-        return None;
-    }
+    validate_pack_member_path(relative).ok()?;
     let dest = root.join(relative);
-    // Canonicalize-style check: ensure the resolved path starts with root.
-    // Since the directories may not exist yet, we check component-by-component.
-    let root_canonical = root.to_path_buf();
-    if dest.starts_with(&root_canonical) {
+    if dest.starts_with(root) {
         Some(dest)
     } else {
         None
     }
 }
 
+fn validate_pack_member_path(relative: &str) -> StigpackResult<()> {
+    if relative.trim().is_empty() || relative.contains('\\') || relative.contains('\0') {
+        return Err(StigpackError::ManifestError(format!(
+            "unsafe .stigpack member path: {}",
+            relative
+        )));
+    }
+    let path = Path::new(relative);
+    if path.is_absolute() {
+        return Err(StigpackError::ManifestError(format!(
+            "absolute .stigpack member paths are not allowed: {}",
+            relative
+        )));
+    }
+    for component in path.components() {
+        match component {
+            Component::Normal(part) if !part.is_empty() => {}
+            _ => {
+                return Err(StigpackError::ManifestError(format!(
+                    "unsafe .stigpack member path: {}",
+                    relative
+                )));
+            }
+        }
+    }
+    Ok(())
+}
+
 fn read_zip_file(
     archive: &mut zip::ZipArchive<std::fs::File>,
     name: &str,
 ) -> StigpackResult<Vec<u8>> {
+    validate_pack_member_path(name)?;
     let mut file = archive
         .by_name(name)
         .map_err(|_| StigpackError::MissingFile(name.to_string()))?;
@@ -243,6 +267,25 @@ mod tests {
                 remediation_ids: vec![],
             }],
         }
+    }
+
+    #[test]
+    fn rejects_unsafe_pack_member_paths() {
+        for path in [
+            "",
+            "/absolute/file",
+            "../escape.json",
+            "benchmarks/../../escape.json",
+            "benchmarks\\evil.json",
+            "benchmarks/evil\0.json",
+        ] {
+            assert!(
+                validate_pack_member_path(path).is_err(),
+                "{path} should be rejected"
+            );
+            assert!(safe_join_path(Path::new("/tmp/stiglib"), path).is_none());
+        }
+        assert!(validate_pack_member_path("benchmarks/Test_STIG.json").is_ok());
     }
 
     #[test]

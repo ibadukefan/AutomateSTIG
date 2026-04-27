@@ -1,7 +1,9 @@
 use std::path::Path;
 
 use anyhow::{Context, Result};
-use automatestig_core::coverage::{parse_coverage_manifest, validate_coverage_manifest};
+use automatestig_core::coverage::{
+    parse_coverage_manifest, validate_coverage_manifest_with_content_root,
+};
 
 use crate::ui;
 
@@ -20,7 +22,8 @@ pub fn validate(manifest_path: &str) -> Result<()> {
         .with_context(|| format!("Failed to read coverage manifest: {}", manifest_path))?;
     let manifest =
         parse_coverage_manifest(&content).context("Failed to parse coverage manifest")?;
-    let report = validate_coverage_manifest(&manifest);
+    let content_root = std::env::current_dir().context("Failed to determine content root")?;
+    let report = validate_coverage_manifest_with_content_root(&manifest, &content_root);
 
     ui::info("STIG", &manifest.stig_id);
     ui::info("Version", &manifest.version);
