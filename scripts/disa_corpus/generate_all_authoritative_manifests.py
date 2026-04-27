@@ -7,14 +7,50 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from extract_xccdf_inventory import extract
 
 def norm(s): return re.sub(r'[^a-z0-9]+','_',s.lower()).strip('_') or 'unknown'
+
+def _repo_rel(repo: Path, path: Path) -> str:
+    try:
+        return str(path.relative_to(repo)).replace('\\','/')
+    except ValueError:
+        return str(path).replace('\\','/')
+
+def _load_candidate_evidence(repo: Path) -> dict[str, set[str]]:
+    evidence: dict[str, set[str]] = {}
+    root = repo/'fixtures/generated-candidate-evidence'
+    for p in root.rglob('*.json') if root.exists() else []:
+        data=json.loads(p.read_text())
+        if data.get('status') != 'fixture_validated_candidates':
+            continue
+        if data.get('candidate_checks') != data.get('validated_candidates'):
+            continue
+        source=data.get('source_check_pack','')
+        source_path=Path(source)
+        if source_path.is_absolute():
+            rel=_repo_rel(repo, source_path)
+        else:
+            rel=str(source_path).replace('\\','/')
+        evidence[rel]={case.get('vuln_id','') for case in data.get('cases',[]) if case.get('vuln_id')}
+    return evidence
+
 def load_check_ids(repo):
     ids={}
-    for p in (repo/'content/check_packs').glob('*.json'):
+    evidence=_load_candidate_evidence(repo)
+    check_root=repo/'content/check_packs'
+    for p in check_root.rglob('*.json') if check_root.exists() else []:
+        rel=_repo_rel(repo,p)
+        generated_candidate='generated-candidates/' in rel
+        validated_vulns=evidence.get(rel,set())
+        if generated_candidate and not validated_vulns:
+            continue
         data=json.loads(p.read_text())
         for c in data.get('checks',[]):
             check_id = c.get('id') or c.get('vuln_id') or ''
-            if check_id:
-                ids.setdefault(check_id, p.stem)
+            if not check_id:
+                continue
+            if generated_candidate and check_id not in validated_vulns:
+                continue
+            check_pack_ref = rel.removeprefix('content/check_packs/').removesuffix('.json')
+            ids.setdefault(check_id, {'name': check_pack_ref, 'path': rel, 'fixture_validated': generated_candidate})
     return ids
 
 def manifest_from_inventory(inv, fixture_path, check_ids):
@@ -22,8 +58,13 @@ def manifest_from_inventory(inv, fixture_path, check_ids):
     for r in inv['rules']:
         vuln=r['vuln_id']; pack=check_ids.get(vuln)
         if pack:
-            cls='automated'; reason='Mapped to existing AutomateSTIG check definition.'; validated=[f'content/check_packs/{pack}.json', fixture_path]
-            check_pack=pack; check_id=vuln; issue=''
+            cls='automated'
+            if pack.get('fixture_validated'):
+                reason='Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.'
+            else:
+                reason='Mapped to existing AutomateSTIG check definition.'
+            validated=[pack['path'], fixture_path]
+            check_pack=pack['name']; check_id=vuln; issue=''
         else:
             cls='unsupported'; reason='Authoritative DISA rule inventory item pending automation classification and implementation.'; validated=[fixture_path]
             check_pack=''; check_id=''; issue=f'TODO-{vuln}'

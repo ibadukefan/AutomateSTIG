@@ -19,11 +19,15 @@
   "collector_type": "windows_collector",
   "evaluator": "candidate_template",
   "evidence_fields": [
-    "rule_id",
-    "vuln_id",
-    "status",
+    "candidate_check",
+    "deterministic_fixture_evidence",
     "evidence",
-    "source_artifact"
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
   ],
   "expected_values": {
     "type": "equals",
@@ -31,8 +35,10 @@
   },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> System >> Device Guard >> Turn On Virtualization Based Security to \"Enabled\" with \"Enabled with UEFI lock\" selected for \"Credential Guard Configuration\".\n\nA Microsoft article on Credential Guard system requirement can be found at the following link:\n\nhttps://docs.microsoft.com/en-us/windows/security/identity-protection/credential-guard/credential-guard-requirements\n\nSeverity Override Guidance: The AO can allow the severity override if they have reviewed the overall protection provided to the affected servers that are not capable of complying with the Credential Guard requirement. Items that must be reviewed/considered for compliance or mitigation for non-Credential Guard compliance are:\n\nThe use of Microsoft Local Administrator Password Solution (LAPS) or similar products to control different local administrative passwords for all affected servers. This is to include a strict password change requirement (60 days or less).\n....\nStrict separation of roles and duties. Server administrator credentials cannot be used on Windows 10 desktop to administer it. Documentation of all exceptions must be supplied.\n....\nUse of a Privileged Access Workstation (PAW) and adherence to the Clean Source principle for administering affected servers. \n....\nBoundary Protection that is currently in place to protect from vulnerabilities in the network/servers.\n....\nWindows Defender rule block credential stealing from LSASS.exe is applied. This rule can only be applied if Windows Defender is in use.\n....\nThe overall number of vulnerabilities that are unmitigated on the network/servers.",
-  "fixtures": [],
-  "implementation_status": "planned",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/ms_windows_server_2022_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
   "na_conditions": [],
   "normalizer": "registry",
   "remediation": "planned",
@@ -43,6 +49,6 @@
   "source_version": "U_MS_Windows_Server_2022_V2R8_STIG.zip",
   "stig_id": "MS_Windows_Server_2022_STIG",
   "title": "Windows Server 2022 must be running Credential Guard on domain-joined member servers.",
-  "tracking_issue": "TODO-V-254441",
+  "tracking_issue": "",
   "vuln_id": "V-254441"
 }

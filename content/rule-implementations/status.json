@@ -1,18 +1,12 @@
 {
-  "candidate_check": {
-    "registry": 94,
-    "windows_feature": 2
-  },
-  "classification": {
-    "automated": 951,
-    "manual": 86
-  },
-  "collector_type": {
-    "linux_collector": 543,
-    "manual_evidence_workflow": 86,
-    "platform_collector": 1,
-    "windows_collector": 407
-  },
-  "total_candidate_checks": 96,
-  "total_planned_specs": 1037
+  "authoritative_rules": 1148,
+  "automated_authoritative_rules_after_candidate_promotion": 207,
+  "candidate_fixture_evidence_root": "fixtures/generated-candidate-evidence",
+  "generated_specs": 1037,
+  "implemented_fixture_validated_candidate_specs": 96,
+  "planned_automated_specs": 951,
+  "planned_manual_workflows": 86,
+  "remaining_planned_specs": 941,
+  "schema_version": "1.0",
+  "unsupported_authoritative_rules_after_candidate_promotion": 941
 }

@@ -20,21 +20,26 @@ Completed factory layers:
 - initial authoritative DISA manifests for Windows Server 2022 and RHEL 8 manual/SCAP artifacts;
 - corpus indexing/fetch/extraction/diff scripts;
 - scheduled corpus freshness workflow;
-- generated per-rule implementation backlog specs for every currently unsupported authoritative DISA rule.
-- conservative candidate check-template extraction from authoritative DISA prose for registry and Windows Feature patterns.
+- generated per-rule implementation backlog specs for every currently unsupported authoritative DISA rule;
+- conservative candidate check-template extraction from authoritative DISA prose for registry and Windows Feature patterns;
+- deterministic pass/fail fixture evidence for the first Windows Server candidate check pack;
+- fixture-backed promotion of those candidates into experimental authoritative coverage without claiming live-asset production validation.
 
 Current authoritative corpus tracked in-repo:
 
 - authoritative rules: 1,148
-- mapped to existing automated checks: 111
-- generated planned specs for unsupported rules: 1,037
-- planned automated implementations: 951
+- mapped automated checks after fixture-backed candidate promotion: 207
+  - existing automated checks: 111
+  - generated Windows Server candidate checks with deterministic pass/fail fixture evidence: 96
+- remaining unsupported authoritative rules: 941
+- generated planned specs for remaining unsupported rules: 941
+- planned automated implementations remaining: 855
 - planned manual-evidence workflows: 86
-- generated candidate executable checks requiring fixture validation: 96
+- candidate executable checks promoted to `implemented` with fixture evidence: 96
   - registry candidates: 94
   - Windows Feature candidates: 2
 
-The next burn-down phase is to validate the 96 candidate checks with fixtures, regenerate authoritative coverage for those rules as implemented, and then continue expanding the Linux and Windows prose-to-template extractors. Reusable Windows and Linux collector families remain the high-leverage implementation path because they cover 950 of the 1,037 planned specs in the current corpus.
+The next burn-down phase is to infer and fixture-validate additional reusable templates, starting with Linux/RHEL sysctl, package, service, file-content, auditd, sshd, and PAM patterns, while adding live-asset validation before claiming any candidate as production validated. Reusable Windows and Linux collector families remain the high-leverage implementation path because they cover most remaining planned specs in the current corpus.
 
 ## Immediate next implementation sequence
 

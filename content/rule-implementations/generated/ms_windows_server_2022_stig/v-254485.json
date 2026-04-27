@@ -19,11 +19,15 @@
   "collector_type": "windows_collector",
   "evaluator": "candidate_template",
   "evidence_fields": [
-    "rule_id",
-    "vuln_id",
-    "status",
+    "candidate_check",
+    "deterministic_fixture_evidence",
     "evidence",
-    "source_artifact"
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
   ],
   "expected_values": {
     "type": "equals",
@@ -31,8 +35,10 @@
   },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> User Account Control: Behavior of the elevation prompt for standard users to \"Automatically deny elevation requests\".",
-  "fixtures": [],
-  "implementation_status": "planned",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/ms_windows_server_2022_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
   "na_conditions": [],
   "normalizer": "registry",
   "remediation": "planned",
@@ -43,6 +49,6 @@
   "source_version": "U_MS_Windows_Server_2022_V2R8_STIG.zip",
   "stig_id": "MS_Windows_Server_2022_STIG",
   "title": "Windows Server 2022 User Account Control (UAC) must automatically deny standard user requests for elevation.",
-  "tracking_issue": "TODO-V-254485",
+  "tracking_issue": "",
   "vuln_id": "V-254485"
 }

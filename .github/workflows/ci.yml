@@ -82,6 +82,8 @@ jobs:
       - run: python3 scripts/validate-authorized-fixtures.py content/disa-corpus/artifacts.manifest.json --repo-root .
       - run: python3 scripts/validate-rule-implementations.py --coverage-root content/coverage/disa-authoritative --implementation-root content/rule-implementations
       - run: python3 scripts/disa_corpus/generate_candidate_check_packs.py --implementation-root content/rule-implementations/generated --out /tmp/automatestig-candidate-check-packs
+      - run: python3 scripts/disa_corpus/generate_candidate_fixture_evidence.py --candidate-root content/check_packs/generated-candidates --out /tmp/automatestig-candidate-evidence
+      - run: python3 scripts/disa_corpus/generate_all_authoritative_manifests.py --corpus content/disa-corpus/artifacts.manifest.json --out /tmp/automatestig-authoritative-coverage --repo-root .
       - run: python3 scripts/validate-external-workflows.py --repo-root .
       - run: python3 scripts/run-live-external-acceptance.py --repo-root .
 
