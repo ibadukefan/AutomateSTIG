@@ -168,6 +168,67 @@ mod integration {
     }
 
     #[test]
+    fn test_xccdf_scanner_evidence_survives_evaluation_and_ckl_cklb_export() {
+        let benchmark_xml =
+            include_str!("../../../fixtures/disa-xccdf/windows_server_2022_sanitized_xccdf.xml");
+        let benchmark = xccdf::parse_xccdf_benchmark_str(benchmark_xml).unwrap();
+        let scan_xml = r#"<?xml version="1.0" encoding="UTF-8"?>
+<Benchmark xmlns="http://checklists.nist.gov/xccdf/1.2">
+  <TestResult id="scc_result_1" test-system="cpe:/a:disa:scc:5.7">
+    <target>sanitized-win2022.example.test</target>
+    <profile>MAC-2_Sensitive</profile>
+    <rule-result idref="SV-254239r958388_rule">
+      <result>fail</result>
+      <message severity="info">Registry value HKLM\Example\Tls12 was missing.</message>
+      <check system="urn:xccdf:check:system:script">
+        <check-content-ref href="scc-results.xml" name="SV-254239r958388_rule" />
+        <check-content>reg query HKLM\Example\Tls12 returned not found</check-content>
+      </check>
+    </rule-result>
+  </TestResult>
+</Benchmark>"#;
+        let scan = xccdf::parse_xccdf_results_str(scan_xml).unwrap();
+        let asset = Asset::new("sanitized-win2022.example.test");
+        let engine = EvaluationEngine::with_defaults();
+        let checklist = engine
+            .evaluate(&benchmark, &asset, Some(&scan), &[])
+            .unwrap();
+
+        let finding = checklist.find_by_vuln_id("V-254239").unwrap();
+        assert_eq!(finding.status, FindingStatus::Open);
+        assert_eq!(finding.source, FindingSource::SccScan);
+        assert!(finding
+            .finding_details
+            .contains("Registry value HKLM\\Example\\Tls12 was missing"));
+        assert!(finding
+            .finding_details
+            .contains("check-content-ref: href=scc-results.xml name=SV-254239r958388_rule"));
+        assert!(finding
+            .finding_details
+            .contains("check-content: reg query HKLM\\Example\\Tls12 returned not found"));
+        assert!(finding.comments.contains("Scanner: SCC"));
+        assert!(finding
+            .comments
+            .contains("Target: sanitized-win2022.example.test"));
+        assert!(finding.comments.contains("Profile: MAC-2_Sensitive"));
+        assert!(finding.comments.contains("Raw result: fail"));
+
+        let ckl = ckl::parse_ckl(&ckl::write_ckl(&checklist).unwrap()).unwrap();
+        let ckl_finding = ckl.find_by_vuln_id("V-254239").unwrap();
+        assert!(ckl_finding
+            .finding_details
+            .contains("Registry value HKLM\\Example\\Tls12 was missing"));
+        assert!(ckl_finding.comments.contains("Scanner: SCC"));
+
+        let cklb = cklb::parse_cklb(&cklb::write_cklb(&checklist).unwrap()).unwrap();
+        let cklb_finding = cklb.find_by_vuln_id("V-254239").unwrap();
+        assert!(cklb_finding
+            .finding_details
+            .contains("Registry value HKLM\\Example\\Tls12 was missing"));
+        assert!(cklb_finding.comments.contains("Scanner: SCC"));
+    }
+
+    #[test]
     fn test_evaluation_with_no_scan_all_not_reviewed() {
         let benchmark = make_benchmark("RHEL_9_STIG", 20);
         let asset = Asset::new("linuxbox");

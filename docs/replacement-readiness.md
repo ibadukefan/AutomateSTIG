@@ -37,6 +37,8 @@ AutomateSTIG should claim "Evaluate-STIG replacement" status only for capabiliti
 
 AutomateSTIG may be called a **validated Evaluate-STIG replacement** only for platforms and workflows listed as `Production` in this matrix and backed by CI artifacts.
 
+Production release claims also require the controls in [release-hardening.md](release-hardening.md): signed artifacts, checksums, SBOMs, provenance/attestation, and documented operator verification.
+
 Until then, public wording should say:
 
 > AutomateSTIG is being built as a validated Evaluate-STIG replacement. Supported replacement-ready platforms and workflows are listed in the readiness matrix.

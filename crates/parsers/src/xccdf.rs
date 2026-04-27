@@ -334,7 +334,12 @@ pub fn parse_xccdf_results_str(xml: &str) -> ParseResult<ScanResultSet> {
 
                 if in_rule_result && current_tag == "result" {
                     current_result = text;
-                } else if in_rule_result && matches!(current_tag.as_str(), "message" | "instance") {
+                } else if in_rule_result
+                    && matches!(
+                        current_tag.as_str(),
+                        "message" | "instance" | "check-content"
+                    )
+                {
                     let text = text.trim();
                     if !text.is_empty() {
                         current_evidence.push(format!("{}: {}", current_tag, text));

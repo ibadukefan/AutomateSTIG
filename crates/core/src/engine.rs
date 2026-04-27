@@ -144,6 +144,8 @@ impl EvaluationEngine {
                         finding.evidence = Some(evidence.clone());
                     }
 
+                    finding.comments = build_scan_provenance_comment(results, result);
+
                     if self.config.mark_automated {
                         finding.evaluated_by = self.config.evaluated_by.clone();
                     }
@@ -264,6 +266,47 @@ impl EvaluationEngine {
         }
         current.touch();
         Ok(())
+    }
+}
+
+fn build_scan_provenance_comment(results: &ScanResultSet, result: &ScanResult) -> String {
+    let mut lines = Vec::new();
+    lines.push(format!(
+        "Scanner: {}",
+        scanner_label(results.source.scanner)
+    ));
+    if let Some(version) = &results.source.scanner_version {
+        lines.push(format!("Scanner version: {version}"));
+    }
+    if let Some(scan_date) = results.source.scan_date {
+        lines.push(format!("Scan date: {scan_date}"));
+    }
+    if let Some(source_file) = &results.source.source_file {
+        lines.push(format!("Source file: {source_file}"));
+    }
+    if let Some(target) = &results.source.target {
+        lines.push(format!("Target: {target}"));
+    }
+    if let Some(profile) = &results.source.profile {
+        lines.push(format!("Profile: {profile}"));
+    }
+    if let Some(benchmark_ref) = &result.benchmark_ref {
+        lines.push(format!("Benchmark: {benchmark_ref}"));
+    }
+    lines.push(format!("Rule reference: {}", result.rule_ref));
+    lines.push(format!("Raw result: {}", result.raw_result));
+    lines.join("\n")
+}
+
+fn scanner_label(scanner: ScannerType) -> &'static str {
+    match scanner {
+        ScannerType::Scc => "SCC",
+        ScannerType::Acas => "ACAS",
+        ScannerType::OpenScap => "OpenSCAP",
+        ScannerType::ConfigDump => "Config dump",
+        ScannerType::EvaluateStig => "Evaluate-STIG",
+        ScannerType::AutomateStig => "AutomateSTIG",
+        ScannerType::Other => "Other",
     }
 }
 
