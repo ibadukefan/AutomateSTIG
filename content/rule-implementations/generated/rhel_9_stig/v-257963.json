@@ -1,0 +1,53 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "net.ipv4.conf.default.accept_redirects",
+      "type": "sysctl"
+    },
+    "description": "RHEL 9 must prevent IPv4 Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257963"
+  },
+  "check_content_excerpt": "Verify RHEL 9 will not accept IPv4 ICMP redirect messages.\n\nCheck the value of the default \"accept_redirects\" variables with the following command:\n\n$ sudo sysctl net.ipv4.conf.default.accept_redirects\n\nnet.ipv4.conf.default.accept_redirects = 0\n\nIf the returned line does not have a value of \"0\", a line is not returned, or the line is commented out, this is a finding.\n\nCheck that the configuration files are present to enable this network parameter.\n\n$ sudo /usr/lib/systemd/systemd-sysctl --cat-config | egrep -v '^(#|;)' | grep -F net.ipv4.conf.default.accept_redirects | tail -1\n\nnet.ipv4.conf.default.accept_redirects = 0\n\nIf \"net.ipv4.conf.default.accept_redirects\" is not set to \"0\" or is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 9 to prevent IPv4 ICMP redirect messages from being accepted.\n\nAdd or edit the following line in a single system configuration file, in the \"/etc/sysctl.d/\" directory:\n\nnet.ipv4.conf.default.accept_redirects = 0\n\nLoad settings from all system configuration files with the following command:\n\n$ sudo sysctl --system",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_9_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-257963r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must prevent IPv4 Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+  "tracking_issue": "TODO-V-257963",
+  "vuln_id": "V-257963"
+}

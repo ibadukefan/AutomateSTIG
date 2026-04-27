@@ -1,23 +1,45 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/modprobe.d/",
+      "pattern": "cramfs",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must disable mounting of cramfs.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230498"
+  },
   "check_content_excerpt": "Verify the operating system disables the ability to load the cramfs kernel module and ensure that the cramfs kernel module is disabled with the following command:\n\n$ sudo grep -r cramfs /etc/modprobe.d/* | grep \"blacklist\"\n\n/etc/modprobe.d/blacklist.conf:install cramfs /bin/false\n/etc/modprobe.d/blacklist.conf:blacklist cramfs\n\nIf the command does not return any output, or the line is commented out, and use of the cramfs protocol is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
-    "rule_id",
-    "vuln_id",
-    "status",
+    "candidate_check",
+    "deterministic_fixture_evidence",
     "evidence",
-    "source_artifact"
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to disable the ability to use the cramfs kernel module.\n\nAdd or update the following lines in the file \"/etc/modprobe.d/blacklist.conf\":\n\n     install cramfs /bin/false\n     blacklist cramfs\n\nReboot the system for the settings to take effect.",
-  "fixtures": [],
-  "implementation_status": "planned",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230498r1069314_rule",
   "severity": "low",

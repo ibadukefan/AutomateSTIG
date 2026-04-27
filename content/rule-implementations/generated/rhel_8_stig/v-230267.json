@@ -1,23 +1,45 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "fs.protected_symlinks",
+      "type": "sysctl"
+    },
+    "description": "RHEL 8 must enable kernel parameters to enforce discretionary access control on symlinks.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230267"
+  },
   "check_content_excerpt": "Verify RHEL 8 is configured to enable DAC on symlinks.\n\nCheck the status of the \"fs.protected_symlinks\" kernel parameter with the following command:\n\n$ sudo sysctl fs.protected_symlinks\nfs.protected_symlinks = 1\n\nIf \"fs.protected_symlinks\" is not set to \"1\" or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
-    "rule_id",
-    "vuln_id",
-    "status",
+    "candidate_check",
+    "deterministic_fixture_evidence",
     "evidence",
-    "source_artifact"
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 8 to enable DAC on symlinks with the following:\n\nCreate a drop-in if it does not already exist:\n\n$ sudo vi /etc/sysctl.d/99-fs_protected_symlinks.conf\n\nAdd the following to the file:\nfs.protected_symlinks = 1\n\nReload settings from all system configuration files with the following command:\n\n$ sudo sysctl --system",
-  "fixtures": [],
-  "implementation_status": "planned",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "sysctl",
   "remediation": "planned",
   "rule_id": "SV-230267r1184249_rule",
   "severity": "medium",

@@ -1,0 +1,1449 @@
+{
+  "checks": [
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel",
+        "type": "registry",
+        "value_name": "DisableExceptionChainValidation"
+      },
+      "description": "Structured Exception Handling Overwrite Protection (SEHOP) must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253284"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10",
+        "type": "registry",
+        "value_name": "Start"
+      },
+      "description": "The Server Message Block (SMB) v1 protocol must be disabled on the SMB client.",
+      "expected": {
+        "type": "equals",
+        "value": 4
+      },
+      "platform": "windows",
+      "vuln_id": "V-253288"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application",
+        "type": "registry",
+        "value_name": "MaxSize"
+      },
+      "description": "The Application event log size must be configured to 32768 KB or greater.",
+      "expected": {
+        "type": "equals",
+        "value": 32768
+      },
+      "platform": "windows",
+      "vuln_id": "V-253337"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security",
+        "type": "registry",
+        "value_name": "MaxSize"
+      },
+      "description": "The Security event log size must be configured to 1024000 KB or greater.",
+      "expected": {
+        "type": "equals",
+        "value": 1024000
+      },
+      "platform": "windows",
+      "vuln_id": "V-253338"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System",
+        "type": "registry",
+        "value_name": "MaxSize"
+      },
+      "description": "The System event log size must be configured to 32768 KB or greater.",
+      "expected": {
+        "type": "equals",
+        "value": 32768
+      },
+      "platform": "windows",
+      "vuln_id": "V-253339"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization",
+        "type": "registry",
+        "value_name": "NoLockScreenCamera"
+      },
+      "description": "Camera access from the lock screen must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253350"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization",
+        "type": "registry",
+        "value_name": "NoLockScreenSlideshow"
+      },
+      "description": "The display of slide shows on the lock screen must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253352"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters",
+        "type": "registry",
+        "value_name": "DisableIpSourceRouting"
+      },
+      "description": "IPv6 source routing must be configured to highest protection.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-253353"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters",
+        "type": "registry",
+        "value_name": "DisableIPSourceRouting"
+      },
+      "description": "The system must be configured to prevent IP source routing.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-253354"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters",
+        "type": "registry",
+        "value_name": "EnableICMPRedirect"
+      },
+      "description": "The system must be configured to prevent Internet Control Message Protocol (ICMP) redirects from overriding Open Shortest Path First (OSPF) generated routes.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253355"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netbt\\Parameters",
+        "type": "registry",
+        "value_name": "NoNameReleaseOnDemand"
+      },
+      "description": "The system must be configured to ignore NetBIOS name release requests except from WINS servers.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253356"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "LocalAccountTokenFilterPolicy"
+      },
+      "description": "Local administrator accounts must have their privileged token filtered to prevent elevated privileges from being used over the network on domain systems.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253357"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\Wdigest",
+        "type": "registry",
+        "value_name": "UseLogonCredential"
+      },
+      "description": "WDigest Authentication must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253358"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation",
+        "type": "registry",
+        "value_name": "AllowInsecureGuestAuth"
+      },
+      "description": "Insecure logons to an SMB server must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253360"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Network Connections",
+        "type": "registry",
+        "value_name": "NC_ShowSharedAccessUI"
+      },
+      "description": "Internet connection sharing must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253361"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy",
+        "type": "registry",
+        "value_name": "fMinimizeConnections"
+      },
+      "description": "Simultaneous connections to the internet or a Windows domain must be limited.",
+      "expected": {
+        "type": "equals",
+        "value": 3
+      },
+      "platform": "windows",
+      "vuln_id": "V-253364"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy",
+        "type": "registry",
+        "value_name": "fBlockNonDomain"
+      },
+      "description": "Connections to non-domain networks when connected to a domain authenticated network must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253365"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\WcmSvc\\wifinetworkmanager\\config",
+        "type": "registry",
+        "value_name": "AutoConnectAllowedOEM"
+      },
+      "description": "Wi-Fi Sense must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253366"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit",
+        "type": "registry",
+        "value_name": "ProcessCreationIncludeCmdLine_Enabled"
+      },
+      "description": "Command line data must be included in process creation events.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253367"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CredentialsDelegation",
+        "type": "registry",
+        "value_name": "AllowProtectedCreds"
+      },
+      "description": "Windows 11 must be configured to enable Remote host allows delegation of non-exportable credentials.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253368"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard",
+        "type": "registry",
+        "value_name": "EnableVirtualizationBasedSecurity"
+      },
+      "description": "Virtualization-based Security must be enabled on Windows 11 with the platform security level configured to Secure Boot or Secure Boot with DMA Protection.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253369"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard",
+        "type": "registry",
+        "value_name": "LsaCfgFlags"
+      },
+      "description": "Credential Guard must be running on Windows 11 domain-joined systems.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253370"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard",
+        "type": "registry",
+        "value_name": "HypervisorEnforcedCodeIntegrity"
+      },
+      "description": "Virtualization-based protection of code integrity must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253371"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch",
+        "type": "registry",
+        "value_name": "DriverLoadPolicy"
+      },
+      "description": "Early Launch Antimalware, Boot-Start Driver Initialization Policy must prevent boot drivers.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253372"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Group Policy\\{35378EAC-683F-11D2-A89A-00C04FBBCFA2}",
+        "type": "registry",
+        "value_name": "NoGPOListChanges"
+      },
+      "description": "Group Policy objects must be reprocessed even if they have not changed.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253373"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers",
+        "type": "registry",
+        "value_name": "DisableWebPnPDownload"
+      },
+      "description": "Downloading print driver packages over HTTP must be prevented.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253374"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+        "type": "registry",
+        "value_name": "NoWebServices"
+      },
+      "description": "Web publishing and online ordering wizards must be prevented from downloading a list of providers.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253375"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers",
+        "type": "registry",
+        "value_name": "DisableHTTPPrinting"
+      },
+      "description": "Printing over HTTP must be prevented.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253376"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters",
+        "type": "registry",
+        "value_name": "DevicePKInitEnabled"
+      },
+      "description": "Systems must at least attempt device authentication using certificates.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253377"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "type": "registry",
+        "value_name": "DontDisplayNetworkSelectionUI"
+      },
+      "description": "The network selection user interface (UI) must not be displayed on the logon screen.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253378"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "type": "registry",
+        "value_name": "EnumerateLocalUsers"
+      },
+      "description": "Local users on domain-joined computers must not be enumerated.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253379"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51",
+        "type": "registry",
+        "value_name": "DCSettingIndex"
+      },
+      "description": "Users must be prompted for a password on resume from sleep (on battery).",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253380"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51",
+        "type": "registry",
+        "value_name": "ACSettingIndex"
+      },
+      "description": "The user must be prompted for a password on resume from sleep (plugged in).",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253381"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "fAllowToGetHelp"
+      },
+      "description": "Solicited Remote Assistance must not be allowed.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253382"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc",
+        "type": "registry",
+        "value_name": "RestrictRemoteClients"
+      },
+      "description": "Unauthenticated RPC clients must be restricted from connecting to the RPC server.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253383"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "MSAOptional"
+      },
+      "description": "The setting to allow Microsoft accounts to be optional for modern style apps must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253384"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat",
+        "type": "registry",
+        "value_name": "DisableInventory"
+      },
+      "description": "The Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253385"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer",
+        "type": "registry",
+        "value_name": "NoAutoplayfornonVolume"
+      },
+      "description": "Autoplay must be turned off for non-volume devices.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253386"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+        "type": "registry",
+        "value_name": "NoAutorun"
+      },
+      "description": "The default autorun behavior must be configured to prevent autorun commands.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253387"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\policies\\Explorer",
+        "type": "registry",
+        "value_name": "NoDriveTypeAutoRun"
+      },
+      "description": "Autoplay must be disabled for all drives.",
+      "expected": {
+        "type": "equals",
+        "value": 255
+      },
+      "platform": "windows",
+      "vuln_id": "V-253388"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Biometrics\\FacialFeatures",
+        "type": "registry",
+        "value_name": "EnhancedAntiSpoofing"
+      },
+      "description": "Enhanced anti-spoofing for facial recognition must be enabled on Windows 11.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253389"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent",
+        "type": "registry",
+        "value_name": "DisableWindowsConsumerFeatures"
+      },
+      "description": "Microsoft consumer experiences must be turned off.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253390"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI",
+        "type": "registry",
+        "value_name": "EnumerateAdministrators"
+      },
+      "description": "Administrator accounts must not be enumerated during elevation.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253391"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+        "type": "registry",
+        "value_name": "LimitEnhancedDiagnosticDataWindowsAnalytics"
+      },
+      "description": "Enhanced diagnostic data must be limited to the minimum required to support Windows Analytics.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253392"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+        "type": "registry",
+        "value_name": "AllowTelemetry"
+      },
+      "description": "Windows Telemetry must not be configured to Full.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253393"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization",
+        "type": "registry",
+        "value_name": "DODownloadMode"
+      },
+      "description": "Windows Update must not obtain updates from other PCs on the internet.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253394"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "type": "registry",
+        "value_name": "EnableSmartScreen"
+      },
+      "description": "The Microsoft Defender SmartScreen for Explorer must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253395"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer",
+        "type": "registry",
+        "value_name": "NoDataExecutionPrevention"
+      },
+      "description": "Explorer Data Execution Prevention must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253396"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer",
+        "type": "registry",
+        "value_name": "NoHeapTerminationOnCorruption"
+      },
+      "description": "File Explorer heap termination on corruption must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253397"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+        "type": "registry",
+        "value_name": "PreXPSP2ShellProtocolBehavior"
+      },
+      "description": "File Explorer shell protocol must run in protected mode.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253398"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR",
+        "type": "registry",
+        "value_name": "AllowGameDVR"
+      },
+      "description": "Windows 11 must be configured to disable Windows Game Recording and Broadcasting.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253399"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\PassportForWork",
+        "type": "registry",
+        "value_name": "RequireSecurityDevice"
+      },
+      "description": "The use of a hardware security device with Windows Hello for Business must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253400"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\PassportForWork\\PINComplexity",
+        "type": "registry",
+        "value_name": "MinimumPINLength"
+      },
+      "description": "Windows 11 must be configured to require a minimum pin length of six characters or greater.",
+      "expected": {
+        "type": "equals",
+        "value": 6
+      },
+      "platform": "windows",
+      "vuln_id": "V-253401"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "DisablePasswordSaving"
+      },
+      "description": "Passwords must not be saved in the Remote Desktop Client.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253402"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "fDisableCdm"
+      },
+      "description": "Local drives must be prevented from sharing with Remote Desktop Session Hosts.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253403"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "fPromptForPassword"
+      },
+      "description": "Remote Desktop Services must always prompt a client for passwords upon connection.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253404"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "fEncryptRPCTraffic"
+      },
+      "description": "The Remote Desktop Session Host must require secure RPC communications.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253405"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "MinEncryptionLevel"
+      },
+      "description": "Remote Desktop Services must be configured with the client connection encryption set to the required level.",
+      "expected": {
+        "type": "equals",
+        "value": 3
+      },
+      "platform": "windows",
+      "vuln_id": "V-253406"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds",
+        "type": "registry",
+        "value_name": "DisableEnclosureDownload"
+      },
+      "description": "Attachments must be prevented from being downloaded from RSS feeds.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253407"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds",
+        "type": "registry",
+        "value_name": "AllowBasicAuthInClear"
+      },
+      "description": "Basic authentication for RSS feeds over HTTP must not be used.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253408"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search",
+        "type": "registry",
+        "value_name": "AllowIndexingEncryptedStoresOrItems"
+      },
+      "description": "Indexing of encrypted files must be turned off.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253409"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription",
+        "type": "registry",
+        "value_name": "EnableTranscripting"
+      },
+      "description": "PowerShell Transcription must be enabled on Windows 11.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253415"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client",
+        "type": "registry",
+        "value_name": "AllowBasic"
+      },
+      "description": "The Windows Remote Management (WinRM) client must not use Basic authentication.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253416"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client",
+        "type": "registry",
+        "value_name": "AllowUnencryptedTraffic"
+      },
+      "description": "The Windows Remote Management (WinRM) client must not allow unencrypted traffic.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253417"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service",
+        "type": "registry",
+        "value_name": "AllowBasic"
+      },
+      "description": "The Windows Remote Management (WinRM) service must not use Basic authentication.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253418"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service",
+        "type": "registry",
+        "value_name": "AllowUnencryptedTraffic"
+      },
+      "description": "The Windows Remote Management (WinRM) service must not allow unencrypted traffic.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253419"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "LimitBlankPasswordUse"
+      },
+      "description": "Local accounts with blank passwords must be restricted to prevent access from the network.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253434"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "SCENoApplyLegacyAuditPolicy"
+      },
+      "description": "Audit policy using subcategories must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253437"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "RequireSignOrSeal"
+      },
+      "description": "Outgoing secure channel traffic must be encrypted or signed.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253438"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "SealSecureChannel"
+      },
+      "description": "Outgoing secure channel traffic must be encrypted.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253439"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "SignSecureChannel"
+      },
+      "description": "Outgoing secure channel traffic must be signed.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253440"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "DisablePasswordChange"
+      },
+      "description": "The computer account password must not be prevented from being reset.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253441"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "MaximumPasswordAge"
+      },
+      "description": "The maximum age for machine account passwords must be configured to 30 days or less.",
+      "expected": {
+        "type": "equals",
+        "value": 30
+      },
+      "platform": "windows",
+      "vuln_id": "V-253442"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "RequireStrongKey"
+      },
+      "description": "The system must be configured to require a strong session key.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253443"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "InactivityTimeoutSecs"
+      },
+      "description": "The machine inactivity limit must be set to 15 minutes, locking the system with the screensaver.",
+      "expected": {
+        "type": "equals",
+        "value": 900
+      },
+      "platform": "windows",
+      "vuln_id": "V-253444"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon",
+        "type": "registry",
+        "value_name": "CachedLogonsCount"
+      },
+      "description": "Caching of logon credentials must be limited.",
+      "expected": {
+        "type": "equals",
+        "value": 10
+      },
+      "platform": "windows",
+      "vuln_id": "V-253447"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon",
+        "type": "registry",
+        "value_name": "SCRemoveOption"
+      },
+      "description": "The Smart Card removal option must be configured to Force Logoff or Lock Workstation.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253448"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters",
+        "type": "registry",
+        "value_name": "RequireSecuritySignature"
+      },
+      "description": "The Windows SMB client must be configured to always perform SMB packet signing.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253449"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters",
+        "type": "registry",
+        "value_name": "EnablePlainTextPassword"
+      },
+      "description": "Unencrypted passwords must not be sent to third-party SMB Servers.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253450"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters",
+        "type": "registry",
+        "value_name": "RequireSecuritySignature"
+      },
+      "description": "The Windows SMB server must be configured to always perform SMB packet signing.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253451"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "RestrictAnonymousSAM"
+      },
+      "description": "Anonymous enumeration of SAM accounts must not be allowed.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253453"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "RestrictAnonymous"
+      },
+      "description": "Anonymous enumeration of shares must be restricted.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253454"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "EveryoneIncludesAnonymous"
+      },
+      "description": "The system must be configured to prevent anonymous users from having the same rights as the Everyone group.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253455"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters",
+        "type": "registry",
+        "value_name": "RestrictNullSessAccess"
+      },
+      "description": "Anonymous access to Named Pipes and Shares must be restricted.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253456"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0",
+        "type": "registry",
+        "value_name": "allownullsessionfallback"
+      },
+      "description": "NTLM must be prevented from falling back to a Null session.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253458"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\pku2u",
+        "type": "registry",
+        "value_name": "AllowOnlineID"
+      },
+      "description": "PKU2U authentication using online identities must be prevented.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253459"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters",
+        "type": "registry",
+        "value_name": "SupportedEncryptionTypes"
+      },
+      "description": "Kerberos encryption types must be configured to prevent the use of DES and RC4 encryption suites.",
+      "expected": {
+        "type": "equals",
+        "value": 2147483640
+      },
+      "platform": "windows",
+      "vuln_id": "V-253460"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "NoLMHash"
+      },
+      "description": "The system must be configured to prevent the storage of the LAN Manager hash of passwords.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253461"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "LmCompatibilityLevel"
+      },
+      "description": "The LanMan authentication level must be set to send NTLMv2 response only, and to refuse LM and NTLM.",
+      "expected": {
+        "type": "equals",
+        "value": 5
+      },
+      "platform": "windows",
+      "vuln_id": "V-253462"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LDAP",
+        "type": "registry",
+        "value_name": "LDAPClientIntegrity"
+      },
+      "description": "The system must be configured to the required LDAP client signing level.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253463"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0",
+        "type": "registry",
+        "value_name": "NTLMMinClientSec"
+      },
+      "description": "The system must be configured to meet the minimum session security requirement for NTLM SSP based clients.",
+      "expected": {
+        "type": "equals",
+        "value": 537395200
+      },
+      "platform": "windows",
+      "vuln_id": "V-253464"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0",
+        "type": "registry",
+        "value_name": "NTLMMinServerSec"
+      },
+      "description": "The system must be configured to meet the minimum session security requirement for NTLM SSP based servers.",
+      "expected": {
+        "type": "equals",
+        "value": 537395200
+      },
+      "platform": "windows",
+      "vuln_id": "V-253465"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\FIPSAlgorithmPolicy",
+        "type": "registry",
+        "value_name": "Enabled"
+      },
+      "description": "The system must be configured to use FIPS-compliant algorithms for encryption, hashing, and signing.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253466"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager",
+        "type": "registry",
+        "value_name": "ProtectionMode"
+      },
+      "description": "The default permissions of global system objects must be increased.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253467"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "FilterAdministratorToken"
+      },
+      "description": "User Account Control approval mode for the built-in Administrator must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253468"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "ConsentPromptBehaviorAdmin"
+      },
+      "description": "User Account Control must prompt administrators for consent on the secure desktop.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-253469"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "ConsentPromptBehaviorUser"
+      },
+      "description": "User Account Control must automatically deny elevation requests for standard users.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253471"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableInstallerDetection"
+      },
+      "description": "User Account Control must be configured to detect application installations and prompt for elevation.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253472"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableSecureUIAPaths"
+      },
+      "description": "User Account Control must only elevate UIAccess applications that are installed in secure locations.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253473"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableLUA"
+      },
+      "description": "User Account Control must run all administrators in Admin Approval Mode, enabling UAC.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253474"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableVirtualization"
+      },
+      "description": "User Account Control must virtualize file and registry write failures to per-user locations.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253475"
+    },
+    {
+      "check": {
+        "path": "HKCU\\SOFTWARE\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications",
+        "type": "registry",
+        "value_name": "NoToastApplicationNotificationOnLockScreen"
+      },
+      "description": "Toast notifications to the lock screen must be turned off.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253477"
+    },
+    {
+      "check": {
+        "path": "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments",
+        "type": "registry",
+        "value_name": "SaveZoneInformation"
+      },
+      "description": "Zone information must be preserved when saving attachments.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-253478"
+    }
+  ],
+  "platform": "windows",
+  "stig_id": "Microsoft_Windows_11_STIG",
+  "version": "candidate-planned"
+}

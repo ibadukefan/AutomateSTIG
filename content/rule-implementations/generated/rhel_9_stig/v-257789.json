@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the boot loader superuser account has been set with the following command:\n\n$ sudo grep -A1 \"superusers\" /etc/grub2.cfg \n\nset superusers=\"<accountname>\"\nexport superusers\npassword_pbkdf2 <accountname> ${GRUB2_PASSWORD}\n \nVerify <accountname> is not a common name such as root, admin, or administrator.\n\nIf superusers contains easily guessable usernames, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 9 to have a unique username for the grub superuser account.\n\nEdit the \"/etc/grub.d/01_users\" file and add or modify the following lines with a nondefault username for the superuser account:\n\nset superusers=\"<accountname>\"\nexport superusers \n\nOnce the superuser account has been added, update the grub.cfg file by running:\n\nRegenerate the GRUB configuration:\n$ sudo grub2-mkconfig -o /boot/grub2/grub.cfg\n\nReboot the system:\n$ sudo reboot",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-257789r1069356_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must require a unique superusers name upon booting into single-user and maintenance modes.",
+  "tracking_issue": "TODO-V-257789",
+  "vuln_id": "V-257789"
+}

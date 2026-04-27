@@ -1,0 +1,920 @@
+{
+  "checks": [
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "sctp",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must disable the Stream Control Transmission Protocol (SCTP) kernel module.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257807"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "tipc",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must disable the Transparent Inter Process Communication (TIPC) kernel module.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257808"
+    },
+    {
+      "check": {
+        "key": "kernel.randomize_va_space",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must implement address space layout randomization (ASLR) to protect its memory from unauthorized code execution.",
+      "expected": {
+        "type": "equals",
+        "value": "2"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257809"
+    },
+    {
+      "check": {
+        "name": "--queryformat",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must ensure cryptographic verification of vendor software packages.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257819"
+    },
+    {
+      "check": {
+        "name": "vsftpd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must not have a File Transfer Protocol (FTP) server package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257826"
+    },
+    {
+      "check": {
+        "name": "sendmail",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must not have the sendmail package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257827"
+    },
+    {
+      "check": {
+        "name": "nfs-utils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must not have the nfs-utils package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257828"
+    },
+    {
+      "check": {
+        "name": "ypserv",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must not have the ypserv package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257829"
+    },
+    {
+      "check": {
+        "name": "gssproxy",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must not have the gssproxy package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257832"
+    },
+    {
+      "check": {
+        "name": "iprutils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must not have the iprutils package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257833"
+    },
+    {
+      "check": {
+        "name": "tuned",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must not have the tuned package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257834"
+    },
+    {
+      "check": {
+        "name": "openssl-pkcs11",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the openssl-pkcs11 package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257838"
+    },
+    {
+      "check": {
+        "name": "gnutls-utils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the gnutls-utils package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257839"
+    },
+    {
+      "check": {
+        "name": "rng-tools",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the rng-tools package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257841"
+    },
+    {
+      "check": {
+        "name": "s-nail",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the s-nail package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257842"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "cramfs",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must disable mounting of cramfs.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257880"
+    },
+    {
+      "check": {
+        "name": "firewalld",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the firewalld package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257935"
+    },
+    {
+      "check": {
+        "key": "net.core.bpf_jit_harden",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must enable hardening for the Berkeley Packet Filter just-in-time compiler.",
+      "expected": {
+        "type": "equals",
+        "value": "2"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257942"
+    },
+    {
+      "check": {
+        "name": "chrony",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the chrony package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257943"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aliases",
+        "pattern": "postmaster:\\s*root$",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must forward mail from postmaster to the root account using a postfix alias.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257953"
+    },
+    {
+      "check": {
+        "name": "libreswan",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 libreswan package must be installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257954"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.tcp_syncookies",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must be configured to use TCP syncookies.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257957"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must ignore Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257958"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must not forward Internet Protocol version 4 (IPv4) source-routed packets.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257959"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.log_martians",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must log IPv4 packets with impossible addresses.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257960"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.log_martians",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must log IPv4 packets with impossible addresses by default.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257961"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.rp_filter",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must use reverse path filtering on all IPv4 interfaces.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257962"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must prevent IPv4 Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257963"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must not forward IPv4 source-routed packets by default.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257964"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.rp_filter",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must use a reverse-path filter for IPv4 network traffic when possible by default.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257965"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.icmp_echo_ignore_broadcasts",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must not respond to Internet Control Message Protocol (ICMP) echoes sent to a broadcast address.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257966"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.icmp_ignore_bogus_error_responses",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must limit the number of bogus Internet Control Message Protocol (ICMP) response errors logs.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257967"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.send_redirects",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must not send Internet Control Message Protocol (ICMP) redirects.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257968"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.send_redirects",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must not allow interfaces to perform Internet Control Message Protocol (ICMP) redirects by default.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257969"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.forwarding",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must not enable IPv4 packet forwarding unless the system is a router.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257970"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_ra",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must not accept router advertisements on all IPv6 interfaces.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257971"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must ignore IPv6 Internet Control Message Protocol (ICMP) redirect messages.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257972"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must not forward IPv6 source-routed packets.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257973"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.forwarding",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must not enable IPv6 packet forwarding unless the system is a router.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257974"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_ra",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must not accept router advertisements on all IPv6 interfaces by default.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257975"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must prevent IPv6 Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257976"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "RHEL 9 must not forward IPv6 source-routed packets by default.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257977"
+    },
+    {
+      "check": {
+        "name": "openssh-server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "All RHEL 9 networked systems must have SSH installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257978"
+    },
+    {
+      "check": {
+        "name": "openssh-clients",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the openssh-clients package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257980"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must prevent a user from overriding the disabling of the graphical user interface automount function.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258015"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "usb-storage",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must be configured to disable USB mass storage.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258034"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "bluetooth",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 Bluetooth must be disabled.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258039"
+    },
+    {
+      "check": {
+        "name": "policycoreutils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have policycoreutils package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258081"
+    },
+    {
+      "check": {
+        "name": "policycoreutils-python-utils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 policycoreutils-python-utils package must be installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258082"
+    },
+    {
+      "check": {
+        "name": "sudo",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the sudo package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258083"
+    },
+    {
+      "check": {
+        "name": "fapolicyd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 fapolicy module must be installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258089"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/password-auth",
+        "pattern": "pam_pwquality",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must ensure the password complexity module is enabled in the password-auth file.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258097"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "pam_pwquality",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must ensure the password complexity module is enabled in the system-auth file.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258098"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/password-auth",
+        "pattern": "rounds",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 password-auth must be configured to use a sufficient number of hashing rounds.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258099"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "rounds",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 system-auth must be configured to use a sufficient number of hashing rounds.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258100"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "minlen",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 passwords must be created with a minimum of 15 characters.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258107"
+    },
+    {
+      "check": {
+        "name": "pcsc-lite",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the pcsc-lite package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258124"
+    },
+    {
+      "check": {
+        "name": "opensc",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the opensc package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258126"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/lib/systemd/system/emergency.service",
+        "pattern": "sulogin",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must require authentication to access emergency mode.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258128"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/lib/systemd/system/rescue.service",
+        "pattern": "sulogin",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must require authentication to access single-user mode.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258129"
+    },
+    {
+      "check": {
+        "name": "aide",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the AIDE package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258134"
+    },
+    {
+      "check": {
+        "name": "rsyslog",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the rsyslog package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258140"
+    },
+    {
+      "check": {
+        "name": "rsyslog-gnutls",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the packages required for encrypting offloaded audit logs installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258141"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "cron",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must use cron logging.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258150"
+    },
+    {
+      "check": {
+        "name": "audit",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 audit package must be installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258151"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "local_events",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 audit system must audit local events.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258164"
+    },
+    {
+      "check": {
+        "name": "audispd-plugins",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 audispd-plugins package must be installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258175"
+    },
+    {
+      "check": {
+        "name": "crypto-policies",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the crypto-policies package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258234"
+    },
+    {
+      "check": {
+        "name": "postfix",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the Postfix package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-272488"
+    }
+  ],
+  "platform": "linux",
+  "stig_id": "RHEL_9_STIG",
+  "version": "candidate-planned"
+}

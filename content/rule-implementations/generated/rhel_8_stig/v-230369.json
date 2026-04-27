@@ -1,23 +1,45 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/pwquality.conf",
+      "pattern": "minlen",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 passwords must have a minimum of 15 characters.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230369"
+  },
   "check_content_excerpt": "Verify the operating system enforces a minimum 15-character password length. The \"minlen\" option sets the minimum number of characters in a new password.\n\nCheck for the value of the \"minlen\" option with the following command:\n\n$ sudo grep -r minlen /etc/security/pwquality.conf*\n\n/etc/security/pwquality.conf:minlen = 15\n\nIf the command does not return a \"minlen\" value of 15 or greater, this is a finding.\nIf conflicting results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
-    "rule_id",
-    "vuln_id",
-    "status",
+    "candidate_check",
+    "deterministic_fixture_evidence",
     "evidence",
-    "source_artifact"
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure operating system to enforce a minimum 15-character password length.\n\nAdd the following line to \"/etc/security/pwquality.conf\" (or modify the line to have the required value):\n\nminlen = 15\n\nRemove any configurations that conflict with the above value.",
-  "fixtures": [],
-  "implementation_status": "planned",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230369r1017181_rule",
   "severity": "medium",

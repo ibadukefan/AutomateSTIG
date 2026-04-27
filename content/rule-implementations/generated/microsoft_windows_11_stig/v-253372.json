@@ -1,0 +1,54 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch",
+      "type": "registry",
+      "value_name": "DriverLoadPolicy"
+    },
+    "description": "Early Launch Antimalware, Boot-Start Driver Initialization Policy must prevent boot drivers.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-253372"
+  },
+  "check_content_excerpt": "The default behavior is for Early Launch Antimalware - Boot-Start Driver Initialization policy is to enforce \"Good, unknown and bad but critical\" (preventing \"bad\").\n\nIf the registry value name below does not exist, this is a finding.\n\nIf it exists and is configured with a value of \"7\", this is a finding.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch\\\n\nValue Name: DriverLoadPolicy\n\nValue Type: REG_DWORD\nValue: 1, 3, or 8 \n\nPossible values for this setting are:\n8 - Good only\n1 - Good and unknown\n3 - Good, unknown and bad but critical\n7 - All (which includes \"Bad\" and would be a finding)",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Ensure that Early Launch Antimalware - Boot-Start Driver Initialization policy is set to enforce \"Good, unknown and bad but critical\" (preventing \"bad\").\n\nTo correct this, configure the policy value for Computer Configuration >> Administrative Templates >> System >> Early Launch Antimalware >> \"Boot-Start Driver Initialization Policy\" to \"Enabled with \"Good, unknown and bad but critical\" selected.",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/microsoft_windows_11_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-253372r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/microsoft_windows_11_stig/u_ms_windows_11_v2r4_stig.json",
+  "source_version": "U_MS_Windows_11_V2R4_STIG.zip",
+  "stig_id": "Microsoft_Windows_11_STIG",
+  "title": "Early Launch Antimalware, Boot-Start Driver Initialization Policy must prevent boot drivers.",
+  "tracking_issue": "TODO-V-253372",
+  "vuln_id": "V-253372"
+}

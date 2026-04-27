@@ -1,0 +1,30 @@
+{
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Disable \"Windows PowerShell 2.0\" on the system.\n\nRun \"Windows PowerShell\" with elevated privileges (run as administrator).\nEnter the following:\nDisable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2Root\n\nThis command must disable both \"MicrosoftWindowsPowerShellV2Root\" and \"MicrosoftWindowsPowerShellV2\" which correspond to \"Windows PowerShell 2.0\" and \"Windows PowerShell 2.0 Engine\" respectively in \"Turn Windows features on or off\".\n\nAlternately:\nSearch for \"Features\".\nSelect \"Turn Windows features on or off\".\nDe-select \"Windows PowerShell 2.0\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-253285r958478_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_ms_windows_11_v2r4_stig_scap_1_3_benchmark/u_ms_windows_11_v2r4_stig_scap_1_3_benchmark.json",
+  "source_version": "U_MS_Windows_11_V2R4_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_11_V2R4_STIG_SCAP_1-3_Benchmark",
+  "title": "The Windows PowerShell 2.0 feature must be disabled on the system.",
+  "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-253285",
+  "vuln_id": "xccdf_mil.disa.stig_group_V-253285"
+}

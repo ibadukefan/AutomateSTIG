@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If no accounts are members of the Backup Operators group, this is NA.\n\nVerify users with accounts in the Backup Operators group have a separate user account for backup functions and for performing normal user tasks.\n\nIf users with accounts in the Backup Operators group do not have separate accounts for backup functions and standard user functions, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Ensure each member of the Backup Operators group has separate accounts for backup functions and standard user functions.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-205846r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/windows_server_2019_stig/u_ms_windows_server_2019_v3r4_stig.json",
+  "source_version": "U_MS_Windows_Server_2019_V3R4_STIG.zip",
+  "stig_id": "Windows_Server_2019_STIG",
+  "title": "Windows Server 2019 members of the Backup Operators group must have separate accounts for backup duties and normal operational tasks.",
+  "tracking_issue": "TODO-V-205846",
+  "vuln_id": "V-205846"
+}

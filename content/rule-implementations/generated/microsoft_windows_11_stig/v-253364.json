@@ -1,0 +1,54 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy",
+      "type": "registry",
+      "value_name": "fMinimizeConnections"
+    },
+    "description": "Simultaneous connections to the internet or a Windows domain must be limited.",
+    "expected": {
+      "type": "equals",
+      "value": 3
+    },
+    "platform": "windows",
+    "vuln_id": "V-253364"
+  },
+  "check_content_excerpt": "The default behavior for \"Minimize the number of simultaneous connections to the Internet or a Windows Domain\" is \"Enabled\".\n\nIf it exists and is configured with a value of \"0\", this is a finding.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy\\\n\nValue Name: fMinimizeConnections\n\nValue Type: REG_DWORD\nValue: 3 (or if the Value Name does not exist)",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 3
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "The default behavior for \"Minimize the number of simultaneous connections to the Internet or a Windows Domain\" is \"Enabled\".\n\nIf this needs to be corrected, configure the policy value for Computer Configuration >> Administrative Templates >> Network >> Windows Connection Manager >> \"Minimize the number of simultaneous connections to the Internet or a Windows Domain\" to \"Enabled\".  Under \"Options\", set \"Minimize Policy Options\" to \"3 = Prevent Wi-Fi When on Ethernet\".",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/microsoft_windows_11_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-253364r958358_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/microsoft_windows_11_stig/u_ms_windows_11_v2r4_stig.json",
+  "source_version": "U_MS_Windows_11_V2R4_STIG.zip",
+  "stig_id": "Microsoft_Windows_11_STIG",
+  "title": "Simultaneous connections to the internet or a Windows domain must be limited.",
+  "tracking_issue": "TODO-V-253364",
+  "vuln_id": "V-253364"
+}

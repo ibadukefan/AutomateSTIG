@@ -1,23 +1,45 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/audit.rules",
+      "pattern": "/usr/bin/mount",
+      "type": "file_content"
+    },
+    "description": "Successful/unsuccessful uses of the mount command in RHEL 8 must generate an audit record.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230423"
+  },
   "check_content_excerpt": "Verify that an audit event is generated for any successful/unsuccessful use of the \"mount\" command by performing the following command to check the file system rules in \"/etc/audit/audit.rules\":\n\n$ sudo grep -w /usr/bin/mount /etc/audit/audit.rules\n\n-a always,exit -F path=/usr/bin/mount -F perm=x -F auid>=1000 -F auid!=unset -k privileged-mount\n\nIf the command does not return a line, or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
-    "rule_id",
-    "vuln_id",
-    "status",
+    "candidate_check",
+    "deterministic_fixture_evidence",
     "evidence",
-    "source_artifact"
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit system to generate an audit event for any successful/unsuccessful use of the \"mount\" command by adding or updating the following rules in the \"/etc/audit/rules.d/audit.rules\" file:\n\n-a always,exit -F path=/usr/bin/mount -F perm=x -F auid>=1000 -F auid!=unset -k privileged-mount\n\nThe audit daemon must be restarted for the changes to take effect.",
-  "fixtures": [],
-  "implementation_status": "planned",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230423r1017224_rule",
   "severity": "medium",

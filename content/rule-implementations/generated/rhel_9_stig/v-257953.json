@@ -1,0 +1,53 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/aliases",
+      "pattern": "postmaster:\\s*root$",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must forward mail from postmaster to the root account using a postfix alias.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257953"
+  },
+  "check_content_excerpt": "Verify that the administrators are notified in the event of an audit processing failure.\n\nCheck that the \"/etc/aliases\" file has a defined value for \"root\".\n\n$ sudo grep \"postmaster:\\s*root$\" /etc/aliases\n\nIf the command does not return a line, or the line is commented out, ask the system administrator to indicate how they and the information systems security officer (ISSO) are notified of an audit process failure. If there is no evidence of the proper personnel being notified of an audit processing failure, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure a valid email address as an alias for the root account.\n\nAppend the following line to \"/etc/aliases\":\n\npostmaster: root\n\nThen, run the following command:\n\n$ sudo newaliases",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_9_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-257953r958424_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must forward mail from postmaster to the root account using a postfix alias.",
+  "tracking_issue": "TODO-V-257953",
+  "vuln_id": "V-257953"
+}

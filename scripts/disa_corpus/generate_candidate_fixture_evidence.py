@@ -53,6 +53,26 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
         pass_fixture['packages'] = {name: should_be_installed}
         fail_fixture['packages'] = {name: not should_be_installed}
         evidence_type = 'windows_feature_install_state'
+    elif check_type == 'sysctl':
+        if expected.get('type') != 'equals':
+            raise ValueError(f"{candidate['vuln_id']}: sysctl candidate only supports equals evidence")
+        key = check['key']
+        expected_value = str(expected['value'])
+        pass_fixture['sysctl'] = {key: expected_value}
+        fail_fixture['sysctl'] = {key: _alternate_value(expected_value)}
+        evidence_type = 'linux_sysctl_value_equals'
+    elif check_type == 'package':
+        name = check['name']
+        should_be_installed = bool(check['should_be_installed'])
+        pass_fixture['packages'] = {name: should_be_installed}
+        fail_fixture['packages'] = {name: not should_be_installed}
+        evidence_type = 'linux_package_install_state'
+    elif check_type == 'file_content':
+        path = check['path']
+        pattern = check['pattern']
+        pass_fixture['files'] = {path: f"before\n{pattern}\nafter\n"}
+        fail_fixture['files'] = {path: "before\nafter\n"}
+        evidence_type = 'linux_file_content_contains'
     else:
         raise ValueError(f"{candidate['vuln_id']}: unsupported candidate check type {check_type}")
 

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that a graphical user interface is not installed with the following command:\n\n$ dnf list --installed \"xorg-x11-server-common\"\nError: No matching Packages to list\n\nIf the \"xorg-x11-server-common\" package is installed, and the use of a graphical user interface has not been documented with the information system security officer (ISSO) as an operational requirement, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Document the requirement for a graphical user interface with the ISSO or remove all xorg packages with the following command:\n\nWarning: If you are accessing the system through the graphical user interface, change to the multi-user.target with the following command:\n\n$ sudo systemctl isolate multi-user.target\n\nWarning: Removal of the graphical user interface will immediately render it useless. The following commands must not be run from a virtual terminal emulator in the graphical interface.\n\n$ sudo dnf remove \"xorg*\"\n$ sudo systemctl set-default multi-user.target",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-257837r1044910_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "A graphical display manager must not be installed on RHEL 9 unless approved.",
+  "tracking_issue": "TODO-V-257837",
+  "vuln_id": "V-257837"
+}

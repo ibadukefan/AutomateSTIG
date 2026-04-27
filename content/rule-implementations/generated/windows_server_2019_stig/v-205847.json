@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Determine if manually managed application/service accounts exist. If none exist, this is NA.\n\nIf passwords for manually managed application/service accounts are not changed at least annually or when an administrator with knowledge of the password leaves the organization, this is a finding.\n\nIdentify manually managed application/service accounts.\n\nTo determine the date a password was last changed:\n\nDomain controllers:\n\nOpen \"PowerShell\".\n\nEnter \"Get-AdUser -Identity [application account name] -Properties PasswordLastSet | FT Name, PasswordLastSet\", where [application account name] is the name of the manually managed application/service account.\n\nIf the \"PasswordLastSet\" date is more than one year old, this is a finding.\n\nMember servers and standalone or nondomain-joined systems:\n\nOpen \"Command Prompt\".\n\nEnter 'Net User [application account name] | Find /i \"Password Last Set\"', where [application account name] is the name of the manually managed application/service account.\n\nIf the \"Password Last Set\" date is more than one year old, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change passwords for manually managed application/service accounts at least annually or when an administrator with knowledge of the password leaves the organization.\n\nIt is recommended that system-managed service accounts be used whenever possible.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-205847r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/windows_server_2019_stig/u_ms_windows_server_2019_v3r4_stig.json",
+  "source_version": "U_MS_Windows_Server_2019_V3R4_STIG.zip",
+  "stig_id": "Windows_Server_2019_STIG",
+  "title": "Windows Server 2019 manually managed application account passwords must be changed at least annually or when a system administrator with knowledge of the password leaves the organization.",
+  "tracking_issue": "TODO-V-205847",
+  "vuln_id": "V-205847"
+}

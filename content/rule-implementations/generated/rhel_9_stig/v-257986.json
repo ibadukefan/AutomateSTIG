@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the RHEL 9 SSHD is configured to allow for the UsePAM interface with the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*usepam'\n\nUsePAM yes\n\nIf the \"UsePAM\" keyword is set to \"no\", is missing, or is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the RHEL 9 SSHD to use the UsePAM interface by adding or modifying the following line in \"/etc/ssh/sshd_config\" or in a file in \"/etc/ssh/sshd_config.d\".\n\nUsePAM yes\n\nRestart the SSH daemon for the settings to take effect:\n\n$ sudo systemctl restart sshd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-257986r1045030_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must enable the Pluggable Authentication Module (PAM) interface for SSHD.",
+  "tracking_issue": "TODO-V-257986",
+  "vuln_id": "V-257986"
+}

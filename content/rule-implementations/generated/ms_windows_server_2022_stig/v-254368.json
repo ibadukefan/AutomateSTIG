@@ -14,7 +14,7 @@
     "vuln_id": "V-254368"
   },
   "check_content_excerpt": "If the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\\n\nValue Name: fEncryptRPCTraffic\n\nType: REG_DWORD\nValue: 0x00000001 (1)",
-  "classification": "manual",
+  "classification": "automated",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
   "evaluator": "candidate_template",

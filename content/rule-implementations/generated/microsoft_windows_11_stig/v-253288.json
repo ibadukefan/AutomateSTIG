@@ -1,0 +1,54 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10",
+      "type": "registry",
+      "value_name": "Start"
+    },
+    "description": "The Server Message Block (SMB) v1 protocol must be disabled on the SMB client.",
+    "expected": {
+      "type": "equals",
+      "value": 4
+    },
+    "platform": "windows",
+    "vuln_id": "V-253288"
+  },
+  "check_content_excerpt": "Different methods are available to disable SMBv1 on Windows 11, if WN11-00-000160is configured, this is NA.\n\nIf the following registry value is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10\\\n\nValue Name: Start\n\nType: REG_DWORD\nValue: 0x00000004 (4)",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 4
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> MS Security Guide >> \"Configure SMBv1 client driver\" to \"Enabled\" with \"Disable driver (recommended)\" selected for \"Configure MrxSmb10 driver\".\n\nThis policy setting requires the installation of the SecGuide custom templates included with the STIG package. \"SecGuide.admx\" and \"SecGuide.adml\" must be copied to the \\Windows\\PolicyDefinitions and \\Windows\\PolicyDefinitions\\en-US directories, respectively.  \n\nThe system must be restarted for the changes to take effect.",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/microsoft_windows_11_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-253288r958478_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/microsoft_windows_11_stig/u_ms_windows_11_v2r4_stig.json",
+  "source_version": "U_MS_Windows_11_V2R4_STIG.zip",
+  "stig_id": "Microsoft_Windows_11_STIG",
+  "title": "The Server Message Block (SMB) v1 protocol must be disabled on the SMB client.",
+  "tracking_issue": "TODO-V-253288",
+  "vuln_id": "V-253288"
+}

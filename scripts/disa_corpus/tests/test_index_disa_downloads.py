@@ -27,6 +27,12 @@ class IndexDisaDownloadsTests(unittest.TestCase):
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]['release'], 'V1R2')
 
+    def test_seed_downloads_include_next_flagship_families(self):
+        urls = {item['url'] for item in m.normalize(m.SEED_DOWNLOADS)}
+        self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2019_V3R4_STIG.zip', urls)
+        self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_11_V2R4_STIG.zip', urls)
+        self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_RHEL_9_V2R4_STIG.zip', urls)
+
 
 if __name__ == '__main__':
     unittest.main()

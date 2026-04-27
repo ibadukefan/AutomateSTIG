@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that system accounts must not have an interactive login shell with the following command:\n\n$ awk -F: '($3<1000){print $1 \":\" $3 \":\" $7}' /etc/passwd\n\nroot:0:/bin/bash\nbin:1:/sbin/nologin\ndaemon:2:/sbin/nologin\nadm:3:/sbin/nologin\nlp:4:/sbin/nologin\n\nIdentify the system accounts from this listing that do not have a nologin shell.\n\nIf any system account (other than the root account) has a login shell and it is not documented with the information system security officer (ISSO), this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 9 so that all noninteractive accounts on the system do not have an interactive shell assigned to them.\n\nIf the system account needs a shell assigned for mission operations, document the need with the information system security officer (ISSO).\n\nRun the following command to disable the interactive shell for a specific noninteractive user account:\n\nReplace <user> with the user that has a login shell.\n\n$ sudo usermod --shell /sbin/nologin <user>\n\nDo not perform the steps in this section on the root account. Doing so will cause the system to become inaccessible.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-258046r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 system accounts must not have an interactive login shell.",
+  "tracking_issue": "TODO-V-258046",
+  "vuln_id": "V-258046"
+}

@@ -14,7 +14,7 @@
     "vuln_id": "V-254431"
   },
   "check_content_excerpt": "This applies to member servers and standalone or nondomain-joined systems, it is NA for domain controllers.\n\nIf the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive:  HKEY_LOCAL_MACHINE\nRegistry Path:  \\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc\\\n\nValue Name:  RestrictRemoteClients\n\nType:  REG_DWORD\nValue:  0x00000001 (1)",
-  "classification": "manual",
+  "classification": "automated",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
   "evaluator": "candidate_template",

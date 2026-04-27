@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If the device or operating system does not have a camera installed, this requirement is not applicable.\n\nThis requirement is not applicable to mobile devices (smartphones and tablets), where the use of the camera is a local authorizing official (AO) decision.\n\nThis requirement is not applicable to dedicated VTC suites located in approved VTC locations that are centrally managed.\n\nFor an external camera, if there is not a method for the operator to manually disconnect camera at the end of collaborative computing sessions, this is a finding.\n\nFor a built-in camera, the camera must be protected by a camera cover (e.g. laptop camera cover slide) when not in use. If the built-in camera is not protected with a camera cover, or if the built-in\ncamera is not disabled in the bios, this is a finding.\n\nIf the camera is not disconnected or covered, the following registry entry is required:\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistryPath\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\webcam\n\nValue Name: Value                                                                             Value Data: Deny\n\nIf \"Value Name\" is set to a value other than \"Deny\" and the collaborative computing device has not been authorized for use, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "If the camera is not disconnected or covered, the following registry entry is required.\n \nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistryPath\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\webcam\n\nValue Name: Value                                                                            Value Data: Deny",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-253351r1106508_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/microsoft_windows_11_stig/u_ms_windows_11_v2r4_stig.json",
+  "source_version": "U_MS_Windows_11_V2R4_STIG.zip",
+  "stig_id": "Microsoft_Windows_11_STIG",
+  "title": "Windows 11 must cover or disable the built-in or attached camera when not in use.",
+  "tracking_issue": "TODO-V-253351",
+  "vuln_id": "V-253351"
+}

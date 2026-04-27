@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that RHEL 9 has a DNS mode configured in Network Manager.\n\n$ NetworkManager --print-config\n[main]\ndns=none\n\nIf the dns key under main does not exist or is not set to \"none\" or \"default\", this is a finding.\n\nNote: If RHEL 9 is configured to use a DNS resolver other than Network Manager, the configuration must be documented and approved by the information system security officer (ISSO).",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure NetworkManager in RHEL 9 to use a DNS mode.\n\nIn \"/etc/NetworkManager/NetworkManager.conf\" add the following line in the \"[main]\" section:\n\ndns = none\n\nNetworkManager must be reloaded for the change to take effect.\n\n$ sudo systemctl reload NetworkManager",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-257949r1014841_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must configure a DNS processing mode in Network Manager.",
+  "tracking_issue": "TODO-V-257949",
+  "vuln_id": "V-257949"
+}

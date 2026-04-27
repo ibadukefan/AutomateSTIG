@@ -1,23 +1,45 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/audit.rules",
+      "pattern": "execve",
+      "type": "file_content"
+    },
+    "description": "The RHEL 8 audit system must be configured to audit the execution of privileged functions and prevent all software from executing at higher privilege levels than users executing the software.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230386"
+  },
   "check_content_excerpt": "Verify RHEL 8 audits the execution of privileged functions.\n\nCheck if RHEL 8 is configured to audit the execution of the \"execve\" system call, by running the following command:\n\n$ sudo grep execve /etc/audit/audit.rules\n\n-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k execpriv \n-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k execpriv\n\n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k execpriv \n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k execpriv\n\nIf the command does not return all lines, or the lines are commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
-    "rule_id",
-    "vuln_id",
-    "status",
+    "candidate_check",
+    "deterministic_fixture_evidence",
     "evidence",
-    "source_artifact"
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 8 to audit the execution of the \"execve\" system call.\n\nAdd or update the following file system rules to \"/etc/audit/rules.d/audit.rules\":\n\n-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k execpriv \n-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k execpriv\n\n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k execpriv \n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k execpriv \n\nThe audit daemon must be restarted for the changes to take effect.",
-  "fixtures": [],
-  "implementation_status": "planned",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230386r958730_rule",
   "severity": "medium",

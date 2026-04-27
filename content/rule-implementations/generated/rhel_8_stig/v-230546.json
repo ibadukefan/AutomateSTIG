@@ -1,23 +1,45 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "kernel.yama.ptrace_scope",
+      "type": "sysctl"
+    },
+    "description": "RHEL 8 must restrict usage of ptrace to descendant  processes.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230546"
+  },
   "check_content_excerpt": "Verify RHEL 8 restricts usage of ptrace to descendant processes with the following commands:\n\n$ sudo sysctl kernel.yama.ptrace_scope\n\nkernel.yama.ptrace_scope = 1\n\nIf \"kernel.yama.ptrace_scope\" is not set to \"1\", is missing, or commented out, this is a finding.",
-  "classification": "manual",
+  "classification": "automated",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
-    "rule_id",
-    "vuln_id",
-    "status",
+    "candidate_check",
+    "deterministic_fixture_evidence",
     "evidence",
-    "source_artifact"
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 8 to restrict usage of ptrace to descendant processes by adding the following line in a dropfile, in the \"/etc/sysctl.d\" directory with the following commands:\n\nCreate the dropfile if it doesn't already exist:\n$ sudo vi /etc/sysctl.d/99-ptrace-restrict.conf\n\nAdd the following line to the file:\nkernel.yama.ptrace_scope = 1\n\nThe system configuration files need to be reloaded for the changes to take effect. To reload the contents of the files, run the following command:\n\n$ sudo sysctl --system",
-  "fixtures": [],
-  "implementation_status": "planned",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "sysctl",
   "remediation": "planned",
   "rule_id": "SV-230546r1155413_rule",
   "severity": "medium",

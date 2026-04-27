@@ -1,0 +1,30 @@
+{
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 9 to use 100000 hashing rounds for hashing passwords.\n\nAdd or modify the following line in \"/etc/pam.d/system-auth\" and set \"rounds\" to 100000.\n\npassword sufficient pam_unix.so sha512 rounds=100000\n\nNote: Running authselect will overwrite this value unless a custom authselect policy is created.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-258100r1045201_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_rhel_9_v2r4_stig_scap_1_3_benchmark/u_rhel_9_v2r4_stig_scap_1_3_benchmark.json",
+  "source_version": "U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark",
+  "title": "RHEL 9 system-auth must be configured to use a sufficient number of hashing rounds.",
+  "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-258100",
+  "vuln_id": "xccdf_mil.disa.stig_group_V-258100"
+}

@@ -1,0 +1,3070 @@
+{
+  "generated_from": "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip",
+  "rules": [
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205625r958368_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Account Management - Security Group Management successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205625",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205625"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205626r958368_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Account Management - User Account Management successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205626",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205626"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205627r958368_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Account Management - User Account Management failures.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205627",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205627"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205628r958368_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Account Management - Computer Account Management successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205628",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205628"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205629r958388_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must have the number of allowed bad logon attempts configured to three or less.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205629",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205629"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205630r958388_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205630",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205630"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205633r958400_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 machine inactivity limit must be set to 15 minutes or less, locking the system with the screen saver.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205633",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205633"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205634r958406_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit logon successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205634",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205634"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205635r958406_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit logon failures.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205635",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205635"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205636r958408_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Remote Desktop Services must require secure Remote Procedure Call (RPC) communications.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205636",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205636"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205637r958408_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Remote Desktop Services must be configured with the client connection encryption set to High Level.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205637",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205637"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205638r958422_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 command line data must be included in process creation events.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205638",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205638"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205639r958422_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 PowerShell script block logging must be enabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205639",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205639"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205640r958434_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 permissions for the Application event log must prevent access by non-privileged accounts.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205640",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205640"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205641r958434_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 permissions for the Security event log must prevent access by non-privileged accounts.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205641",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205641"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205642r958434_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 permissions for the System event log must prevent access by non-privileged accounts.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205642",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205642"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205643r958434_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Manage auditing and security log user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205643",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205643"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205644r958442_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must force audit policy subcategory settings to override audit policy category settings.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205644",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205644"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205648r958448_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205648",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205648"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205649r958448_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must have the DoD Interoperability Root Certificate Authority (CA) cross-certificates installed in the Untrusted Certificates Store on unclassified systems.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205649",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205649"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205650r1028366_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must have the US DoD CCEB Interoperability Root CA cross-certificates in the Untrusted Certificates Store on unclassified systems.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205650",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205650"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205651r958450_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 users must be required to enter a password to access private keys stored on the computer.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205651",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205651"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205652r1051061_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must have the built-in Windows password complexity policy enabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205652",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205652"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205653r1051062_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 reversible password encryption must be disabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205653",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205653"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205654r1051063_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 must be configured to prevent the storage of the LAN Manager hash of passwords.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205654",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205654"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205655r987796_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 unencrypted passwords must not be sent to third-party Server Message Block (SMB) servers.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205655",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205655"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205656r1051064_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 minimum password age must be configured to at least one day.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205656",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205656"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205659r1051067_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 maximum password age must be configured to 60 days or less.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205659",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205659"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205660r1000129_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 password history must be configured to 24 passwords remembered.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205660",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205660"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205662r1051069_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 minimum password length must be configured to 14 characters.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205662",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205662"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205663r958472_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 local volumes must use a format that supports NTFS attributes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205663",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205663"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205665r958472_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Access this computer from the network user right must only be assigned to the Administrators, Authenticated Users, and \nEnterprise Domain Controllers groups on domain controllers.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205665",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205665"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205666r958472_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Allow log on through Remote Desktop Services user right must only be assigned to the Administrators group on domain controllers.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205666",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205666"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205667r958472_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Deny access to this computer from the network user right on domain controllers must be configured to prevent unauthenticated access.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205667",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205667"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205668r958472_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Deny log on as a batch job user right on domain controllers must be configured to prevent unauthenticated access.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205668",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205668"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205669r958472_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Deny log on as a service user right must be configured to include no accounts or groups (blank) on domain controllers.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205669",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205669"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205670r958472_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Deny log on locally user right on domain controllers must be configured to prevent unauthenticated access.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205670",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205670"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205671r958472_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 \"Access this computer from the network\" user right must only be assigned to the Administrators and Authenticated Users groups on domain-joined member servers and standalone or nondomain-joined systems.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205671",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205671"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205672r958472_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 \"Deny access to this computer from the network\" user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and local accounts and from unauthenticated access on all systems.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205672",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205672"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205673r958472_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 \"Deny log on as a batch job\" user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205673",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205673"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205674r958472_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 \"Deny log on as a service\" user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts. No other groups or accounts must be assigned this right.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205674",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205674"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205675r958472_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 \"Deny log on locally\" user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205675",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205675"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205676r958472_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Allow log on locally user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205676",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205676"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205678r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must not have the Fax Server role installed.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205678",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205678"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205679r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must not have the Peer Name Resolution Protocol installed.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205679",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205679"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205680r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must not have Simple TCP/IP Services installed.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205680",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205680"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205681r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must not have the TFTP Client installed.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205681",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205681"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205682r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must not have the Server Message Block (SMB) v1 protocol installed.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205682",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205682"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205683r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205683",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205683"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205684r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must have the Server Message Block (SMB) v1 protocol disabled on the SMB client.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205684",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205684"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205685r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must not have Windows PowerShell 2.0 installed.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205685",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205685"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205686r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must prevent the display of slide shows on the lock screen.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205686",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205686"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205687r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must have WDigest Authentication disabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205687",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205687"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205688r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 downloading print driver packages over HTTP must be turned off.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205688",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205688"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205689r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 printing over HTTP must be turned off.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205689",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205689"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205690r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 network selection user interface (UI) must not be displayed on the logon screen.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205690",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205690"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205691r958478_rule",
+      "severity": "low",
+      "title": "Windows Server 2019 Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205691",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205691"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205692r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Windows Defender SmartScreen must be enabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205692",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205692"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205693r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must disable Basic authentication for RSS feeds over HTTP.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205693",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205693"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205694r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must prevent Indexing of encrypted files.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205694",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205694"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205696r958478_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 local users on domain-joined member servers must not be enumerated.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205696",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205696"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205697r958480_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must not have the Microsoft FTP service installed unless required by the organization.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205697",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205697"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205698r958480_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must not have the Telnet Client installed.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205698",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205698"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205702r1051071_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Kerberos user logon restrictions must be enforced.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205702",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205702"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205703r1051072_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Kerberos service ticket maximum lifetime must be limited to 600 minutes or less.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205703",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205703"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205704r1051073_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Kerberos user ticket lifetime must be limited to 10 hours or less.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205704",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205704"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205705r1051074_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Kerberos policy user ticket renewal maximum lifetime must be limited to seven days or less.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205705",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205705"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205706r1051075_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 computer clock synchronization tolerance must be limited to five minutes or less.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205706",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205706"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205708r971535_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Kerberos encryption types must be configured to prevent the use of DES and RC4 encryption suites.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205708",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205708"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205709r958504_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must have the built-in guest account disabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205709",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205709"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205711r958510_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 Windows Remote Management (WinRM) client must not use Basic authentication.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205711",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205711"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205712r958510_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Windows Remote Management (WinRM) client must not use Digest authentication.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205712",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205712"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205713r958510_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 Windows Remote Management (WinRM) service must not use Basic authentication.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205713",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205713"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205714r958518_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 administrator accounts must not be enumerated during elevation.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205714",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205714"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205715r958518_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 local administrator accounts must have their privileged token filtered to prevent elevated privileges from being used over the network on domain-joined member servers.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205715",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205715"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205716r958518_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 UIAccess applications must not be allowed to prompt for elevation without using the secure desktop.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205716",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205716"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205717r958518_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 User Account Control must, at a minimum, prompt administrators for consent on the secure desktop.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205717",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205717"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205718r958518_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 User Account Control must be configured to detect application installations and prompt for elevation.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205718",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205718"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205719r958518_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 User Account Control (UAC) must only elevate UIAccess applications that are installed in secure locations.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205719",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205719"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205720r958518_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 User Account Control (UAC) must virtualize file and registry write failures to per-user locations.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205720",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205720"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205722r958524_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Remote Desktop Services must prevent drive redirection.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205722",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205722"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205724r958524_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 must not allow anonymous enumeration of shares.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205724",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205724"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205725r958524_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 must restrict anonymous access to Named Pipes and Shares.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205725",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205725"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205730r991552_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Logon/Logoff - Account Lockout failures.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205730",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205730"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205731r991558_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Event Viewer must be protected from unauthorized modification and deletion.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205731",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205731"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205732r958672_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Deny log on through Remote Desktop Services user right on domain controllers must be configured to prevent unauthenticated access.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205732",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205732"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205733r958672_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 \"Deny log on through Remote Desktop Services\" user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and all local accounts and from unauthenticated access on all systems.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205733",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205733"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205739r958726_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 permissions on the Active Directory data files must only allow System and Administrators access.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205739",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205739"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205744r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Add workstations to domain user right must only be assigned to the Administrators group on domain controllers.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205744",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205744"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205745r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Enable computer and user accounts to be trusted for delegation user right must only be assigned to the Administrators group on domain controllers.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205745",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205745"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205747r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must restrict remote calls to the Security Account Manager (SAM) to Administrators on domain-joined member servers and standalone or nondomain-joined systems.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205747",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205747"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205748r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 \"Enable computer and user accounts to be trusted for delegation\" user right must not be assigned to any groups or accounts on domain-joined member servers and standalone or nondomain-joined systems.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205748",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205748"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205749r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Access Credential Manager as a trusted caller user right must not be assigned to any groups or accounts.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205749",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205749"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205750r958726_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 Act as part of the operating system user right must not be assigned to any groups or accounts.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205750",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205750"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205751r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Back up files and directories user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205751",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205751"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205752r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Create a pagefile user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205752",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205752"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205753r958726_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 Create a token object user right must not be assigned to any groups or accounts.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205753",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205753"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205754r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Create global objects user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205754",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205754"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205755r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Create permanent shared objects user right must not be assigned to any groups or accounts.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205755",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205755"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205756r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Create symbolic links user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205756",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205756"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205757r958726_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 Debug programs: user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205757",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205757"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205758r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Force shutdown from a remote system user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205758",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205758"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205759r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Generate security audits user right must only be assigned to Local Service and Network Service.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205759",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205759"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205760r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Impersonate a client after authentication user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205760",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205760"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205761r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Increase scheduling priority: user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205761",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205761"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205762r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Load and unload device drivers user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205762",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205762"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205763r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Lock pages in memory user right must not be assigned to any groups or accounts.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205763",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205763"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205764r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Modify firmware environment values user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205764",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205764"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205765r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Perform volume maintenance tasks user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205765",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205765"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205766r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Profile single process user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205766",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205766"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205767r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Restore files and directories user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205767",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205767"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205768r958726_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Take ownership of files or other objects user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205768",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205768"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205769r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Account Management - Other Account Management Events successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205769",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205769"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205770r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Detailed Tracking - Process Creation successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205770",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205770"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205771r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Policy Change - Audit Policy Change successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205771",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205771"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205772r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Policy Change - Audit Policy Change failures.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205772",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205772"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205773r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Policy Change - Authentication Policy Change successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205773",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205773"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205774r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Policy Change - Authorization Policy Change successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205774",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205774"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205775r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Privilege Use - Sensitive Privilege Use successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205775",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205775"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205776r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Privilege Use - Sensitive Privilege Use failures.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205776",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205776"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205777r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit System - IPsec Driver successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205777",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205777"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205778r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit System - IPsec Driver failures.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205778",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205778"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205779r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit System - Other System Events successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205779",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205779"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205780r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit System - Other System Events failures.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205780",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205780"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205781r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit System - Security State Change successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205781",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205781"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205782r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit System - Security System Extension successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205782",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205782"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205783r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit System - System Integrity successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205783",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205783"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205784r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit System - System Integrity failures.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205784",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205784"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205791r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit DS Access - Directory Service Access successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205791",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205791"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205792r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit DS Access - Directory Service Access failures.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205792",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205792"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205793r958732_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit DS Access - Directory Service Changes successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205793",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205793"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205795r958736_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 account lockout duration must be configured to 15 minutes or greater.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205795",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205795"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205796r958752_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Application event log size must be configured to 32768 KB or greater.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205796",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205796"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205797r958752_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Security event log size must be configured to 196608 KB or greater.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205797",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205797"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205798r958752_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 System event log size must be configured to 32768 KB or greater.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205798",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205798"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205801r1051078_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must prevent users from changing installation options.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205801",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205801"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205802r1051079_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 must disable the Windows Installer Always install with elevated privileges option.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205802",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205802"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205804r958804_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 Autoplay must be turned off for non-volume devices.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205804",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205804"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205805r958804_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 default AutoRun behavior must be configured to prevent AutoRun commands.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205805",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205805"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205806r958804_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 AutoPlay must be disabled for all drives.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205806",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205806"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205808r1051080_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must not save passwords in the Remote Desktop Client.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205808",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205808"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205809r1051081_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Remote Desktop Services must always prompt a client for passwords upon connection.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205809",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205809"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205810r1051082_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Windows Remote Management (WinRM) service must not store RunAs credentials.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205810",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205810"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205811r1051083_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 User Account Control approval mode for the built-in Administrator must be enabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205811",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205811"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205812r1051084_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 User Account Control must automatically deny standard user requests for elevation.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205812",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205812"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205813r1051085_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 User Account Control must run all administrators in Admin Approval Mode, enabling UAC.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205813",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205813"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205814r971545_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must restrict unauthenticated Remote Procedure Call (RPC) clients from connecting to the RPC server on domain-joined member servers and standalone or nondomain-joined systems.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205814",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205814"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205815r971545_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 computer account password must not be prevented from being reset.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205815",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205815"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205816r958848_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Windows Remote Management (WinRM) client must not allow unencrypted traffic.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205816",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205816"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205817r958848_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Windows Remote Management (WinRM) service must not allow unencrypted traffic.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205817",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205817"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205819r958902_rule",
+      "severity": "low",
+      "title": "Windows Server 2019 must be configured to ignore NetBIOS name release requests except from WINS servers.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205819",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205819"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205820r958908_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 domain controllers must require LDAP access signing.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205820",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205820"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205821r958908_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 setting Domain member: Digitally encrypt or sign secure channel data (always) must be configured to Enabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205821",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205821"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205822r958908_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 setting Domain member: Digitally encrypt secure channel data (when possible) must be configured to enabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205822",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205822"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205823r958908_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 setting Domain member: Digitally sign secure channel data (when possible) must be configured to Enabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205823",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205823"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205824r958908_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to require a strong session key.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205824",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205824"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205825r958908_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 setting Microsoft network client: Digitally sign communications (always) must be configured to Enabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205825",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205825"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205826r958908_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 setting Microsoft network client: Digitally sign communications (if server agrees) must be configured to Enabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205826",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205826"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205827r958908_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 setting Microsoft network server: Digitally sign communications (always) must be configured to Enabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205827",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205827"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205828r958908_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 setting Microsoft network server: Digitally sign communications (if client agrees) must be configured to Enabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205828",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205828"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205830r958928_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Explorer Data Execution Prevention must be enabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205830",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205830"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205832r991578_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Account Logon - Credential Validation successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205832",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205832"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205833r991578_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Account Logon - Credential Validation failures.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205833",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205833"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205835r991578_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Logon/Logoff - Special Logon successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205835",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205835"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205836r991578_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Object Access - Other Object Access Events successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205836",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205836"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205837r991578_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit Object Access - Other Object Access Events failures.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205837",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205837"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205838r991581_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to audit logoff successes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205838",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205838"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205842r1028367_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to use FIPS-compliant algorithms for encryption, hashing, and signing.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205842",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205842"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205849r991589_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 must be maintained at a supported servicing level.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205849",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205849"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205858r991589_rule",
+      "severity": "low",
+      "title": "Windows Server 2019 Internet Protocol version 6 (IPv6) source routing must be configured to the highest protection level to prevent IP source routing.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205858",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205858"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205859r991589_rule",
+      "severity": "low",
+      "title": "Windows Server 2019 source routing must be configured to the highest protection level to prevent Internet Protocol (IP) source routing.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205859",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205859"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205860r991589_rule",
+      "severity": "low",
+      "title": "Windows Server 2019 must be configured to prevent Internet Control Message Protocol (ICMP) redirects from overriding Open Shortest Path First (OSPF)-generated routes.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205860",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205860"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205861r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 insecure logons to an SMB server must be disabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205861",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205861"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205862r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 hardened Universal Naming Convention (UNC) paths must be defined to require mutual authentication and integrity for at least the \\\\*\\SYSVOL and \\\\*\\NETLOGON shares.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205862",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205862"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205863r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to enable Remote host allows delegation of non-exportable credentials.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205863",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205863"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205865r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Early Launch Antimalware, Boot-Start Driver Initialization Policy must prevent boot drivers identified as bad.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205865",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205865"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205866r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 group policy objects must be reprocessed even if they have not changed.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205866",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205866"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205867r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 users must be prompted to authenticate when the system wakes from sleep (on battery).",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205867",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205867"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205868r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 users must be prompted to authenticate when the system wakes from sleep (plugged in).",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205868",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205868"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205869r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Telemetry must be configured to Security or Basic.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205869",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205869"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205870r991589_rule",
+      "severity": "low",
+      "title": "Windows Server 2019 Windows Update must not obtain updates from other PCs on the Internet.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205870",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205870"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205871r991589_rule",
+      "severity": "low",
+      "title": "Windows Server 2019 Turning off File Explorer heap termination on corruption must be disabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205871",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205871"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205872r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 File Explorer shell protocol must run in protected mode.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205872",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205872"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205873r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must prevent attachments from being downloaded from RSS feeds.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205873",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205873"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205874r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 users must be notified if a web-based program attempts to install software.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205874",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205874"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205876r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 domain controllers must be configured to allow reset of machine account passwords.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205876",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205876"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205906r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must limit the caching of logon credentials to four or less on domain-joined member servers.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205906",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205906"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205908r991589_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 must prevent local accounts with blank passwords from being used from the network.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205908",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205908"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205909r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 built-in administrator account must be renamed.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205909",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205909"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205910r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 built-in guest account must be renamed.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205910",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205910"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205911r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 maximum age for machine account passwords must be configured to 30 days or less.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205911",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205911"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205912r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 Smart Card removal option must be configured to Force Logoff or Lock Workstation.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205912",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205912"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205914r991589_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 must not allow anonymous enumeration of Security Account Manager (SAM) accounts.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205914",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205914"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205915r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to prevent anonymous users from having the same permissions as the Everyone group.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205915",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205915"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205916r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 services using Local System that use Negotiate when reverting to NTLM authentication must use the computer identity instead of authenticating anonymously.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205916",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205916"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205917r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must prevent NTLM from falling back to a Null session.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205917",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205917"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205918r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must prevent PKU2U authentication using online identities.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205918",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205918"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205919r991589_rule",
+      "severity": "high",
+      "title": "Windows Server 2019 LAN Manager authentication level must be configured to send NTLMv2 response only and to refuse LM and NTLM.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205919",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205919"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205920r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must be configured to at least negotiate signing for LDAP client signing.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205920",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205920"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205921r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 session security for NTLM SSP-based clients must be configured to require NTLMv2 session security and 128-bit encryption.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205921",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205921"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205922r991589_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 session security for NTLM SSP-based servers must be configured to require NTLMv2 session security and 128-bit encryption.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205922",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205922"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205923r991589_rule",
+      "severity": "low",
+      "title": "Windows Server 2019 default permissions of global system objects must be strengthened.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205923",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205923"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-205925r991591_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must disable automatically signing in the last interactive user after a system-initiated restart.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205925",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-205925"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-257503r958420_rule",
+      "severity": "medium",
+      "title": "Windows Server 2019 must have PowerShell Transcription enabled.",
+      "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-257503",
+      "validated_by": [
+        "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "xccdf_mil.disa.stig_group_V-257503"
+    }
+  ],
+  "source": "DISA XCCDF benchmark",
+  "status": "experimental",
+  "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark",
+  "total_rules": 204,
+  "version": "U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
+}

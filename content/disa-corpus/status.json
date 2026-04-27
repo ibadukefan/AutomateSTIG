@@ -1,12 +1,14 @@
 {
-  "authoritative_manifests": 4,
+  "authoritative_manifests": 10,
   "current_check_definitions": 2215,
   "current_check_packs": 100,
+  "fixture_backed_candidate_rules": 451,
   "goal": "every public DISA STIG rule has a non-unsupported automation path",
-  "known_authoritative_rules": 1148,
-  "known_machine_automated_rules": 111,
+  "known_authoritative_rules": 2944,
+  "known_machine_automated_rules": 705,
   "known_manual_workflow_rules": 0,
-  "known_unsupported_rules": 1037,
-  "maturity": "corpus-factory-bootstrap",
+  "known_unsupported_rules": 2239,
+  "maturity": "expanded-corpus-fixture-backed-candidate-burndown",
+  "tracked_authorized_public_artifacts": 10,
   "unsupported_rules_allowed_for_production": 0
 }

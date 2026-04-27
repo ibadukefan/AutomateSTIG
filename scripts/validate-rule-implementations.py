@@ -28,9 +28,17 @@ def load_specs(root):
                 raise SystemExit(f'{p}: candidate_check.expected missing type')
     return specs
 def main(argv=None):
-    ap=argparse.ArgumentParser(); ap.add_argument('--coverage-root',required=True); ap.add_argument('--implementation-root',required=True); ap.add_argument('--require-production',action='store_true')
-    args=ap.parse_args(argv); specs=load_specs(Path(args.implementation_root)); missing=[]; unsupported=[]; total=0; unsupported_with_specs=0; planned=0
-    for p in Path(args.coverage_root).rglob('*.json'):
+    ap=argparse.ArgumentParser()
+    ap.add_argument('--coverage-root')
+    ap.add_argument('--implementation-root')
+    ap.add_argument('--repo-root', default='.')
+    ap.add_argument('--require-production',action='store_true')
+    args=ap.parse_args(argv)
+    repo_root=Path(args.repo_root)
+    coverage_root=Path(args.coverage_root) if args.coverage_root else repo_root/'content/coverage/disa-authoritative'
+    implementation_root=Path(args.implementation_root) if args.implementation_root else repo_root/'content/rule-implementations'
+    specs=load_specs(implementation_root); missing=[]; unsupported=[]; total=0; unsupported_with_specs=0; planned=0
+    for p in coverage_root.rglob('*.json'):
         d=json.loads(p.read_text())
         for r in d.get('rules',[]):
             total+=1

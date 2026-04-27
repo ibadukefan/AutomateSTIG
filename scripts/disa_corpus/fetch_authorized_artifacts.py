@@ -42,7 +42,13 @@ def main(argv=None):
           'sha256': sha, 'size_bytes': size, 'source': url, 'authorization': 'public DISA Cyber Exchange download metadata',
           'classification': 'public', 'retrieved_at': dt.datetime.now(dt.timezone.utc).isoformat(), 'notes': d.get('title','')
         })
-    out={'version':1,'generated_at':dt.datetime.now(dt.timezone.utc).isoformat(),'fixtures':entries}
+    out={
+      'schema_version':'1.0',
+      'corpus':'disa-cyber-exchange-public-stigs',
+      'status':'authorized-public-artifacts',
+      'generated_at':dt.datetime.now(dt.timezone.utc).isoformat(),
+      'fixtures':entries,
+    }
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
     Path(args.output).write_text(json.dumps(out, indent=2, sort_keys=True)+'\n')
     print(f'Wrote {len(entries)} artifact metadata entries')

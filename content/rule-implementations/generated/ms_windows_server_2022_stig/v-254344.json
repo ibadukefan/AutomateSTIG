@@ -14,7 +14,7 @@
     "vuln_id": "V-254344"
   },
   "check_content_excerpt": "The default behavior is for Early Launch Antimalware - Boot-Start Driver Initialization policy to enforce \"Good, unknown and bad but critical\" (preventing \"bad\").\n\nIf the registry value name below does not exist, this is not a finding.\n\nIf it exists and is configured with a value of \"0x00000007 (7)\", this is a finding.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch\\\n\nValue Name: DriverLoadPolicy\n\nValue Type: REG_DWORD\nValue: 0x00000001 (1), 0x00000003 (3), or 0x00000008 (8) (or if the Value Name does not exist)\n\nPossible values for this setting are:\n8 - Good only\n1 - Good and unknown\n3 - Good, unknown and bad but critical\n7 - All (which includes \"bad\" and would be a finding)",
-  "classification": "manual",
+  "classification": "automated",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
   "evaluator": "candidate_template",

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify RHEL 9 takes the appropriate action when an audit processing failure occurs.\n\nCheck that RHEL 9 takes the appropriate action when an audit processing failure occurs with the following command:\n\n$ sudo grep disk_error_action /etc/audit/auditd.conf\n\ndisk_error_action = HALT\n\nIf the value of the \"disk_error_action\" option is not \"SYSLOG\", \"SINGLE\", or \"HALT\", or the line is commented out, ask the system administrator (SA) to indicate how the system takes appropriate action when an audit process failure occurs. If there is no evidence of appropriate action, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 9 to shut down by default upon audit failure (unless availability is an overriding concern).\n\nAdd or update the following line (depending on configuration \"disk_error_action\" can be set to \"SYSLOG\" or \"SINGLE\" depending on configuration) in \"/etc/audit/auditd.conf\" file:\n\ndisk_error_action = HALT\n\nIf availability has been determined to be more important, and this decision is documented with the information system security officer (ISSO), configure the operating system to notify SA staff and ISSO staff in the event of an audit processing failure by setting the \"disk_error_action\" to \"SYSLOG\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-258153r1038966_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 audit system must take appropriate action when an error writing to the audit storage volume occurs.",
+  "tracking_issue": "TODO-V-258153",
+  "vuln_id": "V-258153"
+}

@@ -66,6 +66,33 @@ Value: 0x00000000 (0)'''
         self.assertEqual(candidate['check'], {'type': 'windows_feature', 'name': 'Fax', 'should_be_installed': False})
         self.assertEqual(candidate['expected'], {'type': 'is_false'})
 
+    def test_infers_linux_sysctl_candidate_check_from_rhel_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230266',
+            'title': 'RHEL 8 must prevent the loading of a new kernel for later execution.',
+            'check_content': 'Check the status of the "kernel.kexec_load_disabled" kernel parameter with the following command: $ sudo sysctl kernel.kexec_load_disabled kernel.kexec_load_disabled = 1 If the returned line does not have a value of "1", this is a finding.'
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'sysctl', 'key': 'kernel.kexec_load_disabled'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
+
+    def test_infers_linux_package_absent_candidate_check_from_rhel_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230239',
+            'title': 'The krb5-workstation package must not be installed on RHEL 8.',
+            'check_content': 'Verify the krb5-workstation package has not been installed on the system with the following command: $ sudo dnf list --installed krb5-workstation If the krb5-workstation package is installed, this is a finding.'
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'package', 'name': 'krb5-workstation', 'should_be_installed': False})
+        self.assertEqual(candidate['expected'], {'type': 'is_false'})
+
+    def test_infers_linux_file_content_candidate_check_from_grep_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230236',
+            'title': 'RHEL 8 rescue mode must require authentication.',
+            'check_content': 'Check with the following command: $ sudo grep sulogin-shell /usr/lib/systemd/system/rescue.service ExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue If the line is not returned, this is a finding.'
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/usr/lib/systemd/system/rescue.service', 'pattern': 'sulogin-shell', 'is_regex': False})
+        self.assertEqual(candidate['expected'], {'type': 'contains'})
+
 
 if __name__ == '__main__':
     unittest.main()

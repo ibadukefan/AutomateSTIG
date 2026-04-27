@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the permissions on the System event log (System.evtx). Standard user accounts or groups must not have access. The default permissions listed below satisfy this requirement.\n\nEventlog - Full Control\nSYSTEM - Full Control\nAdministrators - Full Control\n\nThe default location is the \"%SystemRoot%\\SYSTEM32\\WINEVT\\LOGS\" directory. They may have been moved to another folder.\n\nIf the permissions for these files are not as restrictive as the ACLs listed, this is a finding.\n\nNote: If \"APPLICATION PACKAGE AUTHORITY\\ALL APPLICATION PACKAGES\" has Special Permissions, this would not be a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Ensure the permissions on the System event log (System.evtx) are configured to prevent standard user accounts or groups from having access. The default permissions listed below satisfy this requirement.\n\nEventlog - Full Control\nSYSTEM - Full Control\nAdministrators - Full Control\n\nThe default location is the \"%SystemRoot%\\SYSTEM32\\WINEVT\\LOGS\" directory.\n\nIf the location of the logs has been changed, when adding Eventlog to the permissions, it must be entered as \"NT Service\\Eventlog\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-253342r958434_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/microsoft_windows_11_stig/u_ms_windows_11_v2r4_stig.json",
+  "source_version": "U_MS_Windows_11_V2R4_STIG.zip",
+  "stig_id": "Microsoft_Windows_11_STIG",
+  "title": "Windows 11 permissions for the System event log must prevent access by non-privileged accounts.",
+  "tracking_issue": "TODO-V-253342",
+  "vuln_id": "V-253342"
+}

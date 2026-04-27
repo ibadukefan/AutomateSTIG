@@ -25,16 +25,18 @@ python3 scripts/disa_corpus/generate_candidate_check_packs.py \
 
 Current generated backlog summary is in `status.json`:
 
-- planned implementation specs: 1,037
-- planned automated implementations: 951
-- planned manual-evidence workflows: 86
-- candidate executable checks awaiting fixture validation: 96
-  - registry: 94
-  - windows_feature: 2
-- collector families:
-  - linux_collector: 543
-  - windows_collector: 407
-  - manual_evidence_workflow: 86
-  - platform_collector: 1
+- authorized public DISA artifacts tracked: 10
+- authoritative rules tracked: 2,944
+- generated implementation specs: 2,690
+- implemented fixture-backed candidate specs: 451
+- remaining planned specs: 2,239
+- planned automated implementations: 2,051
+- planned manual-evidence workflows: 188
+- candidate executable checks with deterministic fixture evidence: 451
+  - registry: 286
+  - windows_feature: 7
+  - sysctl: 49
+  - package: 38
+  - file_content: 71
 
 These specs and generated candidate check packs are **not** a production-readiness claim. They are the machine-readable burn-down queue for reducing `unsupported` authoritative DISA rules to zero. A candidate becomes replacement evidence only after pass/fail/NA fixtures and export/live workflow acceptance validate it.

@@ -14,7 +14,7 @@
     "vuln_id": "V-254482"
   },
   "check_content_excerpt": "UAC requirements are NA for Server Core installations (this is the default installation option for Windows Server 2022 versus Server with Desktop Experience).\n\nIf the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE \nRegistry Path: \\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\\n\nValue Name: FilterAdministratorToken\n\nValue Type: REG_DWORD\nValue: 0x00000001 (1)",
-  "classification": "manual",
+  "classification": "automated",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
   "evaluator": "candidate_template",

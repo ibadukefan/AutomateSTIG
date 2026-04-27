@@ -1,23 +1,45 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "kernel.core_pattern",
+      "type": "sysctl"
+    },
+    "description": "RHEL 8 must disable the kernel.core_pattern.",
+    "expected": {
+      "type": "equals",
+      "value": "|/bin/false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230311"
+  },
   "check_content_excerpt": "Verify RHEL 8 disables storing core dumps with the following commands:\n\n$ sudo sysctl kernel.core_pattern\n\nkernel.core_pattern = |/bin/false\n\nIf the returned line does not have a value of \"|/bin/false\", or a line is not returned and the need for core dumps is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
-    "rule_id",
-    "vuln_id",
-    "status",
+    "candidate_check",
+    "deterministic_fixture_evidence",
     "evidence",
-    "source_artifact"
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "|/bin/false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 8 to restrict usage of ptrace to descendant processes by adding the following line to a dropfile in the \"/etc/sysctl.d\" directory:\n\nCreate a dropfile if it does not already exist:\n$ sudo vi /etc/sysctl.d/99-disable-coredump.conf\n\nAdd the following to the file:\nkernel.core_pattern = |/bin/false\n\nThe system configuration files need to be reloaded for the changes to take effect. To reload the contents of the files, run the following command:\n\n$ sudo sysctl --system",
-  "fixtures": [],
-  "implementation_status": "planned",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "sysctl",
   "remediation": "planned",
   "rule_id": "SV-230311r1155408_rule",
   "severity": "medium",

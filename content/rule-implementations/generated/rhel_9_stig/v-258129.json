@@ -1,0 +1,53 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/usr/lib/systemd/system/rescue.service",
+      "pattern": "sulogin",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must require authentication to access single-user mode.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258129"
+  },
+  "check_content_excerpt": "Verify that RHEL 9 requires authentication for single-user mode with the following command:\n\n$ grep sulogin /usr/lib/systemd/system/rescue.service \n\nExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue\n\nIf this line is not returned, or is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 9 to require authentication for single-user mode.\n\nAdd or modify the following line in the \"/usr/lib/systemd/system/rescue.service\" file:\n\nExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_9_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-258129r958472_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must require authentication to access single-user mode.",
+  "tracking_issue": "TODO-V-258129",
+  "vuln_id": "V-258129"
+}

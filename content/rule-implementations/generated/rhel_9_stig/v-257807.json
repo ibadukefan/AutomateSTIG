@@ -1,0 +1,53 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/modprobe.conf",
+      "pattern": "sctp",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must disable the Stream Control Transmission Protocol (SCTP) kernel module.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257807"
+  },
+  "check_content_excerpt": "Verify that RHEL 9 disables the ability to load the sctp kernel module with the following command:\n\n$ grep -r sctp /etc/modprobe.conf /etc/modprobe.d/* \n\ninstall sctp /bin/false\nblacklist sctp\n\nIf the command does not return any output, or the lines are commented out, and use of sctp is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "To configure the system to prevent the sctp kernel module from being loaded, add the following lines to the file  /etc/modprobe.d/sctp.conf (or create sctp.conf if it does not exist):\n\ninstall sctp /bin/false\nblacklist sctp",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_9_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-257807r1044862_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must disable the Stream Control Transmission Protocol (SCTP) kernel module.",
+  "tracking_issue": "TODO-V-257807",
+  "vuln_id": "V-257807"
+}

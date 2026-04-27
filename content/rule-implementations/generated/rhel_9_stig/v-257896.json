@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the \"/etc/passwd-\" file has mode \"0644\" or less permissive with the following command:\n\n$ sudo stat -c \"%a %n\" /etc/passwd-\n\n644 /etc/passwd-\n\nIf a value of \"0644\" or less permissive is not returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the mode of the file \"/etc/passwd-\" to \"0644\" by running the following command:\n\n$ sudo chmod 0644 /etc/passwd-",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-257896r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 /etc/passwd- file must have mode 0644 or less permissive to prevent unauthorized access.",
+  "tracking_issue": "TODO-V-257896",
+  "vuln_id": "V-257896"
+}

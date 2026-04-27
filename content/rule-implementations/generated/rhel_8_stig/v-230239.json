@@ -1,23 +1,44 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "krb5-workstation",
+      "should_be_installed": false,
+      "type": "package"
+    },
+    "description": "The krb5-workstation package must not be installed on RHEL 8.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230239"
+  },
   "check_content_excerpt": "Verify the krb5-workstation package has not been installed on the system with the following commands:\n\nIf the system is a server or is utilizing krb5-workstation-1.17-18.el8.x86_64 or newer, this is Not Applicable.\n\n$ sudo yum list installed krb5-workstation\n\nkrb5-workstation.x86_64                                                     1.17-9.el8                                                  repository\n\nIf the krb5-workstation package is installed and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
-    "rule_id",
-    "vuln_id",
-    "status",
+    "candidate_check",
+    "deterministic_fixture_evidence",
     "evidence",
-    "source_artifact"
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Document the krb5-workstation package with the ISSO as an operational requirement or remove it from the system with the following command:\n\n$ sudo yum remove krb5-workstation",
-  "fixtures": [],
-  "implementation_status": "planned",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-230239r1017058_rule",
   "severity": "medium",

@@ -1,0 +1,30 @@
+{
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit logs to have a mode of \"0600\" with the following command:\n\nReplace \"[audit_log_file]\" with the path to each audit log file. By default, these logs are located in \"/var/log/audit/.\n\n$ sudo chmod 0600 /var/log/audit/[audit_log_file]\n\nCheck the group that owns the system audit logs:\n\n$ sudo grep -iw log_group /etc/audit/auditd.conf\n\nIf log_group is set to a user other than root, configure the permissions the following way:\n\n$ sudo chmod 0640 $log_file\n$ sudo chmod 0440 $log_file.*\n\nOtherwise, configure the permissions the following way:\n\n$ sudo chmod 0600 $log_file\n$ sudo chmod 0400 $log_file.*",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-258167r1045306_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_rhel_9_v2r4_stig_scap_1_3_benchmark/u_rhel_9_v2r4_stig_scap_1_3_benchmark.json",
+  "source_version": "U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark",
+  "title": "RHEL 9 audit logs file must have mode 0600 or less permissive to prevent unauthorized access to the audit log.",
+  "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-258167",
+  "vuln_id": "xccdf_mil.disa.stig_group_V-258167"
+}

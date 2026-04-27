@@ -1,0 +1,53 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "net.core.bpf_jit_harden",
+      "type": "sysctl"
+    },
+    "description": "RHEL 9 must enable hardening for the Berkeley Packet Filter just-in-time compiler.",
+    "expected": {
+      "type": "equals",
+      "value": "2"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257942"
+  },
+  "check_content_excerpt": "Verify RHEL 9 enables hardening for the BPF JIT with the following commands:\n\n$ sudo sysctl net.core.bpf_jit_harden\n\nnet.core.bpf_jit_harden = 2\n\nIf the returned line does not have a value of \"2\", or a line is not returned, this is a finding.\n\nCheck that the configuration files are present to enable this kernel parameter.\n\n$ sudo /usr/lib/systemd/systemd-sysctl --cat-config | egrep -v '^(#|;)' | grep -F net.core.bpf_jit_harden | tail -1\n\nnet.core.bpf_jit_harden = 2\n\nIf the network parameter \"net.core.bpf_jit_harden\" is not equal to \"2\" or nothing is returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "2"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 9 to enable hardening for the BPF JIT compiler by adding the following line to a file, in the \"/etc/sysctl.d\" directory:\n\nnet.core.bpf_jit_harden = 2\n\nThe system configuration files need to be reloaded for the changes to take effect. To reload the contents of the files, run the following command:\n\n$ sudo sysctl --system",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_9_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-257942r1044999_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must enable hardening for the Berkeley Packet Filter just-in-time compiler.",
+  "tracking_issue": "TODO-V-257942",
+  "vuln_id": "V-257942"
+}

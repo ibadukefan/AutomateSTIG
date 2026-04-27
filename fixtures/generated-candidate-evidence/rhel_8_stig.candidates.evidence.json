@@ -1,0 +1,2380 @@
+{
+  "candidate_checks": 89,
+  "cases": [
+    {
+      "check": {
+        "name": "krb5-workstation",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The krb5-workstation package must not be installed on RHEL 8.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "krb5-workstation": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "krb5-workstation": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230239"
+    },
+    {
+      "check": {
+        "key": "kernel.kexec_load_disabled",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must prevent the loading of a new kernel for later execution.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.kexec_load_disabled": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.kexec_load_disabled": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230266"
+    },
+    {
+      "check": {
+        "key": "fs.protected_symlinks",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must enable kernel parameters to enforce discretionary access control on symlinks.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "fs.protected_symlinks": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "fs.protected_symlinks": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230267"
+    },
+    {
+      "check": {
+        "key": "fs.protected_hardlinks",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must enable kernel parameters to enforce discretionary access control on hardlinks.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "fs.protected_hardlinks": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "fs.protected_hardlinks": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230268"
+    },
+    {
+      "check": {
+        "key": "kernel.dmesg_restrict",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must restrict access to the kernel message buffer.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.dmesg_restrict": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.dmesg_restrict": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230269"
+    },
+    {
+      "check": {
+        "key": "kernel.core_pattern",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must disable the kernel.core_pattern.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "|/bin/false"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.core_pattern": "unexpected-|/bin/false"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.core_pattern": "|/bin/false"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230311"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must prevent a user from overriding the session lock-delay setting for the graphical user interface.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nsystem-db\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230354"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "minlen",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 passwords must have a minimum of 15 characters.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nminlen\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230369"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "execve",
+        "type": "file_content"
+      },
+      "description": "The RHEL 8 audit system must be configured to audit the execution of privileged functions and prevent all software from executing at higher privilege levels than users executing the software.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nexecve\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230386"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "cron",
+        "type": "file_content"
+      },
+      "description": "Cron logging must be implemented in RHEL 8.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\ncron\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230387"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aliases",
+        "pattern": "postmaster:\\s*root$",
+        "type": "file_content"
+      },
+      "description": "The RHEL 8 Information System Security Officer (ISSO) and System Administrator (SA) (at a minimum) must have mail aliases to be notified of an audit processing failure.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/aliases": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/aliases": "before\npostmaster:\\s*root$\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230389"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/shadow",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/shadow.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/etc/shadow\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230404"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/security/opasswd",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/security/opasswd.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/etc/security/opasswd\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230405"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/passwd",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/passwd.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/etc/passwd\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230406"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/gshadow",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/gshadow.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/etc/gshadow\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230407"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/group",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/etc/group\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230408"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/sudoers",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/sudoers.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/etc/sudoers\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230409"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/sudoers.d/",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/sudoers.d/.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/etc/sudoers.d/\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230410"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/bin/su",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the su command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/usr/bin/su\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230412"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "xattr",
+        "type": "file_content"
+      },
+      "description": "The RHEL 8 audit system must be configured to audit any usage of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nxattr\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230413"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "chage",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the chage command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nchage\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230418"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "chcon",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the chcon command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nchcon\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230419"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "ssh-agent",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the ssh-agent in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nssh-agent\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230421"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "passwd",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the passwd command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\npasswd\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230422"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/bin/mount",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the mount command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/usr/bin/mount\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230423"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/bin/umount",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the umount command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/usr/bin/umount\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230424"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "unix_update",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the unix_update in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nunix_update\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230426"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "postdrop",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of postdrop in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\npostdrop\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230427"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "postqueue",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of postqueue in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\npostqueue\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230428"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "semanage",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of semanage in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nsemanage\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230429"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "setfiles",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of setfiles in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nsetfiles\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230430"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "userhelper",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of userhelper in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nuserhelper\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230431"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "setsebool",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of setsebool in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nsetsebool\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230432"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "unix_chkpwd",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of unix_chkpwd in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nunix_chkpwd\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230433"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "ssh-keysign",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the ssh-keysign in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nssh-keysign\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230434"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "setfacl",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the setfacl command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nsetfacl\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230435"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "pam_timestamp_check",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the pam_timestamp_check command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\npam_timestamp_check\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230436"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "newgrp",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the newgrp command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nnewgrp\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230437"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "init_module",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the init_module and finit_module system calls in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\ninit_module\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230438"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "gpasswd",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the gpasswd command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\ngpasswd\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230444"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "delete_module",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the delete_module command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\ndelete_module\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230446"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "crontab",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the crontab command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\ncrontab\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230447"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "chsh",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the chsh command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nchsh\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230448"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "chmod",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the chmod, fchmod, and fchmodat system calls in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nchmod\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230456"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "sudo",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the sudo command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nsudo\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230462"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "usermod",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the usermod command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nusermod\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230463"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "chacl",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the chacl command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nchacl\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230464"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/bin/kmod",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the kmod command in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/usr/bin/kmod\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230465"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "pam_faillock.so",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful modifications to the faillock log file in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\npam_faillock.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230466"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "lastlog",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful modifications to the lastlog file in RHEL 8 must generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nlastlog\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230467"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "uvcvideo",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must cover or disable the built-in or attached camera when not in use.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nuvcvideo\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230493"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "atm",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must disable the asynchronous transfer mode (ATM) protocol.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\natm\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230494"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "can",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must disable the controller area network (CAN) protocol.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\ncan\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230495"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "sctp",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must disable the stream control transmission protocol (SCTP).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nsctp\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230496"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "tipc",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must disable the transparent inter-process communication (TIPC) protocol.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\ntipc\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230497"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "cramfs",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must disable mounting of cramfs.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\ncramfs\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230498"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "firewire-core",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must disable IEEE 1394 (FireWire) Support.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nfirewire-core\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230499"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "usb-storage",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must be configured to disable USB mass storage.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nusb-storage\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230503"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "bluetooth",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 Bluetooth must be disabled.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nbluetooth\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230507"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must prevent IPv6 Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230535"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.send_redirects",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must not send Internet Control Message Protocol (ICMP) redirects.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.send_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.send_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230536"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.icmp_echo_ignore_broadcasts",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must not respond to Internet Control Message Protocol (ICMP) echoes sent to a broadcast address.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.icmp_echo_ignore_broadcasts": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.icmp_echo_ignore_broadcasts": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230537"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must not forward IPv6 source-routed packets.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230538"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must not forward IPv6 source-routed packets by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230539"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.forwarding",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must not enable IPv6 packet forwarding unless the system is a router.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.forwarding": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.forwarding": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230540"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_ra",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must not accept router advertisements on all IPv6 interfaces.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_ra": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_ra": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230541"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_ra",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must not accept router advertisements on all IPv6 interfaces by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_ra": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_ra": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230542"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.send_redirects",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must not allow interfaces to perform Internet Control Message Protocol (ICMP) redirects by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.send_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.send_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230543"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must ignore IPv6 Internet Control Message Protocol (ICMP) redirect messages.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230544"
+    },
+    {
+      "check": {
+        "key": "kernel.unprivileged_bpf_disabled",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must disable access to network bpf syscall from unprivileged processes.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.unprivileged_bpf_disabled": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.unprivileged_bpf_disabled": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230545"
+    },
+    {
+      "check": {
+        "key": "kernel.yama.ptrace_scope",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must restrict usage of ptrace to descendant  processes.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.yama.ptrace_scope": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.yama.ptrace_scope": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230546"
+    },
+    {
+      "check": {
+        "key": "kernel.kptr_restrict",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must restrict exposed kernel pointer addresses access.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.kptr_restrict": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.kptr_restrict": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230547"
+    },
+    {
+      "check": {
+        "key": "user.max_user_namespaces",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must disable the use of user namespaces.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "user.max_user_namespaces": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "user.max_user_namespaces": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230548"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.rp_filter",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must use reverse path filtering on all IPv4 interfaces.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.rp_filter": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.rp_filter": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230549"
+    },
+    {
+      "check": {
+        "name": "gssproxy",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The gssproxy package must not be installed unless mission essential on RHEL 8.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "gssproxy": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "gssproxy": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230559"
+    },
+    {
+      "check": {
+        "name": "iprutils",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The iprutils package must not be installed unless mission essential on RHEL 8.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "iprutils": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "iprutils": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230560"
+    },
+    {
+      "check": {
+        "name": "tuned",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The tuned package must not be installed unless mission essential on RHEL 8.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "tuned": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "tuned": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230561"
+    },
+    {
+      "check": {
+        "name": "krb5-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The krb5-server package must not be installed on RHEL 8.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "krb5-server": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "krb5-server": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-237640"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must prevent a user from overriding the session idle-delay setting for the graphical user interface.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nsystem-db\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244538"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must prevent a user from overriding the screensaver lock-enabled setting for the graphical user interface.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nsystem-db\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244539"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must prevent IPv4 Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244550"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must not forward IPv4 source-routed packets.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244551"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must not forward IPv4 source-routed packets by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244552"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must ignore IPv4 Internet Control Message Protocol (ICMP) redirect messages.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244553"
+    },
+    {
+      "check": {
+        "key": "net.core.bpf_jit_harden",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must enable hardening for the Berkeley Packet Filter Just-in-time compiler.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "2"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.core.bpf_jit_harden": "unexpected-2"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.core.bpf_jit_harden": "2"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244554"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.forwarding",
+        "type": "sysctl"
+      },
+      "description": "RHEL 8 must not enable IPv4 packet forwarding unless the system is a router.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.forwarding": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.forwarding": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-250317"
+    },
+    {
+      "check": {
+        "name": "aide",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The RHEL 8 operating system must use a file integrity tool to verify correct operation of all security functions.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "aide": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "aide": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251710"
+    },
+    {
+      "check": {
+        "name": "--queryformat",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must ensure cryptographic verification of vendor software packages.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "--queryformat": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "--queryformat": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256973"
+    },
+    {
+      "check": {
+        "name": "crypto-policies",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must have the crypto-policies package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "crypto-policies": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "crypto-policies": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-279933"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "RHEL_8_STIG",
+  "validated_candidates": 89
+}

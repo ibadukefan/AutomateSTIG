@@ -68,6 +68,69 @@ def _registry_value(check_content: str):
         return raw
 
 
+def _linux_platform(stig_id: str) -> bool:
+    lower = stig_id.lower()
+    return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'ubuntu'))
+
+
+def _sysctl_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    match = re.search(r'\bsysctl\s+([a-zA-Z0-9_.-]+)', content)
+    if not match:
+        return None
+    key = match.group(1)
+    value_match = re.search(rf'{re.escape(key)}\s*=\s*([^\s,.;]+)', content)
+    if not value_match:
+        value_match = re.search(r'(?:value of|returned line[^.]*value of)\s+["“]([^"”]+)["”]', content, re.IGNORECASE)
+    if not value_match:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'sysctl', 'key': key},
+        'expected': {'type': 'equals', 'value': value_match.group(1).strip().strip('"')},
+        'description': rule.get('title', ''),
+    }
+
+
+def _package_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    title = rule.get('title', '') or ''
+    match = re.search(r'\b(?:dnf|yum|rpm)\s+(?:list\s+--installed|-q)\s+([A-Za-z0-9_.:+-]+)', content)
+    if not match:
+        match = re.search(r'\b([A-Za-z0-9_.:+-]+)\s+package\s+(?:has\s+)?(?:not\s+)?(?:been\s+)?installed', content, re.IGNORECASE)
+    if not match:
+        return None
+    package = match.group(1)
+    lower = f"{title}\n{content}".lower()
+    should_be_installed = not bool(re.search(r'must\s+not\s+be\s+installed|has\s+not\s+been\s+installed|if\s+the\s+[a-z0-9_.:+-]+\s+package\s+is\s+installed,?\s+this\s+is\s+a\s+finding', lower))
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'package', 'name': package, 'should_be_installed': should_be_installed},
+        'expected': {'type': 'is_true' if should_be_installed else 'is_false'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _file_content_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    grep = re.search(r'\bgrep\s+(?:-[A-Za-z]+\s+)*(?:["\']?)([^"\'\s|;]+)(?:["\']?)\s+(/[A-Za-z0-9_./:+-]+)', content)
+    if not grep:
+        return None
+    pattern, path = grep.group(1), grep.group(2)
+    lower = content.lower()
+    if 'line is not returned' not in lower and 'no output is returned' not in lower and 'does not return' not in lower:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'file_content', 'path': path, 'pattern': pattern, 'is_regex': False},
+        'expected': {'type': 'contains'},
+        'description': rule.get('title', ''),
+    }
+
+
 def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     """Infer a conservative executable check candidate from DISA prose.
 
@@ -103,6 +166,12 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'is_false'},
             'description': rule.get('title', ''),
         }
+
+    if _linux_platform(stig_id):
+        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate):
+            candidate = infer(rule)
+            if candidate:
+                return candidate
     return None
 
 

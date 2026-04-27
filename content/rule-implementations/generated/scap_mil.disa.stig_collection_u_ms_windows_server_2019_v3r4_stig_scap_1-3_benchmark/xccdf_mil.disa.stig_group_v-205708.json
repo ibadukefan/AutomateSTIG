@@ -1,0 +1,30 @@
+{
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> \"Network security: Configure encryption types allowed for Kerberos\" to \"Enabled\" with only the following selected:\n\nAES128_HMAC_SHA1\nAES256_HMAC_SHA1\nFuture encryption types\n\nNote: Organizations with domain controllers running earlier versions of Windows where RC4 encryption is enabled, selecting \"The other domain supports Kerberos AES Encryption\" on domain trusts, may be required to allow client communication across the trust relationship.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-205708r971535_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_ms_windows_server_2019_v3r4_stig_scap_1_3_benchmark/u_ms_windows_server_2019_v3r4_stig_scap_1_3_benchmark.json",
+  "source_version": "U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark",
+  "title": "Windows Server 2019 Kerberos encryption types must be configured to prevent the use of DES and RC4 encryption suites.",
+  "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-205708",
+  "vuln_id": "xccdf_mil.disa.stig_group_V-205708"
+}

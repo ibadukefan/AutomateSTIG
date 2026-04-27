@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the certificate of the user or group is mapped to the corresponding user or group in the \"sssd.conf\" file with the following command:\n\n$ sudo find /etc/sssd/sssd.conf /etc/sssd/conf.d/ -type f -exec cat {} \\;\n \n[certmap/testing.test/rule_name]\nmatchrule =<SAN>.*EDIPI@mil\nmaprule = (userCertificate;binary={cert!bin})\ndomains = testing.test\n\nIf the certmap section does not exist, ask the system administrator (SA) to indicate how certificates are mapped to accounts. \n\nIf there is no evidence of certificate mapping, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 9 to map the authenticated identity to the user or group account by adding or modifying the certmap section of the \"/etc/sssd/sssd.conf\" file based on the following example:\n\n[certmap/testing.test/rule_name]\nmatchrule = .*EDIPI@mil\nmaprule = (userCertificate;binary={cert!bin})\ndomains = testing.test\n\nThe \"sssd\" service must be restarted for the changes to take effect. To restart the \"sssd\" service, run the following command:\n\n$ sudo systemctl restart sssd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-258132r1045260_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must map the authenticated identity to the user or group account for PKI-based authentication.",
+  "tracking_issue": "TODO-V-258132",
+  "vuln_id": "V-258132"
+}
