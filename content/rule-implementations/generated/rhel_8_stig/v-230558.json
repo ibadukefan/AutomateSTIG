@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify an FTP server has not been installed on the system with the following commands:\n\n$ sudo yum list installed *ftpd*\n\nvsftpd.x86_64                                                     3.0.3-28.el8                                                  appstream\n\nIf an FTP server is installed and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Document the FTP server package with the ISSO as an operational requirement or remove it from the system with the following command:\n\n$ sudo yum remove vsftpd",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

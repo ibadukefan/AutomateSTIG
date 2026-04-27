@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable the ability to use the TIPC protocol kernel module.\n\nAdd or update the following lines in the file \"/etc/modprobe.d/blacklist.conf\":\n\n     install tipc /bin/false\n     blacklist tipc\n\nReboot the system for the settings to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

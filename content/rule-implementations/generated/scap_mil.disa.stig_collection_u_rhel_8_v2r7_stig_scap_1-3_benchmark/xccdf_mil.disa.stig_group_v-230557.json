@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the TFTP daemon to operate in secure mode with the following command:\n$ sudo systemctl edit tftp.service\n\nIn the editor enter:\n[Service]\nExecStart=/usr/sbin/in.tftpd -s /var/lib/tftpboot\n\nAfter making changes, reload the systemd daemon and restart the TFTP service as follows:\n$ sudo systemctl daemon-reload\n$ sudo systemctl restart tftp.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

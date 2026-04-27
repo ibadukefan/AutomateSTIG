@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit log to be protected from unauthorized read access by setting the correct permissive mode with the following command: \n \n$ sudo chmod 0600 /var/log/audit/audit.log",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

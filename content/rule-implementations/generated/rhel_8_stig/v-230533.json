@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify a TFTP server has not been installed on the system with the following command:\n\n$ sudo yum list installed tftp-server\n\ntftp-server.x86_64   5.2-24.el8\n\nIf TFTP is installed and the requirement for TFTP is not documented with the ISSO, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Remove the TFTP package from the system with the following command:\n\n$ sudo yum remove tftp-server",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

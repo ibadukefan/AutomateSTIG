@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable non-essential capabilities by removing automated bug reporting packages from the system with the following command:\n\n$ sudo yum remove abrt*",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

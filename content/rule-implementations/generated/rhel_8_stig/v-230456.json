@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify RHEL 8 generates an audit record upon successful/unsuccessful attempts to use the \"chmod\", \"fchmod\", and \"fchmodat\" syscalls by using the following command to check the file system rules in \"/etc/audit/audit.rules\":\n\n$ sudo grep chmod /etc/audit/audit.rules\n\n-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -k perm_mod\n\nIf the command does not return an audit rule for \"chmod\", \"fchmod\", and \"fchmodat\", or any of the lines returned are commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit system to generate an audit event for any successful/unsuccessful use of the \"chmod\", \"fchmod\", and \"fchmodat\" syscalls by adding or updating the following line to \"/etc/audit/rules.d/audit.rules\": \n\n-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -k perm_mod\n\nThe audit daemon must be restarted for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

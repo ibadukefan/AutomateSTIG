@@ -1,8 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+      "type": "registry",
+      "value_name": "EnableSmartScreen"
+    },
+    "description": "Windows Server 2022 Microsoft Defender antivirus SmartScreen must be enabled.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-254361"
+  },
+  "check_content_excerpt": "This is applicable to unclassified systems; for other systems, this is NA.\n\nIf the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\\n\nValue Name: EnableSmartScreen\n\nValue Type: REG_DWORD\nValue: 0x00000001 (1)",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,12 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> File Explorer >> Configure Windows Defender SmartScreen to \"Enabled\" with either option \"Warn\" or \"Warn and prevent bypass\" selected.\n\nWindows Server 2022 includes duplicate policies for this setting. It can also be configured under Computer Configuration >> Administrative Templates >> Windows Components >> Windows Defender SmartScreen >> Explorer.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-254361r958478_rule",
   "severity": "medium",

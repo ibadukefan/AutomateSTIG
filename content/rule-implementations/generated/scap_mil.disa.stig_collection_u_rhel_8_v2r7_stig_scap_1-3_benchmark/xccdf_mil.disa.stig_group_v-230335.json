@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to lock an account when three unsuccessful logon attempts occur in 15 minutes.\n\nAdd/Modify the \"/etc/security/faillock.conf\" file to match the following line:\n\nfail_interval = 900",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the US DOD CCEB Interoperability Root CA cross-certificate on unclassified systems.\n\nIssued To - Issued By - Thumbprint\n\nDOD Root CA 3 - US DOD CCEB Interoperability Root CA 2 - 9B74964506C7ED9138070D08D5F8B969866560C8 \nDOD Root CA 6 -US DOD CCEB Interoperability Root CA 2 - D471CA32F7A692CE6CBB6196BD3377FE4DBCD106\n\nAdministrators must run the Federal Bridge Certification Authority (FBCA) Cross-Certificate Removal Tool once as an administrator and once as the current user.\n\nThe FBCA Cross-Certificate Remover Tool and User Guide are available on Cyber Exchange at https://cyber.mil/pki-pke/tools-configuration-files. PKI can be found at https://crl.gds.disa.mil/.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

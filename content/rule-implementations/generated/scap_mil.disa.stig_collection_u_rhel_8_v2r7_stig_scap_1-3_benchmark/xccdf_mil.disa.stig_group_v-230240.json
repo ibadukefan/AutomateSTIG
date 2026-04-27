@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to verify correct operation of all security functions.\n\nSet the \"SELinux\" status and the \"Enforcing\" mode by modifying the \"/etc/selinux/config\" file to have the following line:\n\nSELINUX=enforcing\n\nA reboot is required for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

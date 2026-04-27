@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the krb5-server package has not been installed on the system with the following commands:\n\nIf the system is a workstation or is utilizing krb5-server-1.17-18.el8.x86_64 or newer, this is Not Applicable\n\n$ sudo yum list installed krb5-server\n\nkrb5-server.x86_64 1.17-9.el8 repository\n\nIf the krb5-server package is installed and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Document the krb5-server package with the ISSO as an operational requirement or remove it from the system with the following command:\n\n$ sudo yum remove krb5-server",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

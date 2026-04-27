@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify local interactive users on RHEL 8 have a home directory assigned with the following command:\n\n$ sudo pwck -r\n\nuser 'lp': directory '/var/spool/lpd' does not exist\nuser 'news': directory '/var/spool/news' does not exist\nuser 'uucp': directory '/var/spool/uucp' does not exist\nuser 'www-data': directory '/var/www' does not exist\n\nAsk the System Administrator (SA) if any users found without home directories are local interactive users. If the SA is unable to provide a response, check for users with a User Identifier (UID) of 1000 or greater with the following command:\n\n$ sudo awk -F: '($3>=1000)&&($7 !~ /nologin/){print $1, $3, $6}' /etc/passwd\n\nIf any interactive users do not have a home directory assigned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Assign home directories to all local interactive users on RHEL 8 that currently do not have a home directory assigned.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

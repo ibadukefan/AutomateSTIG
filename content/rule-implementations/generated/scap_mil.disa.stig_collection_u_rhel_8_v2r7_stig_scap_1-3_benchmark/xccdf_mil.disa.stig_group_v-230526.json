@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SSH service to automatically start after reboot with the following command:\n\n$ sudo systemctl enable sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

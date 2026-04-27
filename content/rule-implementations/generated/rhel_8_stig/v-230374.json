@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Note: If temporary accounts do not exist or are not used this is not applicable.\n\nVerify temporary accounts have been provisioned with an expiration date of 72 hours.\n\nFor every existing temporary account, run the following command to obtain its account expiration information:\n\n     $ sudo chage -l <temporary_account_name> | grep -i \"account expires\"\n\nVerify each of these accounts has an expiration date set within 72 hours.\nIf any temporary accounts have no expiration date set or do not expire within 72 hours, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to expire temporary accounts after 72 hours with the following command:\n\n     $ sudo chage -E $(date -d +3days +%Y-%m-%d) <temporary_account_name>",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

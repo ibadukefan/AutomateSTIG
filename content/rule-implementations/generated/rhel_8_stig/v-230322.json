@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the assigned home directory of all local interactive users is group-owned by that user\u2019s primary GID with the following command:\n\nNote: This may miss local interactive users that have been assigned a privileged UID. Evidence of interactive use may be obtained from a number of log files containing system logon information. The returned directory \"/home/smithj\" is used as an example.\n\n     $ sudo ls -ld $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd)\n\n     drwxr-x--- 2 smithj admin 4096 Jun 5 12:41 smithj\n\nCheck the user's primary group with the following command:\n\n     $ sudo grep $(grep smithj /etc/passwd | awk -F: '{print $4}') /etc/group\n\n     admin:x:250:smithj,jonesj,jacksons\n\nIf the user home directory referenced in \"/etc/passwd\" is not group-owned by that user\u2019s primary GID, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the group owner of a local interactive user\u2019s home directory to the group found in \"/etc/passwd\". To change the group owner of a local interactive user\u2019s home directory, use the following command:\n\nNote: The example will be for the user \"smithj\", who has a home directory of \"/home/smithj\", and has a primary group of users.\n\n     $ sudo chgrp users /home/smithj",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

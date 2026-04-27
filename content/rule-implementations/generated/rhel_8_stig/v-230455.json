@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify RHEL 8 generates an audit record upon successful/unsuccessful attempts to use the \"chown\", \"fchown\", \"fchownat\" and \"lchown\" system calls by using the following command to check the file system rules in \"/etc/audit/audit.rules\":\n\n$ sudo grep chown /etc/audit/audit.rules\n\n-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_mod\n\nIf audit rules are not defined for \"chown\", \"fchown\", \"fchownat\", and \"lchown\" or any of the lines returned are commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit system to generate an audit event for any successful/unsuccessful use of the \"chown\", \"fchown\", \"fchownat\", and \"lchown\" system calls by adding or updating the following line to \"/etc/audit/rules.d/audit.rules\":\n\n-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_mod\n\nThe audit daemon must be restarted for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

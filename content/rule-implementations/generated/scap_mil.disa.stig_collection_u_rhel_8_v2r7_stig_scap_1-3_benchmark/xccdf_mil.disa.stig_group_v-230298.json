@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Start the auditd service, and enable the rsyslog service with the following commands:\n\n$ sudo systemctl start rsyslog.service\n\n$ sudo systemctl enable rsyslog.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

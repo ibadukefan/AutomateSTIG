@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Navigate to the System event log file.\n\nThe default location is the \"%SystemRoot%\\System32\\winevt\\Logs\" folder. However, the logs may have been moved to another folder.\n\nIf the permissions for the \"System.evtx\" file are not as restrictive as the default permissions listed below, this is a finding:\n\nEventlog - Full Control\nSYSTEM - Full Control\nAdministrators - Full Control",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the permissions on the System event log file (System.evtx) to prevent access by nonprivileged accounts. The default permissions listed below satisfy this requirement:\n\nEventlog - Full Control\nSYSTEM - Full Control\nAdministrators - Full Control\n\nThe default location is the \"%SystemRoot%\\System32\\winevt\\Logs\" folder.\n\nIf the location of the logs has been changed, when adding Eventlog to the permissions, it must be entered as \"NT Service\\Eventlog\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

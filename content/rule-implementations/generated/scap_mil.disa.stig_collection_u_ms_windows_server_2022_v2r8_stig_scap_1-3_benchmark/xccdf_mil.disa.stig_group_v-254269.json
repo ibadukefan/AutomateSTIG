@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Uninstall the \"Fax Server\" role.\n\nStart \"Server Manager\".\n\nSelect the server with the role.\n\nScroll down to \"ROLES AND FEATURES\" in the right pane.\n\nSelect \"Remove Roles and Features\" from the drop-down \"TASKS\" list.\n\nSelect the appropriate server on the \"Server Selection\" page and click \"Next\".\n\nDeselect \"Fax Server\" on the \"Roles\" page.\n\nClick \"Next\" and \"Remove\" as prompted.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

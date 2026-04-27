@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Note: This requirement applies to RHEL versions 8.4 or newer. If the system is RHEL below version 8.4, this requirement is not applicable.\n\nVerify RHEL 8 is configured to limit the \"pwquality\" retry option to \"3\".\n\nCheck for the use of the retry option in the security directory with the following command:\n\n$ grep -w retry /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf\n\nretry = 3\n\nIf the value of \"retry\" is set to \"0\" or greater than \"3\", or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to limit the \"pwquality\" retry option to \"3\".\n\nAdd or update the following line in the \"/etc/security/pwquality.conf\" file or a file in the \"/etc/security/pwquality.conf.d/\" directory to contain the \"retry\" parameter:\n\nretry = 3",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

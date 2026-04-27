@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify that Advanced Intrusion Detection Environment (AIDE) is properly configured to use cryptographic mechanisms to protect the integrity of audit tools.\n\nIf AIDE is not installed, ask the System Administrator how file integrity checks are performed on the system.\n\nCheck the selection lines to ensure AIDE is configured to add/check with the following command:\n\n     $ sudo grep -E '(\\/usr\\/sbin\\/(audit|au|rsys))' /etc/aide.conf\n\n     /usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512\n     /usr/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512\n     /usr/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512\n     /usr/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512\n     /usr/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512\n     /usr/sbin/rsyslogd p+i+n+u+g+s+b+acl+xattrs+sha512\n     /usr/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512\n\nIf any of the audit tools listed above do not have an appropriate selection line, ask the system administrator to indicate what cryptographic mechanisms are being used to protect the integrity of the audit tools. If there is no evidence of integrity protection, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Add or update the following lines to \"/etc/aide.conf\", to protect the integrity of the audit tools.\n\n# Audit Tools\n/usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/rsyslogd p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

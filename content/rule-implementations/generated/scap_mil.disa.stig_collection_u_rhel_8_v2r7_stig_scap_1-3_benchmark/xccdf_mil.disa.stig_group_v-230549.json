@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to use reverse path filtering on IPv4 interfaces by default.\n\nAdd or edit the following line in a single system configuration file in the \"/etc/sysctl.d/\" directory:\n\nCreate a configuration file if it does not already exist:\n\n$ sudo vi /etc/sysctl.d/ipv4_rp_filter.conf\n\nnet.ipv4.conf.all.rp_filter = 1\n\nLoad settings from all system configuration files with the following command:\n\n$ sudo sysctl --system",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

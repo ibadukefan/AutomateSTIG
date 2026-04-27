@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the RHEL 8 \"fapolicyd\" is enabled and running with the following command:\n\n$ sudo systemctl status fapolicyd.service\n\nfapolicyd.service - File Access Policy Daemon\nLoaded: loaded (/usr/lib/systemd/system/fapolicyd.service; enabled; vendor preset: disabled)\nActive: active (running)\n\nIf fapolicyd is not enabled and running, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Enable \"fapolicyd\" using the following command:\n\n$ sudo systemctl enable --now fapolicyd",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

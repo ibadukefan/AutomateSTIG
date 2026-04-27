@@ -1,8 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "Fax",
+      "should_be_installed": false,
+      "type": "windows_feature"
+    },
+    "description": "Windows Server 2022 must not have the Fax Server role installed.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "windows",
+    "vuln_id": "V-254269"
+  },
+  "check_content_excerpt": "Open \"PowerShell\".\n\nEnter \"Get-WindowsFeature | Where Name -eq Fax\".\n\nIf \"Installed State\" is \"Installed\", this is a finding.\n\nAn Installed State of \"Available\" or \"Removed\" is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,12 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_false"
+  },
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Uninstall the \"Fax Server\" role.\n\nStart \"Server Manager\".\n\nSelect the server with the role.\n\nScroll down to \"ROLES AND FEATURES\" in the right pane.\n\nSelect \"Remove Roles and Features\" from the drop-down \"TASKS\" list.\n\nSelect the appropriate server on the \"Server Selection\" page and click \"Next\".\n\nDeselect \"Fax Server\" on the \"Roles\" page.\n\nClick \"Next\" and \"Remove\" as prompted.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "windows_feature",
   "remediation": "planned",
   "rule_id": "SV-254269r958478_rule",
   "severity": "medium",

@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify RHEL 8 does not accept router advertisements on all IPv6 interfaces by default, unless the system is a router.\n\nNote: If IPv6 is disabled on the system, this requirement is not applicable.\n\nCheck to see if router advertisements are not accepted by default by using the following command:\n\n$ sudo sysctl  net.ipv6.conf.default.accept_ra\n\nnet.ipv6.conf.default.accept_ra = 0\n\nIf the \"accept_ra\" value is not \"0\" and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.\n\nCheck that the configuration files are present to enable this network parameter.\n\n$ sudo grep -r net.ipv6.conf.default.accept_ra /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf /lib/sysctl.d/*.conf /etc/sysctl.conf /etc/sysctl.d/*.conf\n\n/etc/sysctl.d/99-sysctl.conf: net.ipv6.conf.default.accept_ra = 0\n\nIf \"net.ipv6.conf.default.accept_ra\" is not set to \"0\", is missing or commented out, this is a finding.\n\nIf conflicting results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to not accept router advertisements on all IPv6 interfaces by default unless the system is a router.\n\nAdd or edit the following line in a system configuration file, in the \"/etc/sysctl.d/\" directory:\n\nnet.ipv6.conf.default.accept_ra=0\n\nRemove any configurations that conflict with the above from the following locations: \n/run/sysctl.d/*.conf\n/usr/local/lib/sysctl.d/*.conf\n/usr/lib/sysctl.d/*.conf\n/lib/sysctl.d/*.conf\n/etc/sysctl.conf\n/etc/sysctl.d/*.conf\n\nLoad settings from all system configuration files with the following command:\n\n$ sudo sysctl --system",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

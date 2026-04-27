@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify that the pam_unix.so module is configured to use sha512.\n\nCheck that the pam_unix.so module is configured to use sha512 in /etc/pam.d/password-auth with the following command:\n\n$ sudo grep password /etc/pam.d/password-auth | grep pam_unix\n\npassword sufficient pam_unix.so sha512\n\nIf \"sha512\" is missing, or is commented out, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to use a FIPS 140-2 approved cryptographic hashing algorithm for system authentication.\n\nEdit/modify the following line in the \"/etc/pam.d/password-auth\" file to include the sha512 option for pam_unix.so:\n\npassword sufficient pam_unix.so sha512",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

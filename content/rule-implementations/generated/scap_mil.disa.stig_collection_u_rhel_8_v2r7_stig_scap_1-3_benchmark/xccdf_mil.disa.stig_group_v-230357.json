@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to enforce password complexity by requiring that at least one uppercase character be used by setting the \"ucredit\" option.\n\nAdd the following line to /etc/security/pwquality.conf (or modify the line to have the required value):\n\nucredit = -1\n\nRemove any configurations that conflict with the above value.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

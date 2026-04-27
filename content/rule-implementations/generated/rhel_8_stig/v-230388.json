@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify that the SA and ISSO (at a minimum) are notified in the event of an audit processing failure.\n\nCheck that RHEL 8 notifies the SA and ISSO (at a minimum) in the event of an audit processing failure with the following command:\n\n$ sudo grep action_mail_acct /etc/audit/auditd.conf\n\naction_mail_acct = root\n\nIf the value of the \"action_mail_acct\" keyword is not set to \"root\" and/or other accounts for security personnel, the \"action_mail_acct\" keyword is missing, or the retuned line is commented out, ask the system administrator to indicate how they and the ISSO are notified of an audit process failure.  If there is no evidence of the proper personnel being notified of an audit processing failure, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure \"auditd\" service to notify the SA and ISSO in the event of an audit processing failure. \n\nEdit the following line in \"/etc/audit/auditd.conf\" to ensure that administrators are notified via email for those situations:\n\naction_mail_acct = root",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to prevent system daemons from using Kerberos for authentication.\n\nRemove any files with the .keytab extension from the operating system.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

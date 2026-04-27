@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to limit the number of concurrent sessions to \"10\" for all accounts and/or account types.\n\nAdd the following line to the top of the /etc/security/limits.conf or in a \".conf\" file defined in /etc/security/limits.d/:\n\n* hard maxlogins 10",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

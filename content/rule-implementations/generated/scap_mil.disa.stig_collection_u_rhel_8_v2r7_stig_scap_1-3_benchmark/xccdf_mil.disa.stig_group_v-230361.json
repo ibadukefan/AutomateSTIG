@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to require the change of the number of repeating consecutive characters when passwords are changed by setting the \"maxrepeat\" option.\n\nAdd the following line to \"/etc/security/pwquality.conf conf\" (or modify the line to have the required value):\n\nmaxrepeat = 3\n\nRemove any configurations that conflict with the above value.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

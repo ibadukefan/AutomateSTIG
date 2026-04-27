@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Uninstall the SMBv1 protocol.\n\nOpen \"Windows PowerShell\" with elevated privileges (run as administrator).\n\nEnter \"Uninstall-WindowsFeature -Name FS-SMB1 -Restart\".\n(Omit the Restart parameter if an immediate restart of the system cannot be done.)\n\nAlternately:\n\nStart \"Server Manager\".\n\nSelect the server with the feature.\n\nScroll down to \"ROLES AND FEATURES\" in the right pane.\n\nSelect \"Remove Roles and Features\" from the drop-down \"TASKS\" list.\n\nSelect the appropriate server on the \"Server Selection\" page and click \"Next\".\n\nDeselect \"SMB 1.0/CIFS File Sharing Support\" on the \"Features\" page.\n\nClick \"Next\" and \"Remove\" as prompted.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

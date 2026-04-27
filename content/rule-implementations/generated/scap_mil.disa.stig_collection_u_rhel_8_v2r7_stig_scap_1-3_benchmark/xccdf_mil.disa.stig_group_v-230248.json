@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the permissions of the directory \"/var/log\" to \"0755\" by running the following command:\n\n$ sudo chmod 0755 /var/log",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

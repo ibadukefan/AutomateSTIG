@@ -1,8 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer",
+      "type": "registry",
+      "value_name": "NoHeapTerminationOnCorruption"
+    },
+    "description": "Windows Server 2022 Turning off File Explorer heap termination on corruption must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-254363"
+  },
+  "check_content_excerpt": "The default behavior is for File Explorer heap termination on corruption to be enabled.\n\nIf the registry Value Name below does not exist, this is not a finding.\n\nIf it exists and is configured with a value of \"0\", this is not a finding.\n\nIf it exists and is configured with a value of \"1\", this is a finding.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\\n\nValue Name: NoHeapTerminationOnCorruption\n\nValue Type: REG_DWORD\nValue: 0x00000000 (0) (or if the Value Name does not exist)",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,12 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "The default behavior is for File Explorer heap termination on corruption to be disabled.\n\nIf this needs to be corrected, configure the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> File Explorer >> Turn off heap termination on corruption to \"Not Configured\" or \"Disabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-254363r991589_rule",
   "severity": "low",

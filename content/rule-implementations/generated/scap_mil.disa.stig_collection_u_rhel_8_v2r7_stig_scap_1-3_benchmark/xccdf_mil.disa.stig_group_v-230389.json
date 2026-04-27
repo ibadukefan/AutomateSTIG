@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to notify administrators in the event of an audit processing failure.\n\nAdd/update the following line in \"/etc/aliases\":\n\npostmaster: root",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

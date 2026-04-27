@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system to require authentication upon booting into emergency mode by adding the following line to the \"/usr/lib/systemd/system/emergency.service\" file.\n\nExecStart=-/usr/lib/systemd/systemd-sulogin-shell emergency",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

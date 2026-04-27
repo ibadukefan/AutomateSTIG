@@ -41,6 +41,31 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertEqual(classification, 'manual')
         self.assertEqual(collector, 'manual_evidence_workflow')
 
+    def test_infers_registry_candidate_check_from_disa_check_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254382',
+            'title': 'WinRM service must not allow unencrypted traffic.',
+            'check_content': '''If the following registry value does not exist or is not configured as specified, this is a finding:
+Registry Hive: HKEY_LOCAL_MACHINE
+Registry Path: \\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\
+Value Name: AllowUnencryptedTraffic
+Type: REG_DWORD
+Value: 0x00000000 (0)'''
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate['check']['type'], 'registry')
+        self.assertEqual(candidate['check']['path'], 'HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service')
+        self.assertEqual(candidate['check']['value_name'], 'AllowUnencryptedTraffic')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
+
+    def test_infers_windows_feature_candidate_check_from_powershell_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254269',
+            'title': 'Windows Server 2022 must not have the Fax Server role installed.',
+            'check_content': 'Enter "Get-WindowsFeature | Where Name -eq Fax". If "Installed State" is "Installed", this is a finding.'
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate['check'], {'type': 'windows_feature', 'name': 'Fax', 'should_be_installed': False})
+        self.assertEqual(candidate['expected'], {'type': 'is_false'})
+
 
 if __name__ == '__main__':
     unittest.main()

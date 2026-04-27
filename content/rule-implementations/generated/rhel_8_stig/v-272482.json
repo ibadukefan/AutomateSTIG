@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the RHEL 8 SSH client is configured to use only MACs employing FIPS 140-3-approved algorithms.\n\nTo verify the MACs in the systemwide SSH configuration file, use the following command:\n\n$ grep -i MACs /etc/crypto-policies/back-ends/openssh.config\n\nMACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256\n\nIf the MACs entries in the \"openssh.config\" file have any hashes other than \"hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-2562\", or they are missing or commented out, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the RHEL 8 SSH client to use only MACs employing FIPS 140-3-approved algorithms.\n\nReinstall crypto-policies with the following command:\n\n$ sudo dnf -y reinstall crypto-policies\n\nSet the crypto-policy to FIPS with the following command:\n\n$ sudo update-crypto-policies --set FIPS\n\nSetting system policy to FIPS\n\nNote: Systemwide crypto policies are applied on application startup. It is recommended to restart the system for the change of policies to fully take place.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

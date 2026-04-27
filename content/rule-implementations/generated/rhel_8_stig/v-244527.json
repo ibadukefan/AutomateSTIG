@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Note: For RHEL versions 8.4 and above running with kernel FIPS mode enabled as specified by RHEL-08-010020, this requirement is Not Applicable.\n\nCheck that RHEL 8 has the packages required to enabled the hardware random number generator entropy gatherer service with the following command:\n\n$ sudo yum list installed rng-tools\n\nrng-tools.x86_64                       6.8-3.el8                        @anaconda\n\nIf the \"rng-tools\" package is not installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the packages required to enabled the hardware random number generator entropy gatherer service with the following command:\n\n$ sudo yum install rng-tools",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

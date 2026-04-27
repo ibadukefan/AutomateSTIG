@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to enforce a delay of at least four seconds between logon prompts following a failed console logon attempt.\n\nModify the \"/etc/login.defs\" file to set the \"FAIL_DELAY\" parameter to \"4\" or greater:\n\nFAIL_DELAY 4",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

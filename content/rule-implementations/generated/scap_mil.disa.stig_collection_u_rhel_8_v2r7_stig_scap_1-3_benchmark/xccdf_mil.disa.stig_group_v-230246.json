@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the owner of the file /var/log/messages to root by running the following command:\n\n$ sudo chown root /var/log/messages",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

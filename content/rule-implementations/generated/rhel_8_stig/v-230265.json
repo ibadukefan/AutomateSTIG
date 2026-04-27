@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the operating system prevents the installation of patches, service packs, device drivers, or operating system components from a repository without verification that they have been digitally signed using a certificate that is recognized and approved by the organization.\n\nCheck if YUM is configured to perform a signature check on local packages with the following command:\n\n$ sudo grep -i localpkg_gpgcheck /etc/dnf/dnf.conf\n\nlocalpkg_gpgcheck =True\n\nIf \"localpkg_gpgcheck\" is not set to either \"1\", \"True\", or \"yes\", commented out, or is missing from \"/etc/dnf/dnf.conf\", this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to remove all software components after updated versions have been installed.\n\nSet the \"localpkg_gpgcheck\" option to \"True\" in the \"/etc/dnf/dnf.conf\" file:\n\nlocalpkg_gpgcheck=True",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Determine if a process to back up log data to a different system or media than the system being audited has been implemented.\n\nIf it has not, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Establish and implement a process for backing up log data to another system or media other than the system being audited.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

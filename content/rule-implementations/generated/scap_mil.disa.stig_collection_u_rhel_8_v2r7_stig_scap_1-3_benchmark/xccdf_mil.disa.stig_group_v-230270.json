@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to prevent kernel profiling by nonprivileged users.\n\nCreate a drop-in if it does not already exist:\n\n$ sudo vi /etc/sysctl.d/99-kernel_perf_event_paranoid.conf\n\nAdd the following to the file:\nkernel.perf_event_paranoid = 2\n\nReload settings from all system configuration files with the following command:\n\n$ sudo sysctl --system",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

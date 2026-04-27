@@ -18,6 +18,14 @@ def load_specs(root):
             if required not in d: raise SystemExit(f'{p}: missing required field {required}')
         for f in d.get('fixtures',[]):
             if f and not Path(f).exists(): raise SystemExit(f'{p}: missing fixture {f}')
+        candidate = d.get('candidate_check')
+        if candidate:
+            for field in ('vuln_id','platform','check','expected','description'):
+                if field not in candidate: raise SystemExit(f'{p}: candidate_check missing {field}')
+            if not isinstance(candidate.get('check'), dict) or 'type' not in candidate['check']:
+                raise SystemExit(f'{p}: candidate_check.check missing type')
+            if not isinstance(candidate.get('expected'), dict) or 'type' not in candidate['expected']:
+                raise SystemExit(f'{p}: candidate_check.expected missing type')
     return specs
 def main(argv=None):
     ap=argparse.ArgumentParser(); ap.add_argument('--coverage-root',required=True); ap.add_argument('--implementation-root',required=True); ap.add_argument('--require-production',action='store_true')

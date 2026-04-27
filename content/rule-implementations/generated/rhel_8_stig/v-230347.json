@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the operating system enables a user's session lock until that user re-establishes access using established identification and authentication procedures with the following command:\n\n$ sudo gsettings get org.gnome.desktop.screensaver lock-enabled\n\ntrue\n\nIf the setting is \"false\", this is a finding.\n\nNote: This requirement assumes the use of the RHEL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to enable a user's session lock until that user re-establishes access using established identification and authentication procedures.\n\nCreate a database to contain the system-wide screensaver settings (if it does not already exist) with the following example:\n\n$ sudo vi /etc/dconf/db/local.d/00-screensaver\n\nEdit the \"[org/gnome/desktop/screensaver]\" section of the database file and add or update the following lines:\n\n# Set this to true to lock the screen when the screensaver activates\nlock-enabled=true\n\nUpdate the system databases:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

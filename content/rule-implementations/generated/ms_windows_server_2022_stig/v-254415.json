@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "This applies to domain controllers. It is NA for other systems.\n\nOpen \"PowerShell\".\n\nEnter the following:\n\n\"Get-ADUser -Filter {(Enabled -eq $True) -and (SmartcardLogonRequired -eq $False)} | FT Name\"\n(\"DistinguishedName\" may be substituted for \"Name\" for more detailed output.)\n\nIf any user accounts, including administrators, are listed, this is a finding.\n\nAlternately:\n\nTo view sample accounts in \"Active Directory Users and Computers\" (available from various menus or run \"dsa.msc\"):\n\nSelect the Organizational Unit (OU) where the user accounts are located. (By default, this is the Users node; however, accounts may be under other organization-defined OUs.)\n\nRight-click the sample user account and select \"Properties\".\n\nSelect the \"Account\" tab.\n\nIf any user accounts, including administrators, do not have \"Smart card is required for interactive logon\" checked in the \"Account Options\" area, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure all user accounts, including administrator accounts, in Active Directory to enable the option \"Smart card is required for interactive logon\".\n\nRun \"Active Directory Users and Computers\" (available from various menus or run \"dsa.msc\"):\n\nSelect the OU where the user accounts are located. (By default this is the Users node; however, accounts may be under other organization-defined OUs.)\n\nRight-click the user account and select \"Properties\".\n\nSelect the \"Account\" tab.\n\nCheck \"Smart card is required for interactive logon\" in the \"Account Options\" area.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

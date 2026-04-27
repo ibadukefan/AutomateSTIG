@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure \"auditd\" service to notify the SA and ISSO in the event of an audit processing failure. \n\nEdit the following line in \"/etc/audit/auditd.conf\" to ensure that administrators are notified via email for those situations:\n\naction_mail_acct = root",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

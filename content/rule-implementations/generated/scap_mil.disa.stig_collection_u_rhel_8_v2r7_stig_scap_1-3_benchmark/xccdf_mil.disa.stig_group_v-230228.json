@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to monitor all remote access methods by installing rsyslog with the following command:\n\n$ sudo yum install rsyslog\n\nThen add or update the following lines to the \"/etc/rsyslog.conf\" file:\n\nauth.*;authpriv.*;daemon.* /var/log/secure\n\nThe \"rsyslog\" service must be restarted for the changes to take effect. To restart the \"rsyslog\" service, run the following command:\n\n$ sudo systemctl restart rsyslog.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

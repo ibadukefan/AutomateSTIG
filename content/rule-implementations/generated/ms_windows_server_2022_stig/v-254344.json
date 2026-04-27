@@ -1,8 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch",
+      "type": "registry",
+      "value_name": "DriverLoadPolicy"
+    },
+    "description": "Windows Server 2022 Early Launch Antimalware, Boot-Start Driver Initialization Policy must prevent boot drivers identified as bad.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-254344"
+  },
+  "check_content_excerpt": "The default behavior is for Early Launch Antimalware - Boot-Start Driver Initialization policy to enforce \"Good, unknown and bad but critical\" (preventing \"bad\").\n\nIf the registry value name below does not exist, this is not a finding.\n\nIf it exists and is configured with a value of \"0x00000007 (7)\", this is a finding.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch\\\n\nValue Name: DriverLoadPolicy\n\nValue Type: REG_DWORD\nValue: 0x00000001 (1), 0x00000003 (3), or 0x00000008 (8) (or if the Value Name does not exist)\n\nPossible values for this setting are:\n8 - Good only\n1 - Good and unknown\n3 - Good, unknown and bad but critical\n7 - All (which includes \"bad\" and would be a finding)",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,12 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "The default behavior is for Early Launch Antimalware - Boot-Start Driver Initialization policy to enforce \"Good, unknown and bad but critical\" (preventing \"bad\").\n\nIf this needs to be corrected or a more secure setting is desired, configure the policy value for Computer Configuration >> Administrative Templates >> System >> Early Launch Antimalware >> Boot-Start Driver Initialization Policy to \"Not Configured\" or \"Enabled\" with any option other than \"All\" selected.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-254344r991589_rule",
   "severity": "medium",

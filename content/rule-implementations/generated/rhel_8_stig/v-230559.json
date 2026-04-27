@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Note: If NFS mounts are authorized and in use on the system, this control is not applicable.\n\nVerify the gssproxy package is not installed with the following command:\n\n$ dnf list --installed gssproxy\n\nError: No matching Packages to list\n\nIf the \"gssproxy\" package is installed and is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Document the gssproxy package with the ISSO as an operational requirement or remove it from the system with the following command:\n\n$ sudo yum remove gssproxy",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the certificate of the user or group is mapped to the corresponding user or group in the \"sssd.conf\" file with the following command:\n\nNote: If the System Administrator demonstrates the use of an approved alternate multifactor authentication method, this requirement is not applicable.\n\n$ sudo cat /etc/sssd/sssd.conf\n\n[sssd]\nconfig_file_version = 2\nservices = pam, sudo, ssh\ndomains = testing.test\n\n[pam]\npam_cert_auth = True\n\n[domain/testing.test]\nid_provider = ldap\n\n[certmap/testing.test/rule_name]\nmatchrule =<SAN>.*EDIPI@mil\nmaprule = (userCertificate;binary={cert!bin})\ndomains = testing.test\n\nIf the certmap section does not exist, ask the System Administrator to indicate how certificates are mapped to accounts. If there is no evidence of certificate mapping, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to map the authenticated identity to the user or group account by adding or modifying the certmap section of the \"/etc/sssd/sssd.conf file based on the following example:\n\n[certmap/testing.test/rule_name]\nmatchrule =<SAN>.*EDIPI@mil\nmaprule = (userCertificate;binary={cert!bin})\ndomains = testing.test\n\nThe \"sssd\" service must be restarted for the changes to take effect. To restart the \"sssd\" service, run the following command:\n\n$ sudo systemctl restart sssd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

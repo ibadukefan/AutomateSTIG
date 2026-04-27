@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable the Bluetooth adapter when not in use.\n\nBuild or modify the \"/etc/modprobe.d/bluetooth.conf\" file with the following line:\n\n     install bluetooth /bin/false\n\nDisable the ability to use the Bluetooth kernel module. \n \n     $ sudo vi /etc/modprobe.d/blacklist.conf \n \nAdd or update the line: \n \n     blacklist bluetooth\n\nReboot the system for the settings to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

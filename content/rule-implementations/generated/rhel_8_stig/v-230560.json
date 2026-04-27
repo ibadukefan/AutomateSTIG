@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the iprutils package has not been installed on the system with the following commands:\n\n$ sudo yum list installed iprutils\n\niprutils.x86_64                                                     2.4.18.1-1.el8                                                  @anaconda\n\nIf the iprutils package is installed and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Document the iprutils package with the ISSO as an operational requirement or remove it from the system with the following command:\n\n$ sudo yum remove iprutils",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

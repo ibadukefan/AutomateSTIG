@@ -21,6 +21,7 @@ Completed factory layers:
 - corpus indexing/fetch/extraction/diff scripts;
 - scheduled corpus freshness workflow;
 - generated per-rule implementation backlog specs for every currently unsupported authoritative DISA rule.
+- conservative candidate check-template extraction from authoritative DISA prose for registry and Windows Feature patterns.
 
 Current authoritative corpus tracked in-repo:
 
@@ -29,8 +30,11 @@ Current authoritative corpus tracked in-repo:
 - generated planned specs for unsupported rules: 1,037
 - planned automated implementations: 951
 - planned manual-evidence workflows: 86
+- generated candidate executable checks requiring fixture validation: 96
+  - registry candidates: 94
+  - Windows Feature candidates: 2
 
-The next burn-down phase is to replace generated planned specs with validated implementations, starting with reusable Windows and Linux collector families because they cover 950 of the 1,037 planned specs in the current corpus.
+The next burn-down phase is to validate the 96 candidate checks with fixtures, regenerate authoritative coverage for those rules as implemented, and then continue expanding the Linux and Windows prose-to-template extractors. Reusable Windows and Linux collector families remain the high-leverage implementation path because they cover 950 of the 1,037 planned specs in the current corpus.
 
 ## Immediate next implementation sequence
 

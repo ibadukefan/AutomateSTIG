@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to define default permissions for all authenticated users in such a way that the user can only read and modify their own files.\n\nAdd or edit the line for the \"UMASK\" parameter in \"/etc/login.defs\" file to \"077\":\n\nUMASK 077",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

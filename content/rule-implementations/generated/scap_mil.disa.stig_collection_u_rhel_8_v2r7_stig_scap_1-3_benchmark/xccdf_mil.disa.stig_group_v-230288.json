@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure SSH to perform strict mode checking of home directory configuration files. Uncomment the \"StrictModes\" keyword in \"/etc/ssh/sshd_config\" and set the value to \"yes\":\n\nStrictModes yes\n\nThe SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command:\n\n$ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to authenticate the remote logging server for off-loading audit logs by setting the following option in \"/etc/rsyslog.conf\" or \"/etc/rsyslog.d/[customfile].conf\":\n\n$ActionSendStreamDriverAuthMode x509/name",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

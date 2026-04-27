@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify that a separate file system has been created for \"/var/tmp\".\n\nCheck that a file system has been created for \"/var/tmp\" with the following command:\n\n     $ sudo grep /var/tmp /etc/fstab\n\n     /dev/mapper/...   /var/tmp   xfs   defaults,nodev,noexec,nosuid 0 0\n\nIf a separate entry for \"/var/tmp\" is not in use, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Migrate the \"/var/tmp\" path onto a separate file system.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

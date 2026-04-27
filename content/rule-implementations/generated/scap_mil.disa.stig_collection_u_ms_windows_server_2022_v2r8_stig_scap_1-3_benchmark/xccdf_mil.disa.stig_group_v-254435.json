@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Deny access to this computer from the network to include the following:\n\nDomain Systems Only:\n- Enterprise Admins group\n- Domain Admins group\n- \"Local account and member of Administrators group\" or \"Local account\" (see Note below)\n\nAll Systems:\n- Guests group\n\nNote: These are built-in security groups. \"Local account\" is more restrictive but may cause issues on servers such as systems that provide failover clustering.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

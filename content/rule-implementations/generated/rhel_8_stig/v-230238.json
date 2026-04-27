@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify that RHEL 8 prevents system daemons from using Kerberos for authentication.\n\nIf the system is a server utilizing krb5-server-1.17-18.el8.x86_64 or newer, this requirement is not applicable.\nIf the system is a workstation utilizing krb5-workstation-1.17-18.el8.x86_64 or newer, this requirement is not applicable.\n\nCheck if there are available keytabs with the following command:\n\n$ sudo ls -al /etc/*.keytab\n\nIf this command produces any file(s), this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to prevent system daemons from using Kerberos for authentication.\n\nRemove any files with the .keytab extension from the operating system.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

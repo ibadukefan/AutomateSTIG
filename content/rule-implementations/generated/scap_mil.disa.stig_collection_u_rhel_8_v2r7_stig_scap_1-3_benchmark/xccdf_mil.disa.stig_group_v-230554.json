@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure network interfaces to turn off promiscuous mode unless approved by the ISSO and documented.\n\nSet the promiscuous mode of an interface to off with the following command:\n\n$ sudo ip link set dev <devicename> multicast off promisc off",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

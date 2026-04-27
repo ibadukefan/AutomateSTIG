@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify RHEL 8 generates audit records for all account creations, modifications, disabling, and termination events that affect \"/etc/shadow\".\n\nCheck the auditing rules in \"/etc/audit/audit.rules\" with the following command:\n\n$ sudo grep /etc/shadow /etc/audit/audit.rules\n\n-w /etc/shadow -p wa -k identity\n\nIf the command does not return a line, or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to generate audit records for all account creations, modifications, disabling, and termination events that affect \"/etc/shadow\".\n\nAdd or update the following file system rule to \"/etc/audit/rules.d/audit.rules\":\n\n-w /etc/shadow -p wa -k identity\n\nThe audit daemon must be restarted for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

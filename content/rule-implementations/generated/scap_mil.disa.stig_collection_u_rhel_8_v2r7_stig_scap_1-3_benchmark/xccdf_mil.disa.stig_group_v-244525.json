@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: This setting must be applied in conjunction with RHEL-08-010200 to function correctly.\n\nConfigure the SSH server to terminate a user session automatically after the SSH client has been unresponsive for 10 minutes.\n\nModify or append the following lines in the \"/etc/ssh/sshd_config\" file:\n\n     ClientAliveInterval 600\n\nFor the changes to take effect, the SSH daemon must be restarted.\n\n     $ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

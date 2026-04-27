@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "The default behavior is for File Explorer heap termination on corruption to be disabled.\n\nIf this needs to be corrected, configure the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> File Explorer >> Turn off heap termination on corruption to \"Not Configured\" or \"Disabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

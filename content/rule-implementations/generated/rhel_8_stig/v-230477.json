@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the operating system has the packages required for offloading audit logs installed with the following commands:\n\n$ sudo yum list installed rsyslog\n\nrsyslog.x86_64          8.1911.0-3.el8          @AppStream\n\nIf the \"rsyslog\" package is not installed, ask the administrator to indicate how audit logs are being offloaded and what packages are installed to support it.  If there is no evidence of audit logs being offloaded, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to offload audit logs by installing the required packages with the following command:\n\n$ sudo yum install rsyslog",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

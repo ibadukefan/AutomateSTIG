@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify RHEL 8 cryptographic policies are not overridden.\n\nVerify the configured policy matches the generated policy with the following command:\n\n$ sudo update-crypto-policies --is-applied\n\nThe configured policy is applied\n\nIf the returned message does not match the above, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to correctly implement the systemwide cryptographic policies by reinstalling the crypto-policies package contents.\n\nReinstall crypto-policies with the following command:\n\n$ sudo dnf -y reinstall crypto-policies\n\nSet the crypto-policy to FIPS with the following command:\n\n$ sudo update-crypto-policies --set FIPS\n\nSetting system policy to FIPS\n\nNote: Systemwide crypto policies are applied on application startup. It is recommended to restart the system for the change of policies to fully take place.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

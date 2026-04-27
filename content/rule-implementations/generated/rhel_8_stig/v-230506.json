@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify there are no wireless interfaces configured on the system with the following command:\n\nNote: This requirement is Not Applicable for systems that do not have physical wireless network radios.\n\n$ sudo nmcli device status\n\nDEVICE                    TYPE            STATE                    CONNECTION\nvirbr0                      bridge         connected             virbr0\nwlp7s0                    wifi              connected            wifiSSID\nenp6s0                    ethernet     disconnected        --\np2p-dev-wlp7s0     wifi-p2p     disconnected        --\nlo                             loopback    unmanaged           --\nvirbr0-nic                tun              unmanaged          --\n\nIf a wireless interface is configured and has not been documented and approved by the Information System Security Officer (ISSO), this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system to disable all wireless network interfaces with the following command:\n\n$ sudo nmcli radio all off",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

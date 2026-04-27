@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Check to see if the system requires authentication for rescue mode with the following command:\n\n$ sudo grep sulogin-shell /usr/lib/systemd/system/rescue.service\n\nExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue\n\nIf the \"ExecStart\" line is configured for anything other than \"/usr/lib/systemd/systemd-sulogin-shell rescue\", commented out, or missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system to require authentication upon booting into rescue mode by adding the following line to the \"/usr/lib/systemd/system/rescue.service\" file.\n\nExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

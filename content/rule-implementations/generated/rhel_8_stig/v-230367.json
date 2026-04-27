@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Check whether the maximum time period for existing passwords is restricted to 60 days with the following commands:\n\n$ sudo awk -F: '$5 > 60 {print $1 \" \" $5}' /etc/shadow\n\n$ sudo awk -F: '$5 <= 0 {print $1 \" \" $5}' /etc/shadow\n\nIf any results are returned that are not associated with a system account, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure non-compliant accounts to enforce a 60-day maximum password lifetime restriction.\n\n$ sudo chage -M 60 [user]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

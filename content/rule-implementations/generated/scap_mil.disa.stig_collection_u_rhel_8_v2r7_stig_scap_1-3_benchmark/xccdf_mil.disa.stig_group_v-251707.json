@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the library directories to be protected from unauthorized access. Run the following command, replacing \"[DIRECTORY]\" with any library directory with a mode more permissive than 755.\n\n$ sudo chmod 755 [DIRECTORY]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

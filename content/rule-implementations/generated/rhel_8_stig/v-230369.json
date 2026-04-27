@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the operating system enforces a minimum 15-character password length. The \"minlen\" option sets the minimum number of characters in a new password.\n\nCheck for the value of the \"minlen\" option with the following command:\n\n$ sudo grep -r minlen /etc/security/pwquality.conf*\n\n/etc/security/pwquality.conf:minlen = 15\n\nIf the command does not return a \"minlen\" value of 15 or greater, this is a finding.\nIf conflicting results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure operating system to enforce a minimum 15-character password length.\n\nAdd the following line to \"/etc/security/pwquality.conf\" (or modify the line to have the required value):\n\nminlen = 15\n\nRemove any configurations that conflict with the above value.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to remove all software components after updated versions have been installed.\n\nSet the \"localpkg_gpgcheck\" option to \"True\" in the \"/etc/dnf/dnf.conf\" file:\n\nlocalpkg_gpgcheck=True",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

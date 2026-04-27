@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SSSD to prohibit the use of cached authentications after one day.\n\nAdd or change the following line in \"/etc/sssd/sssd.conf\" just below the line \"[pam]\".\n\n     offline_credentials_expiration = 1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

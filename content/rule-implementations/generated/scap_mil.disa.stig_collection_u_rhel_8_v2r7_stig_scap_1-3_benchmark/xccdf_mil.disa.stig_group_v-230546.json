@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to restrict usage of ptrace to descendant processes by adding the following line in a dropfile, in the \"/etc/sysctl.d\" directory with the following commands:\n\nCreate the dropfile if it doesn't already exist:\n$ sudo vi /etc/sysctl.d/99-ptrace-restrict.conf\n\nAdd the following line to the file:\nkernel.yama.ptrace_scope = 1\n\nThe system configuration files need to be reloaded for the changes to take effect. To reload the contents of the files, run the following command:\n\n$ sudo sysctl --system",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the SSH private host key files have mode \"0640\" or less permissive with the following command:\n\n     $ sudo ls -l /etc/ssh/ssh_host*key\n\n     -rw-r----- 1 root ssh_keys 668 Nov 28 06:43 ssh_host_dsa_key\n     -rw-r----- 1 root ssh_keys 582 Nov 28 06:43 ssh_host_key\n     -rw-r----- 1 root ssh_keys 887 Nov 28 06:43 ssh_host_rsa_key\n\nIf any private host key file has a mode more permissive than \"0640\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the mode of SSH private host key files under \"/etc/ssh\" to \"0640\" with the following command:\n\n     $ sudo chmod 0640 /etc/ssh/ssh_host*key\n\nThe SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command:\n\n     $ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

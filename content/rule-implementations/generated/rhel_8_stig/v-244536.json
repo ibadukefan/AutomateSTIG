@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the operating system disables the user logon list for graphical user interfaces with the following command:\nNote: This requirement assumes the use of the RHEL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\n$ sudo gsettings get org.gnome.login-screen disable-user-list\ntrue\n\nIf the setting is \"false\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable the user list at logon for graphical user interfaces.\n\nCreate a database to contain the system-wide screensaver settings (if it does not already exist) with the following command: \nNote: The example below is using the database \"local\" for the system, so if the system is using another database in \"/etc/dconf/profile/user\", the file should be created under the appropriate subdirectory.\n\n$ sudo touch /etc/dconf/db/local.d/02-login-screen\n\n[org/gnome/login-screen]\ndisable-user-list=true\n\nUpdate the system databases:\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

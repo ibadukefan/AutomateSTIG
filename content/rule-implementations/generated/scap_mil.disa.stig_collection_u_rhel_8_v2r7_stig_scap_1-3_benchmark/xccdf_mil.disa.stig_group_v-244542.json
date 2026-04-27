@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit service to produce audit records containing the information needed to establish when (date and time) an event occurred with the following commands:\n\n$ sudo systemctl enable auditd.service\n\n$ sudo systemctl start auditd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

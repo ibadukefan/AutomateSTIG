@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to exit interactive command shell user sessions after 10 minutes of inactivity.\n\nAdd or edit the following line in \"/etc/profile.d/tmout.sh\":\n\n#!/bin/bash\n\ndeclare -xr TMOUT=600",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

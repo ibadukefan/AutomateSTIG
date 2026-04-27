@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the RHEL 8 Audit Daemon is configured to resolve audit information before writing to disk, with the following command:\n\n$ sudo grep \"log_format\" /etc/audit/auditd.conf\n\nlog_format = ENRICHED\n\nIf the \"log_format\" option is not \"ENRICHED\", or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Edit the /etc/audit/auditd.conf file and add or update the \"log_format\" option:\n\nlog_format = ENRICHED\n\nThe audit daemon must be restarted for changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify RHEL 8 is configured to restrict access to the kernel message buffer.\n\nCheck the status of the \"kernel.dmesg_restrict\" kernel parameter with the following command:\n\n$ sudo sysctl kernel.dmesg_restrict\nkernel.dmesg_restrict = 1\n\nIf \"kernel.dmesg_restrict\" is not set to \"1\" or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to restrict access to the kernel message buffer.\n\nCreate a drop-in if it does not already exist:\n\n$ sudo vi /etc/sysctl.d/99-dmesg_restrict.conf\n\nAdd the following to the file:\nkernel.dmesg_restrict = 1\n\nReload settings from all system configuration files with the following command:\n\n$ sudo sysctl --system",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

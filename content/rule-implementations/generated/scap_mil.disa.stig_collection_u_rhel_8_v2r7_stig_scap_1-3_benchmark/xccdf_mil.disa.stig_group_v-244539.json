@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to prevent a user from overriding settings for graphical user interfaces.\n\nCreate a database to contain the system-wide screensaver settings (if it does not already exist) with the following command: \n\nNote: The example below is using the database \"local\" for the system, so if the system is using another database in \"/etc/dconf/profile/user\", the file should be created under the appropriate subdirectory.\n\n$ sudo touch /etc/dconf/db/local.d/locks/session\n\nAdd the following setting to prevent non-privileged users from modifying it:\n\n/org/gnome/desktop/screensaver/lock-enabled\n\nRun the following command to update the database:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

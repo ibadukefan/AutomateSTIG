@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify RHEL 8 world writable directories are owned by root, a system account, or an application account with the following command:\n\n$ sudo find / -xdev -type d -perm -0002 -uid +999 -exec stat -c \"%U, %u, %A, %n\" {} \\; 2>/dev/null\n\nIf there is output that indicates world-writable directories are owned by any account other than root or an approved system account, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure all RHEL 8 public directories to be owned by root or a system account to prevent unauthorized and unintended information transferred via shared system resources.\n\nUse the following command template to set ownership of public directories to root or a system account:\n\n$ sudo chown [root or system account] [Public Directory]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

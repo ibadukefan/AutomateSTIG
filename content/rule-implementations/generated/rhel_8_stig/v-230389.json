@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify that the administrators are notified in the event of an audit processing failure.\n\nCheck that the \"/etc/aliases\" file has a defined value for \"root\".\n\n$ sudo grep \"postmaster:\\s*root$\" /etc/aliases\n\nIf the command does not return a line, or the line is commented out, ask the system administrator to indicate how they and the ISSO are notified of an audit process failure.  If there is no evidence of the proper personnel being notified of an audit processing failure, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to notify administrators in the event of an audit processing failure.\n\nAdd/update the following line in \"/etc/aliases\":\n\npostmaster: root",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

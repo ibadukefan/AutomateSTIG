@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system SSH server to use strong entropy.\n\nAdd or modify the following line in the \"/etc/sysconfig/sshd\" file.\n\nSSH_USE_STRONG_RNG=32\n\nThe SSH service must be restarted for changes to take effect.\n\nRestart the SSH Daemon with the following command:\n\n$ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

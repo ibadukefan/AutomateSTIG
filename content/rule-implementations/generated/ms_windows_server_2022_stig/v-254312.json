@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Security Option \"Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings\" must be set to \"Enabled\" (WN22-SO-000050) for the detailed auditing subcategories to be effective. \n\nUse the \"AuditPol\" tool to review the current Audit Policy configuration:\n\nOpen \"PowerShell\" or a \"Command Prompt\" with elevated privileges (\"Run as administrator\").\n\nEnter \"AuditPol /get /category:*\"\n\nCompare the \"AuditPol\" settings with the following:\n\nIf the system does not audit the following, this is a finding.\n\nLogon/Logoff >> Logon - Success",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Advanced Audit Policy Configuration >> System Audit Policies >> Logon/Logoff >> Audit Logon with \"Success\" selected.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

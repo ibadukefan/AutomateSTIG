@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the operating system does not allow an unattended or automatic logon to the system via a graphical user interface.\n\nNote: This requirement assumes the use of the RHEL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nCheck for the value of the \"AutomaticLoginEnable\" in the \"/etc/gdm/custom.conf\" file with the following command:\n\n$ sudo grep -i automaticloginenable /etc/gdm/custom.conf\n\nAutomaticLoginEnable=false\n\nIf the value of \"AutomaticLoginEnable\" is not set to \"false\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to not allow an unattended or automatic logon to the system via a graphical user interface.\n\nAdd or edit the line for the \"AutomaticLoginEnable\" parameter in the [daemon] section of the \"/etc/gdm/custom.conf\" file to \"false\":\n\n[daemon]\nAutomaticLoginEnable=false",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

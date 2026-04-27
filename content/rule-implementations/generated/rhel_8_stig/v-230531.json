@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify RHEL 8 is configured to not reboot the system when Ctrl-Alt-Delete is pressed seven times within two seconds with the following command:\n\n$ sudo grep -iR CtrlAltDelBurstAction /etc/systemd/system*\n/etc/systemd/system.conf.d/55-CtrlAltDel-BurstAction:CtrlAltDelBurstAction=none\n\nIf the \"CtrlAltDelBurstAction\" is not set to \"none\", commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to disable the CtrlAltDelBurstAction by adding it to a drop file in a \"/etc/systemd/system.conf.d/\" configuration file:\n\nIf no drop file exists, create one with the following command:\n\n$ sudo mkdir -p /etc/systemd/system.conf.d && sudo vi /etc/systemd/system.conf.d/55-CtrlAltDel-BurstAction\n\nEdit the file to contain the setting by adding the following text:\n\nCtrlAltDelBurstAction=none\n\nReload the daemon for this change to take effect.\n\n$ sudo systemctl daemon-reload",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

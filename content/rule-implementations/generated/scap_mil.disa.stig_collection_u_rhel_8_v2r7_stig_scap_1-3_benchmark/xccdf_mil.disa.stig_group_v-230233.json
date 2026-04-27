@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to encrypt all stored passwords with a strong cryptographic hash.\n\nEdit/modify the following line in the \"/etc/login.defs\" file and set \"SHA_CRYPT_MIN_ROUNDS\" to a value no lower than \"100000\":\n\nSHA_CRYPT_MIN_ROUNDS 100000",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

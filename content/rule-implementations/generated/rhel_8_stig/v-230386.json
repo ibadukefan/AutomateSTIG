@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify RHEL 8 audits the execution of privileged functions.\n\nCheck if RHEL 8 is configured to audit the execution of the \"execve\" system call, by running the following command:\n\n$ sudo grep execve /etc/audit/audit.rules\n\n-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k execpriv \n-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k execpriv\n\n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k execpriv \n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k execpriv\n\nIf the command does not return all lines, or the lines are commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to audit the execution of the \"execve\" system call.\n\nAdd or update the following file system rules to \"/etc/audit/rules.d/audit.rules\":\n\n-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k execpriv \n-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k execpriv\n\n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k execpriv \n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k execpriv \n\nThe audit daemon must be restarted for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

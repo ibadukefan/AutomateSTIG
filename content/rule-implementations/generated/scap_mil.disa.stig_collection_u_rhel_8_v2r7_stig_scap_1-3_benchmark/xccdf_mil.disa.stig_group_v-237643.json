@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the \"sudo\" command to require re-authentication.\nEdit the /etc/sudoers file:\n$ sudo visudo\n\nAdd or modify the following line:\nDefaults timestamp_timeout=[value]\nNote: The \"[value]\" must be a number that is greater than or equal to \"0\".\n\nRemove any duplicate or conflicting lines from /etc/sudoers and /etc/sudoers.d/ files.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

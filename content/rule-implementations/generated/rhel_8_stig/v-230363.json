@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the value of the \"difok\" option with the following command:\n\n$ sudo grep -r difok /etc/security/pwquality.conf*\n\n/etc/security/pwquality.conf:difok = 8\n\nIf the value of \"difok\" is set to less than \"8\" or is commented out, this is a finding.\nIf conflicting results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to require the change of at least eight of the total number of characters when passwords are changed by setting the \"difok\" option.\n\nAdd the following line to \"/etc/security/pwquality.conf\" (or modify the line to have the required value):\n\ndifok = 8\n\nRemove any configurations that conflict with the above value.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

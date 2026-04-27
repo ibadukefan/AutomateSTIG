@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to remove all software components after updated versions have been installed.\n\nSet the \"clean_requirements_on_remove\" option to \"True\" in the \"/etc/dnf/dnf.conf\" file:\n\nclean_requirements_on_remove=True",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

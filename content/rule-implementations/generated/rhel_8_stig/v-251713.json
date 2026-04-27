@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the operating system uses \"pwquality\" to enforce the password complexity rules. \n\nCheck for the use of \"pwquality\" in the system-auth file with the following command:\n\n     $ sudo cat /etc/pam.d/system-auth | grep pam_pwquality\n\n     password requisite pam_pwquality.so\n\nIf the command does not return a line containing the value \"pam_pwquality.so\" as shown, or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to use \"pwquality\" to enforce password complexity rules.\n\nAdd the following line to the \"/etc/pam.d/system-auth\" file (or modify the line to have the required value):\n\n     password requisite pam_pwquality.so",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

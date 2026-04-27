@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "The default behavior is for shell protected mode to be turned on for File Explorer.\n\nIf this needs to be corrected, configure the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> File Explorer >> Turn off shell protocol protected mode to \"Not Configured\" or \"Disabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

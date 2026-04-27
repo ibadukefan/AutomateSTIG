@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "This applies to domain controllers. It is NA for other systems.\n\nOpen \"Command Prompt\" (not elevated).\n\nRun \"ldp.exe\".\n\nFrom the \"Connection menu\", select \"Bind\".\n\nClear the User, Password, and Domain fields.\n\nSelect \"Simple bind\" for the Bind type and click \"OK\".\n\nConfirmation of anonymous access will be displayed at the end:\n\nres = ldap_simple_bind_s\nAuthenticated as: 'NT AUTHORITY\\ANONYMOUS LOGON'\n\nFrom the \"Browse\" menu, select \"Search\".\n\nIn the Search dialog, enter the DN of the domain naming context (generally something like \"dc=disaost,dc=mil\") in the Base DN field.\n\nClear the Attributes field and select \"Run\".\n\nError messages must display related to Bind and user not authenticated.\n\nIf attribute data is displayed, anonymous access is enabled to the domain naming context and this is a finding.\n\nThe following network controls allow the finding severity to be downgraded to a CAT II since these measures lower the risk associated with anonymous access.\n\nNetwork hardware ports at the site are subject to 802.1x authentication or MAC address restrictions. \n\nPremise firewall or host restrictions prevent access to ports 389, 636, 3268, and 3269 from client hosts not explicitly identified by domain (.mil) or IP address.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure directory data (outside the root DSE) of a nonpublic directory to prevent anonymous access.\n\nFor AD, there are multiple configuration items that could enable anonymous access.\n\nChanging the access permissions on the domain naming context object (from the secure defaults) could enable anonymous access. If the check procedures indicate this is the cause, the process that was used to change the permissions must be reversed. This could have been through the Windows Support Tools ADSI Edit console (adsiedit.msc).\n\nThe dsHeuristics option is used. This is addressed in check V-8555 in the AD Forest STIG.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

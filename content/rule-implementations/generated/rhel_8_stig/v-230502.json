@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify RHEL 8 disables the ability to automount devices.\n\nCheck to see if automounter service is active with the following command:\n\nNote: If the autofs service is not installed, this requirement is not applicable.\n\n$ sudo systemctl status autofs\n\no autofs.service - Automounts filesystems on demand\n   Loaded: loaded (/usr/lib/systemd/system/autofs.service; disabled)\n   Active: inactive (dead)\n\nIf the \"autofs\" status is set to \"active\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to disable the ability to automount devices.\n\nTurn off the automount service with the following commands:\n\n$ sudo systemctl stop autofs\n$ sudo systemctl disable autofs",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable the chrony daemon from acting as a server by adding or modifying the following line in the \"/etc/chrony.conf\" file:\n\nport 0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

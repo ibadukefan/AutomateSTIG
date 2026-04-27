@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to log out idle sessions after 10 minutes by editing the /etc/systemd/logind.conf file with the following line:\n\nStopIdleSessionSec=600\n\nThe \"logind\" service must be restarted for the changes to take effect. To restart the \"logind\" service, run the following command:\n\n$ sudo systemctl restart systemd-logind",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

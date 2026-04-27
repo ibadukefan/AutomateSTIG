@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Edit the /etc/audit/auditd.conf file and add or update the \"name_format\" option:\n\nname_format = hostname\n\nThe audit daemon must be restarted for changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

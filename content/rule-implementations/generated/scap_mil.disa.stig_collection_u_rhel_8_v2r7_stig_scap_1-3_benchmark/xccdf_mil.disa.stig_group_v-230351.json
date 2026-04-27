@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to enable a user's session lock until that user re-establishes access using established identification and authentication procedures.\n\nSelect/Create an authselect profile and incorporate the \"with-smartcard-lock-on-removal\" feature with the following example:\n\n$ sudo authselect select sssd with-smartcard with-smartcard-lock-on-removal\n\nAlternatively, the dconf settings can be edited in the /etc/dconf/db/* location.\n\nEdit or add the \"[org/gnome/settings-daemon/peripherals/smartcard]\" section of the database file and add or update the following lines:\n\nremoval-action='lock-screen'\n\nUpdate the system databases:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the file integrity tool is configured to verify ACLs.\n\nNote: AIDE is highly configurable at install time. This requirement assumes the \"aide.conf\" file is under the \"/etc\" directory.\n\nIf AIDE is not installed, ask the system administrator (SA) how file integrity checks are performed on the system.\n\nUse the following command to determine if the file is in a location other than \"/etc/aide/aide.conf\":\n\n$ sudo find / -name aide.conf\n\nUse the following command to review the \"aide.conf\" file to determine if the \"acl\" rule has been added to the rule list being applied to the files and directories selection lists:\n\n$ sudo cat /etc/aide.conf | more\n\nIf the \"acl\" rule is not being used on all selection lines in the \"/etc/aide.conf\" file, is commented out, or ACLs are not being checked by another file integrity tool, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the file integrity tool to check file and directory ACLs. \n\nIf AIDE is installed, ensure the \"acl\" rule is present on all file and directory selection lists.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

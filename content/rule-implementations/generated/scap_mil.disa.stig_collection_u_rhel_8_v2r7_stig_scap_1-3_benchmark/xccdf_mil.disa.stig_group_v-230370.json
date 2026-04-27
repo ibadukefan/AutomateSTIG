@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure operating system to enforce a minimum 15-character password length for new user accounts.\n\nAdd, or modify the following line in the \"/etc/login.defs\" file:\n\nPASS_MIN_LEN 15",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to use a FIPS 140-2 approved cryptographic hashing algorithm for system authentication.\n\nEdit/modify the following line in the \"/etc/pam.d/password-auth\" file to include the sha512 option for pam_unix.so:\n\npassword sufficient pam_unix.so sha512",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

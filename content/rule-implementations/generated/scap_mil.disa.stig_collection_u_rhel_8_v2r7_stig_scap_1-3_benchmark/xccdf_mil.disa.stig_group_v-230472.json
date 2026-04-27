@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit tools to be protected from unauthorized access by setting the correct permissive mode using the following command:\n\n$ sudo chmod 0755 [audit_tool]\n\nReplace \"[audit_tool]\" with the audit tool that does not have the correct permissive mode.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

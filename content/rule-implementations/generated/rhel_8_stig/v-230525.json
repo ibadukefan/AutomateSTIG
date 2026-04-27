@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify \"nftables\" is configured to allow rate limits on any connection to the system with the following command:\n\nVerify \"firewalld\" has \"nftables\" set as the default backend:\n\n$ sudo grep -i firewallbackend /etc/firewalld/firewalld.conf\n\n# FirewallBackend\nFirewallBackend=nftables\n\nIf the \"nftables\" is not set as the \"firewallbackend\" default, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure \"nftables\" to be the default \"firewallbackend\" for \"firewalld\" by adding or editing the following line in \"/etc/firewalld/firewalld.conf\":\n\nFirewallBackend=nftables\n\nEstablish rate-limiting rules based on organization-defined types of DoS attacks on impacted network interfaces.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

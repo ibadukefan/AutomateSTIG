@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Note: For RHEL versions 8.4 and above running with kernel FIPS mode enabled as specified by RHEL-08-010020, this requirement is Not Applicable.\n\nCheck that  RHEL 8 has enabled the hardware random number generator entropy gatherer service.\n\nVerify the rngd service is enabled and active with the following commands:\n\n     $ sudo systemctl is-enabled rngd\n     enabled\n\n     $ sudo systemctl is-active rngd\n     active\n\nIf the service is not \"enabled\" and \"active\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Start the rngd service and enable the rngd service with the following commands:\n\n     $ sudo systemctl start rngd.service\n\n     $ sudo systemctl enable rngd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

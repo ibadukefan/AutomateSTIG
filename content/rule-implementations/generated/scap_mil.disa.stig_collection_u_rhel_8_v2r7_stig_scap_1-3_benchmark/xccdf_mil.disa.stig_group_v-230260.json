@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the systemwide shared library files contained in the directories \"/lib\", \"/lib64\", \"/usr/lib\", and \"/usr/lib64\" have mode 0755 or less permissive with the following command.\n\n$ sudo find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm /022 -exec chmod go-w {} +",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

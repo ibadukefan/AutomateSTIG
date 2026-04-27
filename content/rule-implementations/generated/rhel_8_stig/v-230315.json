@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Note: If kernel dumps are disabled in accordance with RHEL-08-010671, this requirement is not applicable.\n\nVerify the operating system disables core dump backtraces by issuing the following command:\n\n$ sudo grep -i ProcessSizeMax /etc/systemd/coredump.conf\n\nProcessSizeMax=0\n\nIf the \"ProcessSizeMax\" item is missing or commented out, or the value is anything other than \"0\", and the need for core dumps is not documented with the information system security officer (ISSO) as an operational requirement for all domains that have the \"core\" item assigned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable core dump backtraces.\n\nAdd or modify the following line in /etc/systemd/coredump.conf:\n\nProcessSizeMax=0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

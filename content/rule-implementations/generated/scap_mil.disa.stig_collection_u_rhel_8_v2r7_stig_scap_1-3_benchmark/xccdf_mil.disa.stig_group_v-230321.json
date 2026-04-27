@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the mode of interactive user's home directories to \"0750\". To change the mode of a local interactive user's home directory, use the following command:\n\nNote: The example will be for the user \"smithj\".\n\n$ sudo chmod 0750 /home/smithj",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the operating system encrypts audit records off-loaded onto a different system or media from the system being audited with the following commands:\n\n$ sudo grep -i '$DefaultNetstreamDriver' /etc/rsyslog.conf /etc/rsyslog.d/*.conf\n\n/etc/rsyslog.conf:$DefaultNetstreamDriver gtls\n\nIf the value of the \"$DefaultNetstreamDriver\" option is not set to \"gtls\" or the line is commented out, this is a finding.\n\n$ sudo grep -i '$ActionSendStreamDriverMode' /etc/rsyslog.conf /etc/rsyslog.d/*.conf\n\n/etc/rsyslog.conf:$ActionSendStreamDriverMode 1\n\nIf the value of the \"$ActionSendStreamDriverMode\" option is not set to \"1\" or the line is commented out, this is a finding.\n\nIf neither of the definitions above are set, ask the System Administrator to indicate how the audit logs are off-loaded to a different system or media. \n\nIf there is no evidence that the transfer of the audit logs being off-loaded to another system or media is encrypted, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to encrypt off-loaded audit records by setting the following options in \"/etc/rsyslog.conf\" or \"/etc/rsyslog.d/[customfile].conf\":\n\n$DefaultNetstreamDriver gtls\n$ActionSendStreamDriverMode 1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

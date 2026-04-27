@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify SSH is installed with the following command:\n\n$ sudo yum list installed openssh-server\n\nopenssh-server.x86_64                 8.0p1-5.el8          @anaconda\n\nIf the \"SSH server\" package is not installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install SSH packages onto the host with the following command:\n\n$ sudo yum install openssh-server.x86_64",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "The default behavior is for Early Launch Antimalware - Boot-Start Driver Initialization policy to enforce \"Good, unknown and bad but critical\" (preventing \"bad\").\n\nIf this needs to be corrected or a more secure setting is desired, configure the policy value for Computer Configuration >> Administrative Templates >> System >> Early Launch Antimalware >> Boot-Start Driver Initialization Policy to \"Not Configured\" or \"Enabled\" with any option other than \"All\" selected.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -1,8 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0",
+      "type": "registry",
+      "value_name": "NTLMMinClientSec"
+    },
+    "description": "Windows Server 2022 session security for NTLM SSP-based clients must be configured to require NTLMv2 session security and 128-bit encryption.",
+    "expected": {
+      "type": "equals",
+      "value": 537395200
+    },
+    "platform": "windows",
+    "vuln_id": "V-254477"
+  },
+  "check_content_excerpt": "If the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE \nRegistry Path: \\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0\\\n\nValue Name: NTLMMinClientSec\n\nValue Type: REG_DWORD\nValue: 0x20080000 (537395200)",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,12 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 537395200
+  },
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> Network security: Minimum session security for NTLM SSP based (including secure RPC) clients to \"Require NTLMv2 session security\" and \"Require 128-bit encryption\" (all options selected).",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-254477r991589_rule",
   "severity": "medium",

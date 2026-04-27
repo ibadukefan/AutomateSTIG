@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the account identifiers (individuals, groups, roles, and devices) are disabled after 35 days of inactivity with the following command:\n\nCheck the account inactivity value by performing the following command:\n\n$ sudo grep -i inactive /etc/default/useradd\n\nINACTIVE=35\n\nIf \"INACTIVE\" is set to \"-1\", a value greater than \"35\", or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to disable account identifiers after 35 days of inactivity after the password expiration. \n\nRun the following command to change the configuration for useradd:\n\n$ sudo useradd -D -f 35\n\nDoD recommendation is 35 days, but a lower value is acceptable. The value \"-1\" will disable this feature, and \"0\" will disable the account immediately after the password expires.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

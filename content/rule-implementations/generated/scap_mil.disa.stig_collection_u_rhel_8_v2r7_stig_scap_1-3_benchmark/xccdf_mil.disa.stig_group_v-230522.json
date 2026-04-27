@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system so that /var/tmp is mounted with the \"noexec\" option by adding /modifying the /etc/fstab with the following line:\n\n/dev/mapper/rhel-var-tmp /var/tmp xfs defaults,nodev,nosuid,noexec 0 0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

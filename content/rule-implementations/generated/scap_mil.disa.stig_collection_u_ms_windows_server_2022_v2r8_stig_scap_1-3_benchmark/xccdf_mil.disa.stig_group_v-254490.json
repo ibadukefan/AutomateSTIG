@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "The default behavior is for Windows to mark file attachments with their zone information.\n\nIf this needs to be corrected, configure the policy value for User Configuration >> Administrative Templates >> Windows Components >> Attachment Manager >> Do not preserve zone information in file attachments to \"Not Configured\" or \"Disabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

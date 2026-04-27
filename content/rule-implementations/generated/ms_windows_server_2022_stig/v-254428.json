@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "This applies to member servers and standalone or nondomain-joined systems. A separate version applies to domain controllers.\n\nOpen \"Computer Management\".\n\nNavigate to \"Groups\" under \"Local Users and Groups\".\n\nReview the local \"Administrators\" group.\n\nOnly administrator groups or accounts responsible for administration of the system may be members of the group.\n\nFor domain-joined member servers, the Domain Admins group must be replaced by a domain member server administrator group.\n\nStandard user accounts must not be members of the local Administrator group.\n\nIf accounts that do not have responsibility for administration of the system are members of the local Administrators group, this is a finding.\n\nIf the built-in Administrator account or other required administrative accounts are found on the system, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the local \"Administrators\" group to include only administrator groups or accounts responsible for administration of the system.\n\nFor domain-joined member servers, replace the Domain Admins group with a domain member server administrator group. \n\nRemove any standard user accounts.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

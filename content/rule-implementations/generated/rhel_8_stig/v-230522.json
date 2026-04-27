@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify \"/var/tmp\" is mounted with the \"noexec\" option:\n\n$ sudo mount | grep /var/tmp\n\n/dev/mapper/rhel-var-tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)\n\nVerify that the \"noexec\" option is configured for /var/tmp:\n\n$ sudo cat /etc/fstab | grep /var/tmp\n\n/dev/mapper/rhel-var-tmp /var/tmp xfs defaults,nodev,nosuid,noexec 0 0\n\nIf results are returned and the \"noexec\" option is missing, or if /var/tmp is mounted without the \"noexec\" option, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system so that /var/tmp is mounted with the \"noexec\" option by adding /modifying the /etc/fstab with the following line:\n\n/dev/mapper/rhel-var-tmp /var/tmp xfs defaults,nodev,nosuid,noexec 0 0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify RHEL 8 enables Linux audit logging of the USBGuard daemon with the following commands:\n\nNote: If the USBGuard daemon is not installed and enabled, this requirement is Not Applicable.\n\n$ sudo grep -i auditbackend /etc/usbguard/usbguard-daemon.conf\n\nAuditBackend=LinuxAudit\n\nIf the \"AuditBackend\" entry does not equal \"LinuxAudit\", is missing, or the line is commented out, this is a finding.\n\nIf the system is a virtual machine with no virtual or physical USB peripherals attached, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to enable Linux audit logging of the USBGuard daemon by adding or modifying the following line in \"/etc/usbguard/usbguard-daemon.conf\":\n\nAuditBackend=LinuxAudit",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

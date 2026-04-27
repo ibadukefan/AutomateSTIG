@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Check whether the minimum time period between password changes for each user account is one day or greater.\n\n$ sudo awk -F: '$4 < 1 {print $1 \" \" $4}' /etc/shadow\n\nIf any results are returned that are not associated with a system account, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure non-compliant accounts to enforce a 24 hours/1 day minimum password lifetime:\n\n$ sudo chage -m 1 [user]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

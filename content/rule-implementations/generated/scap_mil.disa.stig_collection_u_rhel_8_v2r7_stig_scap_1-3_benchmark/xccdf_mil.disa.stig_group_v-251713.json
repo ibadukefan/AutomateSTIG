@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to use \"pwquality\" to enforce password complexity rules.\n\nAdd the following line to the \"/etc/pam.d/system-auth\" file (or modify the line to have the required value):\n\n     password requisite pam_pwquality.so",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

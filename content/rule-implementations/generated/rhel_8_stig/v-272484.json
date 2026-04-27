@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the operating system elevates the SELinux context when an administrator calls the sudo command with the following command:\n\nThis command must be run as root:\n\n# grep -r sysadm_r /etc/sudoers /etc/sudoers.d\n/etc/sudoers.d/admins:<username> ALL=(ALL) TYPE=sysadm_t ROLE=sysadm_r ALL\n\nIf conflicting results are returned, this is a finding.\n\nIf a designated sudoers administrator group or account(s) is not configured to elevate the SELinux type and role to \"sysadm_t\" and \"sysadm_r\" with the use of the sudo command, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to elevate the SELinux context when an administrator calls the sudo command.\n\nEdit a file in the \"/etc/sudoers.d\" directory with the following command:\n\n$ sudo visudo -f /etc/sudoers.d/<customfile>\n\nUse the following example to build the <customfile> in the /etc/sudoers.d directory to allow any administrator belonging to a designated sudoers admin group to elevate their SELinux context with the use of the sudo command:\n\n{designated_group_or_user_name} ALL=(ALL) TYPE=sysadm_t ROLE=sysadm_r ALL\n\nRemove any configurations that conflict with the above from the following locations:\n \n/etc/sudoers\n/etc/sudoers.d/",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

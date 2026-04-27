@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Delivery Optimization >> Download Mode to \"Enabled\" with any option except \"Internet\" selected.\n\nAcceptable selections include:\n\nHTTP only (0)\nLAN (1)\nGroup (2)\nInternet (3)\nSimple (99)",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

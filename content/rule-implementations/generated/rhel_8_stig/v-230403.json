@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the audit system prevents unauthorized changes to logon UIDs with the following command:\n\n$ sudo grep -i immutable /etc/audit/audit.rules\n\n--loginuid-immutable\n\nIf the login UIDs are not set to be immutable by adding the \"--loginuid-immutable\" option to the \"/etc/audit/audit.rules\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit system to set the logon UIDs to be immutable by adding the following line to \"/etc/audit/rules.d/audit.rules\"\n\n--loginuid-immutable",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

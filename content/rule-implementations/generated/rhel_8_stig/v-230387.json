@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify that \"rsyslog\" is configured to log cron events with the following command:\n\nNote: If another logging package is used, substitute the utility configuration file for \"/etc/rsyslog.conf\" or \"/etc/rsyslog.d/*.conf\" files.\n\n$ sudo grep -s cron /etc/rsyslog.conf /etc/rsyslog.d/*.conf\n\n/etc/rsyslog.conf:*.info;mail.none;authpriv.none;cron.none                          /var/log/messages\n/etc/rsyslog.conf:# Log cron stuff\n/etc/rsyslog.conf:cron.*                                                                                                    /var/log/cron\n\nIf the command does not return a response, check for cron logging all facilities with the following command.\n\n$ sudo grep -s /var/log/messages /etc/rsyslog.conf /etc/rsyslog.d/*.conf\n\n/etc/rsyslog.conf:*.info;mail.none;authpriv.none;cron.none                          /var/log/messages\n\nIf \"rsyslog\" is not logging messages for the cron facility or all facilities, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure \"rsyslog\" to log all cron messages by adding or updating the following line to \"/etc/rsyslog.conf\" or a configuration file in the /etc/rsyslog.d/ directory:\n\ncron.* /var/log/cron\n\nThe rsyslog daemon must be restarted for the changes to take effect:\n$ sudo systemctl restart rsyslog.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the SSH server is configured to force frequent session key renegotiation with the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*rekeylimit'\n\nRekeyLimit 1G 1h\n\nIf \"RekeyLimit\" does not have a maximum data amount and maximum time defined, is missing, or is commented out, this is a finding.\n\nIf conflicting results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system to force a frequent session key renegotiation for SSH connections to the server by add or modifying the following line in the \"/etc/ssh/sshd_config\" file:\n\nRekeyLimit 1G 1h\n\nRestart the SSH daemon for the settings to take effect.\n\n$ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

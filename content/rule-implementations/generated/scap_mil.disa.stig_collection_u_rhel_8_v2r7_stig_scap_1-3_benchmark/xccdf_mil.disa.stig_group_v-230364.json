@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure non-compliant accounts to enforce a 24 hours/1 day minimum password lifetime:\n\n$ sudo chage -m 1 [user]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

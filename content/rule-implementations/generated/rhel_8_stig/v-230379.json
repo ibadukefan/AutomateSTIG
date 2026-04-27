@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify that there are no unauthorized interactive user accounts with the following command:\n\n$ less /etc/passwd\n\nroot:x:0:0:root:/root:/bin/bash\n...\ngames:x:12:100:games:/usr/games:/sbin/nologin\nscsaustin:x:1001:1001:scsaustin:/home/scsaustin:/bin/bash\ndjohnson:x:1002:1002:djohnson:/home/djohnson:/bin/bash\n\nInteractive user account, generally will have a user identifier (UID) of 1000 or greater, a home directory in a specific partition, and an interactive shell.\n\nObtain the list of interactive user accounts authorized to be on the system from the system administrator or information system security officer (ISSO) and compare it to the list of local interactive user accounts on the system.\n\nIf there are unauthorized local user accounts on the system, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Remove unauthorized local interactive user accounts with the following command where <unauthorized_user> is the unauthorized account:\n\n$ sudo userdel <unauthorized_user>",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

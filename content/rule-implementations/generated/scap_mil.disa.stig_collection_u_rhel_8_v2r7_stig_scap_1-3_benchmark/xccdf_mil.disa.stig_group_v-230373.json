@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to disable account identifiers after 35 days of inactivity after the password expiration. \n\nRun the following command to change the configuration for useradd:\n\n$ sudo useradd -D -f 35\n\nDoD recommendation is 35 days, but a lower value is acceptable. The value \"-1\" will disable this feature, and \"0\" will disable the account immediately after the password expires.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "This applies to domain controllers. It is NA for other systems.\n\nReview the organization network diagram(s) or documentation to determine the level of classification for the network(s) over which replication data is transmitted.\n\nDetermine the classification level of the Windows domain controller.\n\nIf the classification level of the Windows domain controller is higher than the level of the networks, review the organization network diagram(s) and directory implementation documentation to determine if NSA-approved encryption is used to protect the replication network traffic.\n\nIf the classification level of the Windows domain controller is higher than the level of the network traversed and NSA-approved encryption is not used, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure NSA-approved (Type 1) cryptography to protect the directory data in transit for directory service implementations at a classified confidentiality level that transfer replication data through a network cleared to a lower level than the data.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

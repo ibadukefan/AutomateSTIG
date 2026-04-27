@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SSH daemon to not allow GSSAPI authentication.\n\nAdd the following line in \"/etc/ssh/sshd_config\", or uncomment the line and set the value to \"no\":\n\nGSSAPIAuthentication no\n\nThe SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command:\n\n$ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

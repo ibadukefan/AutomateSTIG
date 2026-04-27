@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SSH daemon to prevent remote hosts from connecting to the proxy display.\n\nEdit the \"/etc/ssh/sshd_config\" file to uncomment or add the line for the \"X11UseLocalhost\" keyword and set its value to \"yes\" (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor):\n\nX11UseLocalhost yes",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

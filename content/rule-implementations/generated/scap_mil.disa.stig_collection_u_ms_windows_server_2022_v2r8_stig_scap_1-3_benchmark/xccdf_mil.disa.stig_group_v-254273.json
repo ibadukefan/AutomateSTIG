@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Uninstall the \"Telnet Client\" feature.\n\nStart \"Server Manager\".\n\nSelect the server with the feature.\n\nScroll down to \"ROLES AND FEATURES\" in the right pane.\n\nSelect \"Remove Roles and Features\" from the drop-down \"TASKS\" list.\n\nSelect the appropriate server on the \"Server Selection\" page and click \"Next\".\n\nDeselect \"Telnet Client\" on the \"Features\" page.\n\nClick \"Next\" and \"Remove\" as prompted.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

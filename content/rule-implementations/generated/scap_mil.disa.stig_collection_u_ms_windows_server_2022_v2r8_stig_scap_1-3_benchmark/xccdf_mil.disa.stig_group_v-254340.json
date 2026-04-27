@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> Network >> Network Provider >> Hardened UNC Paths\" to \"Enabled\" with at least the following configured in \"Hardened UNC Paths\" (click the \"Show\" button to display):\n\nValue Name: \\\\*\\SYSVOL\nValue: RequireMutualAuthentication=1, RequireIntegrity=1\n\nValue Name: \\\\*\\NETLOGON\nValue: RequireMutualAuthentication=1, RequireIntegrity=1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

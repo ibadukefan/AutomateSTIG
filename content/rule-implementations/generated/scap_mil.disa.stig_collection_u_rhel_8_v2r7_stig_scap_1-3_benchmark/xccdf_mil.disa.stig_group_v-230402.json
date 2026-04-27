@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit system to set the audit rules to be immutable by adding the following line to \"/etc/audit/rules.d/audit.rules\"\n\n-e 2\n\nNote: Once set, the system must be rebooted for auditing to be changed.  It is recommended to add this option as the last step in securing the system.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

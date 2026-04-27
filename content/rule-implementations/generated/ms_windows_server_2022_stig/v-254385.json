@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "This applies to domain controllers. A separate version applies to other systems.\n\nReview the Administrators group. Only the appropriate administrator groups or accounts responsible for administration of the system may be members of the group.\n\nStandard user accounts must not be members of the local administrator group.\n\nIf prohibited accounts are members of the local administrators group, this is a finding.\n\nIf the built-in Administrator account or other required administrative accounts are found on the system, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the Administrators group to include only administrator groups or accounts that are responsible for the system.\n\nRemove any standard user accounts.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

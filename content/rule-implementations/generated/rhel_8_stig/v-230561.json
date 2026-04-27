@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the tuned package has not been installed on the system with the following commands:\n\n$ sudo yum list installed tuned\n\ntuned.noarch                                                     2.12.0-3.el8                                                  @anaconda\n\nIf the tuned package is installed and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Document the tuned package with the ISSO as an operational requirement or remove it from the system with the following command:\n\n$ sudo yum remove tuned",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

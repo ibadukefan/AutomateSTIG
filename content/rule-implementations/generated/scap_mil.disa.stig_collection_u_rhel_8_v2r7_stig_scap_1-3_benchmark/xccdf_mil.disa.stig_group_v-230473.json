@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit tools to be owned by \"root\", by running the following command:\n\n$ sudo chown root [audit_tool]\n\nReplace \"[audit_tool]\" with each audit tool not owned by \"root\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -1,8 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization",
+      "type": "registry",
+      "value_name": "DODownloadMode"
+    },
+    "description": "Windows Server 2022 Windows Update must not obtain updates from other PCs on the internet.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-254357"
+  },
+  "check_content_excerpt": "If the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization\\\n\nValue Name: DODownloadMode\n\nValue Type: REG_DWORD\nValue: 0x00000000 (0) - No peering (HTTP Only)\n0x00000001 (1) - Peers on same NAT only (LAN)\n0x00000002 (2) - Local Network / Private group peering (Group)\n0x00000063 (99) - Simple download mode, no peering (Simple)\n\nA value of 0x00000003 (3), Internet, is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,12 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Delivery Optimization >> Download Mode to \"Enabled\" with any option except \"Internet\" selected.\n\nAcceptable selections include:\n\nHTTP only (0)\nLAN (1)\nGroup (2)\nInternet (3)\nSimple (99)",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-254357r991589_rule",
   "severity": "low",

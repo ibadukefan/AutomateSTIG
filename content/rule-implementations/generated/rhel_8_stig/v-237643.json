@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the operating system requires re-authentication when using the \"sudo\" command to elevate privileges.\n\n$ sudo grep -ir 'timestamp_timeout' /etc/sudoers /etc/sudoers.d\n/etc/sudoers:Defaults timestamp_timeout=0\n\nIf conflicting results are returned, this is a finding.\n\nIf \"timestamp_timeout\" is set to a negative number, is commented out, or no results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the \"sudo\" command to require re-authentication.\nEdit the /etc/sudoers file:\n$ sudo visudo\n\nAdd or modify the following line:\nDefaults timestamp_timeout=[value]\nNote: The \"[value]\" must be a number that is greater than or equal to \"0\".\n\nRemove any duplicate or conflicting lines from /etc/sudoers and /etc/sudoers.d/ files.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

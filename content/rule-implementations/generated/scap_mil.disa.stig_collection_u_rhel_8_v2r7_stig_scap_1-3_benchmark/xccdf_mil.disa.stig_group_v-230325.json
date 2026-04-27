@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the mode of the local initialization files to \"0740\" with the following command:\n\nNote: The example will be for the smithj user, who has a home directory of \"/home/smithj\".\n\n     $ sudo chmod 0740 /home/smithj/.<INIT_FILE>",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to use two or more name servers for DNS resolution.\n\nBy default, \"NetworkManager\" on RHEL 8 dynamically updates the /etc/resolv.conf file with the DNS settings from active \"NetworkManager\" connection profiles. However, this feature can be disabled to allow manual configurations.\n\nIf manually configuring DNS, edit the \"/etc/resolv.conf\" file to uncomment or add the two or more \"nameserver\" option lines with the IP address of local authoritative name servers. If local host resolution is being performed, the \"/etc/resolv.conf\" file must be empty. An empty \"/etc/resolv.conf\" file can be created as follows:\n\n$ sudo echo -n > /etc/resolv.conf",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

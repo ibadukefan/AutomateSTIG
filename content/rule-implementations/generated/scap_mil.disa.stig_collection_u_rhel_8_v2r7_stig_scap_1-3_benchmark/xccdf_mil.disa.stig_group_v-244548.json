@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to enable the blocking of unauthorized peripherals with the following commands:\n\n$ sudo systemctl enable usbguard.service\n\n$ sudo systemctl start usbguard.service\n\nNote: Enabling and starting usbguard without properly configuring it for an individual system will immediately prevent any access over a usb device such as a keyboard or mouse",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

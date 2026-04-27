@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify all local files and directories on RHEL 8 have a valid owner with the following command:\n\n$ df --local -P | awk {'if (NR!=1) print $6'} | sudo xargs -I '{}' find '{}' -xdev -nouser\n\nIf any files on the system do not have an assigned owner, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Either remove all files and directories from the system that do not have a valid user, or assign a valid user to all unowned files and directories on RHEL 8 with the \"chown\" command:\n\n$ sudo chown <user> <file>",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

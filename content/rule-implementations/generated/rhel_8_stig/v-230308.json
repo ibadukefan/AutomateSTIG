@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Note: If no NFS mounts are configured, this requirement is Not Applicable.\n\nVerify file systems being imported via NFS are mounted with the \"nosuid\" option with the following command:\n\n$ sudo grep nfs /etc/fstab | grep nosuid\n\nUUID=e06097bb-cfcd-437b-9e4d-a691f5662a7d /store nfs rw,nosuid,nodev,noexec 0 0\n\nIf a file system found in \"/etc/fstab\" refers to NFS and it does not have the \"nosuid\" option set, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the \"/etc/fstab\" to use the \"nosuid\" option on file systems that are being imported via NFS.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

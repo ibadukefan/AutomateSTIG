@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to prevent informative messages from being presented at logon attempts.\n\nAdd/Modify the \"/etc/security/faillock.conf\" file to match the following line:\n\nsilent",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

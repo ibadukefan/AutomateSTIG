@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to disable the ability to automount devices.\n\nTurn off the automount service with the following commands:\n\n$ sudo systemctl stop autofs\n$ sudo systemctl disable autofs",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

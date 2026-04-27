@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to prevent the use of dictionary words for passwords.\n\nAdd or update the following line in the \"/etc/security/pwquality.conf\" file or a configuration file in the /etc/pwquality.conf.d/ directory to contain the \"dictcheck\" parameter:\n\ndictcheck=1\n\nRemove any configurations that conflict with the above value.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

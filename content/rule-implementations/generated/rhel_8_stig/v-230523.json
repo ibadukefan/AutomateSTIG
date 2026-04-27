@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the RHEL 8 \"fapolicyd\" is installed.\n\nCheck that \"fapolicyd\" is installed with the following command:\n\n$ sudo yum list installed fapolicyd\n\nInstalled Packages\nfapolicyd.x86_64\n\nIf fapolicyd is not installed, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install \"fapolicyd\" with the following command:\n\n$ sudo yum install fapolicyd.x86_64",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

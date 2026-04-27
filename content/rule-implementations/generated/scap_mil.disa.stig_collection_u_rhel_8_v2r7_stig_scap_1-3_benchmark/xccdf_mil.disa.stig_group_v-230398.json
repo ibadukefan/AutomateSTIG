@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit log to be owned by root by configuring the log group in the /etc/audit/auditd.conf file:\n\nlog_group = root",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

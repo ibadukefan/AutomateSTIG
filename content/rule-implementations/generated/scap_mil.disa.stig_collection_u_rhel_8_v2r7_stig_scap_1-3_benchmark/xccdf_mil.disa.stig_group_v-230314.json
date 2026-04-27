@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable storing core dumps for all users.\n\nAdd or modify the following line in /etc/systemd/coredump.conf:\n\nStorage=none",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

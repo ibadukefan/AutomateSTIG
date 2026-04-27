@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to lock an account when three unsuccessful logon attempts occur.\n\nAdd/Modify the appropriate sections of the \"/etc/pam.d/system-auth\" and \"/etc/pam.d/password-auth\" files to match the following lines:\n\nauth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0\nauth required pam_faillock.so authfail dir=/var/log/faillock unlock_time=0\naccount required pam_faillock.so\n\nThe \"sssd\" service must be restarted for the changes to take effect. To restart the \"sssd\" service, run the following command:\n\n$ sudo systemctl restart sssd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

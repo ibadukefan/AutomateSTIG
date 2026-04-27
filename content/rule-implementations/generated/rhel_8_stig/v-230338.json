@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify the faillock directory contents persists after a reboot with the following commands:\n\nNote: This check applies to RHEL versions 8.0 and 8.1, if the system is RHEL version 8.2 or newer, this check is not applicable.\n\n$ sudo grep pam_faillock.so /etc/pam.d/password-auth\n\nauth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0\nauth required pam_faillock.so authfail dir=/var/log/faillock unlock_time=0\naccount required pam_faillock.so\n\nIf the \"dir\" option is not set to a non-default documented tally log directory on the \"preauth\" and \"authfail\" lines with the \"pam_faillock.so\" module, or is missing from these lines, this is a finding.\n\n$ sudo grep pam_faillock.so /etc/pam.d/system-auth\n\nauth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0\nauth required pam_faillock.so authfail dir=/var/log/faillock unlock_time=0\naccount required pam_faillock.so\n\nIf the \"dir\" option is not set to a non-default documented tally log directory on the \"preauth\" and \"authfail\" lines with the \"pam_faillock.so\" module, or is missing from these lines, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system maintain the contents of the faillock directory after a reboot.\n\nAdd/Modify the appropriate sections of the \"/etc/pam.d/system-auth\" and \"/etc/pam.d/password-auth\" files to match the following lines:\n\nNote: Using the default faillock directory of /var/run/faillock will result in the contents being cleared in the event of a reboot.\n\nauth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0\nauth required pam_faillock.so authfail dir=/var/log/faillock unlock_time=0\naccount required pam_faillock.so\n\nThe \"sssd\" service must be restarted for the changes to take effect. To restart the \"sssd\" service, run the following command:\n\n$ sudo systemctl restart sssd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

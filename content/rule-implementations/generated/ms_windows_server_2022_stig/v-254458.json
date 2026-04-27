@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "If the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE \nRegistry Path: \\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\\n\nValue Name: LegalNoticeCaption\n\nValue Type: REG_SZ\nValue: See message title options below\n\n\"DoD Notice and Consent Banner\", \"US Department of Defense Warning Statement\", or an organization-defined equivalent. \n\nIf an organization-defined title is used, it can in no case contravene or modify the language of the banner text required in WN22-SO-000150.\n\nAutomated tools may only search for the titles defined above. If an organization-defined title is used, a manual review will be required.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> Interactive Logon: Message title for users attempting to log on to \"DoD Notice and Consent Banner\", \"US Department of Defense Warning Statement\", or an organization-defined equivalent. \n\nIf an organization-defined title is used, it can in no case contravene or modify the language of the message text required in WN22-SO-000150.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

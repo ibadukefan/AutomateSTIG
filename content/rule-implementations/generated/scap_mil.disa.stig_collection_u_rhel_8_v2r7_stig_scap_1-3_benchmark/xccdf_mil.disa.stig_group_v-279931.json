@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure BIND to use the system crypto policy.\n\nAdd the following line to the \"options\" section in \"/etc/named.conf\":\n\ninclude \"/etc/crypto-policies/back-ends/bind.config\";",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

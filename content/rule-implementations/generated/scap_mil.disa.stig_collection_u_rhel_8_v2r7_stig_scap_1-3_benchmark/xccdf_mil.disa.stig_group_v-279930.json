@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Libreswan to use the system cryptographic policy.\n\nAdd the following line to \"/etc/ipsec.conf\":\n\ninclude /etc/crypto-policies/back-ends/libreswan.config",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

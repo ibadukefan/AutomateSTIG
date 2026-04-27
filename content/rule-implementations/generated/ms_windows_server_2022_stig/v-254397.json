@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "This applies to domain controllers, it is NA for other systems.\n\nReview the installed roles the domain controller is supporting.\n\nStart \"Server Manager\".\n\nSelect \"AD DS\" in the left pane and the server name under \"Servers\" to the right.\n\nSelect \"Add (or Remove) Roles and Features\" from \"Tasks\" in the \"Roles and Features\" section. (Cancel before any changes are made.)\n\nDetermine if any additional server roles are installed. A basic domain controller setup will include the following:\n\n- Active Directory Domain Services\n- DNS Server\n- File and Storage Services\n\nIf any roles not requiring installation on a domain controller are installed, this is a finding. \n\nA Domain Name System (DNS) server integrated with the directory server (e.g., AD-integrated DNS) is an acceptable application. However, the DNS server must comply with the DNS STIG security requirements.\n\nRun \"Programs and Features\".\n\nReview installed applications.\n\nIf any applications are installed that are not required for the domain controller, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Remove additional roles or applications such as web, database, and email from the domain controller.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

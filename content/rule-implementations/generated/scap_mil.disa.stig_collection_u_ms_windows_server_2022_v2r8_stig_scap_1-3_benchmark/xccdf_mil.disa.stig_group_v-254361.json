@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> File Explorer >> Configure Windows Defender SmartScreen to \"Enabled\" with either option \"Warn\" or \"Warn and prevent bypass\" selected.\n\nWindows Server 2022 includes duplicate policies for this setting. It can also be configured under Computer Configuration >> Administrative Templates >> Windows Components >> Windows Defender SmartScreen >> Explorer.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

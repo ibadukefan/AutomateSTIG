@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify RHEL 8 kernel core dumps are disabled unless needed with the following command:\n\n$ sudo systemctl status kdump.service\n\no kdump.service - Crash recovery kernel arming\n   Loaded: loaded (/usr/lib/systemd/system/kdump.service; disabled; vendor preset: enabled)\n   Active: inactive (dead)\n\nIf the \"kdump\" service is active, ask the system administrator if the use of the service is required and documented with the information system security officer (ISSO).\n\nIf the service is active and is not documented, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "If kernel core dumps are not required, disable the \"kdump\" service with the following command:\n\n# systemctl disable kdump.service\n\nIf kernel core dumps are required, document the need with the ISSO.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

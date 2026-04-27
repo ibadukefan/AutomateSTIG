@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "This requirement is applicable to domain controllers; it is NA for other systems. \n\nOpen \"Windows PowerShell\".\n\nEnter \"Get-ADUser krbtgt -Property PasswordLastSet\".\n\nIf the \"PasswordLastSet\" date is more than 180 days old, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Reset the password for the krbtgt account a least every 180 days. The password must be changed twice to effectively remove the password history. Changing once, waiting for replication to complete and changing again reduces the risk of issues. Changing twice in rapid succession forces clients to re-authenticate (including application services) but is desired if a compromise is suspected.\n\nPowerShell scripts are available to accomplish this such as at the following link:\n\nhttps://gallery.technet.microsoft.com/Reset-the-krbtgt-account-581a9e51\n\nOpen \"Active Directory Users and Computers\" (available from various menus or run \"dsa.msc\").\n\nSelect \"Advanced Features\" in the \"View\" menu if not previously selected.\n\nSelect the \"Users\" node.\n\nRight-click on the krbtgt account and select \"Reset password\".\n\nEnter a password that meets password complexity requirements.\n\nClear the \"User must change password at next logon\" check box.\n\nThe system will automatically change this to a system-generated complex password.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system to disable the Ctrl-Alt-Delete sequence when using a graphical user interface by creating or editing the /etc/dconf/db/local.d/00-disable-CAD file.\n\nAdd the setting to disable the Ctrl-Alt-Delete sequence for a graphical user interface:\n\n[org/gnome/settings-daemon/plugins/media-keys]\nlogout=''\n\nNote: The value above is set to two single quotations.\n\nThen update the dconf settings:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

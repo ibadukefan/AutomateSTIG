@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system so that /dev/shm is mounted with the  \"nosuid\" option by adding /modifying the /etc/fstab with the following line:\n\ntmpfs /dev/shm tmpfs defaults,nodev,nosuid,noexec 0 0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

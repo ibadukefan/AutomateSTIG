@@ -1,4 +1,5 @@
 {
+  "check_content_excerpt": "Verify RHEL 8 is securely comparing internal information system clocks at least every 24 hours with an NTP server with the following commands:\n\n$ sudo grep maxpoll /etc/chrony.conf\n\nserver 0.us.pool.ntp.mil iburst maxpoll 16\n\nIf the \"maxpoll\" option is set to a number greater than 16 or the line is commented out, this is a finding.\n\nVerify the \"chrony.conf\" file is configured to an authoritative DoD time source by running the following command:\n\n$ sudo grep -i server /etc/chrony.conf\nserver 0.us.pool.ntp.mil \n\nIf the parameter \"server\" is not set or is not set to an authoritative DoD time source, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
@@ -12,6 +13,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to securely compare internal information system clocks at least every 24 hours with an NTP server by adding/modifying the following line in the /etc/chrony.conf file.\n\nserver [ntp.server.name] iburst maxpoll 16",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

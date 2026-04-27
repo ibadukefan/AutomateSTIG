@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to not allow an unattended or automatic logon to the system via a graphical user interface.\n\nAdd or edit the line for the \"AutomaticLoginEnable\" parameter in the [daemon] section of the \"/etc/gdm/custom.conf\" file to \"false\":\n\n[daemon]\nAutomaticLoginEnable=false",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],

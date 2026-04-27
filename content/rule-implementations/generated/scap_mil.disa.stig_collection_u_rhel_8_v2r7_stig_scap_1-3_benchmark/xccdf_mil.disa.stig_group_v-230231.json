@@ -12,6 +12,7 @@
   ],
   "expected_values": {},
   "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to encrypt all stored passwords. \n\nEdit/Modify the following line in the \"/etc/login.defs\" file and set \"[ENCRYPT_METHOD]\" to SHA512.\n\nENCRYPT_METHOD SHA512",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
