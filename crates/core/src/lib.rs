@@ -15,6 +15,7 @@ pub mod agent;
 pub mod answer;
 pub mod checks;
 pub mod converter;
+pub mod coverage;
 pub mod engine;
 pub mod error;
 pub mod inventory;

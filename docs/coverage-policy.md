@@ -24,6 +24,16 @@ A check pack is **supported** only when:
 
 A check pack without this proof is **experimental** even if it contains useful checks.
 
+## Validation Command
+
+Coverage manifests are validated with:
+
+```bash
+automatestig coverage validate --manifest content/coverage/<manifest>.json
+```
+
+The validator fails closed for internal inconsistencies, duplicate rule IDs, missing reasons, missing automation metadata, unsupported entries without `tracking_issue`, and automated/scanner-import entries that lack validation evidence references.
+
 ## Evidence Requirement
 
 Automated checks must record evidence sufficient for an auditor to understand the result:

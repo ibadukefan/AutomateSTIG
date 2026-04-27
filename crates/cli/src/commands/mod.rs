@@ -1,5 +1,6 @@
 pub mod build_pack;
 pub mod convert;
+pub mod coverage;
 pub mod disa_import;
 pub mod evaluate;
 pub mod export;
