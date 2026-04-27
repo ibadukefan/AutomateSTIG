@@ -1,12 +1,17 @@
 {
   "authoritative_manifests": 22,
   "authoritative_rules_tracked": 5206,
-  "automated_or_mapped_rules": 2159,
+  "automated_or_mapped_rules": 2194,
+  "coverage_percent_tracked_corpus": 42.1,
   "current_check_definitions": 2215,
-  "current_check_packs": 100,
-  "fixture_backed_candidate_rules": 744,
-  "goal": "every public DISA STIG rule has a non-unsupported disposition",
-  "public_disa_artifacts_tracked": 22,
-  "status": "expanded seed corpus plus additional Linux candidate templates; not production complete",
-  "unsupported_rules_remaining": 3047
+  "generated_candidate_checks_with_fixture_evidence": 765,
+  "notes": [
+    "Regression ratchet prevents silent drops in tracked artifacts, authoritative manifests, authoritative rules, automated/mapped rules, or unsupported-rule ceilings.",
+    "Generated candidate checks are fixture-backed scaffolding, not live production asset validation.",
+    "Latest pass adds Chrome/Windows registry policy inference for policy prose that uses regedit navigation rather than DISA Registry Hive/Path/Value fields."
+  ],
+  "public_disa_artifacts_indexed": 22,
+  "status": "expanded_public_corpus_with_fixture_gated_candidate_mapping",
+  "target": "unsupported_authoritative_rules == 0 across every authorized DISA STIG artifact",
+  "unsupported_authoritative_rules": 3012
 }

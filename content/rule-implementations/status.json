@@ -1,16 +1,16 @@
 {
   "authoritative_rules": 5206,
-  "automated_authoritative_rules_after_candidate_promotion": 2159,
-  "candidate_fixture_evidence_root": "fixtures/generated-candidate-evidence",
-  "generated_specs": 5368,
-  "implementation_status_counts": {
-    "implemented": 451,
-    "planned": 4917
-  },
-  "candidate_check_specs": 744,
-  "planned_specs_for_current_unsupported_rules": 3047,
-  "note": "Generated spec tree can retain historical planned specs for rules that later become mapped through canonical SCAP/manual Vuln ID alignment; coverage validation is authoritative for current unsupported counts.",
-  "public_disa_artifacts_tracked": 22,
-  "status": "not production complete",
-  "unsupported_authoritative_rules_remaining": 3047
+  "automated_authoritative_rules_after_candidate_promotion": 2194,
+  "generated_candidate_checks_with_fixture_evidence": 765,
+  "implementation_specs_implemented": 451,
+  "implementation_specs_planned": 4917,
+  "implementation_specs_total": 5368,
+  "implementation_specs_with_candidate_checks": 765,
+  "notes": [
+    "Specs are generated for unsupported authoritative rules and retain prior implemented candidate specs for auditability.",
+    "Chrome registry policy candidates are inferred only when DISA prose includes a Windows regedit path, a concrete value name, and an expected value."
+  ],
+  "target": "unsupported_authoritative_rules == 0",
+  "unsupported_authoritative_rules": 3012,
+  "unsupported_with_specs": 3012
 }

@@ -1,0 +1,578 @@
+{
+  "candidate_checks": 21,
+  "cases": [
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "DefaultPopupsSetting"
+      },
+      "description": "Sites ability to show pop-ups must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\DefaultPopupsSetting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\DefaultPopupsSetting": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221561"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "AllowDeletingBrowserHistory"
+      },
+      "description": "Deletion of browser history must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\AllowDeletingBrowserHistory": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\AllowDeletingBrowserHistory": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221586"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "PromptForDownloadLocation"
+      },
+      "description": "Prompt for download location must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\PromptForDownloadLocation": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\PromptForDownloadLocation": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221587"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "SafeBrowsingExtendedReportingEnabled"
+      },
+      "description": "Safe Browsing Extended Reporting must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\SafeBrowsingExtendedReportingEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\SafeBrowsingExtendedReportingEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221590"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "DefaultWebUsbGuardSetting"
+      },
+      "description": "WebUSB must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\DefaultWebUsbGuardSetting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\DefaultWebUsbGuardSetting": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221591"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "EnableMediaRouter"
+      },
+      "description": "Google Cast must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\EnableMediaRouter": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\EnableMediaRouter": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221594"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "AutoplayAllowed"
+      },
+      "description": "Autoplay must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\AutoplayAllowed": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\AutoplayAllowed": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221595"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "UrlKeyedAnonymizedDataCollectionEnabled"
+      },
+      "description": "Anonymized data collection must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\UrlKeyedAnonymizedDataCollectionEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\UrlKeyedAnonymizedDataCollectionEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221597"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "WebRtcEventLogCollectionAllowed"
+      },
+      "description": "Collection of WebRTC event logs must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\WebRtcEventLogCollectionAllowed": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\WebRtcEventLogCollectionAllowed": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221598"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "BrowserGuestModeEnabled"
+      },
+      "description": "Guest Mode must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\BrowserGuestModeEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\BrowserGuestModeEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-226401"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "AutofillCreditCardEnabled"
+      },
+      "description": "AutoFill for credit cards must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\AutofillCreditCardEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\AutofillCreditCardEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-226402"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "AutofillAddressEnabled"
+      },
+      "description": "AutoFill for addresses must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\AutofillAddressEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\AutofillAddressEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-226403"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "ImportAutofillFormData"
+      },
+      "description": "Import AutoFill form data must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\ImportAutofillFormData": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\ImportAutofillFormData": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-226404"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "DefaultWebBluetoothGuardSetting"
+      },
+      "description": "Web Bluetooth API must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\DefaultWebBluetoothGuardSetting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\DefaultWebBluetoothGuardSetting": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-241787"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "QuicAllowed"
+      },
+      "description": "Use of the QUIC protocol must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\QuicAllowed": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\QuicAllowed": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-245538"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "CreateThemesSettings"
+      },
+      "description": "Create Themes with AI must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\CreateThemesSettings": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\CreateThemesSettings": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-275780"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "DevToolsGenAiSettings"
+      },
+      "description": "DevTools Generative AI features must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\DevToolsGenAiSettings": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\DevToolsGenAiSettings": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-275781"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "GenAILocalFoundationalModelSettings"
+      },
+      "description": "GenAI local foundational model must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\GenAILocalFoundationalModelSettings": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\GenAILocalFoundationalModelSettings": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-275782"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "HelpMeWriteSettings"
+      },
+      "description": "Help Me Write must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\HelpMeWriteSettings": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\HelpMeWriteSettings": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-275783"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "HistorySearchSettings"
+      },
+      "description": "AI-powered History Search must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\HistorySearchSettings": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\HistorySearchSettings": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-275784"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "TabCompareSettings"
+      },
+      "description": "Tab Compare Settings must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\TabCompareSettings": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\TabCompareSettings": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-275785"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "Google_Chrome_Current_Windows",
+  "validated_candidates": 21
+}

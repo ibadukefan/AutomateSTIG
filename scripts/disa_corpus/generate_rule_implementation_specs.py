@@ -68,6 +68,59 @@ def _registry_value(check_content: str):
         return raw
 
 
+def _normalize_registry_path(path: str) -> str:
+    path = path.strip().strip('"“”').strip().rstrip('\\/.')
+    path = re.sub(r'\\+', r'\\', path)
+    for hive in ('HKEY_LOCAL_MACHINE', 'HKEY_CURRENT_USER', 'HKEY_CLASSES_ROOT', 'HKEY_USERS', 'HKEY_CURRENT_CONFIG'):
+        if path.upper().startswith(hive):
+            return _registry_hive_abbrev(hive) + path[len(hive):]
+    return path
+
+
+def _parse_expected_registry_data(text: str):
+    match = re.search(r'value\s+data\s+is\s+not\s+set\s+to\s+["“]?([^"”\s,.;]+)', text, re.IGNORECASE)
+    if not match:
+        match = re.search(r'\bis\s+not\s+set\s+to\s+["“]?([^"”\s,.;]+)', text, re.IGNORECASE)
+    if not match:
+        return None
+    raw = match.group(1).strip()
+    lowered = raw.lower()
+    if lowered in ('false', 'disabled'):
+        return 0
+    if lowered in ('true', 'enabled'):
+        return 1
+    try:
+        return int(raw, 16) if lowered.startswith('0x') else int(raw)
+    except ValueError:
+        return raw
+
+
+def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    path_match = re.search(r'Navigate\s+to\s+["“]?((?:HKLM|HKCU|HKCR|HKU|HKCC|HKEY_[A-Z_]+)\\[^\n\r"”]+)', content, re.IGNORECASE)
+    if not path_match:
+        return None
+    value_match = re.search(r'If\s+the\s+["“]([^"”]+)["”]\s+(?:value\s+name|key)\s+does\s+not\s+exist[^\n\r.]*?(?:value\s+data\s+)?is\s+not\s+set\s+to', content, re.IGNORECASE)
+    if not value_match:
+        value_match = re.search(r'If\s+([A-Za-z0-9_.-]+)\s+is\s+not\s+displayed[^\n\r.]*?or\s+it\s+is\s+not\s+set\s+to', content, re.IGNORECASE)
+    if not value_match:
+        return None
+    expected_value = _parse_expected_registry_data(content)
+    if expected_value is None:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows' if 'windows' in stig_id.lower() or 'chrome' in stig_id.lower() else 'generic',
+        'check': {
+            'type': 'registry',
+            'path': _normalize_registry_path(path_match.group(1)),
+            'value_name': value_match.group(1).strip(),
+        },
+        'expected': {'type': 'equals', 'value': expected_value},
+        'description': rule.get('title', ''),
+    }
+
+
 def _linux_platform(stig_id: str) -> bool:
     lower = stig_id.lower()
     return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'ubuntu'))
@@ -200,6 +253,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
                 'expected': {'type': 'equals', 'value': expected_value},
                 'description': rule.get('title', ''),
             }
+
+    policy_candidate = _windows_registry_policy_candidate(rule, stig_id)
+    if policy_candidate:
+        return policy_candidate
 
     feature = re.search(r'Get-WindowsFeature\s*\|\s*Where\s+Name\s+-eq\s+([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
     if feature and re.search(r'Installed[^\n.]+is[^\n.]+finding|If[^\n.]+Installed[^\n.]+finding', content, re.IGNORECASE):

@@ -66,6 +66,39 @@ Value: 0x00000000 (0)'''
         self.assertEqual(candidate['check'], {'type': 'windows_feature', 'name': 'Fax', 'should_be_installed': False})
         self.assertEqual(candidate['expected'], {'type': 'is_false'})
 
+    def test_infers_chrome_registry_policy_candidate_from_windows_method(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221586',
+            'title': 'Deletion of browser history must be disabled.',
+            'check_content': '''Universal method:
+1. In the omnibox type chrome://policy
+2. If the policy "AllowDeletingBrowserHistory" is not shown or is not set to false, this is a finding.
+
+Windows method:
+1. Start regedit
+2. Navigate to HKLM\\Software\\Policies\\Google\\Chrome\\
+3. If the "AllowDeletingBrowserHistory" value name does not exist or its value data is not set to "0", this is a finding.'''
+        }, 'Google_Chrome_Current_Windows')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'registry')
+        self.assertEqual(candidate['check']['path'], 'HKLM\\Software\\Policies\\Google\\Chrome')
+        self.assertEqual(candidate['check']['value_name'], 'AllowDeletingBrowserHistory')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
+
+    def test_infers_chrome_policy_value_from_boolean_false_text(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-245538',
+            'title': 'Use of the QUIC protocol must be disabled.',
+            'check_content': '''Universal method:
+If QuicAllowed is not displayed under the Policy Name column or it is not set to False under the Policy Value column, this is a finding.
+Windows method:
+1. Start regedit.
+2. Navigate to HKLM\\Software\\Policies\\Google\\Chrome\\.
+3. If the QuicAllowed value name does not exist or its value data is not set to 0, this is a finding.'''
+        }, 'Google_Chrome_Current_Windows')
+        self.assertEqual(candidate['check'], {'type': 'registry', 'path': 'HKLM\\Software\\Policies\\Google\\Chrome', 'value_name': 'QuicAllowed'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
+
     def test_infers_linux_sysctl_candidate_check_from_rhel_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230266',

@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "description": "Regression ratchet for the tracked public DISA corpus and coverage mapping. Raise floors intentionally only after regenerated manifests/specs/fixtures validate and CI passes.",
+  "description": "Regression ratchet for the tracked public DISA corpus and coverage mapping. Raise floors intentionally only after regenerated manifests/specs/fixtures validate.",
   "min_public_disa_artifacts": 22,
   "min_authoritative_manifests": 22,
   "min_authoritative_rules": 5206,
-  "min_automated_or_mapped_rules": 2159,
-  "max_unsupported_rules": 3047
+  "min_automated_or_mapped_rules": 2194,
+  "max_unsupported_rules": 3012
 }
