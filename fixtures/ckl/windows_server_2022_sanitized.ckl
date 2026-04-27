@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CHECKLIST>
+  <ASSET>
+    <ROLE>Member Server</ROLE>
+    <ASSET_TYPE>Computing</ASSET_TYPE>
+    <HOST_NAME>sanitized-win2022</HOST_NAME>
+    <HOST_IP>192.0.2.10</HOST_IP>
+    <HOST_MAC>00:00:5E:00:53:01</HOST_MAC>
+    <HOST_FQDN>sanitized-win2022.example.test</HOST_FQDN>
+    <TECH_AREA></TECH_AREA>
+    <TARGET_KEY></TARGET_KEY>
+    <WEB_OR_DATABASE>false</WEB_OR_DATABASE>
+  </ASSET>
+  <STIGS>
+    <iSTIG>
+      <STIG_INFO>
+        <SI_DATA><SID_NAME>title</SID_NAME><SID_DATA>Windows Server 2022 STIG</SID_DATA></SI_DATA>
+        <SI_DATA><SID_NAME>stigid</SID_NAME><SID_DATA>Windows_Server_2022_STIG</SID_DATA></SI_DATA>
+        <SI_DATA><SID_NAME>version</SID_NAME><SID_DATA>001</SID_DATA></SI_DATA>
+        <SI_DATA><SID_NAME>releaseinfo</SID_NAME><SID_DATA>Release: 4 Benchmark Date: 24 Jul 2024</SID_DATA></SI_DATA>
+      </STIG_INFO>
+      <VULN>
+        <STIG_DATA><VULN_ATTRIBUTE>Vuln_Num</VULN_ATTRIBUTE><ATTRIBUTE_DATA>V-254239</ATTRIBUTE_DATA></STIG_DATA>
+        <STIG_DATA><VULN_ATTRIBUTE>Rule_ID</VULN_ATTRIBUTE><ATTRIBUTE_DATA>SV-254239r958388_rule</ATTRIBUTE_DATA></STIG_DATA>
+        <STIG_DATA><VULN_ATTRIBUTE>Rule_Title</VULN_ATTRIBUTE><ATTRIBUTE_DATA>Windows Server 2022 must use TLS 1.2</ATTRIBUTE_DATA></STIG_DATA>
+        <STIG_DATA><VULN_ATTRIBUTE>Severity</VULN_ATTRIBUTE><ATTRIBUTE_DATA>high</ATTRIBUTE_DATA></STIG_DATA>
+        <STATUS>Open</STATUS>
+        <FINDING_DETAILS>Sanitized evidence: TLS 1.2 registry setting missing.</FINDING_DETAILS>
+        <COMMENTS>Fixture data only.</COMMENTS>
+      </VULN>
+    </iSTIG>
+  </STIGS>
+</CHECKLIST>

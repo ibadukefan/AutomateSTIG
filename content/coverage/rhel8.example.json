@@ -1,0 +1,31 @@
+{
+  "stig_id": "RHEL_8_STIG",
+  "version": "001",
+  "source": "sanitized fixture corpus; replace with authorized DISA release before production claim",
+  "status": "experimental",
+  "total_rules": 2,
+  "generated_from": "fixtures/openscap-results/rhel8_openscap_results.xml",
+  "generated_at": "2026-04-27T00:00:00Z",
+  "rules": [
+    {
+      "vuln_id": "V-230221",
+      "rule_id": "SV-230221r858734_rule",
+      "title": "RHEL 8 sanitized OpenSCAP pass fixture",
+      "severity": "medium",
+      "classification": "scanner_import",
+      "evidence_required": true,
+      "reason": "OpenSCAP result fixture imports and maps rule result evidence.",
+      "validated_by": ["fixture:openscap-results"]
+    },
+    {
+      "vuln_id": "V-230222",
+      "rule_id": "SV-230222r858736_rule",
+      "title": "RHEL 8 sanitized OpenSCAP fail fixture",
+      "severity": "high",
+      "classification": "scanner_import",
+      "evidence_required": true,
+      "reason": "OpenSCAP result fixture imports and maps rule result evidence.",
+      "validated_by": ["fixture:openscap-results"]
+    }
+  ]
+}

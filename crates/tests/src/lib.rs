@@ -1110,4 +1110,75 @@ end"#;
         assert!(result2.integrity_valid);
         assert_eq!(result2.signature_valid, Some(false));
     }
+
+    // ---------------------------------------------------------------------------
+    // Replacement-readiness fixture scaffolding
+    // ---------------------------------------------------------------------------
+
+    #[test]
+    fn test_sanitized_xccdf_and_scan_result_fixtures_parse() {
+        let benchmark_xml =
+            include_str!("../../../fixtures/disa-xccdf/windows_server_2022_sanitized_xccdf.xml");
+        let benchmark = xccdf::parse_xccdf_benchmark_str(benchmark_xml).unwrap();
+        assert_eq!(benchmark.id, "Windows_Server_2022_STIG");
+        assert_eq!(benchmark.rules.len(), 2);
+        assert!(benchmark.rules.iter().any(|r| r.vuln_id == "V-254239"));
+
+        let scc_xml =
+            include_str!("../../../fixtures/scc-results/windows_server_2022_scc_results.xml");
+        let scc_results = xccdf::parse_xccdf_results_str(scc_xml).unwrap();
+        assert_eq!(
+            scc_results.source.target.as_deref(),
+            Some("sanitized-win2022.example.test")
+        );
+        assert_eq!(scc_results.results.len(), 2);
+        assert_eq!(scc_results.results[0].passed, Some(false));
+        assert_eq!(scc_results.results[1].passed, Some(true));
+
+        let openscap_xml =
+            include_str!("../../../fixtures/openscap-results/rhel8_openscap_results.xml");
+        let openscap_results = xccdf::parse_xccdf_results_str(openscap_xml).unwrap();
+        assert_eq!(
+            openscap_results.source.target.as_deref(),
+            Some("sanitized-rhel8.example.test")
+        );
+        assert_eq!(openscap_results.results.len(), 2);
+        assert_eq!(openscap_results.results[0].passed, Some(true));
+        assert_eq!(openscap_results.results[1].passed, Some(false));
+    }
+
+    #[test]
+    fn test_sanitized_ckl_and_cklb_fixtures_parse() {
+        let ckl_xml = include_str!("../../../fixtures/ckl/windows_server_2022_sanitized.ckl");
+        let ckl_checklist = ckl::parse_ckl(ckl_xml).unwrap();
+        assert_eq!(ckl_checklist.asset.hostname, "sanitized-win2022");
+        assert_eq!(ckl_checklist.findings.len(), 1);
+        assert_eq!(ckl_checklist.findings[0].status, FindingStatus::Open);
+
+        let cklb_json = include_str!("../../../fixtures/cklb/windows_server_2022_sanitized.cklb");
+        let cklb_checklist = cklb::parse_cklb(cklb_json).unwrap();
+        assert_eq!(cklb_checklist.asset.hostname, "sanitized-win2022");
+        assert_eq!(cklb_checklist.findings.len(), 1);
+        assert_eq!(cklb_checklist.findings[0].status, FindingStatus::Open);
+    }
+
+    #[test]
+    fn test_example_coverage_manifests_are_internally_consistent() {
+        for manifest_json in [
+            include_str!("../../../content/coverage/windows_server_2022.example.json"),
+            include_str!("../../../content/coverage/rhel8.example.json"),
+        ] {
+            let manifest: serde_json::Value = serde_json::from_str(manifest_json).unwrap();
+            assert_eq!(manifest["status"], "experimental");
+            let total_rules = manifest["total_rules"].as_u64().unwrap();
+            let rules = manifest["rules"].as_array().unwrap();
+            assert_eq!(total_rules as usize, rules.len());
+            assert!(rules
+                .iter()
+                .all(|rule| rule["vuln_id"].as_str().unwrap().starts_with("V-")));
+            assert!(rules
+                .iter()
+                .all(|rule| rule["reason"].as_str().unwrap().len() > 10));
+        }
+    }
 } // mod integration

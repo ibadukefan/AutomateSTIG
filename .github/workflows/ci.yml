@@ -2,9 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: ["**"]
   pull_request:
-    branches: [main]
 
 env:
   CARGO_TERM_COLOR: always
@@ -53,9 +52,32 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: cargo clippy --workspace --all-targets -- -D warnings
 
+  frontend-syntax:
+    name: Frontend syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node --check crates/gui/frontend/app.js
+
+  dependency-audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install cargo-audit
+        uses: taiki-e/install-action@cargo-audit
+      # RUSTSEC-2023-0071 is documented in docs/audit-exceptions.md. Keep the
+      # exception explicit so all other vulnerabilities fail CI.
+      - run: cargo audit --ignore RUSTSEC-2023-0071
+
   build-release:
     name: Build Release
-    needs: [check, test]
+    needs: [check, test, fmt, clippy, frontend-syntax, dependency-audit]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
