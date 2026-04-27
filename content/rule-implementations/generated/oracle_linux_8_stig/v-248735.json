@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the audit log directory is owned by \"root\" to prevent unauthorized read access. \n \nDetermine where the audit logs are stored with the following command: \n \n$ sudo grep -iw log_file /etc/audit/auditd.conf \n \nlog_file = /var/log/audit/audit.log \n \nDetermine the owner of the audit log directory by using the output of the above command (ex: \"/var/log/audit/\"). Run the following command with the correct audit log directory path: \n \n$ sudo ls -ld /var/log/audit \n \ndrwx------ 2 root root 23 Jun 11 11:56 /var/log/audit \n \nIf the audit log directory is not owned by \"root\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit log to be protected from unauthorized read access by setting the correct owner as \"root\" with the following command: \n \n$ sudo chown root [audit_log_directory] \n \nReplace \"[audit_log_directory]\" with the correct audit log directory path. By default, this location is usually \"/var/log/audit\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248735r958434_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "The OL 8 audit log directory must be owned by root to prevent unauthorized read access.",
+  "tracking_issue": "TODO-V-248735",
+  "vuln_id": "V-248735"
+}

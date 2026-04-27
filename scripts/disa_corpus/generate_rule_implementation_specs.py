@@ -131,6 +131,50 @@ def _file_content_candidate(rule: dict) -> dict | None:
     }
 
 
+def _service_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    title = rule.get('title', '') or ''
+    match = re.search(r'\bsystemctl\s+is-(?:enabled|active)\s+([A-Za-z0-9_.@+-]+)(?:\.service)?\b', content)
+    if not match:
+        return None
+    name = match.group(1).removesuffix('.service')
+    lower = f"{title}\n{content}".lower()
+    if re.search(r'must\s+not\s+.*(?:enabled|running)|if\s+the\s+service\s+is\s+(?:enabled|active|running),?\s+this\s+is\s+a\s+finding', lower):
+        expected_status = 'disabled'
+    elif 'must be enabled' in lower or 'must be running' in lower:
+        expected_status = 'running'
+    else:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'service', 'name': name, 'expected_status': expected_status},
+        'expected': {'type': 'equals', 'value': expected_status},
+        'description': rule.get('title', ''),
+    }
+
+
+def _file_permission_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    path_match = re.search(r'\bstat\s+(?:-[A-Za-z]+\s+)*(?:["\'][^"\']+["\']\s+)?(/[A-Za-z0-9_./:+-]+)', content)
+    if not path_match:
+        path_match = re.search(r'\b(?:permissions|mode)[^\n.]+\s+(/[A-Za-z0-9_./:+-]+)', content, re.IGNORECASE)
+    if not path_match:
+        return None
+    mode_match = re.search(r'\b(?:mode|permissions?)\s+(?:is|are|of)?\s*(?:not\s+)?["“]?([0-7]{3,4})["”]?', content, re.IGNORECASE)
+    if not mode_match:
+        mode_match = re.search(r'If\s+the\s+mode\s+is\s+not\s+["“]([0-7]{3,4})["”]', content, re.IGNORECASE)
+    if not mode_match:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'file_permission', 'path': path_match.group(1), 'owner': None, 'group': None, 'mode': mode_match.group(1)},
+        'expected': {'type': 'is_true'},
+        'description': rule.get('title', ''),
+    }
+
+
 def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     """Infer a conservative executable check candidate from DISA prose.
 
@@ -168,7 +212,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         }
 
     if _linux_platform(stig_id):
-        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate):
+        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _service_candidate, _file_permission_candidate):
             candidate = infer(rule)
             if candidate:
                 return candidate

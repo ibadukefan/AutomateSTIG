@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that Advanced Intrusion Detection Environment (AIDE) notifies the SA when anomalies in the operation of any security functions are discovered with the following command: \n \n$ grep SILENTREPORTS /etc/default/aide\nSILENTREPORTS=no\n \nIf \"SILENTREPORTS\" is set to \"yes\", is commented out, or is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to notify designated personnel if baseline configurations are changed in an unauthorized manner. \n \nModify the \"SILENTREPORTS\" parameter in the \"/etc/default/aide\" file with a value of \"no\" if it does not already exist as follows:\n\nSILENTREPORTS=no",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270652r1067138_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must notify designated personnel if baseline configurations are changed in an unauthorized manner. The file integrity tool must notify the system administrator (SA) when changes to the baseline configuration or anomalies in the operation of any security functions are discovered.",
+  "tracking_issue": "TODO-V-270652",
+  "vuln_id": "V-270652"
+}

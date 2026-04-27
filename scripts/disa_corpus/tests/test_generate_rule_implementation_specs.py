@@ -93,6 +93,24 @@ Value: 0x00000000 (0)'''
         self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/usr/lib/systemd/system/rescue.service', 'pattern': 'sulogin-shell', 'is_regex': False})
         self.assertEqual(candidate['expected'], {'type': 'contains'})
 
+    def test_infers_linux_service_disabled_candidate_from_systemctl_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-251234',
+            'title': 'RHEL must not have the telnet service enabled.',
+            'check_content': 'Verify the telnet service is disabled with the following command: $ systemctl is-enabled telnet.service If the service is enabled, this is a finding.'
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
+
+    def test_infers_linux_file_permission_candidate_from_stat_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-251235',
+            'title': 'RHEL audit logs must have mode 0600.',
+            'check_content': 'Check the permissions with the following command: $ stat -c "%a %U %G" /var/log/audit/audit.log If the mode is not "600", this is a finding.'
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/var/log/audit/audit.log', 'owner': None, 'group': None, 'mode': '600'})
+        self.assertEqual(candidate['expected'], {'type': 'is_true'})
+
 
 if __name__ == '__main__':
     unittest.main()

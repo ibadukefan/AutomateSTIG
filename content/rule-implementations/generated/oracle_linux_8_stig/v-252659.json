@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: This requirement applies to OL versions 8.0 through 8.3. If the system is OL version 8.4 or newer, this requirement is not applicable.\n\nVerify the operating system is configured to limit the \"pwquality\" retry option to 3. \n\nCheck for the use of the \"pwquality\" retry option in the password-auth file with the following command:\n\n     $ sudo cat /etc/pam.d/password-auth | grep pam_pwquality\n\n     password requisite pam_pwquality.so retry=3\n\nIf the value of \"retry\" is set to \"0\" or greater than \"3\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to limit the \"pwquality\" retry option to 3.\n\nAdd the following line to the \"/etc/pam.d/password-auth\" file (or modify the line to have the required value):\n\n     password requisite pam_pwquality.so retry=3",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-252659r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 systems below version 8.4 must ensure the password complexity module in the password-auth file is configured for three retries or less.",
+  "tracking_issue": "TODO-V-252659",
+  "vuln_id": "V-252659"
+}

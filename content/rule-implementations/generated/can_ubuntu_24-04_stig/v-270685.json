@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify Ubuntu 24.04 LTS generates audit records for all account creations, modifications, disabling, and termination events that affect \"/etc/group\" with the following command: \n \n$ sudo auditctl -l | grep group \n-w /etc/group -p wa -k usergroup_modification \n \nIf the command does not return a line that matches the example or the line is commented out, this is a finding. \n \nNote: The \"-k\" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to generate audit records for all account creations, modifications, disabling, and termination events that affect \"/etc/group\". \n \nAdd or update the following rule to \"/etc/audit/rules.d/stig.rules\": \n \n-w /etc/group -p wa -k usergroup_modification \n  \nTo reload the rules file, issue the following command: \n \n$ sudo augenrules --load",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270685r1066544_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group.",
+  "tracking_issue": "TODO-V-270685",
+  "vuln_id": "V-270685"
+}

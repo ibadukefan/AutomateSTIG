@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system disables core dump backtraces by issuing the following command: \n \n$ sudo grep -i ProcessSizeMax /etc/systemd/coredump.conf \n \nProcessSizeMax=0 \n \nIf the \"ProcessSizeMax\" item is missing or commented out or the value is anything other than \"0\", and the need for core dumps is not documented with the Information System Security Officer (ISSO) as an operational requirement for all domains that have the \"core\" item assigned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 8 to disable core dump backtraces. \n \nAdd or modify the following line in \"/etc/systemd/coredump.conf\": \n \nProcessSizeMax=0",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248633r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must disable core dump backtraces.",
+  "tracking_issue": "TODO-V-248633",
+  "vuln_id": "V-248633"
+}

@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/pwquality.conf",
+      "pattern": "minlen",
+      "type": "file_content"
+    },
+    "description": "OL 8 passwords must have a minimum of 15 characters.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248699"
+  },
+  "check_content_excerpt": "Verify the operating system enforces a minimum 15-character password length. The \"minlen\" option sets the minimum number of characters in a new password. \n \nCheck for the value of the \"minlen\" option in \"/etc/security/pwquality.conf\" or \"/etc/security/pwquality.conf.d/*.conf\" files with the following command: \n \n$ sudo grep -r minlen /etc/security/pwquality.conf*\n \n/etc/security/pwquality.conf:minlen = 15 \n \nIf the command does not return a \"minlen\" value of 15 or greater or is commented out, this is a finding.\nIf conflicting results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 8 to enforce a minimum 15-character password length.\n\nAdd or update the following line in the \"/etc/security/pwquality.conf\" file or a configuration file in the \"/etc/security/pwquality.conf.d/\" directory:\n\nminlen = 15\n\nRemove any configurations that conflict with the above value.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-248699r1015058_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 passwords must have a minimum of 15 characters.",
+  "tracking_issue": "TODO-V-248699",
+  "vuln_id": "V-248699"
+}

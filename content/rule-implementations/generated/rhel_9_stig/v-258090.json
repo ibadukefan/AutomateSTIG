@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "fapolicyd",
+      "type": "service"
+    },
+    "description": "RHEL 9 fapolicy module must be enabled.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258090"
+  },
   "check_content_excerpt": "Verify that RHEL 9 fapolicyd is active with the following command:\n\n$ systemctl is-active fapolicyd\n\nactive\n\nIf fapolicyd module is not active, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Enable the fapolicyd with the following command:\n\n$ systemctl enable --now fapolicyd",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-258090r958808_rule",
   "severity": "medium",

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the journalctl command has a permission set of \"740\" with the following command:\n\n$ sudo find /usr/bin/journalctl -exec stat -c \"%n %a\" {} \\;\n/usr/bin/journalctl 740\n\nIf journalctl is not set to \"740\", this is a finding",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure journalctl to have a permission set of \"740\":\n\n$ sudo chmod 740 /usr/bin/journalctl",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270758r1066763_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must be configured so that the \"journalctl\" command is not accessible by unauthorized users.",
+  "tracking_issue": "TODO-V-270758",
+  "vuln_id": "V-270758"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify all public (world-writeable) directories have the public sticky bit set with the following command:  \n \n$ sudo find / -type d -perm -002 ! -perm -1000 \n \nIf any world-writable directories are found missing the sticky bit, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure all public directories to have the sticky bit set to prevent unauthorized and unintended information transferred via shared system resources. \n \nSet the sticky bit on all public directories using the following command, replacing \"[Public Directory]\" with any directory path missing the sticky bit: \n \n$ sudo chmod +t  [Public Directory]",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270750r1066739_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must set a sticky bit on all public directories to prevent unauthorized and unintended information transferred via shared system resources.",
+  "tracking_issue": "TODO-V-270750",
+  "vuln_id": "V-270750"
+}

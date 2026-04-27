@@ -150,6 +150,36 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": "0600",
+        "owner": null,
+        "path": "/var/log/audit/audit.log",
+        "type": "file_permission"
+      },
+      "description": "RHEL 8 audit logs must have a mode of 0600 or less permissive to prevent unauthorized read access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230396"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0700",
+        "owner": null,
+        "path": "/var/log/audit",
+        "type": "file_permission"
+      },
+      "description": "RHEL 8 audit log directory must have a mode of 0700 or less permissive to prevent unauthorized read access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230401"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/audit.rules",
         "pattern": "/etc/shadow",

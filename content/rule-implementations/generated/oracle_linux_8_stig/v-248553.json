@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SSH server automatically terminates a user session after the SSH client has been unresponsive for 10 minutes.\n\nCheck that the \"ClientAliveInterval\" variable is set to a value of \"600\" or less by running the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*clientaliveinterval'\n\nClientAliveInterval 600\n\nIf \"ClientAliveInterval\" does not exist, does not have a product value of \"600\" or less in \"/etc/ssh/sshd_config\", or is commented out, this is a finding.\n\nIf conflicting results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: This setting must be applied in conjunction with OL08-00-010200 to function correctly.\n\nConfigure the SSH server to terminate a user session automatically after the SSH client has been unresponsive for 10 minutes.\n \nModify or append the following lines in the \"/etc/ssh/sshd_config\" file to have a product value of \"600\" or less: \n \n     ClientAliveInterval 600 \n \nThe SSH daemon must be restarted for changes to take effect.\n \n     $ sudo systemctl restart sshd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248553r986330_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must be configured so that all network connections associated with SSH traffic are terminated after 10 minutes of becoming unresponsive.",
+  "tracking_issue": "TODO-V-248553",
+  "vuln_id": "V-248553"
+}

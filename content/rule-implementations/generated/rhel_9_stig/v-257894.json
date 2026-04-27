@@ -1,9 +1,24 @@
 {
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": "0000",
+      "owner": null,
+      "path": "/etc/gshadow-",
+      "type": "file_permission"
+    },
+    "description": "RHEL 9 /etc/gshadow- file must have mode 0000 or less permissive to prevent unauthorized access.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257894"
+  },
   "check_content_excerpt": "Verify that the \"/etc/gshadow-\" file has mode \"0000\" with the following command:\n\n$ sudo stat -c \"%a %n\" /etc/gshadow-\n\n0 /etc/gshadow-\n\nIf a value of \"0\" is not returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +26,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the mode of the file \"/etc/gshadow-\" to \"0000\" by running the following command:\n\n$ sudo chmod 0000 /etc/gshadow-",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_permission",
   "remediation": "planned",
   "rule_id": "SV-257894r991589_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "chronyd",
+      "type": "service"
+    },
+    "description": "RHEL 9 chronyd service must be enabled.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257944"
+  },
   "check_content_excerpt": "Verify the chronyd service is active with the following command:\n\n$ systemctl is-active chronyd\n\nactive \n\nIf the chronyd service is not active, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "To enable the chronyd service run the following command:\n\n$ sudo systemctl enable --now chronyd",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-257944r1038944_rule",
   "severity": "medium",

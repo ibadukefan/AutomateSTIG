@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system has the packages required for encrypting offloaded audit logs installed with the following commands: \n \n$ sudo yum list installed rsyslog-gnutls \n \nrsyslog-gnutls.x86_64 8.1911.0-6.el8 @AppStream \n \nIf the \"rsyslog-gnutls\" package is not installed, ask the administrator to indicate how audit logs are being encrypted during offloading and what packages are installed to support it.  \n \nIf there is no evidence of audit logs being encrypted during offloading, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to encrypt offloaded audit logs by installing the required packages with the following command: \n \n$ sudo yum install rsyslog-gnutls",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248813r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must have the packages required for encrypting offloaded audit logs installed.",
+  "tracking_issue": "TODO-V-248813",
+  "vuln_id": "V-248813"
+}

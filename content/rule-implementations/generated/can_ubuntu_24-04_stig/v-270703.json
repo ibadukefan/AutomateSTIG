@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the system commands contained in the following directories are group-owned by root or a required system account with the following command: \n \n$ find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin \\-type f -perm -u=x -exec stat --format=\"%n %G\" {} + |  \\awk '$2 != \"root\" && $2 != \"daemon\" && $2 != \"adm\" && $2 != \"shadow\" && $2 != \"mail\" && $2 != \"crontab\" && $2 != \"_ssh\"'\n\nNote: The above command uses awk to filter out common system accounts. If your system uses other required system accounts, add them to the awk condition to filter them out of the results.\n\nIf any system commands are returned that are not group-owned by a required system account, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system commands to be protected from unauthorized access. Run the following command, replacing \"[FILE]\" with any system command file not group-owned by \"root\" or a required system account: \n \n$ sudo chgrp [SYSTEMACCOUNT] [FILE]",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270703r1066598_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must have system commands group-owned by root or a system account.",
+  "tracking_issue": "TODO-V-270703",
+  "vuln_id": "V-270703"
+}

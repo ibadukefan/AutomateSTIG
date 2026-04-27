@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the SA and ISSO (at a minimum) are notified in the event of an audit processing failure with the following command: \n \n$ sudo grep '^action_mail_acct' /etc/audit/auditd.conf\naction_mail_acct = <administrator_account> \n \nIf the value of the \"action_mail_acct\" keyword is not set to an account for security personnel, the returned line is commented out, or the keyword is missing, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure \"auditd\" service to notify the SA and ISSO in the event of an audit processing failure.  \n \nEdit the following line in \"/etc/audit/auditd.conf\" to ensure administrators are notified via email for those situations: \n \naction_mail_acct = <administrator_account> \n \nNote: Change \"administrator_account\" to an account for security personnel. \n \nRestart the \"auditd\" service so the changes take effect: \n \n$ sudo systemctl restart auditd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270819r1068390_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must alert the system administrator (SA) and information system security officer (ISSO) (at a minimum) in the event of an audit processing failure.",
+  "tracking_issue": "TODO-V-270819",
+  "vuln_id": "V-270819"
+}

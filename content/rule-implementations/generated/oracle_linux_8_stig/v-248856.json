@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify \"/var/tmp\" is mounted with the \"nodev\" option:\n\n$ sudo mount | grep /var/tmp\n\n/dev/mapper/ol-var_tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)\n\nVerify that the \"nodev\" option is configured for /var/tmp:\n\n$ sudo cat /etc/fstab | grep /var/tmp\n\n/dev/mapper/ol-var_tmp /var/tmp xfs defaults,nodev,nosuid,noexec 0 0\n\nIf results are returned and the \"nodev\" option is missing, or if /var/tmp is mounted without the \"nodev\" option, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system so that /var/tmp is mounted with the \"nodev\" option by adding /modifying the /etc/fstab with the following line:\n\n/dev/mapper/ol-var_tmp /var/tmp xfs defaults,nodev,nosuid,noexec 0 0",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248856r958804_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must mount \"/var/tmp\" with the \"nodev\" option.",
+  "tracking_issue": "TODO-V-248856",
+  "vuln_id": "V-248856"
+}

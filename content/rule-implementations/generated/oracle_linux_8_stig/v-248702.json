@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify OL 8 uses multifactor authentication for local access to accounts.\n\nNote: If the system administrator (SA) demonstrates the use of an approved alternate multifactor authentication method, this requirement is Not Applicable.\n\nCheck that the \"pam_cert_auth\" setting is set to \"true\" in the \"/etc/sssd/sssd.conf\" file.\n\nCheck that the \"try_cert_auth\" or \"require_cert_auth\" options are configured in both \"/etc/pam.d/system-auth\" and \"/etc/pam.d/smartcard-auth\" files with the following command:\n\n     $ sudo grep -ir cert_auth /etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf /etc/pam.d/*\n\n     /etc/sssd/sssd.conf:pam_cert_auth = True\n     /etc/pam.d/smartcard-auth:auth sufficient pam_sss.so try_cert_auth\n     /etc/pam.d/system-auth:auth [success=done authinfo_unavail=ignore ignore=ignore default=die] pam_sss.so try_cert_auth\n\nIf \"pam_cert_auth\" is not set to \"true\" in \"/etc/sssd/sssd.conf\", this is a finding.\n\nIf \"pam_sss.so\" is not set to \"try_cert_auth\" or \"require_cert_auth\" in both the \"/etc/pam.d/smartcard-auth\" and \"/etc/pam.d/system-auth\" files, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 8 to use multifactor authentication for local access to accounts.\n\nAdd or update the \"pam_cert_auth\" setting in the \"/etc/sssd/sssd.conf\" file to match the following line:\n\n     [pam]\n     pam_cert_auth = True\n\nAdd or update \"pam_sss.so\" with \"try_cert_auth\" or \"require_cert_auth\" in the \"/etc/pam.d/system-auth\" and \"/etc/pam.d/smartcard-auth\" files based on the following examples:\n\n     /etc/pam.d/smartcard-auth:auth sufficient pam_sss.so try_cert_auth\n\n     /etc/pam.d/system-auth:auth [success=done authinfo_unavail=ignore ignore=ignore default=die] pam_sss.so try_cert_auth\n\nThe \"sssd\" service must be restarted for the changes to take effect. To restart the \"sssd\" service, run the following command:\n\n     $ sudo systemctl restart sssd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248702r1015060_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must implement multifactor authentication for access to interactive accounts.",
+  "tracking_issue": "TODO-V-248702",
+  "vuln_id": "V-248702"
+}

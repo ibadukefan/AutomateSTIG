@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Universal method: \n 1. In the omnibox (address bar) type chrome://policy \n 2. If DefaultPopupsSetting is not displayed under the Policy Name column or it is not set to 2, then this is a finding.\n\nWindows method:\n 1. Start regedit\n 2. Navigate to HKLM\\Software\\Policies\\Google\\Chrome\\\n 3. If the value name DefaultPopupsSetting does not exist or its value data is not set to 2, then this is a finding.\n\nNote:  If AO Approved exceptions to this rule have been enabled, this is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Windows group policy:\n   1. Open the group policy editor tool with gpedit.msc   \n   2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Google\\Google Chrome\\Content Settings\\\n    Policy Name: Default popups setting\n    Policy State: Enabled\n    Policy Value: Do not allow any site to show popups",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221561r960963_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/google_chrome_current_windows/u_google_chrome_v2r11_stig.json",
+  "source_version": "U_Google_Chrome_V2R11_STIG.zip",
+  "stig_id": "Google_Chrome_Current_Windows",
+  "title": "Sites ability to show pop-ups must be disabled.",
+  "tracking_issue": "TODO-V-221561",
+  "vuln_id": "V-221561"
+}

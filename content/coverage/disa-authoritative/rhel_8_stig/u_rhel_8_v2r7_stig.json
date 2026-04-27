@@ -2463,16 +2463,17 @@
       "vuln_id": "V-230395"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230396",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230396r1017202_rule",
       "severity": "medium",
       "title": "RHEL 8 audit logs must have a mode of 0600 or less permissive to prevent unauthorized read access.",
-      "tracking_issue": "TODO-V-230396",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-230396"
@@ -2538,16 +2539,17 @@
       "vuln_id": "V-230400"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230401",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230401r1017207_rule",
       "severity": "medium",
       "title": "RHEL 8 audit log directory must have a mode of 0700 or less permissive to prevent unauthorized read access.",
-      "tracking_issue": "TODO-V-230401",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-230401"

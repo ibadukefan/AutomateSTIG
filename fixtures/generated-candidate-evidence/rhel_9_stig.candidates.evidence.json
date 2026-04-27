@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 69,
+  "candidate_checks": 85,
   "cases": [
     {
       "check": {
@@ -422,6 +422,424 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": "0755",
+        "owner": null,
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /var/log directory must have mode 0755 or less permissive.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/var/log": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0755",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/var/log": {
+            "exists": true,
+            "group": null,
+            "mode": "0755",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257885"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/var/log/messages",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /var/log/messages file must have mode 0640 or less permissive.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/var/log/messages": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/var/log/messages": {
+            "exists": true,
+            "group": null,
+            "mode": "0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257886"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0755",
+        "owner": null,
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 audit tools must have a mode of 0755 or less permissive.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/sbin/auditctl": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0755",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/sbin/auditctl": {
+            "exists": true,
+            "group": null,
+            "mode": "0755",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257887"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/group",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/group file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/group": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/group": {
+            "exists": true,
+            "group": null,
+            "mode": "0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257891"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/group-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/group- file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/group-": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/group-": {
+            "exists": true,
+            "group": null,
+            "mode": "0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257892"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
+        "path": "/etc/gshadow",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/gshadow file must have mode 0000 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/gshadow": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/gshadow": {
+            "exists": true,
+            "group": null,
+            "mode": "0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257893"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
+        "path": "/etc/gshadow-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/gshadow- file must have mode 0000 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/gshadow-": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/gshadow-": {
+            "exists": true,
+            "group": null,
+            "mode": "0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257894"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/passwd",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/passwd file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/passwd": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/passwd": {
+            "exists": true,
+            "group": null,
+            "mode": "0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257895"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/passwd-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/passwd- file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/passwd-": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/passwd-": {
+            "exists": true,
+            "group": null,
+            "mode": "0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257896"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
+        "path": "/etc/shadow-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/shadow- file must have mode 0000 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/shadow-": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/shadow-": {
+            "exists": true,
+            "group": null,
+            "mode": "0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257897"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
+        "path": "/etc/shadow",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/shadow file must have mode 0000 to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/shadow": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/shadow": {
+            "exists": true,
+            "group": null,
+            "mode": "0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257934"
+    },
+    {
+      "check": {
         "name": "firewalld",
         "should_be_installed": true,
         "type": "package"
@@ -497,6 +915,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257943"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "chronyd",
+        "type": "service"
+      },
+      "description": "RHEL 9 chronyd service must be enabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "chronyd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "chronyd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257944"
     },
     {
       "check": {
@@ -1151,6 +1596,82 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/etc/ssh/",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 SSH private host key files must have mode 0640 or less permissive.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/ssh/": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/ssh/": {
+            "exists": true,
+            "group": null,
+            "mode": "0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258000"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/ssh/",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 SSH public host key files must have mode 0644 or less permissive.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/ssh/": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/ssh/": {
+            "exists": true,
+            "group": null,
+            "mode": "0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258001"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/dconf/profile/user",
         "pattern": "system-db",
@@ -1333,6 +1854,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-258089"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "fapolicyd",
+        "type": "service"
+      },
+      "description": "RHEL 9 fapolicy module must be enabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "fapolicyd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "fapolicyd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258090"
     },
     {
       "check": {
@@ -1735,6 +2283,44 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/etc/audit/auditd.conf",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/audit/auditd.conf file must have 0640 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/audit/auditd.conf": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/audit/auditd.conf": {
+            "exists": true,
+            "group": null,
+            "mode": "0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258172"
+    },
+    {
+      "check": {
         "name": "audispd-plugins",
         "should_be_installed": true,
         "type": "package"
@@ -1817,5 +2403,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 69
+  "validated_candidates": 85
 }

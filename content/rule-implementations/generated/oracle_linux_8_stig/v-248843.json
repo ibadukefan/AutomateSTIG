@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/modprobe.d",
+      "pattern": "bluetooth",
+      "type": "file_content"
+    },
+    "description": "OL 8 Bluetooth must be disabled.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248843"
+  },
+  "check_content_excerpt": "If the device or operating system does not have a Bluetooth adapter installed, this requirement is not applicable.\n\nThis requirement is not applicable to mobile devices (smartphones and tablets), where the use of Bluetooth is a local AO decision.\n\nDetermine if Bluetooth is disabled with the following command:\n\n     $ sudo grep -r bluetooth /etc/modprobe.d\n     /etc/modprobe.d/bluetooth.conf:install bluetooth /bin/false\n\nIf the command does not return any output or the line is commented out and the collaborative computing device has not been authorized for use, this is a finding.\n\nVerify the operating system disables the ability to use Bluetooth with the following command:  \n \n     $ sudo grep -r bluetooth /etc/modprobe.d | grep -i \"blacklist\" | grep -v \"^#\" \n     blacklist bluetooth \n \nIf the command does not return any output or the output is not \"blacklist bluetooth\", and use of Bluetooth is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable the Bluetooth adapter when not in use.\n\nBuild or modify the \"/etc/modprobe.d/bluetooth.conf\" file with the following line:\n\n     install bluetooth /bin/false\n\nDisable the ability to use the Bluetooth kernel module. \n \n     $ sudo vi /etc/modprobe.d/blacklist.conf \n \nAdd or update the line: \n \n     blacklist bluetooth\n\nReboot the system for the settings to take effect.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-248843r991569_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 Bluetooth must be disabled.",
+  "tracking_issue": "TODO-V-248843",
+  "vuln_id": "V-248843"
+}

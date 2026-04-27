@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "net.ipv6.conf.all.accept_ra",
+      "type": "sysctl"
+    },
+    "description": "OL 8 must not accept router advertisements on all IPv6 interfaces.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248884"
+  },
+  "check_content_excerpt": "Verify OL 8 does not accept router advertisements on all IPv6 interfaces unless the system is a router.\n\nNote: If IPv6 is disabled on the system, this requirement is not applicable.\n\nDetermine if router advertisements are not accepted by using the following command:\n\n$ sudo sysctl net.ipv6.conf.all.accept_ra\n\nnet.ipv6.conf.all.accept_ra = 0\n\nIf the \"accept_ra\" value is not \"0\" and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.\n\nCheck that the configuration files are present to enable this network parameter.\n\n$ sudo grep -r net.ipv6.conf.all.accept_ra /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf /lib/sysctl.d/*.conf /etc/sysctl.conf /etc/sysctl.d/*.conf\n\n/etc/sysctl.d/99-sysctl.conf: net.ipv6.conf.all.accept_ra = 0\n\nIf \"net.ipv6.conf.all.accept_ra\" is not set to \"0\", is missing or commented out, this is a finding.\n\nIf conflicting results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system to not accept router advertisements on all IPv6 interfaces unless the system is a router with the following commands:\n\n$ sudo sysctl -w net.ipv6.conf.all.accept_ra=0\n\nRemove any configurations that conflict with the above from the following locations:\n/run/sysctl.d/*.conf\n/usr/local/lib/sysctl.d/*.conf\n/usr/lib/sysctl.d/*.conf\n/lib/sysctl.d/*.conf\n/etc/sysctl.conf\n/etc/sysctl.d/*.conf\n\nIf \"0\" is not the system's default value, add or update the following lines in the appropriate file under \"/etc/sysctl.d\":\n\nnet.ipv6.conf.all.accept_ra=0",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-248884r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must not accept router advertisements on all IPv6 interfaces.",
+  "tracking_issue": "TODO-V-248884",
+  "vuln_id": "V-248884"
+}

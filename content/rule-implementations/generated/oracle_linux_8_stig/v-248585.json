@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system requires re-authentication when using the \"sudo\" command to elevate privileges.\n\n     $ sudo grep -Eir 'timestamp_timeout' /etc/sudoers /etc/sudoers.d*\n     /etc/sudoers:Defaults timestamp_timeout=0\n\nIf conflicting results are returned, this is a finding.\n\nIf \"timestamp_timeout\" is set to a negative number, is commented out, or no results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the \"sudo\" command to require re-authentication.\n\nEdit the /etc/sudoers file:\n     $ sudo visudo\n\nAdd or modify the following line:\n     Defaults timestamp_timeout=[value]\n\nNote: The \"[value]\" must be a number that is greater than or equal to \"0\".\n\nRemove any duplicate or conflicting lines from /etc/sudoers and /etc/sudoers.d/ files.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248585r1050789_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must require reauthentication when using the \"sudo\" command.",
+  "tracking_issue": "TODO-V-248585",
+  "vuln_id": "V-248585"
+}

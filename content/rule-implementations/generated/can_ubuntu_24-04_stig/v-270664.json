@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the \"chrony\" package is installed using the following command:\n \n$ dpkg -l | grep chrony\nii  chrony     4.5-1ubuntu4.1     amd64     Versatile implementation of the Network Time Protocol\n\nIf the \"chrony\" package is not installed,\u00a0this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the \"chrony\" network time protocol package using the following command:\n\n$ sudo apt install -y chrony",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270664r1068359_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must have the \"chrony\" package installed.",
+  "tracking_issue": "TODO-V-270664",
+  "vuln_id": "V-270664"
+}

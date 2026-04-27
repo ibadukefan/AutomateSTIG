@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the Ubuntu operating system uses the \"cracklib\" library to prevent the use of dictionary words with the following command: \n \n$ grep dictcheck /etc/security/pwquality.conf \n \ndictcheck=1 \n \nIf the \"dictcheck\" parameter is not set to \"1\" or is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the Ubuntu operating system to prevent the use of dictionary words for passwords. \n \nAdd or update the following line in the \"/etc/security/pwquality.conf\" file to include the \"dictcheck=1\" parameter: \n \ndictcheck=1",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-238227r991587_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/canonical_ubuntu_20_04_lts_stig/u_can_ubuntu_20_04_lts_v2r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip",
+  "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
+  "title": "The Ubuntu operating system must prevent the use of dictionary words for passwords.",
+  "tracking_issue": "TODO-V-238227",
+  "vuln_id": "V-238227"
+}

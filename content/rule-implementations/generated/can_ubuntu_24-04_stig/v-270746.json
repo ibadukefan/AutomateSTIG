@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that kernel core dumps are disabled unless needed with the following command: \n \n$ systemctl is-active kdump.service\ninactive \n \nIf the \"kdump\" service is active, ask the system administrator (SA) if the use of the service is required and documented with the information system security officer (ISSO). \n \nIf the service is active and is not documented, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "If kernel core dumps are not required, disable the \"kdump\" service with the following command: \n \n$ sudo systemctl disable kdump.service \n \nIf kernel core dumps are required, document the need with the ISSO.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270746r1066727_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must disable kernel core dumps.",
+  "tracking_issue": "TODO-V-270746",
+  "vuln_id": "V-270746"
+}

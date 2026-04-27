@@ -1,9 +1,24 @@
 {
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": "0640",
+      "owner": null,
+      "path": "/etc/audit/auditd.conf",
+      "type": "file_permission"
+    },
+    "description": "RHEL 9 /etc/audit/auditd.conf file must have 0640 or less permissive to prevent unauthorized access.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258172"
+  },
   "check_content_excerpt": "Verify the mode of /etc/audit/auditd.conf with the command:\n\n$ sudo stat -c \"%a %n\" /etc/audit/auditd.conf\n\n640 /etc/audit/auditd.conf\n\nIf \"/etc/audit/auditd.conf\" does not have a mode of \"0640\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +26,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the mode of /etc/audit/auditd.conf file to 0640 with the command:\n\n$ sudo chmod 0640 /etc/audit/auditd.conf",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_permission",
   "remediation": "planned",
   "rule_id": "SV-258172r958444_rule",
   "severity": "medium",

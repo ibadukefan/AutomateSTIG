@@ -1,9 +1,24 @@
 {
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": "0640",
+      "owner": null,
+      "path": "/var/log/messages",
+      "type": "file_permission"
+    },
+    "description": "RHEL 9 /var/log/messages file must have mode 0640 or less permissive.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257886"
+  },
   "check_content_excerpt": "Verify the \"/var/log/messages\" file has a mode of \"0640\" or less permissive with the following command:\n\n$ stat -c '%a %n' /var/log/messages\n\n600 /var/log/messages\n\nIf \"/var/log/messages\" does not have a mode of \"0640\" or less permissive, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +26,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the \"/var/log/messages\" file to have a mode of \"0640\" by running the following command:\n\n$ sudo chmod 0640 /var/log/messages",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_permission",
   "remediation": "planned",
   "rule_id": "SV-257886r1044955_rule",
   "severity": "medium",

@@ -1,0 +1,29 @@
+{
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-252652r991560_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_oracle_linux_8_v2r5_stig_scap_1_3_benchmark/u_oracle_linux_8_v2r5_stig_scap_1_3_benchmark.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark",
+  "title": "OL 8 library directories must be owned by root.",
+  "tracking_issue": "TODO-V-252652",
+  "vuln_id": "V-252652"
+}

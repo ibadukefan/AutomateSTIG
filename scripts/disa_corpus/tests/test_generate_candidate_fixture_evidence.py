@@ -53,6 +53,18 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
                         'check': {'type': 'file_content', 'path': '/etc/example.conf', 'pattern': 'expected', 'is_regex': False},
                         'expected': {'type': 'contains'},
                     },
+                    {
+                        'vuln_id': 'V-6',
+                        'platform': 'linux',
+                        'check': {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'},
+                        'expected': {'type': 'equals', 'value': 'disabled'},
+                    },
+                    {
+                        'vuln_id': 'V-7',
+                        'platform': 'linux',
+                        'check': {'type': 'file_permission', 'path': '/var/log/audit/audit.log', 'owner': None, 'group': None, 'mode': '600'},
+                        'expected': {'type': 'is_true'},
+                    },
                 ],
             }))
 
@@ -60,8 +72,8 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
 
             self.assertEqual(written, 1)
             evidence = json.loads((out / 'mixed.candidates.evidence.json').read_text())
-            self.assertEqual(evidence['candidate_checks'], 5)
-            self.assertEqual(evidence['validated_candidates'], 5)
+            self.assertEqual(evidence['candidate_checks'], 7)
+            self.assertEqual(evidence['validated_candidates'], 7)
             cases = {case['vuln_id']: case for case in evidence['cases']}
             self.assertEqual(cases['V-1']['pass_fixture']['registry']['HKLM\\Software\\Example\\Enabled'], 1)
             self.assertNotEqual(cases['V-1']['fail_fixture']['registry']['HKLM\\Software\\Example\\Enabled'], 1)
@@ -73,6 +85,10 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
             self.assertTrue(cases['V-4']['fail_fixture']['packages']['krb5-workstation'])
             self.assertIn('expected', cases['V-5']['pass_fixture']['files']['/etc/example.conf'])
             self.assertNotIn('expected', cases['V-5']['fail_fixture']['files']['/etc/example.conf'])
+            self.assertEqual(cases['V-6']['pass_fixture']['services']['telnet'], 'disabled')
+            self.assertNotEqual(cases['V-6']['fail_fixture']['services']['telnet'], 'disabled')
+            self.assertEqual(cases['V-7']['pass_fixture']['file_permissions']['/var/log/audit/audit.log']['mode'], '600')
+            self.assertNotEqual(cases['V-7']['fail_fixture']['file_permissions']['/var/log/audit/audit.log']['mode'], '600')
 
 
 if __name__ == '__main__':

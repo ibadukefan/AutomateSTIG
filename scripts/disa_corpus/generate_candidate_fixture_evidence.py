@@ -73,6 +73,25 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
         pass_fixture['files'] = {path: f"before\n{pattern}\nafter\n"}
         fail_fixture['files'] = {path: "before\nafter\n"}
         evidence_type = 'linux_file_content_contains'
+    elif check_type == 'service':
+        name = check['name']
+        expected_status = check['expected_status']
+        pass_fixture['services'] = {name: expected_status}
+        fail_fixture['services'] = {name: 'running' if expected_status != 'running' else 'disabled'}
+        evidence_type = 'linux_service_status'
+    elif check_type == 'file_permission':
+        path = check['path']
+        expected_perm = {
+            'exists': True,
+            'owner': check.get('owner'),
+            'group': check.get('group'),
+            'mode': check.get('mode'),
+        }
+        unexpected_perm = dict(expected_perm)
+        unexpected_perm['mode'] = _alternate_value(expected_perm.get('mode'))
+        pass_fixture['file_permissions'] = {path: expected_perm}
+        fail_fixture['file_permissions'] = {path: unexpected_perm}
+        evidence_type = 'linux_file_permission'
     else:
         raise ValueError(f"{candidate['vuln_id']}: unsupported candidate check type {check_type}")
 

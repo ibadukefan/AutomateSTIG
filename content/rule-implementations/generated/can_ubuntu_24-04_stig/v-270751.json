@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If the system is not networked, this requirement is not applicable.\n\nVerify Ubuntu 24.04 LTS is configured to compare the system clock at least every 24 hours to an authoritative time source with the following command:\n\n$ sudo grep -ir maxpoll /etc/chrony*\nserver [source] iburst maxpoll 16\n\nIf the parameter \"server\" is not set, is not set to an authoritative DOD time source, or is commented out, this is a finding.\n\nIf the \"maxpoll\" option is set to a number greater than 16, the line is commented out, or is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "To configure the system clock to compare to the authoritative time source at least every 24 hours, edit the \"/etc/chrony/chrony.conf\" file. Add or correct the following lines, by replacing \"[source]\" in the following line with an authoritative time source: \n\nserver [source] iburst maxpoll 16 \n\nIf the \"chrony\" service was running and the value of \"maxpoll\" or \"server\" was updated, the service must be restarted using the following command: \n\n$ sudo systemctl restart chrony.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270751r1066742_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must compare internal information system clocks at least every 24 hours with an authoritative time server.",
+  "tracking_issue": "TODO-V-270751",
+  "vuln_id": "V-270751"
+}

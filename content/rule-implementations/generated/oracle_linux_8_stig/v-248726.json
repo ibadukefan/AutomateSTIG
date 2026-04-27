@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify OL 8 takes the appropriate action when an audit processing failure occurs with the following command: \n \n$ sudo grep disk_error_action /etc/audit/auditd.conf \n \ndisk_error_action = HALT \n \nIf the value of the \"disk_error_action\" option is not \"SYSLOG\", \"SINGLE\", or \"HALT\", or the line is commented out, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 8 to shut down by default upon audit failure (unless availability is an overriding concern). \n \nAdd or update the following line (\"disk_error_action\" can be set to \"SYSLOG\" or \"SINGLE\" depending on configuration) in the \"/etc/audit/auditd.conf\" file: \n \ndisk_error_action = HALT \n \nIf availability has been determined to be more important, and this decision is documented with the ISSO, configure OL 8 to notify system administration staff and ISSO staff in the event of an audit processing failure by setting the \"disk_error_action\" to \"SYSLOG\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248726r1038966_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "The OL 8 System must take appropriate action when an audit processing failure occurs.",
+  "tracking_issue": "TODO-V-248726",
+  "vuln_id": "V-248726"
+}

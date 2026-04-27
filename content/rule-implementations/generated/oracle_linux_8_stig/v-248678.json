@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify OL 8 has the \"vlock\" package installed by running the following command: \n \n$ sudo grep vlock /usr/bin/* \n \nBinary file /usr/bin/vlock matches \n \nIf \"vlock\" is not installed, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the \"vlock\" package, if it is not already installed, by running the following command: \n \n$ sudo yum install kbd.x86_64",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248678r1015045_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must enable a user session lock until that user reestablishes access using established identification and authentication procedures for command line sessions.",
+  "tracking_issue": "TODO-V-248678",
+  "vuln_id": "V-248678"
+}

@@ -213,6 +213,171 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": "0755",
+        "owner": null,
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /var/log directory must have mode 0755 or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257885"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/var/log/messages",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /var/log/messages file must have mode 0640 or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257886"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0755",
+        "owner": null,
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 audit tools must have a mode of 0755 or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257887"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/group",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/group file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257891"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/group-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/group- file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257892"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
+        "path": "/etc/gshadow",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/gshadow file must have mode 0000 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257893"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
+        "path": "/etc/gshadow-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/gshadow- file must have mode 0000 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257894"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/passwd",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/passwd file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257895"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/passwd-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/passwd- file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257896"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
+        "path": "/etc/shadow-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/shadow- file must have mode 0000 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257897"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
+        "path": "/etc/shadow",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/shadow file must have mode 0000 to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257934"
+    },
+    {
+      "check": {
         "name": "firewalld",
         "should_be_installed": true,
         "type": "package"
@@ -249,6 +414,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-257943"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "chronyd",
+        "type": "service"
+      },
+      "description": "RHEL 9 chronyd service must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257944"
     },
     {
       "check": {
@@ -578,6 +757,36 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/etc/ssh/",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 SSH private host key files must have mode 0640 or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258000"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/ssh/",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 SSH public host key files must have mode 0644 or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258001"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/dconf/profile/user",
         "pattern": "system-db",
@@ -669,6 +878,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-258089"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "fapolicyd",
+        "type": "service"
+      },
+      "description": "RHEL 9 fapolicy module must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258090"
     },
     {
       "check": {
@@ -873,6 +1096,21 @@
       },
       "platform": "linux",
       "vuln_id": "V-258164"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/etc/audit/auditd.conf",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/audit/auditd.conf file must have 0640 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258172"
     },
     {
       "check": {

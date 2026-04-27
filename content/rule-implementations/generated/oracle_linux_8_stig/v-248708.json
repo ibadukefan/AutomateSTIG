@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify temporary accounts have been provisioned with an expiration date of 72 hours.\n\nFor every existing temporary account, run the following command to obtain its account expiration information:\n\n     $ sudo chage -l <temporary_account_name> | grep -i \"account expires\"\n\nVerify each of these accounts has an expiration date set within 72 hours.\nIf any temporary accounts have no expiration date set or do not expire within 72 hours, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to expire temporary accounts after 72 hours with the following command:\n\n     $ sudo chage -E $(date -d +3days +%Y-%m-%d) <temporary_account_name>",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248708r958508_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must automatically expire temporary accounts within 72 hours.",
+  "tracking_issue": "TODO-V-248708",
+  "vuln_id": "V-248708"
+}

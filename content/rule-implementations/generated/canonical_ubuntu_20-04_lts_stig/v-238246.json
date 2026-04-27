@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the audit log files are owned by \"root\" account. \n \nDetermine where the audit logs are stored with the following command: \n \n$ sudo grep -iw log_file /etc/audit/auditd.conf \nlog_file = /var/log/audit/audit.log \n \nUsing the path of the directory containing the audit logs, determine if the audit log files are owned by the \"root\" user by using the following command: \n \n$ sudo stat -c \"%n %U\" /var/log/audit/* \n/var/log/audit/audit.log root \n \nIf the audit log files are owned by an user other than \"root\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit log directory and its underlying files to be owned by \"root\" user. \n \nDetermine where the audit logs are stored with the following command: \n \n$ sudo grep -iw log_file /etc/audit/auditd.conf \nlog_file = /var/log/audit/audit.log \n \nUsing the path of the directory containing the audit logs, configure the audit log files to be owned by \"root\" user by using the following command: \n \n$ sudo chown root /var/log/audit/*",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-238246r958434_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/canonical_ubuntu_20_04_lts_stig/u_can_ubuntu_20_04_lts_v2r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip",
+  "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
+  "title": "The Ubuntu operating system must be configured to permit only authorized users ownership of the audit log files.",
+  "tracking_issue": "TODO-V-238246",
+  "vuln_id": "V-238246"
+}

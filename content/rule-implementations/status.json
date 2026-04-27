@@ -1,14 +1,16 @@
 {
-  "authoritative_rules": 3828,
-  "automated_authoritative_rules_after_candidate_promotion": 1794,
+  "authoritative_rules": 5206,
+  "automated_authoritative_rules_after_candidate_promotion": 2159,
   "candidate_fixture_evidence_root": "fixtures/generated-candidate-evidence",
-  "generated_specs": 4101,
+  "generated_specs": 5368,
   "implementation_status_counts": {
-    "planned": 2034,
-    "validated_fixture_backed": 611
+    "implemented": 451,
+    "planned": 4917
   },
+  "candidate_check_specs": 744,
+  "planned_specs_for_current_unsupported_rules": 3047,
   "note": "Generated spec tree can retain historical planned specs for rules that later become mapped through canonical SCAP/manual Vuln ID alignment; coverage validation is authoritative for current unsupported counts.",
-  "public_disa_artifacts_tracked": 14,
+  "public_disa_artifacts_tracked": 22,
   "status": "not production complete",
-  "unsupported_authoritative_rules_remaining": 2034
+  "unsupported_authoritative_rules_remaining": 3047
 }

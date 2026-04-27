@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": "755",
+      "owner": null,
+      "path": "/var/log",
+      "type": "file_permission"
+    },
+    "description": "Ubuntu 24.04 LTS must configure the /var/log directory to have mode \"0755\" or less permissive.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270767"
+  },
+  "check_content_excerpt": "Note: If rsyslog is active and enabled on Ubuntu 24.04 LTS, this requirement is not applicable.\n\nVerify Ubuntu 24.04 LTS configures the /var/log directory with a mode of \"755\" or less permissive with the following command:\n\n$ stat -c \"%n %a\" /var/log\n/var/log 755\n\nIf a value of \"755\" or less permissive is not returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to have permissions of \"0755\" for the /var/log directory by running the following command: \n \n$ sudo chmod 0755 /var/log",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_permission",
+  "remediation": "planned",
+  "rule_id": "SV-270767r1066790_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must configure the /var/log directory to have mode \"0755\" or less permissive.",
+  "tracking_issue": "TODO-V-270767",
+  "vuln_id": "V-270767"
+}

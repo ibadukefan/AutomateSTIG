@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the directory containing the root certificates for the Ubuntu operating system contains certificate files for DoD PKI-established certificate authorities by iterating over all files in the \"/etc/ssl/certs\" directory and checking if, at least one, has the subject matching \"DOD ROOT CA\".\n\nIf none is found, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the Ubuntu operating system to use of DoD PKI-established certificate authorities for verification of the establishment of protected sessions. \n \nEdit the \"/etc/ca-certificates.conf\" file, adding the character \"!\" to the beginning of all uncommented lines that do not start with the \"!\" character with the following command: \n \n     $ sudo sed -i -E 's/^([^!#]+)/!\\1/' /etc/ca-certificates.conf \n \nAdd at least one DoD certificate authority to the \"/usr/local/share/ca-certificates\" directory in the PEM format. \n \nUpdate the \"/etc/ssl/certs\" directory with the following command: \n \n     $ sudo update-ca-certificates",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-238364r958868_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/canonical_ubuntu_20_04_lts_stig/u_can_ubuntu_20_04_lts_v2r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip",
+  "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
+  "title": "The Ubuntu operating system must use DoD PKI-established certificate authorities for verification of the establishment of protected sessions.",
+  "tracking_issue": "TODO-V-238364",
+  "vuln_id": "V-238364"
+}

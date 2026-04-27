@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify Ubuntu 24.04 LTS has AppArmor installed with the following command:\n \n$ dpkg -l | grep apparmor\nii  apparmor                                4.0.1really4.0.1-0ubuntu0.24.04.3        amd64        user-space parser utility for AppArmor\nii  libapparmor1:amd64                      4.0.1really4.0.1-0ubuntu0.24.04.3        amd64        changehat AppArmor library\n \nIf the AppArmor package is not installed,\u00a0this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install \"AppArmor\" with the following command: \n \n$ sudo apt install apparmor \n \nNote: AppArmor must have properly configured profiles for applications and home directories. All configurations will be based on the actual system setup and organization and normally are on a per role basis. Refer to the AppArmor documentation for more information on configuring profiles.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270659r1066466_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must have AppArmor installed.",
+  "tracking_issue": "TODO-V-270659",
+  "vuln_id": "V-270659"
+}

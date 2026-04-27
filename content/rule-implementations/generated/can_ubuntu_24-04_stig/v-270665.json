@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SSH package is installed with the following command: \n \n$ dpkg -l | grep openssh \nii  openssh-client     1:9.6p1-3ubuntu13.5     amd64     secure shell (SSH) client, for secure access to remote machines\nii  openssh-server     1:9.6p1-3ubuntu13.5     amd64     secure shell (SSH) server, for secure access from remote machines\nii  openssh-sftp-server     1:9.6p1-3ubuntu13.5     amd64     secure shell (SSH) sftp server module, for SFTP access from remote machines\n \nIf the \"openssh\" server package is not installed, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the \"ssh\" meta-package on the system with the following command: \n \n$ sudo apt install -y ssh",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270665r1067133_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must have SSH installed.",
+  "tracking_issue": "TODO-V-270665",
+  "vuln_id": "V-270665"
+}

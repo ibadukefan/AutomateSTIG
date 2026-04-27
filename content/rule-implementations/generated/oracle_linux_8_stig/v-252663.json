@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the system is configured to boot to the command line:\n\n$ systemctl get-default\nmulti-user.target\n\nIf the system default target is not set to \"multi-user.target\" and the Information System Security Officer (ISSO) lacks a documented requirement for a graphical user interface, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Document the requirement for a graphical user interface with the ISSO or reinstall the operating system without the graphical user interface. If reinstallation is not feasible, then continue with the following procedure:\n\nOpen an SSH session and enter the following commands:\n\n$ sudo systemctl set-default multi-user.target\n\nA reboot is required for the changes to take effect.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-252663r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "The graphical display manager must not be the default target on OL 8 unless approved.",
+  "tracking_issue": "TODO-V-252663",
+  "vuln_id": "V-252663"
+}

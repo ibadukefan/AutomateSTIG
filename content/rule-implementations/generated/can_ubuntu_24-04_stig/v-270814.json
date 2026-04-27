@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify Ubuntu 24.04 LTS is configured to audit the execution of the module management program \"kmod\" with the following command: \n \n$ sudo auditctl -l | grep kmod\n-w /bin/kmod -p x -k module \n \nIf the command does not return a line, or the line is commented out, this is a finding. \n \nNote: The \"-k\" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to audit the execution of the module management program \"kmod\". \n \nAdd or update the following rule in the \"/etc/audit/rules.d/stig.rules\" file: \n \n-w /bin/kmod -p x -k modules \n  \nTo reload the rules file, issue the following command: \n \n$ sudo augenrules --load",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270814r1066931_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must generate audit records when successful/unsuccessful attempts to use the kmod command.",
+  "tracking_issue": "TODO-V-270814",
+  "vuln_id": "V-270814"
+}

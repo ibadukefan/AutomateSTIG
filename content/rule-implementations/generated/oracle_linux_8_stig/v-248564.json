@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the OpenSSL library is configured to use only ciphers employing FIPS 140-2-approved algorithms:\n\nVerify that systemwide crypto policies are in effect:\n\n$ sudo grep -i opensslcnf.config /etc/pki/tls/openssl.cnf\n\n.include /etc/crypto-policies/back-ends/opensslcnf.config\n\nIf the \"opensslcnf.config\" is not defined in the \"/etc/pki/tls/openssl.cnf\" file, this is a finding.\n\nVerify which systemwide crypto policy is in use:\n\n$ sudo fips-mode-setup --check\n\nFIPS mode is enabled.\n\nIf the systemwide crypto policy is set to anything other than \"FIPS\", this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the OL 8 OpenSSL library to use only ciphers employing FIPS 140-2 approved algorithms with the following command:\n\n$ sudo fips-mode-setup --enable\n\nA reboot is required for the changes to take effect.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248564r1069146_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "The OL 8 operating system must implement DoD-approved encryption in the OpenSSL package.",
+  "tracking_issue": "TODO-V-248564",
+  "vuln_id": "V-248564"
+}

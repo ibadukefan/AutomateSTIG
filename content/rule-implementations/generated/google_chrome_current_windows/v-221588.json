@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If the system is on the SIPRNet, this requirement is Not Applicable.\n\nUniversal method:\n1. In the omnibox (address bar) type \"chrome:// policy\".\n2. If \"DownloadRestrictions\" is not displayed under the \"Policy Name\" column or it is set to \"0\", this is a finding.\n\nWindows method:\n1. Start \"regedit\".\n2. Navigate to \"HKLM\\Software\\Policies\\Google\\Chrome\\\".\n3. If the \"DownloadRestrictions\" value name does not exist or its value data is set to \"0\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "If the system is on the SIPRNet, this requirement is Not Applicable.\n\nWindows group policy:\n1. Open the group policy editor tool with gpedit.msc.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Google\\Google Chrome\\\nPolicy Name: Allow download restrictions\nPolicy State: 1, 2, or 4\nPolicy Value: N/A",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221588r1106670_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/google_chrome_current_windows/u_google_chrome_v2r11_stig.json",
+  "source_version": "U_Google_Chrome_V2R11_STIG.zip",
+  "stig_id": "Google_Chrome_Current_Windows",
+  "title": "Download restrictions must be configured.",
+  "tracking_issue": "TODO-V-221588",
+  "vuln_id": "V-221588"
+}

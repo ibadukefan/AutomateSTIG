@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the value for \"lcredit\" in \"/etc/security/pwquality.conf\" or \"/etc/security/pwquality.conf.d/*.conf\" files with the following command: \n \n$ sudo grep -r lcredit /etc/security/pwquality.conf*\n \n/etc/security/pwquality.conf:lcredit = -1 \n \nIf the value of \"lcredit\" is a positive number or is commented out, this is a finding.\nIf conflicting results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 8 to enforce password complexity by requiring that at least one lowercase character be used by setting the \"lcredit\" option.\n\nAdd or update the following line in the \"/etc/security/pwquality.conf\" file or a configuration file in the \"/etc/security/pwquality.conf.d/\" directory:\n\nlcredit = -1\n\nRemove any configurations that conflict with the above value.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248688r1015048_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must enforce password complexity by requiring that at least one lowercase character be used.",
+  "tracking_issue": "TODO-V-248688",
+  "vuln_id": "V-248688"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If Ubuntu 24.04 LTS does not have a graphical user interface installed, this requirement is not applicable. \n\nVerify the Ubuntu operation system has a graphical user interface session lock configured to activate after 10 minutes of inactivity with the following commands:  \n \nSet the following settings to verify the graphical user interface session is configured to lock the graphical user session after 10 minutes of inactivity: \n  \n**$ gsettings get org.gnome.desktop.screensaver lock-enabled\ntrue\n\n$ gsettings get org.gnome.desktop.screensaver lock-delay\nuint32 0\n\n$ gsettings get org.gnome.desktop.session idle-delay\nuint32 600\n\nNote: If \"lock-enabled\" is not set to \"true\", this is a finding.\n\nIf \"lock-delay\" is set to a value greater than \"0\", or if \"idle-delay\" is set to a value greater than \"600\", or either settings are missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to lock the current graphical user interface session after 10 minutes of inactivity.  \n \nSet the following settings to allow graphical user interface session lock to initiate after 10 minutes of inactivity:  \n \n$ gsettings set org.gnome.desktop.screensaver lock-enabled true\n$ gsettings set org.gnome.desktop.screensaver lock-delay 0\n$ gsettings set org.gnome.desktop.session idle-delay 600",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270678r1066523_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must initiate a graphical session lock after 10 minutes of inactivity.",
+  "tracking_issue": "TODO-V-270678",
+  "vuln_id": "V-270678"
+}

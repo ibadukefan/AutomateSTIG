@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the system is configured to run in FIPS mode with the following command: \n \n$ grep -i 1 /proc/sys/crypto/fips_enabled\n1 \n \nIf a value of \"1\" is not returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system to run in FIPS mode. Add \"fips=1\" to the kernel parameter during Ubuntu 24.04 LTSs install. \n \nEnabling a FIPS mode on a pre-existing system involves a number of modifications to Ubuntu 24.04 LTS. Refer to the Ubuntu Pro security certification documentation for instructions.  \n \nA subscription to the \"Ubuntu Pro\" plan is required to obtain the FIPS Kernel cryptographic modules and enable FIPS.\n\nNote: Ubuntu Pro security certification instructions can be found at: https://ubuntu.com/security/certifications/docs/fips-enablement\n\nThe basic steps use the following commands:\n\n$ sudo pro attach <token>\n$ sudo pro enable fips-updates",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270744r1066721_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must implement NIST FIPS-validated cryptography to protect classified information and for the following: To provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards.",
+  "tracking_issue": "TODO-V-270744",
+  "vuln_id": "V-270744"
+}

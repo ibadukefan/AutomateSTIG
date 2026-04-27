@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify OL 8 is comparing internal information system clocks at least every 24 hours with an NTP server with the following command: \n \n$ sudo grep maxpoll /etc/chrony.conf \n \nserver [ntp.server.name] iburst maxpoll 16 \n \nIf the \"maxpoll\" option is set to a number greater than \"16\" or the line is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 8 to compare internal information system clocks at least every 24 hours with an NTP server by adding/modifying the following line in the \"/etc/chrony.conf\" file. \n \nserver [ntp.server.name] iburst maxpoll 16",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248820r1038944_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must compare internal information system clocks at least every 24 hours with a server synchronized to an authoritative time source, such as the United States Naval Observatory (USNO) time servers, or a time server designated for the appropriate DOD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS).",
+  "tracking_issue": "TODO-V-248820",
+  "vuln_id": "V-248820"
+}

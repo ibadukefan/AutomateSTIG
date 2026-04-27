@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the minimum time period between password changes for each user account is one day or greater. \n \n$ sudo awk -F: '$4 < 1 {print $1 \" \" $4}' /etc/shadow \n \nIf any results are returned that are not associated with a system account, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure non-compliant accounts to enforce a 24 hours/one day minimum password lifetime: \n \n$ sudo chage -m 1 [user]",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248694r1015054_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 passwords for new users or password changes must have a 24 hours/one day minimum password lifetime restriction in \"/etc/shadow\".",
+  "tracking_issue": "TODO-V-248694",
+  "vuln_id": "V-248694"
+}

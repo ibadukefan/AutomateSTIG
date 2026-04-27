@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "net.ipv4.tcp_syncookies",
+      "type": "sysctl"
+    },
+    "description": "Ubuntu 24.04 LTS must be configured to use TCP syncookies.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270753"
+  },
+  "check_content_excerpt": "Verify Ubuntu 24.04 LTS is configured to use TCP syncookies with the following command:\n \n$ sysctl net.ipv4.tcp_syncookies \nnet.ipv4.tcp_syncookies = 1 \n \nIf the value is not \"1\", this is a finding. \n \nCheck the saved value of TCP syncookies with the following command: \n \n$ sudo grep -ir net.ipv4.tcp_syncookies /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf /lib/sysctl.d/*.conf /etc/sysctl.conf 2> /dev/null \n/etc/sysctl.d/99-sysctl.conf:net.ipv4.tcp_syncookies=1\n/etc/sysctl.conf:net.ipv4.tcp_syncookies=1\n\nIf the \"net.ipv4.tcp_syncookies\" option is not set to \"1\", is commented out, or is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to use TCP syncookies with the following command: \n \n$ sudo sysctl -w net.ipv4.tcp_syncookies=1 \n \nIf \"1\" is not the system's default value, add or update the following line in \"/etc/sysctl.conf\": \n \nnet.ipv4.tcp_syncookies = 1",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-270753r1066748_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must be configured to use TCP syncookies.",
+  "tracking_issue": "TODO-V-270753",
+  "vuln_id": "V-270753"
+}

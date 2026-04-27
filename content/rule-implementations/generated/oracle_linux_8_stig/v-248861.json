@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the OL 8 \"fapolicyd\" employs a deny-all, permit-by-exception policy.\n\nCheck that \"fapolicyd\" is in enforcement mode with the following command:\n\n$ sudo grep permissive /etc/fapolicyd/fapolicyd.conf\n\npermissive = 0\n\nCheck that fapolicyd employs a deny-all policy on system mounts with the following commands:\n\nFor OL 8.4 systems and older:\n$ sudo tail /etc/fapolicyd/fapolicyd.rules\n\nFor OL 8.5 systems and newer:\n$ sudo tail /etc/fapolicyd/compiled.rules\n\nallow exe=/usr/bin/python3.7 : ftype=text/x-python\ndeny_audit perm=any pattern=ld_so : all\ndeny perm=any all : all\n\nIf fapolicyd is not running in enforcement mode with a deny-all, permit-by-exception policy, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 8 to employ a deny-all, permit-by-exception application whitelisting policy with \"fapolicyd\".\n\nWith the \"fapolicyd\" installed and enabled, configure the daemon to function in permissive mode until the whitelist is built correctly to avoid system lockout. Do this by editing the \"/etc/fapolicyd/fapolicyd.conf\" file with the following line:\n\npermissive = 1\n\nFor OL 8.4 systems and older:\nBuild the whitelist in the \"/etc/fapolicyd/fapolicyd.rules\" file ensuring the last rule is \"deny perm=any all : all\".\n\nFor OL 8.5 systems and newer:\nBuild the whitelist in a file within the \"/etc/fapolicyd/rules.d\" directory ensuring the last rule is \"deny perm=any all : all\".\n\nOnce it is determined the whitelist is built correctly, set the fapolicyd to enforcing mode by editing the \"permissive\" line in the /etc/fapolicyd/fapolicyd.conf file.\n\npermissive = 0",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248861r958804_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "The OL 8 fapolicy module must be configured to employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs.",
+  "tracking_issue": "TODO-V-248861",
+  "vuln_id": "V-248861"
+}

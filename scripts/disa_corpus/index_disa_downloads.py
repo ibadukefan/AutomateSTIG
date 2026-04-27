@@ -30,6 +30,14 @@ SEED_DOWNLOADS=[
  {'title':'Red Hat Enterprise Linux 8 STIG SCAP 1.3 Benchmark V2R7','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip'},
  {'title':'Red Hat Enterprise Linux 9 STIG V2R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_RHEL_9_V2R4_STIG.zip'},
  {'title':'Red Hat Enterprise Linux 9 STIG SCAP 1.3 Benchmark V2R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip'},
+ {'title':'Canonical Ubuntu 20.04 LTS STIG V2R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip'},
+ {'title':'Canonical Ubuntu 20.04 LTS STIG SCAP 1.3 Benchmark V2R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip'},
+ {'title':'Canonical Ubuntu 24.04 LTS STIG V1R1','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip'},
+ {'title':'Canonical Ubuntu 24.04 LTS STIG SCAP 1.3 Benchmark V1R1','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip'},
+ {'title':'Oracle Linux 8 STIG V2R5','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Linux_8_V2R5_STIG.zip'},
+ {'title':'Oracle Linux 8 STIG SCAP 1.3 Benchmark V2R5','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip'},
+ {'title':'Google Chrome STIG V2R11','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Google_Chrome_V2R11_STIG.zip'},
+ {'title':'Google Chrome STIG SCAP 1.3 Benchmark V2R11','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip'},
 ]
 
 def classify(title,url):

@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": "0750",
+      "owner": null,
+      "path": "/usr/bin/lastlog",
+      "type": "file_permission"
+    },
+    "description": "The OL 8 lastlog command must have a mode of \"0750\" or less permissive.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248705"
+  },
+  "check_content_excerpt": "Verify the \"lastlog\" command has a mode of \"0750\" or less permissive with the following command: \n \n$ sudo stat -c \"%a %n\" /usr/bin/lastlog\n\n750  /usr/bin/lastlog\n\nIf the \"lastlog\" command has a mode more permissive than \"0750\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the mode of the \"lastlog\" command for OL 8 to \"0750\" with the following command:  \n\n$ sudo chmod 0750 /usr/bin/lastlog",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_permission",
+  "remediation": "planned",
+  "rule_id": "SV-248705r958566_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "The OL 8 lastlog command must have a mode of \"0750\" or less permissive.",
+  "tracking_issue": "TODO-V-248705",
+  "vuln_id": "V-248705"
+}

@@ -1,0 +1,179 @@
+{
+  "checks": [
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "enforcing",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must be configured so that when passwords are changed or new passwords are established, pwquality must be used.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238228"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0600",
+        "owner": null,
+        "path": "/var/log/audit/",
+        "type": "file_permission"
+      },
+      "description": "The Ubuntu operating system must be configured so that audit log files are not read or write-accessible by unauthorized users.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238245"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0750",
+        "owner": null,
+        "path": "/var/log/audit",
+        "type": "file_permission"
+      },
+      "description": "The Ubuntu operating system must be configured so that the audit log directory is not write-accessible by unauthorized users.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238248"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0755",
+        "owner": null,
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "The Ubuntu operating system must configure audit tools with a mode of 0755 or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238300"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.tcp_syncookies",
+        "type": "sysctl"
+      },
+      "description": "The Ubuntu operating system must be configured to use TCP syncookies.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238333"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "755",
+        "owner": null,
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "The Ubuntu operating system must configure the /var/log directory to have mode \"0755\" or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238340"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/var/log/syslog",
+        "type": "file_permission"
+      },
+      "description": "The Ubuntu operating system must configure /var/log/syslog file with mode 0640 or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238343"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0755",
+        "owner": null,
+        "path": "/bin",
+        "type": "file_permission"
+      },
+      "description": "The Ubuntu operating system must have directories that contain system commands set to a mode of 0755 or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238344"
+    },
+    {
+      "check": {
+        "key": "kernel.randomize_va_space",
+        "type": "sysctl"
+      },
+      "description": "The Ubuntu operating system must implement address space layout randomization to protect its memory from unauthorized code execution.",
+      "expected": {
+        "type": "equals",
+        "value": "2"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238369"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0755",
+        "owner": null,
+        "path": "/bin",
+        "type": "file_permission"
+      },
+      "description": "The Ubuntu operating system must have system commands set to a mode of 0755 or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238376"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "usb-storage",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must disable automatic mounting of Universal Serial Bus (USB) mass storage driver.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-251505"
+    },
+    {
+      "check": {
+        "key": "kernel.dmesg_restrict",
+        "type": "sysctl"
+      },
+      "description": "The Ubuntu operating system must restrict access to the kernel message buffer.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-255913"
+    }
+  ],
+  "platform": "linux",
+  "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
+  "version": "candidate-planned"
+}

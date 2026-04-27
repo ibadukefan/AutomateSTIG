@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 89,
+  "candidate_checks": 91,
   "cases": [
     {
       "check": {
@@ -291,6 +291,82 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230389"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0600",
+        "owner": null,
+        "path": "/var/log/audit/audit.log",
+        "type": "file_permission"
+      },
+      "description": "RHEL 8 audit logs must have a mode of 0600 or less permissive to prevent unauthorized read access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/var/log/audit/audit.log": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0600",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/var/log/audit/audit.log": {
+            "exists": true,
+            "group": null,
+            "mode": "0600",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230396"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0700",
+        "owner": null,
+        "path": "/var/log/audit",
+        "type": "file_permission"
+      },
+      "description": "RHEL 8 audit log directory must have a mode of 0700 or less permissive to prevent unauthorized read access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/var/log/audit": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0700",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/var/log/audit": {
+            "exists": true,
+            "group": null,
+            "mode": "0700",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230401"
     },
     {
       "check": {
@@ -2376,5 +2452,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 89
+  "validated_candidates": 91
 }
