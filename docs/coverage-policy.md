@@ -1,0 +1,48 @@
+# STIG Coverage Policy
+
+AutomateSTIG must not advertise a STIG/platform as comprehensive unless every DISA rule for that release is represented in a coverage manifest.
+
+## Rule Classification
+
+Every rule in a supported STIG must be classified as one of:
+
+- `automated` — AutomateSTIG executes a check and records evidence.
+- `scanner_import` — AutomateSTIG maps an external scanner result such as SCC/OpenSCAP/ACAS.
+- `manual` — Human review is required; the manifest explains why.
+- `not_applicable` — Always not applicable for the supported platform profile; reason required.
+- `unsupported` — Known gap; reason and tracking issue required.
+
+## Supported vs Experimental
+
+A check pack is **supported** only when:
+
+1. The coverage manifest lists the DISA STIG release and every rule.
+2. Every `automated` entry references an existing check definition.
+3. Every manual/NA/unsupported entry includes a reason.
+4. Fixture or unit tests validate the important status mappings.
+5. CI runs the coverage validator.
+
+A check pack without this proof is **experimental** even if it contains useful checks.
+
+## Evidence Requirement
+
+Automated checks must record evidence sufficient for an auditor to understand the result:
+
+- check ID
+- target asset
+- source type
+- command/query/file/registry path used
+- expected value
+- actual value
+- timestamp
+- normalized evidence summary
+
+## Release Claims
+
+Allowed:
+
+> AutomateSTIG has validated replacement-ready support for Windows Server 2022 STIG VxRy and RHEL 8 STIG VxRy.
+
+Not allowed without proof:
+
+> AutomateSTIG comprehensively supports Windows, Linux, ACAS, SCC, and all DISA STIGs.

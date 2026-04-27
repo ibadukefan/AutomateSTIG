@@ -2,7 +2,7 @@
 
 **Cross-platform, open-source STIG evaluation and compliance automation.**
 
-Zero to CKL in seconds. 100% deterministic. Air-gapped first. Built for DoD, Navy, NAVAIR, and contractor environments.
+AutomateSTIG is being built as a validated, better-than-Evaluate-STIG replacement. Replacement-ready support is claimed only for workflows and platforms backed by fixture tests, coverage manifests, and CI evidence. 100% deterministic. Air-gapped first. Built for DoD, Navy, NAVAIR, and contractor environments.
 
 ---
 
@@ -27,13 +27,13 @@ The GUI opens in your browser automatically. No Node.js, no npm, no external dep
 
 ## What It Does
 
-AutomateSTIG automates STIG checklist population from scan results, provides a modern answer file system, and generates audit-ready compliance artifacts. It replaces the manual process of populating .ckl files (1-4 hours per asset) with seconds-fast automation.
+AutomateSTIG automates STIG checklist population from validated scan results and check packs, provides a modern answer file system, and generates audit-ready compliance artifacts. The project goal is to replace manual .ckl population workflows with deterministic automation while clearly reporting coverage and remaining manual review.
 
 ### Key Features
 
-- **Auto-populate checklists** from SCC, ACAS, OpenSCAP scans and device config dumps
-- **DISA auto-download** — fetches the latest STIGs directly from cyber.mil with one click
-- **STIG-Manager integration** — push results directly via REST API with Result Engine metadata
+- **Auto-populate checklists** from validated SCC/OpenSCAP XCCDF results, check packs, and device config dumps
+- **DISA content import** — import official STIG XCCDF files/ZIPs and track rule coverage
+- **STIG-Manager integration** — export results with Result Engine metadata
 - **Modern answer files** — JSON/YAML templates replace tedious XML
 - **Built-in remediation** — PowerShell, Bash, and Ansible scripts
 - **eMASS export** — CSV format for POA&M and control assessments
@@ -145,8 +145,8 @@ cargo build --release             # Release build
 
 - **100% deterministic** — no AI/ML. Same inputs always produce same outputs.
 - **Air-gapped first** — designed for disconnected environments. Connected mode is optional.
-- **Signed content** — .stigpack files are SHA-256 + Ed25519 verified.
-- **Audit-ready** — full evaluation logs in SQLite with timestamps, sources, evidence.
+- **Signed content** — .stigpack files are SHA-256 verified and can be policy-gated by trusted Ed25519 signatures.
+- **Audit-ready** — evaluation logs, timestamps, sources, evidence, and coverage summaries are first-class roadmap requirements.
 - **Data-driven** — checks are JSON definitions, not compiled code. Update content without updating the app.
 - **Cross-platform** — native on Windows, macOS, Linux. Single binary, no runtime deps.
 
