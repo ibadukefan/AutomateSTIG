@@ -174,9 +174,8 @@ mod tests {
         let results = export_to_emass(&golden_checklist());
         let csv = export_emass_csv(&results);
 
-        assert_eq!(
-            csv,
-            include_str!("../../../fixtures/exports/emass_golden.csv")
-        );
+        let expected =
+            include_str!("../../../fixtures/exports/emass_golden.csv").replace("\r\n", "\n");
+        assert_eq!(csv, expected);
     }
 }
