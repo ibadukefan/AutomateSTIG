@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "In Cisco NX-OS, all packets with any header option other than the \u201csource-route\u201d header option are dropped. By default, ipv4 source routing is enabled. Verify that source routing is disabled via the following command: \n\nno ip source-route\n\nIf the switch is not configured to drop all packets with IP option source routing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the switch to drop all packets with IP option source routing.\n\nSW1(config)# no ip source-route \nSW1(config)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221095r999704_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco perimeter switch must be configured to block all packets with any IP options.",
+  "tracking_issue": "TODO-V-221095",
+  "vuln_id": "V-221095"
+}

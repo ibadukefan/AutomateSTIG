@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Determine which tool or control file is used to control the configuration of the web server.\n\nIf the control of the web server is done via control files, verify who has update access to them. If tools are being used to configure the web server, determine who has access to execute the tools.\n\nIf accounts other than the System Administrator (SA), the Web Manager, or the Web Manager designees have access to the web administration tool or control files, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Restrict access to the web administration tool to only the System Administrator, Web Manager, or the Web Manager designees.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-214345r961353_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apache_server_2_4_windows_server_stig/u_apache_server_2_4_windows_y26m04_stig.json",
+  "source_version": "U_Apache_Server_2-4_Windows_Y26M04_STIG.zip",
+  "stig_id": "Apache_Server_2-4_Windows_Server_STIG",
+  "title": "Non-privileged accounts on the hosting system must only access Apache web server security-relevant information and functions through a distinct administrative account.",
+  "tracking_issue": "TODO-V-214345",
+  "vuln_id": "V-214345"
+}

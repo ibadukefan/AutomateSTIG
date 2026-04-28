@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If the manager application is not in use or has been deleted from the system, this is not a finding.\n\nFrom the Tomcat server as an elevated user run the following command:\n\nsudo grep -i maxactivesessions $CATALINA_BASE/webapps/manager/ META-INF/context.xml\n\nIf the maxActiveSesions setting is not configured according to the number of connections defined in the SSP, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Determine the number of authorized admins requiring simultaneous access and increase the number of allowed simultaneous sessions by a small percentage in order to address potential lockout scenarios. Document that value in the System Security Plan.\n\nReview the maxActiveSessions setting in the $CATALINA_BASE/webapps/manager/ META-INF/context.xml configuration file.\n\nConfigure maxActiveSessions setting according to admin access requirements defined in the SSP.\n\nEXAMPLE:\n<Manager \u2026 maxActiveSessions=\"10\" />",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222926r960735_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "The number of allowed simultaneous sessions to the manager application must be limited.",
+  "tracking_issue": "TODO-V-222926",
+  "vuln_id": "V-222926"
+}

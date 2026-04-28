@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review all ACLs used to filter traffic and verify that packets being dropped are logged as shown in the configuration below:\n\nip access-list EXTERNAL_ACL\n 10 permit tcp x.11.1.1/32 eq bgp x.11.1.2/32 \n 20 permit tcp x.11.1.1/32 x.11.1.2/32 eq bgp \n 30 permit icmp x.11.1.1/32 x.11.1.2/32 echo \n\u2026\n \u2026\n \u2026\n90 deny ip any any log\n\nIf packets being dropped at an interface are not logged, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure ACLs to log packets that are dropped as shown in the example below:\n\nSW1(config)# ip access-list EXTERNAL_ACL\nSW1(config-acl)# 90 deny ip any any log\nSW1(config-acl)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221086r999695_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco switch must be configured to log all packets that have been dropped at interfaces via an ACL.",
+  "tracking_issue": "TODO-V-221086",
+  "vuln_id": "V-221086"
+}

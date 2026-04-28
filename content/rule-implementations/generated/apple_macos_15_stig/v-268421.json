@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the macOS system is configured to prompt users to enter a password to unlock the screen saver with the following command:\n\n/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\\n.objectForKey('askForPassword').js\nEOS\n\nIf the result is not \"true\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the macOS system to prompt users to enter a password to unlock the screen saver by installing the \"com.apple.screensaver\" configuration profile.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-268421r1034203_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_15_stig/u_apple_macos_15_v1r7_stig.json",
+  "source_version": "U_Apple_macOS_15_V1R7_STIG.zip",
+  "stig_id": "Apple_macOS_15_STIG",
+  "title": "The macOS system must enforce screen saver password.",
+  "tracking_issue": "TODO-V-268421",
+  "vuln_id": "V-268421"
+}

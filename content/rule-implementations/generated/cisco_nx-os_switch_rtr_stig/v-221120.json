@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "The Cisco switch is not compliant with this requirement; hence, it is a finding. However, the severity level can be downgraded to a category 3 if the switch is configured to authenticate targeted LDP sessions using MD5 as shown in the configuration example below:\n\nStep 1: Verify that LDP neighbors are authenticating session, advertisement, and notification messages as shown in the example below:\n\nmpls ldp configurations\n password required for LDP_NBR1\n password option 1 for LDP_NBR1 key-chain LDP_KEY\n password required for LDP_NBR2\n password option 1 for LDP_NBR2 key-chain LDP_KEY\n\nStep 2: Verify that the neighbors identified in step 1 have the correct prefix.\n\nip prefix-list LDP_NBR1 permit 10.1.22.2/32\nip prefix-list LDP_NBR2 permit 10.1.12.4/32\n\nIf the switch is not configured to authenticate targeted LDP sessions using MD5, this is a finding. The finding will remain as a CAT II.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "The severity level can be downgraded to a category 3 if the switch is configured to authenticate targeted LDP sessions using MD5 as shown in the example below:\n\nStep 1: Configure a key chain for LDP sessions.\n\n SW1(config)# key chain LDP_KEY\nSW1(config-keychain)# key 1\nSW1(config-keychain-key)# key-string xxxxxxxxxxxx\nSW1(config-keychain-key)# send-lifetime 00:00:00 Oct 1 2019 23:59:59 Dec 31 2019\nSW1(config-keychain-key)# accept-lifetime 00:00:00 Oct 1 2019 01:05:00 Jan 1 2020\nSW1(config-keychain-key)# exit\nSW1(config-keychain)# exit\n\nStep 2: Configure a prefix lists to identify LDP neighbors.\n\nSW1(config)# ip prefix-list LDP_NBR1 permit 10.1.22.2/32\nSW1(config)# ip prefix-list LDP_NBR2 permit 10.1.12.4/32\n\nStep 3: Apply the key chain to the LDP neighbors.\n\nSW1 (config)# mpls ldp configurations\nSW1 (config-ldp)# password required for LDP_NBR1\nSW1 (config-ldp)# password option 1 for LDP_NBR1 key-chain LDP_KEY\nSW1 (config-ldp)# password required for LDP_NBR2\nSW1 (config-ldp)# password option 1 for LDP_NBR2 key-chain LDP_KEY\nSW1 (config-ldp)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221120r999729_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco PE switch providing MPLS Layer 2 Virtual Private Network (L2VPN) services must be configured to authenticate targeted Label Distribution Protocol (LDP) sessions used to exchange virtual circuit (VC) information using a FIPS-approved message authentication code algorithm.",
+  "tracking_issue": "TODO-V-221120",
+  "vuln_id": "V-221120"
+}

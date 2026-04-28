@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This is a mutual authentication requirement where both the Tomcat server and the client are required to authenticate themselves via mutual TLS. Review system security plan and other system documentation. If the system has no connections requiring mutual authentication (e.g., proxy servers or other hosts specified in the system documentation), this requirement is Not Applicable.\n\nFor the systemd Ubuntu OS, check the tomcat.service file to read the content of the JAVA_OPTS environment variable setting.\n\nsudo cat /etc/systemd/system/tomcat.service |grep -i truststore\n\nEXAMPLE output:\nset JAVA_OPTS=\"-Djavax.net.ssl.trustStore=/path/to/truststore\" \"-Djavax.net.ssl.trustStorePassword=************\"\n\nIf the variable is not set, use the default location command below. If the variable is set, use the alternate location command below and include the path and truststore file. \n\n-Default location:\nkeytool -list -cacerts -v | grep -i issuer\n\n-Alternate location:\nkeytool -list -keystore <location of trust store file> -v |grep -i issuer\n\nIf there are no CA certificates issued by a CA that are part of the DOD PKI/PKE, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Obtain and install the DOD PKI CA certificate bundles by accessing the DOD PKI office website at cyber.mil/pki-pke.\n\nImport the DOD CA certificates.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222966r985891_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "DOD root CA certificates must be installed in Tomcat trust store.",
+  "tracking_issue": "TODO-V-222966",
+  "vuln_id": "V-222966"
+}

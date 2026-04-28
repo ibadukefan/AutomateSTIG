@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "For Apple Silicon systems, this is not applicable.\n\nVerify the macOS system is configured with a firmware password with the following command:\n\n/usr/sbin/firmwarepasswd -check | /usr/bin/grep -c \"Password Enabled: Yes\"\n\nIf the result is not \"1\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the macOS system with a firmware password with the following command:\n\n/usr/sbin/firmwarepasswd -setpasswd\n\nNOTE: If firmware password or passcode is forgotten, the only way to reset the forgotten password is through a machine-specific binary generated and provided by Apple. Users must schedule a support call and provide proof of purchase before the firmware binary will be generated.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-268540r1034560_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_15_stig/u_apple_macos_15_v1r7_stig.json",
+  "source_version": "U_Apple_macOS_15_V1R7_STIG.zip",
+  "stig_id": "Apple_macOS_15_STIG",
+  "title": "The macOS system must enable firmware password.",
+  "tracking_issue": "TODO-V-268540",
+  "vuln_id": "V-268540"
+}

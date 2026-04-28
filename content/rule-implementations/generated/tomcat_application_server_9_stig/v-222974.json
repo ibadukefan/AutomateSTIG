@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review System Security Plan (SSP) documentation determine if the Tomcat server is part of an application server cluster. Also identify Tomcat network interfaces and the proxy/load balancer that front-ends the cluster.\n\nFrom the Tomcat server as a privileged user, run the following command:\n\nsudo grep -i -A2 -B2 \"Cluster\" $CATALINA_BASE/conf/server.xml\n\nIf the <Cluster/> element is commented out, or there are no results returned, this requirement is NA.\n\nIf a cluster is in use, run the following command as a privileged user:\n\ngrep -i EncryptInterceptor $CATALINA_BASE/conf/server.xml file.  \n\nIf the Tomcat server is clustered and the EncryptionInterceptor is not in use or if the cluster traffic is not on a private network or VLAN, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Update the System Security Plan (SSP) and document the network interface, their related IP addresses, and which interfaces transport Tomcat cluster traffic. Also document which interface is multi-cast enabled if using the McastService membership class versus Static. \n\nTo obtain the information needed for the SSP:\nsudo grep -i -A3 \"<Membership className\" $CATALINA_BASE/conf.server.xml\n\nDocument the address=\"<ipAddress>\" value.\n\nReview the OS routing tables. Identify and document which interface is configured to route the Tomcat class D IP multicast traffic. \n\nsudo netstat -r \n\nEND of Documentation instructions.\n\nFrom the Tomcat server as a privileged user, edit the $CATALINA_BASE/conf/server.xml file.\n\nsudo nano $CATALINA_BASE/conf/server.xml\n\nLocate the <Interceptor/> element nested within the <Channel/> element.\n\nAdd the <Interceptor className=\"org.apache.catalina.tribes.group.\ninterceptors.EncryptInterceptor\"/> to the server.xml and save the file.\n\nRestart the Tomcat server:\nsudo systemctl restart tomcat\n\nNOTE:\nThe EncryptInterceptor adds encryption to the channel messages carrying session data between nodes. This feature was added in Tomcat 9.0.13. If using the TcpFailureDetector interceptor, the EncryptInterceptor must be inserted into the interceptor chain BEFORE the TcpFailureDetector. When validating cluster members, TcpFailureDetector writes channel data directly to the other members without using the remainder of the interceptor chain, but on the receiving side, the message still goes through the chain (in reverse). Because of this asymmetry, the EncryptInterceptor must execute before the TcpFailureDetector on the sender and after it on the receiver; otherwise, message corruption will occur.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222974r961122_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "Clusters must operate on a trusted network.",
+  "tracking_issue": "TODO-V-222974",
+  "vuln_id": "V-222974"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Step 1: Review the switch configuration to verify that a loopback address has been configured.\n\ninterface loopback0\n ip address 10.1.1.1/32\n\nStep 2: Verify that the loopback interface is used as the source address for all iBGP sessions.\n\nrouter bgp xx\n router-id 10.1.1.1\n address-family ipv4 unicast\n neighbor 10.1.12.2 remote-as xx\n password 3 7b07d1b3023056a9\n update-source loopback0 \n\nIf the switch does not use its loopback address as the source address for all iBGP sessions, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the switch to use its loopback address as the source address for all iBGP peering.\n\nSW1(config)# router bgp xx\nSW1(config-router)# neighbor 10.1.12.2 \nSW1(config-router-neighbor)# update-source lo0\nSW1(config-router-neighbor)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221112r999769_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco BGP switch must be configured to use its loopback address as the source address for iBGP peering sessions.",
+  "tracking_issue": "TODO-V-221112",
+  "vuln_id": "V-221112"
+}

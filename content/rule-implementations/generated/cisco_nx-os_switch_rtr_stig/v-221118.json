@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the design plan for MPLS/L3VPN to determine what RTs have been assigned for each VRF. Review the switch configuration and verify that the correct RT is configured for each VRF. In the example below, route target 13:13 has been configured for customer 1.\n\nvrf context CUST1\n address-family ipv4 unicast\n route-target export 13:13\n route-target import 13:13\n\nIf there are VRFs configured with the wrong RT, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the switch to have each VRF instance defined with the correct RT.\n\nSW1(config)# vrf context CUST1\nSW1(config-vrf)# address-family ipv4 unicast \nSW1(config-vrf-af-ipv4)# route-target import 13:13\nSW1(config-vrf-af-ipv4)# route-target export 13:13\nSW1(config-vrf-af-ipv4)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221118r999772_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco PE switch must be configured to have each Virtual Routing and Forwarding (VRF) instance with the appropriate Route Target (RT).",
+  "tracking_issue": "TODO-V-221118",
+  "vuln_id": "V-221118"
+}

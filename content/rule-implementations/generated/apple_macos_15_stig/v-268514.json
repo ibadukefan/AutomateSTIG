@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the macOS system is configured to require administrator privileges to modify systemwide settings with the following command:\n\nauthDBs=(\"system.preferences\" \"system.preferences.energysaver\" \"system.preferences.network\" \"system.preferences.printing\" \"system.preferences.sharing\" \"system.preferences.softwareupdate\" \"system.preferences.startupdisk\" \"system.preferences.timemachine\")\nresult=\"1\"\nfor section in ${authDBs[@]}; do\nif [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"shared\")]/following-sibling::*[1])' -) != \"false\" ]]; then\nresult=\"0\"\nfi\nif [[ $(security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath '//*[contains(text(), \"group\")]/following-sibling::*[1]/text()' - ) != \"admin\" ]]; then\nresult=\"0\"\nfi\nif [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"authenticate-user\")]/following-sibling::*[1])' -) != \"true\" ]]; then\nresult=\"0\"\nfi\nif [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"session-owner\")]/following-sibling::*[1])' -) != \"false\" ]]; then\nresult=\"0\"\nfi\ndone\necho $result\n\nIf the result is not \"1\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the macOS system to require administrator privileges to modify systemwide settings with the following command:\n\nauthDBs=(\"system.preferences\" \"system.preferences.energysaver\" \"system.preferences.network\" \"system.preferences.printing\" \"system.preferences.sharing\" \"system.preferences.softwareupdate\" \"system.preferences.startupdisk\" \"system.preferences.timemachine\")\n\nfor section in ${authDBs[@]}; do\n/usr/bin/security -q authorizationdb read \"$section\" > \"/tmp/$section.plist\"\n\nclass_key_value=$(usr/libexec/PlistBuddy -c \"Print :class\" \"/tmp/$section.plist\" 2>&1)\nif [[ \"$class_key_value\" == *\"Does Not Exist\"* ]]; then\n/usr/libexec/PlistBuddy -c \"Add :class string user\" \"/tmp/$section.plist\"\nelse\n/usr/libexec/PlistBuddy -c \"Set :class user\" \"/tmp/$section.plist\"\nfi\n\nkey_value=$(/usr/libexec/PlistBuddy -c \"Print :shared\" \"/tmp/$section.plist\" 2>&1)  \nif [[ \"$key_value\" == *\"Does Not Exist\"* ]]; then\n/usr/libexec/PlistBuddy -c \"Add :shared bool false\" \"/tmp/$section.plist\"\nelse\n/usr/libexec/PlistBuddy -c \"Set :shared false\" \"/tmp/$section.plist\"\nfi\n\nauth_user_key=$(/usr/libexec/PlistBuddy -c \"Print :authenticate-user\" \"/tmp/$section.plist\" 2>&1)  \nif [[ \"$auth_user_key\" == *\"Does Not Exist\"* ]]; then\n/usr/libexec/PlistBuddy -c \"Add :authenticate-user bool true\" \"/tmp/$section.plist\"\nelse\n/usr/libexec/PlistBuddy -c \"Set :authenticate-user true\" \"/tmp/$section.plist\"\nfi\n\nsession_owner_key=$(/usr/libexec/PlistBuddy -c \"Print :session-owner\" \"/tmp/$section.plist\" 2>&1)  \nif [[ \"$session_owner_key\" == *\"Does Not Exist\"* ]]; then\n/usr/libexec/PlistBuddy -c \"Add :session-owner bool false\" \"/tmp/$section.plist\"\nelse\n/usr/libexec/PlistBuddy -c \"Set :session-owner false\" \"/tmp/$section.plist\"\nfi\n\ngroup_key=$(usr/libexec/PlistBuddy -c \"Print :group\" \"/tmp/$section.plist\" 2>&1)\nif [[ \"$group_key\" == *\"Does Not Exist\"* ]]; then\n/usr/libexec/PlistBuddy -c \"Add :group string admin\" \"/tmp/$section.plist\"\nelse\n/usr/libexec/PlistBuddy -c \"Set :group admin\" \"/tmp/$section.plist\"\nfi\n\n/usr/bin/security -q authorizationdb write \"$section\" < \"/tmp/$section.plist\"\ndone",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-268514r1131229_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_15_stig/u_apple_macos_15_v1r7_stig.json",
+  "source_version": "U_Apple_macOS_15_V1R7_STIG.zip",
+  "stig_id": "Apple_macOS_15_STIG",
+  "title": "The macOS system must require an administrator password to modify systemwide preferences.",
+  "tracking_issue": "TODO-V-268514",
+  "vuln_id": "V-268514"
+}

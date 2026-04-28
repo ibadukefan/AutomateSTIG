@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to verify that the inbound ACL applied to all external interfaces is configured to allow specific ports and protocols and deny all other traffic.\n\nStep 1: Verify that an inbound ACL is applied to all external interfaces as shown in the example below:\n\ninterface Ethernet1/2\n no switchport\n ip access-group EXTERNAL_ACL in\n ip address x.11.1.2 255.255.255.254\n\nStep 2: Review inbound ACL to verify that it is configured to deny all other traffic that is not explicitly allowed.\n\nip access-list EXTERNAL_ACL\n 10 permit tcp x.11.1.1/32 eq bgp x.11.1.2/32 \n 20 permit tcp x.11.1.1/32 x.11.1.2/32 eq bgp \n 30 permit icmp x.11.1.1/32 x.11.1.2/32 echo \n 40 permit icmp x.11.1.1/32 x.11.1.2/32 echo-reply \n 50 permit tcp any x.11.2.3/32 eq www \n 60 permit \u2026 \n \u2026\n \u2026\n \u2026\n90 deny ip any any log\n\nIf the ACL is not configured to allow specific ports and protocols and deny all other traffic, this is a finding. If the ACL is not configured inbound on all external interfaces, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Step 1: Configure an inbound ACL to deny all other traffic by default as shown in the example below:\n\nSW1(config)# ip access-list EXTERNAL_ACL\nSW1(config-acl)# permit tcp host x.11.1.1 eq bgp host x.11.1.2 \nSW1(config-acl)# permit tcp host x.11.1.1 host x.11.1.2 eq bgp\nSW1(config-acl)# permit icmp host x.11.1.1 host x.11.1.2 echo\nSW1(config-acl)# permit icmp host x.11.1.1 host x.11.1.2 echo-reply\nSW1(config-acl)# permit tcp any x.11.2.3/32 eq www\nSW1(config-acl)# permit \u2026\n\u2026\n\u2026\n\u2026\nSW1(config-acl)# deny ip any any log\n\nStep 2: Apply the ingress filter to all external interfaces.\n\nSW1(config)#int e1/2\nSW1(config-if)#ip access-group EXTERNAL_ACL in",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221087r1137935_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco perimeter switch must be configured to deny network traffic by default and allow network traffic by exception.",
+  "tracking_issue": "TODO-V-221087",
+  "vuln_id": "V-221087"
+}

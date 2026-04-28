@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From the Tomcat server run the following OS command:\n\nsudo cat $CATALINA_BASE/conf/server.xml | grep -i connector \n\nReview each connector element, ensure each connector does not have an \"allowTrace\" setting or ensure the \"allowTrace\" setting is set to false.\n\n<Connector ... allowTrace=\"false\" />\n\nDo the same for each application by checking every $CATALINA_BASE/webapps/<APP_NAME>/WEBINF/web.xml file on the system.\n\nsudo cat $CATALINA_BASE/webapps/<APP_NAME>/WEBINF/web.xml |grep -i connector \n\nIf a connector element in the server.xml file or in any of the <APP NAME>/WEBINF/web.xml files contains the \"allow Trace = true\" statement, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From the Tomcat server as a privileged user, edit the xml files containing the \"allow Trace=true\" statement.\n\nRemove the \"allow Trace=true\" statement from the affected xml configuration files and restart the Tomcat server:\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222950r960963_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "Stack tracing must be disabled.",
+  "tracking_issue": "TODO-V-222950",
+  "vuln_id": "V-222950"
+}

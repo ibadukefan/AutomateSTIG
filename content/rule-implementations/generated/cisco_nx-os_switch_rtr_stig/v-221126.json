@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Step 1: Review the switch configuration to verify that an ingress ACL is applied to all external or CE-facing interfaces. \n\ninterface Ethernet1/2\n ip address x.1.12.2/30\n ip access-group BLOCK_TO_CORE in\n\nStep 2: Verify that the ingress ACL discards and logs packets destined to the IP core address space. \n\nip access-list BLOCK_TO_CORE\n deny ip any 10.1.x.0 0.0.255.255 log\n permit ip any any\n\nNote: Internet Control Message Protocol (ICMP) echo requests and traceroutes will be allowed to the edge from external adjacent neighbors.\n\nIf the PE switch is not configured to block any traffic with a destination address assigned to the IP core infrastructure, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure protection for the IP core to be implemented at the edges by blocking any traffic with a destination address assigned to the IP core infrastructure.\n\nStep 1: Configure an ingress ACL to discard and log packets destined to the IP core address space. \n\nSW1(config)# ip access-list BLOCK_TO_CORE\nSW1(config-acl)# deny ip any 10.1.x.0 0.0.255.255 log\nSW1(config-acl)# exit\n\nStep 2: Apply the ACL inbound to all external or CE-facing interfaces.\n\nSW1(config)#int e1/2\nSW1(config-if)# ip access-group BLOCK_TO_CORE in\nSW1(config-if)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221126r999735_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco PE switch must be configured to block any traffic that is destined to the IP core infrastructure.",
+  "tracking_issue": "TODO-V-221126",
+  "vuln_id": "V-221126"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to verify that IGMP or MLD snooping has been configured for IPv4 and IPv6 multicast traffic respectively for each VPLS bridge domain. The example below are the steps to verify that IGMP snooping is enabled for a VPLS bridge domain.\n\nStep 1: Verify that IGMP snooping is enabled globally. By default, IGMP snooping is enabled globally; hence, the following command should not be in the switch configuration: no ip igmp snooping\n\nStep 2: If IGMP snooping is enabled globally, it will also be enabled by default for each VPLS bridge domain. Hence, the command \u201cno ip igmp snooping\u201d should not be configured for any VPLS bridge domain as shown in the example below:\n\nbridge-domain 100 \n no ip igmp snooping\n\nIf the switch is not configured to implement IGMP or MLD snooping for each VPLS bridge domain, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure IGMP or MLD snooping for IPv4 and IPv6 multicast traffic respectively for each VPLS bridge domain.\n\nSW1(config)# bridge-domain 100\nSW1(config-bdomain)# ip igmp snooping \nSW1(config-bdomain)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221124r999733_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco PE switch must be configured to implement Internet Group Management Protocol (IGMP) or Multicast Listener Discovery (MLD) snooping for each Virtual Private LAN Services (VPLS) bridge domain.",
+  "tracking_issue": "TODO-V-221124",
+  "vuln_id": "V-221124"
+}

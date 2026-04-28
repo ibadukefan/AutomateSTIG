@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Multicast boundary for NX-OS can be established via combination of the border command along with an ACL to filter admin-scoped multicast traffic.\n\nStep 1: Verify that the interface at the multicast domain edge has been configured with both an ingress and egress ACL.\n\ninterface Ethernet2/1\n no switchport\n ip access-group FILTER_TRAFFIC_IN in\n ip access-group FILTER_TRAFFIC_OUT out\n ip address 10.1.12.1/24\n ip pim sparse-mode\n ip pim border\n\nNote: The command ip pim border enables the interface to be on the border of PIM domain so that no bootstrap, candidate-RP, or Auto-RP messages are sent or received on the interface. \n\nStep 2: Verify that the ingress and egress ACLs block the address range for administratively scoped multicast traffic.\n\nip access-list FILTER_TRAFFIC_IN\n 10 deny ip any 239.0.0.0/8\n 20 permit tcp any any established\n\u2026\n \u2026\n \u2026\n90 deny ip any any log \n\nip access-list FILTER_TRAFFIC_OUT\n 10 deny ip any 239.0.0.0/8\n 20 deny ip \u2026\n \u2026\n80 permit ip any any\n\nIf the switch is not configured to establish boundaries for administratively scoped multicast traffic, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Step 1: Configure an ingress and egress ACL to block administratively scoped multicast traffic.\n\nSW1(config)# ip access-list FILTER_TRAFFIC_IN\nSW1(config-acl)# deny 239.0.0.0/8\nSW1(config-acl)# permit tcp any any established\nSW1(config-acl)# \u2026\nSW1(config-acl)# deny ip any any log \nSW1(config-acl)# exit\nSW1(config)# ip access-list FILTER_TRAFFIC_OUT\nSW1(config-acl)# deny 239.0.0.0/8\nSW1(config-acl)# \u2026\nSW1(config-acl)# permit ip any any\nSW1(config-acl)# exit\n\nStep 2: Apply the ingress and egress ACL to the applicable interfaces.\n\nSW1(config)# int e2/1\nSW1(config-if)# ip access-group FILTER_TRAFFIC_IN in\nSW1(config-if)# ip access-group FILTER_TRAFFIC_OUT out\nSW1(config-if)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221134r1137912_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco multicast edge switch must be configured to establish boundaries for administratively scoped multicast traffic.",
+  "tracking_issue": "TODO-V-221134",
+  "vuln_id": "V-221134"
+}

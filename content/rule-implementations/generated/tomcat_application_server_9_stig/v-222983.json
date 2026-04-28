@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From the command line of the Tomcat server type the following command:\n\nsudo cat /etc/passwd|grep -i tomcat\n\nIf the command/shell field of the passwd file is not set to \"/usr/sbin/nologin\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From the Tomcat command line type the following command:\n\nsudo usermod -s /usr/sbin/nologin tomcat",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222983r961353_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "Tomcat user account must be set to nologin.",
+  "tracking_issue": "TODO-V-222983",
+  "vuln_id": "V-222983"
+}

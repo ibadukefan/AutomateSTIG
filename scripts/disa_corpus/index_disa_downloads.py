@@ -14,7 +14,9 @@ from urllib.parse import urljoin
 
 DEFAULT_SOURCE='https://public.cyber.mil/stigs/downloads/'
 ZIP_RE=re.compile(r'https?://[^\s"\']+?\.zip|href=["\']([^"\']+?\.zip)["\']', re.I)
+DATA_LINK_RE=re.compile(r'data-link=["\']([^"\']+?\.zip)["\']', re.I)
 TITLE_RE=re.compile(r'title=["\']([^"\']+)["\']', re.I)
+ARIA_LABEL_RE=re.compile(r'aria-label=["\'](?:Download\s+)?([^"\']+)["\']', re.I)
 SEED_DOWNLOADS=[
  {'title':'Microsoft Windows Server 2022 STIG V2R8','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_V2R8_STIG.zip'},
  {'title':'Microsoft Windows Server 2022 STIG SCAP 1.3 Benchmark V2R8','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark.zip'},
@@ -44,6 +46,10 @@ SEED_DOWNLOADS=[
  {'title':'Oracle Linux 9 STIG SCAP 1.3 Benchmark V1R3','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip'},
  {'title':'Microsoft Edge STIG V2R5','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Edge_V2R5_STIG.zip'},
  {'title':'Microsoft Edge STIG SCAP 1.3 Benchmark V2R5','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip'},
+ {'title':'Cisco NX OS Switch STIG Y26M04','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip'},
+ {'title':'Apache Server 2.4 Windows STIG Y26M04','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Windows_Y26M04_STIG.zip'},
+ {'title':'Apache Tomcat Application Server 9 STIG V3R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip'},
+ {'title':'Apple macOS 15 STIG V1R7','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_15_V1R7_STIG.zip'},
 ]
 
 def classify(title,url):
@@ -67,14 +73,25 @@ def fetch(url):
 
 def parse_html(html, base_url):
     out=[]
+    seen=set()
+    for m in DATA_LINK_RE.finditer(html):
+        url=urljoin(base_url, unescape(m.group(1)))
+        window=html[max(0,m.start()-300):m.end()+300]
+        tm=ARIA_LABEL_RE.search(window) or TITLE_RE.search(window)
+        title=unescape(tm.group(1)) if tm else Path(url).name.replace('_',' ')
+        out.append({'title':title,'url':url})
+        seen.add(url)
     for m in ZIP_RE.finditer(html):
         raw=m.group(1) or m.group(0)
         raw=raw.replace('href=','').strip('"\' ')
         url=urljoin(base_url, unescape(raw))
+        if url in seen:
+            continue
         window=html[max(0,m.start()-300):m.end()+300]
-        tm=TITLE_RE.search(window)
+        tm=TITLE_RE.search(window) or ARIA_LABEL_RE.search(window)
         title=unescape(tm.group(1)) if tm else Path(url).name.replace('_',' ')
         out.append({'title':title,'url':url})
+        seen.add(url)
     return out
 
 def normalize(items):

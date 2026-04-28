@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to verify the switch is configured to deny updates received from eBGP peers that do not list their AS number as the first AS in the AS_PATH attribute.\n\nBy default Cisco IOS enforces the first AS in the AS_PATH attribute for all route advertisements. Review the switch configuration to verify that the command no enforce-first-as is not configured.\n\nrouter bgp xx\n router-id 10.1.1.1\n no enforce-first-as\n\nIf the switch is not configured to reject updates from peers that do not list their AS number as the first AS in the AS_PATH attribute, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the switch to deny updates received from eBGP peers that do not list their AS number as the first AS in the AS_PATH attribute.\n\nSW1(config)# router bgp xx\nSW1(config-router)# enforce-first-as\nSW1(config-router)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221108r1137898_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco BGP switch must be configured to reject route advertisements from BGP peers that do not list their autonomous system (AS) number as the first AS in the AS_PATH attribute.",
+  "tracking_issue": "TODO-V-221108",
+  "vuln_id": "V-221108"
+}

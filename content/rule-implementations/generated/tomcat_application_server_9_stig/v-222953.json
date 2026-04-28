@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From the Tomcat server run the following OS command:\n\nsudo cat $CATALINA_BASE/conf/web.xml |grep -i -A10 -B2 defaultservlet \n\nThe above command will include ten lines after and two lines before the occurrence of \"defaultservlet\". Some systems may require that the user increase the after number (A10) in order to determine the \"debug\" param-value. \n\nIf the \"debug\" param-value for the \"DefaultServlet\" servlet class does not = 0, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From the Tomcat server as a privileged user:\n\nEdit the $CATALINA_BASE/conf/web.xml file.\n\nExamine the <init-param> elements within the <Servletclass> element, if the \"debug\" <param-value>element is not \"0\"\" change the \"debug\" <param-value> to read \"0\".\n\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222953r960963_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "DefaultServlet debug parameter must be disabled.",
+  "tracking_issue": "TODO-V-222953",
+  "vuln_id": "V-222953"
+}

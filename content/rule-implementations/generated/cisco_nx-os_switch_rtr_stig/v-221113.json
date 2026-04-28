@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to determine if it is compliant with this requirement.\n\nVerify that a loopback address has been configured as shown in the following example:\n\ninterface loopback0\n ip address 10.1.1.1/32\n\nBy default, switches will use its loopback address for LDP peering. If an address has not be configured on the loopback interface, it will use its physical interface connecting to the LDP peer. If the router-id command is specified that overrides this default behavior, verify that it is a loopback interface as shown in the example below:\n\nmpls ldp configuration\n router-id lo0\n\nIf the switch is not configured do use its loopback address for LDP peering, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the switch to use their loopback address as the source address for LDP peering sessions. As noted in the check content, the default behavior is to use its loopback address. \n\nSW1(config)# mpls ldp configuration\nSW1(config-ldp)# router-id lo0",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221113r999770_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco MPLS switch must be configured to use its loopback address as the source address for LDP peering sessions.",
+  "tracking_issue": "TODO-V-221113",
+  "vuln_id": "V-221113"
+}

@@ -1,0 +1,1180 @@
+{
+  "generated_from": "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "rules": [
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221071r1195277_rule",
+      "severity": "medium",
+      "title": "The Cisco switch must be configured to enforce approved authorizations for controlling the flow of information within the network based on organization-defined information flow control policies.",
+      "tracking_issue": "TODO-V-221071",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221071"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221072r999681_rule",
+      "severity": "medium",
+      "title": "The Cisco switch must be configured to implement message authentication for all control plane protocols.",
+      "tracking_issue": "TODO-V-221072",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221072"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221073r999682_rule",
+      "severity": "medium",
+      "title": "The Cisco switch must be configured to use keys with a duration not exceeding 180 days for authenticating routing protocol messages.",
+      "tracking_issue": "TODO-V-221073",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221073"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221074r999683_rule",
+      "severity": "medium",
+      "title": "The Cisco switch must be configured to use encryption for routing protocol authentication.",
+      "tracking_issue": "TODO-V-221074",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221074"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221075r999684_rule",
+      "severity": "medium",
+      "title": "The Cisco switch must be configured to authenticate all routing protocol messages using NIST-validated FIPS 198-1 message authentication code algorithm.",
+      "tracking_issue": "TODO-V-221075",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221075"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221076r1137913_rule",
+      "severity": "low",
+      "title": "The Cisco switch must be configured to have all inactive layer 3 interfaces disabled.",
+      "tracking_issue": "TODO-V-221076",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221076"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221078r999687_rule",
+      "severity": "medium",
+      "title": "The Cisco switch must not be configured to have any feature enabled that calls home to the vendor.",
+      "tracking_issue": "TODO-V-221078",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221078"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221079r1055901_rule",
+      "severity": "medium",
+      "title": "The Cisco switch must be configured to protect against or limit the effects of denial-of-service (DoS) attacks by employing control plane protection.",
+      "tracking_issue": "TODO-V-221079",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221079"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221081r999690_rule",
+      "severity": "medium",
+      "title": "The Cisco switch must be configured to drop all fragmented Internet Control Message Protocol (ICMP) packets destined to itself.",
+      "tracking_issue": "TODO-V-221081",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221081"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221082r999691_rule",
+      "severity": "medium",
+      "title": "The Cisco switch must be configured to have Gratuitous ARP disabled on all external interfaces.",
+      "tracking_issue": "TODO-V-221082",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221082"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221083r999692_rule",
+      "severity": "low",
+      "title": "The Cisco switch must be configured to have IP directed broadcast disabled on all interfaces.",
+      "tracking_issue": "TODO-V-221083",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221083"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221084r999693_rule",
+      "severity": "medium",
+      "title": "The Cisco switch must be configured to have Internet Control Message Protocol (ICMP) unreachable messages disabled on all external interfaces.",
+      "tracking_issue": "TODO-V-221084",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221084"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221085r999694_rule",
+      "severity": "medium",
+      "title": "The Cisco switch must be configured to have Internet Control Message Protocol (ICMP) redirect messages disabled on all external interfaces.",
+      "tracking_issue": "TODO-V-221085",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221085"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221086r999695_rule",
+      "severity": "low",
+      "title": "The Cisco switch must be configured to log all packets that have been dropped at interfaces via an ACL.",
+      "tracking_issue": "TODO-V-221086",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221086"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221087r1137935_rule",
+      "severity": "high",
+      "title": "The Cisco perimeter switch must be configured to deny network traffic by default and allow network traffic by exception.",
+      "tracking_issue": "TODO-V-221087",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221087"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221088r1137907_rule",
+      "severity": "medium",
+      "title": "The Cisco perimeter switch must be configured to enforce approved authorizations for controlling the flow of information between interconnected networks in accordance with applicable policy.",
+      "tracking_issue": "TODO-V-221088",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221088"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221089r999698_rule",
+      "severity": "medium",
+      "title": "The Cisco perimeter switch must be configured to only allow incoming communications from authorized sources to be routed to authorized destinations.",
+      "tracking_issue": "TODO-V-221089",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221089"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221090r999699_rule",
+      "severity": "medium",
+      "title": "The Cisco perimeter switch must be configured to block inbound packets with source Bogon IP address prefixes.",
+      "tracking_issue": "TODO-V-221090",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221090"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221091r999700_rule",
+      "severity": "high",
+      "title": "The Cisco perimeter switch must be configured to restrict it from accepting outbound IP packets that contain an illegitimate address in the source address field via egress filter or by enabling Unicast Reverse Path Forwarding (uRPF).",
+      "tracking_issue": "TODO-V-221091",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221091"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221092r999701_rule",
+      "severity": "medium",
+      "title": "The Cisco perimeter switch must be configured to filter traffic destined to the enclave in accordance with the guidelines contained in DoD Instruction 8551.1.",
+      "tracking_issue": "TODO-V-221092",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221092"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221093r999702_rule",
+      "severity": "medium",
+      "title": "The Cisco perimeter switch must be configured to filter ingress traffic at the external interface on an inbound direction.",
+      "tracking_issue": "TODO-V-221093",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221093"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221094r999703_rule",
+      "severity": "medium",
+      "title": "The Cisco perimeter switch must be configured to filter egress traffic at the internal interface on an inbound direction.",
+      "tracking_issue": "TODO-V-221094",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221094"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221095r999704_rule",
+      "severity": "medium",
+      "title": "The Cisco perimeter switch must be configured to block all packets with any IP options.",
+      "tracking_issue": "TODO-V-221095",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221095"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221096r999705_rule",
+      "severity": "low",
+      "title": "The Cisco perimeter switch must be configured to have Link Layer Discovery Protocol (LLDP) disabled on all external interfaces.",
+      "tracking_issue": "TODO-V-221096",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221096"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221097r999706_rule",
+      "severity": "low",
+      "title": "The Cisco perimeter switch must be configured to have Cisco Discovery Protocol (CDP) disabled on all external interfaces.",
+      "tracking_issue": "TODO-V-221097",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221097"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221098r999707_rule",
+      "severity": "medium",
+      "title": "The Cisco perimeter switch must be configured to have Proxy ARP disabled on all external interfaces.",
+      "tracking_issue": "TODO-V-221098",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221098"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221099r999708_rule",
+      "severity": "medium",
+      "title": "The Cisco perimeter switch must be configured to block all outbound management traffic.",
+      "tracking_issue": "TODO-V-221099",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221099"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221100r999709_rule",
+      "severity": "medium",
+      "title": "The Cisco switch must be configured to only permit management traffic that ingresses and egresses the out-of-band management (OOBM) interface.",
+      "tracking_issue": "TODO-V-221100",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221100"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221101r999710_rule",
+      "severity": "low",
+      "title": "The Cisco BGP switch must be configured to check whether a single-hop eBGP peer is directly connected.",
+      "tracking_issue": "TODO-V-221101",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221101"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221102r999711_rule",
+      "severity": "medium",
+      "title": "The Cisco BGP switch must be configured to use a unique key for each autonomous system (AS) that it peers with.",
+      "tracking_issue": "TODO-V-221102",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221102"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221103r1137894_rule",
+      "severity": "medium",
+      "title": "The Cisco BGP switch must be configured to reject inbound route advertisements for any Bogon prefixes.",
+      "tracking_issue": "TODO-V-221103",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221103"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221104r1137895_rule",
+      "severity": "medium",
+      "title": "The Cisco BGP switch must be configured to reject inbound route advertisements for any prefixes belonging to the local autonomous system (AS).",
+      "tracking_issue": "TODO-V-221104",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221104"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221105r1137896_rule",
+      "severity": "medium",
+      "title": "The Cisco BGP switch must be configured to reject inbound route advertisements from a customer edge (CE) switch for prefixes that are not allocated to that customer.",
+      "tracking_issue": "TODO-V-221105",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221105"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221106r1137897_rule",
+      "severity": "medium",
+      "title": "The Cisco BGP switch must be configured to reject outbound route advertisements for any prefixes that do not belong to any customers or the local autonomous system (AS).",
+      "tracking_issue": "TODO-V-221106",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221106"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221107r999716_rule",
+      "severity": "medium",
+      "title": "The Cisco BGP switch must be configured to reject outbound route advertisements for any prefixes belonging to the IP core.",
+      "tracking_issue": "TODO-V-221107",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221107"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221108r1137898_rule",
+      "severity": "low",
+      "title": "The Cisco BGP switch must be configured to reject route advertisements from BGP peers that do not list their autonomous system (AS) number as the first AS in the AS_PATH attribute.",
+      "tracking_issue": "TODO-V-221108",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221108"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221109r1137905_rule",
+      "severity": "low",
+      "title": "The Cisco BGP switch must be configured to reject route advertisements from CE switches with an originating AS in the AS_PATH attribute that does not belong to that customer.",
+      "tracking_issue": "TODO-V-221109",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221109"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221110r999719_rule",
+      "severity": "medium",
+      "title": "The Cisco BGP switch must be configured to use the maximum prefixes feature to protect against route table flooding and prefix de-aggregation attacks.",
+      "tracking_issue": "TODO-V-221110",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221110"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221111r999720_rule",
+      "severity": "low",
+      "title": "The Cisco BGP switch must be configured to limit the prefix size on any inbound route advertisement to /24, or the least significant prefixes issued to the customer.",
+      "tracking_issue": "TODO-V-221111",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221111"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221112r999769_rule",
+      "severity": "low",
+      "title": "The Cisco BGP switch must be configured to use its loopback address as the source address for iBGP peering sessions.",
+      "tracking_issue": "TODO-V-221112",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221112"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221113r999770_rule",
+      "severity": "low",
+      "title": "The Cisco MPLS switch must be configured to use its loopback address as the source address for LDP peering sessions.",
+      "tracking_issue": "TODO-V-221113",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221113"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221114r999723_rule",
+      "severity": "low",
+      "title": "The Cisco MPLS switch must be configured to synchronize Interior Gateway Protocol (IGP) and LDP to minimize packet loss when an IGP adjacency is established prior to LDP peers completing label exchange.",
+      "tracking_issue": "TODO-V-221114",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221114"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221115r999724_rule",
+      "severity": "low",
+      "title": "The MPLS switch with RSVP-TE enabled must be configured with message pacing to adjust maximum burst and maximum number of RSVP messages to an output queue based on the link speed and input queue size of adjacent core switches.",
+      "tracking_issue": "TODO-V-221115",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221115"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221116r999725_rule",
+      "severity": "medium",
+      "title": "The Cisco MPLS switch must be configured to have TTL Propagation disabled.",
+      "tracking_issue": "TODO-V-221116",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221116"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221117r999771_rule",
+      "severity": "high",
+      "title": "The Cisco PE switch must be configured to have each Virtual Routing and Forwarding (VRF) instance bound to the appropriate physical or logical interfaces to maintain traffic separation between all MPLS L3VPNs.",
+      "tracking_issue": "TODO-V-221117",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221117"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221118r999772_rule",
+      "severity": "high",
+      "title": "The Cisco PE switch must be configured to have each Virtual Routing and Forwarding (VRF) instance with the appropriate Route Target (RT).",
+      "tracking_issue": "TODO-V-221118",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221118"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221119r999773_rule",
+      "severity": "medium",
+      "title": "The Cisco PE switch must be configured to have each VRF with the appropriate Route Distinguisher (RD).",
+      "tracking_issue": "TODO-V-221119",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221119"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221120r999729_rule",
+      "severity": "medium",
+      "title": "The Cisco PE switch providing MPLS Layer 2 Virtual Private Network (L2VPN) services must be configured to authenticate targeted Label Distribution Protocol (LDP) sessions used to exchange virtual circuit (VC) information using a FIPS-approved message authentication code algorithm.",
+      "tracking_issue": "TODO-V-221120",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221120"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221121r999774_rule",
+      "severity": "high",
+      "title": "The Cisco PE switch providing MPLS Virtual Private Wire Service (VPWS) must be configured to have the appropriate virtual circuit identification (VC ID) for each attachment circuit.",
+      "tracking_issue": "TODO-V-221121",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221121"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221122r999775_rule",
+      "severity": "high",
+      "title": "The Cisco PE switch providing Virtual Private LAN Services (VPLS) must be configured to have all attachment circuits defined to the virtual forwarding instance (VFI) with the globally unique VPN ID assigned for each customer VLAN.",
+      "tracking_issue": "TODO-V-221122",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221122"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221123r999732_rule",
+      "severity": "medium",
+      "title": "The Cisco PE switch providing Virtual Private LAN Services (VPLS) must be configured to have traffic storm control thresholds on CE-facing interfaces.",
+      "tracking_issue": "TODO-V-221123",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221123"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221124r999733_rule",
+      "severity": "low",
+      "title": "The Cisco PE switch must be configured to implement Internet Group Management Protocol (IGMP) or Multicast Listener Discovery (MLD) snooping for each Virtual Private LAN Services (VPLS) bridge domain.",
+      "tracking_issue": "TODO-V-221124",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221124"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221125r999734_rule",
+      "severity": "medium",
+      "title": "The Cisco PE switch must be configured to limit the number of MAC addresses it can learn for each Virtual Private LAN Services (VPLS) bridge domain.",
+      "tracking_issue": "TODO-V-221125",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221125"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221126r999735_rule",
+      "severity": "high",
+      "title": "The Cisco PE switch must be configured to block any traffic that is destined to the IP core infrastructure.",
+      "tracking_issue": "TODO-V-221126",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221126"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221127r999736_rule",
+      "severity": "medium",
+      "title": "The Cisco PE switch must be configured with Unicast Reverse Path Forwarding (uRPF) loose mode enabled on all CE-facing interfaces.",
+      "tracking_issue": "TODO-V-221127",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221127"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221128r999737_rule",
+      "severity": "medium",
+      "title": "The Cisco PE switch must be configured to ignore or drop all packets with any IP options.",
+      "tracking_issue": "TODO-V-221128",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221128"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221129r999738_rule",
+      "severity": "low",
+      "title": "The Cisco PE switch must be configured to enforce a Quality-of-Service (QoS) policy to provide preferred treatment for mission-critical applications.",
+      "tracking_issue": "TODO-V-221129",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221129"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221130r999739_rule",
+      "severity": "low",
+      "title": "The Cisco P switch must be configured to enforce a Quality-of-Service (QoS) policy to provide preferred treatment for mission-critical applications.",
+      "tracking_issue": "TODO-V-221130",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221130"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221131r999740_rule",
+      "severity": "medium",
+      "title": "The Cisco switch must be configured to enforce a Quality-of-Service (QoS) policy to limit the effects of packet flooding denial-of-service (DoS) attacks.",
+      "tracking_issue": "TODO-V-221131",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221131"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221132r1137908_rule",
+      "severity": "medium",
+      "title": "The Cisco multicast switch must be configured to disable Protocol Independent Multicast (PIM) on all interfaces that are not required to support multicast routing.",
+      "tracking_issue": "TODO-V-221132",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221132"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221133r1137911_rule",
+      "severity": "medium",
+      "title": "The Cisco multicast switch must be configured to bind a Protocol Independent Multicast (PIM) neighbor filter to interfaces that have PIM enabled.",
+      "tracking_issue": "TODO-V-221133",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221133"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221134r1137912_rule",
+      "severity": "low",
+      "title": "The Cisco multicast edge switch must be configured to establish boundaries for administratively scoped multicast traffic.",
+      "tracking_issue": "TODO-V-221134",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221134"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221135r999744_rule",
+      "severity": "low",
+      "title": "The Cisco multicast Rendezvous Point (RP) switch must be configured to limit the multicast forwarding cache so that its resources are not saturated by managing an overwhelming number of Protocol Independent Multicast (PIM) and Multicast Source Discovery Protocol (MSDP) source-active entries.",
+      "tracking_issue": "TODO-V-221135",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221135"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221136r1137930_rule",
+      "severity": "low",
+      "title": "The Cisco multicast Rendezvous Point (RP) switch must be configured to filter Protocol Independent Multicast (PIM) Register messages received from the Designated switch (DR) for any undesirable multicast groups and sources.",
+      "tracking_issue": "TODO-V-221136",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221136"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221137r1137932_rule",
+      "severity": "low",
+      "title": "The Cisco multicast Rendezvous Point (RP) switch must be configured to filter Protocol Independent Multicast (PIM) Join messages received from the Designated Cisco switch (DR) for any undesirable multicast groups.",
+      "tracking_issue": "TODO-V-221137",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221137"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221138r999747_rule",
+      "severity": "low",
+      "title": "The Cisco multicast Designated switch (DR) must be configured to filter the Internet Group Management Protocol (IGMP) and Multicast Listener Discovery (MLD) Report messages to allow hosts to join only multicast groups that have been approved by the organization.",
+      "tracking_issue": "TODO-V-221138",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221138"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221139r999748_rule",
+      "severity": "medium",
+      "title": "The Cisco multicast Designated switch (DR) must be configured to filter the Internet Group Management Protocol (IGMP) and Multicast Listener Discovery (MLD) Report messages to allow hosts to join a multicast group only from sources that have been approved by the organization.",
+      "tracking_issue": "TODO-V-221139",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221139"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221140r999749_rule",
+      "severity": "medium",
+      "title": "The Cisco multicast Designated switch (DR) must be configured to limit the number of mroute states resulting from Internet Group Management Protocol (IGMP) and Multicast Listener Discovery (MLD) Host Membership Reports.",
+      "tracking_issue": "TODO-V-221140",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221140"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221141r999750_rule",
+      "severity": "medium",
+      "title": "The Cisco multicast Designated switch (DR) must be configured to set the shortest-path tree (SPT) threshold to infinity to minimalize source-group (S, G) state within the multicast topology where Any Source Multicast (ASM) is deployed.",
+      "tracking_issue": "TODO-V-221141",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221141"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221142r999751_rule",
+      "severity": "medium",
+      "title": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to only accept MSDP packets from known MSDP peers.",
+      "tracking_issue": "TODO-V-221142",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221142"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221143r999752_rule",
+      "severity": "medium",
+      "title": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to authenticate all received MSDP packets.",
+      "tracking_issue": "TODO-V-221143",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221143"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221144r1137900_rule",
+      "severity": "low",
+      "title": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to filter received source-active multicast advertisements for any undesirable multicast groups and sources.",
+      "tracking_issue": "TODO-V-221144",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221144"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221145r1137902_rule",
+      "severity": "low",
+      "title": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to filter source-active multicast advertisements to external MSDP peers to avoid global visibility of local-only multicast sources and groups.",
+      "tracking_issue": "TODO-V-221145",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221145"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221146r1137903_rule",
+      "severity": "low",
+      "title": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to limit the amount of source-active messages it accepts on a per-peer basis.",
+      "tracking_issue": "TODO-V-221146",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221146"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-221147r999776_rule",
+      "severity": "low",
+      "title": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to use a loopback address as the source address when originating MSDP traffic.",
+      "tracking_issue": "TODO-V-221147",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-221147"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-237754r999759_rule",
+      "severity": "low",
+      "title": "The Cisco switch must be configured to advertise a hop limit of at least 32 in Switch Advertisement messages for IPv6 stateless auto-configuration deployments.",
+      "tracking_issue": "TODO-V-237754",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-237754"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-237757r999761_rule",
+      "severity": "medium",
+      "title": "The Cisco switch must not be configured to use IPv6 Site Local Unicast addresses.",
+      "tracking_issue": "TODO-V-237757",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-237757"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-237760r999764_rule",
+      "severity": "medium",
+      "title": "The Cisco perimeter switch must be configured to suppress Router Advertisements on all external IPv6-enabled interfaces.",
+      "tracking_issue": "TODO-V-237760",
+      "validated_by": [
+        "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+      ],
+      "vuln_id": "V-237760"
+    }
+  ],
+  "source": "DISA XCCDF benchmark",
+  "status": "experimental",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "total_rules": 78,
+  "version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
+}

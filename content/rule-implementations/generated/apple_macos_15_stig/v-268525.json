@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the macOS system is configured to disable Find My service with the following command:\n\n/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('allowFindMyDevice'))\nlet pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('allowFindMyFriends'))\nlet pref3 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.icloud.managed')\\\n.objectForKey('DisableFMMiCloudSetting'))\nif ( pref1 == false && pref2 == false && pref3 == true ) {\nreturn(\"true\")\n} else {\nreturn(\"false\")\n}\n}\nEOS\n\nIf the result is not \"true\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the macOS system to disable Find My service by installing the \"com.apple.applicationaccess\" and \"com.apple.icloud.managed\" configuration profiles.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-268525r1131237_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_15_stig/u_apple_macos_15_v1r7_stig.json",
+  "source_version": "U_Apple_macOS_15_V1R7_STIG.zip",
+  "stig_id": "Apple_macOS_15_STIG",
+  "title": "The macOS system must disable Find My service.",
+  "tracking_issue": "TODO-V-268525",
+  "vuln_id": "V-268525"
+}

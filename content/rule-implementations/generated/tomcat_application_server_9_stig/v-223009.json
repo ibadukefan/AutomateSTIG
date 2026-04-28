@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review SSP documentation for list of approved connectors and associated TCP/IP ports and interfaces.\n\nVerify the address attribute is specified for each connector and is set to the network interface specified in the SSP.\n\nExecute the following command to find configured Connectors:\n\nsudo grep -i -B1 -A5 connector $CATALINA_BASE/conf/server.xml\n\nReview results and examine the \"address=\" field for each connector.\n\nIf the connector address attribute is not specified as per the SSP, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Ensure the address attribute for each connector and the network interfaces are specified in the SSP.\n\nEdit the following file From the Tomcat server as a privileged user:\n\n$CATALINA_BASE/conf/server.xml\n\nLocate each Connector element then edit or add the \"address=\" field for each connector and specify the appropriate network IP address. The following is an example using a random IP address:\n\nEXAMPLE:\n<Connector\nport=\"8443\"\naddress=\"192.168.0.145\"\n...\n/>\n\nRestart the Tomcat server:\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-223009r961863_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "Connector address attribute must be set.",
+  "tracking_issue": "TODO-V-223009",
+  "vuln_id": "V-223009"
+}

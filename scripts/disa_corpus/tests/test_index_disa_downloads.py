@@ -19,6 +19,19 @@ class IndexDisaDownloadsTests(unittest.TestCase):
         self.assertEqual(rows[0]['title'], 'Example STIG V1R2')
         self.assertEqual(rows[0]['url'], 'https://dl.dod.cyber.mil/stigs/zip/U_Example_V1R2_STIG.zip')
 
+    def test_parse_html_data_link_buttons(self):
+        html = '''
+        <button aria-label="Download Apache Server 2.4 Windows STIG"
+                data-link="https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Windows_Y26M04_STIG.zip">
+          Download
+        </button>
+        '''
+        rows = m.parse_html(html, 'https://www.cyber.mil/stigs/downloads/')
+        self.assertEqual(rows, [{
+            'title': 'Apache Server 2.4 Windows STIG',
+            'url': 'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Windows_Y26M04_STIG.zip',
+        }])
+
     def test_normalize_deduplicates_and_release(self):
         rows = m.normalize([
             {'title': 'Example STIG V1R2', 'url': 'https://x/U_Example_V1R2_STIG.zip'},
@@ -40,7 +53,11 @@ class IndexDisaDownloadsTests(unittest.TestCase):
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Linux_9_V1R3_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Edge_V2R5_STIG.zip', urls)
-        self.assertEqual(len(rows), 28)
+        self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip', urls)
+        self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Windows_Y26M04_STIG.zip', urls)
+        self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip', urls)
+        self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_15_V1R7_STIG.zip', urls)
+        self.assertEqual(len(rows), 32)
 
 if __name__ == '__main__':
     unittest.main()

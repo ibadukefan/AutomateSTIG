@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Check the audit rules for the Tomcat folders. Run the following command from the Tomcat server as a privileged user:\n\nsudo auditctl -l | grep $CATALINA_HOME/lib\n\nIf the results do not include \"-w $CATALINA_HOME/lib -p wa -k tomcat\" or if there are no results, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From the Tomcat server as a privileged user:\n\n1. Identify the home folder for the Tomcat server:\n#grep -i -- 'catalina_home\\|catalina_base' /etc/systemd/system/tomcat.service\n\nLines similar to the following should be returned:\nEnvironment=\"CATALINA_HOME=/opt/tomcat\"\nEnvironment=\"CATALINA_BASE=/opt/tomcat\"\nwhere /opt/tomcat in the example will be referred to as <homefolderpath>\n\n2. Add rules to a rules file. These files will typically be /etc/audit/rules.d/audit.rules or stig.rules. Open the rules file <rulesfile> in a text editor.\n\n3. Alter or add the following line to the rules file, replacing <homefolderpath> with the actual path. (e.g., /opt/tomcat):\n-w <homefolderpath>/lib -p wa -k tomcat\n\n4. Load the rules, replacing <rulesfile> with the actual filename (e.g., audit.rules):\n#auditctl -R <rulesfile>\n\n5. Make the rules persistent:\n#augenrules --load",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-223000r1193100_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "Changes to $CATALINA_HOME/lib/ folder must be logged.",
+  "tracking_issue": "TODO-V-223000",
+  "vuln_id": "V-223000"
+}

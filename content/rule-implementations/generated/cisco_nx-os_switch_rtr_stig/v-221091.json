@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to verify uRPF or an egress ACL has been configured on all internal interfaces to restrict the switch from accepting outbound IP packets that contain an illegitimate address in the source address field.\n\nuRPF example\n\ninterface Ethernet2/4\n description downstream link to LAN\n no switchport\n ip address 10.1.12.1/24\n ip verify unicast source reachable-via rx\n\nEgress ACL example\n\nip access-list EGRESS_FILTER\n 10 permit udp 10.1.15.0/24 any eq domain \n 20 permit tcp 10.1.15.0/24 any eq ftp \n 30 permit tcp 10.1.15.0/24 any eq ftp-data \n 40 permit tcp 10.1.15.0/24 any eq www \n 50 permit icmp 10.1.15.0/24 any \n 60 permit icmp 10.1.15.0/24 any echo \n 70 deny ip any any\n\u2026\n\u2026\n\u2026\ninterface Ethernet2/4\n description downstream link to LAN\n no switchport\n ip access-group EGRESS_FILTER in\n ip address 10.1.12.1/24\n\nIf uRPF or an egress ACL to restrict the switch from accepting outbound IP packets that contain an illegitimate address in the source address field has not been configured on all internal interfaces in an enclave, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the switch to ensure that an egress ACL or uRPF is configured on internal interfaces to restrict the switch from accepting any outbound IP packet that contains an illegitimate address in the source field. The example below enables uRPF.\n\nSW1(config)# int e2/4\nSW1(config-if)# ip verify unicast source reachable-via rx\nSW1(config-if)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221091r999700_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco perimeter switch must be configured to restrict it from accepting outbound IP packets that contain an illegitimate address in the source address field via egress filter or by enabling Unicast Reverse Path Forwarding (uRPF).",
+  "tracking_issue": "TODO-V-221091",
+  "vuln_id": "V-221091"
+}

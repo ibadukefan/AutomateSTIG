@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Step 1: Verify LLDP is not enabled globally via the command feature lldp.\n\nBy default the LLDP feature is not enabled. If LLDP is enabled, proceed to Step 2.\n\nStep 2: Verify LLDP is not enabled on any external interface as shown in the example below:\n\ninterface Ethernet2/2\n description link to DISN\n no switchport\n no lldp transmit\n\nNote: LLDP is enabled by default on all interfaces once it is enabled globally; hence the command lldp transmit will not be visible on the interface configuration.\n\nIf LLDP transmit is enabled on any external interface, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Disable LLDP transmit on all external interfaces as shown in the example below:\n\nSW2(config)# int e2/2\nSW2(config-if)# no lldp transmit \nSW2(config-if)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221096r999705_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco perimeter switch must be configured to have Link Layer Discovery Protocol (LLDP) disabled on all external interfaces.",
+  "tracking_issue": "TODO-V-221096",
+  "vuln_id": "V-221096"
+}

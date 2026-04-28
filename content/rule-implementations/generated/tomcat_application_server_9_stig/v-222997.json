@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "As an elevated user on the Tomcat server, edit the $CATALINA_BASE/conf/server.xml file.\n\nReview the <Engine> element. Ensure one AccessLog <Valve> element is nested within the engine element. \n\nIf a <Valve className=\"org.apache.catalina.valves.AccessLogValve\" .../> element is not defined, this is a finding.\n\nEXAMPLE:\n<Engine name=\"Standalone\" ...>\n  ...\n  <Valve className=\"org.apache.catalina.valves.AccessLogValve\"\n         prefix=\"catalina_access_log\" suffix=\".txt\"\n         pattern=\"common\"/>\n  ...\n</Engine>",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "As a privileged user on the Tomcat server, edit the $CATALINA_BASE/conf/server.xml file.\n\nCreate a <Valve> element that is nested beneath the <Host> element containing an AccessLogValve. \n\nEXAMPLE:\n<Host name=\"localhost\"  appBase=\"webapps\"\n            unpackWARs=\"true\" autoDeploy=\"false\">\n...\n<Valve className=\"org.apache.catalina.valves.AccessLogValve\" directory=\"logs\"\n               prefix=\"localhost_access_log\" suffix=\".txt\"\n               pattern=\"%h %l %t %u &quot;%r&quot; %s %b\" />\n  ...\n</Host>\n\nRestart the Tomcat server:\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222997r1016518_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "AccessLogValve must be configured for Catalina engine.",
+  "tracking_issue": "TODO-V-222997",
+  "vuln_id": "V-222997"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From the Tomcat server as a privileged user, run the following command:\n\nsudo grep -i  enforce_encoding /etc/systemd/system/tomcat.service \n\nIf there are no results, or if the org.apache.catalina.connector.Response.ENFORCE_ENCODING_IN_GET_WRITER is not =\"true\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From the Tomcat server as a privileged user: \n\nEdit the /etc/systemd/system/tomcat.service file, and either add or edit the org.apache.catalina.connector.Response.ENFORCE_ENCODING_IN_GET_WRITER setting.\n\nSet the org.apache.catalina.connector.Response.ENFORCE_ENCODING_IN_GET_WRITER=true \n\nEXAMPLE:\nEnvironment='CATALINA_OPTS -Dorg.apache.catalina.connector.Response.ENFORCE_ENCODING_IN_GET_WRITER=true'\n\nRestart the Tomcat server:\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-223005r1135509_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "ENFORCE_ENCODING_IN_GET_WRITER must be set to true.",
+  "tracking_issue": "TODO-V-223005",
+  "vuln_id": "V-223005"
+}

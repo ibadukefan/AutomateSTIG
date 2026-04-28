@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Refer to https://tomcat.apache.org/security-9.html and identify the latest secure version of Tomcat with no known vulnerabilities.\n\nAs a privileged user from the Tomcat server, run the following command:\n\nsudo $CATALINA_HOME/bin/version.sh |grep -i server\n\nCompare the version running on the system to the latest secure version of Tomcat.\n\nNote: If TCAT-AS-000950 is compliant, users may need to leverage a different management interface. There is commonly a version.bat script in CATALINA_HOME/bin that will also output the current version of Tomcat.\n\nIf the version is more than one version behind the most recent patch level, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Follow operational procedures for upgrading Tomcat. Download latest version of Tomcat and install in a test environment. Test applications that are running in production and follow all operations best practices when upgrading the production Tomcat application servers.\n\nUpdate the Tomcat production instance accordingly and ensure corrected builds are installed once tested and verified.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222996r1067548_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "Tomcat server must be patched for security vulnerabilities.",
+  "tracking_issue": "TODO-V-222996",
+  "vuln_id": "V-222996"
+}

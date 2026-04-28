@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Step 1: Review the network's multicast topology diagram.\n\nStep 2: Review the switch configuration to verify that only the PIM interfaces as shown in the multicast topology diagram are enabled for PIM as shown in the example below:\n\ninterface Ethernet2/1\n no switchport\n ip address 10.1.12.1/24\n ip pim sparse-mode\n\nIf an interface is not required to support multicast routing and it is enabled, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Document all enabled interfaces for PIM in the network's multicast topology diagram. Disable support for PIM on interfaces that are not required to support it.\n\nSW1(config)# int e2/1\nSW1(config-if)# no ip pim sparse-mode \nSW1(config-if)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221132r1137908_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco multicast switch must be configured to disable Protocol Independent Multicast (PIM) on all interfaces that are not required to support multicast routing.",
+  "tracking_issue": "TODO-V-221132",
+  "vuln_id": "V-221132"
+}

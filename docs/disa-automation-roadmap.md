@@ -17,7 +17,7 @@ This roadmap implements the factory required to pursue every-DISA-STIG coverage.
 Completed factory layers:
 
 - current check-pack coverage gates for all existing AutomateSTIG check packs;
-- expanded seed authoritative DISA corpus for Windows 10, Windows 11, Windows Server 2019, Windows Server 2022, RHEL 7, RHEL 8, RHEL 9, Ubuntu 20.04, Ubuntu 22.04, Ubuntu 24.04, Oracle Linux 8, Oracle Linux 9, Google Chrome, and Microsoft Edge manual/SCAP artifacts;
+- expanded seed authoritative DISA corpus for Windows 10, Windows 11, Windows Server 2019, Windows Server 2022, RHEL 7, RHEL 8, RHEL 9, Ubuntu 20.04, Ubuntu 22.04, Ubuntu 24.04, Oracle Linux 8, Oracle Linux 9, Google Chrome, Microsoft Edge, Cisco NX-OS Switch, Apache Server 2.4 Windows, Apache Tomcat Application Server 9, and Apple macOS 15 artifacts;
 - corpus indexing/fetch/extraction/diff scripts;
 - scheduled corpus freshness workflow;
 - generated per-rule implementation backlog specs for every currently unsupported authoritative DISA rule;
@@ -28,20 +28,21 @@ Completed factory layers:
 
 Current authoritative corpus tracked in-repo:
 
-- authorized public DISA artifacts: 28
-- authoritative coverage manifests: 28
-- authoritative rules: 6,516
-- mapped automated checks after fixture-backed candidate and SCAP/manual canonical promotion: 2,559
+- authorized public DISA artifacts: 32
+- authoritative coverage manifests: 32
+- authoritative rules: 6,882
+- mapped automated checks after fixture-backed candidate and SCAP/manual canonical promotion: 2,578
   - mapped before Linux/corpus expansion: 207
   - mapped before SCAP/manual canonical alignment and Windows 10/RHEL 7 expansion: 705
   - mapped before Ubuntu/Oracle Linux/Chrome expansion and Linux service/file-permission templates: 1,794
   - mapped before Chrome registry-policy inference: 2,159
   - mapped before Ubuntu 22.04/Oracle Linux 9/Microsoft Edge corpus expansion: 2,194
+  - mapped before Cisco NX-OS/Apache/macOS corpus expansion: 2,559
   - generated candidate checks with deterministic pass/fail fixture evidence: 875
-- remaining unsupported authoritative rules: 3,957
-- generated planned specs for remaining unsupported rules: 3,957
+- remaining unsupported authoritative rules: 4,304
+- generated planned specs for remaining unsupported rules: 4,304
 
-The corpus grew from 22 to 28 authorized public DISA artifacts and from 5,206 to 6,516 authoritative rules in this expansion pass by adding Ubuntu 22.04 LTS V2R6, Oracle Linux 9 V1R3, and Microsoft Edge V2R5 manual/SCAP artifacts. Fixture-backed candidate promotion increased mapped/automated rules from 2,194 to 2,559, while unsupported rules increased to 3,957 because the authoritative corpus is larger. This is still not production-complete or all-DISA complete. The production target remains zero unsupported rules across the full tracked public DISA corpus, with every rule classified as machine-verifiable automated, scanner-import-verifiable, automated manual-evidence workflow, or not-applicable-with-proof.
+The corpus grew from 28 to 32 authorized public DISA artifacts and from 6,516 to 6,882 authoritative rules in this expansion pass by adding Cisco NX-OS Switch Y26M04, Apache Server 2.4 Windows Y26M04, Apache Tomcat Application Server 9 V3R4, and Apple macOS 15 V1R7 manual STIG artifacts. Fixture-backed candidate promotion increased mapped/automated rules from 2,559 to 2,578, while unsupported rules increased to 4,304 because the authoritative corpus is larger. This is still not production-complete or all-DISA complete. The production target remains zero unsupported rules across the full tracked public DISA corpus, with every rule classified as machine-verifiable automated, scanner-import-verifiable, automated manual-evidence workflow, or not-applicable-with-proof.
 
 The next burn-down phase is to deepen SCAP/OVAL semantics and infer/fixture-validate additional reusable Linux, Windows, browser, and application templates, including auditd, sshd, PAM, crypto policy, kernel arguments, local security policy, audit policy, local users/groups, file ACLs, PowerShell, WMI/CIM, browser policy registry/plist/json sources, and application configuration collectors. Live-asset validation is still required before claiming any generated candidate as production validated.
 

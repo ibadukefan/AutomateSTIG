@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration and verify that inactive interfaces have been disabled as shown below:\n\ninterface Ethernet4/12\n shutdown\n no switchport\n\ninterface Ethernet4/13\n shutdown\n no switchport\n\u2026\n\u2026\n\u2026\ninterface Ethernet4/48\n shutdown\n no switchport\n\nIf an interface is not being used but is configured or enabled, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Disable all inactive interfaces as shown below:\n\nSW1(config)# int e4/1 - 11\nSW1(config-if-range)# shutdown\nSW1(config-if-range)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221076r1137913_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco switch must be configured to have all inactive layer 3 interfaces disabled.",
+  "tracking_issue": "TODO-V-221076",
+  "vuln_id": "V-221076"
+}

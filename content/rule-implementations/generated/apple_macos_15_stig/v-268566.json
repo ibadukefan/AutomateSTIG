@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the macOS system is configured to prohibit user installation of software into /users/ with the following command:\n\n/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n.objectForKey('familyControlsEnabled'))\nlet pathlist = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n.objectForKey('pathBlackList').js\nfor ( let app in pathlist ) {\nif ( ObjC.unwrap(pathlist[app]) == \"/Users/\" && pref1 == true ){\nreturn(\"true\")\n}\n}\nreturn(\"false\")\n}\nEOS\n\nIf the result is not \"true\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the macOS system to prohibit user installation of software into /users/ by installing the \"com.apple.applicationaccess.new\" configuration profile.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-268566r1131250_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_15_stig/u_apple_macos_15_v1r7_stig.json",
+  "source_version": "U_Apple_macOS_15_V1R7_STIG.zip",
+  "stig_id": "Apple_macOS_15_STIG",
+  "title": "The macOS system must prohibit user installation of software into /users/.",
+  "tracking_issue": "TODO-V-268566",
+  "vuln_id": "V-268566"
+}

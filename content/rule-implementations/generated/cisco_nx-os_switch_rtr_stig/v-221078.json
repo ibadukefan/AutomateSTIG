@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to determine if the call home service is enabled as shown in the example below:\n\ncallhome\n contract-id CompanyXYZ\n customer-id CompanyXYZ\n email-contact netadmin@CompanyXYZ.com\n phone-contact +1-800-555-4567\n enable\n\nIf the call home feature is configured to call home to the vendor, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Disable the call home feature as shown below:\n\nSW1(config)# callhome\nSW1(config-callhome)# no enable \nSW1(config-callhome)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221078r999687_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco switch must not be configured to have any feature enabled that calls home to the vendor.",
+  "tracking_issue": "TODO-V-221078",
+  "vuln_id": "V-221078"
+}

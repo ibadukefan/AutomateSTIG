@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the macOS system is configured to remove password hints from user accounts with the following command:\n\nHINT=$(/usr/bin/dscl . -list /Users hint | /usr/bin/awk '{ print $2 }')\n\nif [ -z \"$HINT\" ]; then\necho \"PASS\"\nelse\necho \"FAIL\"\nfi\n\nIf the result is not \"PASS\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the macOS system to remove password hints from user accounts with the following command:\n\nfor u in $(/usr/bin/dscl . -list /Users UniqueID | /usr/bin/awk '$2 > 500 {print $1}'); do\n/usr/bin/dscl . -delete /Users/$u hint\ndone",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-268541r1131242_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_15_stig/u_apple_macos_15_v1r7_stig.json",
+  "source_version": "U_Apple_macOS_15_V1R7_STIG.zip",
+  "stig_id": "Apple_macOS_15_STIG",
+  "title": "The macOS system must remove password hints from user accounts.",
+  "tracking_issue": "TODO-V-268541",
+  "vuln_id": "V-268541"
+}

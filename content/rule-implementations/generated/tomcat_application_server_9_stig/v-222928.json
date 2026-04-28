@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From the Tomcat server console, run the following command:\n\nsudo grep -i -A5 -B8 hstsEnable $CATALINA_BASE/conf/web.xml file.\n\nIf the httpHeaderSecurity filter is commented out or if hstsEnable is not set to \"true\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From the Tomcat server as a privileged user, edit the web.xml file:\n\nsudo nano $CATALINA_BASE/conf/web.xml file.\n\nUncomment the existing httpHeaderSecurity filter section or create the filter section using the following code:\n\nNOTE: includeSubDomains param-value and url-pattern values may change and can vary according to local deployment requirements. \n<filter>\n<filter-name>httpHeaderSecurity</filter-name>\n<filter-class>org.apache.catalina.filters.HttpHeaderSecurityFilter</filter-class>\n<init-param>\n <param-name>hstsEnabled</param-name>\n <param-value>true</param-value>\n</init-param>\n<init-param>\n <param-name>hstsMaxAgeSeconds</param-name>\n <param-value>31536000</param-value>\n </init-param>\n <init-param>\n <param-name>hstsIncludeSubDomains</param-name>\n <param-value>true</param-value>\n </init-param>\n<async-supported>true</async-supported>\n</filter>\n\nCreate or uncomment the httpHeaderSecurity filter mapping:\n<filter-mapping>\n<filter-name>httpHeaderSecurity</filter-name>\n<url-pattern>/*</url-pattern>\n<dispatcher>REQUEST</dispatcher>\n</filter-mapping>",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222928r960762_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "HTTP Strict Transport Security (HSTS) must be enabled.",
+  "tracking_issue": "TODO-V-222928",
+  "vuln_id": "V-222928"
+}

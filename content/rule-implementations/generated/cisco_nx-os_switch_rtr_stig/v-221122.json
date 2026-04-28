@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Step 1: Review the implementation plan and the VPN IDs assigned to customer VLANs for the VPLS deployment.\n\nStep 2: Review the PE switch configuration to verify that customer attachment circuits are associated to the appropriate VFI. In the example below, the attached circuit at interface GigabitEthernet3 is associated to VPN ID 110.\n\nbridge-domain 100\n member vfi CUST1_VPLS\n member Ethernet2/2 service instance 1\n\nl2vpn vfi context CUST1_VPLS\n vpn id 100\nmember Pseudowire12\nmember Pseudowire13\n\u2026\n\u2026\n\u2026\ninterface Ethernet2/2\n service instance 1 ethernet\n encapsulation dot1q 100\n\u2026\n\u2026\n\u2026\ninterface Pseudowire12 \n encapsulation mpls\n neighbor 10.2.2.2 100\n\ninterface Pseudowire13 \n encapsulation mpls\n neighbor 10.3.3.3 100\n\nIf the attachment circuits have not been bound to the VFI configured with the assigned VPN ID for each VLAN, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Assign globally unique VPN IDs for each customer bridge domain using VPLS for carrier Ethernet services between multiple sites, and configure the attachment circuits to the appropriate VFI.\n\nStep 1: Configure the pseudowire interfaces with the assigned VC-ID.\n\nSW1(config)# interface Pseudowire12 \nSW1(config-if-pseudowire)# neighbor 10.2.2.2 100\nSW1(config-if-pseudowire)# encapsulation mpls\nSW1(config-pseudowire-mpls)# exit\nSW1(config-if-pseudowire)# exit\nSW1(config)# interface Pseudowire13 \nSW1(config-if-pseudowire)# neighbor 10.3.3.3 100\nSW1(config-if-pseudowire)# encapsulation mpls\nSW1(config-pseudowire-mpls)# exit\nSW1(config-if-pseudowire)# exit\n\nStep 2: Configure the virtual forwarding instance for the pseudowires as shown in the example with the assigned VPN ID.\n\nSW1(config)# l2vpn vfi context CUST1_VPLS\nSW1(config-l2vpn-vfi)# vpn 100\nSW1(config-l2vpn-vfi)# member Pseudowire12\nSW1(config-l2vpn-vfi)# member Pseudowire13\nSW1(config-l2vpn-vfi)# exit\n\nStep 3: Configure the service instance on the attachment circuit as shown in the example below:\n\nSW1(config)# interface ethernet 2/2\nSW1(config-if)# service instance 1 ethernet\nSW1(config-if-srv)# encapsulation dot1q 100\nSW1(config-if-srv)# exit\nSW1(config-if)# exit\n\nStep 4: Configure the bridge domain. \n\nSW1(config)# bridge-domain 100\nSW1(config-bdomain)# member ethernet 2/2 service-instance 1\nSW1(config-bdomain)# member vfi CUST1_VPLS\nSW1(config-bdomain)# end\n\nNote: The service instance configured on the attachment circuit must map to the service instance configured on the bridge domain in order to be bound to the correct bridge domain with the VFI that defines the appropriate VPN ID.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221122r999775_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco PE switch providing Virtual Private LAN Services (VPLS) must be configured to have all attachment circuits defined to the virtual forwarding instance (VFI) with the globally unique VPN ID assigned for each customer VLAN.",
+  "tracking_issue": "TODO-V-221122",
+  "vuln_id": "V-221122"
+}

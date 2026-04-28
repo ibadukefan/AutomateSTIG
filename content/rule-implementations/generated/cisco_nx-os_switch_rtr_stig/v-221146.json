@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to determine if it is configured to limit the amount of source-active messages it accepts on a per-peer basis.\n\nip msdp peer x.1.28.2 connect-source Ethernet2/1 remote-as nn\n\u2026\n\u2026\n\u2026\nip msdp sa-limit x.1.28.2 nnn\n\nIf the switch is not configured to limit the source-active messages it accepts, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the switch to limit the amount of source-active messages it accepts from each peer.\n\nSW1(config)# ip msdp sa-limit x.1.28.2 nnn\nSW1(config)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221146r1137903_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to limit the amount of source-active messages it accepts on a per-peer basis.",
+  "tracking_issue": "TODO-V-221146",
+  "vuln_id": "V-221146"
+}
