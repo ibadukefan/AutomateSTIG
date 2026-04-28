@@ -1,17 +1,17 @@
 {
-  "authoritative_manifests": 46,
-  "authoritative_rules_tracked": 8077,
-  "automated_or_mapped_rules": 2780,
-  "coverage_percent_tracked_corpus": 34.4,
+  "authoritative_manifests": 52,
+  "authoritative_rules_tracked": 8547,
+  "automated_or_mapped_rules": 2866,
+  "coverage_percent_tracked_corpus": 33.5,
   "current_check_definitions": 3189,
   "generated_candidate_checks_with_fixture_evidence": 974,
   "notes": [
     "Regression ratchet prevents silent drops in tracked artifacts, authoritative manifests, authoritative rules, automated/mapped rules, or unsupported-rule ceilings.",
     "Generated candidate checks are fixture-backed scaffolding, not live production asset validation.",
-    "Latest pass expands browser, desktop application, and Linux coverage with Mozilla Firefox, Adobe Acrobat Pro/Reader, and SUSE Linux Enterprise Server 15 artifacts. Coverage percentage dropped because total tracked rules increased faster than fixture-backed mappings; absolute automated/mapped rules increased."
+    "Latest pass expands container, database, and virtualization coverage with Kubernetes, Crunchy Data PostgreSQL, Oracle Database 19c, and VMware vSphere artifacts. Coverage percentage dropped because total tracked rules increased faster than fixture-backed mappings; absolute automated/mapped rules increased."
   ],
-  "public_disa_artifacts_indexed": 46,
+  "public_disa_artifacts_indexed": 52,
   "status": "expanded_public_corpus_with_fixture_gated_candidate_mapping",
   "target": "unsupported_authoritative_rules == 0 across every authorized DISA STIG artifact",
-  "unsupported_authoritative_rules": 5297
+  "unsupported_authoritative_rules": 5681
 }

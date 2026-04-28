@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If the organization has a policy, consistently enforced, forbidding the creation of emergency or temporary accounts, this is not a finding.\n\nIf all user accounts are authenticated by the OS or an enterprise-level authentication/access mechanism and not by Oracle, this is not a finding.\n\nIf using the database to identify temporary accounts, and temporary accounts exist, there should be a temporary profile. If a profile for temporary accounts cannot be identified, this is a finding.\n\nTo check for a temporary profile, run the scripts below:\n\nTo obtain a list of profiles:\n\nSELECT PROFILE#, NAME FROM SYS.PROFNAME$;\n\nTo obtain a list of users assigned a given profile (TEMPORARY_USERS, in this example):\n\nSELECT USERNAME, PROFILE FROM SYS.DBA_USERS\nWHERE PROFILE = 'TEMPORARY_USERS'\nORDER BY USERNAME;",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Use a profile with a distinctive name (for example, TEMPORARY_USERS), so that temporary users can be easily identified. Whenever a temporary user account is created, assign it to this profile.\n\nTo enable resource limiting via profiles, use the SQL statement:\n\nALTER SYSTEM SET RESOURCE_LIMIT = TRUE;\n\nSet values in the profile as needed for temporary users; refer to below for further information. The values here are examples; set them to values appropriate to the situation:\n\nCREATE PROFILE TEMPORARY_USERS\nLIMIT\nSESSIONS_PER_USER ........... <limit>\nCPU_PER_SESSION ............. <limit>\nCPU_PER_CALL ................ <limit>\nCONNECT_TIME ................ <limit>\nLOGICAL_READS_PER_SESSION ... DEFAULT\nLOGICAL_READS_PER_CALL ...... <limit>\nPRIVATE_SGA ................. <limit>\nCOMPOSITE_LIMIT ............. <limit>\nFAILED_LOGIN_ATTEMPTS ....... 3\nPASSWORD_LIFE_TIME .......... 7\nPASSWORD_REUSE_TIME ......... 60\nPASSWORD_REUSE_MAX .......... 5\nPASSWORD_VERIFY_FUNCTION .... ORA12c_STIG_VERIFY_FUNCTION\nPASSWORD_LOCK_TIME .......... UNLIMITED\nPASSWORD_GRACE_TIME ......... 3;\n\nCREATE USER <username> IDENTIFIED BY <password> PROFILE TEMPORARY_USERS;\n\nResource Parameters:\n\nCOMPOSITE_LIMIT - Specify the total resource cost for a session, expressed in service units. Oracle Database calculates the total service units as a weighted sum of CPU_PER_SESSION, CONNECT_TIME,LOGICAL_READS_PER_SESSION, and PRIVATE_SGA.\n\nSESSIONS_PER_USER - Specify the number of concurrent sessions to limit the user to.\n\nCPU_PER_SESSION - Specify the CPU time limit for a session, expressed in hundredths of seconds.\n\nCPU_PER_CALL - Specify the CPU time limit for a call (a parse, execute, or fetch), expressed in hundredths of seconds.\n\nLOGICAL_READS_PER_SESSION - Specify the permitted number of data blocks read in a session, including blocks read from memory and disk.\n\nLOGICAL_READS_PER_CALL - Specify the permitted number of data blocks read for a call to process a SQL statement (a parse, execute, or fetch).\n\nPRIVATE_SGA - Specify the amount of private space a session can allocate in the shared pool of the system global area (SGA). Refer to size_clause for information on that clause.\n\nCONNECT_TIME - Specify the total elapsed time limit for a session, expressed in minutes.\n\nIDLE_TIME - Specify the permitted periods of continuous inactive time during a session, expressed in minutes. Long-running queries and other operations are not subject to this limit.\n\nCOMPOSITE_LIMIT - Refer to Oracle documentation for more details.\n\nPassword Parameters: Use the following clauses to set password parameters. Parameters that set lengths of time are interpreted in number of days. For testing purposes, specify minutes (n/1440) or even seconds (n/86400).\n\nFAILED_LOGIN_ATTEMPTS - Specify the number of failed attempts to log on to the user account before the account is locked. If omitting this clause, then the default is 10.\n\nPASSWORD_LIFE_TIME - Specify the number of days the same password can be used for authentication. If setting a value for PASSWORD_GRACE_TIME, then the password expires if it is not changed within the grace period, and further connections are rejected. If omitting this clause, then the default is 180 days.\n\nPASSWORD_REUSE_TIME and PASSWORD_REUSE_MAX - These two parameters must be set in conjunction with each other. PASSWORD_REUSE_TIME specifies the number of days before which a password cannot be reused. PASSWORD_REUSE_MAX specifies the number of password changes required before the current password can be reused. For these parameters to have any effect, specify an integer for both of them.\n\nIf specifying a value for both of these parameters, then the user cannot reuse a password until the password has been changed the number of times specified for PASSWORD_REUSE_MAX during the number of days specified for PASSWORD_REUSE_TIME.\n\nFor example, if specifying PASSWORD_REUSE_TIME to 30 and PASSWORD_REUSE_MAX to 10, then the user can reuse the password after 30 days if the password",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270546r1112478_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Oracle Database must provide a mechanism to automatically identify accounts designated as temporary or emergency accounts.",
+  "tracking_issue": "TODO-V-270546",
+  "vuln_id": "V-270546"
+}

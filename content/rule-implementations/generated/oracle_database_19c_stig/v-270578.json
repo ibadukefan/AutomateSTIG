@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the permissions granted to users by the operating system/file system on the database files, database log files, and database backup files.\n\nOn Unix Systems:\n\n  ls -ld [pathname]\n\nSubstitute [pathname] with the directory path where the database files, logs, and database backup files are located.\n(examples: /*/app/oracle/oradata/db_name, /*/app/oracle/oradata/db_name/audit, and /*/app/oracle/fast_recovery_area/db_name) \n\nIf permissions are granted for world access, this is a finding.\n\nIf any user/role who is not an authorized system administrator with a need to know or database administrator with a need to know, or a system account for running DBMS processes, is permitted to read/view any of these files, this is a finding.\n\nOn Windows Systems (from Windows Explorer):\n\nBrowse to the directory specified (example: %ORACLE_BASE%\\oradata and %ORACLE_BASE%\\fast_recovery_area). Select and right-click on the directory >> Properties >> Security tab. On Windows hosts, records are also written to the Windows application event log. The location of the application event log is listed under Properties for the log under the Windows console. The default location is C:\\WINDOWS\\system32\\config\\EventLogs\\AppEvent.Evt.\n\nSelect and right-click on the directory >> Properties >> Security tab.\n\nIf permissions are granted to everyone, this is a finding.\n\nIf any user/role who is not an authorized system administrator with a need to know or database administrator with a need to know, or a system account for running DBMS processes permitted to read/view any of these files, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the permissions of the database files, database log files, and database backup files so that only relevant system accounts and authorized system administrators and database administrators with a need to know are permitted to read/view these files.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270578r1137658_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Access to Oracle Database files must be limited to relevant processes and to authorized, administrative users.",
+  "tracking_issue": "TODO-V-270578",
+  "vuln_id": "V-270578"
+}

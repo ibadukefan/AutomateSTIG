@@ -1,0 +1,1470 @@
+{
+  "generated_from": "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip",
+  "rules": [
+    {
+      "check_id": "V-270495",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270495r1167748_rule",
+      "severity": "medium",
+      "title": "Oracle Database must limit the number of concurrent sessions for each system account to an organization-defined number of sessions.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270495"
+    },
+    {
+      "check_id": "V-270496",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270496r1167727_rule",
+      "severity": "medium",
+      "title": "Oracle Database must protect against or limit the effects of organization-defined types of denial-of-service (DoS) attacks.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270496"
+    },
+    {
+      "check_id": "V-270497",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270497r1167730_rule",
+      "severity": "medium",
+      "title": "Oracle Database must automatically terminate a user session after organization-defined conditions or trigger events requiring session disconnect.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270497"
+    },
+    {
+      "check_id": "V-270498",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270498r1167732_rule",
+      "severity": "medium",
+      "title": "Oracle Database must associate organization-defined types of security labels having organization-defined security label values with information in storage.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270498"
+    },
+    {
+      "check_id": "V-270499",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270499r1064775_rule",
+      "severity": "high",
+      "title": "Oracle Database must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270499"
+    },
+    {
+      "check_id": "V-270500",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270500r1167734_rule",
+      "severity": "high",
+      "title": "Oracle Database must enforce approved authorizations for logical access to the system in accordance with applicable policy.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270500"
+    },
+    {
+      "check_id": "V-270501",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270501r1167736_rule",
+      "severity": "low",
+      "title": "Oracle Database must protect against an individual who uses a shared account falsely denying having performed a particular action.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270501"
+    },
+    {
+      "check_id": "V-270502",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270502r1167738_rule",
+      "severity": "medium",
+      "title": "Oracle Database must provide audit record generation capability for organization-defined auditable events within the database.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270502"
+    },
+    {
+      "check_id": "V-270503",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270503r1064787_rule",
+      "severity": "medium",
+      "title": "Oracle Database must allow designated organizational personnel to select which auditable events are to be audited by the database.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270503"
+    },
+    {
+      "check_id": "V-270504",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270504r1167741_rule",
+      "severity": "medium",
+      "title": "Oracle Database must generate audit records for the DOD-selected list of auditable events, when successfully accessed, added, modified, or deleted, to the extent such information is available.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270504"
+    },
+    {
+      "check_id": "V-270505",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270505r1167742_rule",
+      "severity": "medium",
+      "title": "Oracle Database must include organization-defined additional, more detailed information in the audit records for audit events identified by type, location, or subject.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270505"
+    },
+    {
+      "check_id": "V-270506",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270506r1167744_rule",
+      "severity": "medium",
+      "title": "Oracle Database must allocate audit record storage capacity in accordance with organization-defined audit record storage requirements.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270506"
+    },
+    {
+      "check_id": "V-270507",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270507r1065200_rule",
+      "severity": "medium",
+      "title": "Oracle Database must off-load audit data to a separate log management facility; this must be continuous and in near-real-time for systems with a network connection to the storage facility, and weekly or more often for stand-alone systems.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270507"
+    },
+    {
+      "check_id": "V-270508",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270508r1065201_rule",
+      "severity": "medium",
+      "title": "The Oracle Database, or the logging or alerting mechanism the application uses, must provide a warning when allocated audit record storage volume record storage volume reaches 75 percent of maximum audit record storage capacity.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270508"
+    },
+    {
+      "check_id": "V-270509",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270509r1065202_rule",
+      "severity": "medium",
+      "title": "Oracle Database must provide an immediate real-time alert to appropriate support staff of all audit log failures.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270509"
+    },
+    {
+      "check_id": "V-270510",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270510r1068294_rule",
+      "severity": "medium",
+      "title": "The audit information produced by the Oracle Database must be protected from unauthorized access, modification, or deletion.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270510"
+    },
+    {
+      "check_id": "V-270511",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270511r1065262_rule",
+      "severity": "medium",
+      "title": "The system must protect audit tools from unauthorized access, modification, or deletion.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270511"
+    },
+    {
+      "check_id": "V-270512",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270512r1065305_rule",
+      "severity": "medium",
+      "title": "Oracle Database must support enforcement of logical access restrictions associated with changes to the database management system (DBMS) configuration and to the database itself.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270512"
+    },
+    {
+      "check_id": "V-270513",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270513r1138543_rule",
+      "severity": "high",
+      "title": "Oracle Database products must be a version supported by the vendor.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270513"
+    },
+    {
+      "check_id": "V-270514",
+      "check_pack": "oracle_19c",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-270514r1064820_rule",
+      "severity": "medium",
+      "title": "Database software, applications, and configuration files must be monitored to discover unauthorized changes.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/oracle_19c.json",
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270514"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270515r1065210_rule",
+      "severity": "medium",
+      "title": "The OS must limit privileges to change the database management system (DBMS) software resident within software libraries (including privileged programs).",
+      "tracking_issue": "TODO-V-270515",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270515"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270516r1064826_rule",
+      "severity": "high",
+      "title": "The Oracle Database software installation account must be restricted to authorized users.",
+      "tracking_issue": "TODO-V-270516",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270516"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270517r1064829_rule",
+      "severity": "medium",
+      "title": "Database software directories, including database management system (DBMS) configuration files, must be stored in dedicated directories, or DASD pools, separate from the host OS and other applications.",
+      "tracking_issue": "TODO-V-270517",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270517"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270518r1064832_rule",
+      "severity": "medium",
+      "title": "Database objects must be owned by accounts authorized for ownership.",
+      "tracking_issue": "TODO-V-270518",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270518"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270519r1112463_rule",
+      "severity": "medium",
+      "title": "The role(s)/group(s) used to modify database structure (including but not necessarily limited to tables, indexes, storage, etc.) and logic modules (stored procedures, functions, triggers, links to software external to the DBMS, etc.) must be restricted to authorized users.",
+      "tracking_issue": "TODO-V-270519",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270519"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270520r1115964_rule",
+      "severity": "medium",
+      "title": "Oracle Database must be configured in accordance with the security configuration settings based on DOD security configuration and implementation guidance, including STIGs, NSA configuration guides, CTOs, DTMs, and IAVMs.",
+      "tracking_issue": "TODO-V-270520",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270520"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270521r1112467_rule",
+      "severity": "medium",
+      "title": "Oracle instance names must not contain Oracle version numbers.",
+      "tracking_issue": "TODO-V-270521",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270521"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270522r1115956_rule",
+      "severity": "medium",
+      "title": "Fixed user and PUBLIC Database links must be authorized for use.",
+      "tracking_issue": "TODO-V-270522",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270522"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270523r1167746_rule",
+      "severity": "medium",
+      "title": "The Oracle WITH GRANT OPTION privilege must be limited when granted to nondatabase administrator (DBA) or nonapplication administrator user accounts.",
+      "tracking_issue": "TODO-V-270523",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270523"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270524r1112471_rule",
+      "severity": "medium",
+      "title": "The Oracle REMOTE_OS_ROLES parameter must be set to FALSE.",
+      "tracking_issue": "TODO-V-270524",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270524"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270525r1112473_rule",
+      "severity": "medium",
+      "title": "The Oracle SQL92_SECURITY parameter must be set to TRUE.",
+      "tracking_issue": "TODO-V-270525",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270525"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270526r1115966_rule",
+      "severity": "medium",
+      "title": "The Oracle password file ownership and permissions should be limited and the REMOTE_LOGIN_PASSWORDFILE parameter must be set to EXCLUSIVE or NONE.",
+      "tracking_issue": "TODO-V-270526",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270526"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270527r1065266_rule",
+      "severity": "medium",
+      "title": "System privileges granted using the WITH ADMIN OPTION must not be granted to unauthorized user accounts.",
+      "tracking_issue": "TODO-V-270527",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270527"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270528r1064862_rule",
+      "severity": "medium",
+      "title": "System Privileges must not be granted to PUBLIC.",
+      "tracking_issue": "TODO-V-270528",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270528"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270529r1065268_rule",
+      "severity": "medium",
+      "title": "Oracle roles granted using the WITH ADMIN OPTION must not be granted to unauthorized accounts.",
+      "tracking_issue": "TODO-V-270529",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270529"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270530r1065320_rule",
+      "severity": "medium",
+      "title": "Object permissions granted to PUBLIC must be restricted.",
+      "tracking_issue": "TODO-V-270530",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270530"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270531r1065272_rule",
+      "severity": "high",
+      "title": "The Oracle Listener must be configured to require administration authentication.",
+      "tracking_issue": "TODO-V-270531",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270531"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270532r1064874_rule",
+      "severity": "medium",
+      "title": "Application role permissions must not be assigned to the Oracle PUBLIC role.",
+      "tracking_issue": "TODO-V-270532",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270532"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270533r1065215_rule",
+      "severity": "medium",
+      "title": "Oracle application administration roles must be disabled if not required and authorized.",
+      "tracking_issue": "TODO-V-270533",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270533"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270534r1065274_rule",
+      "severity": "medium",
+      "title": "The directories assigned to the LOG_ARCHIVE_DEST* parameters must be protected from unauthorized access.",
+      "tracking_issue": "TODO-V-270534",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270534"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270535r1065307_rule",
+      "severity": "medium",
+      "title": "The Oracle _TRACE_FILES_PUBLIC parameter if present must be set to FALSE.",
+      "tracking_issue": "TODO-V-270535",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270535"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270536r1064886_rule",
+      "severity": "medium",
+      "title": "Oracle Database production application and data directories must be protected from developers on shared production/development database management system (DBMS) host systems.",
+      "tracking_issue": "TODO-V-270536",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270536"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270537r1064889_rule",
+      "severity": "medium",
+      "title": "Use of the Oracle Database installation account must be logged.",
+      "tracking_issue": "TODO-V-270537",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270537"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270538r1064892_rule",
+      "severity": "medium",
+      "title": "The Oracle Database data files, transaction logs and audit files must be stored in dedicated directories or disk partitions separate from software or other application files.",
+      "tracking_issue": "TODO-V-270538",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270538"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270539r1064895_rule",
+      "severity": "medium",
+      "title": "Network access to Oracle Database must be restricted to authorized personnel.",
+      "tracking_issue": "TODO-V-270539",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270539"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270540r1064898_rule",
+      "severity": "medium",
+      "title": "Changes to configuration options must be audited.",
+      "tracking_issue": "TODO-V-270540",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270540"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270541r1065276_rule",
+      "severity": "medium",
+      "title": "The /diag subdirectory under the directory assigned to the DIAGNOSTIC_DEST parameter must be protected from unauthorized access.",
+      "tracking_issue": "TODO-V-270541",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270541"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270542r1064904_rule",
+      "severity": "medium",
+      "title": "Remote administration must be disabled for the Oracle connection manager.",
+      "tracking_issue": "TODO-V-270542",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270542"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270543r1064907_rule",
+      "severity": "medium",
+      "title": "Network client connections must be restricted to supported versions.",
+      "tracking_issue": "TODO-V-270543",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270543"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270544r1065278_rule",
+      "severity": "high",
+      "title": "Database administrator (DBA) OS accounts must be granted only those host system privileges necessary for the administration of the Oracle Database.",
+      "tracking_issue": "TODO-V-270544",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270544"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270545r1064913_rule",
+      "severity": "high",
+      "title": "Oracle Database default accounts must be assigned custom passwords.",
+      "tracking_issue": "TODO-V-270545",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270545"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270546r1112478_rule",
+      "severity": "medium",
+      "title": "Oracle Database must provide a mechanism to automatically identify accounts designated as temporary or emergency accounts.",
+      "tracking_issue": "TODO-V-270546",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270546"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270547r1064919_rule",
+      "severity": "medium",
+      "title": "Oracle Database must provide a mechanism to automatically remove or disable temporary user accounts after 72 hours.",
+      "tracking_issue": "TODO-V-270547",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270547"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270548r1064922_rule",
+      "severity": "medium",
+      "title": "Oracle Database must be protected from unauthorized access by developers on shared production/development host systems.",
+      "tracking_issue": "TODO-V-270548",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270548"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270549r1112480_rule",
+      "severity": "medium",
+      "title": "Oracle Database must verify account lockouts persist until reset by an administrator.",
+      "tracking_issue": "TODO-V-270549",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270549"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270550r1112482_rule",
+      "severity": "medium",
+      "title": "Oracle Database must set the maximum number of consecutive invalid logon attempts to three.",
+      "tracking_issue": "TODO-V-270550",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270550"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270551r1112483_rule",
+      "severity": "medium",
+      "title": "Oracle Database must disable user accounts after 35 days of inactivity.",
+      "tracking_issue": "TODO-V-270551",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270551"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270552r1064934_rule",
+      "severity": "medium",
+      "title": "Oracle Database default demonstration and sample databases, database objects, and applications must be removed.",
+      "tracking_issue": "TODO-V-270552",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270552"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270553r1064937_rule",
+      "severity": "medium",
+      "title": "Unused database components, database management system (DBMS) software, and database objects must be removed.",
+      "tracking_issue": "TODO-V-270553",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270553"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270554r1065221_rule",
+      "severity": "medium",
+      "title": "Unused database components that are integrated in the database management system (DBMS) and cannot be uninstalled must be disabled.",
+      "tracking_issue": "TODO-V-270554",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270554"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270555r1115550_rule",
+      "severity": "medium",
+      "title": "OS accounts used to run external procedures called by Oracle Database must have limited privileges.",
+      "tracking_issue": "TODO-V-270555",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270555"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270556r1064946_rule",
+      "severity": "medium",
+      "title": "Use of external executables must be authorized.",
+      "tracking_issue": "TODO-V-270556",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270556"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270557r1065281_rule",
+      "severity": "medium",
+      "title": "Access to external executables must be disabled or restricted.",
+      "tracking_issue": "TODO-V-270557",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270557"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270558r1065283_rule",
+      "severity": "medium",
+      "title": "Oracle Database must be configured to prohibit or restrict the use of organization-defined functions, ports, protocols, and/or services, as defined in the Ports, Protocols, and Services Management Category Assurance List (PPSM CAL) and vulnerability assessments.",
+      "tracking_issue": "TODO-V-270558",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270558"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270559r1068298_rule",
+      "severity": "medium",
+      "title": "Oracle Database must ensure users are authenticated with an individual authenticator prior to using a shared authenticator.",
+      "tracking_issue": "TODO-V-270559",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270559"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270560r1065286_rule",
+      "severity": "medium",
+      "title": "Oracle Database must uniquely identify and authenticate organizational users (or processes acting on behalf of organizational users).",
+      "tracking_issue": "TODO-V-270560",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270560"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270561r1112485_rule",
+      "severity": "medium",
+      "title": "Oracle Database must enforce the DOD standards for password complexity.",
+      "tracking_issue": "TODO-V-270561",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270561"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270562r1064964_rule",
+      "severity": "medium",
+      "title": "Procedures for establishing temporary passwords that meet DOD password requirements for new accounts must be defined, documented, and implemented.",
+      "tracking_issue": "TODO-V-270562",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270562"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270563r1064967_rule",
+      "severity": "medium",
+      "title": "Oracle Database must enforce password maximum lifetime restrictions.",
+      "tracking_issue": "TODO-V-270563",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270563"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270564r1136919_rule",
+      "severity": "high",
+      "title": "Oracle Database must, for password-based authentication, store passwords using an approved salted key derivation function, preferably using a keyed hash.",
+      "tracking_issue": "TODO-V-270564",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270564"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270565r1136921_rule",
+      "severity": "medium",
+      "title": "If passwords are used for authentication, the Oracle Database must transmit only encrypted representations of passwords.",
+      "tracking_issue": "TODO-V-270565",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270565"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270566r1136923_rule",
+      "severity": "high",
+      "title": "Oracle Database, when using public key infrastructure (PKI)-based authentication, must enforce authorized access to the corresponding private key.",
+      "tracking_issue": "TODO-V-270566",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270566"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270567r1064979_rule",
+      "severity": "medium",
+      "title": "Oracle Database must map the authenticated identity to the user account using public key infrastructure (PKI)-based authentication.",
+      "tracking_issue": "TODO-V-270567",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270567"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270568r1136925_rule",
+      "severity": "high",
+      "title": "When using command-line tools such as Oracle SQL*Plus, which can accept a plain-text password, users must use an alternative logon method that does not expose the password.",
+      "tracking_issue": "TODO-V-270568",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270568"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270569r1065205_rule",
+      "severity": "high",
+      "title": "Oracle Database must use NIST-validated FIPS 140-2/140-3 compliant cryptography for authentication mechanisms.",
+      "tracking_issue": "TODO-V-270569",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270569"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270570r1065294_rule",
+      "severity": "medium",
+      "title": "Oracle Database must uniquely identify and authenticate nonorganizational users (or processes acting on behalf of nonorganizational users).",
+      "tracking_issue": "TODO-V-270570",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270570"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270571r1137664_rule",
+      "severity": "high",
+      "title": "Oracle Database must implement NIST FIPS 140-2/140-3 validated cryptographic modules to protect unclassified information requiring confidentiality and cryptographic protection, in accordance with the data owner's requirements.",
+      "tracking_issue": "TODO-V-270571",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270571"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270572r1137655_rule",
+      "severity": "medium",
+      "title": "Oracle Database must separate user functionality (including user interface services) from database management functionality.",
+      "tracking_issue": "TODO-V-270572",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270572"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270573r1064997_rule",
+      "severity": "medium",
+      "title": "Oracle Database must preserve any organization-defined system state information in the event of a system failure.",
+      "tracking_issue": "TODO-V-270573",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270573"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270574r1192921_rule",
+      "severity": "high",
+      "title": "Oracle Database must take steps to protect data at rest and ensure confidentiality and integrity of application data.",
+      "tracking_issue": "TODO-V-270574",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270574"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270575r1065003_rule",
+      "severity": "medium",
+      "title": "Oracle Database must implement cryptographic mechanisms to prevent unauthorized modification of organization-defined information at rest (to include, at a minimum, PII and classified information) on organization-defined information system components.",
+      "tracking_issue": "TODO-V-270575",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270575"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270576r1065006_rule",
+      "severity": "medium",
+      "title": "Oracle Database must isolate security functions from nonsecurity functions by means of separate security domains.",
+      "tracking_issue": "TODO-V-270576",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270576"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270577r1137656_rule",
+      "severity": "medium",
+      "title": "Oracle Database contents must be protected from unauthorized and unintended information transfer by enforcement of a data-transfer policy.",
+      "tracking_issue": "TODO-V-270577",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270577"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270578r1137658_rule",
+      "severity": "medium",
+      "title": "Access to Oracle Database files must be limited to relevant processes and to authorized, administrative users.",
+      "tracking_issue": "TODO-V-270578",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270578"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270579r1065015_rule",
+      "severity": "high",
+      "title": "Oracle Database must employ cryptographic mechanisms preventing the unauthorized disclosure of information during transmission unless the transmitted data is otherwise protected by alternative physical measures.",
+      "tracking_issue": "TODO-V-270579",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270579"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270580r1068300_rule",
+      "severity": "medium",
+      "title": "Oracle Database must check the validity of data inputs.",
+      "tracking_issue": "TODO-V-270580",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270580"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270581r1065225_rule",
+      "severity": "medium",
+      "title": "The database management system (DBMS) and associated applications must reserve the use of dynamic code execution for situations that require it.",
+      "tracking_issue": "TODO-V-270581",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270581"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270582r1065226_rule",
+      "severity": "medium",
+      "title": "The database management system (DBMS) and associated applications, when making use of dynamic code execution, must take steps against invalid values that may be used in a SQL injection attack, therefore resulting in steps to prevent a SQL injection attack.",
+      "tracking_issue": "TODO-V-270582",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270582"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270583r1065027_rule",
+      "severity": "medium",
+      "title": "Oracle Database must only generate error messages that provide information necessary for corrective actions without revealing organization-defined sensitive or potentially harmful information in error logs and administrative messages that could be exploited.",
+      "tracking_issue": "TODO-V-270583",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270583"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270584r1065296_rule",
+      "severity": "medium",
+      "title": "Oracle Database must restrict error messages so only authorized personnel may view them.",
+      "tracking_issue": "TODO-V-270584",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270584"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270585r1137667_rule",
+      "severity": "high",
+      "title": "Oracle Database software must be evaluated and patched against newly found vulnerabilities.",
+      "tracking_issue": "TODO-V-270585",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270585"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270587r1112489_rule",
+      "severity": "medium",
+      "title": "Oracle Database must, for password-based authentication, verify that when users create or update passwords, the passwords are not found on the list of commonly used, expected, or compromised passwords in IA-5 (1) (a).",
+      "tracking_issue": "TODO-V-270587",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270587"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270588r1065042_rule",
+      "severity": "medium",
+      "title": "Oracle Database must, for password-based authentication, require immediate selection of a new password upon account recovery.",
+      "tracking_issue": "TODO-V-270588",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270588"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-270589r1136927_rule",
+      "severity": "medium",
+      "title": "Oracle Database must include only approved trust anchors in trust stores or certificate stores managed by the organization.",
+      "tracking_issue": "TODO-V-270589",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-270589"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-275999r1115962_rule",
+      "severity": "medium",
+      "title": "A minimum of three Oracle Control Files must be created and each stored on a separate physical and logical device.",
+      "tracking_issue": "TODO-V-275999",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-275999"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-276000r1112495_rule",
+      "severity": "medium",
+      "title": "A minimum of three Oracle redo log groups/files must be defined and configured to be stored on separate, archived physical disks or archived directories on a RAID device. In addition, each Oracle redo log group must have a minimum of two Oracle redo log members (files).",
+      "tracking_issue": "TODO-V-276000",
+      "validated_by": [
+        "content/disa-corpus/artifacts/1492e4dcfc2c58290918e50aef55ea63c8fb6dd277812d6f3b159ce388cff7ab/U_Oracle_Database_19c_V1R5_STIG.zip"
+      ],
+      "vuln_id": "V-276000"
+    }
+  ],
+  "source": "DISA XCCDF benchmark",
+  "status": "experimental",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "total_rules": 96,
+  "version": "U_Oracle_Database_19c_V1R5_STIG.zip"
+}

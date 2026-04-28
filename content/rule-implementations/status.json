@@ -1,15 +1,15 @@
 {
-  "authoritative_rules": 8077,
-  "automated_authoritative_rules_after_candidate_promotion": 2780,
+  "authoritative_rules": 8547,
+  "automated_authoritative_rules_after_candidate_promotion": 2866,
   "generated_candidate_checks_with_fixture_evidence": 974,
-  "implementation_specs_planned": 5297,
-  "implementation_specs_total": 7954,
+  "implementation_specs_planned": 5681,
+  "implementation_specs_total": 8338,
   "implementation_specs_with_candidate_checks": 974,
   "notes": [
     "Specs are generated for unsupported authoritative rules and retain prior implementation/candidate spec history for auditability.",
-    "Latest corpus expansion adds Mozilla Firefox, Adobe Acrobat Pro/Reader, and SUSE Linux Enterprise Server 15 rule specs; generated candidates remain fixture-backed scaffolding, not live production validation."
+    "Latest corpus expansion adds Kubernetes, Crunchy Data PostgreSQL, Oracle Database 19c, and VMware vSphere rule specs; generated candidates remain fixture-backed scaffolding, not live production validation."
   ],
   "target": "unsupported_authoritative_rules == 0",
-  "unsupported_authoritative_rules": 5297,
-  "unsupported_with_specs": 5297
+  "unsupported_authoritative_rules": 5681,
+  "unsupported_with_specs": 5681
 }

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the system documentation to determine if the use of the external procedure agent is authorized.\n\nReview the ORACLE_HOME/bin directory or search the ORACLE_BASE path for the executable extproc (Unix) or extproc.exe (Windows).\n\nIf external procedure agent is not authorized for use in the system documentation and the executable file does not exist or is restricted, this is not a finding.\n\nIf external procedure agent is not authorized for use in the system documentation and the executable file exists and is not restricted, this is a finding.\n\nIf use of the external procedure agent is authorized, ensure extproc is restricted to execution of authorized applications.\n\nExternal jobs are run using the account \"nobody\" by default.\n\nReview the contents of the file ORACLE_HOME/rdbms/admin/externaljob.ora for the lines run_user= and run_group=.\n\nIf the user assigned to these parameters is not \"nobody\", this is a finding.\n\nThe external procedure agent (extproc executable) is available directly from the database and does not require definition in the listener.ora file for use.\n\nReview the contents of the file ORACLE_HOME/hs/admin/extproc.ora.\n\nIf the file does not exist, this is a finding.\n\nIf the following entry does not appear in the file, this is a finding:\n\nEXTPROC_DLLS=ONLY:[dll full file name1]:[dll full file name2]:..\n\n[dll full file name] represents a full path and file name.\n\nThis list of file names is separated by \":\".\n\nNote: If \"ONLY\" is specified, then the list is restricted to allow execution of only the DLLs specified in the list and is not a finding. If \"ANY\" is specified, then there are no restrictions for execution except what is controlled by operating system permissions and is a finding. If no specification is made, any files located in the %ORACLE_HOME%\\bin directory on Windows systems or $ORACLE_HOME/lib directory on Unix systems can be executed (the default) and is a finding.\n\nEnsure that EXTPROC is not accessible from the listener.\n\nReview the listener.ora file. If any entries reference \"extproc\", this is a finding.\n\nDetermine if the external procedure agent is in use per Oracle 10.x conventions.\n\nReview the listener.ora file.\n\nIf any entries reference \"extproc\", then the agent is in use.\n\nIf external procedure agent is not authorized for use in the system documentation and references to \"extproc\" exist, this is a finding.\n\nSample listener.ora entries with extproc included:\n\nLISTENER =\n(DESCRIPTION =\n(ADDRESS = (PROTOCOL = TCP)(HOST = 127.0.0.1)(PORT = 1521))\n)\nEXTLSNR =\n(DESCRIPTION =\n(ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC))\n)\nSID_LIST_LISTENER =\n(SID_LIST =\n(SID_DESC =\n(GLOBAL_DBNAME = ORCL)\n(ORACLE_HOME = /home/oracle/app/oracle/product/19.0/db_1)\n(SID_NAME = ORCL)\n)\n)\nSID_LIST_EXTLSNR =\n(SID_LIST =\n(SID_DESC =\n(PROGRAM = extproc)\n(SID_NAME = PLSExtProc)\n(ORACLE_HOME = /home/oracle/app/oracle/product/19.0/db_1)\n(ENVS=\"EXTPROC_DLLS=ONLY:/home/app1/app1lib.so:/home/app2/app2lib.so,\nLD_LIBRARY_PATH=/private/app2/lib:/private/app1,\nMYPATH=/usr/fso:/usr/local/packages\")\n)\n)\n\nSample tnsnames.ora entries with extproc included:\n\nORCL =\n(DESCRIPTION =\n(ADDRESS_LIST =\n(ADDRESS = (PROTOCOL = TCP)(HOST = 127.0.0.1)(PORT = 1521))\n)\n(CONNECT_DATA =\n(SERVICE_NAME = ORCL)\n)\n)\nEXTPROC_CONNECTION_DATA =\n(DESCRIPTION =\n(ADDRESS_LIST =\n(ADDRESS = (PROTOCOL = IPC)(KEY = extproc))\n)\n(CONNECT_DATA =\n(SERVER = DEDICATED)\n(SERVICE_NAME = PLSExtProc)\n)\n)\n\nIf EXTPROC is in use, confirm that a listener is dedicated to serving the external procedure agent (as shown above).\n\nView the protocols configured for the listener.\n\nFor the listener to be dedicated, the only entries will be to specify extproc.\n\nIf there is not a dedicated listener in use for the external procedure agent, this is a finding.\n\nIf the PROTOCOL= specified is other than IPC, this is a finding.\n\nVerify and ensure extproc is restricted executing authorized external applications only and extproc is restricted to execution of authorized applications.\n\nReview the listener.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "If use of the external procedure agent is required, then authorize and document the requirement in the system documentation.\n\nIf the external procedure agent must be accessible to the Oracle listener, then specify this and authorize it in the system documentation.\n\nIf use of the Oracle External Procedure agent is not required:\n\n1. Stop the Oracle Listener process.\n2. Remove all references to extproc in the listener.ora and tnsnames.ora files.\n3. Alter the permissions on the executable files:\nUnix: Remove read/write/execute permissions from owner, group, and world.\nWindows: Remove Groups/Users from the executable (except groups SYSTEM and ADMINISTRATORS) and allow READ [only] for SYSTEM and ADMINISTRATORS groups.\n\nIf required:\n\n1. Restrict extproc execution to only authorized applications.\n2. Specify EXTPROC_DLLS=ONLY: [list of authorized DLLS] in the extproc.ora and the listener.ora files.\n3. Create a separate, dedicated listener for use by the external procedure agent.\n\nRefer to the Oracle Net Services Administrators Guides, External Procedures section for detailed configuration information.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270557r1065281_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Access to external executables must be disabled or restricted.",
+  "tracking_issue": "TODO-V-270557",
+  "vuln_id": "V-270557"
+}

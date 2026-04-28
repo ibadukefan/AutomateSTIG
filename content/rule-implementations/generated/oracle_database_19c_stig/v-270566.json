@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review DBMS configuration to determine whether appropriate access controls exist to protect the DBMS's private key. If strong access controls do not exist to enforce authorized access to the private key, this is a finding.\n\nThe database supports authentication by using digital certificates over TLS in addition to the native encryption and data integrity capabilities of these protocols.\n\nAn Oracle Wallet is a container that is used to store authentication and signing credentials, including private keys, certificates, and trusted certificates needed by TLS. In an Oracle environment, every entity that communicates over TLS must have a wallet containing an X.509 version 3 certificate, private key, and list of trusted certificates, with the exception of Diffie-Hellman.\n\nVerify the $ORACLE_HOME/network/admin/sqlnet.ora contains entries similar to the following to confirm TLS is installed: \n\nWALLET_LOCATION = (SOURCE=\n(METHOD = FILE) \n(METHOD_DATA = \nDIRECTORY=/wallet)\n\nSSL_CIPHER_SUITES=(SSL_cipher_suiteExample) \nSSL_VERSION = 1.1 or 1.2\nSSL_CLIENT_AUTHENTICATION=TRUE\n\nIf the sqlnet.ora file does not contain such entries, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Implement strong access and authentication controls to protect the database's private key.\n\nConfigure the database to support TLS protocols and the Oracle Wallet to store authentication and signing credentials, including private keys. \n\nMore information can be found at https://docs.oracle.com/en/database/oracle/oracle-database/19/dbseg/configuring-secure-sockets-layer-authentication.html#GUID-EF8DEC69-C8BE-462B-ABDD-E621914E617E.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270566r1136923_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Oracle Database, when using public key infrastructure (PKI)-based authentication, must enforce authorized access to the corresponding private key.",
+  "tracking_issue": "TODO-V-270566",
+  "vuln_id": "V-270566"
+}

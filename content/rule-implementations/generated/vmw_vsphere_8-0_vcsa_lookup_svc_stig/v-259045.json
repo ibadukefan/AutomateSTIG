@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "At the command line, run the following command:\n\n# grep RECYCLE_FACADES /usr/lib/vmware-lookupsvc/conf/catalina.properties\n\nExample result:\n\norg.apache.catalina.connector.RECYCLE_FACADES=true\n\nIf \"org.apache.catalina.connector.RECYCLE_FACADES\" is not set to \"true\", this is a finding.\n\nIf the \"org.apache.catalina.connector.RECYCLE_FACADES\" setting does not exist, this is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/catalina.properties\n\nUpdate or remove the following line:\n\norg.apache.catalina.connector.RECYCLE_FACADES=true\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-259045r961116_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/vmw_vsphere_8_0_vcsa_lookup_svc_stig/u_vmw_vsphere_8_0_y25m07_stig.json",
+  "source_version": "U_VMW_vSphere_8-0_Y25M07_STIG.zip",
+  "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
+  "title": "The vCenter Lookup service must be configured to limit data exposure between applications.",
+  "tracking_issue": "TODO-V-259045",
+  "vuln_id": "V-259045"
+}

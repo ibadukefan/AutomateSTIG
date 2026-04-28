@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Determine all situations where a user must reauthenticate. Check if the mechanisms that handle such situations use the following SQL:\n\nTo make a single user reauthenticate, the following must be present:\n\nSELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE user='<username>'\n\nTo make all users reauthenticate, run the following:\n\nSELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE user LIKE '%'\n\nIf the provided SQL does not force reauthentication, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Modify and/or configure PostgreSQL and related applications and tools so that users are always required to reauthenticate when changing role or escalating privileges.\n\nTo make a single user reauthenticate, the following must be present:\n\nSELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE user='<username>'\n\nTo make all users reauthenticate, the following must be present:\n\nSELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE user LIKE '%'",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233601r998206_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must require users to reauthenticate when organization-defined circumstances or situations require reauthentication.",
+  "tracking_issue": "TODO-V-233601",
+  "vuln_id": "V-233601"
+}

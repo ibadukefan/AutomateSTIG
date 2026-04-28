@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Functions in PostgreSQL can be created with the SECURITY DEFINER option. When SECURITY DEFINER functions are executed by a user, said function is run with the privileges of the user who created it.\n\nTo list all functions that have SECURITY DEFINER, as, the DBA (shown here as \"postgres\"), run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"SELECT nspname, proname, proargtypes, prosecdef, rolname, proconfig FROM pg_proc p JOIN pg_namespace n ON p.pronamespace = n.oid JOIN pg_authid a ON a.oid = p.proowner WHERE prosecdef OR NOT proconfig IS NULL\"\n\nIn the query results, a prosecdef value of \"t\" on a row indicates that that function uses privilege elevation.\n\nIf elevation of PostgreSQL privileges is utilized but not documented, this is a finding.\n\nIf elevation of PostgreSQL privileges is documented, but not implemented as described in the documentation, this is a finding.\n\nIf the privilege-elevation logic can be invoked in ways other than intended, or in contexts other than intended, or by subjects/principals other than intended, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Determine where, when, how, and by what principals/subjects elevated privilege is needed.\n\nTo change a SECURITY DEFINER function to SECURITY INVOKER, as the database administrator (shown here as \"postgres\"), run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"ALTER FUNCTION <function_name> SECURITY INVOKER\"",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233543r961359_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "Execution of software modules (to include functions and trigger procedures) with elevated privileges must be restricted to necessary cases only.",
+  "tracking_issue": "TODO-V-233543",
+  "vuln_id": "V-233543"
+}

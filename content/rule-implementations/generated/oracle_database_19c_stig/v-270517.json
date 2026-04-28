@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the DBMS software library directory and note other root directories located on the same disk directory or any subdirectories. If any non-DBMS software directories exist on the disk directory, examine or investigate their use.\n\nIf any of the directories are used by other applications, including third-party applications that use the DBMS, this is a finding.\n\nOnly applications that are required for the functioning and administration, not use, of the DBMS should be located on the same disk directory as the DBMS software libraries.\n\nFor databases located on mainframes, confirm that the database and its configuration files are isolated in their own DASD pools.\n\nIf database software and database configuration files share DASD with other applications, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install all applications on directories, or pools, separate from the DBMS software library directory. Relocate any directories or reinstall other application software that currently shares the DBMS software library directory to separate directories.\n\nFor mainframe-based databases, locate database software and configuration files in separate DASD pools from other mainframe applications.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270517r1064829_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Database software directories, including database management system (DBMS) configuration files, must be stored in dedicated directories, or DASD pools, separate from the host OS and other applications.",
+  "tracking_issue": "TODO-V-270517",
+  "vuln_id": "V-270517"
+}

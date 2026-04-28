@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: The following instructions use the PGDATA environment variable. See supplementary content APPENDIX-F for instructions on configuring PGDATA.\n\nCheck PostgreSQL settings and documentation to determine whether designated personnel are able to select which auditable events are being audited.\n\nAs the database administrator (shown here as \"postgres\"), verify the permissions for PGDATA:\n\n$ ls -la ${PGDATA?}\n\nIf anything in PGDATA is not owned by the database administrator, this is a finding.\n\nNext, as the database administrator, run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"\\du\"\n\nReview the role permissions, if any role is listed as superuser but should not have that access, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure PostgreSQL's settings to allow designated personnel to select which auditable events are audited.\n\nUsing pgaudit allows administrators the flexibility to choose what they log. For an overview of the capabilities of pgaudit, see https://github.com/pgaudit/pgaudit. \n\nSee supplementary content APPENDIX-B for documentation on installing pgaudit.\n\nSee supplementary content APPENDIX-C for instructions on enabling logging. Only administrators/superuser can change PostgreSQL configurations. Access to the database administrator must be limited to designated personnel only.\n\nTo ensure that postgresql.conf is owned by the database owner:\n\n$ chown postgres:postgres ${PGDATA?}/postgresql.conf\n$ chmod 600 ${PGDATA?}/postgresql.conf",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233534r960882_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must allow only the Information System Security Manager (ISSM), or individuals or roles appointed by the ISSM, to select which auditable events are to be audited.",
+  "tracking_issue": "TODO-V-233534",
+  "vuln_id": "V-233534"
+}

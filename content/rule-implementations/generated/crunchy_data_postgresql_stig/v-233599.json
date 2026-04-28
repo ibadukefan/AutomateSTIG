@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review system configuration.\n\nIf no script/tool is monitoring the partition for the PostgreSQL log directories, this is a finding.\n\nIf appropriate support staff are not notified immediately upon storage volume utilization reaching 75 percent, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nConfigure the system to notify appropriate support staff immediately upon storage volume utilization reaching 75 percent.\n\nPostgreSQL does not monitor storage, however, it is possible to monitor storage with a script.\n\n##### Example Monitoring Script\n\n#!/bin/bash\n\nPGDATA=/var/lib/psql/${PGVER?}/data\nCURRENT=$(df ${PGDATA?} | grep / | awk '{ print $5}' | sed 's/%//g')\nTHRESHOLD=75\n\nif [ \"$CURRENT\" -gt \"$THRESHOLD\" ] ; then\nmail -s 'Disk Space Alert' mail@support.com << EOF\nThe data directory volume is almost full. Used: $CURRENT\n%EOF\nfi\n\nSchedule this script in cron to run around the clock.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233599r961398_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "The system must provide a warning to appropriate support staff when allocated audit record storage volume reaches 75 percent of maximum audit record storage capacity.",
+  "tracking_issue": "TODO-V-233599",
+  "vuln_id": "V-233599"
+}

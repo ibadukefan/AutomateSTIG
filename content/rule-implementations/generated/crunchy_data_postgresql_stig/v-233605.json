@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "To check if pgcrypto is installed on PostgreSQL, as a database administrator (shown here as \"postgres\"), run the following command:\n\n$ sudo su - postgres\n$ psql -c \"SELECT * FROM pg_available_extensions where name='pgcrypto'\"\n\nIf data in the database requires encryption and pgcrypto is not available, this is a finding.\n\nIf a disk or filesystem requires encryption, ask the system owner, DBA, and SA to demonstrate the use of filesystem and/or disk-level encryption. If this is required and is not found, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure PostgreSQL, operating system/file system, and additional software as relevant, to provide the required level of cryptographic protection for information requiring cryptographic protection against disclosure.\n\nSecure the premises, equipment, and media to provide the required level of physical protection.\n\nThe pgcrypto module provides cryptographic functions for PostgreSQL. See supplementary content APPENDIX-E for documentation on installing pgcrypto.\n\nWith pgcrypto installed, it is possible to insert encrypted data into the database:\n\nINSERT INTO accounts(username, password) VALUES ('bob', crypt('mypass', gen_salt('bf', 4));",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233605r961602_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must implement cryptographic mechanisms preventing the unauthorized disclosure of organization-defined information at rest on organization-defined information system components.",
+  "tracking_issue": "TODO-V-233605",
+  "vuln_id": "V-233605"
+}

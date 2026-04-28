@@ -1,0 +1,1165 @@
+{
+  "generated_from": "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip",
+  "rules": [
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256375r958398_rule",
+      "severity": "medium",
+      "title": "Access to the ESXi host must be limited by enabling lockdown mode.",
+      "tracking_issue": "TODO-V-256375",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256375"
+    },
+    {
+      "check_id": "V-256376",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256376r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must verify the DCUI.Access list.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256376"
+    },
+    {
+      "check_id": "V-256377",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256377r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must verify the exception users list for lockdown mode.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256377"
+    },
+    {
+      "check_id": "V-256378",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256378r958406_rule",
+      "severity": "medium",
+      "title": "Remote logging for ESXi hosts must be configured.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256378"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256379r958388_rule",
+      "severity": "medium",
+      "title": "The ESXi host must enforce the limit of three consecutive invalid logon attempts by a user.",
+      "tracking_issue": "TODO-V-256379",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256379"
+    },
+    {
+      "check_id": "V-256380",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256380r958736_rule",
+      "severity": "medium",
+      "title": "The ESXi host must enforce an unlock timeout of 15 minutes after a user account is locked out.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256380"
+    },
+    {
+      "check_id": "V-256381",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256381r958390_rule",
+      "severity": "medium",
+      "title": "The ESXi host must display the Standard Mandatory DOD Notice and Consent Banner before granting access to the system via the Direct Console User Interface (DCUI).",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256381"
+    },
+    {
+      "check_id": "V-256382",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256382r958390_rule",
+      "severity": "medium",
+      "title": "The ESXi host must display the Standard Mandatory DOD Notice and Consent Banner before granting access to the system via Secure Shell (SSH).",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256382"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256383r958390_rule",
+      "severity": "medium",
+      "title": "The ESXi host SSH daemon must be configured with the DOD logon banner.",
+      "tracking_issue": "TODO-V-256383",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256383"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256384r958408_rule",
+      "severity": "medium",
+      "title": "The ESXi host Secure Shell (SSH) daemon must use FIPS 140-2 validated cryptographic modules to protect the confidentiality of remote access sessions.",
+      "tracking_issue": "TODO-V-256384",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256384"
+    },
+    {
+      "check_id": "V-256385",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256385r984206_rule",
+      "severity": "medium",
+      "title": "The ESXi host Secure Shell (SSH) daemon must ignore \".rhosts\" files.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256385"
+    },
+    {
+      "check_id": "V-256386",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256386r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host Secure Shell (SSH) daemon must not allow host-based authentication.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256386"
+    },
+    {
+      "check_id": "V-256387",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256387r959010_rule",
+      "severity": "low",
+      "title": "The ESXi host Secure Shell (SSH) daemon must not allow authentication using an empty password.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256387"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256388r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host Secure Shell (SSH) daemon must not permit user environment settings.",
+      "tracking_issue": "TODO-V-256388",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256388"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256389r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host Secure Shell (SSH) daemon must perform strict mode checking of home directory configuration files.",
+      "tracking_issue": "TODO-V-256389",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256389"
+    },
+    {
+      "check_id": "V-256390",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256390r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host Secure Shell (SSH) daemon must not allow compression or must only allow compression after successful authentication.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256390"
+    },
+    {
+      "check_id": "V-256391",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256391r959010_rule",
+      "severity": "low",
+      "title": "The ESXi host Secure Shell (SSH) daemon must be configured to not allow gateway ports.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256391"
+    },
+    {
+      "check_id": "V-256392",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256392r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host Secure Shell (SSH) daemon must be configured to not allow X11 forwarding.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256392"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256393r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host Secure Shell (SSH) daemon must not permit tunnels.",
+      "tracking_issue": "TODO-V-256393",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256393"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256394r959010_rule",
+      "severity": "low",
+      "title": "The ESXi host Secure Shell (SSH) daemon must set a timeout count on idle sessions.",
+      "tracking_issue": "TODO-V-256394",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256394"
+    },
+    {
+      "check_id": "V-256395",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256395r959010_rule",
+      "severity": "low",
+      "title": "The ESXi host Secure Shell (SSH) daemon must set a timeout interval on idle sessions.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256395"
+    },
+    {
+      "check_id": "V-256396",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256396r958412_rule",
+      "severity": "medium",
+      "title": "The ESXi host must produce audit records containing information to establish what type of events occurred.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256396"
+    },
+    {
+      "check_id": "V-256397",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256397r984191_rule",
+      "severity": "medium",
+      "title": "The ESXi host must be configured with a sufficiently complex password policy.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256397"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256398r984204_rule",
+      "severity": "medium",
+      "title": "The ESXi host must prohibit the reuse of passwords within five iterations.",
+      "tracking_issue": "TODO-V-256398",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256398"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256399r958478_rule",
+      "severity": "medium",
+      "title": "The ESXi host must disable the Managed Object Browser (MOB).",
+      "tracking_issue": "TODO-V-256399",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256399"
+    },
+    {
+      "check_id": "V-256400",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256400r958478_rule",
+      "severity": "medium",
+      "title": "The ESXi host must be configured to disable nonessential capabilities by disabling Secure Shell (SSH).",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256400"
+    },
+    {
+      "check_id": "V-256401",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256401r958478_rule",
+      "severity": "medium",
+      "title": "The ESXi host must disable ESXi Shell unless needed for diagnostics or troubleshooting.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256401"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256402r958482_rule",
+      "severity": "low",
+      "title": "The ESXi host must use Active Directory for local user authentication.",
+      "tracking_issue": "TODO-V-256402",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256402"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256403r958482_rule",
+      "severity": "medium",
+      "title": "ESXi hosts using Host Profiles and/or Auto Deploy must use the vSphere Authentication Proxy to protect passwords when adding themselves to Active Directory.",
+      "tracking_issue": "TODO-V-256403",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256403"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256404r958482_rule",
+      "severity": "medium",
+      "title": "Active Directory ESX Admin group membership must not be used when adding ESXi hosts to Active Directory.",
+      "tracking_issue": "TODO-V-256404",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256404"
+    },
+    {
+      "check_id": "V-256405",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256405r970703_rule",
+      "severity": "medium",
+      "title": "The ESXi host must set a timeout to automatically disable idle shell sessions after two minutes.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256405"
+    },
+    {
+      "check_id": "V-256406",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256406r970703_rule",
+      "severity": "medium",
+      "title": "The ESXi host must terminate shell services after 10 minutes.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256406"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256407r970703_rule",
+      "severity": "medium",
+      "title": "The ESXi host must log out of the console UI after two minutes.",
+      "tracking_issue": "TODO-V-256407",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256407"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256408r958752_rule",
+      "severity": "medium",
+      "title": "The ESXi host must enable a persistent log location for all locally stored logs.",
+      "tracking_issue": "TODO-V-256408",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256408"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256409r1038976_rule",
+      "severity": "medium",
+      "title": "The ESXi host must configure NTP time synchronization.",
+      "tracking_issue": "TODO-V-256409",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256409"
+    },
+    {
+      "check_id": "V-256410",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256410r984242_rule",
+      "severity": "high",
+      "title": "The ESXi Image Profile and vSphere Installation Bundle (VIB) acceptance levels must be verified.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256410"
+    },
+    {
+      "check_id": "V-256411",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256411r958908_rule",
+      "severity": "medium",
+      "title": "The ESXi host must protect the confidentiality and integrity of transmitted information by isolating vMotion traffic.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256411"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256412r958908_rule",
+      "severity": "medium",
+      "title": "The ESXi host must protect the confidentiality and integrity of transmitted information by protecting ESXi management traffic.",
+      "tracking_issue": "TODO-V-256412",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256412"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256413r958908_rule",
+      "severity": "medium",
+      "title": "The ESXi host must protect the confidentiality and integrity of transmitted information by isolating IP-based storage traffic.",
+      "tracking_issue": "TODO-V-256413",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256413"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256414r959010_rule",
+      "severity": "medium",
+      "title": "Simple Network Management Protocol (SNMP) must be configured properly on the ESXi host.",
+      "tracking_issue": "TODO-V-256414",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256414"
+    },
+    {
+      "check_id": "V-256415",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256415r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must enable bidirectional Challenge-Handshake Authentication Protocol (CHAP) authentication for Internet Small Computer Systems Interface (iSCSI) traffic.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256415"
+    },
+    {
+      "check_id": "V-256416",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256416r959010_rule",
+      "severity": "low",
+      "title": "The ESXi host must disable Inter-Virtual Machine (VM) Transparent Page Sharing.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256416"
+    },
+    {
+      "check_id": "V-256417",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256417r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must configure the firewall to restrict access to services running on the host.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256417"
+    },
+    {
+      "check_id": "V-256418",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256418r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must configure the firewall to block network traffic by default.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256418"
+    },
+    {
+      "check_id": "V-256419",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256419r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must enable Bridge Protocol Data Units (BPDU) filter on the host to prevent being locked out of physical switch ports with Portfast and BPDU Guard enabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256419"
+    },
+    {
+      "check_id": "V-256420",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256420r959010_rule",
+      "severity": "medium",
+      "title": "All port groups on standard switches must be configured to reject forged transmits.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256420"
+    },
+    {
+      "check_id": "V-256421",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256421r959010_rule",
+      "severity": "high",
+      "title": "All port groups on standard switches must be configured to reject guest Media Access Control (MAC) address changes.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256421"
+    },
+    {
+      "check_id": "V-256422",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256422r959010_rule",
+      "severity": "medium",
+      "title": "All port groups on standard switches must be configured to reject guest promiscuous mode requests.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256422"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256423r959010_rule",
+      "severity": "medium",
+      "title": "Use of the dvFilter network application programming interfaces (APIs) must be restricted.",
+      "tracking_issue": "TODO-V-256423",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256423"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256424r959010_rule",
+      "severity": "medium",
+      "title": "All port groups on standard switches must be configured to a value other than that of the native virtual local area network (VLAN).",
+      "tracking_issue": "TODO-V-256424",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256424"
+    },
+    {
+      "check_id": "V-256425",
+      "check_pack": "vmware_esxi_7",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-256425r959010_rule",
+      "severity": "medium",
+      "title": "All port groups on standard switches must not be configured to virtual local area network (VLAN) 4095 unless Virtual Guest Tagging (VGT) is required.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/vmware_esxi_7.json",
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256425"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256426r959010_rule",
+      "severity": "medium",
+      "title": "All port groups on standard switches must not be configured to virtual local area network (VLAN) values reserved by upstream physical switches.",
+      "tracking_issue": "TODO-V-256426",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256426"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256427r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must not provide root/administrator-level access to Common Information Model (CIM)-based hardware monitoring tools or other third-party applications.",
+      "tracking_issue": "TODO-V-256427",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256427"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256428r959010_rule",
+      "severity": "high",
+      "title": "The ESXi host must have all security patches and updates installed.",
+      "tracking_issue": "TODO-V-256428",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256428"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256429r959010_rule",
+      "severity": "high",
+      "title": "The ESXi host must exclusively enable Transport Layer Security (TLS) 1.2 for all endpoints.",
+      "tracking_issue": "TODO-V-256429",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256429"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256430r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must enable Secure Boot.",
+      "tracking_issue": "TODO-V-256430",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256430"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256431r1067573_rule",
+      "severity": "medium",
+      "title": "The ESXi host must use DOD-approved certificates.",
+      "tracking_issue": "TODO-V-256431",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256431"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256432r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must not suppress warnings that the local or remote shell sessions are enabled.",
+      "tracking_issue": "TODO-V-256432",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256432"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256433r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must not suppress warnings about unmitigated hyperthreading vulnerabilities.",
+      "tracking_issue": "TODO-V-256433",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256433"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256434r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host Secure Shell (SSH) daemon must disable port forwarding.",
+      "tracking_issue": "TODO-V-256434",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256434"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256435r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host OpenSLP service must be disabled.",
+      "tracking_issue": "TODO-V-256435",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256435"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256436r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must enable audit logging.",
+      "tracking_issue": "TODO-V-256436",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256436"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256437r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must enable strict x509 verification for SSL syslog endpoints.",
+      "tracking_issue": "TODO-V-256437",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256437"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256438r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must verify certificates for SSL syslog endpoints.",
+      "tracking_issue": "TODO-V-256438",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256438"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256439r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must enable volatile key destruction.",
+      "tracking_issue": "TODO-V-256439",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256439"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256440r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must configure a session timeout for the vSphere API.",
+      "tracking_issue": "TODO-V-256440",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256440"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256441r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi Host Client must be configured with a session timeout.",
+      "tracking_issue": "TODO-V-256441",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256441"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256442r958408_rule",
+      "severity": "medium",
+      "title": "The ESXi host rhttpproxy daemon must use FIPS 140-2 validated cryptographic modules to protect the confidentiality of remote access sessions.",
+      "tracking_issue": "TODO-V-256442",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256442"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256443r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must be configured with an appropriate maximum password age.",
+      "tracking_issue": "TODO-V-256443",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256443"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256444r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must not be configured to override virtual machine (VM) configurations.",
+      "tracking_issue": "TODO-V-256444",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256444"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256445r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must not be configured to override virtual machine (VM) logger settings.",
+      "tracking_issue": "TODO-V-256445",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256445"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256446r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must require TPM-based configuration encryption.",
+      "tracking_issue": "TODO-V-256446",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256446"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256447r959010_rule",
+      "severity": "medium",
+      "title": "The ESXi host must implement Secure Boot enforcement.",
+      "tracking_issue": "TODO-V-256447",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256447"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256448r1051419_rule",
+      "severity": "medium",
+      "title": "The ESXi Common Information Model (CIM) service must be disabled.",
+      "tracking_issue": "TODO-V-256448",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256448"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256449r959006_rule",
+      "severity": "medium",
+      "title": "The ESXi host SSH daemon must be configured to only use FIPS 140-2 validated ciphers.",
+      "tracking_issue": "TODO-V-256449",
+      "validated_by": [
+        "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      ],
+      "vuln_id": "V-256449"
+    }
+  ],
+  "source": "DISA XCCDF benchmark",
+  "status": "experimental",
+  "stig_id": "VMW_vSphere_7-0_ESXi_STIG",
+  "total_rules": 75,
+  "version": "U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+}

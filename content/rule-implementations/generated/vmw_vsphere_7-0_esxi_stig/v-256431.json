@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Certificate.\n\nIf the issuer is not a DOD-approved certificate authority, or other AO-approved certificate authority, this is a finding.\n\nIf the host will never be accessed directly (virtual machine console connections bypass vCenter), this is not a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Join the ESXi host to vCenter before replacing the certificate.\n\nObtain a DOD-issued certificate and private key for the host following the requirements below:\n\nKey size: 2048 bits or more (PEM encoded)\n\nKey format: PEM\nVMware supports PKCS8 and PKCS1 (RSA keys)\nx509 version 3\n\nSubjectAltName must contain DNS Name=<machine_FQDN>\n\nCRT (Base-64) format\n\nContains the following Key Usages: Digital Signature, Non Repudiation, Key Encipherment\n\nStart time of one day before the current time\n\nCN (and SubjectAltName) set to the host name (or IP address) that the ESXi host has in the vCenter Server inventory\n\nFrom the vSphere Web Client, select the ESXi host's vCenter Server >> Configure >> System >> Advanced Settings.\n\nSelect the \"vpxd.certmgmt.mode\" value and ensure it is set to \"custom\".\n\nPut the host into maintenance mode.\n\nTemporarily enable Secure Shell (SSH) on the host. Use Secure Copy Protocol (SCP) to transfer the new certificate and key to /tmp. SSH to the host. Back up the existing certificate and key:\n\n# mv /etc/vmware/ssl/rui.crt /etc/vmware/ssl/rui.crt.bak\n# mv /etc/vmware/ssl/rui.key /etc/vmware/ssl/rui.key.bak\n\nCopy the new certificate and key to \"/etc/vmware/ssl/\" and rename them to \"rui.crt\" and \"rui.key\" respectively.\n\nRestart management agents to implement the new certificate:\n\n# services.sh restart",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-256431r1067573_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/vmw_vsphere_7_0_esxi_stig/u_vmw_vsphere_7_0_y25m04_stig.json",
+  "source_version": "U_VMW_vSphere_7-0_Y25M04_STIG.zip",
+  "stig_id": "VMW_vSphere_7-0_ESXi_STIG",
+  "title": "The ESXi host must use DOD-approved certificates.",
+  "tracking_issue": "TODO-V-256431",
+  "vuln_id": "V-256431"
+}

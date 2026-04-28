@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: The following instructions use the PGDATA environment variable. See supplementary content APPENDIX-F for instructions on configuring PGDATA.\n\nIf all accounts are authenticated by the organization-level authentication/access mechanism, such as LDAP or Kerberos and not by PostgreSQL, this is not a finding.\n\nAs the database administrator (shown here as \"postgres\"), review pg_hba.conf authentication file settings:\n\n$ sudo su - postgres\n$ cat ${PGDATA?}/pg_hba.conf\n\nAll records must use an auth-method of gss, sspi, or ldap. For details on the specifics of these authentication methods see: http://www.postgresql.org/docs/current/static/auth-pg-hba-conf.html.\n\nIf there are any records with a different auth-method than gss, sspi, or ldap, review the system documentation for justification and approval of these records.\n\nIf there are any records with a different auth-method than gss, sspi, or ldap, that are not documented and approved, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: The following instructions use the PGDATA environment variable. See supplementary content APPENDIX-F for instructions on configuring PGDATA.\n\nIntegrate PostgreSQL security with an organization-level authentication/access mechanism providing account management for all users, groups, roles, and any other principals.\n\nAs the database administrator (shown here as \"postgres\"), edit pg_hba.conf authentication file:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/pg_hba.conf\n\nFor each PostgreSQL-managed account that is not documented and approved, either transfer it to management by the external mechanism, or document the need for it and obtain approval, as appropriate.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233515r960768_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals.",
+  "tracking_issue": "TODO-V-233515",
+  "vuln_id": "V-233515"
+}

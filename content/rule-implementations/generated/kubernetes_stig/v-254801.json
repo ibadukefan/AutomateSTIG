@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "On the Control Plane, change to the manifests' directory at /etc/kubernetes/manifests and run the command:\ngrep -i feature-gates *\n\nFor each manifest file, if the \"--feature-gates\" setting does not exist, does not contain the \"--PodSecurity\" flag, or sets the flag to \"false\", this is a finding.\n\nOn each Control Plane and Worker Node, run the command:\nps -ef | grep kubelet\n\nIf the \"--feature-gates\" option exists, this is a finding. \n\nNote the path to the config file (identified by --config).\n\nInspect the content of the config file:\nIf the \"featureGates\" setting is not present, does not contain the \"PodSecurity\" flag, or sets the flag to \"false\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "On the Control Plane, change to the manifests' directory at /etc/kubernetes/manifests and run the command:\ngrep -i feature-gates *\n\nEnsure the argument \"--feature-gates=PodSecurity=true\" is present in each manifest file.\n\nOn each Control Plane and Worker Node, run the command:\nps -ef | grep kubelet\n\nRemove the \"--feature-gates\" option if present.\n\nNote the path to the config file (identified by --config).\n\nEdit the Kubernetes Kubelet config file: \nAdd a \"featureGates\" setting if one does not yet exist. Add the feature gate \"PodSecurity=true\".\n\nRestart the kubelet service using the following command:\nsystemctl daemon-reload && systemctl restart kubelet",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-254801r961359_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/kubernetes_stig/u_kubernetes_v2r6_stig.json",
+  "source_version": "U_Kubernetes_V2R6_STIG.zip",
+  "stig_id": "Kubernetes_STIG",
+  "title": "Kubernetes must enable PodSecurity admission controller on static pods and Kubelets.",
+  "tracking_issue": "TODO-V-254801",
+  "vuln_id": "V-254801"
+}

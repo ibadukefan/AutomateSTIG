@@ -71,7 +71,13 @@ class IndexDisaDownloadsTests(unittest.TestCase):
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Adobe_Acrobat_Reader_DC_Continuous_V2R4_STIG_SCAP_1-3_Benchmark.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_SLES_15_V2R7_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip', urls)
-        self.assertEqual(len(rows), 46)
+        self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Kubernetes_V2R6_STIG.zip', urls)
+        self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip', urls)
+        self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CD_PGSQL_V3R1_STIG.zip', urls)
+        self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Database_19c_V1R5_STIG.zip', urls)
+        self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y25M07_STIG.zip', urls)
+        self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip', urls)
+        self.assertEqual(len(rows), 52)
 
 if __name__ == '__main__':
     unittest.main()

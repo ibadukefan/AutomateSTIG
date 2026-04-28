@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the system documentation to determine whether the organization has defined the information at rest that is to be protected from modification, which must include, at a minimum, PII and classified information.\n\nIf no information is identified as requiring such protection, this is not a finding.\n\nReview the configuration of PostgreSQL, operating system/file system, and additional software as relevant.\n\nIf any of the information defined as requiring cryptographic protection from modification is not encrypted in a manner that provides the required level of protection, this is a finding.\n\nOne possible way to encrypt data within PostgreSQL is to use pgcrypto extension.\n\nTo check if pgcrypto is installed on PostgreSQL, as a database administrator (shown here as \"postgres\"), run the following command:\n\n$ sudo su - postgres\n$ psql -c \"SELECT * FROM pg_available_extensions where name='pgcrypto'\"\n\nIf data in the database requires encryption and pgcrypto is not available, this is a finding.\n\nIf disk or filesystem requires encryption, ask the system owner, DBA, and SA to demonstrate filesystem or disk level encryption.\n\nIf this is required and is not found, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure PostgreSQL, operating system/file system, and additional software as relevant, to provide the required level of cryptographic protection.\n\nThe pgcrypto module provides cryptographic functions for PostgreSQL. See supplementary content APPENDIX-E for documentation on installing pgcrypto.\n\nWith pgcrypto installed, it is possible to insert encrypted data into the database:\n\nINSERT INTO accounts(username, password) VALUES ('bob', crypt('mypass', gen_salt('bf', 4));",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233590r961599_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must implement cryptographic mechanisms to prevent unauthorized modification of organization-defined information at rest (to include, at a minimum, PII and classified information) on organization-defined information system components.",
+  "tracking_issue": "TODO-V-233590",
+  "vuln_id": "V-233590"
+}

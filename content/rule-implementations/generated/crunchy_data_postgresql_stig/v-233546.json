@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Check PostgreSQL settings to determine whether objects or code implementing security functionality are located in a separate security domain, such as a separate database or schema created specifically for security functionality.\n\nBy default, all objects in pg_catalog and information_schema are owned by the database administrator. \n\nTo check the access controls for those schemas, as the database administrator (shown here as \"postgres\"), run the following commands to review the access privileges granted on the data dictionary and security tables, views, sequences, functions and trigger procedures:\n\n$ sudo su - postgres\n$ psql -x -c \"\\dp pg_catalog.*\"\n$ psql -x -c \"\\dp information_schema.*\"\n\nRepeat the \\dp statements for any additional schemas that contain locally defined security objects.\n\nRepeat using \\df+*.* to review ownership of PostgreSQL functions:\n\n$ sudo su - postgres\n$ psql -x -c \"\\df+ pg_catalog.*\"\n$ psql -x -c \"\\df+ information_schema.*\"\n\nRefer to the PostgreSQL online documentation for GRANT for help in interpreting the Access Privileges column in the output from \\du. Note that an entry starting with an equals sign indicates privileges granted to Public (all users). By default, most of the tables and views in the pg_catalog and information_schema schemas can be read by Public.\n\nIf any user besides the database administrator(s) is listed in access privileges and not documented, this is a finding.\n\nIf security-related database objects or code are not kept separate, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Do not locate security-related database objects with application tables or schema.\n\nReview any site-specific applications security modules built into the database: determine what schema they are located in and take appropriate action.\n\nDo not grant access to pg_catalog or information_schema to anyone but the database administrator(s). Access to the database administrator account(s) must not be granted to anyone without official approval.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233546r961131_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must isolate security functions from non-security functions.",
+  "tracking_issue": "TODO-V-233546",
+  "vuln_id": "V-233546"
+}

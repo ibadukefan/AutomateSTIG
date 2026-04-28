@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review DBMS, OS, or third-party logging software settings to determine whether a real-time alert will be sent to the appropriate personnel when auditing fails for any reason.\n\nIf real-time alerts are not sent upon auditing failure, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system to provide an immediate real-time alert to appropriate support staff when an audit log failure occurs.\n\nIt is possible to create scripts or implement third-party tools to enable real-time alerting for audit failures in PostgreSQL.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233535r961401_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must provide an immediate alert to appropriate support staff of all audit log failures.",
+  "tracking_issue": "TODO-V-233535",
+  "vuln_id": "V-233535"
+}

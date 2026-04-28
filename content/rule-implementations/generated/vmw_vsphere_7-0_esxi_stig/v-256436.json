@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From an ESXi shell, run the following command:\n\n# esxcli system auditrecords get\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\n$esxcli = Get-EsxCli -v2\n$esxcli.system.auditrecords.get.invoke()|Format-List\n\nExample result:\n\nAuditRecordRemoteTransmissionActive : true\nAuditRecordStorageActive : true\nAuditRecordStorageCapacity : 100\nAuditRecordStorageDirectory : /scratch/auditLog\n\nNote: The \"Audit Record Storage Directory\" may differ from the default above, but it must still be located on persistent storage.\n\nIf audit record storage is not active and configured, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From an ESXi shell, run the following commands:\n\nOptional: Set the audit log location to persistent storage. This is set to \"/scratch/auditLog\" by default and does not normally need to be changed.\n\n# esxcli system auditrecords local set --directory=\"/full/path/here\"\n\nMandatory:\n\n# esxcli system auditrecords local set --size=100\n# esxcli system auditrecords local enable\n# esxcli system auditrecords remote enable\n# esxcli system syslog reload\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\n$esxcli = Get-EsxCli -v2\n$arguments = $esxcli.system.auditrecords.local.set.CreateArgs()\n*Optional* $arguments.directory = \"/full/path/here\"\n$arguments.size=\"100\"\n$esxcli.system.auditrecords.local.set.Invoke($arguments)\n$esxcli.system.auditrecords.local.enable.Invoke()\n$esxcli.system.auditrecords.remote.enable.Invoke()",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-256436r959010_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/vmw_vsphere_7_0_esxi_stig/u_vmw_vsphere_7_0_y25m04_stig.json",
+  "source_version": "U_VMW_vSphere_7-0_Y25M04_STIG.zip",
+  "stig_id": "VMW_vSphere_7-0_ESXi_STIG",
+  "title": "The ESXi host must enable audit logging.",
+  "tracking_issue": "TODO-V-256436",
+  "vuln_id": "V-256436"
+}

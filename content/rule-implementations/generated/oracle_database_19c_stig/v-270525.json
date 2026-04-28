@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "To verify the current status of the SQL92_SECURITY parameter use the SQL statement: \n\nIf using a non-CDB database: \nFrom SQL*Plus:\n\nselect value from v$parameter where name = 'sql92_security';\n\nIf using a CDB database:\nFrom SQL*Plus:\n\ncolumn name format a20\ncolumn parameter_value format a20\n\nSELECT name, inst_id, con_id, value AS PARAMETER_VALUE \nFROM sys.gv_$parameter \nWHERE name = 'sql92_security' \nORDER BY 1;\n\nCheck Result:\n\nThe CDB database and all PDBs must be checked.\n\nIf the value returned is set to FALSE, this is a finding.\n\nIf the parameter is set to TRUE or does not exist, this is not a finding.\n\nIn any instance or container, if the PARAMETER_VALUE is not TRUE, that is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Enable SQL92 security.\n\nFrom SQL*Plus:\n\nalter system set sql92_security = TRUE scope = spfile;\n\nThe above SQL*Plus command will set the parameter to take effect at next system startup.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270525r1112473_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "The Oracle SQL92_SECURITY parameter must be set to TRUE.",
+  "tracking_issue": "TODO-V-270525",
+  "vuln_id": "V-270525"
+}

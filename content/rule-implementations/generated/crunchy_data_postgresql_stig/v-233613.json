@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review system documentation to obtain the organization's definition of circumstances requiring automatic session termination. If the documentation explicitly states that such termination is not required or is prohibited, this is not a finding.\n\nIf the documentation requires automatic session termination, but PostgreSQL is not configured accordingly, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure PostgreSQL to automatically terminate a user session after organization-defined conditions or trigger events requiring session termination.\n\nExamples follow.\n\n### Change a role to nologin and disconnect the user\n\nALTER ROLE '<username>' NOLOGIN;\nSELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE usename='<usename>';\n\n### Disconnecting users during a specific time range\nSee supplementary content APPENDIX-A for a bash script for this example.\n\nThe script found in APPENDIX-A using the -l command can disable all users with rolcanlogin=t from logging in. The script keeps track of who it disables in a .restore_login file. After the specified time is over, the same script can be run with the -r command to restore all login connections.\n\nThis script would be added to a cron job:\n\n# lock at 5 am every day of the week, month, year at the 0 minute mark.\n0 5 * * * postgres /var/lib/pgsql/no_login.sh -d postgres -l\n# restore at 5 pm every day of the week, month, year at the 0 minute mark.\n0 17 * * * postgres /var/lib/pgsql/no_login.sh -d postgres -r",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233613r961221_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must automatically terminate a user session after organization-defined conditions or trigger events requiring session disconnect.",
+  "tracking_issue": "TODO-V-233613",
+  "vuln_id": "V-233613"
+}

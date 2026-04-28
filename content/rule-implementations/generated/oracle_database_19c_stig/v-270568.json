@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "For Oracle SQL*Plus, which cannot be configured not to accept a plain-text password, and any other essential tool with the same limitation, verify that the system documentation explains the need for the tool, who uses it, and any relevant mitigations; and that authorizing official (AO) approval has been obtained. If not, this is a finding.\n\nRequest evidence that all users of the tool are trained in the importance of not using the plain-text password option and in how to keep the password hidden; and that they adhere to this practice. If not, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "For Oracle SQL*Plus, which cannot be configured not to accept a plain-text password, and any other essential tool with the same limitation:\n\n1. Document the need for it, who uses it, and any relevant mitigations, and obtain AO approval.\n2. Train all users of the tool in the importance of not using the plain-text password option and how to keep the password hidden.\n\nConsider wrapping the startup command with a shell or wrapper and using an Oracle external password store.\n\nOracle provides the capability to provide for a secure external password facility. Use the Oracle mkstore to create a secure storage area for passwords for applications, batch jobs, and scripts to use or deploy a site-authorized facility to perform this function.\n\nCheck to verify what has been stored in the Oracle External Password Store.\n\nTo view all contents of a client wallet external password store, check specific credentials by viewing them. Listing the external password store contents provides information used to decide whether to add or delete credentials from the store. To list the contents of the external password store, enter the following command at the command line:\n\n$ mkstore -wrl wallet_location -listCredential\n\nFor example:\n\n$ mkstore -wrl c:\\oracle\\product\\19.0.0\\db_1\\wallets -listCredential\n\nThe wallet_location specifies the path to the directory where the wallet, whose external password store contents is to be viewed, is located. This command lists all of the credential database service names (aliases) and the corresponding username (schema) for that database. Passwords are not listed.\n\nConfiguring Clients to Use the External Password Store\n\nIf the client is already configured to use external authentication, such as Windows native authentication or Transport Layer Security (TLS), then Oracle Database uses that authentication method. The same credentials used for this type of authentication are typically also used to log on to the database.\n\nFor clients not using such authentication methods or wanting to override them for database authentication, set the SQLNET.WALLET_OVERRIDE parameter in sqlnet.ora to TRUE. The default value for SQLNET.WALLET_OVERRIDE is FALSE, allowing standard use of authentication credentials as before.\n\nIf wanting a client to use the secure external password store feature, perform the following configuration task:\n\n1. Create a wallet on the client by using the following syntax at the command line:\norapki create -wallet wallet_location -auto_login_local\n\nFor example:\norapki wallet create -wallet c:\\oracle\\product\\19.0.0\\db_1\\wallets -auto_login_local\nEnter password: password\n\nThe wallet_location is the path to the directory where the wallet is to be created and stored. This command creates an Oracle wallet with the autologon feature enabled at the location specified. The autologon feature enables the client to access the wallet contents without supplying a password.\n\nThe mkstore utility -create option uses password complexity verification.\n\n2. Create database connection credentials in the wallet by using the following syntax at the command line:\nmkstore -wrl wallet_location -createCredential db_connect_string username\nEnter password: password\n\nFor example:\nmkstore -wrl c:\\oracle\\product\\19.0.0\\db_1\\wallets -createCredential oracle system\nEnter password: password\n\nIn this specification:\nThe wallet_location is the path to the directory where the wallet was created. The db_connect_string used in the CONNECT /@db_connect_string statement must be identical to the db_connect_string specified in the -createCredential command.\n\nThe db_connect_string is the TNS alias used to specify the database in the tnsnames.ora file or any service name used to identify the database on an Oracle network. By default, tnsnames.ora is located in the $ORACLE_HOME/network/admin directory on Unix systems and in ORACLE_HOME\\network\\admin on Windows.\n\nThe username is the database logon credential. When prompted, enter the password for this user.\n\n3. In",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270568r1136925_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "When using command-line tools such as Oracle SQL*Plus, which can accept a plain-text password, users must use an alternative logon method that does not expose the password.",
+  "tracking_issue": "TODO-V-270568",
+  "vuln_id": "V-270568"
+}

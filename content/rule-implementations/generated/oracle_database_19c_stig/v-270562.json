@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If all user accounts are authenticated by the OS or an enterprise-level authentication/access mechanism, and not by Oracle, this is not a finding.\n\nWhere accounts are authenticated using passwords, review procedures and implementation evidence for creation of temporary passwords.\n\nIf the procedures or evidence do not exist or do not enforce passwords to meet DOD password requirements, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Implement procedures for assigning temporary passwords to user accounts.\n\nProcedures should include instructions to meet current DOD password length and complexity requirements and provide a secure method to relay the temporary password to the user.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270562r1064964_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Procedures for establishing temporary passwords that meet DOD password requirements for new accounts must be defined, documented, and implemented.",
+  "tracking_issue": "TODO-V-270562",
+  "vuln_id": "V-270562"
+}

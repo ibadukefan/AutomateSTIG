@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the Kubernetes accounts and their corresponding roles. \n\nIf any accounts have read (list, watch, get) access to Secrets without a documented organizational requirement, this is a finding. \n\nRun the below command to list the workload resources for applications deployed to Kubernetes:\nkubectl get all -A -o yaml \n\nIf Secrets are attached to applications without a documented requirement, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "For Kubernetes accounts that have read access to Secrets without a documented requirement, modify the corresponding Role or ClusterRole to remove list, watch, and get privileges for Secrets.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-274884r1107245_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/kubernetes_stig/u_kubernetes_v2r6_stig.json",
+  "source_version": "U_Kubernetes_V2R6_STIG.zip",
+  "stig_id": "Kubernetes_STIG",
+  "title": "Kubernetes must limit Secret access on a need-to-know basis.",
+  "tracking_issue": "TODO-V-274884",
+  "vuln_id": "V-274884"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Change to the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Run the command:\ngrep -i audit-policy-file \n\nIf the audit-policy-file is not set, this is a finding. \n\nThe file given is the policy file and defines what is audited and what information is included with each event.\n\nThe policy file must look like this:\n\n# Log all requests at the RequestResponse level.\napiVersion: audit.k8s.io/vX (Where X is the latest apiVersion)\nkind: Policy\nrules:\n- level: RequestResponse\n\nIf the audit policy file does not look like above, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. \n\nSet the value of  \"--audit-policy-file\" to the path of a file with the following content:\n    \n    # Log all requests at the RequestResponse level.\n    apiVersion: audit.k8s.io/vX (Where X is the latest apiVersion)\n    kind: Policy\n    rules:\n    - level: RequestResponse\n\nNote: If the API server is running as a Pod, then the manifest will also need to be updated to mount the host system filesystem where the audit policy file resides.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-242403r986135_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/kubernetes_stig/u_kubernetes_v2r6_stig.json",
+  "source_version": "U_Kubernetes_V2R6_STIG.zip",
+  "stig_id": "Kubernetes_STIG",
+  "title": "Kubernetes API Server must generate audit records that identify what type of event has occurred, identify the source of the event, contain the event results, identify any users, and identify any containers associated with the event.",
+  "tracking_issue": "TODO-V-242403",
+  "vuln_id": "V-242403"
+}

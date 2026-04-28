@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: The following instructions use the PGDATA and PGLOG environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-I for instructions on configuring PGLOG.\n\nCheck PostgreSQL settings and custom database code to determine if detailed error messages are ever displayed to unauthorized individuals.\n\nTo check the level of detail for errors exposed to clients, as the DBA (shown here as \"postgres\"), run the following:\n\n$ sudo su - postgres\n$ psql -c \"SHOW client_min_messages;\"\n\nIf client_min_messages is set to LOG or DEBUG, this is a finding.\n\nIf detailed error messages are displayed to individuals not authorized to view them, this is a finding.\n\n#### stderr Logging\n\nLogs may contain detailed information and should only be accessible by the database owner.\n\nAs the database administrator, verify the following settings of logs.\n\nNote: Consult the organization's documentation on acceptable log privileges.\n\n$ sudo su - postgres\n$ psql -c \"SHOW log_file_mode;\" \n\nNext, verify the log files have the set configurations.\n\n$ ls -l ${PGLOG?}\ntotal 32\n-rw-------. 1 postgres postgres 0 Apr 8 00:00 postgresql-Fri.log\n-rw-------. 1 postgres postgres 8288 Apr 11 17:36 postgresql-Mon.log\n-rw-------. 1 postgres postgres 0 Apr 9 00:00 postgresql-Sat.log\n-rw-------. 1 postgres postgres 0 Apr 10 00:00 postgresql-Sun.log\n-rw-------. 1 postgres postgres 16212 Apr 7 17:05 postgresql-Thu.log\n-rw-------. 1 postgres postgres 1130 Apr 6 17:56 postgresql-Wed.log\n\nIf logs are not owned by the database administrator or have permissions that are not 0600, this is a finding.\n\n#### syslog Logging\n\nIf PostgreSQL is configured to use syslog for logging, consult organization location and permissions for syslog log files. If the logs are not owned by root or have permissions that are not 0600, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: The following instructions use the PGDATA environment variable. See supplementary content APPENDIX-F for instructions on configuring PGDATA.\n\nTo set the level of detail for error messages exposed to clients, as the DBA (shown here as \"postgres\"), run the following commands:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\nclient_min_messages = error",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233533r961170_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must reveal detailed error messages only to the ISSO, ISSM, SA, and DBA.",
+  "tracking_issue": "TODO-V-233533",
+  "vuln_id": "V-233533"
+}

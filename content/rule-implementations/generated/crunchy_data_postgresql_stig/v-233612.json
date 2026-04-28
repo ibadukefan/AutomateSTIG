@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review PostgreSQL settings to determine whether organizational users are uniquely identified and authenticated when logging on/connecting to the system.\n\nTo list all roles in the database, as the database administrator (shown here as \"postgres\"), run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"\\du\"\n\nIf organizational users are not uniquely identified and authenticated, this is a finding.\n\nNext, as the database administrator (shown here as \"postgres\"), verify the current pg_hba.conf authentication settings:\n\n$ sudo su - postgres\n$ cat ${PGDATA?}/pg_hba.conf\n\nIf every role does not have unique authentication requirements, this is a finding.\n\nIf accounts are determined to be shared, determine if individuals are first individually authenticated. If individuals are not individually authenticated before using the shared account, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: The following instructions use the PGDATA environment variable. See supplementary content APPENDIX-F for instructions on configuring PGDATA.\n\nConfigure PostgreSQL settings to uniquely identify and authenticate all organizational users who log on/connect to the system.\n\nTo create roles, use the following SQL:\n\nCREATE ROLE <role_name> [OPTIONS]\n\nFor more information on CREATE ROLE, see the official documentation: https://www.postgresql.org/docs/current/static/sql-createrole.html\n\nFor each role created, the database administrator can specify database authentication by editing pg_hba.conf:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/pg_hba.conf\n\nAn example pg_hba entry looks like this:\n\n# TYPE DATABASE USER ADDRESS METHOD\nhost test_db bob 192.168.0.0/16 scram-sha-256\n\nFor more information on pg_hba.conf, see the official documentation: https://www.postgresql.org/docs/current/static/auth-pg-hba-conf.html.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233612r960969_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must uniquely identify and authenticate organizational users (or processes acting on behalf of organizational users).",
+  "tracking_issue": "TODO-V-233612",
+  "vuln_id": "V-233612"
+}

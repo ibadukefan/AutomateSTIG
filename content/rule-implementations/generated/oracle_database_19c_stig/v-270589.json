@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If all accounts are authenticated by the OS or an enterprise-level authentication/access mechanism and not by Oracle, this is not a finding.\n\nVerify the database management system (DBMS) is configured to include only approved trust anchors in trust stores or certificate stores managed by the organization.\n\nIf trust stores or certification paths are not being validated back to a trust anchor, this is a finding.\n\nThe database supports PKI-based authentication by using digital certificates over Transport Layer Security (TLS) in addition to the native encryption and data integrity capabilities of these protocols.\n\nOracle provides a complete PKI that is based on RSA Security, Inc., Public-Key Cryptography Standards, and interoperates with Oracle servers and clients. The database uses a wallet that is a container to store authentication and signing credentials, including private keys, certificates, and trusted certificates needed by TLS. In an Oracle environment, every entity that communicates over TLS must have a wallet containing an X.509 version 3 certificate, private key, and list of trusted certificates.\n\nIf the $ORACLE_HOME/network/admin/sqlnet.ora contains the following entries, TLS is installed.\n\nWALLET_LOCATION = (SOURCE=\n(METHOD = FILE) \n(METHOD_DATA = \nDIRECTORY=/wallet) \n\nSSL_CIPHER_SUITES=(SSL_cipher_suiteExample) \nSSL_VERSION = 1.1 or 1.2\nSSL_CLIENT_AUTHENTICATION=TRUE",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the DBMS to include only approved trust anchors in trust stores or certificate stores managed by the organization.\n\nConfigure the database to support TLS protocols and the Oracle Wallet to store authentication and signing credentials, including private keys.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270589r1136927_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Oracle Database must include only approved trust anchors in trust stores or certificate stores managed by the organization.",
+  "tracking_issue": "TODO-V-270589",
+  "vuln_id": "V-270589"
+}

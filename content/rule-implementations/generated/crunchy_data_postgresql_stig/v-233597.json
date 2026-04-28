@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "To list all the permissions of individual roles, as the database administrator (shown here as \"postgres\"), run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"\\du\n\nIf any role has SUPERUSER that should not, this is a finding.\n\nNext, list all the permissions of databases and schemas by running the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"\\l\"\n$ psql -c \"\\dn+\"\n\nIf any database or schema has update (\"W\") or create (\"C\") privileges and should not, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure PostgreSQL to enforce access restrictions associated with changes to the configuration of PostgreSQL or database(s).\n\nUse ALTER ROLE to remove accesses from roles:\n\n$ psql -c \"ALTER ROLE <role_name> NOSUPERUSER\"\n\nUse REVOKE to remove privileges from databases and schemas:\n\n$ psql -c \"REVOKE ALL PRIVILEGES ON <table> FROM <role_name>\"",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233597r961461_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must enforce access restrictions associated with changes to the configuration of PostgreSQL or database(s).",
+  "tracking_issue": "TODO-V-233597",
+  "vuln_id": "V-233597"
+}

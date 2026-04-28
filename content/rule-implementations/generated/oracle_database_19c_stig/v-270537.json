@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review documented and implemented procedures for monitoring the use of the DBMS software installation account in the system documentation.\n\nIf use of this account is not monitored or procedures for monitoring its use do not exist or are incomplete, this is a finding.\n\nNote: On Windows systems, the Oracle DBMS software is installed using an account with administrator privileges. Ownership should be reassigned to a dedicated OS account used to operate the DBMS software. If monitoring does not include all accounts with administrator privileges on the DBMS host, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Develop, document, and implement a logging procedure for use of the DBMS software installation account that provides accountability to individuals for any actions taken by the account.\n\nHost system audit logs should be included in the DBMS account usage log along with an indication of the person who accessed the account and an explanation for the access.\n\nEnsure all accounts with administrator privileges are monitored for DBMS host on Windows OS platforms.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270537r1064889_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Use of the Oracle Database installation account must be logged.",
+  "tracking_issue": "TODO-V-270537",
+  "vuln_id": "V-270537"
+}

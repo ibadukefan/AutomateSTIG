@@ -64,6 +64,12 @@ SEED_DOWNLOADS=[
  {'title':'Adobe Acrobat Reader DC Continuous Track STIG SCAP 1.3 Benchmark V2R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Adobe_Acrobat_Reader_DC_Continuous_V2R4_STIG_SCAP_1-3_Benchmark.zip'},
  {'title':'SUSE Linux Enterprise Server 15 STIG V2R7','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_SLES_15_V2R7_STIG.zip'},
  {'title':'SUSE Linux Enterprise Server 15 STIG SCAP 1.3 Benchmark V2R8','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip'},
+ {'title':'Kubernetes STIG V2R6','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Kubernetes_V2R6_STIG.zip'},
+ {'title':'Kubernetes STIG SCAP 1.3 Benchmark V2R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip'},
+ {'title':'Crunchy Data PostgreSQL STIG V3R1','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CD_PGSQL_V3R1_STIG.zip'},
+ {'title':'Oracle Database 19c STIG V1R5','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Database_19c_V1R5_STIG.zip'},
+ {'title':'VMware vSphere 8.0 STIG Y25M07','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y25M07_STIG.zip'},
+ {'title':'VMware vSphere 7.0 STIG Y25M04','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip'},
 ]
 
 def classify(title,url):
