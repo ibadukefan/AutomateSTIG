@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the \"telnetd\" package is not installed on Ubuntu 22.04 LTS by using the following command:  \n \n     $ dpkg -l | grep telnetd \n \nIf the \"telnetd\" package is installed, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Remove the \"telnetd\" package by using the following command:  \n  \n     $ sudo apt-get remove telnetd",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-260483r987796_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must not have the \"telnet\" package installed.",
+  "tracking_issue": "TODO-V-260483",
+  "vuln_id": "V-260483"
+}

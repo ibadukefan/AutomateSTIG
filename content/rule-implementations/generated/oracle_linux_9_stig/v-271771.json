@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 SSH private host key files have a mode of \"0640\" or less permissive with the following command:\n\n$ ls -l /etc/ssh/*_key\n640 /etc/ssh/ssh_host_dsa_key\n640 /etc/ssh/ssh_host_ecdsa_key\n640 /etc/ssh/ssh_host_ed25519_key\n640 /etc/ssh/ssh_host_rsa_key\n\nIf any private host key file has a mode more permissive than \"0640\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the mode of SSH private host key files under \"/etc/ssh\" to \"0640\" with the following command:\n\n$ sudo chmod 0640 /etc/ssh/ssh_host*key\n\nRestart the SSH daemon for the changes to take effect:\n\n$ sudo systemctl restart sshd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271771r1092025_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 SSH private host key files must have mode 0640 or less permissive.",
+  "tracking_issue": "TODO-V-271771",
+  "vuln_id": "V-271771"
+}

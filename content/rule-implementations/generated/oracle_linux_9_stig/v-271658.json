@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 is configured to mount /var/log with the noexec option.\n\nVerify \"/var/log\" is mounted with the \"noexec\" option:\n\n$ mount | grep /var/log\n/dev/mapper/ol-var-log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)\n\nIf the \"/var/log\" file system is mounted without the \"noexec\" option, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to mount /var/log with the noexec option.\n\nModify \"/etc/fstab\" to use the \"noexec\" option on the \"/var/log\" directory.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271658r1091686_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must mount /var/log with the noexec option.",
+  "tracking_issue": "TODO-V-271658",
+  "vuln_id": "V-271658"
+}

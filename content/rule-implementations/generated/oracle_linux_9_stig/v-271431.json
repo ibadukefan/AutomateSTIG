@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If there is a documented and approved reason for not having data at rest encryption, this requirement is Not Applicable.\n\nVerify that OL 9 prevents unauthorized disclosure or modification of all information requiring at rest protection by using disk encryption.\n\nDetermine the partition layout for the system with the following command: \n \n$ sudo fdisk -l \n(..) \nDisk /dev/vda: 15 GiB, 16106127360 bytes, 31457280 sectors \nUnits: sectors of 1 * 512 = 512 bytes \nSector size (logical/physical): 512 bytes / 512 bytes \nI/O size (minimum/optimal): 512 bytes / 512 bytes \nDisklabel type: gpt \nDisk identifier: 83298450-B4E3-4B19-A9E4-7DF147A5FEFB \n \nDevice       Start      End  Sectors Size Type \n/dev/vda1     2048     4095     2048   1M BIOS boot \n/dev/vda2     4096  2101247  2097152   1G Linux filesystem \n/dev/vda3  2101248 31455231 29353984  14G Linux filesystem \n(...) \n \nVerify that the system partitions are all encrypted with the following command: \n \n$ sudo more /etc/crypttab \n \nEvery persistent disk partition present must have an entry in the file. \n \nIf any partitions other than the boot partition or pseudo file systems (such as /proc or /sys) are not listed, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the OL 9 operating system to implement cryptographic mechanisms to prevent unauthorized modification of all information at rest.\n\nTo encrypt an entire partition, dedicate a partition for encryption in the partition layout. \n \nNote: Encrypting a partition in an already-installed system is more difficult because it will need to be resized and existing partitions changed.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271431r1092616_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "The OL 9 operating system must implement cryptographic mechanisms to prevent unauthorized modification of all information at rest.",
+  "tracking_issue": "TODO-V-271431",
+  "vuln_id": "V-271431"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the directory containing the root certificates for Ubuntu 22.04 LTS contains certificate files for DOD PKI-established certificate authorities by iterating over all files in the \"/etc/ssl/certs\" directory and checking if, at least one, has the subject matching \"DOD ROOT CA\". \n \n     $ ls /etc/ssl/certs | grep -i DOD \n     DOD_PKE_CA_chain.pem \n \nIf no DOD root certificate is found, this is a finding. \n \nVerify that all root certificates present on the system have been approved by the AO. \n \n     $ ls /etc/ssl/certs \n \nIf a certificate is present that is not approved by the AO, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to use of DOD PKI-established certificate authorities for verification of the establishment of protected sessions.  \n \nAdd at least one DOD certificate authority to the \"/usr/share/ca-certificates\" directory in the CRT format.  \n  \nUpdate the \"/etc/ssl/certs\" directory by using the following command:  \n  \n     $ sudo dpkg-reconfigure ca-certificates",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-260580r958868_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must use DOD PKI-established certificate authorities for verification of the establishment of protected sessions.",
+  "tracking_issue": "TODO-V-260580",
+  "vuln_id": "V-260580"
+}

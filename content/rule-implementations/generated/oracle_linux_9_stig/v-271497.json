@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 routinely executes a file integrity scan for changes to the system baseline. The command used in the example will use a daily occurrence.\n\nCheck the cron directories for scripts controlling the execution and notification of results of the file integrity application. For example, if Advanced Intrusion Detection Environment (AIDE) is installed on the system, use the following commands:\n\n$ ls -al /etc/cron.* | grep aide\n-rwxr-xr-x 1 root root 29 Nov 22 2015 aide\n\n$ sudo grep aide /etc/crontab /var/spool/cron/root\n/etc/crontab: 30 04 * * * root usr/sbin/aide\n/var/spool/cron/root: 30 04 * * * root usr/sbin/aide\n\n$ more /etc/cron.daily/aide\n#!/bin/bash\n/usr/sbin/aide --check | /bin/mail -s \"$HOSTNAME - Daily aide integrity check run\" root@sysname.mil\n\nIf the file integrity application does not exist, or a script file controlling the execution of the file integrity application does not exist, or the file integrity application does not notify designated personnel of changes, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the file integrity tool to run automatically on the system at least weekly and to notify designated personnel if baseline configurations are changed in an unauthorized manner. The AIDE tool can be configured to email designated personnel with the use of the cron system.\n \nThe following example output is generic. It will set cron to run AIDE daily and to send email at the completion of the analysis.\n\n$ sudo more /etc/cron.daily/aide\n \n#!/bin/bash\n/usr/sbin/aide --check | /bin/mail -s \"$HOSTNAME - Daily aide integrity check run\" root@sysname.mil\n\n$ sudo chmod 755  /etc/cron.daily/aide\n\n$ sudo crontab -e \n30 04 * * * root usr/sbin/aide",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271497r1092471_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must routinely check the baseline configuration for unauthorized changes and notify the system administrator (SA) when anomalies in the operation of any security functions are discovered.",
+  "tracking_issue": "TODO-V-271497",
+  "vuln_id": "V-271497"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 is configured to employ a deny-all, allow-by-exception policy for allowing connections to other systems with the following commands:\n\n$ sudo  firewall-cmd --state\nrunning\n\n$ sudo firewall-cmd --get-active-zones\npublic\n   interfaces: ens33\n\n$ sudo firewall-cmd --info-zone=public | grep target\n   target: DROP\n\n$ sudo firewall-cmd --permanent --info-zone=public | grep target\n   target: DROP\n\nIf no zones are active on the OL 9 interfaces or if runtime and permanent targets are set to a different option other than \"DROP\", this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the firewalld daemon to employ a deny-all, allow-by-exception with the following commands:\n\nStart by adding the exceptions that are required for mission functionality to the \"drop\" zone. If SSH access on port 22 is needed, for example, run the following: \"sudo firewall-cmd --permanent --add-service=ssh --zone=drop\"\n\nReload the firewall rules to update the runtime configuration from the \"--permanent\" changes made above:\n$ sudo firewall-cmd --reload\n\nSet the default zone to the drop zone:\n$ sudo firewall-cmd --set-default-zone=drop\nNote: This is a runtime and permanent change.\n\nAdd any interfaces to the newly modified \"drop\" zone:\n$ sudo firewall-cmd --permanent --zone=drop --change-interface=ens33\n\nReload the firewall rules for changes to take effect:\n$ sudo firewall-cmd --reload",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271473r1091131_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must be configured so that the firewall employs a deny-all, allow-by-exception policy for allowing connections to other systems.",
+  "tracking_issue": "TODO-V-271473",
+  "vuln_id": "V-271473"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 monitors all remote access methods.\n\nCheck that remote access methods are being logged by running the following command:\n\n$ grep -rE '(auth.\\*|authpriv.\\*|daemon.\\*)' /etc/rsyslog.conf\nauthpriv.*                                              /var/log/secure\n \nIf \"auth.*\", \"authpriv.*\" or \"daemon.*\" are not configured to be logged, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 remote access methods to be monitored.\n\nAdd or update the following lines to the \"/etc/rsyslog.conf\" file:\n\nauth.*;authpriv.*;daemon.* /var/log/secure\n\nThe \"rsyslog\" service must be restarted for the changes to take effect with the following command:\n\n$ sudo systemctl restart rsyslog.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271851r1092265_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 remote access methods must be monitored.",
+  "tracking_issue": "TODO-V-271851",
+  "vuln_id": "V-271851"
+}

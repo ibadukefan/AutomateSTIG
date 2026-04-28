@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 is configured to enable auditing of processes that start prior to the audit daemon.\n\nCheck that the current GRUB 2 configuration enables auditing:\n\n$ sudo grubby --info=ALL | grep audit\nargs=\"ro crashkernel=auto resume=/dev/mapper/ol-swap rd.lvm.lv=ol/root rd.lvm.lv=ol/swap rhgb quiet fips=1 audit=1 audit_backlog_limit=8192 pti=on \n\nIf \"audit\" is not set to \"1\" or is missing, this is a finding.\n\nCheck that auditing is enabled by default to persist through kernel updates: \n\n$ sudo grep audit /etc/default/grub\nGRUB_CMDLINE_LINUX=\"audit=1\"\n\nIf \"audit\" is not set to \"1\", is missing, or is commented out, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Enable auditing of processes that start prior to the audit daemon with the following command:\n\n$ sudo grubby --update-kernel=ALL --args=\"audit=1\"\n\nAdd or modify the following line in \"/etc/default/grub\" to ensure the configuration survives kernel updates:\n\nGRUB_CMDLINE_LINUX=\"audit=1\"",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271577r1091443_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must enable auditing of processes that start prior to the audit daemon.",
+  "tracking_issue": "TODO-V-271577",
+  "vuln_id": "V-271577"
+}

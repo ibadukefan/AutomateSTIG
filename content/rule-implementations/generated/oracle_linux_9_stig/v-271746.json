@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "kernel.perf_event_paranoid",
+      "type": "sysctl"
+    },
+    "description": "OL 9 must prevent kernel profiling by nonprivileged users.",
+    "expected": {
+      "type": "equals",
+      "value": "2"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271746"
+  },
+  "check_content_excerpt": "Verify that OL 9 is configured to prevent kernel profiling by nonprivileged users with the following commands:\n\nCheck the status of the kernel.perf_event_paranoid kernel parameter.\n\n$ sysctl kernel.perf_event_paranoid\nkernel.perf_event_paranoid = 2\n\nIf \"kernel.perf_event_paranoid\" is not set to \"2\" or is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "2"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to prevent kernel profiling by nonprivileged users.\n\nAdd or edit the following line in /etc/sysctl.d/99-sysctl.conf system configuration file:\n\nkernel.perf_event_paranoid = 2\n\nLoad settings from all system configuration files with the following command:\n\n$ sudo sysctl --system",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-271746r1117266_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must prevent kernel profiling by nonprivileged users.",
+  "tracking_issue": "TODO-V-271746",
+  "vuln_id": "V-271746"
+}

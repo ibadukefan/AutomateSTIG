@@ -1,0 +1,50 @@
+{
+  "checks": [
+    {
+      "check": {
+        "key": "kernel.dmesg_restrict",
+        "type": "sysctl"
+      },
+      "description": "Ubuntu 22.04 LTS must restrict access to the kernel message buffer.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260472"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "755",
+        "owner": null,
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 22.04 LTS must configure the \"/var/log\" directory to have mode \"755\" or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260488"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "600",
+        "owner": null,
+        "path": "/var/log/audit/",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 22.04 LTS must be configured so that audit log files are not read- or write-accessible by unauthorized users.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260597"
+    }
+  ],
+  "platform": "linux",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "version": "candidate-planned"
+}

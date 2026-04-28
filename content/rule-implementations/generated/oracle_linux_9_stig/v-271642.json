@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If no NFS mounts are configured, this requirement is Not Applicable.\n\nVerify that OL 9 has the \"noexec\" option configured for all NFS mounts with the following command:\n\n$ cat /etc/fstab | grep nfs\n192.168.22.2:/mnt/export /data nfs4 rw,nosuid,nodev,noexec,sync,soft,sec=krb5:krb5i:krb5p\n\nIf the system is mounting file systems via NFS and the \"noexec\" option is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Update each NFS mounted file system to use the \"noexec\" option on file systems that are being imported via NFS.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271642r1092593_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must prevent code from being executed on file systems that are imported via Network File System (NFS).",
+  "tracking_issue": "TODO-V-271642",
+  "vuln_id": "V-271642"
+}

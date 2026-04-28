@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This requirement assumes the use of the OL 9 default graphical user interface\u2014the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nVerify that OL 9 initiates a session lock after a 15-minute period of inactivity for graphical user interfaces with the following command:\n\n$ gsettings get org.gnome.desktop.session idle-delay\nuint32 900\n\nIf \"idle-delay\" is set to \"0\" or a value greater than \"900\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to initiate a screensaver after a 15-minute period of inactivity for graphical user interfaces.\n\nCreate a database to contain the system-wide screensaver settings (if it does not already exist) with the following command:\n\n$ sudo touch /etc/dconf/db/local.d/00-screensaver\n\nEdit /etc/dconf/db/local.d/00-screensaver and add or update the following lines:\n\n[org/gnome/desktop/session]\n# Set the lock time out to 900 seconds before the session is considered idle\nidle-delay=uint32 900\n\nUpdate the system databases:\n\n$ sudo dconf update",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271674r1091734_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must automatically lock graphical user sessions after 15 minutes of inactivity.",
+  "tracking_issue": "TODO-V-271674",
+  "vuln_id": "V-271674"
+}

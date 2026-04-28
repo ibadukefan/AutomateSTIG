@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "net.ipv6.conf.default.accept_redirects",
+      "type": "sysctl"
+    },
+    "description": "OL 9 must prevent IPv6 Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271882"
+  },
+  "check_content_excerpt": "Note: If IPv6 is disabled on the system, this requirement is Not Applicable.\n\nVerify that OL 9 will not accept IPv6 ICMP redirect messages.\n\nCheck the value of the default \"accept_redirects\" variables with the following command:\n\n$ sysctl net.ipv6.conf.default.accept_redirects\nnet.ipv6.conf.default.accept_redirects = 0\n\nIf the returned line does not have a value of \"0\", a line is not returned, or the line is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to prevent IPv6 ICMP redirect messages from being accepted.\n\nAdd or edit the following line in a single system configuration file in the \"/etc/sysctl.d/\" directory:\n\nnet.ipv6.conf.default.accept_redirects = 0\n\nLoad settings from all system configuration files with the following command:\n\n$ sudo sysctl --system",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-271882r1092358_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must prevent IPv6 Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+  "tracking_issue": "TODO-V-271882",
+  "vuln_id": "V-271882"
+}

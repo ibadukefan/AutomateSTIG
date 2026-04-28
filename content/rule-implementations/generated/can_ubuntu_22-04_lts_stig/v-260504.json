@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the /run/log/journal and /var/log/journal files are group-owned by \"systemd-journal\" by using the following command: \n \n     $ sudo find /run/log/journal /var/log/journal  -type f -exec stat -c \"%n %G\" {} \\; \n     /var/log/journal/3b018e681c904487b11671b9c1987cce/system@99dcc72bb1134aaeae4bf157aa7606f4-0000000000003c7a-0006073f8d1c0fec.journal systemd-journal \n     /var/log/journal/3b018e681c904487b11671b9c1987cce/system.journal systemd-journal \n     /var/log/journal/3b018e681c904487b11671b9c1987cce/user-1000.journal systemd-journal \n     /var/log/journal/3b018e681c904487b11671b9c1987cce/user-1000@bdedf14602ff4081a77dc7a6debc8626-00000000000062a6-00060b4b414b617a.journal systemd-journal \n     /var/log/journal/3b018e681c904487b11671b9c1987cce/system@99dcc72bb1134aaeae4bf157aa7606f4-0000000000005301-000609a409\n593.journal systemd-journal \n     /var/log/journal/3b018e681c904487b11671b9c1987cce/system@99dcc72bb1134aaeae4bf157aa7606f4-0000000000000001-000604dae53225ee.journal systemd-journal \n     /var/log/journal/3b018e681c904487b11671b9c1987cce/user-1000@bdedf14602ff4081a77dc7a6debc8626-000000000000083b-000604dae72c7e3b.journal systemd-journal \n \nIf any output returned is not group-owned by \"systemd-journal\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to set the appropriate group-ownership to the files used by the systemd journal: \n \nAdd or modify the following line in the \"/usr/lib/tmpfiles.d/systemd.conf\" file: \n \nZ /run/log/journal/%m ~2640 root systemd-journal - - \nz /var/log/journal/%m 2640 root systemd-journal - - \nz /var/log/journal/%m/system.journal 0640 root systemd-journal - - \n \nRestart the system for the changes to take effect.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-260504r958566_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must configure the files used by the system journal to be group-owned by \"systemd-journal\".",
+  "tracking_issue": "TODO-V-260504",
+  "vuln_id": "V-260504"
+}

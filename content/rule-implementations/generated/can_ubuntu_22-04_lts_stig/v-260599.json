@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the group owner of newly created audit logs is \"root\" by using the following command:  \n \n     $ sudo grep -iw log_group /etc/audit/auditd.conf \n     log_group = root \n \nIf \"log_group\" is not set to \"root\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the group owner of newly created audit logs to be \"root\". \n \nAdd or modify the following lines in the \"/etc/audit/auditd.conf \" file: \n \nlog_group = root \n \nReload the configuration file of the audit service to update the group ownership of existing files: \n \n     $ sudo systemctl kill auditd -s SIGHUP",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-260599r958434_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must permit only authorized groups ownership of the audit log files.",
+  "tracking_issue": "TODO-V-260599",
+  "vuln_id": "V-260599"
+}

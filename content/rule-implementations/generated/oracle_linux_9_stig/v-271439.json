@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 security patches and updates are installed and up to date. Updates are required to be applied with a frequency determined by organizational policy.\n\nObtain the list of available package security updates from Oracle. The URL for updates is https://linux.oracle.com/errata/. It is important to note that updates provided by Oracle may not be present on the system if the underlying packages are not installed.\n\nCheck that the available package security updates have been installed on the system with the following command:\n\n$ dnf history list | more\n\n    ID | Command line | Date and time | Action(s) | Altered    \n-------------------------------------------------------------------------------    \n   70 | install aide | 2023-03-05 10:58 | Install | 1    \n   69 | update -y | 2023-03-04 14:34 | Update | 18 EE    \n   68 | install vlc | 2023-02-21 17:12 | Install | 21   \n   67 | update -y | 2023-02-21 17:04 | Update | 7 EE \n\nTypical update frequency may be overridden by Information Assurance Vulnerability Alert (IAVA) notifications from CYBERCOM.\n\nIf the system is in noncompliance with the organizational patching policy, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install OL 9 security patches and updates at the organizationally defined frequency. If system updates are installed via a centralized repository that is configured on the system, all updates can be installed with the following command:\n\n$ sudo dnf update -y",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271439r1091029_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 vendor packaged system security patches and updates must be installed and up to date.",
+  "tracking_issue": "TODO-V-271439",
+  "vuln_id": "V-271439"
+}

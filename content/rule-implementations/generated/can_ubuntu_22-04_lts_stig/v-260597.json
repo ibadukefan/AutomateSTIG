@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": "600",
+      "owner": null,
+      "path": "/var/log/audit/",
+      "type": "file_permission"
+    },
+    "description": "Ubuntu 22.04 LTS must be configured so that audit log files are not read- or write-accessible by unauthorized users.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260597"
+  },
+  "check_content_excerpt": "Verify that the audit log files have a mode of \"600\" or less permissive.  \n  \nDetermine where the audit logs are stored by using the following command:  \n  \n     $ sudo grep -iw log_file /etc/audit/auditd.conf \n     log_file = /var/log/audit/audit.log \n  \nUsing the path of the directory containing the audit logs, determine if the audit log files have a mode of \"600\" or less by using the following command:  \n  \n     $ sudo stat -c \"%n %a\" /var/log/audit/* \n     /var/log/audit/audit.log 600 \n  \nIf the audit log files have a mode more permissive than \"600\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit log files to have a mode of \"600\" or less permissive.  \n  \nUsing the path of the directory containing the audit logs, configure the audit log files to have a mode of \"600\" or less permissive by using the following command:  \n  \n     $ sudo chmod 600 /var/log/audit/*",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_permission",
+  "remediation": "planned",
+  "rule_id": "SV-260597r958434_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must be configured so that audit log files are not read- or write-accessible by unauthorized users.",
+  "tracking_issue": "TODO-V-260597",
+  "vuln_id": "V-260597"
+}

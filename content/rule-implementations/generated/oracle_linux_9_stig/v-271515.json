@@ -1,0 +1,46 @@
+{
+  "candidate_check": {
+    "check": {
+      "name": "opensc",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "OL 9 must have the opensc package installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271515"
+  },
+  "check_content_excerpt": "Verify that OL 9 has the opensc package installed with the following command:\n\n$ dnf list --installed opensc\nInstalled Packages\nopensc.x86_64                                     0.23.0-4.el9_3                                      @ol9_baseos_latest\n\nIf the opensc package is not installed, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the opensc package with the following command:\n \n$ sudo dnf install -y opensc",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "package",
+  "remediation": "planned",
+  "rule_id": "SV-271515r1091257_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must have the opensc package installed.",
+  "tracking_issue": "TODO-V-271515",
+  "vuln_id": "V-271515"
+}

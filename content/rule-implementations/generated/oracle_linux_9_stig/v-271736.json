@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 GRUB 2 is configured to disable interactive boot.\n\nCheck that the current GRUB 2 configuration disables the ability of systemd to spawn an interactive boot process with the following command:\n\n$ sudo grubby --info=ALL | grep args | grep 'systemd.confirm_spawn'\n\nIf any output is returned, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to allocate sufficient audit_backlog_limit to disable the ability of systemd to spawn an interactive boot process with the following command:\n\n$ sudo grubby --update-kernel=ALL --remove-args=\"systemd.confirm_spawn\"",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271736r1091920_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must disable the ability of systemd to spawn an interactive boot process.",
+  "tracking_issue": "TODO-V-271736",
+  "vuln_id": "V-271736"
+}

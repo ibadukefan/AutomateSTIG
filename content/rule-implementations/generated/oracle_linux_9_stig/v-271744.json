@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 is configured to notify the appropriate interactive users in the event of an audit processing failure.\n\nFind the alias maps that are being used with the following command:\n\n$ postconf alias_maps \nalias_maps = hash:/etc/aliases\n\nQuery the Postfix alias maps for an alias for the root user with the following command:\n\n$ postmap -q root hash:/etc/aliases\nisso\n\nIf an alias is not set, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to have mail aliases notify the ISSO and SA (at a minimum) in the event of an audit processing failure.\n\nEdit the aliases map file (by default /etc/aliases) used by Postfix and configure a root alias (using the user ISSO as an example):\n\nroot:    ISSO\n\nUpdate the aliases database with the command:\n\n$ sudo newaliases",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271744r1091944_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must have mail aliases to notify the information system security officer (ISSO) and system administrator (SA) (at a minimum) in the event of an audit processing failure.",
+  "tracking_issue": "TODO-V-271744",
+  "vuln_id": "V-271744"
+}

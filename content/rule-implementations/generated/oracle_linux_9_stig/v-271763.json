@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If postfix is not installed, this requirement is Not Applicable.\n\nVerify that OL 9 is configured to prevent unrestricted mail relaying with the following command:\n\n$ postconf -n smtpd_client_restrictions \nsmtpd_client_restrictions = permit_mynetworks,reject \n\nIf the \"smtpd_client_restrictions\" parameter contains any entries other than \"permit_mynetworks\" and \"reject\", and the additional entries have not been documented with the information system security officer (ISSO), this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Modify the postfix configuration file to restrict client connections to the local network with the following command:\n\n$ sudo postconf -e 'smtpd_client_restrictions = permit_mynetworks,reject'",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271763r1092001_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must be configured to prevent unrestricted mail relaying.",
+  "tracking_issue": "TODO-V-271763",
+  "vuln_id": "V-271763"
+}

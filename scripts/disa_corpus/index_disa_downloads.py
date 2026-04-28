@@ -38,6 +38,12 @@ SEED_DOWNLOADS=[
  {'title':'Oracle Linux 8 STIG SCAP 1.3 Benchmark V2R5','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip'},
  {'title':'Google Chrome STIG V2R11','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Google_Chrome_V2R11_STIG.zip'},
  {'title':'Google Chrome STIG SCAP 1.3 Benchmark V2R11','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip'},
+ {'title':'Canonical Ubuntu 22.04 LTS STIG V2R6','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip'},
+ {'title':'Canonical Ubuntu 22.04 LTS STIG SCAP 1.3 Benchmark V2R6','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip'},
+ {'title':'Oracle Linux 9 STIG V1R3','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Linux_9_V1R3_STIG.zip'},
+ {'title':'Oracle Linux 9 STIG SCAP 1.3 Benchmark V1R3','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip'},
+ {'title':'Microsoft Edge STIG V2R5','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Edge_V2R5_STIG.zip'},
+ {'title':'Microsoft Edge STIG SCAP 1.3 Benchmark V2R5','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip'},
 ]
 
 def classify(title,url):

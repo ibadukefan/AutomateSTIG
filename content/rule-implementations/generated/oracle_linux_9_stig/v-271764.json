@@ -1,0 +1,46 @@
+{
+  "candidate_check": {
+    "check": {
+      "name": "tftp-server",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "OL 9 Trivial File Transfer Protocol (TFTP) daemon must be configured to operate in secure mode if the TFTP server is required.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271764"
+  },
+  "check_content_excerpt": "Verify that OL 9 TFTP daemon is configured to operate in secure mode.\n\nCheck if a TFTP server is installed with the following command:\n\n$ sudo dnf list --installed tftp-server\nInstalled Packages\ntftp-server.x86_64                                       5.2-38.el9                                       @ol9_appstream\n\nNote: If a TFTP server is not installed, this requirement is Not Applicable.\n\nIf a TFTP server is installed, check for the server arguments with the following command: \n\n$ systemctl cat tftp | grep ExecStart\nExecStart=/usr/sbin/in.tftpd -s /var/lib/tftpboot\n\nIf the \"ExecStart\" line does not have a \"-s\" option, and a subdirectory is not assigned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the TFTP daemon to operate in secure mode.\n\nFind the path for the systemd service.\n\n$ sudo systemctl show tftp | grep FragmentPath=\nFragmentPath=/etc/systemd/system/tftp.service\n\nEdit the ExecStart line on that file to add the -s option with a subdirectory.\n\nExecStart=/usr/sbin/in.tftpd -s /var/lib/tftpboot",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "package",
+  "remediation": "planned",
+  "rule_id": "SV-271764r1092004_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 Trivial File Transfer Protocol (TFTP) daemon must be configured to operate in secure mode if the TFTP server is required.",
+  "tracking_issue": "TODO-V-271764",
+  "vuln_id": "V-271764"
+}

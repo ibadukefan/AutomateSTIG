@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 enforces password complexity by requiring at least one special character with the following command:\n\n$ sudo grep ocredit /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf \nocredit = -1 \n\nIf the value of \"ocredit\" is a positive number or is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to enforce password complexity by requiring at least one special character be used by setting the \"ocredit\" option.\n\nAdd the following line to \"/etc/security/pwquality.conf\" (or modify the line to have the required value):\n\nocredit = -1",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271636r1091620_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must enforce password complexity by requiring that at least one special character be used.",
+  "tracking_issue": "TODO-V-271636",
+  "vuln_id": "V-271636"
+}

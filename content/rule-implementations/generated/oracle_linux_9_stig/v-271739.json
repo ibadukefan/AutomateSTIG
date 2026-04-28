@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "systemd-journald",
+      "type": "service"
+    },
+    "description": "OL 9 systemd-journald service must be enabled.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271739"
+  },
+  "check_content_excerpt": "Verify that OL 9 systemd-journald is active with the following command:\n\n$ systemctl is-active systemd-journald\nactive\n\nIf the systemd-journald service is not active, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to enable the systemd-journald service with the following command:\n\n$ sudo systemctl enable --now systemd-journald",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "service",
+  "remediation": "planned",
+  "rule_id": "SV-271739r1091929_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 systemd-journald service must be enabled.",
+  "tracking_issue": "TODO-V-271739",
+  "vuln_id": "V-271739"
+}

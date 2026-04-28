@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/modprobe.conf",
+      "pattern": "atm",
+      "type": "file_content"
+    },
+    "description": "OL 9 must be configured to disable the Asynchronous Transfer Mode (ATM) kernel module.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271443"
+  },
+  "check_content_excerpt": "Verify that OL 9 disables the ability to load the ATM kernel module with the following command:\n\n$ grep -r atm /etc/modprobe.conf /etc/modprobe.d/* \ninstall atm /bin/false\nblacklist atm\n\nIf the command does not return any output, or the line is commented out, and use of ATM is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to prevent the atm kernel module from being loaded.\n\nAdd the following line to the file /etc/modprobe.d/atm.conf (or create atm.conf if it does not exist):\n\ninstall atm /bin/false\nblacklist atm",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-271443r1092463_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must be configured to disable the Asynchronous Transfer Mode (ATM) kernel module.",
+  "tracking_issue": "TODO-V-271443",
+  "vuln_id": "V-271443"
+}

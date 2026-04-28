@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify Ubuntu 22.04 LTS is configured to compare the system clock at least every 24 hours to the authoritative time source by using the following command: \n \nNote: If the system is not networked, this requirement is not applicable. \n \n     $ sudo grep maxpoll -ir /etc/chrony* \n     server tick.usno.navy.mil iburst maxpoll 16 \n  \nIf the \"maxpoll\" option is set to a number greater than 16, the line is commented out, or is missing, this is a finding. \n  \nVerify that the \"chrony.conf\" file is configured to an authoritative DOD time source by using the following command:  \n  \n     $ sudo grep -ir server /etc/chrony* \n     server tick.usno.navy.mil iburst maxpoll 16 \n     server tock.usno.navy.mil iburst maxpoll 16 \n     server ntp2.usno.navy.mil iburst maxpoll 16 \n  \nIf \"server\" is not defined, is not set to an authoritative DOD time source, is commented out, or missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to compare the system clock at least every 24 hours to the authoritative time source. \n \nAdd or modify the following line in the \"/etc/chrony/chrony.conf\" file: \n  \nserver [source] iburst maxpoll = 16  \n  \nRestart \"chrony.service\" for the changes to take effect by using the following command:  \n  \n     $ sudo systemctl restart chrony.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-260519r1038944_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must, for networked systems, compare internal information system clocks at least every 24 hours with a server synchronized to one of the redundant United States Naval Observatory (USNO) time servers, or a time server designated for the appropriate DOD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS).",
+  "tracking_issue": "TODO-V-260519",
+  "vuln_id": "V-260519"
+}

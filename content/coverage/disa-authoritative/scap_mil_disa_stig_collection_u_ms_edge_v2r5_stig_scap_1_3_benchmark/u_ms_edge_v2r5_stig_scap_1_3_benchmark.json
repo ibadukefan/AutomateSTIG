@@ -1,0 +1,837 @@
+{
+  "generated_from": "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip",
+  "rules": [
+    {
+      "check_id": "V-235720",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235720 from source identifier xccdf_mil.disa.stig_group_V-235720.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235720r960852_rule",
+      "severity": "medium",
+      "title": "Bypassing Microsoft Defender SmartScreen prompts for sites must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235720"
+    },
+    {
+      "check_id": "V-235721",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235721 from source identifier xccdf_mil.disa.stig_group_V-235721.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235721r960852_rule",
+      "severity": "medium",
+      "title": "Bypassing of Microsoft Defender SmartScreen warnings about downloads must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235721"
+    },
+    {
+      "check_id": "V-235723",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235723 from source identifier xccdf_mil.disa.stig_group_V-235723.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235723r960864_rule",
+      "severity": "medium",
+      "title": "InPrivate mode must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235723"
+    },
+    {
+      "check_id": "V-235724",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235724 from source identifier xccdf_mil.disa.stig_group_V-235724.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235724r960963_rule",
+      "severity": "medium",
+      "title": "Background processing must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235724"
+    },
+    {
+      "check_id": "V-235725",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235725 from source identifier xccdf_mil.disa.stig_group_V-235725.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235725r960963_rule",
+      "severity": "medium",
+      "title": "The ability of sites to show pop-ups must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235725"
+    },
+    {
+      "check_id": "V-235727",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235727 from source identifier xccdf_mil.disa.stig_group_V-235727.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235727r960963_rule",
+      "severity": "low",
+      "title": "Data Synchronization must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235727"
+    },
+    {
+      "check_id": "V-235728",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235728 from source identifier xccdf_mil.disa.stig_group_V-235728.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235728r960963_rule",
+      "severity": "medium",
+      "title": "Network prediction must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235728"
+    },
+    {
+      "check_id": "V-235729",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235729 from source identifier xccdf_mil.disa.stig_group_V-235729.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235729r960963_rule",
+      "severity": "medium",
+      "title": "Search suggestions must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235729"
+    },
+    {
+      "check_id": "V-235730",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235730 from source identifier xccdf_mil.disa.stig_group_V-235730.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235730r960963_rule",
+      "severity": "medium",
+      "title": "Importing of autofill form data must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235730"
+    },
+    {
+      "check_id": "V-235731",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235731 from source identifier xccdf_mil.disa.stig_group_V-235731.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235731r960963_rule",
+      "severity": "low",
+      "title": "Importing of browser settings must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235731"
+    },
+    {
+      "check_id": "V-235732",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235732 from source identifier xccdf_mil.disa.stig_group_V-235732.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235732r960963_rule",
+      "severity": "medium",
+      "title": "Importing of cookies must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235732"
+    },
+    {
+      "check_id": "V-235733",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235733 from source identifier xccdf_mil.disa.stig_group_V-235733.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235733r960963_rule",
+      "severity": "medium",
+      "title": "Importing of extensions must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235733"
+    },
+    {
+      "check_id": "V-235734",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235734 from source identifier xccdf_mil.disa.stig_group_V-235734.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235734r960963_rule",
+      "severity": "medium",
+      "title": "Importing of browsing history must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235734"
+    },
+    {
+      "check_id": "V-235735",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235735 from source identifier xccdf_mil.disa.stig_group_V-235735.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235735r960963_rule",
+      "severity": "medium",
+      "title": "Importing of home page settings must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235735"
+    },
+    {
+      "check_id": "V-235736",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235736 from source identifier xccdf_mil.disa.stig_group_V-235736.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235736r960963_rule",
+      "severity": "medium",
+      "title": "Importing of open tabs must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235736"
+    },
+    {
+      "check_id": "V-235737",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235737 from source identifier xccdf_mil.disa.stig_group_V-235737.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235737r960963_rule",
+      "severity": "medium",
+      "title": "Importing of payment info must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235737"
+    },
+    {
+      "check_id": "V-235738",
+      "check_pack": "microsoft_edge",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-235738 from source identifier xccdf_mil.disa.stig_group_V-235738.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235738r960963_rule",
+      "severity": "medium",
+      "title": "Importing of saved passwords must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/microsoft_edge.json",
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235738"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235739r960963_rule",
+      "severity": "medium",
+      "title": "Importing of search engine settings must be disabled.",
+      "tracking_issue": "TODO-V-235739",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235739"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235740r960963_rule",
+      "severity": "medium",
+      "title": "Importing of shortcuts must be disabled.",
+      "tracking_issue": "TODO-V-235740",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235740"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235741r1007485_rule",
+      "severity": "medium",
+      "title": "AutoplayAllowed must be set to disabled.",
+      "tracking_issue": "TODO-V-235741",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235741"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235742r960963_rule",
+      "severity": "medium",
+      "title": "WebUSB must be disabled.",
+      "tracking_issue": "TODO-V-235742",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235742"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235743r960963_rule",
+      "severity": "medium",
+      "title": "Google Cast must be disabled.",
+      "tracking_issue": "TODO-V-235743",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235743"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235744r960963_rule",
+      "severity": "medium",
+      "title": "Web Bluetooth API must be disabled.",
+      "tracking_issue": "TODO-V-235744",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235744"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235745r960963_rule",
+      "severity": "medium",
+      "title": "Autofill for Credit Cards must be disabled.",
+      "tracking_issue": "TODO-V-235745",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235745"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235746r960963_rule",
+      "severity": "medium",
+      "title": "Autofill for addresses must be disabled.",
+      "tracking_issue": "TODO-V-235746",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235746"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235747r961038_rule",
+      "severity": "medium",
+      "title": "Online revocation checks must be performed.",
+      "tracking_issue": "TODO-V-235747",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235747"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235748r960963_rule",
+      "severity": "medium",
+      "title": "Personalization of ads, search, and news by sending browsing history to Microsoft must be disabled.",
+      "tracking_issue": "TODO-V-235748",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235748"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235749r960963_rule",
+      "severity": "medium",
+      "title": "Site tracking of a user's location must be disabled.",
+      "tracking_issue": "TODO-V-235749",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235749"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235750r960864_rule",
+      "severity": "medium",
+      "title": "Browser history must be saved.",
+      "tracking_issue": "TODO-V-235750",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235750"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235751r960963_rule",
+      "severity": "low",
+      "title": "Edge development tools must be disabled.",
+      "tracking_issue": "TODO-V-235751",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235751"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235752r1156563_rule",
+      "severity": "low",
+      "title": "Download restrictions must be configured.",
+      "tracking_issue": "TODO-V-235752",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235752"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235754r960963_rule",
+      "severity": "medium",
+      "title": "Extensions installation must be blocklisted by default.",
+      "tracking_issue": "TODO-V-235754",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235754"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235756r961521_rule",
+      "severity": "medium",
+      "title": "The Password Manager must be disabled.",
+      "tracking_issue": "TODO-V-235756",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235756"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235760r960963_rule",
+      "severity": "medium",
+      "title": "Site isolation for every site must be enabled.",
+      "tracking_issue": "TODO-V-235760",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235760"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235761r1043177_rule",
+      "severity": "medium",
+      "title": "Supported authentication schemes must be configured.",
+      "tracking_issue": "TODO-V-235761",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235761"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235763r960963_rule",
+      "severity": "medium",
+      "title": "Microsoft Defender SmartScreen must be enabled.",
+      "tracking_issue": "TODO-V-235763",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235763"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235764r960963_rule",
+      "severity": "medium",
+      "title": "Microsoft Defender SmartScreen must be configured to block potentially unwanted apps.",
+      "tracking_issue": "TODO-V-235764",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235764"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235765r960963_rule",
+      "severity": "low",
+      "title": "The download location prompt must be configured.",
+      "tracking_issue": "TODO-V-235765",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235765"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235766r1051115_rule",
+      "severity": "medium",
+      "title": "Tracking of browsing activity must be disabled.",
+      "tracking_issue": "TODO-V-235766",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235766"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235767r960972_rule",
+      "severity": "medium",
+      "title": "A website's ability to query for payment methods must be disabled.",
+      "tracking_issue": "TODO-V-235767",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235767"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235768r1015298_rule",
+      "severity": "medium",
+      "title": "Suggestions of similar web pages in the event of a navigation error must be disabled.",
+      "tracking_issue": "TODO-V-235768",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235768"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235769r960981_rule",
+      "severity": "medium",
+      "title": "User feedback must be disabled.",
+      "tracking_issue": "TODO-V-235769",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235769"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235770r960984_rule",
+      "severity": "medium",
+      "title": "The collections feature must be disabled.",
+      "tracking_issue": "TODO-V-235770",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235770"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235771r960963_rule",
+      "severity": "medium",
+      "title": "The Share Experience feature must be disabled.",
+      "tracking_issue": "TODO-V-235771",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235771"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235772r960963_rule",
+      "severity": "medium",
+      "title": "Guest mode must be disabled.",
+      "tracking_issue": "TODO-V-235772",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235772"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235773r960993_rule",
+      "severity": "medium",
+      "title": "Relaunch notification must be required.",
+      "tracking_issue": "TODO-V-235773",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235773"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-235774r1015299_rule",
+      "severity": "medium",
+      "title": "The built-in DNS client must be disabled.",
+      "tracking_issue": "TODO-V-235774",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-235774"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-246736r960963_rule",
+      "severity": "medium",
+      "title": "Use of the QUIC protocol must be disabled.",
+      "tracking_issue": "TODO-V-246736",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-246736"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-260465r960963_rule",
+      "severity": "medium",
+      "title": "Visual Search must be disabled.",
+      "tracking_issue": "TODO-V-260465",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-260465"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-260466r960963_rule",
+      "severity": "medium",
+      "title": "Copilot must be disabled.",
+      "tracking_issue": "TODO-V-260466",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-260466"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-260467r960864_rule",
+      "severity": "medium",
+      "title": "Session only-based cookies must be enabled.",
+      "tracking_issue": "TODO-V-260467",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-260467"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-266981r1169858_rule",
+      "severity": "medium",
+      "title": "FriendlyURLs must be disabled.",
+      "tracking_issue": "TODO-V-266981",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-266981"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-279940r1156561_rule",
+      "severity": "medium",
+      "title": "Access to Microsoft 365 Copilot writing assistance must be disabled.",
+      "tracking_issue": "TODO-V-279940",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-279940"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-283439r1192850_rule",
+      "severity": "medium",
+      "title": "Spell checking provided by Microsoft Editor must be disabled.",
+      "tracking_issue": "TODO-V-283439",
+      "validated_by": [
+        "content/disa-corpus/artifacts/c6354533c163485e60d001809517533620413de36c2ce857c6448a7cf3da6db1/U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-283439"
+    }
+  ],
+  "source": "DISA XCCDF benchmark",
+  "status": "experimental",
+  "stig_id": "scap_mil.disa.stig_collection_U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark",
+  "total_rules": 54,
+  "version": "U_MS_Edge_V2R5_STIG_SCAP_1-3_Benchmark.zip"
+}

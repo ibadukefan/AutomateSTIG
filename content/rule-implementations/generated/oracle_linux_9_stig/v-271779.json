@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 world-writable directories have the sticky bit set.\n\nDetermine if all world-writable directories have the sticky bit set by running the following command:\n\n$ sudo find / -type d \\( -perm -0002 -a ! -perm -1000 \\) -print 2>/dev/null\ndrwxrwxrwt 7 root root 4096 Jul 26 11:19 /tmp\n\nIf any of the returned directories are world-writable and do not have the sticky bit set, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure all world-writable directories to have the sticky bit set to prevent unauthorized and unintended information transferred via shared system resources.\n\nSet the sticky bit on all world-writable directories using the command, replace \"[World-Writable Directory]\" with any directory path missing the sticky bit:\n\n$ sudo chmod a+t [World-Writable Directory]",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271779r1117267_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must be configured so that a sticky bit must be set on all public directories.",
+  "tracking_issue": "TODO-V-271779",
+  "vuln_id": "V-271779"
+}

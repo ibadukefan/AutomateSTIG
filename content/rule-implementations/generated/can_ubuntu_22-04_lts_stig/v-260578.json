@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify Ubuntu 22.04 LTS, for PKI-based authentication, uses local revocation data when unable to access it from the network by using the following command: \n \nNote: If smart card authentication is not being used on the system, this is not applicable.  \n  \n     $ grep cert_policy /etc/pam_pkcs11/pam_pkcs11.conf | grep  -E -- 'crl_auto|crl_offline' \n     cert_policy = ca,signature,ocsp_on,crl_auto; \n  \nIf \"cert_policy\" is not set to include \"crl_auto\" or \"crl_offline\", is commented out, or is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 22.04 LTS, for PKI-based authentication, to use local revocation data when unable to access the network to obtain it remotely.  \n  \nAdd or update the \"cert_policy\" option in \"/etc/pam_pkcs11/pam_pkcs11.conf\" to include \"crl_auto\" or \"crl_offline\".  \n  \ncert_policy = ca,signature,ocsp_on, crl_auto;  \n  \nIf the system is missing an \"/etc/pam_pkcs11/\" directory and an \"/etc/pam_pkcs11/pam_pkcs11.conf\", find an example to copy into place and modify accordingly at \"/usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-260578r1015021_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network.",
+  "tracking_issue": "TODO-V-260578",
+  "vuln_id": "V-260578"
+}

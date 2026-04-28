@@ -1,16 +1,16 @@
 {
-  "authoritative_rules": 5206,
-  "automated_authoritative_rules_after_candidate_promotion": 2194,
-  "generated_candidate_checks_with_fixture_evidence": 765,
+  "authoritative_rules": 6516,
+  "automated_authoritative_rules_after_candidate_promotion": 2559,
+  "generated_candidate_checks_with_fixture_evidence": 875,
   "implementation_specs_implemented": 451,
-  "implementation_specs_planned": 4917,
-  "implementation_specs_total": 5368,
-  "implementation_specs_with_candidate_checks": 765,
+  "implementation_specs_planned": 6077,
+  "implementation_specs_total": 6528,
+  "implementation_specs_with_candidate_checks": 875,
   "notes": [
     "Specs are generated for unsupported authoritative rules and retain prior implemented candidate specs for auditability.",
-    "Chrome registry policy candidates are inferred only when DISA prose includes a Windows regedit path, a concrete value name, and an expected value."
+    "Latest corpus expansion adds Ubuntu 22.04 LTS, Oracle Linux 9, and Microsoft Edge rule specs; new candidates remain fixture-backed scaffolding, not live production validation."
   ],
   "target": "unsupported_authoritative_rules == 0",
-  "unsupported_authoritative_rules": 3012,
-  "unsupported_with_specs": 3012
+  "unsupported_authoritative_rules": 3957,
+  "unsupported_with_specs": 3957
 }

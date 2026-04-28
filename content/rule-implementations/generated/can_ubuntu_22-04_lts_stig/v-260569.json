@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the Ubuntu operating stores only encrypted representations of passwords with the following command: \n \n     $ grep pam_unix.so /etc/pam.d/common-password \n     password [success=1 default=ignore] pam_unix.so obscure sha512 shadow rounds=100000\n \nIf \"sha512\" is missing from the \"pam_unix.so\" line, or if the \"rounds\" is set to less than 100000, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to store encrypted representations of passwords. \n \nAdd or modify the following line in the \"/etc/pam.d/common-password\" file: \n \npassword [success=1 default=ignore] pam_unix.so obscure sha512 shadow rounds=100000",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-260569r1101736_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must store only encrypted representations of passwords.",
+  "tracking_issue": "TODO-V-260569",
+  "vuln_id": "V-260569"
+}

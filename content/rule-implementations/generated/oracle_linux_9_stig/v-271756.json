@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If there is a documented and approved reason for not having data-at-rest encryption, this requirement is Not Applicable.\n\nVerify that OL 9 prevents unauthorized disclosure or modification of all information requiring at-rest protection by using disk encryption. \n\nVerify all system partitions are encrypted with the following command:\n\n$ sudo blkid\n/dev/map per/ol-root:  UUID=\"67b7d7fe-de60-6fd0-befb-e6748cf97743\" TYPE=\"crypto_LUKS\"\n\nEvery persistent disk partition present must be of type \"crypto_LUKS\". If any partitions other than the boot partition or pseudo file systems (such as /proc or /sys) or temporary file systems (that are tmpfs) are not type \"crypto_LUKS\", ask the administrator to indicate how the partitions are encrypted. If there is no evidence that these partitions are encrypted, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to prevent unauthorized modification of all information at rest by using disk encryption.\n\nEncrypting a partition in an already installed system is more difficult, because existing partitions will need to be resized and changed.\n\nTo encrypt an entire partition, dedicate a partition for encryption in the partition layout.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271756r1091980_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 local disk partitions must implement cryptographic mechanisms to prevent unauthorized disclosure or modification of all information that requires at rest protection.",
+  "tracking_issue": "TODO-V-271756",
+  "vuln_id": "V-271756"
+}

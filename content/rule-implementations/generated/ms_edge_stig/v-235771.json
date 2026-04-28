@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "The policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Configure the Share experience\" must be set to \"enabled\" with the option value set to \"Don't allow using the Share experience\".\n\nUse the Windows Registry Editor to navigate to the following key:\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\n\nIf the value for \"ConfigureShare\" is not set to \"REG_DWORD = 1\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Configure the Share experience\" to \"Don't allow using the Share experience\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-235771r960963_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_edge_stig/u_ms_edge_v2r5_stig.json",
+  "source_version": "U_MS_Edge_V2R5_STIG.zip",
+  "stig_id": "MS_Edge_STIG",
+  "title": "The Share Experience feature must be disabled.",
+  "tracking_issue": "TODO-V-235771",
+  "vuln_id": "V-235771"
+}

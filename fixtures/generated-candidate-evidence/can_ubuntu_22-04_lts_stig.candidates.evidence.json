@@ -1,0 +1,113 @@
+{
+  "candidate_checks": 3,
+  "cases": [
+    {
+      "check": {
+        "key": "kernel.dmesg_restrict",
+        "type": "sysctl"
+      },
+      "description": "Ubuntu 22.04 LTS must restrict access to the kernel message buffer.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.dmesg_restrict": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.dmesg_restrict": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260472"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "755",
+        "owner": null,
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 22.04 LTS must configure the \"/var/log\" directory to have mode \"755\" or less permissive.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/var/log": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-755",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/var/log": {
+            "exists": true,
+            "group": null,
+            "mode": "755",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260488"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "600",
+        "owner": null,
+        "path": "/var/log/audit/",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 22.04 LTS must be configured so that audit log files are not read- or write-accessible by unauthorized users.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/var/log/audit/": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-600",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/var/log/audit/": {
+            "exists": true,
+            "group": null,
+            "mode": "600",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260597"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "validated_candidates": 3
+}

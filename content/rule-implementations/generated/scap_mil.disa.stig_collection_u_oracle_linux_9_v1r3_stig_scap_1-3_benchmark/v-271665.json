@@ -1,0 +1,29 @@
+{
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-271665r1091707_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_oracle_linux_9_v1r3_stig_scap_1_3_benchmark/u_oracle_linux_9_v1r3_stig_scap_1_3_benchmark.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark",
+  "title": "OL 9 must mount /var/tmp with the nosuid option.",
+  "tracking_issue": "TODO-V-271665",
+  "vuln_id": "V-271665"
+}

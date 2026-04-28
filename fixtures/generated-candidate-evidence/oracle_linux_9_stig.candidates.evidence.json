@@ -1,0 +1,2963 @@
+{
+  "candidate_checks": 107,
+  "cases": [
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/lib/systemd/system/emergency.service",
+        "pattern": "sulogin-shell",
+        "type": "file_content"
+      },
+      "description": "OL 9 must require authentication to access emergency mode.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/usr/lib/systemd/system/emergency.service": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/usr/lib/systemd/system/emergency.service": "before\nsulogin-shell\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271441"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/lib/systemd/system/rescue.service",
+        "pattern": "sulogin",
+        "type": "file_content"
+      },
+      "description": "OL 9 must require authentication to access single-user mode.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/usr/lib/systemd/system/rescue.service": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/usr/lib/systemd/system/rescue.service": "before\nsulogin\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271442"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "atm",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured to disable the Asynchronous Transfer Mode (ATM) kernel module.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.conf": "before\natm\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271443"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "can",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured to disable the Controller Area Network (CAN) kernel module.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.conf": "before\ncan\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271444"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "firewire-core",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured to disable the FireWire kernel module.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.conf": "before\nfirewire-core\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271445"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "sctp",
+        "type": "file_content"
+      },
+      "description": "OL 9 must disable the Stream Control Transmission Protocol (SCTP) kernel module.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.conf": "before\nsctp\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271446"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "tipc",
+        "type": "file_content"
+      },
+      "description": "OL 9 must disable the Transparent Inter Process Communication (TIPC) kernel module.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.conf": "before\ntipc\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271447"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "cramfs",
+        "type": "file_content"
+      },
+      "description": "OL 9 must disable mounting of cramfs.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\ncramfs\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271448"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "bluetooth",
+        "type": "file_content"
+      },
+      "description": "OL 9 Bluetooth must be disabled.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.conf": "before\nbluetooth\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271449"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "usb-storage",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured to disable USB mass storage.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.conf": "before\nusb-storage\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271450"
+    },
+    {
+      "check": {
+        "name": "nfs-utils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have the nfs-utils package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "nfs-utils": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "nfs-utils": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271456"
+    },
+    {
+      "check": {
+        "name": "telnet-server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have the telnet-server package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "telnet-server": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "telnet-server": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271458"
+    },
+    {
+      "check": {
+        "name": "gssproxy",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have the gssproxy package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "gssproxy": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "gssproxy": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271459"
+    },
+    {
+      "check": {
+        "name": "iprutils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have the iprutils package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "iprutils": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "iprutils": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271460"
+    },
+    {
+      "check": {
+        "name": "tuned",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have the tuned package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "tuned": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "tuned": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271461"
+    },
+    {
+      "check": {
+        "name": "server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have a File Transfer Protocol (FTP) server package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "server": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "server": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271462"
+    },
+    {
+      "check": {
+        "name": "server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have a Trivial File Transfer Protocol (TFTP) server package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "server": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "server": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271463"
+    },
+    {
+      "check": {
+        "name": "quagga",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have the quagga package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "quagga": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "quagga": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271464"
+    },
+    {
+      "check": {
+        "name": "sendmail",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have the sendmail package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "sendmail": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "sendmail": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271466"
+    },
+    {
+      "check": {
+        "name": "policycoreutils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have policycoreutils package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "policycoreutils": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "policycoreutils": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271467"
+    },
+    {
+      "check": {
+        "name": "policycoreutils-python-utils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 policycoreutils-python-utils package must be installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "policycoreutils-python-utils": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "policycoreutils-python-utils": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271468"
+    },
+    {
+      "check": {
+        "name": "firewalld",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the firewalld package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "firewalld": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "firewalld": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271469"
+    },
+    {
+      "check": {
+        "name": "sudo",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the sudo package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "sudo": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "sudo": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271474"
+    },
+    {
+      "check": {
+        "name": "crypto-policies",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the crypto-policies package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "crypto-policies": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "crypto-policies": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271477"
+    },
+    {
+      "check": {
+        "name": "openssh-server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 networked systems must have SSH installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "openssh-server": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "openssh-server": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271482"
+    },
+    {
+      "check": {
+        "name": "openssh-clients",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the openssh-clients package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "openssh-clients": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "openssh-clients": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271488"
+    },
+    {
+      "check": {
+        "name": "openssl-pkcs11",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the openssl-pkcs11 package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "openssl-pkcs11": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "openssl-pkcs11": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271491"
+    },
+    {
+      "check": {
+        "name": "libpam-pkcs11",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must implement multifactor authentication for remote access to privileged accounts in such a way that one of the factors is provided by a device separate from the system gaining access.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "libpam-pkcs11": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "libpam-pkcs11": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271492"
+    },
+    {
+      "check": {
+        "name": "sssd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the SSSD package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "sssd": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "sssd": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271493"
+    },
+    {
+      "check": {
+        "name": "s-nail",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the s-nail package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "s-nail": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "s-nail": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271495"
+    },
+    {
+      "check": {
+        "name": "aide",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the Advanced Intrusion Detection Environment (AIDE) package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "aide": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "aide": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271496"
+    },
+    {
+      "check": {
+        "name": "chrony",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the chrony package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "chrony": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "chrony": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271501"
+    },
+    {
+      "check": {
+        "name": "usbguard",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the USBGuard package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "usbguard": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "usbguard": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271503"
+    },
+    {
+      "check": {
+        "name": "fapolicyd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the fapolicy module installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "fapolicyd": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "fapolicyd": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271506"
+    },
+    {
+      "check": {
+        "name": "rsyslog",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the rsyslog package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rsyslog": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rsyslog": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271508"
+    },
+    {
+      "check": {
+        "name": "rsyslog-gnutls",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the packages required for encrypting offloaded audit logs installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rsyslog-gnutls": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rsyslog-gnutls": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271510"
+    },
+    {
+      "check": {
+        "name": "rng-tools",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the rng-tools package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rng-tools": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rng-tools": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271512"
+    },
+    {
+      "check": {
+        "name": "nss-tools",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the nss-tools package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "nss-tools": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "nss-tools": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271513"
+    },
+    {
+      "check": {
+        "name": "pcsc-lite",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the pcsc-lite package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "pcsc-lite": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "pcsc-lite": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271514"
+    },
+    {
+      "check": {
+        "name": "opensc",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the opensc package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "opensc": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "opensc": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271515"
+    },
+    {
+      "check": {
+        "name": "libreswan",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the libreswan package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "libreswan": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "libreswan": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271517"
+    },
+    {
+      "check": {
+        "name": "gnutls-utils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the gnutls-utils package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "gnutls-utils": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "gnutls-utils": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271518"
+    },
+    {
+      "check": {
+        "name": "audit",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the audit package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "audit": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "audit": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271519"
+    },
+    {
+      "check": {
+        "name": "audispd-plugins",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the audispd-plugins package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "audispd-plugins": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "audispd-plugins": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271521"
+    },
+    {
+      "check": {
+        "name": "--queryformat",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must ensure cryptographic verification of vendor software packages.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "--queryformat": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "--queryformat": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271526"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "local_events",
+        "type": "file_content"
+      },
+      "description": "OL 9 audit system must audit local events.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nlocal_events\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271586"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/etc/audit/rules.d/",
+        "type": "file_permission"
+      },
+      "description": "OL 9 must allow only the information system security manager (ISSM) (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/audit/rules.d/": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/audit/rules.d/": {
+            "exists": true,
+            "group": null,
+            "mode": "0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271587"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/etc/audit/auditd.conf",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/audit/auditd.conf file must have 0640 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/audit/auditd.conf": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/audit/auditd.conf": {
+            "exists": true,
+            "group": null,
+            "mode": "0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271588"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aliases",
+        "pattern": "postmaster:\\s*root$",
+        "type": "file_content"
+      },
+      "description": "OL 9 must forward mail from postmaster to the root account using a postfix alias.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/aliases": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/aliases": "before\npostmaster:\\s*root$\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271589"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.",
+        "pattern": "umount",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured so that successful/unsuccessful uses of the umount system call generate an audit record.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.": "before\numount\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271594"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/password-auth",
+        "pattern": "pam_pwquality",
+        "type": "file_content"
+      },
+      "description": "OL 9 must ensure the password complexity module is enabled in the password-auth file.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/password-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/password-auth": "before\npam_pwquality\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271614"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/password-auth",
+        "pattern": "rounds",
+        "type": "file_content"
+      },
+      "description": "OL 9 password-auth must be configured to use a sufficient number of hashing rounds.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/password-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/password-auth": "before\nrounds\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271625"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "rounds",
+        "type": "file_content"
+      },
+      "description": "OL 9 system-auth must be configured to use a sufficient number of hashing rounds.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\nrounds\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271626"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "minlen",
+        "type": "file_content"
+      },
+      "description": "OL 9 passwords must be created with a minimum of 15 characters.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nminlen\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271633"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent a user from overriding the disabling of the graphical user interface automount function.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nsystem-db\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271678"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent a user from overriding the disabling of the graphical user interface autorun function.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nsystem-db\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271679"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent a user from overriding the screensaver lock-enabled setting for the graphical user interface.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nsystem-db\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271681"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent a user from overriding the session idle-delay setting for the graphical user interface.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nsystem-db\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271682"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent a user from overriding the session lock-delay setting for the graphical user interface.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nsystem-db\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271683"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent a user from overriding the disabling of the graphical user smart card removal action.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nsystem-db\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271684"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent a user from overriding the disable-restart-buttons setting for the graphical user interface.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nsystem-db\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271686"
+    },
+    {
+      "check": {
+        "key": "user.max_user_namespaces",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must disable the use of user namespaces.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "user.max_user_namespaces": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "user.max_user_namespaces": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271727"
+    },
+    {
+      "check": {
+        "key": "kernel.core_pattern",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must disable the kernel.core_pattern.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "|/bin/false"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.core_pattern": "unexpected-|/bin/false"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.core_pattern": "|/bin/false"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271728"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "systemd-journald",
+        "type": "service"
+      },
+      "description": "OL 9 systemd-journald service must be enabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "systemd-journald": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "systemd-journald": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271739"
+    },
+    {
+      "check": {
+        "key": "fs.protected_hardlinks",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must enable kernel parameters to enforce discretionary access control on hardlinks.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "fs.protected_hardlinks": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "fs.protected_hardlinks": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271740"
+    },
+    {
+      "check": {
+        "key": "fs.protected_symlinks",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must enable kernel parameters to enforce discretionary access control on symlinks.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "fs.protected_symlinks": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "fs.protected_symlinks": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271741"
+    },
+    {
+      "check": {
+        "key": "kernel.dmesg_restrict",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must restrict access to the kernel message buffer.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.dmesg_restrict": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.dmesg_restrict": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271745"
+    },
+    {
+      "check": {
+        "key": "kernel.perf_event_paranoid",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must prevent kernel profiling by nonprivileged users.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "2"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.perf_event_paranoid": "unexpected-2"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.perf_event_paranoid": "2"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271746"
+    },
+    {
+      "check": {
+        "key": "kernel.kptr_restrict",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must restrict exposed kernel pointer addresses access.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.kptr_restrict": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.kptr_restrict": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271747"
+    },
+    {
+      "check": {
+        "key": "kernel.unprivileged_bpf_disabled",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must disable access to network bpf system call from nonprivileged processes.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.unprivileged_bpf_disabled": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.unprivileged_bpf_disabled": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271748"
+    },
+    {
+      "check": {
+        "key": "kernel.yama.ptrace_scope",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must restrict usage of ptrace to descendant processes.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.yama.ptrace_scope": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.yama.ptrace_scope": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271749"
+    },
+    {
+      "check": {
+        "key": "kernel.randomize_va_space",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must implement address space layout randomization (ASLR) to protect its memory from unauthorized code execution.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "2"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.randomize_va_space": "unexpected-2"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.randomize_va_space": "2"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271761"
+    },
+    {
+      "check": {
+        "name": "tftp-server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 Trivial File Transfer Protocol (TFTP) daemon must be configured to operate in secure mode if the TFTP server is required.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "tftp-server": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "tftp-server": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271764"
+    },
+    {
+      "check": {
+        "key": "kernel.kexec_load_disabled",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must prevent the loading of a new kernel for later execution.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.kexec_load_disabled": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.kexec_load_disabled": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271766"
+    },
+    {
+      "check": {
+        "key": "net.core.bpf_jit_harden",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must enable hardening for the Berkeley Packet Filter (BPF) just-in-time compiler.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "2"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.core.bpf_jit_harden": "unexpected-2"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.core.bpf_jit_harden": "2"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271768"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/ssh/",
+        "type": "file_permission"
+      },
+      "description": "OL 9 SSH public host key files must have mode 0644 or less permissive.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/ssh/": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/ssh/": {
+            "exists": true,
+            "group": null,
+            "mode": "0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271772"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/group",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/group file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/group": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/group": {
+            "exists": true,
+            "group": null,
+            "mode": "0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271798"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/group-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/group- file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/group-": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/group-": {
+            "exists": true,
+            "group": null,
+            "mode": "0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271799"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
+        "path": "/etc/gshadow-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/gshadow- file must have mode 0000 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/gshadow-": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/gshadow-": {
+            "exists": true,
+            "group": null,
+            "mode": "0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271805"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/passwd",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/passwd file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/passwd": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/passwd": {
+            "exists": true,
+            "group": null,
+            "mode": "0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271810"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/passwd-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/passwd- file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/passwd-": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/passwd-": {
+            "exists": true,
+            "group": null,
+            "mode": "0644",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271811"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
+        "path": "/etc/shadow-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/shadow- file must have mode 0000 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/shadow-": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/shadow-": {
+            "exists": true,
+            "group": null,
+            "mode": "0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271816"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
+        "path": "/etc/shadow",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/shadow file must have mode 0000 to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/shadow": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/shadow": {
+            "exists": true,
+            "group": null,
+            "mode": "0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271817"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0755",
+        "owner": null,
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "OL 9 audit tools must have a mode of 0755 or less permissive.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/sbin/auditctl": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0755",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/sbin/auditctl": {
+            "exists": true,
+            "group": null,
+            "mode": "0755",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271826"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0600",
+        "owner": null,
+        "path": "/etc/crontab",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/crontab file must have mode 0600.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/crontab": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0600",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/crontab": {
+            "exists": true,
+            "group": null,
+            "mode": "0600",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271830"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "cron",
+        "type": "file_content"
+      },
+      "description": "OL 9 must use cron logging.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\ncron\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271853"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must ignore Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271864"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not forward Internet Protocol version 4 (IPv4) source-routed packets.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271865"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.log_martians",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must log IPv4 packets with impossible addresses.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.log_martians": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.log_martians": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271866"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.log_martians",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must log IPv4 packets with impossible addresses by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.log_martians": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.log_martians": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271867"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.rp_filter",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must use reverse path filtering on all IPv4 interfaces.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.rp_filter": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.rp_filter": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271868"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must prevent IPv4 Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271869"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not forward IPv4 source-routed packets by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271870"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.rp_filter",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must use a reverse-path filter for IPv4 network traffic, when possible, by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.rp_filter": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.rp_filter": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271871"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.forwarding",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not enable IPv4 packet forwarding unless the system is a router.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.forwarding": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.forwarding": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271872"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.icmp_echo_ignore_broadcasts",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not respond to Internet Control Message Protocol (ICMP) echoes sent to a broadcast address.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.icmp_echo_ignore_broadcasts": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.icmp_echo_ignore_broadcasts": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271873"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.icmp_ignore_bogus_error_responses",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must limit the number of bogus Internet Control Message Protocol (ICMP) response errors logs.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.icmp_ignore_bogus_error_responses": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.icmp_ignore_bogus_error_responses": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271874"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.send_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not send Internet Control Message Protocol (ICMP) redirects.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.send_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.send_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271875"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.send_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not allow interfaces to perform Internet Control Message Protocol (ICMP) redirects by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.send_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.send_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271876"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_ra",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not accept router advertisements on all IPv6 interfaces.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_ra": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_ra": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271877"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must ignore IPv6 Internet Control Message Protocol (ICMP) redirect messages.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271878"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not forward IPv6 source-routed packets.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271879"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.forwarding",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not enable IPv6 packet forwarding unless the system is a router.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.forwarding": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.forwarding": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271880"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_ra",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not accept router advertisements on all IPv6 interfaces by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_ra": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_ra": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271881"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must prevent IPv6 Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271882"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not forward IPv6 source-routed packets by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271883"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.tcp_syncookies",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must be configured to use TCP syncookies.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.tcp_syncookies": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.tcp_syncookies": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271884"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "validated_candidates": 107
+}

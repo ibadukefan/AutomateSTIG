@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "The policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Allow websites to query for available payment methods\" must be set to \"disabled\".\n\nUse the Windows Registry Editor to navigate to the following key:\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\n\nIf the value for PaymentMethodQueryEnabled is not set to \"REG_DWORD = 0\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Allow websites to query for available payment methods\" to \"disabled\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-235767r960972_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_edge_stig/u_ms_edge_v2r5_stig.json",
+  "source_version": "U_MS_Edge_V2R5_STIG.zip",
+  "stig_id": "MS_Edge_STIG",
+  "title": "A website's ability to query for payment methods must be disabled.",
+  "tracking_issue": "TODO-V-235767",
+  "vuln_id": "V-235767"
+}

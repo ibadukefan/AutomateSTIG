@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify Ubuntu 22.04 LTS has a graphical user interface session lock enabled by using the following command: \n  \nNote: If no graphical user interface is installed, this requirement is not applicable. \n  \n     $ sudo gsettings get org.gnome.desktop.screensaver lock-enabled \n     true \n  \nIf \"lock-enabled\" is not set to \"true\", is commented out, or is missing, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to allow a user to lock the current graphical user interface session.   \n  \nCreate or edit a file named /etc/dconf/db/local.d/00-screensaver with the following contents:\n\n[org/gnome/desktop/screensaver]\nlock-enabled=true",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-260537r1069101_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must retain a user's session lock until that user reestablishes access using established identification and authentication procedures.",
+  "tracking_issue": "TODO-V-260537",
+  "vuln_id": "V-260537"
+}

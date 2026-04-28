@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 SSH server is configured to use only ciphers employing FIPS 140-3 approved algorithms.\n\nTo verify the ciphers in the systemwide SSH configuration file, use the following command:\n\n$ sudo grep -i Ciphers /etc/crypto-policies/back-ends/opensshserver.config \nCiphers aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr\n\nIf the cipher entries in the \"opensshserver.config\" file have any ciphers other than \"aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr\", or they are missing or commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the OL 9 SSH server to use only ciphers employing FIPS 140-3 approved algorithms.\n\nReinstall crypto-policies with the following command:\n\n$ sudo dnf -y reinstall crypto-policies\n\nSet the crypto-policy to FIPS with the following command:\n\n$ sudo update-crypto-policies --set FIPS\n\nSetting system policy to FIPS\n\nNote: Systemwide crypto policies are applied on application startup. It is recommended to restart the system for the change of policies to fully take place.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271485r1092625_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 SSH server must be configured to use only ciphers employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections.",
+  "tracking_issue": "TODO-V-271485",
+  "vuln_id": "V-271485"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that an audit event is generated for any successful/unsuccessful use of the \"chage\" command by using the following command:  \n  \n     $ sudo auditctl -l | grep -w chage \n     -a always,exit -S all -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-chage \n  \nIf the command does not return a line that matches the example or the line is commented out, this is a finding.  \n  \nNote: The \"key=\" value is arbitrary and can be different from the example output above.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit system to generate an audit event for any successful/unsuccessful uses of the \"chage\" command.   \n  \nAdd or modify the following line in the \"/etc/audit/rules.d/stig.rules\" file: \n  \n-a always,exit -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=unset -k privileged-chage \n \nTo reload the rules file, issue the following command:  \n  \n     $ sudo augenrules --load \n \nNote: The \"-k <keyname>\" at the end of the line gives the rule a unique meaning to help during an audit investigation. The <keyname> does not need to match the example above.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-260606r958446_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the chage command.",
+  "tracking_issue": "TODO-V-260606",
+  "vuln_id": "V-260606"
+}
