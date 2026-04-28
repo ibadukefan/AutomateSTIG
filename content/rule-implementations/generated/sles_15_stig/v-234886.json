@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system configures the Linux PAM to only store encrypted representations of passwords. All account passwords must be hashed with SHA512 encryption strength.\n\nCheck that PAM is configured to create SHA512 hashed passwords by running the following command:\n\n> grep pam_unix.so /etc/pam.d/common-password\npassword required pam_unix.so sha512\n\nIf the command does not return anything or the returned line is commented out, has a second column value different from \"required\", or does not contain \"sha512\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system Linux PAM to only store encrypted representations of passwords. All account passwords must be hashed with SHA512 encryption strength.\n\nEdit \"/etc/pam.d/common-password\" and edit the line containing \"pam_unix.so\" to contain the SHA512 keyword after third column. Remove the \"nullok\" option.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234886r1009625_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must configure the Linux Pluggable Authentication Modules (PAM) to only store encrypted representations of passwords.",
+  "tracking_issue": "TODO-V-234886",
+  "vuln_id": "V-234886"
+}

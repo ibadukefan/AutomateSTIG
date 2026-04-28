@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system has the packages required for multifactor authentication installed.\n\nCheck for the presence of the packages required to support multifactor authentication with the following commands:\n\n> zypper info pam_pkcs11 | grep -i installed\n\n> zypper info mozilla-nss | grep -i installed\n\n> zypper info mozilla-nss-tools | grep -i installed\n\n> zypper info pcsc-ccid | grep -i installed\n\n> zypper info pcsc-lite | grep -i installed\n\n> zypper info pcsc-tools | grep -i installed\n\n> zypper info opensc | grep -i installed\n\n> zypper info coolkey | grep -i installed\n\nIf any of the packages required for multifactor authentication are not installed, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to implement multifactor authentication by installing the required packages.\n\nInstall the packages required to support multifactor authentication with the following commands:\n\n> zypper install pam_pkcs11\n\n> zypper install mozilla-nss\n\n> zypper install mozilla-nss-tools\n\n> zypper install pcsc-ccid\n\n> zypper install pcsc-lite\n\n> zypper install pcsc-tools\n\n> zypper install opensc\n\n> zypper install coolkey\n\nAdditional information on the configuration of multifactor authentication on the SUSE operating system can be found at https://www.suse.com/communities/blog/configuring-smart-card-authentication-suse-linux-enterprise/.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234854r1009615_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must have the packages required for multifactor authentication to be installed.",
+  "tracking_issue": "TODO-V-234854",
+  "vuln_id": "V-234854"
+}

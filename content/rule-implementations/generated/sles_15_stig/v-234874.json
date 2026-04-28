@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify all SUSE operating system accounts are assigned to an active system, application, or user account.\n\nObtain the list of authorized system accounts from the Information System Security Officer (ISSO).\n\nCheck the system accounts on the system with the following command:\n\n> more /etc/passwd\nroot:x:0:0:root:/root:/bin/bash\n...\ngames:x:12:100:Games account:/var/games:/bin/bash\n\nAccounts such as \"games\" and \"gopher\" are not authorized accounts as they do not support authorized system functions. \n\nIf the accounts on the system do not match the provided documentation, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system so all accounts on the system are assigned to an active system, application, or user account. \n\nRemove accounts that do not support approved system activities or that allow for a normal user to perform administrative-level actions. \n\nDocument all authorized accounts on the system.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234874r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must not have unnecessary accounts.",
+  "tracking_issue": "TODO-V-234874",
+  "vuln_id": "V-234874"
+}

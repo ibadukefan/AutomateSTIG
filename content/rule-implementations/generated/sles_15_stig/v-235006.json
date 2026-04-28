@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system is configured to not overwrite PAM configuration on package changes.\n\nCheck that soft links between PAM configuration files are removed with the following command:\n\n> find /etc/pam.d/ -type l -iname \"common-*\"\n\nIf any results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Copy the PAM configuration files to their static locations and remove the SUSE operating system soft links for the PAM configuration files with the following command:\n\n> sudo sh -c 'for X in /etc/pam.d/common-*-pc; do cp -ivp --remove-destination $X ${X:0:-3}; done'\n\nAdditional information on the configuration of multifactor authentication on the SUSE operating system can be found at https://www.suse.com/communities/blog/configuring-smart-card-authentication-suse-linux-enterprise/.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-235006r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must be configured to not overwrite Pluggable Authentication Modules (PAM) configuration on package changes.",
+  "tracking_issue": "TODO-V-235006",
+  "vuln_id": "V-235006"
+}

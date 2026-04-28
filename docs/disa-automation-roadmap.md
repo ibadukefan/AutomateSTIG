@@ -17,7 +17,7 @@ This roadmap implements the factory required to pursue every-DISA-STIG coverage.
 Completed factory layers:
 
 - current check-pack coverage gates for all existing AutomateSTIG check packs;
-- expanded seed authoritative DISA corpus for Windows 10, Windows 11, Windows Server 2019, Windows Server 2022, Windows Server 2025, RHEL 7, RHEL 8, RHEL 9, Ubuntu 20.04, Ubuntu 22.04, Ubuntu 24.04, Oracle Linux 8, Oracle Linux 9, Google Chrome, Microsoft Edge, Cisco NX-OS Switch, Apache Server 2.4 Windows, Apache Tomcat Application Server 9, Apple macOS 15, Microsoft SQL Server 2022, Microsoft IIS 10.0, and Microsoft Office 365 ProPlus artifacts;
+- expanded seed authoritative DISA corpus for Windows 10, Windows 11, Windows Server 2019, Windows Server 2022, Windows Server 2025, RHEL 7, RHEL 8, RHEL 9, Ubuntu 20.04, Ubuntu 22.04, Ubuntu 24.04, Oracle Linux 8, Oracle Linux 9, SUSE Linux Enterprise Server 15, Google Chrome, Mozilla Firefox, Microsoft Edge, Adobe Acrobat Pro/Reader DC Continuous Track, Cisco NX-OS Switch, Apache Server 2.4 Windows, Apache Tomcat Application Server 9, Apple macOS 15, Microsoft SQL Server 2022, Microsoft IIS 10.0, and Microsoft Office 365 ProPlus artifacts;
 - corpus indexing/fetch/extraction/diff scripts;
 - scheduled corpus freshness workflow;
 - generated per-rule implementation backlog specs for every currently unsupported authoritative DISA rule;
@@ -28,10 +28,10 @@ Completed factory layers:
 
 Current authoritative corpus tracked in-repo:
 
-- authorized public DISA artifacts: 37
-- authoritative coverage manifests: 37
-- authoritative rules: 7,561
-- mapped automated checks after fixture-backed candidate and SCAP/manual canonical promotion: 2,607
+- authorized public DISA artifacts: 46
+- authoritative coverage manifests: 46
+- authoritative rules: 8,077
+- mapped automated checks after fixture-backed candidate and SCAP/manual canonical promotion: 2,780
   - mapped before Linux/corpus expansion: 207
   - mapped before SCAP/manual canonical alignment and Windows 10/RHEL 7 expansion: 705
   - mapped before Ubuntu/Oracle Linux/Chrome expansion and Linux service/file-permission templates: 1,794
@@ -39,11 +39,12 @@ Current authoritative corpus tracked in-repo:
   - mapped before Ubuntu 22.04/Oracle Linux 9/Microsoft Edge corpus expansion: 2,194
   - mapped before Cisco NX-OS/Apache/macOS corpus expansion: 2,559
   - mapped before Windows Server 2025/SQL Server/IIS/Office corpus expansion: 2,578
+  - mapped before Firefox/Adobe/SUSE corpus expansion: 2,607
   - generated candidate checks with deterministic pass/fail fixture evidence: 974
-- remaining unsupported authoritative rules: 4,954
-- generated planned specs for remaining unsupported rules: 4,954
+- remaining unsupported authoritative rules: 5,297
+- generated planned specs for remaining unsupported rules: 5,297
 
-The corpus grew from 32 to 37 authorized public DISA artifacts and from 6,882 to 7,561 authoritative rules in this expansion pass by adding Microsoft Windows Server 2025 V1R1, Microsoft SQL Server 2022 Y26M04, Microsoft IIS 10.0 Y26M04, Microsoft Office 365 ProPlus V3R5 manual STIG, and Microsoft Office 365 ProPlus V3R8 SCAP benchmark artifacts. Fixture-backed candidate promotion increased mapped/automated rules from 2,578 to 2,607 and generated candidate checks from 875 to 974, while unsupported rules increased to 4,954 because the authoritative corpus is larger. This is still not production-complete or all-DISA complete. The production target remains zero unsupported rules across the full tracked public DISA corpus, with every rule classified as machine-verifiable automated, scanner-import-verifiable, automated manual-evidence workflow, or not-applicable-with-proof.
+The corpus grew from 37 to 46 authorized public DISA artifacts and from 7,561 to 8,077 authoritative rules in this expansion pass by adding Mozilla Firefox V6R7 manual, Firefox Windows V6R7 SCAP, Firefox Linux V6R6 SCAP, Adobe Acrobat Pro DC Continuous V2R1 manual/SCAP, Adobe Acrobat Reader DC Continuous V2R1 manual and V2R4 SCAP, and SUSE Linux Enterprise Server 15 V2R7 manual/V2R8 SCAP artifacts. Fixture-backed candidate promotion increased mapped/automated rules from 2,607 to 2,780, while unsupported rules increased to 5,297 because the authoritative corpus is larger. This is still not production-complete or all-DISA complete. The production target remains zero unsupported rules across the full tracked public DISA corpus, with every rule classified as machine-verifiable automated, scanner-import-verifiable, automated manual-evidence workflow, or not-applicable-with-proof.
 
 The next burn-down phase is to deepen SCAP/OVAL semantics and infer/fixture-validate additional reusable Linux, Windows, browser, and application templates, including auditd, sshd, PAM, crypto policy, kernel arguments, local security policy, audit policy, local users/groups, file ACLs, PowerShell, WMI/CIM, browser policy registry/plist/json sources, and application configuration collectors. Live-asset validation is still required before claiming any generated candidate as production validated.
 

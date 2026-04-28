@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system checks the baseline configuration for unauthorized changes at least once weekly.\n\nNote: A file integrity tool other than AIDE may be used, but the tool must be executed at least once per week.\n\nCheck for the presence of a cron job running daily or weekly on the system that executes AIDE to scan for changes to the system baseline. The command used in the following example looks at the daily cron job:\n\nCheck the \"/etc/cron\" subdirectories for a \"crontab\" file controlling the execution of the file integrity application. For example, if AIDE is installed on the system, use the following command:\n\n     > sudo grep -R aide /etc/crontab /etc/cron.*\n     /etc/crontab: 30 04 * * * /etc/aide\n\nIf the file integrity application does not exist, or a \"crontab\" file does not exist in \"/etc/crontab\", the \"/etc/cron.daily\" subdirectory, or \"/etc/cron.weekly\" subdirectory, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to check the baseline configuration for unauthorized changes at least once weekly.\n\nIf the \"aide\" package is not installed, install it with the following command:\n\n     > sudo zypper in aide\n\nConfigure the file integrity tool to automatically run on the system at least weekly. The following example output is generic. It will set cron to run AIDE weekly, but other file integrity tools may be used:\n\n     > cat /etc/cron.weekly/aide \n     0 0 * * * /usr/bin/aide --check | /bin/mail -s \"$HOSTNAME - Daily AIDE integrity check run\" root@example_server_name.mil\n\nNote: Per requirement SLES-15-010418, the \"mailx\" package must be installed on the system to enable email functionality.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234851r1184456_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "Advanced Intrusion Detection Environment (AIDE) must verify the baseline SUSE operating system configuration at least weekly.",
+  "tracking_issue": "TODO-V-234851",
+  "vuln_id": "V-234851"
+}

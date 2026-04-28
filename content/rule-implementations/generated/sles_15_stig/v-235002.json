@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify all SUSE operating system world-writable directories are group-owned by root, sys, bin, or an application group.\n\nCheck the system for world-writable directories with the following command:\n\n> sudo find / -perm -002 -type d -exec ls -lLd {} \\;\ndrwxrwxrwt. 2 root root 40 Aug 26 13:07 /dev/mqueue\ndrwxrwxrwt. 2 root root 220 Aug 26 13:23 /dev/shm\ndrwxrwxrwt. 14 root root 4096 Aug 26 13:29 /tmp\n\nIf any world-writable directories are not owned by root, sys, bin, or an application group associated with the directory, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the group of the SUSE operating system world-writable directories to root with the following command:\n\n> sudo chgrp root <directory>",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-235002r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "All SUSE operating system world-writable directories must be group-owned by root, sys, bin, or an application group.",
+  "tracking_issue": "TODO-V-235002",
+  "vuln_id": "V-235002"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Determine if the SUSE operating system audit event multiplexor is configured to use Kerberos by running the following command:\n\n> sudo grep transport /etc/audit/audisp-remote.conf\ntransport = krb5\n\nIf \"transport\" is not set to \"krb5\", or is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system audit event multiplexor to use Kerberos by editing the \"/etc/audit/audisp-remote.conf\" file. \n\nEdit or add the following line to match the text below:\n\ntransport = krb5",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234967r1009567_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system audit event multiplexor must be configured to use Kerberos.",
+  "tracking_issue": "TODO-V-234967",
+  "vuln_id": "V-234967"
+}

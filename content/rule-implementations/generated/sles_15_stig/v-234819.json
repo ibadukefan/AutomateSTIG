@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the SUSE operating system has set an encrypted root password. \n\nNote: If the system does not use a BIOS this requirement is Not Applicable.\n\nCheck that the encrypted password is set for root with the following command:\n\n> sudo cat /boot/grub2/grub.cfg | grep -i password \n\npassword_pbkdf2 root grub.pbkdf2.sha512.10000.VeryLongString\n\nIf the root password entry does not begin with \"password_pbkdf2\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: If the system does not use a BIOS this requirement is Not Applicable.\n\nConfigure the SUSE operating system to encrypt the boot password.\n\nGenerate an encrypted (GRUB2) password for root with the following command:\n\n> grub2-mkpasswd-pbkdf2\nEnter Password:\nReenter Password:\nPBKDF2 hash of your password is grub.pbkdf2.sha512.10000.MFU48934NJD84NF8NSD39993JDHF84NG\n\nUsing the hash from the output, modify the \"/etc/grub.d/40_custom\" file and add the following two lines to add a boot password for the root entry:\n\nset superusers=\"root\"\npassword_pbkdf2 root grub.pbkdf2.sha512.VeryLongString\n\nGenerate an updated \"grub.conf\" file with the new password using the following commands:\n\n> sudo grub2-mkconfig --output=/tmp/grub2.cfg\n> sudo mv /tmp/grub2.cfg /boot/grub2/grub.cfg",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234819r1137691_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "SUSE operating systems with a basic input/output system (BIOS) must require authentication upon booting into single-user and maintenance modes.",
+  "tracking_issue": "TODO-V-234819",
+  "vuln_id": "V-234819"
+}

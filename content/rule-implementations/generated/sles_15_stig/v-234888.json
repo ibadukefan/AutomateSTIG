@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system configures the shadow password suite configuration to encrypt passwords using a strong cryptographic hash.\n\nCheck that a minimum number of hash rounds is configured by running the following command:\n\n> egrep \"^SHA_CRYPT_\" /etc/login.defs\n\nIf only one of \"SHA_CRYPT_MIN_ROUNDS\" or \"SHA_CRYPT_MAX_ROUNDS\" is set, and this value is below \"100000\", this is a finding.\n\nIf both \"SHA_CRYPT_MIN_ROUNDS\" and \"SHA_CRYPT_MAX_ROUNDS\" are set, and the highest value for either is below \"100000\", this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to encrypt all stored passwords with a strong cryptographic hash.\n\nEdit/modify the following line in the \"/etc/login.defs\" file and set \"SHA_CRYPT_MIN_ROUNDS\" to a value no lower than \"100000\":\n\nSHA_CRYPT_MIN_ROUNDS 100000",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234888r1044810_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must employ FIPS 140-3 approved cryptographic hashing algorithms for all stored passwords.",
+  "tracking_issue": "TODO-V-234888",
+  "vuln_id": "V-234888"
+}

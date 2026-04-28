@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system does not automount USB mass storage devices when connected to the host.\n\nCheck that \"usb-storage\" is blacklisted in the \"/etc/modprobe.d/50-blacklist.conf\" file with the following command:\n\n> grep usb-storage /etc/modprobe.d/50-blacklist.conf\nblacklist usb-storage\n\nIf nothing is output from the command, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to prevent USB mass storage devices from automounting when connected to the host.\n\nAdd or update the following line to the \"/etc/modprobe.d/50-blacklist.conf\" file:\n\nblacklist usb-storage",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234856r958820_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must disable the USB mass storage kernel module.",
+  "tracking_issue": "TODO-V-234856",
+  "vuln_id": "V-234856"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system requires the shadow password suite configuration be set to encrypt interactive user passwords using a strong cryptographic hash.\n\nCheck that the interactive user account passwords are using a strong password hash with the following command:\n\n> sudo cut -d: -f2 /etc/shadow\n\n$6$kcOnRq/5$NUEYPuyL.wghQwWssXRcLRFiiru7f5JPV6GaJhNC2aK5F3PZpE/BCCtwrxRc/AInKMNX3CdMw11m9STiql12f/\n\nPassword hashes \"!\" or \"*\" indicate inactive accounts not available for logon and are not evaluated. \n\nIf any interactive user password hash does not begin with \"$6\", this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to encrypt all stored passwords with a strong cryptographic hash.\n\nEdit/modify the following line in the \"/etc/login.defs\" file and set \"ENCRYPT_METHOD\" to have a value of \"SHA512\".\n\nENCRYPT_METHOD SHA512\n\nLock all interactive user accounts not using SHA512 hashing until the passwords can be regenerated.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234887r1009626_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must employ FIPS 140-2-approved cryptographic hashing algorithms for all stored passwords.",
+  "tracking_issue": "TODO-V-234887",
+  "vuln_id": "V-234887"
+}

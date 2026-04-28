@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system for PKI-based authentication had valid certificates by constructing a certification path (which includes status information) to an accepted trust anchor.\n\nCheck that the certification path to an accepted trust anchor for multifactor authentication is implemented with the following command:\n\n> grep cert_policy /etc/pam_pkcs11/pam_pkcs11.conf\n\ncert_policy = ca,oscp_on,signature,crl_auto;\n\nIf \"cert_policy\" is not set to include \"ca\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system for PKI-based authentication to validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.\n\nModify all of the cert_policy lines in \"/etc/pam_pkcs11/pam_pkcs11.conf\" to include \"ca\":\n\ncert_policy = ca,signature,oscp_on;\n\nNote: Additional certificate validation polices are permitted.\n\nAdditional information on the configuration of multifactor authentication on the SUSE operating system can be found at https://www.suse.com/communities/blog/configuring-smart-card-authentication-suse-linux-enterprise/.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234817r1009611_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
+  "tracking_issue": "TODO-V-234817",
+  "vuln_id": "V-234817"
+}

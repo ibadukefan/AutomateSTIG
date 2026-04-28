@@ -1,17 +1,17 @@
 {
-  "authoritative_manifests": 37,
-  "authoritative_rules_tracked": 7561,
-  "automated_or_mapped_rules": 2607,
-  "coverage_percent_tracked_corpus": 34.5,
+  "authoritative_manifests": 46,
+  "authoritative_rules_tracked": 8077,
+  "automated_or_mapped_rules": 2780,
+  "coverage_percent_tracked_corpus": 34.4,
   "current_check_definitions": 3189,
   "generated_candidate_checks_with_fixture_evidence": 974,
   "notes": [
     "Regression ratchet prevents silent drops in tracked artifacts, authoritative manifests, authoritative rules, automated/mapped rules, or unsupported-rule ceilings.",
     "Generated candidate checks are fixture-backed scaffolding, not live production asset validation.",
-    "Latest pass expands the authoritative public DISA corpus with Microsoft Windows Server 2025 V1R1, Microsoft SQL Server 2022 Y26M04, Microsoft IIS 10.0 Y26M04, Microsoft Office 365 ProPlus V3R5 manual STIG, and Microsoft Office 365 ProPlus V3R8 SCAP benchmark artifacts. Coverage percentage dropped because total tracked rules increased faster than fixture-backed mappings; absolute automated/mapped rules increased."
+    "Latest pass expands browser, desktop application, and Linux coverage with Mozilla Firefox, Adobe Acrobat Pro/Reader, and SUSE Linux Enterprise Server 15 artifacts. Coverage percentage dropped because total tracked rules increased faster than fixture-backed mappings; absolute automated/mapped rules increased."
   ],
-  "public_disa_artifacts_indexed": 37,
+  "public_disa_artifacts_indexed": 46,
   "status": "expanded_public_corpus_with_fixture_gated_candidate_mapping",
   "target": "unsupported_authoritative_rules == 0 across every authorized DISA STIG artifact",
-  "unsupported_authoritative_rules": 4954
+  "unsupported_authoritative_rules": 5297
 }

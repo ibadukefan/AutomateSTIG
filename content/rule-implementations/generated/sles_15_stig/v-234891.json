@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the SUSE operating system is configured to create or update passwords with a maximum password age of 60 days or less.\n\nCheck that the SUSE operating system enforces 60 days or less as the maximum password age with the following command:\n\n> grep '^PASS_MAX_DAYS' /etc/login.defs\n\nThe DOD requirement is \"60\" days or less (greater than zero, as zero days will lock the account immediately).\n\nIf no output is produced, or if \"PASS_MAX_DAYS\" is not set to \"60\" days or less, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to enforce a maximum password age of 60 days or less.\n\nEdit the file \"/etc/login.defs\" and add or correct the following line. Replace [DAYS] with the appropriate amount of days:\n\nPASS_MAX_DAYS [DAYS]\n\nThe DOD requirement is 60 days or less (greater than zero, as zero days will lock the account immediately).",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234891r1038967_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must be configured to create or update passwords with a maximum lifetime of 60 days.",
+  "tracking_issue": "TODO-V-234891",
+  "vuln_id": "V-234891"
+}

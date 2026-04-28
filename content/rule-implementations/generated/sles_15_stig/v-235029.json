@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify all SUSE operating system files and directories on the system have a valid group.\n\nCheck the owner of all files and directories with the following command:\n\nNote: The value after -fstype must be replaced with the filesystem type. XFS is used as an example.\n\n> sudo find / -fstype xfs -nogroup\n\nIf any files on the system do not have an assigned group, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Either remove all files and directories from the SUSE operating system that do not have a valid group, or assign a valid group to all files and directories on the system with the \"chgrp\" command:\n\n> sudo chgrp <group> <file>",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-235029r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "All SUSE operating system files and directories must have a valid group owner.",
+  "tracking_issue": "TODO-V-235029",
+  "vuln_id": "V-235029"
+}

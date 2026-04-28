@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify SUSE operating system file systems used for removable media are mounted with the \"nosuid\" option.\n\nCheck the file systems that are mounted at boot time with the following command:\n\n> more /etc/fstab\n\nUUID=2bc871e4-e2a3-4f29-9ece-3be60c835222 /mnt/usbflash vfat noauto,owner,ro,nosuid 0 0\n\nIf a file system found in \"/etc/fstab\" refers to removable media and it does not have the \"nosuid\" option set, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system \"/etc/fstab\" file to use the \"nosuid\" option on file systems that are associated with removable media.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234999r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "SUSE operating system file systems that are used with removable media must be mounted to prevent files with the setuid and setgid bit set from being executed.",
+  "tracking_issue": "TODO-V-234999",
+  "vuln_id": "V-234999"
+}

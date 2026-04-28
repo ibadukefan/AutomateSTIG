@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system auditing package is installed.\n\nCheck that the \"audit\" package is installed by performing the following command:\n\n> zypper info audit | grep Installed \n\ni | audit | User Space Tools for 2.6 Kernel Auditing \n\nIf the package \"audit\" is not installed on the system, then this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "The SUSE operating system auditd package must be installed on the system. If it is not installed, use the following command to install it:\n\n> sudo zypper in audit",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234964r1009639_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must have the auditing package installed.",
+  "tracking_issue": "TODO-V-234964",
+  "vuln_id": "V-234964"
+}

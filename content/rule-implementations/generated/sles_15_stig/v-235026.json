@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system is not performing IPv6 packet forwarding by default, unless the system is a router.\n\nCheck to see if IPv6 forwarding is disabled by default using the following command:\n\n> sudo sysctl net.ipv6.conf.default.forwarding\nnet.ipv6.conf.default.forwarding = 0\n\nIf the network parameter \"ipv6.conf.default.forwarding\" is not equal to \"0\" or nothing is returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to not performing IPv6 packet forwarding by default by running the following command as an administrator:\n\n> sudo sysctl -w net.ipv6.conf.default.forwarding=0\n\nIf \"0\" is not the system's default value, add or update the following line in \"/etc/sysctl.d/99-stig.conf\":\n\n> sudo sh -c 'echo \"net.ipv6.conf.default.forwarding=0\" >> /etc/sysctl.d/99-stig.conf'\n\n> sudo sysctl --system",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-235026r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must not be performing Internet Protocol version 6 (IPv6) packet forwarding by default unless the system is a router.",
+  "tracking_issue": "TODO-V-235026",
+  "vuln_id": "V-235026"
+}

@@ -1,0 +1,365 @@
+{
+  "generated_from": "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip",
+  "rules": [
+    {
+      "check_id": "V-251546",
+      "check_pack": "mozilla_firefox",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-251546 from source identifier xccdf_mil.disa.stig_group_V-251546.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251546r961869_rule",
+      "severity": "high",
+      "title": "Firefox must be configured to allow only TLS 1.2 or above.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251546"
+    },
+    {
+      "check_id": "V-251549",
+      "check_pack": "mozilla_firefox",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-251549 from source identifier xccdf_mil.disa.stig_group_V-251549.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251549r960963_rule",
+      "severity": "medium",
+      "title": "Firefox must be configured to not automatically update installed add-ons and plugins.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251549"
+    },
+    {
+      "check_id": "V-251551",
+      "check_pack": "mozilla_firefox",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-251551 from source identifier xccdf_mil.disa.stig_group_V-251551.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251551r960963_rule",
+      "severity": "medium",
+      "title": "Firefox must be configured to disable form fill assistance.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251551"
+    },
+    {
+      "check_id": "V-251552",
+      "check_pack": "mozilla_firefox",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-251552 from source identifier xccdf_mil.disa.stig_group_V-251552.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251552r960963_rule",
+      "severity": "medium",
+      "title": "Firefox must be configured to not use a password store with or without a master password.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251552"
+    },
+    {
+      "check_id": "V-251553",
+      "check_pack": "mozilla_firefox",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-251553 from source identifier xccdf_mil.disa.stig_group_V-251553.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251553r960963_rule",
+      "severity": "medium",
+      "title": "Firefox must be configured to block pop-up windows.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251553"
+    },
+    {
+      "check_id": "V-251557",
+      "check_pack": "mozilla_firefox",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-251557 from source identifier xccdf_mil.disa.stig_group_V-251557.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251557r960963_rule",
+      "severity": "medium",
+      "title": "Firefox must be configured to disable the installation of extensions.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251557"
+    },
+    {
+      "check_id": "V-251558",
+      "check_pack": "mozilla_firefox",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-251558 from source identifier xccdf_mil.disa.stig_group_V-251558.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251558r960963_rule",
+      "severity": "medium",
+      "title": "Background submission of information to Mozilla must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251558"
+    },
+    {
+      "check_id": "V-251559",
+      "check_pack": "mozilla_firefox",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-251559 from source identifier xccdf_mil.disa.stig_group_V-251559.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251559r961167_rule",
+      "severity": "low",
+      "title": "Firefox development tools must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251559"
+    },
+    {
+      "check_id": "V-251562",
+      "check_pack": "mozilla_firefox",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-251562 from source identifier xccdf_mil.disa.stig_group_V-251562.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251562r1156569_rule",
+      "severity": "medium",
+      "title": "Firefox must prevent the user from quickly deleting data.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251562"
+    },
+    {
+      "check_id": "V-251563",
+      "check_pack": "mozilla_firefox",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-251563 from source identifier xccdf_mil.disa.stig_group_V-251563.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251563r960963_rule",
+      "severity": "medium",
+      "title": "Firefox private browsing must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251563"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251564r960963_rule",
+      "severity": "medium",
+      "title": "Firefox search suggestions must be disabled.",
+      "tracking_issue": "TODO-V-251564",
+      "validated_by": [
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251564"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251565r960963_rule",
+      "severity": "low",
+      "title": "Firefox autoplay must be disabled.",
+      "tracking_issue": "TODO-V-251565",
+      "validated_by": [
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251565"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251566r960963_rule",
+      "severity": "medium",
+      "title": "Firefox network prediction must be disabled.",
+      "tracking_issue": "TODO-V-251566",
+      "validated_by": [
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251566"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251567r960963_rule",
+      "severity": "medium",
+      "title": "Firefox fingerprinting protection must be enabled.",
+      "tracking_issue": "TODO-V-251567",
+      "validated_by": [
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251567"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251568r960963_rule",
+      "severity": "medium",
+      "title": "Firefox cryptomining protection must be enabled.",
+      "tracking_issue": "TODO-V-251568",
+      "validated_by": [
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251568"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251571r960963_rule",
+      "severity": "medium",
+      "title": "Firefox deprecated ciphers must be disabled.",
+      "tracking_issue": "TODO-V-251571",
+      "validated_by": [
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251571"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251572r960963_rule",
+      "severity": "medium",
+      "title": "Firefox must not recommend extensions as the user is using the browser.",
+      "tracking_issue": "TODO-V-251572",
+      "validated_by": [
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251572"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251573r960963_rule",
+      "severity": "medium",
+      "title": "The Firefox New Tab page must not show Top Sites, Sponsored Top Sites, Pocket Recommendations, Sponsored Pocket Stories, Searches, Highlights, or Snippets.",
+      "tracking_issue": "TODO-V-251573",
+      "validated_by": [
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251573"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251577r960963_rule",
+      "severity": "medium",
+      "title": "Firefox must be configured so that DNS over HTTPS is disabled.",
+      "tracking_issue": "TODO-V-251577",
+      "validated_by": [
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251577"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251578r960963_rule",
+      "severity": "medium",
+      "title": "Firefox accounts must be disabled.",
+      "tracking_issue": "TODO-V-251578",
+      "validated_by": [
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251578"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251580r960963_rule",
+      "severity": "medium",
+      "title": "Firefox feedback reporting must be disabled.",
+      "tracking_issue": "TODO-V-251580",
+      "validated_by": [
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251580"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251581r960963_rule",
+      "severity": "medium",
+      "title": "Firefox encrypted media extensions must be disabled.",
+      "tracking_issue": "TODO-V-251581",
+      "validated_by": [
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251581"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-252881r960963_rule",
+      "severity": "medium",
+      "title": "Firefox must be configured to not delete data upon shutdown.",
+      "tracking_issue": "TODO-V-252881",
+      "validated_by": [
+        "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-252881"
+    }
+  ],
+  "source": "DISA XCCDF benchmark",
+  "status": "experimental",
+  "stig_id": "scap_mil.disa.stig_collection_U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark",
+  "total_rules": 23,
+  "version": "U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
+}

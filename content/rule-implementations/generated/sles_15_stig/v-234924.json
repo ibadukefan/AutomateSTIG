@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system generates an audit record for all uses of the \"chown\", \"fchown\", \"fchownat\", and \"lchown\" system calls.\n\nCheck that the system calls are being audited by performing the following command:\n\n> sudo auditctl -l | grep chown\n\n-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=-1 -k perm_mod\n-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=-1 -k perm_mod\n\nIf both the \"b32\" and \"b64\" audit rules are not defined for the \"chown\", \"fchown\", \"fchownat\", and \"lchown\" syscalls, this is a finding.\n\nNote:\nThe \"-k\" allows for specifying an arbitrary identifier. The string following \"-k\" does not need to match the example output above.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to generate an audit record for all uses of the \"chown\", \"fchown\", \"fchownat\", and \"lchown\" system calls. \n\nAdd or update the following rules to \"/etc/audit/rules.d/audit.rules\":\n\n-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod\n-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod\n\nTo reload the rules file, restart the audit daemon:\n\n> sudo systemctl restart auditd.service\n\nor issue the following command:\n\n> sudo augenrules --load",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234924r958412_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must generate audit records for all uses of the chown, fchown, fchownat, and lchown system calls.",
+  "tracking_issue": "TODO-V-234924",
+  "vuln_id": "V-234924"
+}

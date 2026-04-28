@@ -55,6 +55,15 @@ SEED_DOWNLOADS=[
  {'title':'Microsoft IIS 10.0 STIG Y26M04','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y26M04_STIG.zip'},
  {'title':'Microsoft Office 365 ProPlus STIG V3R5','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Office_365_ProPlus_V3R5_STIG.zip'},
  {'title':'Microsoft Office 365 ProPlus STIG SCAP 1.3 Benchmark V3R8','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Office_365_ProPlus_V3R8_STIG_SCAP_1-3_Benchmark.zip'},
+ {'title':'Mozilla Firefox STIG V6R7','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R7_STIG.zip'},
+ {'title':'Mozilla Firefox for Windows STIG SCAP 1.3 Benchmark V6R7','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip'},
+ {'title':'Mozilla Firefox for Linux STIG SCAP 1.3 Benchmark V6R6','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_Linux_V6R6_STIG_SCAP_1-3_Benchmark.zip'},
+ {'title':'Adobe Acrobat Professional DC Continuous Track STIG V2R1','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Adobe_Acrobat_Pro_DC_Continuous_V2R1_STIG.zip'},
+ {'title':'Adobe Acrobat Professional DC Continuous Track STIG SCAP 1.3 Benchmark V2R1','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Adobe_Acrobat_Pro_DC_Continuous_V2R1_STIG_SCAP_1-3_Benchmark.zip'},
+ {'title':'Adobe Acrobat Reader DC Continuous Track STIG V2R1','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Adobe_Acrobat_Reader_DC_Continuous_V2R1_STIG.zip'},
+ {'title':'Adobe Acrobat Reader DC Continuous Track STIG SCAP 1.3 Benchmark V2R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Adobe_Acrobat_Reader_DC_Continuous_V2R4_STIG_SCAP_1-3_Benchmark.zip'},
+ {'title':'SUSE Linux Enterprise Server 15 STIG V2R7','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_SLES_15_V2R7_STIG.zip'},
+ {'title':'SUSE Linux Enterprise Server 15 STIG SCAP 1.3 Benchmark V2R8','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip'},
 ]
 
 def classify(title,url):

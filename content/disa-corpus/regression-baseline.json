@@ -1,9 +1,13 @@
 {
-  "schema_version": 1,
-  "description": "Regression ratchet for the tracked public DISA corpus and coverage mapping. Raise floors intentionally only after regenerated manifests/specs/fixtures validate. Unsupported-rule ceiling may rise only when new authoritative artifacts are added and documented in status.json.",
-  "min_public_disa_artifacts": 37,
-  "min_authoritative_manifests": 37,
-  "min_authoritative_rules": 7561,
-  "min_automated_or_mapped_rules": 2607,
-  "max_unsupported_rules": 4954
+  "max_unsupported_rules": 5297,
+  "min_authoritative_manifests": 46,
+  "min_authoritative_rules": 8077,
+  "min_automated_or_mapped_rules": 2780,
+  "min_public_disa_artifacts": 46,
+  "notes": [
+    "Ratchet floors/ceiling reflect the intentionally expanded authorized public DISA corpus.",
+    "Unsupported-rule ceiling may rise only when new authoritative artifacts are intentionally added; otherwise increases are regressions.",
+    "Generated candidate mappings are fixture-backed scaffolding, not production live validation."
+  ],
+  "schema_version": 1
 }
