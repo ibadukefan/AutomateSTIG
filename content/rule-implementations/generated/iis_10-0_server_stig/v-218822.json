@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the web server documentation and deployed configuration to determine which version of TLS is being used.\n\nIf the TLS version is not TLS 1.2 or higher, according to NIST SP 800-52, or if non-FIPS-approved algorithms are enabled, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the web server to use an approved TLS version according to NIST SP 800-52 and to disable all non-approved versions.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-218822r961632_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/iis_10_0_server_stig/u_ms_iis_10_0_y26m04_stig.json",
+  "source_version": "U_MS_IIS_10-0_Y26M04_STIG.zip",
+  "stig_id": "IIS_10-0_Server_STIG",
+  "title": "The IIS 10.0 web server must maintain the confidentiality of controlled information during transmission through the use of an approved Transport Layer Security (TLS) version.",
+  "tracking_issue": "TODO-V-218822",
+  "vuln_id": "V-218822"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Execute the following:\n\nSELECT name\nFROM sys.server_principals\nWHERE type in ('U','G')\nAND name LIKE '%$'\n\nIf no logins are returned, this is not a finding.\n\nIf logins are returned, determine whether each login is a computer account.\n\nLaunch PowerShell and execute the following code:\n\nNote: <name> represents the username portion of the login. For example, if the login is \"CONTOSO\\user1$\", the username is \"user1\".\n\n([ADSISearcher]\"(&(ObjectCategory=Computer)(Name=<name>))\").FindAll()\n\nIf no account information is returned, this is not a finding.\n\nIf account information is returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Remove all logins that were returned in the check content.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271267r1108417_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "SQL Server must protect against a user falsely repudiating by ensuring only clearly unique Active Directory user accounts can connect to the instance.",
+  "tracking_issue": "TODO-V-271267",
+  "vuln_id": "V-271267"
+}

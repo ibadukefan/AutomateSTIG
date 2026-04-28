@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the effective setting in Local Group Policy Editor.\n\nRun gpedit.msc.\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.\n\nIf any accounts or groups other than the following are granted the \"Create symbolic links\" user right, this is a finding:\n- Administrators.\n\nFor server core installations, run the following command:\n\nSecedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt\n\nReview the text file.\n\nIf any SIDs other than the following are granted the \"SeCreateSymbolicLinkPrivilege\" user right, this is a finding:\n\nS-1-5-32-544 (Administrators)\n\nSystems that have the Hyper-V role will also have \"Virtual Machines\" given this user right (this may be displayed as \"NT Virtual Machine\\Virtual Machines\", SID S-1-5-83-0). This is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Create symbolic links to include only the following accounts or groups:\n- Administrators.\n\nSystems that have the Hyper-V role will also have \"Virtual Machines\" given this user right. To add this manually, enter it as \"NT Virtual Machine\\Virtual Machines\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278249r1182217_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "The Windows Server 2025 \"Create symbolic links\" user right must only be assigned to the Administrators group.",
+  "tracking_issue": "TODO-V-278249",
+  "vuln_id": "V-278249"
+}

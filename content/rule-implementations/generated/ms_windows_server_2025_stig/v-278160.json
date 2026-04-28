@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This applies to domain controllers. It is not applicable for other systems.\n\nRun \"MMC\".\n\nSelect \"Add/Remove Snap-in\" from the \"File\" menu.\n\nSelect \"Certificates\" in the left pane, and then click \"Add >\".\n\nSelect \"Computer Account\", and then click \"Next\".\n\nSelect the appropriate option for \"Select the computer you want this snap-in to manage\", and then click \"Finish\".\n\nClick \"OK\".\n\nSelect and expand the \"Certificates (Local Computer)\" entry in the left pane.\n\nSelect and expand the \"Personal\" entry in the left pane.\n\nSelect the \"Certificates\" entry in the left pane.\n\nIn the right pane, examine the \"Issued By\" field for the certificate to determine the issuing CA.\n\nIf the \"Issued By\" field of the PKI certificate being used by the domain controller does not indicate the issuing CA is part of the DOD PKI or an approved ECA, this is a finding.\n\nIf the certificates in use are issued by a CA authorized by the Component's CIO, this is a CAT II finding.\n\nThere are multiple sources from which lists of valid DOD CAs and approved ECAs can be obtained: \n\nThe Global Directory Service (GDS) website provides an online source. The address for this site is https://crl.gds.disa.mil.\n\nDOD Public Key Enablement (PKE) Engineering Support maintains the InstallRoot utility to manage DOD supported root certificates on Windows computers, which includes a list of authorized CAs. The utility package can be downloaded from the PKI and PKE Tools page on Cyber Exchange:\nhttps://www.cyber.mil/pki-pke/tools-configuration-files",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Obtain a server certificate for the domain controller issued by the DOD PKI or an approved ECA.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278160r1182126_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 domain Controller PKI certificates must be issued by the DOD PKI or an approved External Certificate Authority (ECA).",
+  "tracking_issue": "TODO-V-278160",
+  "vuln_id": "V-278160"
+}

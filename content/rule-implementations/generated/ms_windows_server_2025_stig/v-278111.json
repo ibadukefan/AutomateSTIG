@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+      "type": "registry",
+      "value_name": "PreXPSP2ShellProtocolBehavior"
+    },
+    "description": "Windows Server 2025 File Explorer shell protocol must run in protected mode.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-278111"
+  },
+  "check_content_excerpt": "The default behavior is for shell protected mode to be turned on for File Explorer.\n\nIf the registry value name below does not exist, this is not a finding.\n\nIf it exists and is configured with a value of \"0\", this is not a finding.\n\nIf it exists and is configured with a value of \"1\", this is a finding.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\\n\nValue Name: PreXPSP2ShellProtocolBehavior\n\nValue Type: REG_DWORD\nValue: 0x00000000 (0) (or if the Value Name does not exist)",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "The default behavior is for shell protected mode to be turned on for File Explorer.\n\nTo correct this, configure the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> File Explorer >> Turn off shell protocol protected mode to \"Not Configured\" or \"Disabled\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-278111r1182065_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 File Explorer shell protocol must run in protected mode.",
+  "tracking_issue": "TODO-V-278111",
+  "vuln_id": "V-278111"
+}

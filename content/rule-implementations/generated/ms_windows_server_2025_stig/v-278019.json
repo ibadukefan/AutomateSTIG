@@ -1,0 +1,46 @@
+{
+  "candidate_check": {
+    "check": {
+      "name": "PNRP",
+      "should_be_installed": false,
+      "type": "windows_feature"
+    },
+    "description": "Windows Server 2025 must not have the Peer Name Resolution Protocol installed.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "windows",
+    "vuln_id": "V-278019"
+  },
+  "check_content_excerpt": "Open PowerShell.\n\nEnter \"Get-WindowsFeature | Where Name -eq PNRP\".\n\nIf \"Installed State\" is \"Installed\", this is a finding.\n\nAn Installed State of \"Available\" or \"Removed\" is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_false"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Uninstall the \"Peer Name Resolution Protocol\" feature.\n\nStart Server Manager.\n\nSelect the server with the feature.\n\nScroll down to \"ROLES AND FEATURES\" in the right pane.\n\nSelect \"Remove Roles and Features\" from the drop-down \"TASKS\" list.\n\nSelect the appropriate server on the \"Server Selection\" page and click \"Next\".\n\nDeselect \"Peer Name Resolution Protocol\" on the \"Features\" page.\n\nClick \"Next\" and \"Remove\" as prompted.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "windows_feature",
+  "remediation": "planned",
+  "rule_id": "SV-278019r1180763_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 must not have the Peer Name Resolution Protocol installed.",
+  "tracking_issue": "TODO-V-278019",
+  "vuln_id": "V-278019"
+}

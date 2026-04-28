@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Access the IIS 10.0 Web Server.\n\nNavigate to:\nHKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.2\\Server\n\nVerify a REG_DWORD value of \"0\" for \"DisabledByDefault\".\nVerify a REG_DWORD value of \"1\" for \"Enabled\".\n\nNavigate to:\nHKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.0\\Server\nHKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.1\\Server\nHKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\SSL 3.0\\Server\n\nVerify a REG_DWORD value of \"1\" for \"DisabledByDefault\".\nVerify a REG_DWORD value of \"0\" for \"Enabled\".\n\nIf any of the respective registry paths do not exist or are configured with the wrong value, this is a finding.\n\nSSL 3.0 is disabled by default in newer Operating Systems. If SSL 3.0 has a registry DWORD enabled with a value of 1, this is a finding. If this key is not present, this is not a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Access the IIS 10.0 Web Server.\n\nNavigate to:\nHKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.2\\Server \n\nCreate a REG_DWORD named \"DisabledByDefault\" with a value of \"0\".\nCreate a REG_DWORD named \"Enabled\" with a  value of \"1\".\n\nNavigate to:\nHKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.0\\Server\nHKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.1\\Server\nHKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\SSL 3.0\\Server\n\nFor each protocol:\nCreate a REG_DWORD named \"DisabledByDefault\" with a value of \"1\".\nCreate a REG_DWORD named \"Enabled\" with a  value of \"0\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-218821r1067596_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/iis_10_0_server_stig/u_ms_iis_10_0_y26m04_stig.json",
+  "source_version": "U_MS_IIS_10-0_Y26M04_STIG.zip",
+  "stig_id": "IIS_10-0_Server_STIG",
+  "title": "An IIS 10.0 web server must maintain the confidentiality of controlled information during transmission through the use of an approved Transport Layer Security (TLS) version.",
+  "tracking_issue": "TODO-V-218821",
+  "vuln_id": "V-218821"
+}

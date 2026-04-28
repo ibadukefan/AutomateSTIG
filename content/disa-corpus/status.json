@@ -1,17 +1,17 @@
 {
-  "authoritative_manifests": 32,
-  "authoritative_rules_tracked": 6882,
-  "automated_or_mapped_rules": 2578,
-  "coverage_percent_tracked_corpus": 37.5,
-  "current_check_definitions": 3090,
-  "generated_candidate_checks_with_fixture_evidence": 875,
+  "authoritative_manifests": 37,
+  "authoritative_rules_tracked": 7561,
+  "automated_or_mapped_rules": 2607,
+  "coverage_percent_tracked_corpus": 34.5,
+  "current_check_definitions": 3189,
+  "generated_candidate_checks_with_fixture_evidence": 974,
   "notes": [
     "Regression ratchet prevents silent drops in tracked artifacts, authoritative manifests, authoritative rules, automated/mapped rules, or unsupported-rule ceilings.",
     "Generated candidate checks are fixture-backed scaffolding, not live production asset validation.",
-    "Latest pass expands the authoritative public DISA corpus with Cisco NX-OS Switch Y26M04, Apache Server 2.4 Windows Y26M04, Apache Tomcat Application Server 9 V3R4, and Apple macOS 15 V1R7 manual STIG artifacts. Coverage percentage dropped because total tracked rules increased faster than fixture-backed mappings; absolute automated/mapped rules increased."
+    "Latest pass expands the authoritative public DISA corpus with Microsoft Windows Server 2025 V1R1, Microsoft SQL Server 2022 Y26M04, Microsoft IIS 10.0 Y26M04, Microsoft Office 365 ProPlus V3R5 manual STIG, and Microsoft Office 365 ProPlus V3R8 SCAP benchmark artifacts. Coverage percentage dropped because total tracked rules increased faster than fixture-backed mappings; absolute automated/mapped rules increased."
   ],
-  "public_disa_artifacts_indexed": 32,
+  "public_disa_artifacts_indexed": 37,
   "status": "expanded_public_corpus_with_fixture_gated_candidate_mapping",
   "target": "unsupported_authoritative_rules == 0 across every authorized DISA STIG artifact",
-  "unsupported_authoritative_rules": 4304
+  "unsupported_authoritative_rules": 4954
 }

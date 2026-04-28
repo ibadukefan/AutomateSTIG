@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Excel 2016 >> Excel Options >> Security >> Trust Center >> External Content >> Always prevent untrusted Microsoft Query files from opening is set to \"Enabled\".\nUse the Windows Registry Editor to navigate to the following key: \n\nHKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\external content.\nValue for enableblockunsecurequeryfiles should be REG_DWORD = 1\n\nIf the value for enableblockunsecurequeryfiles is Reg_DWORD = 1, this is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set policy value for User Configuration >> Administrative Templates >> Microsoft Excel 2016 >> Excel Options >> Security >> Trust Center >> External Content >> Always prevent untrusted Microsoft Query files from opening to \"Enabled\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-223338r961086_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_office_365_proplus_stig/u_ms_office_365_proplus_v3r5_stig.json",
+  "source_version": "U_MS_Office_365_ProPlus_V3R5_STIG.zip",
+  "stig_id": "MS_Office_365_ProPlus_STIG",
+  "title": "Untrusted Microsoft Query files must be blocked from opening in Excel.",
+  "tracking_issue": "TODO-V-223338",
+  "vuln_id": "V-223338"
+}

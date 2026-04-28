@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Required roles and features will vary based on the function of the individual system.\n\nRoles and features specifically required to be disabled per the STIG are identified in separate requirements.\n\nRun the following Powershell command to determine installed features:\n\nGet-WindowsFeature | Where-Object {$_. installstate -eq \"installed\"} | Format-List Displayname, Name, Featuretype\n\nIf the organization has not documented the roles and features displayed as required for the system, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Document the roles and features required for the system to operate. Uninstall any that are not required.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278011r1182239_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 must have the roles and features required by the system documented.",
+  "tracking_issue": "TODO-V-278011",
+  "vuln_id": "V-278011"
+}

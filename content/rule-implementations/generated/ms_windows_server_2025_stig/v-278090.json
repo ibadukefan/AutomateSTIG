@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard",
+      "type": "registry",
+      "value_name": "EnableVirtualizationBasedSecurity"
+    },
+    "description": "Windows Server 2025 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-278090"
+  },
+  "check_content_excerpt": "For stand-alone or nondomain-joined systems, this is not applicable.\n\nOpen PowerShell with elevated privileges (run as administrator).\n\nEnter the following:\n\n\"Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\\Microsoft\\Windows\\DeviceGuard\"\n\nIf \"RequiredSecurityProperties\" does not include a value of \"2\" indicating \"Secure Boot\" (e.g., \"{1, 2}\"), this is a finding.\n\nIf \"Secure Boot and DMA Protection\" is configured, \"3\" will also be displayed in the results (e.g., \"{1, 2, 3}\").\n\nIf \"VirtualizationBasedSecurityStatus\" is not a value of \"2\" indicating \"Running\", this is a finding.\n\nAlternately:\n\nRun \"System Information\".\n\nUnder \"System Summary\", verify the following:\n\nIf \"Device Guard Virtualization based security\" does not display \"Running\", this is a finding.\n\nIf \"Device Guard Required Security Properties\" does not display \"Base Virtualization Support, Secure Boot\", this is a finding.\n\nIf \"Secure Boot and DMA Protection\" is configured, \"DMA Protection\" will also be displayed (e.g., \"Base Virtualization Support, Secure Boot, DMA Protection\").\n\nThe policy settings referenced in the Fix section will configure the following registry values; however, due to hardware requirements, the registry values alone do not ensure proper function.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard\\\n\nValue Name: EnableVirtualizationBasedSecurity\nValue Type: REG_DWORD\nValue: 0x00000001 (1)\n\nValue Name: RequirePlatformSecurityFeatures\nValue Type: REG_DWORD\nValue: 0x00000001 (1) (Secure Boot only) or 0x00000003 (3) (Secure Boot and DMA Protection)\n\nA Microsoft TechNet article on Credential Guard, including system requirement details, can be found at the following link:\nhttps://technet.microsoft.com/itpro/windows/keep-secure/credential-guard",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> System >> Device Guard >> Turn On Virtualization Based Security to \"Enabled\" with Platform Security Level set to \"Secure Boot\" or \"Secure Boot and DMA Protection\" selected.\n\nA Microsoft TechNet article on Credential Guard, including system requirement details, can be found at the following link:\nhttps://technet.microsoft.com/itpro/windows/keep-secure/credential-guard",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-278090r1182274_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection.",
+  "tracking_issue": "TODO-V-278090",
+  "vuln_id": "V-278090"
+}

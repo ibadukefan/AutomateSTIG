@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Open SQL Server Configuration Manager. Select SQL Server Services. Review the Start Mode and State of SQL Server Browser.\n\nIf its Start Type is shown as \"Disabled\", this is not a finding.\n\nIf the need for the SQL Server Browser service is documented and authorized, verify the SQL Instances that do not require use of the SQL Browser Service are hidden with the following SQL script:\nDECLARE @HiddenInstance INT \nEXEC master.dbo.Xp_instance_regread \n N'HKEY_LOCAL_MACHINE', \n N'Software\\Microsoft\\MSSQLServer\\MSSQLServer\\SuperSocketNetLib', \n N'HideInstance', \n @HiddenInstance output \n\nSELECT CASE \n        WHEN @HiddenInstance = 0 \n             AND Serverproperty('IsClustered') = 0 THEN 'No' \n        ELSE 'Yes' \n      END AS [Hidden]\n\nIf the value of \"Hidden\" is \"Yes\", this is not a finding.\n\nIf the value of \"Hidden\" is \"No\" and the startup type of the \"SQL Server Browser\" service is not \"Disabled\", this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "If SQL Server Browser is needed, document the justification and obtain the appropriate authorization. \n\nWhere SQL Server Browser is judged unnecessary, the Service can be disabled. \n\nTo disable, in the Services tool, double-click \"SQL Server Browser\". Set \"Startup Type\" to \"Disabled\". If \"Service Status\" is \"Running\", click \"Stop\" and then click \"OK\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271387r1111140_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "The SQL Server Browser service must be disabled unless specifically required and approved.",
+  "tracking_issue": "TODO-V-271387",
+  "vuln_id": "V-271387"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Open \"Printers & scanners\" in \"Settings\".\n\nIf there are no printers configured, this is not applicable. (Exclude Microsoft Print to PDF and Microsoft XPS Document Writer, which do not support sharing.)\n\nFor each printer:\n\nSelect the printer and \"Manage\". \n\nSelect \"Printer Properties\". \n\nSelect the \"Sharing\" tab. \n\nIf \"Share this printer\" is checked, select the \"Security\" tab.\n\nIf any standard user accounts or groups have permissions other than \"Print\", this is a finding.\n\nThe default is for the \"Everyone\" group to be given Print permission.\n\n\"All APPLICATION PACKAGES\" and \"CREATOR OWNER\" are not standard user accounts.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the permissions on shared printers to restrict standard users to only have Print permissions.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278002r1181785_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 nonadministrative accounts or groups must only have print permissions on printer shares.",
+  "tracking_issue": "TODO-V-278002",
+  "vuln_id": "V-278002"
+}

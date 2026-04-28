@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review Server documentation to determine the authorized owner and users or groups with modify rights for this SQL instance's binary files. Additionally check the owner and users or groups with modify rights for shared software library paths on disk. \n \nIf any unauthorized users are granted modify rights or the owner is incorrect, this is a finding. \n\nTo determine the location for these instance-specific binaries:\n\n1. Launch SQL Server Management Studio (SSMS). \n2. Connect to the instance to be reviewed. \n3. Right-click server name in \"Object Explorer\".\n4. Click \"Facets\".\n5. Select the \"Server\" facet. \n6. Record the value for the \"RootDirectory\" facet property. \n7. Navigate to the folder above and review the \"Binn\" subdirectory.\n\nTIP: Use the Get-FileHash cmdlet shipped with PowerShell 5.0 to get the SHA-2 hash of one or more files.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the ownership of all shared software libraries on disk to the authorized account. Remove any modify permissions granted to unauthorized users or groups.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271285r1109236_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "SQL Server must limit privileges to change software modules and links to software external to SQL Server.",
+  "tracking_issue": "TODO-V-271285",
+  "vuln_id": "V-271285"
+}

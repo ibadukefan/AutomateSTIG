@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If ASP.NET is not installed, this is Not Applicable.\n\nOpen the IIS 10.0 Manager.\nUnder the \"Connections\" pane on the left side of the management console, select the IIS 10.0 web server.\nClick the HTTP Response Headers button.\nClick to select the \u201cX-Powered-By\u201d HTTP Header.\nIf \u201cX-Powered-By\u201d has not been removed, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Open the IIS 10.0 Manager.\nUnder the \"Connections\" pane on the left side of the management console, select the IIS 10.0 web server.\nClick the HTTP Response Headers button.\nClick to select the \u201cX-Powered-By\u201d HTTP Header.\nClick \u201cRemove\u201d in the Actions Panel.\nNote: This can be performed multiple ways, this is an example.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-241789r1022662_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/iis_10_0_server_stig/u_ms_iis_10_0_y26m04_stig.json",
+  "source_version": "U_MS_IIS_10-0_Y26M04_STIG.zip",
+  "stig_id": "IIS_10-0_Server_STIG",
+  "title": "ASP.NET version must be removed from the HTTP Response Header information.",
+  "tracking_issue": "TODO-V-241789",
+  "vuln_id": "V-241789"
+}

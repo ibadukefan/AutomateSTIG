@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the system documentation to determine if FileStream is in use. If in use and authorized, this is not a finding.   \n\nIf FileStream is not documented as being authorized, execute the following query:\nEXEC sp_configure 'filestream access level'\n\nIf \"run_value\" is greater than \"0\", this is a finding.\n\nThis rule checks that the Filestream SQL-specific option is disabled.\nSELECT CASE \n        WHEN EXISTS (SELECT * \n                     FROM sys.configurations \n                     WHERE Name = 'filestream access level' \n                            AND Cast(value AS INT) = 0) THEN 'No' \n        ELSE 'Yes'\n      END AS TSQLFileStreamAccess;\n\nIf the above query returns \"Yes\" in the \"FileStreamEnabled\" field, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Disable the use of Filestream.\n\n1. Delete all FILESTREAM columns from all tables. ALTER TABLE <name> DROP COLUMN <column name>\n2. Disassociate tables from the FILESTREAM filegroups. ALTER TABLE <name> SET (FILESTREAM_ON = 'NULL'\n3. Remove all FILESTREAM data containers. ALTER DATABASE <name> REMOVE FILE <file name>\n4. Remove all FILESTREAM filegroups. ALTER DATABASE <name> REMOVE FILEGROUP <file name>\n5. Disable FILESTREAM.\nEXEC sp_configure filestream_access_level, 0 \n    RECONFIGURE \n6. Restart the SQL Service.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-274450r1111117_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "Filestream must be disabled unless specifically required and approved.",
+  "tracking_issue": "TODO-V-274450",
+  "vuln_id": "V-274450"
+}

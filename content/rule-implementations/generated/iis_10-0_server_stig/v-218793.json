@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Click \u201cStart\u201d.\n\nOpen Control Panel.\n\nClick \u201cPrograms\u201d.\n\nClick \u201cPrograms and Features\u201d.\n\nReview the installed programs. If any programs are installed other than those required for the IIS 10.0 web services, this is a finding.\n\nNote: If additional software is needed, supporting documentation must be signed by the ISSO.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Remove all unapproved programs and roles from the production IIS 10.0 web server.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-218793r960963_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/iis_10_0_server_stig/u_ms_iis_10_0_y26m04_stig.json",
+  "source_version": "U_MS_IIS_10-0_Y26M04_STIG.zip",
+  "stig_id": "IIS_10-0_Server_STIG",
+  "title": "The IIS 10.0 web server must only contain functions necessary for operation.",
+  "tracking_issue": "TODO-V-218793",
+  "vuln_id": "V-218793"
+}

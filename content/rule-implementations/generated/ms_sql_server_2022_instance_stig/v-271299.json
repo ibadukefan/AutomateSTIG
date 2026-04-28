@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "A linked server allows for access to distributed, heterogeneous queries against OLE DB data sources. After a linked server is created, distributed queries can be run against this server, and queries can join tables from more than one data source. If the linked server is defined as an instance of SQL Server, remote stored procedures can be executed.\n \nTo obtain a list of linked servers, execute the following command:\n \nSELECT name\nFROM sys.servers s \nWHERE s.is_linked = 1 \n \nReview the system documentation to determine whether the linked servers listed are required and approved. If it is not approved, this is a finding. \n \nRun the following to get a linked server login mapping: \n \nSELECT s.name, p.principal_id, l.remote_name \nFROM sys.servers s \nJOIN sys.linked_logins l ON s.server_id = l.server_id \nLEFT JOIN sys.server_principals p ON l.local_principal_id = p.principal_id \nWHERE s.is_linked = 1 \n \nReview the linked login mapping and check the remote name as it can impersonate sysadmin. If a login in the list is impersonating sysadmin and system documentation does not require this, it is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Remove any linked servers and all associated logins that are not authorized. \n \nTo remove a linked server and all associated logins run the following: \n \nsp_dropserver 'LinkedServerName', 'droplogins'; \n \nTo remove a login from a linked server run the following: \n \nEXEC sp_droplinkedsrvlogin 'LoginName', NULL;",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271299r1108513_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "Access to linked servers must be disabled or restricted, unless specifically required and approved.",
+  "tracking_issue": "TODO-V-271299",
+  "vuln_id": "V-271299"
+}

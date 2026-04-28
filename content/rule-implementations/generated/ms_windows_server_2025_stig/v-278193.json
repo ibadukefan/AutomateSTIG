@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This is applicable to unclassified systems. It is not applicable for others.\n\nOpen PowerShell as an administrator.\n\nExecute the following command:\n\nGet-ChildItem -Path Cert:Localmachine\\disallowed | Where {$_.Issuer -Like \"*DOD Interoperability*\" -and $_.Subject -Like \"*DOD*\"} | FL Subject, Issuer, Thumbprint, NotAfter\n\nIf the following certificate \"Subject\", \"Issuer\", and \"Thumbprint\" information is not displayed, this is a finding:\n\nSubject: CN=DOD Root CA 3, OU=PKI, OU=DOD, O=U.S. Government, C=US\nIssuer: CN=DOD Interoperability Root CA 2, OU=PKI, OU=DOD, O=U.S. Government, C=US\nThumbprint: AC06108CA348CC03B53795C64BF84403C1DBD341\nNotAfter: 1/22/2025 10:22:56 AM\n\nSubject: CN=DOD Root CA 2, OU=PKI, OU=DOD, O=U.S. Government, C=US\nIssuer: CN=DOD Interoperability Root CA 1, OU=PKI, OU=DOD, O=U.S. Government, C=US\nThumbprint: A8C27332CCB4CA49554CE55D34062A7DD2850C02\nNotAfter: 8/26/2025 9:25:51 AM\n\nAlternately, use the Certificates MMC snap-in:\n\nRun \"MMC\".\n\nSelect \"File\", \"Add/Remove Snap-in\".\n\nSelect \"Certificates\" and click \"Add\".\n\nSelect \"Computer account\" and click \"Next\".\n\nSelect \"Local computer: (the computer this console is running on)\" and click \"Finish\".\n\nClick \"OK\".\n\nExpand \"Certificates\" and navigate to Untrusted Certificates >> Certificates.\n\nFor each certificate with \"DOD Root CA...\" under \"Issued To\" and \"DOD Interoperability Root CA...\" under \"Issued By\":\n\nRight-click the certificate and select \"Open\".\n\nSelect the \"Details\" tab.\n\nScroll to the bottom and select \"Thumbprint\".\n\nIf the certificates below are not listed or the value for the \"Thumbprint\" field is not as noted, this is a finding:\n\nIssued To: DOD Root CA 3\nIssued By: DOD Interoperability Root CA 2\nThumbprint: 49CBE933151872E17C8EAE7F0ABA97FB610F6477\nValid to: Wednesday, November 16, 2024\n\nIssued To: DOD Root CA 3\nIssued By: DOD Interoperability Root CA 2\nThumbprint: AC06108CA348CC03B53795C64BF84403C1DBD341\nValid to: Saturday, January 22, 2025",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the DOD Interoperability Root CA cross-certificates on unclassified systems.\n\nIssued To - Issued By - Thumbprint\n\nDOD Root CA 3- DOD Interoperability Root CA 2 - 49CBE933151872E17C8EAE7F0ABA97FB610F6477\n\nDOD Root CA 3 - DOD Interoperability Root CA 2 - AC06108CA348CC03B53795C64BF84403C1DBD341\n\nAdministrators must run the Federal Bridge Certification Authority (FBCA) Cross-Certificate Removal Tool once as an administrator and once as the current user.\n\nThe FBCA Cross-Certificate Remover Tool and User Guide are available on Cyber Exchange at https://cyber.mil/pki-pke/tools-configuration-files.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278193r1182311_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 must have the DOD Interoperability Root Certificate Authority (CA) cross-certificates installed in the Untrusted Certificates Store on unclassified systems.",
+  "tracking_issue": "TODO-V-278193",
+  "vuln_id": "V-278193"
+}

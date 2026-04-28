@@ -1,16 +1,15 @@
 {
-  "authoritative_rules": 6882,
-  "automated_authoritative_rules_after_candidate_promotion": 2578,
-  "generated_candidate_checks_with_fixture_evidence": 875,
-  "implementation_specs_implemented": 451,
-  "implementation_specs_planned": 6424,
-  "implementation_specs_total": 6875,
-  "implementation_specs_with_candidate_checks": 875,
+  "authoritative_rules": 7561,
+  "automated_authoritative_rules_after_candidate_promotion": 2607,
+  "generated_candidate_checks_with_fixture_evidence": 974,
+  "implementation_specs_planned": 4954,
+  "implementation_specs_total": 7525,
+  "implementation_specs_with_candidate_checks": 974,
   "notes": [
-    "Specs are generated for unsupported authoritative rules and retain prior implemented candidate specs for auditability.",
-    "Latest corpus expansion adds Cisco NX-OS Switch, Apache Server 2.4 Windows, Apache Tomcat Application Server 9, and Apple macOS 15 rule specs; generated candidates remain fixture-backed scaffolding, not live production validation."
+    "Specs are generated for unsupported authoritative rules and retain prior implementation/candidate spec history for auditability.",
+    "Latest corpus expansion adds Microsoft Windows Server 2025, Microsoft SQL Server 2022, Microsoft IIS 10.0, and Microsoft Office 365 ProPlus rule specs; generated candidates remain fixture-backed scaffolding, not live production validation."
   ],
   "target": "unsupported_authoritative_rules == 0",
-  "unsupported_authoritative_rules": 4304,
-  "unsupported_with_specs": 4304
+  "unsupported_authoritative_rules": 4954,
+  "unsupported_with_specs": 4954
 }

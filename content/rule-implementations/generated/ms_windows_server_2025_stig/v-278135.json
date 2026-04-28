@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This applies to domain controllers. It is not applicable for other systems.\n\nVerify the following is configured in the Default Domain Policy:\n\nOpen \"Group Policy Management\".\n\nNavigate to \"Group Policy Objects\" in the Domain being reviewed (Forest >> Domains >> Domain).\n\nRight-click the \"Default Domain Policy\".\n\nSelect \"Edit\".\n\nNavigate to Computer Configuration >> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy.\n\nIf the value for \"Maximum lifetime for user ticket\" is \"0\" or greater than \"10\" hours, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value in the Default Domain Policy for Computer Configuration >> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy >> Maximum lifetime for user ticket to a maximum of \"10\" hours but not \"0\", which equates to \"Ticket doesn't expire\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278135r1182075_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 Kerberos user ticket lifetime must be limited to 10 hours or less.",
+  "tracking_issue": "TODO-V-278135",
+  "vuln_id": "V-278135"
+}

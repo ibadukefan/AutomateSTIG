@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Open Explorer and navigate to the inetpub directory.\n\nRight-click \"inetpub\" and select \"Properties\".\n\nClick the \"Security\" tab.\n\nVerify the permissions for the following users; if the permissions are less restrictive, this is a finding.\n\nSystem: Full control\nAdministrators: Full control\nTrustedInstaller: Full control\nALL APPLICATION PACKAGES (built-in security group): Read and execute, This folder, subfolders and files\nALL RESTRICTED APPLICATION PACKAGES (built-in security group): Read and execute, This folder, subfolders and files\nUsers: Read and execute, list folder contents\nCREATOR OWNER: Full Control, Subfolders and files only",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Open Explorer and navigate to the inetpub directory.\n\nRight-click \"inetpub\" and select \"Properties\".\n\nClick the \"Security\" tab.\n\nSet the following permissions: \nSystem: Full control\nAdministrators: Full control\nTrustedInstaller: Full control\nALL APPLICATION PACKAGES (built-in security group): Read and execute, This folder, subfolders and files\nALL RESTRICTED APPLICATION PACKAGES (built-in security group): Read and execute, This folder, subfolders and files\nUsers: Read and execute, list folder contents\nCREATOR OWNER: Full Control, Subfolders and files only",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-218814r1067589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/iis_10_0_server_stig/u_ms_iis_10_0_y26m04_stig.json",
+  "source_version": "U_MS_IIS_10-0_Y26M04_STIG.zip",
+  "stig_id": "IIS_10-0_Server_STIG",
+  "title": "IIS 10.0 web server system files must conform to minimum file permission requirements.",
+  "tracking_issue": "TODO-V-218814",
+  "vuln_id": "V-218814"
+}

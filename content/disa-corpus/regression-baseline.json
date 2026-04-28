@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "description": "Regression ratchet for the tracked public DISA corpus and coverage mapping. Raise floors intentionally only after regenerated manifests/specs/fixtures validate. Unsupported-rule ceiling may rise only when new authoritative artifacts are added and documented in status.json.",
-  "min_public_disa_artifacts": 32,
-  "min_authoritative_manifests": 32,
-  "min_authoritative_rules": 6882,
-  "min_automated_or_mapped_rules": 2578,
-  "max_unsupported_rules": 4304
+  "min_public_disa_artifacts": 37,
+  "min_authoritative_manifests": 37,
+  "min_authoritative_rules": 7561,
+  "min_automated_or_mapped_rules": 2607,
+  "max_unsupported_rules": 4954
 }

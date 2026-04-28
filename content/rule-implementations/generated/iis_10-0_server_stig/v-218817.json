@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review programs installed on the OS.\n\nOpen Control Panel.\n\nOpen Programs and Features.\n\nThe following programs may be installed without any additional documentation:\n\nAdministration Pack for IIS\nIIS Search Engine Optimization Toolkit\nMicrosoft .NET Framework version 3.5 SP1 or greater\nMicrosoft Web Platform Installer version 3.x or greater\nVirtual Machine Additions\n\nReview the installed programs, if any programs are installed other than those listed above, this is a finding.\n\nNote: If additional software is needed and has supporting documentation signed by the ISSO, this is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Remove all unapproved programs and roles from the production web server.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-218817r961470_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/iis_10_0_server_stig/u_ms_iis_10_0_y26m04_stig.json",
+  "source_version": "U_MS_IIS_10-0_Y26M04_STIG.zip",
+  "stig_id": "IIS_10-0_Server_STIG",
+  "title": "The IIS 10.0 web server must not be running on a system providing any other role.",
+  "tracking_issue": "TODO-V-218817",
+  "vuln_id": "V-218817"
+}

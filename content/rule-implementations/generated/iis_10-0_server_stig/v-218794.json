@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Open the IIS 10.0 Manager.\n\nUnder the \"Connections\" pane on the left side of the management console, select the IIS 10.0 web server.\n\nIf, under the IIS installed features \"Application Request Routing Cache\" is not present, this is not a finding.\n\nIf, under the IIS installed features \"Application Request Routing Cache\" is present, double-click the icon to open the feature.\n\nFrom the right \"Actions\" pane under \"Proxy\", select \"Server Proxy Settings...\".\n\nIn the \"Application Request Routing\" settings window, verify whether \"Enable proxy\" is selected.\n\nIf \"Enable proxy\" is selected under the \"Application Request Routing\" settings, this is a finding.\n\nIf the server has been approved to be a Proxy server, this requirement is Not Applicable.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Open the IIS 10.0 Manager.\n\nUnder the \"Connections\" pane on the left side of the management console, select the IIS 10.0 web server.\n\nUnder the IIS installed features, if \"Application Request Routing Cache\" is present, double-click the icon to open the feature.\n\nFrom the right \"Actions\" pane, under \"Proxy\", select \"Server Proxy Settings...\".\n\nIn the \"Application Request Routing\" settings window, remove the check from the \"Enable proxy\" check box.\n\nClick \"Apply\" in the \"Actions\" pane.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-218794r960963_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/iis_10_0_server_stig/u_ms_iis_10_0_y26m04_stig.json",
+  "source_version": "U_MS_IIS_10-0_Y26M04_STIG.zip",
+  "stig_id": "IIS_10-0_Server_STIG",
+  "title": "The IIS 10.0 web server must not be both a website server and a proxy server.",
+  "tracking_issue": "TODO-V-218794",
+  "vuln_id": "V-218794"
+}

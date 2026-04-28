@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Kdc",
+      "type": "registry",
+      "value_name": "StrongCertificateBindingEnforcement"
+    },
+    "description": "Windows Server 2025 must be configured for certificate-based authentication for domain controllers.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-278172"
+  },
+  "check_content_excerpt": "This applies to domain controllers. This is not applicable for member servers.\n\nIf the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: SYSTEM\\CurrentControlSet\\Services\\Kdc\n \nValue Name: StrongCertificateBindingEnforcement\n \nValue Type: REG_DWORD\nValue: 0x00000001 (1) or 0x00000002 (2)",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the registry value.\nRegistry Hive: \n\nHKEY_LOCAL_MACHINE\nRegistry Path: SYSTEM\\CurrentControlSet\\Services\\Kdc\n \nValue Name: StrongCertificateBindingEnforcement\n \nValue Type: REG_DWORD\nValue: 0x00000001 (1) or 0x00000002 (2)",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-278172r1182145_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 must be configured for certificate-based authentication for domain controllers.",
+  "tracking_issue": "TODO-V-278172",
+  "vuln_id": "V-278172"
+}

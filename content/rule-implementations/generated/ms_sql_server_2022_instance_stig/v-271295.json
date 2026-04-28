@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "To determine if [Remote Data Archive] is enabled, execute the following command:\nSELECT name, value, value_in_use\nFROM sys.configurations\nWHERE name = 'Remote Data Archive'\n \nIf [value_in_use] is a [1], review the system documentation to determine whether the use of [Remote Data Archive] is approved. If it is not approved, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Disable use of or remove any external application executable object definitions that are not approved.\n\nTo disable the use of [Remote Data Archive] option, from the query prompt: \nEXEC SP_CONFIGURE 'Remote Data Archive', 0;\nRECONFIGURE WITH OVERRIDE;",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271295r1111135_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "The remote Data Archive feature must be disabled unless specifically required and approved.",
+  "tracking_issue": "TODO-V-271295",
+  "vuln_id": "V-271295"
+}

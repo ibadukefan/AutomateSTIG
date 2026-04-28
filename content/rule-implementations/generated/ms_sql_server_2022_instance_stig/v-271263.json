@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the system documentation to determine whether any concurrent session limits have been defined. If it does not, assume a limit of 10 for database administrators and two for all other users. \n \nIf a mechanism other than a logon trigger is used, verify its correct operation by the appropriate means. If it does not work correctly, this is a finding.\n\nDue to excessive CPU consumption when using a logon trigger, an alternative method of limiting concurrent sessions is setting the max connection limit within SQL Server to an appropriate value. This serves to block a distributed denial-of-service (DDOS) attack by limiting the attacker's connections while allowing a database administrator to still force a SQL connection.\n\nIn SQL Server Management Studio's Object Explorer tree, right-click on the Server Name >> Properties >> Connections Tab.\n\nOR\n\nRun the query:\nEXEC sys.sp_configure N'user connections'\n\nIf the max connection limit is set to 0 (unlimited) or does not match the documented value, this is a finding.\n \nOtherwise, determine if a logon trigger exists:  \n \nIn SQL Server Management Studio's Object Explorer tree, expand [SQL Server Instance] >> Server Objects >> Triggers.\n \nOR \n \nRun the query:  \nSELECT name FROM master.sys.server_triggers;  \n \nIf no triggers are listed, this is a finding. \n \nIf triggers are listed, identify the trigger(s) limiting the number of concurrent sessions per user. If none are found, this is a finding. If they are present but disabled, this is a finding. \n \nExamine the trigger source code for logical correctness and for compliance with the documented limit(s). If errors or variances exist, this is a finding.\n \nVerify that the system does execute the trigger(s) each time a user session is established. If it does not operate correctly for all types of user, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "If a trigger consumes too much CPU, an example alternative method for limiting the concurrent users is setting the max connection limit on SQL Server.\n\nIn SQL Server Management Studio's Object Explorer tree, right-click on the Server Name >> Properties >> Connections Tab >> Set the Maximum Number of Concurrent Connections to a value other than 0 (0 = unlimited), and document it.\n\nOR\n\nRun the query:\n\nEXEC sys.sp_configure N'user connections','5000' /* this is an example max limit */\nGO\nRECONFIGURE WITH OVERRIDE\nGO\n\nRestart SQL Server for the setting to take effect.\n\nReference: https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/configure-the-user-connections-server-configuration-option?\n\nOtherwise, establish the limit(s) appropriate to the type(s) of user account accessing the SQL Server instance, and record them in the system documentation. Implement one or more logon triggers to enforce the limit(s), without exposing the dynamic management views to general users. \n\nExample script:\n \nCREATE TRIGGER SQL_STIG_Connection_Limit \nON ALL SERVER WITH EXECUTE AS 'renamed_sa' /*Make sure to use the renamed SA account here*/ \nFOR LOGON \nAS \nBEGIN \nIf (Select COUNT(1) from sys.dm_exec_sessions WHERE is_user_process = 1 AND original_login_name = ORIGINAL_LOGIN() ) > \n  (CASE ORIGINAL_LOGIN()\n              WHEN 'domain/ima.dba' THEN 150    /*this is a busy DBA's domain account */\n              WHEN 'application1_login' THEN 6  /* this is a SQL login for an application */\n              WHEN 'application2_login' THEN 20 /* this is a SQL login for another application */\n              \u2026\n              ELSE 1 /* All unspecified users are restricted to a single login */\n  END)\n              BEGIN \n                             PRINT 'The login [' + ORIGINAL_LOGIN() + '] has exceeded its concurrent session limit.' \n                             ROLLBACK; \n              END\nEND; \n  \nReference: https://msdn.microsoft.com/en-us/library/ms189799.aspx",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271263r1108405_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "SQL Server must limit the number of concurrent sessions to an organization-defined number per user for all accounts and/or account types.",
+  "tracking_issue": "TODO-V-271263",
+  "vuln_id": "V-271263"
+}
