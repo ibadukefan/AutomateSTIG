@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/group",
+      "pattern": "users:x:1000:smithj,jonesj,jacksons",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that all local initialization files for local interactive users are be group-owned by the users primary group or root.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204475"
+  },
   "check_content_excerpt": "Verify the local initialization files of all local interactive users are group-owned by that user's primary Group Identifier (GID).\n\nCheck the home directory assignment for all nonprivileged users on the system with the following command:\n\nNote: The example will be for the smithj user, who has a home directory of \"/home/smithj\" and a primary group of \"users\".\n\n     # awk -F: '($4>=1000)&&($7 !~ /nologin/){print $1, $4, $6}' /etc/passwd\n     \n     smithj 1000 /home/smithj\n\n     # grep 1000 /etc/group\n     \n     users:x:1000:smithj,jonesj,jacksons \n\nNote: This may miss interactive users that have been assigned a privileged User Identifier (UID). Evidence of interactive use may be obtained from a number of log files containing system logon information.\n\nCheck the group owner of all local interactive users' initialization files with the following command:\n\n     # ls -al /home/smithj/.[^.]* | more\n\n     -rw-------. 1 smithj users 2984 Apr 27 19:02 .bash_history\n     -rw-r--r--. 1 smithj users   18 Aug 21  2019 .bash_logout\n     -rw-r--r--. 1 smithj users  193 Aug 21  2019 .bash_profile\n\nIf all local interactive users' initialization files are not group-owned by that user's primary GID, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the group owner of a local interactive user's files to the group found in \"/etc/passwd\" for the user. To change the group owner of a local interactive user's home directory, use the following command:\n\nNote: The example will be for the user smithj, who has a home directory of \"/home/smithj\" and has a primary group of users.\n\n     # chgrp users /home/smithj/.[^.]*",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204475r991589_rule",
   "severity": "medium",

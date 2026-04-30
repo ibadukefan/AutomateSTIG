@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/auditd.conf",
+      "pattern": "name_format = hostname",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must label all offloaded audit logs before sending them to the central log server.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258161"
+  },
   "check_content_excerpt": "Verify that RHEL 9 Audit Daemon is configured to label all offloaded audit logs, with the following command:\n\n$ sudo grep name_format /etc/audit/auditd.conf\n\nname_format = hostname\n\nIf the \"name_format\" option is not \"hostname\", \"fqd\", or \"numeric\", or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the /etc/audit/auditd.conf file and add or update the \"name_format\" option:\n\nname_format = hostname\n\nThe audit daemon must be restarted for changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258161r958416_rule",
   "severity": "medium",

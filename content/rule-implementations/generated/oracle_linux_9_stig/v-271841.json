@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/faillock.conf",
+      "pattern": "audit",
+      "type": "file_content"
+    },
+    "description": "OL 9 must log username information when unsuccessful logon attempts occur.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271841"
+  },
   "check_content_excerpt": "Verify that OL 9 logs username information when unsuccessful logon attempts occur.\n\nVerify the \"/etc/security/faillock.conf\" file is configured to log username information when unsuccessful logon attempts occur with the following command:\n\n$ grep audit /etc/security/faillock.conf\naudit\n\nIf the \"audit\" option is not set, is missing, or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to log username information when unsuccessful logon attempts occur.\n\nAdd/modify the \"/etc/security/faillock.conf\" file to match the following line:\n\naudit",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271841r1092235_rule",
   "severity": "medium",

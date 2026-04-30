@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/crontab",
+      "pattern": "/var/spool/cron/root",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must routinely check the baseline configuration for unauthorized changes and notify the system administrator when anomalies in the operation of any security functions are discovered.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258135"
+  },
   "check_content_excerpt": "Verify that RHEL 9 routinely executes a file integrity scan for changes to the system baseline. The command used in the example will use a daily occurrence.\n\nCheck the cron directories for scripts controlling the execution and notification of results of the file integrity application. For example, if AIDE is installed on the system, use the following commands:\n\n$ sudo ls -al /etc/cron.* | grep aide\n\n-rwxr-xr-x 1 root root 29 Nov 22 2015 aide\n\n$ sudo grep aide /etc/crontab /var/spool/cron/root\n\n/etc/crontab: 30 04 * * * root usr/sbin/aide\n/var/spool/cron/root: 30 04 * * * root usr/sbin/aide\n\n$ sudo more /etc/cron.daily/aide\n\n#!/bin/bash\n/usr/sbin/aide --check | /bin/mail -s \"$HOSTNAME - Daily aide integrity check run\" root@sysname.mil\n\nIf the file integrity application does not exist, a script file controlling the execution of the file integrity application does not exist, or the file integrity application does not notify designated personnel of changes, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the file integrity tool to run automatically on the system at least weekly and to notify designated personnel if baseline configurations are changed in an unauthorized manner. The AIDE tool can be configured to email designated personnel with the use of the cron system.\n \nThe following example output is generic. It will set cron to run AIDE daily and to send email at the completion of the analysis\n\n$ sudo more /etc/cron.daily/aide\n \n#!/bin/bash\n/usr/sbin/aide --check | /bin/mail -s \"$HOSTNAME - Daily aide integrity check run\" root@sysname.mil",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258135r1045267_rule",
   "severity": "medium",

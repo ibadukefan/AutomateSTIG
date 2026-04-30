@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/proc/cpuinfo",
+      "pattern": "| grep -w nx | sort -u",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must implement nonexecutable data to protect its memory from unauthorized code execution.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270771"
+  },
   "check_content_excerpt": "Verify the NX (no-execution) bit flag is set on the system with the following command: \n \n$ sudo dmesg | grep -i \"execute disable\" \n[    0.000000] NX (Execute Disable) protection: active \n \nIf \"dmesg\" does not show \"NX (Execute Disable) protection: active\", check the cpuinfo settings with the following command:  \n \n$ grep flags /proc/cpuinfo | grep -w nx | sort -u \nflags       : fpu vme de pse tsc ms nx rdtscp lm constant_tsc \n \nIf \"flags\" does not contain the \"nx\" flag, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to enable NX. \n \nIf \"nx\" is not showing up in \"/proc/cpuinfo\", and the system's BIOS setup configuration permits toggling the No Execution bit, set it to \"enable\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270771r1066802_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/postlogin",
+      "pattern": "session required pam_lastlog.so showfailed",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must display the date and time of the last successful account logon upon logon.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204605"
+  },
   "check_content_excerpt": "Verify users are provided with feedback on when account accesses last occurred.\n\nCheck that \"pam_lastlog\" is used and not silent with the following command:\n\n# grep pam_lastlog /etc/pam.d/postlogin\nsession required pam_lastlog.so showfailed\n\nIf \"pam_lastlog\" is missing from \"/etc/pam.d/postlogin\" file, or the silent option is present, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to provide users with feedback on when account accesses last occurred by setting the required configuration options in \"/etc/pam.d/postlogin\". \n\nAdd the following line to the top of \"/etc/pam.d/postlogin\":\n\nsession required pam_lastlog.so showfailed",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204605r991589_rule",
   "severity": "low",

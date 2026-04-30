@@ -4,6 +4,20 @@
       "check": {
         "is_regex": false,
         "path": "/boot/grub/grub.cfg",
+        "pattern": "password_pbkdf2 root grub.pbkdf2.sha512.10000.03255F190F0E2F7B4F0D1C3216012309162F022A7A636771",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS, when booted, must require authentication upon booting into single-user and maintenance modes.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260470"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/boot/grub/grub.cfg",
         "pattern": "linux   /vmlinuz-6.8.0-31-generic root=UUID=c92a542f-aee4-4af9-94b2-203624ccb8e3 ro audit=1 quiet splash $vt_handoff",
         "type": "file_content"
       },
@@ -167,6 +181,76 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/gdm3/greeter.dconf-defaults",
+        "pattern": "banner-message-enable=true",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must enable the graphical user logon banner to display the Standard Mandatory DOD Notice and Consent Banner before granting local access to the system via a graphical user logon.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260535"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/gdm3/greeter.dconf-defaults",
+        "pattern": "banner-message-text=\"You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\\n\\nBy using this IS (which includes any device attached to this IS), you consent to the following conditions:\\n\\n-The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law enforcement (LE), and counterintelligence (CI) investigations.\\n\\n-At any time, the USG may inspect and seize data stored on this IS.\\n\\n-Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG-authorized purpose.\\n\\n-This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not for your personal benefit or privacy.\\n\\n-Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details.\"",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must display the Standard Mandatory DOD Notice and Consent Banner before granting local access to the system via a graphical user logon.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260536"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "PASS_MIN_DAYS    1",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must enforce 24 hours/one day as the minimum password lifetime. Passwords for new users must have a 24 hours/one day minimum password lifetime restriction.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260545"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "PASS_MAX_DAYS    60",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must enforce a 60-day maximum password lifetime restriction. Passwords for new users must have a 60-day maximum password lifetime restriction.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260546"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/default/useradd",
+        "pattern": "INACTIVE=35",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260547"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/security/faillock.conf",
         "pattern": "audit",
         "type": "file_content"
@@ -222,6 +306,104 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/group",
+        "pattern": "sudo:x:27:<username>",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must ensure only users who need access to security functions are part of sudo group.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260559"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "dcredit = -1",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must enforce password complexity by requiring that at least one numeric character be used.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260562"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "ocredit = -1",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must enforce password complexity by requiring that at least one special character be used.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260563"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "dictcheck = 1",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must prevent the use of dictionary words for passwords.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260564"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "enforcing = 1",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must be configured so that when passwords are changed or new passwords are established, pwquality must be used.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260567"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-password",
+        "pattern": "password [success=1 default=ignore] pam_unix.so obscure sha512 shadow rounds=100000",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must store only encrypted representations of passwords.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260569"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-auth",
+        "pattern": "/etc/pam.d/common-password",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must not allow accounts configured with blank or null passwords.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260570"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "ENCRYPT_METHOD SHA512",
         "type": "file_content"
@@ -272,6 +454,62 @@
       },
       "platform": "linux",
       "vuln_id": "V-260575"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+        "pattern": "| sudo awk '/pkcs11_module opensc {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy | grep ocsp_on",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must electronically verify personal identity verification (PIV) credentials.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260576"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+        "pattern": "| sudo awk '/pkcs11_module opensc {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy | grep ca",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260577"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+        "pattern": "| grep  -E -- 'crl_auto|crl_offline'",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260578"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+        "pattern": "use_mappers = pwent",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260579"
     },
     {
       "check": {
@@ -369,6 +607,62 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "action_mail_acct = <administrator_email_account>",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must alert the information system security officer (ISSO) and system administrator (SA) in the event of an audit processing failure.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260593"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "disk_full_action = HALT",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must shut down by default upon audit failure.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260594"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_file = /var/log/audit/audit.log",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must allocate audit record storage capacity to store at least one weeks' worth of audit records, when audit records are not immediately sent to a central audit record storage facility.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260595"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "space_left = 25%",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must immediately notify the system administrator (SA) and information system security officer (ISSO) when the audit record storage volume reaches 25 percent remaining of the allocated capacity.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260596"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "600",
         "owner": null,
@@ -381,6 +675,34 @@
       },
       "platform": "linux",
       "vuln_id": "V-260597"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_file = /var/log/audit/audit.log",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must be configured to permit only authorized users ownership of the audit log files.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260598"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_group = root",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must permit only authorized groups ownership of the audit log files.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260599"
     },
     {
       "check": {
@@ -455,6 +777,20 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/proc/sys/crypto/fips_enabled",
+        "pattern": "1",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must implement NIST FIPS-validated cryptography to protect classified information and for the following: To provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260650"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/sudoers",
         "pattern": "/etc/sudoers.d/ | grep -v '#'",
         "type": "file_content"
@@ -482,6 +818,20 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "/etc/sssd/conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274863"
+    },
+    {
+      "check": {
         "name": "sssd",
         "should_be_installed": true,
         "type": "package"
@@ -492,6 +842,48 @@
       },
       "platform": "linux",
       "vuln_id": "V-274864"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "ldap_user_certificate=userCertificate;binary",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274865"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "certificate_verification = ca_cert,ocsp",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must ensure SSSD performs certificate path validation, including revocation checking, against a trusted anchor for PKI-based authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274867"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/lsb-release",
+        "pattern": "DISTRIB_DESCRIPTION=\"Ubuntu 22.04.1 LTS\"",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must be a vendor-supported release.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-278951"
     },
     {
       "check": {

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/default/aide",
+      "pattern": "SILENTREPORTS=no",
+      "type": "file_content"
+    },
+    "description": "The Ubuntu operating system must notify designated personnel if baseline configurations are changed in an unauthorized manner. The file integrity tool must notify the System Administrator when changes to the baseline configuration or anomalies in the operation of any security functions are discovered.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238372"
+  },
   "check_content_excerpt": "Verify that Advanced Intrusion Detection Environment (AIDE) notifies the System Administrator\n when anomalies in the operation of any security functions are discovered with the following command: \n \n$ sudo grep SILENTREPORTS /etc/default/aide \n \nSILENTREPORTS=no \n \nIf SILENTREPORTS is uncommented and set to \"yes\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the Ubuntu operating system to notify designated personnel if baseline configurations are changed in an unauthorized manner. \n \nModify the \"SILENTREPORTS\" parameter in the \"/etc/default/aide\" file with a value of \"no\" if it does not already exist.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-238372r958948_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/auditd.conf",
+      "pattern": "log_file = /var/log/audit/audit.log",
+      "type": "file_content"
+    },
+    "description": "OL 8 audit logs must be owned by root to prevent unauthorized read access.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248733"
+  },
   "check_content_excerpt": "Verify the audit logs are owned by \"root\".  \n \nDetermine where the audit logs are stored with the following command: \n \n$ sudo grep -iw log_file /etc/audit/auditd.conf \n \nlog_file = /var/log/audit/audit.log \n \nUsing the location of the audit log file, determine if the audit log is owned by \"root\" using the following command: \n \n$ sudo ls -al /var/log/audit/audit.log \n \nrw------- 2 root root 23 Jun 11 11:56 /var/log/audit/audit.log \n \nIf the audit log is not owned by \"root\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit log to be protected from unauthorized read access by setting the correct owner as \"root\" with the following command: \n \n$ sudo chown root [audit_log_file] \n \nReplace \"[audit_log_file]\" to the correct audit log path. By default, this location is \"/var/log/audit/audit.log\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248733r958434_rule",
   "severity": "medium",

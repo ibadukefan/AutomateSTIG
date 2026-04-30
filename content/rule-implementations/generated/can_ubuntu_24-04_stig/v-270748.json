@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/group",
+      "pattern": "sudo:x:27:foo",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must ensure only users who need access to security functions are part of sudo group.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270748"
+  },
   "check_content_excerpt": "Verify the sudo group has only members who require access to security functions with the following command:  \n \n$ grep sudo /etc/group\nsudo:x:27:foo \n \nIf the sudo group contains users not needing access to security functions, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the sudo group with only members requiring access to security functions. \n \nTo remove a user from the sudo group, run: \n \n$ sudo gpasswd -d <username> sudo",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270748r1066733_rule",
   "severity": "high",

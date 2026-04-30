@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+      "pattern": "| sudo awk '/pkcs11_module opensc {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy | grep ocsp_on",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must electronically verify personal identity verification (PIV) credentials.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260576"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS electronically verifies PIV credentials via certificate status checking by using the following command:  \n  \n     $ sudo grep use_pkcs11_module /etc/pam_pkcs11/pam_pkcs11.conf | sudo awk '/pkcs11_module opensc {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy | grep ocsp_on \n     cert_policy = ca,signature,ocsp_on;  \n  \nIf every returned \"cert_policy\" line is not set to \"ocsp_on\", the line is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to do certificate status checking for multifactor authentication.  \n \nAdd or modify all \"cert_policy\" lines in the \"/etc/pam_pkcs11/pam_pkcs11.conf\" file with the following: \n \nocsp_on",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260576r1069114_rule",
   "severity": "medium",

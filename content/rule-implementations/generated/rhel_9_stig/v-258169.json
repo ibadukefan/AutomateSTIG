@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/auditd.conf",
+      "pattern": "log_format = ENRICHED",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must produce audit records containing information to establish the identity of any individual or process associated with the event.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258169"
+  },
   "check_content_excerpt": "Verify that RHEL 9 audit system is configured to resolve audit information before writing to disk, with the following command:\n\n$ sudo grep log_format /etc/audit/auditd.conf\n\nlog_format = ENRICHED\n\nIf the \"log_format\" option is not \"ENRICHED\", or the line is commented out, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the /etc/audit/auditd.conf file and add or update the \"log_format\" option:\n\nlog_format = ENRICHED\n\nThe audit daemon must be restarted for changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258169r991556_rule",
   "severity": "medium",

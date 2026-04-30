@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/password-auth",
+      "pattern": "auth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must automatically lock an account when three unsuccessful logon attempts occur.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230332"
+  },
   "check_content_excerpt": "Verify the system locks an account after three unsuccessful logon attempts with the following commands:\n\nNote: This check applies to RHEL versions 8.0 and 8.1, if the system is RHEL version 8.2 or newer, this check is not applicable.\n\n$ sudo grep pam_faillock.so /etc/pam.d/password-auth\n\nauth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0\nauth required pam_faillock.so authfail dir=/var/log/faillock unlock_time=0\naccount required pam_faillock.so\n\nIf the \"deny\" option is not set to \"3\" or less (but not \"0\") on the \"preauth\" line with the \"pam_faillock.so\" module, or is missing from this line, this is a finding.\n\nIf any line referencing the \"pam_faillock.so\" module is commented out, this is a finding.\n\n$ sudo grep pam_faillock.so /etc/pam.d/system-auth\n\nauth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0\nauth required pam_faillock.so authfail dir=/var/log/faillock unlock_time=0\naccount required pam_faillock.so\n\nIf the \"deny\" option is not set to \"3\" or less (but not \"0\") on the \"preauth\" line with the \"pam_faillock.so\" module, or is missing from this line, this is a finding.\n\nIf any line referencing the \"pam_faillock.so\" module is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to lock an account when three unsuccessful logon attempts occur.\n\nAdd/Modify the appropriate sections of the \"/etc/pam.d/system-auth\" and \"/etc/pam.d/password-auth\" files to match the following lines:\n\nauth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0\nauth required pam_faillock.so authfail dir=/var/log/faillock unlock_time=0\naccount required pam_faillock.so\n\nThe \"sssd\" service must be restarted for the changes to take effect. To restart the \"sssd\" service, run the following command:\n\n$ sudo systemctl restart sssd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230332r1184264_rule",
   "severity": "medium",

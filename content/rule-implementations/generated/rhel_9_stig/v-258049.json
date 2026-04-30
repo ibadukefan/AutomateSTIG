@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/default/useradd",
+      "pattern": "INACTIVE=35",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258049"
+  },
   "check_content_excerpt": "Verify that RHEL 9 account identifiers (individuals, groups, roles, and devices) are disabled after 35 days of inactivity with the following command:\n\nCheck the account inactivity value by performing the following command:\n\n$ sudo grep -i inactive /etc/default/useradd\n\nINACTIVE=35\n\nIf \"INACTIVE\" is set to \"-1\", a value greater than \"35\", or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to disable account identifiers after 35 days of inactivity after the password expiration. \n\nRun the following command to change the configuration for useradd:\n\n$ sudo useradd -D -f 35\n\nThe recommendation is 35 days, but a lower value is acceptable.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258049r1015092_rule",
   "severity": "medium",

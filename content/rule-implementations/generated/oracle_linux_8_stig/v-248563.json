@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sysconfig/sshd",
+      "pattern": "SSH_USE_STRONG_RNG=32",
+      "type": "file_content"
+    },
+    "description": "The OL 8 SSH server must be configured to use strong entropy.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248563"
+  },
   "check_content_excerpt": "Verify the operating system SSH server uses strong entropy with the following command: \n \n$ sudo grep -i ssh_use_strong_rng /etc/sysconfig/sshd \n \nSSH_USE_STRONG_RNG=32 \n \nIf the \"SSH_USE_STRONG_RNG\" line does not equal \"32\" or is commented out or missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system SSH server to use strong entropy. \n \nAdd or modify the following line in the \"/etc/sysconfig/sshd\" file. \n \nSSH_USE_STRONG_RNG=32 \n \nThe SSH service must be restarted for changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248563r991593_rule",
   "severity": "low",

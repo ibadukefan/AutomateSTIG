@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/grub2.cfg",
+      "pattern": "password_pbkdf2  <superusers-accountname>   ${GRUB2_PASSWORD}",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must require a boot loader superuser password.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257787"
+  },
   "check_content_excerpt": "Verify the boot loader superuser password has been set with the following command:\n\n$ sudo grep password_pbkdf2 /etc/grub2.cfg \n\npassword_pbkdf2  <superusers-accountname>   ${GRUB2_PASSWORD}  \n\nTo verify the boot loader superuser account password has been set and the password encrypted, run the following command:\n\n$ sudo cat /boot/grub2/user.cfg \n\nGRUB2_PASSWORD=grub.pbkdf2.sha512.10000.C4E08AC72FBFF7E837FD267BFAD7AEB3D42DDC\n2C99F2A94DD5E2E75C2DC331B719FE55D9411745F82D1B6CFD9E927D61925F9BBDD1CFAA0080E0\n916F7AB46E0D.1302284FCCC52CD73BA3671C6C12C26FF50BA873293B24EE2A96EE3B57963E6D7\n0C83964B473EC8F93B07FE749AA6710269E904A9B08A6BBACB00A2D242AD828 \n\nIf a \"GRUB2_PASSWORD\" is not set, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to require a grub bootloader password for the grub superuser account.\n\nGenerate an encrypted grub2 password for the grub superuser account with the following command:\n\n$ sudo grub2-setpassword\nEnter password:\nConfirm password:",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-257787r1117265_rule",
   "severity": "medium",

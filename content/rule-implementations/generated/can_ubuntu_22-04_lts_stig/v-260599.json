@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/auditd.conf",
+      "pattern": "log_group = root",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must permit only authorized groups ownership of the audit log files.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260599"
+  },
   "check_content_excerpt": "Verify the group owner of newly created audit logs is \"root\" by using the following command:  \n \n     $ sudo grep -iw log_group /etc/audit/auditd.conf \n     log_group = root \n \nIf \"log_group\" is not set to \"root\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the group owner of newly created audit logs to be \"root\". \n \nAdd or modify the following lines in the \"/etc/audit/auditd.conf \" file: \n \nlog_group = root \n \nReload the configuration file of the audit service to update the group ownership of existing files: \n \n     $ sudo systemctl kill auditd -s SIGHUP",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260599r958434_rule",
   "severity": "medium",

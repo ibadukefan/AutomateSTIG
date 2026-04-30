@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/dnf/dnf.conf",
+      "pattern": "localpkg_gpgcheck=1",
+      "type": "file_content"
+    },
+    "description": "OL 9 must check the GPG signature of locally installed software packages before installation.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271523"
+  },
   "check_content_excerpt": "Verify that OL 9 dnf package manager always checks the GPG signature of locally installed software packages before installation:\n\n$ grep localpkg_gpgcheck /etc/dnf/dnf.conf \nlocalpkg_gpgcheck=1 \n\nIf \"localpkg_gpgcheck\" is not set to \"1\", or if the option is missing or commented out, ask the system administrator how the GPG signatures of local software packages are being verified.\n\nIf there is no process to verify GPG signatures that is approved by the organization, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure dnf to always check the GPG signature of local software packages before installation.\n\nAdd or update the following line in the [main] section of the /etc/dnf/dnf.conf file:\n\nlocalpkg_gpgcheck=1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271523r1091281_rule",
   "severity": "high",

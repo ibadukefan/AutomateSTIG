@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "Ciphers aes256-ctr,aes192-ctr,aes128-ctr",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux 7 operating system must implement DoD-approved encryption to protect the confidentiality of SSH connections.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204578"
+  },
   "check_content_excerpt": "Verify the operating system uses mechanisms meeting the requirements of applicable federal laws, Executive orders, directives, policies, regulations, standards, and guidance for authentication to a cryptographic module.\n\nThe location of the \"sshd_config\" file may vary if a different daemon is in use.\n\nInspect the \"Ciphers\" configuration with the following command:\n\n# grep -i ciphers /etc/ssh/sshd_config\nCiphers aes256-ctr,aes192-ctr,aes128-ctr\n\nIf any ciphers other than \"aes256-ctr\", \"aes192-ctr\", or \"aes128-ctr\" are listed, the order differs from the example above, the \"Ciphers\" keyword is missing, or the returned line is commented out, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure SSH to use FIPS 140-2 approved cryptographic algorithms.\n\nAdd the following line (or modify the line to have the required value) to the \"/etc/ssh/sshd_config\" file (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor).\n\nCiphers aes256-ctr,aes192-ctr,aes128-ctr\n\nThe SSH service must be restarted for changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204578r958408_rule",
   "severity": "medium",

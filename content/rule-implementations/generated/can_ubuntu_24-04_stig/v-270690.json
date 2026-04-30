@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/common-auth",
+      "pattern": "auth     [default=die]  pam_faillock.so authfail",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270690"
+  },
   "check_content_excerpt": "Verify that Ubuntu 24.04 LTS utilizes the \"pam_faillock\" module with the following command:\n\n$ grep faillock /etc/pam.d/common-auth \nauth     [default=die]  pam_faillock.so authfail\nauth     sufficient     pam_faillock.so authsucc\n\nIf the pam_faillock.so module is not present in the \"/etc/pam.d/common-auth\" file, this is a finding.\n\nVerify the pam_faillock module is configured to use the following options:\n\n$ sudo egrep 'silent|audit|deny|fail_interval| unlock_time' /etc/security/faillock.conf\naudit\nsilent\ndeny = 3\nfail_interval = 900\nunlock_time = 0\n\nIf the \"silent\" keyword is missing or commented out, this is a finding.\nIf the \"audit\" keyword is missing or commented out, this is a finding.\nIf the \"deny\" keyword is missing, commented out, or set to a value greater than \"3\", this is a finding.\nIf the \"fail_interval\" keyword is missing, commented out, or set to a value greater than \"900\", this is a finding.\nIf the \"unlock_time\" keyword is missing, commented out, or not set to \"0\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to utilize the \"pam_faillock\" module. \n\nEdit the /etc/pam.d/common-auth file to add the following lines below the \"auth\" definition for pam_unix.so:\nauth     [default=die]  pam_faillock.so authfail\nauth     sufficient     pam_faillock.so authsucc\n\nConfigure the \"pam_faillock\" module to use the following options:\n\nEdit the /etc/security/faillock.conf file and add/update the following keywords and values:\naudit\nsilent\ndeny = 3\nfail_interval = 900\nunlock_time = 0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270690r1067126_rule",
   "severity": "low",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/default/useradd",
+      "pattern": "INACTIVE=35",
+      "type": "file_content"
+    },
+    "description": "The Ubuntu operating system must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238330"
+  },
   "check_content_excerpt": "Verify the account identifiers (individuals, groups, roles, and devices) are disabled after 35 days of inactivity with the following command: \n \nCheck the account inactivity value by performing the following command: \n \n$ sudo grep INACTIVE /etc/default/useradd \n \nINACTIVE=35 \n \nIf \"INACTIVE\" is not set to a value 0<[VALUE]<=35, or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the Ubuntu operating system to disable account identifiers after 35 days of inactivity since the password expiration.  \n \nRun the following command to change the configuration for adduser: \n \n$ sudo useradd -D -f 35 \n \nNote: DoD recommendation is 35 days, but a lower value is acceptable. The value \"0\" will disable the account immediately after the password expires.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-238330r1015154_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/system-auth",
+      "pattern": "password required pam_pwquality.so retry=3",
+      "type": "file_content"
+    },
+    "description": "OL 9 must ensure the password complexity module in the system-auth file is configured for three retries or less.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271612"
+  },
   "check_content_excerpt": "Verify that OL 9 is configured to limit the \"pwquality\" retry option to \"3\". \n\nCheck for the use of the \"pwquality\" retry option in the system-auth file with the following command:\n\n$ grep pam_pwquality /etc/pam.d/system-auth \npassword required pam_pwquality.so retry=3\n\nIf the value of \"retry\" is set to \"0\" or greater than \"3\", or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to limit the \"pwquality\" retry option to \"3\".\n\nAdd the following line to the \"/etc/pam.d/system-auth\" file (or modify the line to have the required value):\n\npassword required pam_pwquality.so retry=3",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271612r1091548_rule",
   "severity": "medium",

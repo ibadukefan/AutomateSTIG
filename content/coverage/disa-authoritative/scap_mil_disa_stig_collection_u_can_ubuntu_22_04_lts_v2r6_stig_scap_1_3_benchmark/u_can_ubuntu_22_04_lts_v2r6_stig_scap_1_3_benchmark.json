@@ -17,16 +17,17 @@
       "vuln_id": "V-260469"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260470",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260470 from source identifier xccdf_mil.disa.stig_group_V-260470.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260470r1137691_rule",
       "severity": "high",
       "title": "Ubuntu 22.04 LTS, when booted, must require authentication upon booting into single-user and maintenance modes.",
-      "tracking_issue": "TODO-V-260470",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260470"
@@ -911,16 +912,17 @@
       "vuln_id": "V-260534"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260535",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260535 from source identifier xccdf_mil.disa.stig_group_V-260535.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260535r958390_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must enable the graphical user logon banner to display the Standard Mandatory DOD Notice and Consent Banner before granting local access to the system via a graphical user logon.",
-      "tracking_issue": "TODO-V-260535",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260535"
@@ -974,46 +976,49 @@
       "vuln_id": "V-260543"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260545",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260545 from source identifier xccdf_mil.disa.stig_group_V-260545.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260545r1015007_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must enforce 24 hours/one day as the minimum password lifetime. Passwords for new users must have a 24 hours/one day minimum password lifetime restriction.",
-      "tracking_issue": "TODO-V-260545",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260545"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260546",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260546 from source identifier xccdf_mil.disa.stig_group_V-260546.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260546r1038967_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must enforce a 60-day maximum password lifetime restriction. Passwords for new users must have a 60-day maximum password lifetime restriction.",
-      "tracking_issue": "TODO-V-260546",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260546"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260547",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260547 from source identifier xccdf_mil.disa.stig_group_V-260547.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260547r1015009_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity.",
-      "tracking_issue": "TODO-V-260547",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260547"
@@ -1179,46 +1184,49 @@
       "vuln_id": "V-260561"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260562",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260562 from source identifier xccdf_mil.disa.stig_group_V-260562.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260562r1015014_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must enforce password complexity by requiring that at least one numeric character be used.",
-      "tracking_issue": "TODO-V-260562",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260562"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260563",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260563 from source identifier xccdf_mil.disa.stig_group_V-260563.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260563r1015015_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must enforce password complexity by requiring that at least one special character be used.",
-      "tracking_issue": "TODO-V-260563",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260563"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260564",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260564 from source identifier xccdf_mil.disa.stig_group_V-260564.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260564r991587_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must prevent the use of dictionary words for passwords.",
-      "tracking_issue": "TODO-V-260564",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260564"
@@ -1256,46 +1264,49 @@
       "vuln_id": "V-260566"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260567",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260567 from source identifier xccdf_mil.disa.stig_group_V-260567.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260567r991587_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must be configured so that when passwords are changed or new passwords are established, pwquality must be used.",
-      "tracking_issue": "TODO-V-260567",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260567"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260569",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260569 from source identifier xccdf_mil.disa.stig_group_V-260569.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260569r1101736_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must store only encrypted representations of passwords.",
-      "tracking_issue": "TODO-V-260569",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260569"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260570",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260570 from source identifier xccdf_mil.disa.stig_group_V-260570.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260570r1082233_rule",
       "severity": "high",
       "title": "Ubuntu 22.04 LTS must not allow accounts configured with blank or null passwords.",
-      "tracking_issue": "TODO-V-260570",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260570"
@@ -1380,61 +1391,65 @@
       "vuln_id": "V-260575"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260576",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260576 from source identifier xccdf_mil.disa.stig_group_V-260576.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260576r1069114_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must electronically verify personal identity verification (PIV) credentials.",
-      "tracking_issue": "TODO-V-260576",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260576"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260577",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260577 from source identifier xccdf_mil.disa.stig_group_V-260577.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260577r1069112_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
-      "tracking_issue": "TODO-V-260577",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260577"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260578",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260578 from source identifier xccdf_mil.disa.stig_group_V-260578.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260578r1015021_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network.",
-      "tracking_issue": "TODO-V-260578",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260578"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260579",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260579 from source identifier xccdf_mil.disa.stig_group_V-260579.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260579r958452_rule",
       "severity": "high",
       "title": "Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.",
-      "tracking_issue": "TODO-V-260579",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260579"
@@ -1566,31 +1581,33 @@
       "vuln_id": "V-260591"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260594",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260594 from source identifier xccdf_mil.disa.stig_group_V-260594.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260594r1038966_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must shut down by default upon audit failure.",
-      "tracking_issue": "TODO-V-260594",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260594"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260596",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260596 from source identifier xccdf_mil.disa.stig_group_V-260596.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260596r971542_rule",
       "severity": "low",
       "title": "Ubuntu 22.04 LTS must immediately notify the system administrator (SA) and information system security officer (ISSO) when the audit record storage volume reaches 25 percent remaining of the allocated capacity.",
-      "tracking_issue": "TODO-V-260596",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260596"
@@ -1612,31 +1629,33 @@
       "vuln_id": "V-260597"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260598",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260598 from source identifier xccdf_mil.disa.stig_group_V-260598.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260598r958434_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must be configured to permit only authorized users ownership of the audit log files.",
-      "tracking_issue": "TODO-V-260598",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260598"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260599",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260599 from source identifier xccdf_mil.disa.stig_group_V-260599.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260599r958434_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must permit only authorized groups ownership of the audit log files.",
-      "tracking_issue": "TODO-V-260599",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260599"
@@ -2412,31 +2431,33 @@
       "vuln_id": "V-260649"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260650",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260650 from source identifier xccdf_mil.disa.stig_group_V-260650.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260650r987791_rule",
       "severity": "high",
       "title": "Ubuntu 22.04 LTS must implement NIST FIPS-validated cryptography to protect classified information and for the following: To provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards.",
-      "tracking_issue": "TODO-V-260650",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260650"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278951",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-278951 from source identifier xccdf_mil.disa.stig_group_V-278951.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-278951r1155215_rule",
       "severity": "high",
       "title": "Ubuntu 22.04 LTS must be a vendor-supported release.",
-      "tracking_issue": "TODO-V-278951",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-278951"

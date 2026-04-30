@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/common-auth",
+      "pattern": "/etc/pam.d/common-password",
+      "type": "file_content"
+    },
+    "description": "The Ubuntu operating system must not allow accounts configured with blank or null passwords.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-251504"
+  },
   "check_content_excerpt": "Verify null passwords cannot be used. Run the following command: \n\n$ grep nullok /etc/pam.d/common-auth /etc/pam.d/common-password\n\nIf this produces any output, it may be possible to log on with accounts with empty passwords.\n\nIf null passwords can be used, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "If an account is configured for password authentication but does not have an assigned password, it may be possible to log on to the account without authenticating.\n\nRemove any instances of the \"nullok\" option in \"/etc/pam.d/common-auth\" and \"/etc/pam.d/common-password\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-251504r1082230_rule",
   "severity": "high",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/aide.conf",
+      "pattern": "All= p+i+n+u+g+s+m+S+sha512+acl+xattrs+selinux",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must be configured so that the file integrity tool verifies extended attributes.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258139"
+  },
   "check_content_excerpt": "Verify that AIDE is configured to verify extended attributes with the following command:\n\n$ sudo grep xattrs /etc/aide.conf\n\nAll= p+i+n+u+g+s+m+S+sha512+acl+xattrs+selinux\n\nIf the \"xattrs\" rule is not being used on all uncommented selection lines in the \"/etc/aide.conf\" file, or extended attributes are not being checked by another file integrity tool, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the file integrity tool to check file and directory extended attributes. \n\nIf AIDE is installed, ensure the \"xattrs\" rule is present on all uncommented file and directory selection lists.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258139r1045276_rule",
   "severity": "low",

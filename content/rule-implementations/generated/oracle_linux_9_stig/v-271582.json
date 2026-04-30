@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/auditd.conf",
+      "pattern": "freq = 100",
+      "type": "file_content"
+    },
+    "description": "OL 9 must periodically flush audit records to disk to prevent the loss of audit records.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271582"
+  },
   "check_content_excerpt": "Verify that OL 9 is configured to flush audit records to disk after every 100 records with the following command:\n\n$ sudo grep freq /etc/audit/auditd.conf \nfreq = 100 \n\nIf \"freq\" isn't set to a value of \"100\" or greater, the value is missing, or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to flush audit to disk by adding or updating the following configuration in \"/etc/audit/auditd.conf\":\n\nfreq = 100\n\nThe audit daemon must be restarted for the changes to take effect.\n\nRestart auditd:\n$ sudo service auditd restart",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271582r1092574_rule",
   "severity": "medium",

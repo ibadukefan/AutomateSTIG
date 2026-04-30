@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/default/grub",
+      "pattern": "GRUB_CMDLINE_LINUX=\"audit_backlog_limit=8192\"",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must allocate an audit_backlog_limit of sufficient size to capture processes that start prior to the audit daemon.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230469"
+  },
   "check_content_excerpt": "Verify RHEL 8 allocates a sufficient audit_backlog_limit to capture processes that start prior to the audit daemon with the following commands:\n\n$ sudo grub2-editenv list | grep audit\n\nkernelopts=root=/dev/mapper/rhel-root ro crashkernel=auto resume=/dev/mapper/rhel-swap rd.lvm.lv=rhel/root rd.lvm.lv=rhel/swap rhgb quiet fips=1 audit=1 audit_backlog_limit=8192 boot=UUID=8d171156-cd61-421c-ba41-1c021ac29e82\n\nIf the \"audit_backlog_limit\" entry does not equal \"8192\" or greater, is missing, or the line is commented out, this is a finding.\n\nCheck the audit_backlog_limit is set to persist in kernel updates: \n\n$ sudo grep audit /etc/default/grub\n\nGRUB_CMDLINE_LINUX=\"audit_backlog_limit=8192\"\n\nIf \"audit_backlog_limit\" is not set to \"8192\" or greater, is missing or commented out, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 8 to allocate sufficient audit_backlog_limit to capture processes that start prior to the audit daemon with the following command:\n\n$ sudo grubby --update-kernel=ALL --args=\"audit_backlog_limit=8192\"\n\nAdd or modify the following line in \"/etc/default/grub\" to ensure the configuration survives kernel updates:\n\nGRUB_CMDLINE_LINUX=\"audit_backlog_limit=8192\"",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230469r958752_rule",
   "severity": "low",

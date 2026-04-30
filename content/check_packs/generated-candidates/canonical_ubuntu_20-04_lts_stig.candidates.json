@@ -3,6 +3,48 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "PASS_MAX_DAYS    60",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must enforce a 60-day maximum password lifetime restriction. Passwords for new users must have a 60-day maximum password lifetime restriction.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238203"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/boot/grub/grub.cfg",
+        "pattern": "password_pbkdf2 root grub.pbkdf2.sha512.10000.MFU48934NJA87HF8NSD34493GDHF84NG",
+        "type": "file_content"
+      },
+      "description": "Ubuntu operating systems when booted must require authentication upon booting into single-user and maintenance modes.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238204"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/group",
+        "pattern": "sudo:x:27:foo",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must ensure only users who need access to security functions are part of sudo group.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238206"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/bash.bashrc",
         "pattern": "/etc/profile.d/*",
         "type": "file_content"
@@ -60,6 +102,20 @@
       "check": {
         "is_regex": false,
         "path": "/etc/security/pwquality.conf",
+        "pattern": "minlen=15",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must enforce a minimum 15-character password length.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238225"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
         "pattern": "ocredit=-1",
         "type": "file_content"
       },
@@ -74,6 +130,20 @@
       "check": {
         "is_regex": false,
         "path": "/etc/security/pwquality.conf",
+        "pattern": "dictcheck=1",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must prevent the use of dictionary words for passwords.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238227"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
         "pattern": "enforcing",
         "type": "file_content"
       },
@@ -83,6 +153,62 @@
       },
       "platform": "linux",
       "vuln_id": "V-238228"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+        "pattern": "| sudo awk '/pkcs11_module opensc {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy | grep ca",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238229"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-password",
+        "pattern": "password [success=1 default=ignore] pam_unix.so obscure sha512 shadow remember=5 rounds=5000",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must prohibit password reuse for a minimum of five generations.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238234"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-auth",
+        "pattern": "auth     [default=die]  pam_faillock.so authfail",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238235"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-auth",
+        "pattern": "auth    required    pam_faildelay.so    delay=4000000",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must enforce a delay of at least 4 seconds between logon prompts following a failed logon attempt.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238237"
     },
     {
       "check": {
@@ -112,6 +238,34 @@
       },
       "platform": "linux",
       "vuln_id": "V-238245"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_file = /var/log/audit/audit.log",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must be configured to permit only authorized users ownership of the audit log files.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238246"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_group = root",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must permit only authorized groups ownership of the audit log files.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238247"
     },
     {
       "check": {
@@ -200,6 +354,62 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_file = /var/log/audit/audit.log",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must allocate audit record storage capacity to store at least one weeks' worth of audit records, when audit records are not immediately sent to a central audit record storage facility.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238305"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audisp/plugins.d/au-remote.conf",
+        "pattern": "active = yes",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system audit event multiplexor must be configured to off-load audit logs onto a different system or storage media from the system being audited.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238306"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "space_left_action email",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must immediately notify the SA and ISSO (at a minimum) when allocated audit record storage volume reaches 75% of the repository maximum audit record storage capacity.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238307"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/limits.conf",
+        "pattern": "/etc/security/limits.d/*.conf | grep -v '^#'",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must limit the number of concurrent sessions to ten for all accounts and/or account types.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238323"
+    },
+    {
+      "check": {
         "name": "telnetd",
         "should_be_installed": false,
         "type": "package"
@@ -223,6 +433,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-238327"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/default/useradd",
+        "pattern": "INACTIVE=35",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238330"
     },
     {
       "check": {
@@ -310,6 +534,34 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/chrony/chrony.conf",
+        "pattern": "server tick.usno.navy.mil iburst maxpoll 16",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must, for networked systems, compare internal information system clocks at least every 24 hours with a server which is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, or a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS).",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238356"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/chrony/chrony.conf",
+        "pattern": "makestep 1 -1",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must synchronize internal information system clocks to the authoritative time source when the time difference is greater than one second.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238357"
+    },
+    {
+      "check": {
         "name": "apparmor",
         "should_be_installed": true,
         "type": "package"
@@ -320,6 +572,48 @@
       },
       "platform": "linux",
       "vuln_id": "V-238360"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "/etc/sssd/conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238362"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/proc/sys/crypto/fips_enabled",
+        "pattern": "1",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must implement NIST FIPS-validated cryptography to protect classified information and for the following: To provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238363"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/proc/cpuinfo",
+        "pattern": "| grep -w nx | sort -u",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must implement nonexecutable data to protect its memory from unauthorized code execution.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238368"
     },
     {
       "check": {
@@ -336,6 +630,20 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/apt/apt.conf.d/50unattended-upgrades",
+        "pattern": "Unattended-Upgrade::Remove-Unused-Dependencies \"true\";",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must be configured so that Advance Package Tool (APT) removes all software components after updated versions have been installed.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238370"
+    },
+    {
+      "check": {
         "name": "aide",
         "should_be_installed": true,
         "type": "package"
@@ -346,6 +654,34 @@
       },
       "platform": "linux",
       "vuln_id": "V-238371"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/default/aide",
+        "pattern": "SILENTREPORTS=no",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must notify designated personnel if baseline configurations are changed in an unauthorized manner. The file integrity tool must notify the System Administrator when changes to the baseline configuration or anomalies in the operation of any security functions are discovered.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238372"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/login",
+        "pattern": "session     required      pam_lastlog.so showfailed",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must display the date and time of the last successful account logon upon logon.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238373"
     },
     {
       "check": {
@@ -361,6 +697,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-238376"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-auth",
+        "pattern": "/etc/pam.d/common-password",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must not allow accounts configured with blank or null passwords.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-251504"
     },
     {
       "check": {
@@ -433,6 +783,48 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "certificate_verification = ca_cert,ocsp",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 20.04 LTS must ensure SSSD performs certificate path validation, including revocation checking, against a trusted anchor for PKI-based authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274855"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "/etc/sssd/conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 20.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274856"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "ldap_user_certificate=userCertificate;binary",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 20.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274857"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/sudoers",
         "pattern": "/etc/sudoers.d/ | grep -v '#'",
         "type": "file_content"
@@ -443,6 +835,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-274858"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/lsb-release",
+        "pattern": "DISTRIB_DESCRIPTION=\"Ubuntu 20.04.6 LTS\"",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 20.04 LTS must be a vendor-supported release.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-278950"
     }
   ],
   "platform": "linux",

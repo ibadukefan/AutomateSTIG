@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/crontab",
+      "pattern": "/var/spool/cron/root",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that designated personnel are notified if baseline configurations are changed in an unauthorized manner.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204446"
+  },
   "check_content_excerpt": "Verify the operating system notifies designated personnel if baseline configurations are changed in an unauthorized manner.\n\nNote: A file integrity tool other than Advanced Intrusion Detection Environment (AIDE) may be used, but the tool must be executed and notify specified individuals via email or an alert.\n\nCheck for the presence of a cron job running routinely on the system that executes AIDE to scan for changes to the system baseline. The commands used in the example will use a daily occurrence.\n\nCheck the cron directories for a \"crontab\" script file controlling the execution of the file integrity application. For example, if AIDE is installed on the system, use the following command:\n    \n     # ls -al /etc/cron.* | grep aide\n     -rwxr-xr-x 1 root root 602 Mar 6 20:02 aide\n\n     # grep aide /etc/crontab /var/spool/cron/root\n     /etc/crontab: 30 04 * * * root /usr/sbin/aide  --check\n     /var/spool/cron/root: 30 04 * * * /usr/sbin/aide  --check\n\nAIDE does not have a configuration that will send a notification, so the cron job uses the mail application on the system to email the results of the file integrity run as in the following example:\n\n     # more /etc/cron.daily/aide\n     #!/bin/bash\n\n     /usr/sbin/aide --check | /bin/mail -s \"$HOSTNAME - Daily AIDE integrity check run\" root@example_server_name.mil\n\nIf the file integrity application does not notify designated personnel of changes, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to notify designated personnel if baseline configurations are changed in an unauthorized manner. The AIDE tool can be configured to email designated personnel with the use of the cron system. \n\nThe following example output is generic. It will set cron to run AIDE daily and to send email at the completion of the analysis. \n\n     # more /etc/cron.daily/aide\n\n     /usr/sbin/aide --check | /bin/mail -s \"$HOSTNAME - Daily AIDE integrity check run\" root@example_server_name.mil\n\nNote: Per requirement RHEL-07-020028, the \"mailx\" package must be installed on the system to enable email functionality.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204446r958794_rule",
   "severity": "medium",

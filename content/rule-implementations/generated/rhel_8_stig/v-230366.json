@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/login.defs",
+      "pattern": "PASS_MAX_DAYS 60",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 user account passwords must have a 60-day maximum password lifetime restriction.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230366"
+  },
   "check_content_excerpt": "Verify that RHEL 8 enforces a 60-day maximum password lifetime for new user accounts by running the following command:\n\n$ sudo grep -i pass_max_days /etc/login.defs\nPASS_MAX_DAYS 60\n\nIf the \"PASS_MAX_DAYS\" parameter value is greater than \"60\", or commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 8 to enforce a 60-day maximum password lifetime.\n\nAdd, or modify the following line in the \"/etc/login.defs\" file:\n\nPASS_MAX_DAYS 60",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230366r1038967_rule",
   "severity": "medium",

@@ -50,31 +50,33 @@
       "vuln_id": "V-238202"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238203",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238203 from source identifier xccdf_mil.disa.stig_group_V-238203.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238203r1038967_rule",
       "severity": "low",
       "title": "The Ubuntu operating system must enforce a 60-day maximum password lifetime restriction. Passwords for new users must have a 60-day maximum password lifetime restriction.",
-      "tracking_issue": "TODO-V-238203",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238203"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238204",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238204 from source identifier xccdf_mil.disa.stig_group_V-238204.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238204r958472_rule",
       "severity": "high",
       "title": "Ubuntu operating systems when booted must require authentication upon booting into single-user and maintenance modes.",
-      "tracking_issue": "TODO-V-238204",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238204"
@@ -319,16 +321,17 @@
       "vuln_id": "V-238224"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238225",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238225 from source identifier xccdf_mil.disa.stig_group_V-238225.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238225r1015148_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must enforce a minimum 15-character password length.",
-      "tracking_issue": "TODO-V-238225",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238225"
@@ -350,16 +353,17 @@
       "vuln_id": "V-238226"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238227",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238227 from source identifier xccdf_mil.disa.stig_group_V-238227.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238227r991587_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must prevent the use of dictionary words for passwords.",
-      "tracking_issue": "TODO-V-238227",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238227"
@@ -381,16 +385,17 @@
       "vuln_id": "V-238228"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238229",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238229 from source identifier xccdf_mil.disa.stig_group_V-238229.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238229r1069088_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
-      "tracking_issue": "TODO-V-238229",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238229"
@@ -460,31 +465,33 @@
       "vuln_id": "V-238233"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238235",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238235 from source identifier xccdf_mil.disa.stig_group_V-238235.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238235r1069092_rule",
       "severity": "low",
       "title": "The Ubuntu operating system must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.",
-      "tracking_issue": "TODO-V-238235",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238235"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238237",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238237 from source identifier xccdf_mil.disa.stig_group_V-238237.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238237r991588_rule",
       "severity": "low",
       "title": "The Ubuntu operating system must enforce a delay of at least 4 seconds between logon prompts following a failed logon attempt.",
-      "tracking_issue": "TODO-V-238237",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238237"
@@ -1281,16 +1288,17 @@
       "vuln_id": "V-238320"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238323",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238323 from source identifier xccdf_mil.disa.stig_group_V-238323.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238323r1101671_rule",
       "severity": "low",
       "title": "The Ubuntu operating system must limit the number of concurrent sessions to ten for all accounts and/or account types.",
-      "tracking_issue": "TODO-V-238323",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238323"
@@ -1343,16 +1351,17 @@
       "vuln_id": "V-238327"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238330",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238330 from source identifier xccdf_mil.disa.stig_group_V-238330.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238330r1015154_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity.",
-      "tracking_issue": "TODO-V-238330",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238330"
@@ -1513,16 +1522,17 @@
       "vuln_id": "V-238354"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238357",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238357 from source identifier xccdf_mil.disa.stig_group_V-238357.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238357r1015156_rule",
       "severity": "low",
       "title": "The Ubuntu operating system must synchronize internal information system clocks to the authoritative time source when the time difference is greater than one second.",
-      "tracking_issue": "TODO-V-238357",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238357"
@@ -1543,16 +1553,17 @@
       "vuln_id": "V-238359"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238363",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238363 from source identifier xccdf_mil.disa.stig_group_V-238363.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238363r1014774_rule",
       "severity": "high",
       "title": "The Ubuntu operating system must implement NIST FIPS-validated cryptography to protect classified information and for the following: To provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards.",
-      "tracking_issue": "TODO-V-238363",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238363"
@@ -1574,16 +1585,17 @@
       "vuln_id": "V-238369"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238370",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238370 from source identifier xccdf_mil.disa.stig_group_V-238370.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238370r958936_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must be configured so that Advance Package Tool (APT) removes all software components after updated versions have been installed.",
-      "tracking_issue": "TODO-V-238370",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238370"
@@ -1605,16 +1617,17 @@
       "vuln_id": "V-238371"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238373",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238373 from source identifier xccdf_mil.disa.stig_group_V-238373.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238373r991589_rule",
       "severity": "low",
       "title": "The Ubuntu operating system must display the date and time of the last successful account logon upon logon.",
-      "tracking_issue": "TODO-V-238373",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238373"
@@ -1651,16 +1664,17 @@
       "vuln_id": "V-251503"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-251504",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-251504 from source identifier xccdf_mil.disa.stig_group_V-251504.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-251504r1082230_rule",
       "severity": "high",
       "title": "The Ubuntu operating system must not allow accounts configured with blank or null passwords.",
-      "tracking_issue": "TODO-V-251504",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-251504"

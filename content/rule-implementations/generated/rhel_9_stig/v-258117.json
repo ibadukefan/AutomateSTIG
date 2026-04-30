@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/login.defs",
+      "pattern": "ENCRYPT_METHOD SHA512",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must be configured to use the shadow file to store only encrypted representations of passwords.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258117"
+  },
   "check_content_excerpt": "Verify the system's shadow file is configured to store only encrypted representations of passwords with a hash value of SHA512 with the following command:\n\n# grep -i encrypt_method /etc/login.defs\n\nENCRYPT_METHOD SHA512\n\nIf \"ENCRYPT_METHOD\" does not have a value of \"SHA512\", or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to store only SHA512 encrypted representations of passwords.\n\nAdd or update the following line in the \"/etc/login.defs\" file:\n\nENCRYPT_METHOD SHA512",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258117r1015116_rule",
   "severity": "medium",

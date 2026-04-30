@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ipsec.conf",
+      "pattern": "/etc/ipsec.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must not have unauthorized IP tunnels configured.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204629"
+  },
   "check_content_excerpt": "Verify the system does not have unauthorized IP tunnels configured.\n\nCheck to see if \"libreswan\" is installed with the following command:\n\n# yum list installed libreswan\nlibreswan.x86-64 3.20-5.el7_4\n\nIf \"libreswan\" is installed, check to see if the \"IPsec\" service is active with the following command:\n\n# systemctl status ipsec\nipsec.service - Internet Key Exchange (IKE) Protocol Daemon for IPsec\nLoaded: loaded (/usr/lib/systemd/system/ipsec.service; disabled)\nActive: inactive (dead)\n\nIf the \"IPsec\" service is active, check to see if any tunnels are configured in \"/etc/ipsec.conf\" and \"/etc/ipsec.d/\" with the following commands:\n\n# grep -iw conn /etc/ipsec.conf /etc/ipsec.d/*.conf\n\nIf there are indications that a \"conn\" parameter is configured for a tunnel, ask the System Administrator if the tunnel is documented with the ISSO. \n\nIf \"libreswan\" is installed, \"IPsec\" is active, and an undocumented tunnel is active, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove all unapproved tunnels from the system, or document them with the ISSO.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204629r991589_rule",
   "severity": "medium",

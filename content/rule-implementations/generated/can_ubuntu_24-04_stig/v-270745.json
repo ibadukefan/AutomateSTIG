@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssl/certs",
+      "pattern": "DOD_PKE_CA_chain.pem",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must use DOD PKI-established certificate authorities (CAs) for verification of the establishment of protected sessions.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270745"
+  },
   "check_content_excerpt": "Verify the directory containing the root certificates for Ubuntu 24.04 LTS contains certificate files for DOD PKI-established CAs by iterating over all files in the \"/etc/ssl/certs\" directory and checking if, at least one, has the subject matching \"DOD ROOT CA\".\n\n$ grep -ir DOD /etc/ssl/certs\nDOD_PKE_CA_chain.pem\n\nIf no root certificate is found, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to use of DOD PKI-established CAs for verification of the establishment of protected sessions. \n \nEdit the \"/etc/ca-certificates.conf\" file, adding the character \"!\" to the beginning of all uncommented lines that do not start with the \"!\" character with the following command: \n \n$ sudo sed -i -E 's/^([^!#]+)/!\\1/' /etc/ca-certificates.conf \n \nAdd at least one CA to the \"/usr/local/share/ca-certificates\" directory in the PEM format. \n \nUpdate the \"/etc/ssl/certs\" directory with the following command: \n \n$ sudo update-ca-certificates",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270745r1066724_rule",
   "severity": "medium",

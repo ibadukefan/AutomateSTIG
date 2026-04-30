@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/common-auth",
+      "pattern": "auth    [success=2 default=ignore] pam_pkcs11.so",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must implement smart card logins for multifactor authentication for local and network access to privileged and nonprivileged accounts.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270721"
+  },
   "check_content_excerpt": "Verify that the \"pam_pkcs11.so\" module is configured with the following command:\n\n$ grep -r pam_pkcs11.so /etc/pam.d/common-auth\nauth    [success=2 default=ignore] pam_pkcs11.so\n\nIf the module is not configured, is missing, or commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to use multifactor authentication for access to accounts. \n \nAdd or update \"pam_pkcs11.so\" in \"/etc/pam.d/common-auth\" to match the following line: \n \nauth    [success=2 default=ignore] pam_pkcs11.so",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270721r1066652_rule",
   "severity": "medium",

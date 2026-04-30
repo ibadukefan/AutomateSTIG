@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/default/grub",
+      "pattern": "GRUB_CMDLINE_LINUX=\"... init_on_free=1\"",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must clear memory when it is freed to prevent use-after-free attacks.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230279"
+  },
   "check_content_excerpt": "Verify that GRUB2 is configured to mitigate use-after-free vulnerabilities by employing memory poisoning.\n\nInspect the \"GRUB_CMDLINE_LINUX\" entry of /etc/default/grub as follows:\n$ sudo grep -i grub_cmdline_linux /etc/default/grub\nGRUB_CMDLINE_LINUX=\"... init_on_free=1\"\n\nIf \"init_on_free=1\" is missing or commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 8 to enable init_on_free with the following command:\n$ sudo grubby --update-kernel=ALL --args=\"init_on_free=1\"\n\nRegenerate the GRUB configuration:\n$ sudo grub2-mkconfig -o /boot/grub2/grub.cfg\n\nReboot the system:\n$ sudo reboot",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230279r1069286_rule",
   "severity": "medium",

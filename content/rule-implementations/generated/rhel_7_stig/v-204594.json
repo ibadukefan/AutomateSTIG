@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "Protocol 2",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon is configured to only use the SSHv2 protocol.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204594"
+  },
   "check_content_excerpt": "Check the version of the operating system with the following command:\n\n# cat /etc/redhat-release\n\nIf the release is 7.4 or newer this requirement is Not Applicable.\n\nVerify the SSH daemon is configured to only use the SSHv2 protocol.\n\nCheck that the SSH daemon is configured to only use the SSHv2 protocol with the following command:\n\n# grep -i protocol /etc/ssh/sshd_config\nProtocol 2\n#Protocol 1,2\n\nIf any protocol line other than \"Protocol 2\" is uncommented, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove all Protocol lines that reference version \"1\" in \"/etc/ssh/sshd_config\" (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor). The \"Protocol\" line must be as follows:\n\nProtocol 2\n\nThe SSH service must be restarted for changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204594r987796_rule",
   "severity": "high",

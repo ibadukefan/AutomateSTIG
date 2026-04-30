@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/usr/lib/systemd/system/tftp.service",
+      "pattern": "ExecStart=/usr/sbin/in.tftpd -s /var/lib/tftpboot",
+      "type": "file_content"
+    },
+    "description": "If the Trivial File Transfer Protocol (TFTP) server is required, the RHEL 8 TFTP daemon must be configured to operate in secure mode.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230557"
+  },
   "check_content_excerpt": "Note: IAW RHEL-08-040190 if TFTP is not required, it should not be installed.  If TFTP is not installed, this rule is not applicable.\n\nCheck to see if TFTP server is installed with the following command:\n\n$ sudo dnf list installed | grep tftp-server \ntftp-server.x86_64 x.x-x.el8\n\nVerify that the TFTP daemon, if tftp.server is installed, is configured to operate in secure mode with the following command:\n\n$ grep -i execstart /usr/lib/systemd/system/tftp.service\nExecStart=/usr/sbin/in.tftpd -s /var/lib/tftpboot\n\nNote: The \"-s\" option ensures that the TFTP server only serves files from the specified directory, which is a security measure to prevent unauthorized access to other parts of the file system.\n\nIf the TFTP server is installed but the TFTP daemon is not configured to operate in secure mode, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the TFTP daemon to operate in secure mode with the following command:\n$ sudo systemctl edit tftp.service\n\nIn the editor enter:\n[Service]\nExecStart=/usr/sbin/in.tftpd -s /var/lib/tftpboot\n\nAfter making changes, reload the systemd daemon and restart the TFTP service as follows:\n$ sudo systemctl daemon-reload\n$ sudo systemctl restart tftp.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230557r1088855_rule",
   "severity": "medium",

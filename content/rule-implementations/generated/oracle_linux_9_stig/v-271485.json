@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/crypto-policies/back-ends/opensshserver.config",
+      "pattern": "Ciphers aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr",
+      "type": "file_content"
+    },
+    "description": "OL 9 SSH server must be configured to use only ciphers employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271485"
+  },
   "check_content_excerpt": "Verify that OL 9 SSH server is configured to use only ciphers employing FIPS 140-3 approved algorithms.\n\nTo verify the ciphers in the systemwide SSH configuration file, use the following command:\n\n$ sudo grep -i Ciphers /etc/crypto-policies/back-ends/opensshserver.config \nCiphers aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr\n\nIf the cipher entries in the \"opensshserver.config\" file have any ciphers other than \"aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr\", or they are missing or commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the OL 9 SSH server to use only ciphers employing FIPS 140-3 approved algorithms.\n\nReinstall crypto-policies with the following command:\n\n$ sudo dnf -y reinstall crypto-policies\n\nSet the crypto-policy to FIPS with the following command:\n\n$ sudo update-crypto-policies --set FIPS\n\nSetting system policy to FIPS\n\nNote: Systemwide crypto policies are applied on application startup. It is recommended to restart the system for the change of policies to fully take place.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271485r1092625_rule",
   "severity": "medium",

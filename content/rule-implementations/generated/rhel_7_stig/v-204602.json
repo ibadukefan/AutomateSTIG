@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "Compression delayed",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon does not allow compression or only allows compression after successful authentication.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204602"
+  },
   "check_content_excerpt": "Note: For RHEL 7.4 and above, this requirement is not applicable.\n\nVerify the SSH daemon performs compression after a user successfully authenticates.\n\nCheck that the SSH daemon performs compression after a user successfully authenticates with the following command:\n\n     # grep -i compression /etc/ssh/sshd_config\n     Compression delayed\n\nIf the \"Compression\" keyword is set to \"yes\", is missing, or the returned line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Uncomment the \"Compression\" keyword in \"/etc/ssh/sshd_config\" (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor) on the system and set the value to \"delayed\" or \"no\":\n\n     Compression no\n\nThe SSH service must be restarted for changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204602r991589_rule",
   "severity": "medium",

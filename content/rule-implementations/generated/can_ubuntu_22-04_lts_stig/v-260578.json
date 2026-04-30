@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+      "pattern": "| grep  -E -- 'crl_auto|crl_offline'",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260578"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS, for PKI-based authentication, uses local revocation data when unable to access it from the network by using the following command: \n \nNote: If smart card authentication is not being used on the system, this is not applicable.  \n  \n     $ grep cert_policy /etc/pam_pkcs11/pam_pkcs11.conf | grep  -E -- 'crl_auto|crl_offline' \n     cert_policy = ca,signature,ocsp_on,crl_auto; \n  \nIf \"cert_policy\" is not set to include \"crl_auto\" or \"crl_offline\", is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS, for PKI-based authentication, to use local revocation data when unable to access the network to obtain it remotely.  \n  \nAdd or update the \"cert_policy\" option in \"/etc/pam_pkcs11/pam_pkcs11.conf\" to include \"crl_auto\" or \"crl_offline\".  \n  \ncert_policy = ca,signature,ocsp_on, crl_auto;  \n  \nIf the system is missing an \"/etc/pam_pkcs11/\" directory and an \"/etc/pam_pkcs11/pam_pkcs11.conf\", find an example to copy into place and modify accordingly at \"/usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260578r1015021_rule",
   "severity": "medium",

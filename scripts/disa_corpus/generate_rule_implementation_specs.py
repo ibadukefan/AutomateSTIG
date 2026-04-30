@@ -306,7 +306,7 @@ def _file_content_candidate(rule: dict) -> dict | None:
 
 def _grep_expected_line_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
-    grep = re.search(r'\bgrep\s+(?:-[A-Za-z]+\s+)*(?:["\'][^"\']+["\']\s+)?(?P<path>/[A-Za-z0-9_./:*+{}-]+)', content)
+    grep = re.search(r'\bgrep\s+(?:-[A-Za-z]+\s+)*(?:(?:["\'][^"\']+["\']|[^\s|;]+)\s+)?(?P<path>/[A-Za-z0-9_./:*+{}-]+)', content)
     if not grep:
         return None
     raw_path = grep.group('path')

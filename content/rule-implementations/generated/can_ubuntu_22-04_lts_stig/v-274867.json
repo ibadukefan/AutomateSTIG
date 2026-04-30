@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sssd/sssd.conf",
+      "pattern": "certificate_verification = ca_cert,ocsp",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must ensure SSSD performs certificate path validation, including revocation checking, against a trusted anchor for PKI-based authentication.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-274867"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS, for PKI-based authentication, has valid certificates by constructing a certification path to an accepted trust anchor. \n\nVerify the pam service is listed under [sssd] with the following command:\n\n$ sudo grep -A 1 '^\\[sssd\\]' /etc/sssd/sssd.conf\n[sssd]\nservices = nss,pam,ssh\n\nIf \"pam\" is not listed in services, this is a finding.\n\nVerify the pam service is set to use pam for smart card authentication in the [pam] section of /etc/sssd/sssd.conf with the following command:\n\n$ sudo grep -A 1 '^\\[pam]' /etc/sssd/sssd.conf\n[pam]\npam_cert_auth = True\n\nIf \"pam_cert_auth = True\" is not returned, this is a finding.\n\nVerify \"ca\" is enabled in \"certificate_verification\" with the following command: \n  \n$ sudo grep certificate_verification /etc/sssd/sssd.conf\ncertificate_verification = ca_cert,ocsp\n \nIf \"certificate_verification\" is not set to \"ca\" or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS, for PKI-based authentication, to validate certificates by constructing a certification path to an accepted trust anchor. \n \nAdd or update the /etc/sssd/sssd.conf so that the following entries are in the correct sections of the file: \n \n$ sudo vi /etc/sssd/sssd.conf\n\n[sssd]\nservices = nss,pam,ssh\nconfig_file_version = 2\n\n[pam]\npam_cert_auth = True\n\n[domain/example.com]\nldap_user_certificate = usercertificate;binary\ncertificate_verification = ca_cert,ocsp\nca_cert = /etc/ssl/certs/ca-certificates.crt",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-274867r1107270_rule",
   "severity": "medium",

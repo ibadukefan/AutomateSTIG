@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/auditd.conf",
+      "pattern": "write_logs = yes",
+      "type": "file_content"
+    },
+    "description": "OL 9 must write audit records to disk.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271602"
+  },
   "check_content_excerpt": "Verify that OL 9 audit system is configured to write logs to the disk with the following command:\n\n$ sudo grep write_logs /etc/audit/auditd.conf \nwrite_logs = yes \n\nIf \"write_logs\" does not have a value of \"yes\", the line is commented out, or the line is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit system to write log files to the disk.\n\nEdit the /etc/audit/auditd.conf file and add or update the \"write_logs\" option to \"yes\":\n\nwrite_logs = yes \n\nThe audit daemon must be restarted for changes to take effect.\n\nRestart auditd:\n$ sudo service auditd restart",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271602r1092590_rule",
   "severity": "medium",

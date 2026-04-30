@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/systemd/logind.conf",
+      "pattern": "StopIdleSessionSec=600",
+      "type": "file_content"
+    },
+    "description": "OL 9 must terminate idle user sessions.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-279935"
+  },
   "check_content_excerpt": "Verify that OL 9 logs out sessions that are idle for 10 minutes with the following command:\n\n$ sudo grep -i ^StopIdleSessionSec /etc/systemd/logind.conf\n\nStopIdleSessionSec=600\n\nIf \"StopIdleSessionSec\" is not configured to \"600\" seconds, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to log out idle sessions by editing the /etc/systemd/logind.conf file with the following line:\n\nStopIdleSessionSec=600\n\nThe \"logind\" service must be restarted for the changes to take effect. To restart the \"logind\" service, run the following command:\n\n$ sudo systemctl restart systemd-logind",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-279935r1156358_rule",
   "severity": "medium",

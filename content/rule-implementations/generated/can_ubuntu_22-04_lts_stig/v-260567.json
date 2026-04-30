@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/pwquality.conf",
+      "pattern": "enforcing = 1",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must be configured so that when passwords are changed or new passwords are established, pwquality must be used.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260567"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS enforces password complexity rules by using the following command:   \n \n     $ grep -i enforcing /etc/security/pwquality.conf  \n     enforcing = 1  \n  \nIf \"enforcing\" is not \"1\", is commented out, or is missing, this is a finding.  \n  \nCheck for the use of \"pwquality\" by using the following command:  \n  \n     $ cat /etc/pam.d/common-password | grep requisite | grep pam_pwquality \n      password     requisite     pam_pwquality.so retry=3  \n  \nIf \"retry\" is set to \"0\" or is greater than \"3\", or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to enforce password complexity rules. \n  \nAdd or modify the following line in the \"/etc/security/pwquality.conf\" file: \n  \nenforcing = 1  \n  \nAdd or modify the following line in the \"/etc/pam.d/common-password\" file: \n  \npassword requisite pam_pwquality.so retry=3  \n  \nNote: The value of \"retry\" should be between \"1\" and \"3\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260567r991587_rule",
   "severity": "medium",

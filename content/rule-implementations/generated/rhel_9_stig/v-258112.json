@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/pwquality.conf",
+      "pattern": "/etc/security/pwquality.conf.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must require the change of at least eight characters when passwords are changed.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258112"
+  },
   "check_content_excerpt": "Verify that RHEL 9 requires the change of at least eight of the total number of characters when passwords are changed.\n\n$ grep difok /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf\n\ndifok = 8\n \nIf the value of \"difok\" is set to less than \"8\", or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to require the change of at least eight of the total number of characters when passwords are changed by setting the \"difok\" option.\n\nAdd or update the following line in the \"/etc/security/pwquality.conf\" file or a configuration file in the \"/etc/security/pwquality.conf.d/\" directory to contain the \"difok\" parameter:\n\ndifok = 8",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258112r1045229_rule",
   "severity": "medium",

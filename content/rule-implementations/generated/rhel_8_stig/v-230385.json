@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/bashrc",
+      "pattern": "/etc/csh.cshrc /etc/profile",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must define default permissions for logon and non-logon shells.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230385"
+  },
   "check_content_excerpt": "Verify that the umask default for installed shells is \"077\".\n\nCheck for the value of the \"UMASK\" parameter in the \"/etc/bashrc\", \"/etc/csh.cshrc\" and \"/etc/profile\" files with the following command:\n\nNote: If the value of the \"UMASK\" parameter is set to \"000\" in the \"/etc/bashrc\" the \"/etc/csh.cshrc\" or the \"/etc/profile\" files, the Severity is raised to a CAT I.\n\n# grep -i umask /etc/bashrc /etc/csh.cshrc /etc/profile\n\n/etc/bashrc:          umask 077\n/etc/bashrc:          umask 077\n/etc/csh.cshrc:      umask 077   \n/etc/csh.cshrc:      umask 077\n/etc/profile:      umask 077   \n/etc/profile:      umask 077\n\nIf the value for the \"UMASK\" parameter is not \"077\", or the \"UMASK\" parameter is missing or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to define default permissions for all authenticated users in such a way that the user can only read and modify their own files.\n\nAdd or edit the lines for the \"UMASK\" parameter in the \"/etc/bashrc\", \"/etc/csh.cshrc\" and \"/etc/profile\"files to \"077\":\n\nUMASK 077",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230385r1017194_rule",
   "severity": "medium",

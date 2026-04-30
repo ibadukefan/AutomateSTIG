@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/common-password",
+      "pattern": "password [success=1 default=ignore] pam_unix.so obscure sha512 shadow remember=5 rounds=5000",
+      "type": "file_content"
+    },
+    "description": "The Ubuntu operating system must prohibit password reuse for a minimum of five generations.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238234"
+  },
   "check_content_excerpt": "Verify the Ubuntu operating system prevents passwords from being reused for a minimum of five generations by running the following command:\n\n$ grep -i remember /etc/pam.d/common-password\n\npassword [success=1 default=ignore] pam_unix.so obscure sha512 shadow remember=5 rounds=5000\n\nIf the \"remember\" parameter value is not greater than or equal to \"5\", is commented out, or is not set at all, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the Ubuntu operating system to prevent passwords from being reused for a minimum of five generations.\n\nAdd or modify the \"remember\" parameter value to the following line in \"/etc/pam.d/common-password\" file:\n\npassword [success=1 default=ignore] pam_unix.so obscure sha512 shadow remember=5 rounds=5000",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-238234r1015152_rule",
   "severity": "low",

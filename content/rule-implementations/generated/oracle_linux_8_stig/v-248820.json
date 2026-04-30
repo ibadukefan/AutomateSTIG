@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/chrony.conf",
+      "pattern": "server [ntp.server.name] iburst maxpoll 16",
+      "type": "file_content"
+    },
+    "description": "OL 8 must compare internal information system clocks at least every 24 hours with a server synchronized to an authoritative time source, such as the United States Naval Observatory (USNO) time servers, or a time server designated for the appropriate DOD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS).",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248820"
+  },
   "check_content_excerpt": "Verify OL 8 is comparing internal information system clocks at least every 24 hours with an NTP server with the following command: \n \n$ sudo grep maxpoll /etc/chrony.conf \n \nserver [ntp.server.name] iburst maxpoll 16 \n \nIf the \"maxpoll\" option is set to a number greater than \"16\" or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 8 to compare internal information system clocks at least every 24 hours with an NTP server by adding/modifying the following line in the \"/etc/chrony.conf\" file. \n \nserver [ntp.server.name] iburst maxpoll 16",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248820r1038944_rule",
   "severity": "medium",

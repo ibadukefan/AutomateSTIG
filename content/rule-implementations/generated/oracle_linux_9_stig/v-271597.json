@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/plugins.d/syslog.conf",
+      "pattern": "active = yes",
+      "type": "file_content"
+    },
+    "description": "OL 9 must be configured to offload audit records onto a different system from the system being audited via syslog.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271597"
+  },
   "check_content_excerpt": "Verify that OL 9 is configured use the audisp-remote syslog service with the following command:\n\n$ sudo grep active /etc/audit/plugins.d/syslog.conf \nactive = yes\n\nIf the \"active\" keyword does not have a value of \"yes\", the line is commented out, or the line is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to offload audit records onto a different system from the system being audited via syslog.\n\nEdit the /etc/audit/plugins.d/syslog.conf file and add or update the \"active\" option:\n\nactive = yes\n\nThe audit daemon must be restarted for changes to take effect.\n\nRestart auditd:\n$ sudo service auditd restart",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271597r1092586_rule",
   "severity": "medium",

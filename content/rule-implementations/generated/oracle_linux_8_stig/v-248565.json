@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/crypto-policies/back-ends/opensslcnf.config",
+      "pattern": "MinProtocol = TLSv1.2",
+      "type": "file_content"
+    },
+    "description": "The OL 8 operating system must implement DoD-approved TLS encryption in the OpenSSL package.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248565"
+  },
   "check_content_excerpt": "Verify the OpenSSL library is configured to use only DoD-approved TLS encryption:\n\nFor versions prior to crypto-policies-20210617-1.gitc776d3e.el8.noarch:\n\n$ sudo grep -i MinProtocol /etc/crypto-policies/back-ends/opensslcnf.config\n\nMinProtocol = TLSv1.2\n\nIf the \"MinProtocol\" is set to anything older than \"TLSv1.2\", this is a finding.\n\nFor version crypto-policies-20210617-1.gitc776d3e.el8.noarch and newer:\n\n$ sudo grep -i  MinProtocol /etc/crypto-policies/back-ends/opensslcnf.config\n\nTLS.MinProtocol = TLSv1.2\nDTLS.MinProtocol = DTLSv1.2\n\nIf the \"TLS.MinProtocol\" is set to anything older than \"TLSv1.2\" or the \"DTLS.MinProtocol\" is set to anything older than \"DTLSv1.2\", this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the OL 8 OpenSSL library to use only DoD-approved TLS encryption by editing the following line in the \"/etc/crypto-policies/back-ends/opensslcnf.config\" file:\n\nFor versions prior to crypto-policies-20210617-1.gitc776d3e.el8.noarch:\n\nMinProtocol = TLSv1.2\n\nFor version crypto-policies-20210617-1.gitc776d3e.el8.noarch and newer:\nTLS.MinProtocol = TLSv1.2\nDTLS.MinProtocol = DTLSv1.2\n\nA reboot is required for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248565r991554_rule",
   "severity": "medium",

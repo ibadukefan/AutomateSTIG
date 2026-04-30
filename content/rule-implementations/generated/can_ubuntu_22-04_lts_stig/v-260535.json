@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/gdm3/greeter.dconf-defaults",
+      "pattern": "banner-message-enable=true",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must enable the graphical user logon banner to display the Standard Mandatory DOD Notice and Consent Banner before granting local access to the system via a graphical user logon.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260535"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS is configured to display the Standard Mandatory DOD Notice and Consent Banner before granting access to the operating system via a graphical user logon by using the following command:  \n  \nNote: If no graphical user interface is installed, this requirement is not applicable. \n  \n     $ grep -i banner-message-enable /etc/gdm3/greeter.dconf-defaults \n     banner-message-enable=true  \n  \nIf the value for \"banner-message-enable\" is set to \"false\", the line is commented out, or no value is returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to display the Standard Mandatory DOD Notice and Consent Banner before granting access to the operating system via a graphical user logon. \n \nAdd or modify the following line in the \"/etc/gdm3/greeter.dconf-defaults\" file: \n \n[org/gnome/login-screen]  \nbanner-message-enable=true  \n  \nUpdate GDM with the new configuration by using the following commands:  \n  \n     $ sudo dconf update  \n     $ sudo systemctl restart gdm3",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260535r958390_rule",
   "severity": "medium",

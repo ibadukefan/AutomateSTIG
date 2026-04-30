@@ -423,6 +423,20 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d/*'",
+        "type": "file_content"
+      },
+      "description": "OL 9 must restrict privilege elevation to authorized personnel.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271476"
+    },
+    {
+      "check": {
         "name": "crypto-policies",
         "should_be_installed": true,
         "type": "package"
@@ -478,6 +492,34 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/crypto-policies/back-ends/opensshserver.config",
+        "pattern": "Ciphers aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr",
+        "type": "file_content"
+      },
+      "description": "OL 9 SSH server must be configured to use only ciphers employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271485"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/crypto-policies/back-ends/opensshserver.config",
+        "pattern": "MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-512",
+        "type": "file_content"
+      },
+      "description": "OL 9 SSH server must be configured to use only Message Authentication Codes (MACs) employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271486"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "banner /etc/issue",
         "type": "file_content"
@@ -501,6 +543,34 @@
       },
       "platform": "linux",
       "vuln_id": "V-271488"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/crypto-policies/back-ends/openssh.config",
+        "pattern": "Ciphers aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr",
+        "type": "file_content"
+      },
+      "description": "OL 9 SSH client must be configured to use only DOD-approved encryption ciphers employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH client connections.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271489"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/crypto-policies/back-ends/openssh.config",
+        "pattern": "MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-512",
+        "type": "file_content"
+      },
+      "description": "OL 9 SSH client must be configured to use only DOD-approved Message Authentication Codes (MACs) employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH client connections.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271490"
     },
     {
       "check": {
@@ -566,6 +636,62 @@
       },
       "platform": "linux",
       "vuln_id": "V-271496"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/crontab",
+        "pattern": "/var/spool/cron/root",
+        "type": "file_content"
+      },
+      "description": "OL 9 must routinely check the baseline configuration for unauthorized changes and notify the system administrator (SA) when anomalies in the operation of any security functions are discovered.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271497"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aide.conf",
+        "pattern": "All=p+i+n+u+g+s+m+S+sha512+acl+xattrs+selinux",
+        "type": "file_content"
+      },
+      "description": "OL 9 must use a file integrity tool that is configured to use FIPS 140-3-approved cryptographic hashes for validating file contents and directories.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271498"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aide.conf",
+        "pattern": "All= p+i+n+u+g+s+m+S+sha512+acl+xattrs+selinux",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured so that the file integrity tool verifies Access Control Lists (ACLs).",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271499"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aide.conf",
+        "pattern": "All= p+i+n+u+g+s+m+S+sha512+acl+xattrs+selinux",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured so that the file integrity tool verifies extended attributes.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271500"
     },
     {
       "check": {
@@ -738,6 +864,48 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/dnf/dnf.conf",
+        "pattern": "clean_requirements_on_remove=True",
+        "type": "file_content"
+      },
+      "description": "OL 9 must remove all software components after updated versions have been installed.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271522"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dnf/dnf.conf",
+        "pattern": "localpkg_gpgcheck=1",
+        "type": "file_content"
+      },
+      "description": "OL 9 must check the GPG signature of locally installed software packages before installation.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271523"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dnf/dnf.conf",
+        "pattern": "gpgcheck=1",
+        "type": "file_content"
+      },
+      "description": "OL 9 must check the GPG signature of software packages originating from external software repositories before installation.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271524"
+    },
+    {
+      "check": {
         "name": "--queryformat",
         "should_be_installed": true,
         "type": "package"
@@ -892,6 +1060,132 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/default/grub",
+        "pattern": "GRUB_CMDLINE_LINUX=\"audit=1\"",
+        "type": "file_content"
+      },
+      "description": "OL 9 must enable auditing of processes that start prior to the audit daemon.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271577"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "name_format = hostname",
+        "type": "file_content"
+      },
+      "description": "OL 9 must label all offloaded audit logs before sending them to the central log server.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271578"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "disk_error_action = HALT",
+        "type": "file_content"
+      },
+      "description": "OL 9 audit system must take appropriate action when an error writing to the audit storage volume occurs.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271579"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "disk_full_action = HALT",
+        "type": "file_content"
+      },
+      "description": "OL 9 audit system must take appropriate action when the audit storage volume is full.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271580"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "max_log_file_action = ROTATE",
+        "type": "file_content"
+      },
+      "description": "OL 9 audit system must take appropriate action when the audit files have reached maximum size.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271581"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "freq = 100",
+        "type": "file_content"
+      },
+      "description": "OL 9 must periodically flush audit records to disk to prevent the loss of audit records.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271582"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_group = root",
+        "type": "file_content"
+      },
+      "description": "OL 9 audit logs must be group-owned by root or by a restricted logging group to prevent unauthorized read access.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271583"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_file = /var/log/audit/audit.log",
+        "type": "file_content"
+      },
+      "description": "OL 9 audit log directory must be owned by root to prevent unauthorized read access.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271584"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_file = /var/log/audit/audit.log",
+        "type": "file_content"
+      },
+      "description": "OL 9 audit logs file must have mode 0600 or less permissive to prevent unauthorized access to the audit log.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271585"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/audit/auditd.conf",
         "pattern": "local_events",
         "type": "file_content"
@@ -964,6 +1258,34 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "action_mail_acct = root",
+        "type": "file_content"
+      },
+      "description": "The OL 9 system administrator (SA) and/or information system security officer (ISSO) (at a minimum) must be alerted of an audit processing failure event.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271591"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_format = ENRICHED",
+        "type": "file_content"
+      },
+      "description": "OL 9 must produce audit records containing information to establish the identity of any individual or process associated with the event.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271593"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/audit/audit.",
         "pattern": "umount",
         "type": "file_content"
@@ -978,6 +1300,202 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_file = /var/log/audit/audit.log",
+        "type": "file_content"
+      },
+      "description": "OL 9 must allocate audit record storage capacity to store at least one week's worth of audit records.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271596"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/plugins.d/syslog.conf",
+        "pattern": "active = yes",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured to offload audit records onto a different system from the system being audited via syslog.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271597"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "overflow_action = syslog",
+        "type": "file_content"
+      },
+      "description": "OL 9 must take appropriate action when the internal event queue is full.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271598"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "space_left = 25%",
+        "type": "file_content"
+      },
+      "description": "OL 9 must take action when allocated audit record storage volume reaches 75 percent of the repository maximum audit record storage capacity.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271599"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "space_left_action = email",
+        "type": "file_content"
+      },
+      "description": "OL 9 must notify the system administrator (SA) and information system security officer (ISSO) (at a minimum) when allocated audit record storage volume reaches 75 percent utilization.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271600"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "admin_space_left = 5%",
+        "type": "file_content"
+      },
+      "description": "OL 9 must take action when allocated audit record storage volume reaches 95 percent of the audit record storage capacity.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271601"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "write_logs = yes",
+        "type": "file_content"
+      },
+      "description": "OL 9 must write audit records to disk.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271602"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "admin_space_left_action = single",
+        "type": "file_content"
+      },
+      "description": "OL 9 must act when allocated audit record storage volume reaches 95 percent of the repository maximum audit record storage capacity.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271603"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "pam_cert_auth = True",
+        "type": "file_content"
+      },
+      "description": "OL 9 must enable certificate-based smart card authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271607"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "/etc/sssd/conf.d/*.conf | grep -v \"^#\"",
+        "type": "file_content"
+      },
+      "description": "OL 9 must implement certificate status checking for multifactor authentication (MFA).",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271608"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "cache_credentials = true",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prohibit the use of cached authenticators after one day.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271609"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/opensc.conf",
+        "pattern": "card_drivers = cac;",
+        "type": "file_content"
+      },
+      "description": "OL 9 must use the CAC smart card driver.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271610"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "password required pam_pwquality.so retry=3",
+        "type": "file_content"
+      },
+      "description": "OL 9 must ensure the password complexity module in the system-auth file is configured for three retries or less.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271612"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must enforce password complexity by requiring that at least one uppercase character be used.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271613"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/pam.d/password-auth",
         "pattern": "pam_pwquality",
         "type": "file_content"
@@ -988,6 +1506,132 @@
       },
       "platform": "linux",
       "vuln_id": "V-271614"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must enforce password complexity by requiring that at least one lowercase character be used.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271615"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must enforce password complexity by requiring that at least one numeric character be used.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271616"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must require the change of at least eight characters when passwords are changed.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271617"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must require the maximum number of repeating characters of the same character class be limited to four when passwords are changed.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271618"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must require the maximum number of repeating characters be limited to three when passwords are changed.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271619"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must require the change of at least four character classes when passwords are changed.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271620"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must enforce password complexity rules for the root account.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271621"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/libuser.conf",
+        "pattern": "crypt_style = sha512",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured so that user and group account administration utilities are configured to store only encrypted representations of passwords.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271622"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "ENCRYPT_METHOD SHA512",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured to use the shadow file to store only encrypted representations of passwords.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271623"
     },
     {
       "check": {
@@ -1034,6 +1678,34 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "PASS_MIN_DAYS 1",
+        "type": "file_content"
+      },
+      "description": "OL 9 passwords for new users or password changes must have a 24-hour minimum password lifetime restriction in /etc/login.defs.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271629"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "PASS_MAX_DAYS 60",
+        "type": "file_content"
+      },
+      "description": "OL 9 user account passwords for new users or password changes must have a 60-day maximum password lifetime restriction in /etc/login.defs.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271631"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/security/pwquality.conf",
         "pattern": "minlen",
         "type": "file_content"
@@ -1048,6 +1720,20 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "/etc/pam.d/password-auth",
+        "type": "file_content"
+      },
+      "description": "OL 9 must not allow blank or null passwords.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271634"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/grub2.cfg",
         "pattern": "password_pbkdf2  superusers-account   ${GRUB2_PASSWORD}",
         "type": "file_content"
@@ -1058,6 +1744,34 @@
       },
       "platform": "linux",
       "vuln_id": "V-271635"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must enforce password complexity by requiring that at least one special character be used.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271636"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent the use of dictionary words for passwords.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271637"
     },
     {
       "check": {
@@ -1399,6 +2113,20 @@
       "check": {
         "is_regex": false,
         "path": "/etc/dconf/profile/user",
+        "pattern": "system-db:local",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent a user from overriding the banner-message-enable setting for the graphical user interface.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271680"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
         "pattern": "system-db",
         "type": "file_content"
       },
@@ -1464,6 +2192,132 @@
       },
       "platform": "linux",
       "vuln_id": "V-271686"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/gdm/custom.conf",
+        "pattern": "[daemon]",
+        "type": "file_content"
+      },
+      "description": "OL 9 must not allow unattended or automatic logon via the graphical user interface.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271691"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/bashrc",
+        "pattern": "umask 077",
+        "type": "file_content"
+      },
+      "description": "OL 9 must define default permissions for the bash shell.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271693"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/csh.cshrc",
+        "pattern": "umask 077",
+        "type": "file_content"
+      },
+      "description": "OL 9 must define default permissions for the c shell.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271694"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/profile",
+        "pattern": "umask 077",
+        "type": "file_content"
+      },
+      "description": "OL 9 must define default permissions for the system default profile.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271695"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "UMASK 077",
+        "type": "file_content"
+      },
+      "description": "OL 9 must define default permissions for all authenticated users in such a way that the user can only read and modify their own files.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271696"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/chrony.conf",
+        "pattern": "port 0",
+        "type": "file_content"
+      },
+      "description": "OL 9 must disable the chrony daemon from acting as a server.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271697"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/chrony.conf",
+        "pattern": "cmdport 0",
+        "type": "file_content"
+      },
+      "description": "OL 9 must disable network management of the chrony daemon.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271698"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/chrony.conf",
+        "pattern": "server 0.us.pool.ntp.mil iburst maxpoll 16",
+        "type": "file_content"
+      },
+      "description": "OL 9 must securely compare internal information system clocks at least every 24 hours.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271699"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/usbguard/usbguard-daemon.conf",
+        "pattern": "AuditBackend=LinuxAudit",
+        "type": "file_content"
+      },
+      "description": "OL 9 must enable Linux audit logging for the USBGuard daemon.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271700"
     },
     {
       "check": {
@@ -1720,6 +2574,20 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PubkeyAuthentication yes",
+        "type": "file_content"
+      },
+      "description": "OL 9 SSHD must accept public key authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271721"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/sudoers",
         "pattern": "/etc/sudoers.d/*",
         "type": "file_content"
@@ -1734,6 +2602,20 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/pam.d/su",
+        "pattern": "auth             required        pam_wheel.so use_uid",
+        "type": "file_content"
+      },
+      "description": "OL 9 must restrict the use of the su command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271723"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/sudoers",
         "pattern": "/etc/sudoers.d/*",
         "type": "file_content"
@@ -1744,6 +2626,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-271724"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d/",
+        "type": "file_content"
+      },
+      "description": "OL 9 must require users to provide a password for privilege escalation.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271725"
     },
     {
       "check": {
@@ -1770,6 +2666,104 @@
       },
       "platform": "linux",
       "vuln_id": "V-271728"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/systemd/coredump.conf",
+        "pattern": "ProcessSizeMax=0",
+        "type": "file_content"
+      },
+      "description": "OL 9 must disable core dump backtraces.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271729"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/systemd/coredump.conf",
+        "pattern": "Storage=none",
+        "type": "file_content"
+      },
+      "description": "OL 9 must disable storing core dumps.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271730"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/limits.conf",
+        "pattern": "/etc/security/limits.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must disable core dumps for all users.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271731"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/default/grub",
+        "pattern": "GRUB_CMDLINE_LINUX=\"slub_debug=P\"",
+        "type": "file_content"
+      },
+      "description": "OL 9 must clear SLUB/SLAB objects to prevent use-after-free attacks.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271734"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/default/grub",
+        "pattern": "GRUB_CMDLINE_LINUX=\"pti=on\"",
+        "type": "file_content"
+      },
+      "description": "OL 9 must enable mitigations against processor-based vulnerabilities.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271735"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/default/grub",
+        "pattern": "GRUB_CMDLINE_LINUX=\"vsyscall=none\"",
+        "type": "file_content"
+      },
+      "description": "OL 9 must disable virtual system calls.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271737"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/default/grub",
+        "pattern": "GRUB_CMDLINE_LINUX=\"page_poison=1\"",
+        "type": "file_content"
+      },
+      "description": "OL 9 must clear the page allocator to prevent use-after-free attacks.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271738"
     },
     {
       "check": {
@@ -1810,6 +2804,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-271741"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ipsec.conf",
+        "pattern": "/etc/ipsec.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 IP tunnels must use 140-3 approved cryptographic algorithms.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271743"
     },
     {
       "check": {
@@ -1879,6 +2887,48 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/profile",
+        "pattern": "/etc/profile.d/*.sh",
+        "type": "file_content"
+      },
+      "description": "OL 9 must automatically exit interactive command shell user sessions after 15 minutes of inactivity.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271750"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/limits.conf",
+        "pattern": "/etc/security/limits.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must limit the number of concurrent sessions to ten for all accounts and/or account types.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271753"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "fail_interval = 900",
+        "type": "file_content"
+      },
+      "description": "OL 9 must automatically lock an account when three unsuccessful logon attempts occur during a 15-minute time period.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271754"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/security/faillock.conf",
         "pattern": "unlock_time = 0",
         "type": "file_content"
@@ -1889,6 +2939,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-271755"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/named.conf",
+        "pattern": "include \"/etc/crypto-policies/back-ends/bind.config\";'",
+        "type": "file_content"
+      },
+      "description": "OL 9 must implement DOD-approved encryption in the bind package.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271759"
     },
     {
       "check": {
@@ -1956,6 +3020,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-271772"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/passwd",
+        "pattern": "| awk -F: '{print $4}') /etc/group",
+        "type": "file_content"
+      },
+      "description": "OL 9 local interactive user home directories must be group-owned by the home directory owner's primary group.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271783"
     },
     {
       "check": {
@@ -2109,6 +3187,34 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "auth required pam_faillock.so preauth",
+        "type": "file_content"
+      },
+      "description": "OL 9 must configure the use of the pam_faillock.so module in the /etc/pam.d/system-auth file.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271837"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/password-auth",
+        "pattern": "auth required pam_faillock.so preauth",
+        "type": "file_content"
+      },
+      "description": "OL 9 must configure the use of the pam_faillock.so module in the /etc/pam.d/password-auth file.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271838"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/security/faillock.conf",
         "pattern": "deny = 3",
         "type": "file_content"
@@ -2119,6 +3225,34 @@
       },
       "platform": "linux",
       "vuln_id": "V-271839"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "even_deny_root",
+        "type": "file_content"
+      },
+      "description": "OL 9 must automatically lock the root account until the root account is released by an administrator when three unsuccessful logon attempts occur during a 15-minute time period.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271840"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "audit",
+        "type": "file_content"
+      },
+      "description": "OL 9 must log username information when unsuccessful logon attempts occur.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271841"
     },
     {
       "check": {
@@ -2137,6 +3271,62 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "CREATE_HOME yes",
+        "type": "file_content"
+      },
+      "description": "OL 9 local interactive user accounts must be assigned a home directory upon creation.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271846"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/home/wadea/.bash_history",
+        "pattern": "grep -i umask /etc/bashrc /etc/csh.cshrc /etc/profile",
+        "type": "file_content"
+      },
+      "description": "OL 9 must set the umask value to 077 for all local interactive user accounts.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271848"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/default/useradd",
+        "pattern": "INACTIVE=35",
+        "type": "file_content"
+      },
+      "description": "OL 9 must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271849"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "FAIL_DELAY 4",
+        "type": "file_content"
+      },
+      "description": "OL 9 must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271850"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/rsyslog.conf",
         "pattern": "authpriv.*                                              /var/log/secure",
         "type": "file_content"
@@ -2147,6 +3337,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-271851"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "/etc/rsyslog.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured to forward audit records via TCP to a different system or media from the system being audited via rsyslog.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271852"
     },
     {
       "check": {
@@ -2217,6 +3421,48 @@
       },
       "platform": "linux",
       "vuln_id": "V-271857"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/firewalld/firewalld.conf",
+        "pattern": "FirewallBackend=nftables",
+        "type": "file_content"
+      },
+      "description": "OL 9 must protect against or limit the effects of denial-of-service (DoS) attacks by ensuring rate-limiting measures on impacted network interfaces are implemented.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271858"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/resolv.conf",
+        "pattern": "nameserver 192.168.1.2",
+        "type": "file_content"
+      },
+      "description": "OL 9 systems using Domain Name Servers (DNS) resolution must have at least two name servers configured.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271861"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ipsec.conf",
+        "pattern": "/etc/ipsec.d/",
+        "type": "file_content"
+      },
+      "description": "OL 9 must not have unauthorized IP tunnels configured.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271863"
     },
     {
       "check": {
@@ -2495,6 +3741,20 @@
       "check": {
         "is_regex": false,
         "path": "/etc/audit/audit.rules",
+        "pattern": "--loginuid-immutable",
+        "type": "file_content"
+      },
+      "description": "OL 9 audit system must protect logon UIDs from unauthorized change.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271885"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
         "pattern": "| tail -1",
         "type": "file_content"
       },
@@ -2518,6 +3778,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-278952"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/systemd/logind.conf",
+        "pattern": "StopIdleSessionSec=600",
+        "type": "file_content"
+      },
+      "description": "OL 9 must terminate idle user sessions.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-279935"
     }
   ],
   "platform": "linux",

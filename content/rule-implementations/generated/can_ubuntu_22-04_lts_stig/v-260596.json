@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/auditd.conf",
+      "pattern": "space_left = 25%",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must immediately notify the system administrator (SA) and information system security officer (ISSO) when the audit record storage volume reaches 25 percent remaining of the allocated capacity.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260596"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS is configured to notify the SA and ISSO when the audit record storage volume reaches 25 percent remaining of the allocated capacity by using the following command:  \n \n     $ sudo grep -i space_left /etc/audit/auditd.conf \n     space_left = 25% \n     space_left_action = email \n  \nIf \"space_left\" is set to a value less than \"25%\", is commented out, or is missing, this is a finding.\n\nIf \"space_left_action\" is not set to \"email\", is commented out, or is missing, this is a finding. \n  \nNote: If the \"space_left_action\" is set to \"exec\", the system executes a designated script. If this script informs the SA of the event, this is not a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to notify the SA and ISSO when the audit record storage volume reaches 25 percent remaining of the allocated capacity. \n \nAdd or modify the following lines in the \"/etc/audit/auditd.conf \" file: \n \nspace_left = 25% \nspace_left_action = email \n \nRestart the \"auditd\" service for the changes to take effect:  \n  \n     $ sudo systemctl restart auditd.service \n  \nNote: If the \"space_left_action\" parameter is set to \"exec\", ensure the command being executed notifies the SA and ISSO.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260596r971542_rule",
   "severity": "low",

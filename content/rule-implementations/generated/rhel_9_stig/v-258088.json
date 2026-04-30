@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/su",
+      "pattern": "auth             required        pam_wheel.so use_uid",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must restrict the use of the \"su\" command.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258088"
+  },
   "check_content_excerpt": "Verify that RHEL 9 requires uses to be members of the \"wheel\" group with the following command:\n\n$ grep pam_wheel /etc/pam.d/su \n\nauth             required        pam_wheel.so use_uid \n\nIf a line for \"pam_wheel.so\" does not exist, or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to require users to be in the \"wheel\" group to run \"su\" command.\n\nIn file \"/etc/pam.d/su\", uncomment the following line:\n\n\"#auth    required    pam_wheel.so use_uid\"\n\n$ sed '/^[[:space:]]*#[[:space:]]*auth[[:space:]]\\+required[[:space:]]\\+pam_wheel\\.so[[:space:]]\\+use_uid$/s/^[[:space:]]*#//' -i /etc/pam.d/su\n\nIf necessary, create a \"wheel\" group and add administrative users to the group.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258088r1050789_rule",
   "severity": "medium",

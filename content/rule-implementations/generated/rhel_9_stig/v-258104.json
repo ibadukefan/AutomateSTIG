@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/login.defs",
+      "pattern": "PASS_MIN_DAYS 1",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 passwords for new users or password changes must have a 24 hours minimum password lifetime restriction in /etc/login.defs.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258104"
+  },
   "check_content_excerpt": "Verify RHEL 9 enforces 24 hours as the minimum password lifetime for new user accounts.\n\nCheck for the value of \"PASS_MIN_DAYS\" in \"/etc/login.defs\" with the following command: \n\n$ grep -i pass_min_days /etc/login.defs\n\nPASS_MIN_DAYS 1\n\nIf the \"PASS_MIN_DAYS\" parameter value is not \"1\" or greater, or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to enforce 24 hours as the minimum password lifetime.\n\nAdd the following line in \"/etc/login.defs\" (or modify the line to have the required value):\n\nPASS_MIN_DAYS 1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258104r1015104_rule",
   "severity": "medium",

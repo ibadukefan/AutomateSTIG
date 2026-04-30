@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/faillock.conf",
+      "pattern": "even_deny_root",
+      "type": "file_content"
+    },
+    "description": "OL 9 must automatically lock the root account until the root account is released by an administrator when three unsuccessful logon attempts occur during a 15-minute time period.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271840"
+  },
   "check_content_excerpt": "Verify that OL 9 is configured to lock the root account after three unsuccessful logon attempts with the command:\n\n$ grep even_deny_root /etc/security/faillock.conf\neven_deny_root\n\nIf the \"even_deny_root\" option is not set, is missing or commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to lock out the \"root\" account after a number of incorrect login attempts using \"pam_faillock.so\", first enable the feature using the following command:\n \n$ sudo authselect enable-feature with-faillock  \n\nThen edit the \"/etc/security/faillock.conf\" file as follows:\n \n  add or uncomment the following line:\n even_deny_root",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271840r1092232_rule",
   "severity": "medium",

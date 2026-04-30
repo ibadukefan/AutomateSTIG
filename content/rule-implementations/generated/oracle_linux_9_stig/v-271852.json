@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/rsyslog.conf",
+      "pattern": "/etc/rsyslog.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "OL 9 must be configured to forward audit records via TCP to a different system or media from the system being audited via rsyslog.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271852"
+  },
   "check_content_excerpt": "Verify that OL 9 audit system offloads audit records onto a different system or media from the system being audited via rsyslog using TCP with the following command:\n\n$ grep @@ /etc/rsyslog.conf /etc/rsyslog.d/*.conf\n/etc/rsyslog.conf:*.* @@[remoteloggingserver]:[port]\n\nIf a remote server is not configured, or the line is commented out, ask the system administrator (SA) to indicate how the audit logs are offloaded to a different system or media. \n\nIf there is no evidence that the audit logs are being offloaded to another system or media, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to offload audit records onto a different system or media from the system being audited via TCP using rsyslog by specifying the remote logging server in \"/etc/rsyslog.conf\"\" or \"/etc/rsyslog.d/[customfile].conf\" with the name or IP address of the log aggregation server.\n\n*.* @@[remoteloggingserver]:[port]\"",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271852r1092608_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/csh.cshrc",
+      "pattern": "umask 077",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must define default permissions for the c shell.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258073"
+  },
   "check_content_excerpt": "Verify the \"umask\" setting is configured correctly in the \"/etc/csh.cshrc\" file with the following command:\n\nNote: If the value of the \"umask\" parameter is set to \"000\" \"/etc/csh.cshrc\" file, the Severity is raised to a CAT I.\n\n$ grep umask /etc/csh.cshrc \n\numask 077\n\nIf the value for the \"umask\" parameter is not \"077\", or the \"umask\" parameter is missing or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to define default permissions for all authenticated users using the c shell.\n\nAdd or edit the lines for the \"umask\" parameter in the \"/etc/csh.cshrc\" file to \"077\":\n\numask 077",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258073r1045157_rule",
   "severity": "medium",

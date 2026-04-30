@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/yum.conf",
+      "pattern": "clean_requirements_on_remove=1",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must remove all software components after updated versions have been installed.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204452"
+  },
   "check_content_excerpt": "Verify the operating system removes all software components after updated versions have been installed.\n\nCheck if yum is configured to remove unneeded packages with the following command:\n\n# grep -i clean_requirements_on_remove /etc/yum.conf\nclean_requirements_on_remove=1\n\nIf \"clean_requirements_on_remove\" is not set to \"1\", \"True\", or \"yes\", or is not set in \"/etc/yum.conf\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to remove all software components after updated versions have been installed.\n\nSet the \"clean_requirements_on_remove\" option to \"1\" in the \"/etc/yum.conf\" file:\n\nclean_requirements_on_remove=1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204452r958936_rule",
   "severity": "low",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/password-auth",
+      "pattern": "auth required pam_faillock.so preauth",
+      "type": "file_content"
+    },
+    "description": "OL 9 must configure the use of the pam_faillock.so module in the /etc/pam.d/password-auth file.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271838"
+  },
   "check_content_excerpt": "Verify that OL 9 configures the pam_faillock.so module to exist in the \"/etc/pam.d/password-auth\" file with the following command:\n\n$ grep pam_faillock.so /etc/pam.d/password-auth\nauth required pam_faillock.so preauth\nauth required pam_faillock.so authfail\naccount required pam_faillock.so\n\nIf the pam_faillock.so module is not present in the \"/etc/pam.d/password-auth\" file with the \"preauth\" line listed before pam_unix.so, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to include the use of the pam_faillock.so module in the /etc/pam.d/password-auth file.\n\nAdd/modify the appropriate sections of the \"/etc/pam.d/password-auth\" file to match the following lines:\nNote: The \"preauth\" line must be listed before pam_unix.so.\n\nauth required pam_faillock.so preauth\nauth required pam_faillock.so authfail\naccount required pam_faillock.so",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271838r1092226_rule",
   "severity": "medium",

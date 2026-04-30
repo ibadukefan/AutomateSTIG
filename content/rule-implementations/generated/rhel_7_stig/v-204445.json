@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/crontab",
+      "pattern": "/var/spool/cron/root",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that a file integrity tool verifies the baseline operating system configuration at least weekly.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204445"
+  },
   "check_content_excerpt": "Verify the operating system routinely checks the baseline configuration for unauthorized changes.\n\nNote: A file integrity tool other than Advanced Intrusion Detection Environment (AIDE) may be used, but the tool must be executed at least once per week.\n\nCheck for the presence of a cron job running daily or weekly on the system that executes AIDE daily to scan for changes to the system baseline. The command used in the example will use a daily occurrence.\n\nCheck the cron directories for a script file controlling the execution of the file integrity application. For example, if AIDE is installed on the system, use the following command:\n\n     # ls -al /etc/cron.* | grep aide\n     -rwxr-xr-x 1 root root 602 Mar 6 20:02 aide\n\n     # grep aide /etc/crontab /var/spool/cron/root\n     /etc/crontab: 30 04 * * * root /usr/sbin/aide  --check\n     /var/spool/cron/root: 30 04 * * * /usr/sbin/aide  --check\n\nIf the file integrity application does not exist, or a script file controlling the execution of the file integrity application does not exist, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the file integrity tool to run automatically on the system at least weekly. \n\nThe following example output is generic. It will set cron to run AIDE daily, but other file integrity tools may be used:  \n\n     # more /etc/cron.daily/aide\n     #!/bin/bash\n\n     /usr/sbin/aide --check | /bin/mail -s \"$HOSTNAME - Daily AIDE integrity check run\" root@example_server_name.mil\n\nNote: Per requirement RHEL-07-020028, the \"mailx\" package must be installed on the system to enable email functionality.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204445r958794_rule",
   "severity": "medium",

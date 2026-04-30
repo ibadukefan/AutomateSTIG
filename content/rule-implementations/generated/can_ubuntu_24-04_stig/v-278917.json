@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/lsb-release",
+      "pattern": "DISTRIB_DESCRIPTION=\"Ubuntu 24.04.3 LTS\"",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must be a vendor-supported release.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-278917"
+  },
   "check_content_excerpt": "Verify the version of Ubuntu 24.04 LTS is vendor supported with the following command:\n\n$ grep DISTRIB_DESCRIPTION /etc/lsb-release\nDISTRIB_DESCRIPTION=\"Ubuntu 24.04.3 LTS\"\n\nCheck the subscription status of the system with the following command:\n$ pro status\n\nIf the installed version of Ubuntu 24.04 LTS is not supported, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Upgrade to a supported version of Ubuntu 24.04 LTS.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-278917r1155246_rule",
   "severity": "high",

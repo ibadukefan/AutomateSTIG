@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/auditd.conf",
+      "pattern": "action_mail_acct = <administrator_email_account>",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must alert the information system security officer (ISSO) and system administrator (SA) in the event of an audit processing failure.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260593"
+  },
   "check_content_excerpt": "Verify that the SA and ISSO are notified in the event of an audit processing failure by using the following command: \n \nNote: An email package must be installed on the system for email notifications to be sent. \n  \n     $ sudo grep -i action_mail_acct /etc/audit/auditd.conf \n     action_mail_acct = <administrator_email_account> \n  \nIf \"action_mail_acct\" is not set to the email address of the SA and/or ISSO, is commented out, or is missing, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure \"auditd\" service to notify the SA and ISSO in the event of an audit processing failure.   \n  \nAdd or modify the following line in the \"/etc/audit/auditd.conf \" file: \n  \naction_mail_acct = <administrator_email_account>  \n  \nNote: Change \"administrator_email_account\" to the email address of the SA and/or ISSO. \n  \nRestart the \"auditd\" service for the changes take effect:  \n  \n     $ sudo systemctl restart auditd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260593r958424_rule",
   "severity": "low",

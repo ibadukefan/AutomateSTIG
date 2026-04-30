@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/audit.rules",
+      "pattern": "--loginuid-immutable",
+      "type": "file_content"
+    },
+    "description": "The OL 8 audit system must protect logon UIDs from unauthorized change.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248739"
+  },
   "check_content_excerpt": "Verify the audit system prevents unauthorized changes to logon UIDs with the following command:\n\n$ sudo grep -i immutable /etc/audit/audit.rules\n\n--loginuid-immutable\n\nIf the login UIDs are not set to be immutable by adding the \"--loginuid-immutable\" option to the \"/etc/audit/audit.rules\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit system to set the logon UIDs to be immutable by adding the following line to \"/etc/audit/rules.d/audit.rules\":\n\n--loginuid-immutable",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248739r958434_rule",
   "severity": "medium",

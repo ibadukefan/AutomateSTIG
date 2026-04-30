@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/limits.conf",
+      "pattern": "/etc/security/limits.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must limit the number of concurrent sessions to ten for all accounts and/or account types.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258069"
+  },
   "check_content_excerpt": "Verify RHEL 9 limits the number of concurrent sessions to \"10\" for all accounts and/or account types with the following command:\n\n$ grep -r -s maxlogins /etc/security/limits.conf /etc/security/limits.d/*.conf\n\n/etc/security/limits.conf:* hard maxlogins 10\n\nThis can be set as a global domain (with the * wildcard) but may be set differently for multiple domains.\n\nIf the \"maxlogins\" item is missing, commented out, or the value is set greater than \"10\" and is not documented with the information system security officer (ISSO) as an operational requirement for all domains that have the \"maxlogins\" item assigned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to limit the number of concurrent sessions to \"10\" for all accounts and/or account types.\n\nAdd the following line to the top of the /etc/security/limits.conf or in a \".conf\" file defined in /etc/security/limits.d/:\n\n* hard maxlogins 10",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258069r958398_rule",
   "severity": "low",

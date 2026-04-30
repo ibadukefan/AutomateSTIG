@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+      "pattern": "| awk '/pkcs11_module opensc {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy | grep ocsp_on",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must electronically verify Personal Identity Verification (PIV) credentials.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270723"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS electronically verifies PIV credentials via certificate status checking with the following command: \n \n$ sudo grep use_pkcs11_module /etc/pam_pkcs11/pam_pkcs11.conf | awk '/pkcs11_module opensc {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy | grep ocsp_on \n \ncert_policy = ca,signature,ocsp_on; \n \nIf every returned \"cert_policy\" line is not set to \"ocsp_on\", or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to do certificate status checking for multifactor authentication. \n \nModify all of the \"cert_policy\" lines in \"/etc/pam_pkcs11/pam_pkcs11.conf\" to include \"ocsp_on\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270723r1066658_rule",
   "severity": "medium",

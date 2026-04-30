@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/login.defs",
+      "pattern": "FAIL_DELAY 4",
+      "type": "file_content"
+    },
+    "description": "OL 9 must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271850"
+  },
   "check_content_excerpt": "Verify that OL 9 enforces a delay of at least four seconds between console logon prompts following a failed logon attempt with the following command:\n\n$ grep -i fail_delay /etc/login.defs\nFAIL_DELAY 4\n\nIf the value of \"FAIL_DELAY\" is not set to \"4\" or greater, or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the OL 9 to enforce a delay of at least four seconds between logon prompts following a failed console logon attempt.\n\nModify the \"/etc/login.defs\" file to set the \"FAIL_DELAY\" parameter to 4 or greater:\n\nFAIL_DELAY 4",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271850r1092262_rule",
   "severity": "medium",

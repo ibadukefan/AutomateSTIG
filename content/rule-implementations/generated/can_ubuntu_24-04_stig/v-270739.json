@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/login.defs",
+      "pattern": "ENCRYPT_METHOD SHA512",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must encrypt all stored passwords with a FIPS 140-3 approved cryptographic hashing algorithm.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270739"
+  },
   "check_content_excerpt": "Verify the shadow password suite configuration is set to encrypt passwords with a FIPS 140-3 approved cryptographic hashing algorithm with the following command: \n \n$ grep -i ENCRYPT_METHOD /etc/login.defs \nENCRYPT_METHOD SHA512 \n \nIf \"ENCRYPT_METHOD\" does not equal SHA512 or greater, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to encrypt all stored passwords.  \n \nEdit/modify the following line in the \"/etc/login.defs\" file and set \"ENCRYPT_METHOD\" to SHA512: \n \nENCRYPT_METHOD SHA512",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270739r1067124_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ipsec.conf",
+      "pattern": "/etc/ipsec.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 IP tunnels must use FIPS 140-3 approved cryptographic algorithms.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258232"
+  },
   "check_content_excerpt": "Verify that the IPsec service uses the system crypto policy with the following command:\n\nNote: If the ipsec service is not installed, this requirement is Not Applicable.\n\n$ sudo grep include /etc/ipsec.conf /etc/ipsec.d/*.conf\n\n/etc/ipsec.conf:include /etc/crypto-policies/back-ends/libreswan.config\n\nIf the ipsec configuration file does not contain \"include /etc/crypto-policies/back-ends/libreswan.config\", this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Libreswan to use the system cryptographic policy.\n\nAdd the following line to \"/etc/ipsec.conf\":\n\ninclude /etc/crypto-policies/back-ends/libreswan.config",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258232r1045440_rule",
   "severity": "medium",

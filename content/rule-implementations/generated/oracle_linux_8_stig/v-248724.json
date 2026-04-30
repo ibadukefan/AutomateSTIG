@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/auditd.conf",
+      "pattern": "action_mail_acct = root",
+      "type": "file_content"
+    },
+    "description": "The OL 8 System Administrator (SA) and Information System Security Officer (ISSO) (at a minimum) must be alerted of an audit processing failure event.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248724"
+  },
   "check_content_excerpt": "Verify that the SA and ISSO (at a minimum) are notified in the event of an audit processing failure with the following command: \n \n$ sudo grep action_mail_acct /etc/audit/auditd.conf \n \naction_mail_acct = root \n \nIf the value of the \"action_mail_acct\" keyword is not set to \"root\" and/or other accounts for security personnel, the \"action_mail_acct\" keyword is missing, or the retuned line is commented out, ask the SA to indicate how they and the ISSO are notified of an audit process failure.  \n \nIf there is no evidence of the proper personnel being notified of an audit processing failure, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the \"auditd\" service to notify the SA and ISSO in the event of an audit processing failure.  \n \nEdit the following line in \"/etc/audit/auditd.conf\" to ensure that administrators are notified via email for those situations: \n \naction_mail_acct = root",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248724r958424_rule",
   "severity": "medium",

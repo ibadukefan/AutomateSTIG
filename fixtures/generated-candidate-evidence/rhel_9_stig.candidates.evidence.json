@@ -1,6 +1,87 @@
 {
-  "candidate_checks": 155,
+  "candidate_checks": 243,
   "cases": [
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/grub2.cfg",
+        "pattern": "password_pbkdf2  <superusers-accountname>   ${GRUB2_PASSWORD}",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must require a boot loader superuser password.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/grub2.cfg": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/grub2.cfg": "before\npassword_pbkdf2  <superusers-accountname>   ${GRUB2_PASSWORD}\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257787"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/default/grub",
+        "pattern": "GRUB_CMDLINE_LINUX=\"page_poison=1\"",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must clear the page allocator to prevent use-after-free attacks.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/default/grub": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/default/grub": "before\nGRUB_CMDLINE_LINUX=\"page_poison=1\"\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257793"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/default/grub",
+        "pattern": "GRUB_CMDLINE_LINUX=\"... init_on_free=1\"",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must clear memory when it is freed to prevent use-after-free attacks.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/default/grub": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/default/grub": "before\nGRUB_CMDLINE_LINUX=\"... init_on_free=1\"\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257794"
+    },
     {
       "check": {
         "is_regex": false,
@@ -83,6 +164,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/security/limits.conf",
+        "pattern": "/etc/security/limits.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must disable core dumps for all users.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/limits.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/limits.conf": "before\n/etc/security/limits.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257814"
+    },
+    {
+      "check": {
         "name": "--queryformat",
         "should_be_installed": true,
         "type": "package"
@@ -106,6 +214,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257819"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dnf/dnf.conf",
+        "pattern": "clean_requirements_on_remove=True",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must remove all software components after updated versions have been installed.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/dnf/dnf.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/dnf/dnf.conf": "before\nclean_requirements_on_remove=True\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257824"
     },
     {
       "check": {
@@ -581,6 +716,87 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257852"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/fstab",
+        "pattern": "192.168.22.2:/mnt/export /data nfs4 rw,nosuid,nodev,noexec,sync,soft,sec=krb5:krb5i:krb5p",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must prevent special devices on file systems that are imported via Network File System (NFS).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/fstab": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/fstab": "before\n192.168.22.2:/mnt/export /data nfs4 rw,nosuid,nodev,noexec,sync,soft,sec=krb5:krb5i:krb5p\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257854"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/fstab",
+        "pattern": "192.168.22.2:/mnt/export /data nfs4 rw,nosuid,nodev,noexec,sync,soft,sec=krb5:krb5i:krb5p",
+        "type": "file_content"
+      },
+      "description": "RHEL 9  must prevent code from being executed on file systems that are imported via Network File System (NFS).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/fstab": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/fstab": "before\n192.168.22.2:/mnt/export /data nfs4 rw,nosuid,nodev,noexec,sync,soft,sec=krb5:krb5i:krb5p\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257855"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/fstab",
+        "pattern": "192.168.22.2:/mnt/export /data nfs4 rw,nosuid,nodev,noexec,sync,soft,sec=krb5:krb5i:krb5p",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must prevent files with the setuid and setgid bit set from being executed on file systems that are imported via Network File System (NFS).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/fstab": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/fstab": "before\n192.168.22.2:/mnt/export /data nfs4 rw,nosuid,nodev,noexec,sync,soft,sec=krb5:krb5i:krb5p\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257856"
     },
     {
       "check": {
@@ -1541,6 +1757,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/firewalld/firewalld.conf",
+        "pattern": "FirewallBackend=nftables",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must protect against or limit the effects of denial-of-service (DoS) attacks by ensuring rate-limiting measures on impacted network interfaces are implemented.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/firewalld/firewalld.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/firewalld/firewalld.conf": "before\nFirewallBackend=nftables\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257939"
+    },
+    {
+      "check": {
         "key": "net.core.bpf_jit_harden",
         "type": "sysctl"
       },
@@ -1617,6 +1860,141 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257944"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/chrony.conf",
+        "pattern": "server 0.us.pool.ntp.mil iburst maxpoll 16",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must securely compare internal information system clocks at least every 24 hours.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/chrony.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/chrony.conf": "before\nserver 0.us.pool.ntp.mil iburst maxpoll 16\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257945"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/chrony.conf",
+        "pattern": "port 0",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must disable the chrony daemon from acting as a server.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/chrony.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/chrony.conf": "before\nport 0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257946"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/chrony.conf",
+        "pattern": "cmdport 0",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must disable network management of the chrony daemon.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/chrony.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/chrony.conf": "before\ncmdport 0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257947"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/resolv.conf",
+        "pattern": "nameserver 192.168.1.2",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 systems using Domain Name Servers (DNS) resolution must have at least two name servers configured.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/resolv.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/resolv.conf": "before\nnameserver 192.168.1.2\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257948"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ipsec.conf",
+        "pattern": "/etc/ipsec.d/",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must not have unauthorized IP tunnels configured.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ipsec.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ipsec.conf": "before\n/etc/ipsec.d/\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257950"
     },
     {
       "check": {
@@ -2462,6 +2840,87 @@
       "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
+        "pattern": "/etc/ssh/sshd_config.d/",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must implement DOD-approved encryption ciphers to protect the confidentiality of SSH connections.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\n/etc/ssh/sshd_config.d/\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257988"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/crypto-policies/back-ends/opensshserver.config",
+        "pattern": "Ciphers aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr",
+        "type": "file_content"
+      },
+      "description": "The RHEL 9 SSH server must be configured to use only DOD-approved encryption ciphers employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/crypto-policies/back-ends/opensshserver.config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/crypto-policies/back-ends/opensshserver.config": "before\nCiphers aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257989"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/crypto-policies/back-ends/opensshserver.config",
+        "pattern": "MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-512",
+        "type": "file_content"
+      },
+      "description": "The RHEL 9 SSH server must be configured to use only Message Authentication Codes (MACs) employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/crypto-policies/back-ends/opensshserver.config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/crypto-policies/back-ends/opensshserver.config": "before\nMACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-512\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257991"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
         "pattern": "HostbasedAuthentication no",
         "type": "file_content"
       },
@@ -2915,6 +3374,33 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/gdm/custom.conf",
+        "pattern": "AutomaticLoginEnable=false",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must not allow unattended or automatic logon via the graphical user interface.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/gdm/custom.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/gdm/custom.conf": "before\nAutomaticLoginEnable=false\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258018"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/modprobe.conf",
         "pattern": "usb-storage",
         "type": "file_content"
@@ -2938,6 +3424,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-258034"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/usbguard/usbguard-daemon.conf",
+        "pattern": "AuditBackend=LinuxAudit",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must enable Linux audit logging for the USBGuard daemon.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/usbguard/usbguard-daemon.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/usbguard/usbguard-daemon.conf": "before\nAuditBackend=LinuxAudit\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258037"
     },
     {
       "check": {
@@ -2969,6 +3482,141 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "PASS_MAX_DAYS 60",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 user account passwords for new users or password changes must have a 60-day maximum password lifetime restriction in /etc/login.defs.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nPASS_MAX_DAYS 60\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258041"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "CREATE_HOME yes",
+        "type": "file_content"
+      },
+      "description": "All RHEL 9 local interactive user accounts must be assigned a home directory upon creation.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nCREATE_HOME yes\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258043"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/bashrc",
+        "pattern": "/etc/csh.cshrc /etc/profile",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must set the umask value to 077 for all local interactive user accounts.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/bashrc": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/bashrc": "before\n/etc/csh.cshrc /etc/profile\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258044"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/default/useradd",
+        "pattern": "INACTIVE=35",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/default/useradd": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/default/useradd": "before\nINACTIVE=35\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258049"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/passwd",
+        "pattern": "| awk -F: \u2018{print $4}') /etc/group",
+        "type": "file_content"
+      },
+      "description": "All RHEL 9 local interactive user home directories must be group-owned by the home directory owner's primary group.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/passwd": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/passwd": "before\n| awk -F: \u2018{print $4}') /etc/group\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258053"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/security/faillock.conf",
         "pattern": "deny = 3",
         "type": "file_content"
@@ -2996,6 +3644,384 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "even_deny_root",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must automatically lock the root account until the root account is released by an administrator when three unsuccessful logon attempts occur during a 15-minute time period.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\neven_deny_root\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258055"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "fail_interval = 900",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must automatically lock an account when three unsuccessful logon attempts occur during a 15-minute time period.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nfail_interval = 900\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258056"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "unlock_time = 0",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must maintain an account lock until the locked account is released by an administrator.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nunlock_time = 0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258057"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "dir = /var/log/faillock",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must ensure account lockouts persist.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\ndir = /var/log/faillock\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258060"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/profile",
+        "pattern": "/etc/profile.d/*.sh",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must automatically exit interactive command shell user sessions after 10 minutes of inactivity.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/profile": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/profile": "before\n/etc/profile.d/*.sh\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258068"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/limits.conf",
+        "pattern": "/etc/security/limits.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must limit the number of concurrent sessions to ten for all accounts and/or account types.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/limits.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/limits.conf": "before\n/etc/security/limits.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258069"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "audit",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must log username information when unsuccessful logon attempts occur.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\naudit\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258070"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "FAIL_DELAY 4",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nFAIL_DELAY 4\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258071"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/bashrc",
+        "pattern": "[ `umask` -eq 0 ] && umask 077",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must define default permissions for the bash shell.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/bashrc": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/bashrc": "before\n[ `umask` -eq 0 ] && umask 077\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258072"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/csh.cshrc",
+        "pattern": "umask 077",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must define default permissions for the c shell.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/csh.cshrc": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/csh.cshrc": "before\numask 077\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258073"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "UMASK 077",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must define default permissions for all authenticated users in such a way that the user can only read and modify their own files.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nUMASK 077\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258074"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/profile",
+        "pattern": "umask 077",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must define default permissions for the system default profile.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/profile": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/profile": "before\numask 077\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258075"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/postlogin",
+        "pattern": "session required pam_lastlog.so showfailed",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must display the date and time of the last successful account logon upon logon.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/postlogin": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/postlogin": "before\nsession required pam_lastlog.so showfailed\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258076"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/systemd/logind.conf",
+        "pattern": "StopIdleSessionSec=900",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must terminate idle user sessions.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/systemd/logind.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/systemd/logind.conf": "before\nStopIdleSessionSec=900\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258077"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/selinux/config",
         "pattern": "SELINUX=enforcing",
         "type": "file_content"
@@ -3019,6 +4045,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-258078"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "dir = /var/log/faillock",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must configure SELinux context type to allow the use of a nondefault faillock tally directory.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\ndir = /var/log/faillock\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258080"
     },
     {
       "check": {
@@ -3181,6 +4234,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/su",
+        "pattern": "auth             required        pam_wheel.so use_uid",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must restrict the use of the \"su\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/su": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/su": "before\nauth             required        pam_wheel.so use_uid\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258088"
+    },
+    {
+      "check": {
         "name": "fapolicyd",
         "should_be_installed": true,
         "type": "package"
@@ -3231,6 +4311,114 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-258090"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must ensure the password complexity module in the system-auth file is configured for three retries or less.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\n/etc/security/pwquality.conf.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258091"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "/etc/pam.d/password-auth",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must not allow blank or null passwords.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\n/etc/pam.d/password-auth\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258094"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "auth required pam_faillock.so preauth",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must configure the use of the pam_faillock.so module in the /etc/pam.d/system-auth file.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\nauth required pam_faillock.so preauth\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258095"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/password-auth",
+        "pattern": "auth required pam_faillock.so preauth",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must configure the use of the pam_faillock.so module in the /etc/pam.d/password-auth file.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/password-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/password-auth": "before\nauth required pam_faillock.so preauth\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258096"
     },
     {
       "check": {
@@ -3343,6 +4531,114 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must enforce password complexity rules for the root account.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\n/etc/security/pwquality.conf.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258101"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must enforce password complexity by requiring that at least one lowercase character be used.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\n/etc/security/pwquality.conf.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258102"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must enforce password complexity by requiring that at least one numeric character be used.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\n/etc/security/pwquality.conf.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258103"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "PASS_MIN_DAYS 1",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 passwords for new users or password changes must have a 24 hours minimum password lifetime restriction in /etc/login.defs.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nPASS_MIN_DAYS 1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258104"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/sudoers",
         "pattern": "/etc/sudoers.d/",
         "type": "file_content"
@@ -3393,6 +4689,303 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-258107"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must enforce password complexity by requiring that at least one special character be used.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\n/etc/security/pwquality.conf.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258109"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must prevent the use of dictionary words for passwords.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\n/etc/security/pwquality.conf.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258110"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must enforce password complexity by requiring that at least one uppercase character be used.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\n/etc/security/pwquality.conf.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258111"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must require the change of at least eight characters when passwords are changed.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\n/etc/security/pwquality.conf.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258112"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must require the maximum number of repeating characters of the same character class be limited to four when passwords are changed.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\n/etc/security/pwquality.conf.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258113"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must require the maximum number of repeating characters be limited to three when passwords are changed.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\n/etc/security/pwquality.conf.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258114"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "/etc/security/pwquality.conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must require the change of at least four character classes when passwords are changed.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\n/etc/security/pwquality.conf.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258115"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/libuser.conf",
+        "pattern": "crypt_style = sha512",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must be configured so that user and group account administration utilities are configured to store only encrypted representations of passwords.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/libuser.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/libuser.conf": "before\ncrypt_style = sha512\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258116"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "ENCRYPT_METHOD SHA512",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must be configured to use the shadow file to store only encrypted representations of passwords.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nENCRYPT_METHOD SHA512\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258117"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "/etc/sssd/conf.d/",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must enable certificate based smart card authentication.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\n/etc/sssd/conf.d/\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258122"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "/etc/sssd/conf.d/ | grep -v \"^#\"",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must implement certificate status checking for multifactor authentication.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\n/etc/sssd/conf.d/ | grep -v \"^#\"\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258123"
     },
     {
       "check": {
@@ -3502,6 +5095,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "/etc/sssd/conf.d/",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must prohibit the use of cached authenticators after one day.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\n/etc/sssd/conf.d/\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258133"
+    },
+    {
+      "check": {
         "name": "aide",
         "should_be_installed": true,
         "type": "package"
@@ -3529,6 +5149,60 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/crontab",
+        "pattern": "/var/spool/cron/root",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must routinely check the baseline configuration for unauthorized changes and notify the system administrator when anomalies in the operation of any security functions are discovered.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/crontab": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/crontab": "before\n/var/spool/cron/root\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258135"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aide.conf",
+        "pattern": "All=p+i+n+u+g+s+m+S+sha512+acl+xattrs+selinux",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must use a file integrity tool that is configured to use FIPS 140-3-approved cryptographic hashes for validating file contents and directories.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/aide.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/aide.conf": "before\nAll=p+i+n+u+g+s+m+S+sha512+acl+xattrs+selinux\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258136"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/usr/sbin/au",
         "pattern": "/etc/aide.conf",
         "type": "file_content"
@@ -3552,6 +5226,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-258137"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aide.conf",
+        "pattern": "All= p+i+n+u+g+s+m+S+sha512+acl+xattrs+selinux",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must be configured so that the file integrity tool verifies Access Control Lists (ACLs).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/aide.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/aide.conf": "before\nAll= p+i+n+u+g+s+m+S+sha512+acl+xattrs+selinux\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258138"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aide.conf",
+        "pattern": "All= p+i+n+u+g+s+m+S+sha512+acl+xattrs+selinux",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must be configured so that the file integrity tool verifies extended attributes.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/aide.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/aide.conf": "before\nAll= p+i+n+u+g+s+m+S+sha512+acl+xattrs+selinux\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258139"
     },
     {
       "check": {
@@ -3604,6 +5332,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-258141"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "/etc/rsyslog.d/*",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must be configured so that the rsyslog daemon does not accept log messages from other servers unless the server is being used for log aggregation.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\n/etc/rsyslog.d/*\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258143"
     },
     {
       "check": {
@@ -3797,6 +5552,303 @@
       "check": {
         "is_regex": false,
         "path": "/etc/audit/auditd.conf",
+        "pattern": "disk_error_action = HALT",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 audit system must take appropriate action when an error writing to the audit storage volume occurs.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\ndisk_error_action = HALT\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258153"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "disk_full_action = HALT",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 audit system must take appropriate action when the audit storage volume is full.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\ndisk_full_action = HALT\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258154"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_file = /var/log/audit/audit.log",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must allocate audit record storage capacity to store at least one week's worth of audit records.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nlog_file = /var/log/audit/audit.log\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258155"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "space_left = 25%",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must take action when allocated audit record storage volume reaches 75 percent of the repository maximum audit record storage capacity.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nspace_left = 25%\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258156"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "space_left_action = email",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must notify the system administrator (SA) and information system security officer (ISSO) (at a minimum) when allocated audit record storage volume 75 percent utilization.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nspace_left_action = email\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258157"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "admin_space_left = 5%",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must take action when allocated audit record storage volume reaches 95 percent of the audit record storage capacity.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nadmin_space_left = 5%\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258158"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "admin_space_left_action = single",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must take action when allocated audit record storage volume reaches 95 percent of the repository maximum audit record storage capacity.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nadmin_space_left_action = single\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258159"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "max_log_file_action = ROTATE",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 audit system must take appropriate action when the audit files have reached maximum size.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nmax_log_file_action = ROTATE\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258160"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "name_format = hostname",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must label all offloaded audit logs before sending them to the central log server.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nname_format = hostname\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258161"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "overflow_action = syslog",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must take appropriate action when the internal event queue is full.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\noverflow_action = syslog\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258162"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "action_mail_acct = root",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 System Administrator (SA) and/or information system security officer (ISSO) (at a minimum) must be alerted of an audit processing failure event.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\naction_mail_acct = root\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258163"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
         "pattern": "local_events",
         "type": "file_content"
       },
@@ -3819,6 +5871,141 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-258164"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "Then determine where the audit logs are stored with the following command:",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 audit logs must be group-owned by root or by a restricted logging group to prevent unauthorized read access.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nThen determine where the audit logs are stored with the following command:\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258165"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_file = /var/log/audit/audit.log",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 audit log directory must be owned by root to prevent unauthorized read access.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nlog_file = /var/log/audit/audit.log\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258166"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "freq = 100",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must periodically flush audit records to disk to prevent the loss of audit records.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nfreq = 100\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258168"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_format = ENRICHED",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must produce audit records containing information to establish the identity of any individual or process associated with the event.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nlog_format = ENRICHED\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258169"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "write_logs = yes",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must write audit records to disk.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nwrite_logs = yes\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258170"
     },
     {
       "check": {
@@ -4131,6 +6318,33 @@
       "check": {
         "is_regex": false,
         "path": "/etc/audit/audit.rules",
+        "pattern": "--loginuid-immutable",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 audit system must protect logon UIDs from unauthorized change.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n--loginuid-immutable\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258228"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
         "pattern": "| tail -1",
         "type": "file_content"
       },
@@ -4153,6 +6367,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-258229"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ipsec.conf",
+        "pattern": "/etc/ipsec.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 IP tunnels must use FIPS 140-3 approved cryptographic algorithms.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ipsec.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ipsec.conf": "before\n/etc/ipsec.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258232"
     },
     {
       "check": {
@@ -4236,6 +6477,114 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/named.conf",
+        "pattern": "include \"/etc/crypto-policies/back-ends/bind.config\";'",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must implement DOD-approved encryption in the bind package.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/named.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/named.conf": "before\ninclude \"/etc/crypto-policies/back-ends/bind.config\";'\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258242"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/crypto-policies/back-ends/openssh.config",
+        "pattern": "Ciphers aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr",
+        "type": "file_content"
+      },
+      "description": "The RHEL 9 SSH client must be configured to use only DOD-approved encryption ciphers employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH client connections.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/crypto-policies/back-ends/openssh.config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/crypto-policies/back-ends/openssh.config": "before\nCiphers aes256-gcm@openssh.com,aes256-ctr,aes128-gcm@openssh.com,aes128-ctr\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270177"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/crypto-policies/back-ends/openssh.config",
+        "pattern": "MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-512",
+        "type": "file_content"
+      },
+      "description": "The RHEL 9 SSH client must be configured to use only DOD-approved Message Authentication Codes (MACs) employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH client connections.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/crypto-policies/back-ends/openssh.config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/crypto-policies/back-ends/openssh.config": "before\nMACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha2-256,hmac-sha2-512\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270178"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/fapolicyd/fapolicyd.conf",
+        "pattern": "permissive = 0",
+        "type": "file_content"
+      },
+      "description": "The RHEL 9 fapolicy module must be configured to employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/fapolicyd/fapolicyd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/fapolicyd/fapolicyd.conf": "before\npermissive = 0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270180"
+    },
+    {
+      "check": {
         "name": "postfix",
         "should_be_installed": true,
         "type": "package"
@@ -4259,6 +6608,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-272488"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must elevate the SELinux context when an administrator calls the sudo command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers": "before\n/etc/sudoers.d\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-272496"
     },
     {
       "check": {
@@ -4293,5 +6669,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 155
+  "validated_candidates": 243
 }

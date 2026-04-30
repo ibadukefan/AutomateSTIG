@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/faillock.conf",
+      "pattern": "even_deny_root",
+      "type": "file_content"
+    },
+    "description": "OL 8 systems, versions 8.2 and above, must include root when automatically locking an account until the locked account is released by an administrator when three unsuccessful logon attempts occur during a 15-minute time period.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248665"
+  },
   "check_content_excerpt": "Note: This check applies to OL versions 8.2 or newer. If the system is OL version 8.0 or 8.1, this check is not applicable. \n \nVerify the \"/etc/security/faillock.conf\" file is configured to log user name information when unsuccessful logon attempts occur: \n \n$ sudo grep even_deny_root /etc/security/faillock.conf \n \neven_deny_root \n \nIf the \"even_deny_root\" option is not set or is missing or commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to include root when locking an account after three unsuccessful logon attempts occur in 15 minutes.\n \nAdd/modify the \"/etc/security/faillock.conf\" file to match the following line: \n \neven_deny_root",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248665r958388_rule",
   "severity": "medium",

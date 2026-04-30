@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "/etc/ssh/sshd_config.d/",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must implement DOD-approved encryption ciphers to protect the confidentiality of SSH connections.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257988"
+  },
   "check_content_excerpt": "Verify that RHEL 9 implements DOD-approved encryption ciphers for SSH connections.\n\nVerify that the SSH configuration files include the path to the systemwide policy with the following command:\n\n$ sudo grep -R Include /etc/ssh/sshd_config  /etc/ssh/sshd_config.d/\n\n/etc/ssh/sshd_config:Include /etc/ssh/sshd_config.d/*.conf\n/etc/ssh/sshd_config.d/50-redhat.conf:Include /etc/crypto-policies/back-ends/opensshserver.config\n\nIf \"Include /etc/ssh/sshd_config.d/*.conf\" or \"Include /etc/crypto-policies/back-ends/opensshserver.config\" are not included in the system sshd config or if the file \"/etc/ssh/sshd_config.d/50-redhat.conf\" is missing, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the RHEL 9 SSH daemon to use systemwide crypto policies.\n\nReinstall OpenSSH client package contents with the following command:\n\n$ sudo dnf -y reinstall openssh",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-257988r1051234_rule",
   "severity": "medium",

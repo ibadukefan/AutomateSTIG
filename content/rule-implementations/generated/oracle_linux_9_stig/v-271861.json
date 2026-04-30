@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/resolv.conf",
+      "pattern": "nameserver 192.168.1.2",
+      "type": "file_content"
+    },
+    "description": "OL 9 systems using Domain Name Servers (DNS) resolution must have at least two name servers configured.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271861"
+  },
   "check_content_excerpt": "Verify that OL 9 configures name servers used by the system with the following command:\n\n$ grep nameserver /etc/resolv.conf\nnameserver 192.168.1.2\nnameserver 192.168.1.3\n\nIf less than two lines are returned that are not commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to use two or more name servers for DNS resolution based on the DNS mode of the system.\n\nIf the NetworkManager DNS mode is set to \"none\", then add the following lines to \"/etc/resolv.conf\":\n\nnameserver [name server 1]\nnameserver [name server 2]\n\nReplace [name server 1] and [name server 2] with the IPs of two different DNS resolvers.\n\nIf the NetworkManager DNS mode is set to \"default\" then add two DNS servers to a NetworkManager connection. Using the following commands:\n\n$ sudo nmcli connection modify [connection name] ipv4.dns [name server 1]\n$ sudo nmcli connection modify [connection name] ipv4.dns [name server 2]\n\nReplace [name server 1] and [name server 2] with the IPs of two different DNS resolvers. Replace [connection name] with a valid NetworkManager connection name on the system. Replace ipv4 with ipv6 if IPv6 DNS servers are used.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271861r1092295_rule",
   "severity": "medium",

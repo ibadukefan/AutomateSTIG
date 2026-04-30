@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/passwd",
+      "pattern": "| awk -F: \u2018{print $4}') /etc/group",
+      "type": "file_content"
+    },
+    "description": "All RHEL 9 local interactive user home directories must be group-owned by the home directory owner's primary group.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258053"
+  },
   "check_content_excerpt": "Verify the assigned home directory of all local interactive users is group-owned by that user's primary GID with the following command:\n\nNote: This may miss local interactive users that have been assigned a privileged user identifier (UID). Evidence of interactive use may be obtained from a number of log files containing system logon information. The returned directory \"/home/wadea\" is used as an example.\n\n$ sudo ls -ld $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd)\n\ndrwxr-x--- 2 wadea admin 4096 Jun 5 12:41 wadea\n\nCheck the user's primary group with the following command:\n\n$ sudo grep $(grep wadea /etc/passwd | awk -F: \u2018{print $4}') /etc/group\n\nadmin:x:250:wadea,jonesj,jacksons\n\nIf the user home directory referenced in \"/etc/passwd\" is not group-owned by that user's primary GID, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the group owner of a local interactive user's home directory to the group found in \"/etc/passwd\". To change the group owner of a local interactive user's home directory, use the following command:\n\nNote: The example will be for the user \"wadea\", who has a home directory of \"/home/wadea\", and has a primary group of users.\n\n$ sudo chgrp users /home/wadea",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258053r991589_rule",
   "severity": "medium",

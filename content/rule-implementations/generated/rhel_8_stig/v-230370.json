@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/login.defs",
+      "pattern": "PASS_MIN_LEN 15",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 passwords for new users must have a minimum of 15 characters.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230370"
+  },
   "check_content_excerpt": "Verify that RHEL 8 enforces a minimum 15-character password length for new user accounts by running the following command:\n\n$ sudo grep -i  pass_min_len /etc/login.defs\n\nPASS_MIN_LEN 15\n\nIf the \"PASS_MIN_LEN\" parameter value is less than \"15\", or commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure operating system to enforce a minimum 15-character password length for new user accounts.\n\nAdd, or modify the following line in the \"/etc/login.defs\" file:\n\nPASS_MIN_LEN 15",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230370r1017182_rule",
   "severity": "medium",

@@ -572,16 +572,17 @@
       "vuln_id": "V-271475"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271476",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271476 from source identifier xccdf_mil.disa.stig_group_V-271476.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271476r1091140_rule",
       "severity": "medium",
       "title": "OL 9 must restrict privilege elevation to authorized personnel.",
-      "tracking_issue": "TODO-V-271476",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271476"
@@ -634,31 +635,33 @@
       "vuln_id": "V-271483"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271485",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271485 from source identifier xccdf_mil.disa.stig_group_V-271485.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271485r1184186_rule",
       "severity": "high",
       "title": "OL 9 SSH server must be configured to use only ciphers employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections.",
-      "tracking_issue": "TODO-V-271485",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271485"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271486",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271486 from source identifier xccdf_mil.disa.stig_group_V-271486.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271486r1184188_rule",
       "severity": "high",
       "title": "OL 9 SSH server must be configured to use only Message Authentication Codes (MACs) employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections.",
-      "tracking_issue": "TODO-V-271486",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271486"
@@ -696,31 +699,33 @@
       "vuln_id": "V-271488"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271489",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271489 from source identifier xccdf_mil.disa.stig_group_V-271489.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271489r1184190_rule",
       "severity": "high",
       "title": "OL 9 SSH client must be configured to use only DOD-approved encryption ciphers employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH client connections.",
-      "tracking_issue": "TODO-V-271489",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271489"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271490",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271490 from source identifier xccdf_mil.disa.stig_group_V-271490.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271490r1184192_rule",
       "severity": "high",
       "title": "OL 9 SSH client must be configured to use only DOD-approved Message Authentication Codes (MACs) employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH client connections.",
-      "tracking_issue": "TODO-V-271490",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271490"
@@ -1118,46 +1123,49 @@
       "vuln_id": "V-271521"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271522",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271522 from source identifier xccdf_mil.disa.stig_group_V-271522.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271522r1091278_rule",
       "severity": "low",
       "title": "OL 9 must remove all software components after updated versions have been installed.",
-      "tracking_issue": "TODO-V-271522",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271522"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271523",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271523 from source identifier xccdf_mil.disa.stig_group_V-271523.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271523r1091281_rule",
       "severity": "high",
       "title": "OL 9 must check the GPG signature of locally installed software packages before installation.",
-      "tracking_issue": "TODO-V-271523",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271523"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271524",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271524 from source identifier xccdf_mil.disa.stig_group_V-271524.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271524r1091284_rule",
       "severity": "high",
       "title": "OL 9 must check the GPG signature of software packages originating from external software repositories before installation.",
-      "tracking_issue": "TODO-V-271524",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271524"
@@ -1938,136 +1946,145 @@
       "vuln_id": "V-271576"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271577",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271577 from source identifier xccdf_mil.disa.stig_group_V-271577.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271577r1091443_rule",
       "severity": "low",
       "title": "OL 9 must enable auditing of processes that start prior to the audit daemon.",
-      "tracking_issue": "TODO-V-271577",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271577"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271578",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271578 from source identifier xccdf_mil.disa.stig_group_V-271578.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271578r1092572_rule",
       "severity": "medium",
       "title": "OL 9 must label all offloaded audit logs before sending them to the central log server.",
-      "tracking_issue": "TODO-V-271578",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271578"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271579",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271579 from source identifier xccdf_mil.disa.stig_group_V-271579.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271579r1091449_rule",
       "severity": "medium",
       "title": "OL 9 audit system must take appropriate action when an error writing to the audit storage volume occurs.",
-      "tracking_issue": "TODO-V-271579",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271579"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271580",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271580 from source identifier xccdf_mil.disa.stig_group_V-271580.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271580r1091452_rule",
       "severity": "medium",
       "title": "OL 9 audit system must take appropriate action when the audit storage volume is full.",
-      "tracking_issue": "TODO-V-271580",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271580"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271581",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271581 from source identifier xccdf_mil.disa.stig_group_V-271581.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271581r1091455_rule",
       "severity": "medium",
       "title": "OL 9 audit system must take appropriate action when the audit files have reached maximum size.",
-      "tracking_issue": "TODO-V-271581",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271581"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271582",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271582 from source identifier xccdf_mil.disa.stig_group_V-271582.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271582r1092574_rule",
       "severity": "medium",
       "title": "OL 9 must periodically flush audit records to disk to prevent the loss of audit records.",
-      "tracking_issue": "TODO-V-271582",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271582"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271583",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271583 from source identifier xccdf_mil.disa.stig_group_V-271583.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271583r1091461_rule",
       "severity": "medium",
       "title": "OL 9 audit logs must be group-owned by root or by a restricted logging group to prevent unauthorized read access.",
-      "tracking_issue": "TODO-V-271583",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271583"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271584",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271584 from source identifier xccdf_mil.disa.stig_group_V-271584.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271584r1091464_rule",
       "severity": "medium",
       "title": "OL 9 audit log directory must be owned by root to prevent unauthorized read access.",
-      "tracking_issue": "TODO-V-271584",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271584"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271585",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271585 from source identifier xccdf_mil.disa.stig_group_V-271585.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271585r1091467_rule",
       "severity": "medium",
       "title": "OL 9 audit logs file must have mode 0600 or less permissive to prevent unauthorized access to the audit log.",
-      "tracking_issue": "TODO-V-271585",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271585"
@@ -2153,16 +2170,17 @@
       "vuln_id": "V-271590"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271591",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271591 from source identifier xccdf_mil.disa.stig_group_V-271591.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271591r1092578_rule",
       "severity": "medium",
       "title": "The OL 9 system administrator (SA) and/or information system security officer (ISSO) (at a minimum) must be alerted of an audit processing failure event.",
-      "tracking_issue": "TODO-V-271591",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271591"
@@ -2183,16 +2201,17 @@
       "vuln_id": "V-271592"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271593",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271593 from source identifier xccdf_mil.disa.stig_group_V-271593.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271593r1092580_rule",
       "severity": "medium",
       "title": "OL 9 must produce audit records containing information to establish the identity of any individual or process associated with the event.",
-      "tracking_issue": "TODO-V-271593",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271593"
@@ -2229,181 +2248,193 @@
       "vuln_id": "V-271595"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271596",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271596 from source identifier xccdf_mil.disa.stig_group_V-271596.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271596r1091500_rule",
       "severity": "medium",
       "title": "OL 9 must allocate audit record storage capacity to store at least one week's worth of audit records.",
-      "tracking_issue": "TODO-V-271596",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271596"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271597",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271597 from source identifier xccdf_mil.disa.stig_group_V-271597.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271597r1092586_rule",
       "severity": "medium",
       "title": "OL 9 must be configured to offload audit records onto a different system from the system being audited via syslog.",
-      "tracking_issue": "TODO-V-271597",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271597"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271598",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271598 from source identifier xccdf_mil.disa.stig_group_V-271598.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271598r1092588_rule",
       "severity": "medium",
       "title": "OL 9 must take appropriate action when the internal event queue is full.",
-      "tracking_issue": "TODO-V-271598",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271598"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271599",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271599 from source identifier xccdf_mil.disa.stig_group_V-271599.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271599r1134856_rule",
       "severity": "medium",
       "title": "OL 9 must take action when allocated audit record storage volume reaches 75 percent of the repository maximum audit record storage capacity.",
-      "tracking_issue": "TODO-V-271599",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271599"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271600",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271600 from source identifier xccdf_mil.disa.stig_group_V-271600.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271600r1134858_rule",
       "severity": "medium",
       "title": "OL 9 must notify the system administrator (SA) and information system security officer (ISSO) (at a minimum) when allocated audit record storage volume reaches 75 percent utilization.",
-      "tracking_issue": "TODO-V-271600",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271600"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271601",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271601 from source identifier xccdf_mil.disa.stig_group_V-271601.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271601r1091515_rule",
       "severity": "medium",
       "title": "OL 9 must take action when allocated audit record storage volume reaches 95 percent of the audit record storage capacity.",
-      "tracking_issue": "TODO-V-271601",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271601"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271602",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271602 from source identifier xccdf_mil.disa.stig_group_V-271602.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271602r1092590_rule",
       "severity": "medium",
       "title": "OL 9 must write audit records to disk.",
-      "tracking_issue": "TODO-V-271602",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271602"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271603",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271603 from source identifier xccdf_mil.disa.stig_group_V-271603.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271603r1092592_rule",
       "severity": "medium",
       "title": "OL 9 must act when allocated audit record storage volume reaches 95 percent of the repository maximum audit record storage capacity.",
-      "tracking_issue": "TODO-V-271603",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271603"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271607",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271607 from source identifier xccdf_mil.disa.stig_group_V-271607.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271607r1091533_rule",
       "severity": "medium",
       "title": "OL 9 must enable certificate-based smart card authentication.",
-      "tracking_issue": "TODO-V-271607",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271607"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271608",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271608 from source identifier xccdf_mil.disa.stig_group_V-271608.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271608r1091536_rule",
       "severity": "medium",
       "title": "OL 9 must implement certificate status checking for multifactor authentication (MFA).",
-      "tracking_issue": "TODO-V-271608",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271608"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271609",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271609 from source identifier xccdf_mil.disa.stig_group_V-271609.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271609r1091539_rule",
       "severity": "medium",
       "title": "OL 9 must prohibit the use of cached authenticators after one day.",
-      "tracking_issue": "TODO-V-271609",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271609"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271610",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271610 from source identifier xccdf_mil.disa.stig_group_V-271610.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271610r1091542_rule",
       "severity": "medium",
       "title": "OL 9 must use the CAC smart card driver.",
-      "tracking_issue": "TODO-V-271610",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271610"
@@ -2424,31 +2455,33 @@
       "vuln_id": "V-271611"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271612",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271612 from source identifier xccdf_mil.disa.stig_group_V-271612.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271612r1091548_rule",
       "severity": "medium",
       "title": "OL 9 must ensure the password complexity module in the system-auth file is configured for three retries or less.",
-      "tracking_issue": "TODO-V-271612",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271612"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271613",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271613 from source identifier xccdf_mil.disa.stig_group_V-271613.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271613r1091551_rule",
       "severity": "medium",
       "title": "OL 9 must enforce password complexity by requiring that at least one uppercase character be used.",
-      "tracking_issue": "TODO-V-271613",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271613"
@@ -2470,136 +2503,145 @@
       "vuln_id": "V-271614"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271615",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271615 from source identifier xccdf_mil.disa.stig_group_V-271615.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271615r1091557_rule",
       "severity": "medium",
       "title": "OL 9 must enforce password complexity by requiring that at least one lowercase character be used.",
-      "tracking_issue": "TODO-V-271615",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271615"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271616",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271616 from source identifier xccdf_mil.disa.stig_group_V-271616.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271616r1091560_rule",
       "severity": "medium",
       "title": "OL 9 must enforce password complexity by requiring that at least one numeric character be used.",
-      "tracking_issue": "TODO-V-271616",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271616"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271617",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271617 from source identifier xccdf_mil.disa.stig_group_V-271617.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271617r1091563_rule",
       "severity": "medium",
       "title": "OL 9 must require the change of at least eight characters when passwords are changed.",
-      "tracking_issue": "TODO-V-271617",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271617"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271618",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271618 from source identifier xccdf_mil.disa.stig_group_V-271618.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271618r1091566_rule",
       "severity": "medium",
       "title": "OL 9 must require the maximum number of repeating characters of the same character class be limited to four when passwords are changed.",
-      "tracking_issue": "TODO-V-271618",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271618"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271619",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271619 from source identifier xccdf_mil.disa.stig_group_V-271619.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271619r1091569_rule",
       "severity": "medium",
       "title": "OL 9 must require the maximum number of repeating characters be limited to three when passwords are changed.",
-      "tracking_issue": "TODO-V-271619",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271619"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271620",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271620 from source identifier xccdf_mil.disa.stig_group_V-271620.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271620r1091572_rule",
       "severity": "medium",
       "title": "OL 9 must require the change of at least four character classes when passwords are changed.",
-      "tracking_issue": "TODO-V-271620",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271620"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271621",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271621 from source identifier xccdf_mil.disa.stig_group_V-271621.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271621r1091575_rule",
       "severity": "medium",
       "title": "OL 9 must enforce password complexity rules for the root account.",
-      "tracking_issue": "TODO-V-271621",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271621"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271622",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271622 from source identifier xccdf_mil.disa.stig_group_V-271622.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271622r1091578_rule",
       "severity": "medium",
       "title": "OL 9 must be configured so that user and group account administration utilities are configured to store only encrypted representations of passwords.",
-      "tracking_issue": "TODO-V-271622",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271622"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271623",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271623 from source identifier xccdf_mil.disa.stig_group_V-271623.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271623r1091581_rule",
       "severity": "medium",
       "title": "OL 9 must be configured to use the shadow file to store only encrypted representations of passwords.",
-      "tracking_issue": "TODO-V-271623",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271623"
@@ -2683,16 +2725,17 @@
       "vuln_id": "V-271628"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271629",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271629 from source identifier xccdf_mil.disa.stig_group_V-271629.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271629r1091599_rule",
       "severity": "medium",
       "title": "OL 9 passwords for new users or password changes must have a 24-hour minimum password lifetime restriction in /etc/login.defs.",
-      "tracking_issue": "TODO-V-271629",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271629"
@@ -2713,16 +2756,17 @@
       "vuln_id": "V-271630"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271631",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271631 from source identifier xccdf_mil.disa.stig_group_V-271631.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271631r1091605_rule",
       "severity": "medium",
       "title": "OL 9 user account passwords for new users or password changes must have a 60-day maximum password lifetime restriction in /etc/login.defs.",
-      "tracking_issue": "TODO-V-271631",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271631"
@@ -2759,16 +2803,17 @@
       "vuln_id": "V-271633"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271634",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271634 from source identifier xccdf_mil.disa.stig_group_V-271634.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271634r1091614_rule",
       "severity": "high",
       "title": "OL 9 must not allow blank or null passwords.",
-      "tracking_issue": "TODO-V-271634",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271634"
@@ -2790,31 +2835,33 @@
       "vuln_id": "V-271635"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271636",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271636 from source identifier xccdf_mil.disa.stig_group_V-271636.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271636r1091620_rule",
       "severity": "medium",
       "title": "OL 9 must enforce password complexity by requiring that at least one special character be used.",
-      "tracking_issue": "TODO-V-271636",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271636"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271637",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271637 from source identifier xccdf_mil.disa.stig_group_V-271637.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271637r1091623_rule",
       "severity": "medium",
       "title": "OL 9 must prevent the use of dictionary words for passwords.",
-      "tracking_issue": "TODO-V-271637",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271637"
@@ -3309,16 +3356,17 @@
       "vuln_id": "V-271679"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271680",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271680 from source identifier xccdf_mil.disa.stig_group_V-271680.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271680r1091752_rule",
       "severity": "medium",
       "title": "OL 9 must prevent a user from overriding the banner-message-enable setting for the graphical user interface.",
-      "tracking_issue": "TODO-V-271680",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271680"
@@ -3464,121 +3512,129 @@
       "vuln_id": "V-271690"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271691",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271691 from source identifier xccdf_mil.disa.stig_group_V-271691.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271691r1091785_rule",
       "severity": "high",
       "title": "OL 9 must not allow unattended or automatic logon via the graphical user interface.",
-      "tracking_issue": "TODO-V-271691",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271691"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271693",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271693 from source identifier xccdf_mil.disa.stig_group_V-271693.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271693r1091791_rule",
       "severity": "medium",
       "title": "OL 9 must define default permissions for the bash shell.",
-      "tracking_issue": "TODO-V-271693",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271693"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271694",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271694 from source identifier xccdf_mil.disa.stig_group_V-271694.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271694r1091794_rule",
       "severity": "medium",
       "title": "OL 9 must define default permissions for the c shell.",
-      "tracking_issue": "TODO-V-271694",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271694"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271695",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271695 from source identifier xccdf_mil.disa.stig_group_V-271695.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271695r1091797_rule",
       "severity": "medium",
       "title": "OL 9 must define default permissions for the system default profile.",
-      "tracking_issue": "TODO-V-271695",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271695"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271696",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271696 from source identifier xccdf_mil.disa.stig_group_V-271696.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271696r1091800_rule",
       "severity": "medium",
       "title": "OL 9 must define default permissions for all authenticated users in such a way that the user can only read and modify their own files.",
-      "tracking_issue": "TODO-V-271696",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271696"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271697",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271697 from source identifier xccdf_mil.disa.stig_group_V-271697.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271697r1184202_rule",
       "severity": "low",
       "title": "OL 9 must disable the chrony daemon from acting as a server.",
-      "tracking_issue": "TODO-V-271697",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271697"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271698",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271698 from source identifier xccdf_mil.disa.stig_group_V-271698.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271698r1091806_rule",
       "severity": "low",
       "title": "OL 9 must disable network management of the chrony daemon.",
-      "tracking_issue": "TODO-V-271698",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271698"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271700",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271700 from source identifier xccdf_mil.disa.stig_group_V-271700.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271700r1091812_rule",
       "severity": "low",
       "title": "OL 9 must enable Linux audit logging for the USBGuard daemon.",
-      "tracking_issue": "TODO-V-271700",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271700"
@@ -3871,16 +3927,17 @@
       "vuln_id": "V-271720"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271721",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271721 from source identifier xccdf_mil.disa.stig_group_V-271721.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271721r1091875_rule",
       "severity": "medium",
       "title": "OL 9 SSHD must accept public key authentication.",
-      "tracking_issue": "TODO-V-271721",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271721"
@@ -3902,16 +3959,17 @@
       "vuln_id": "V-271722"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271723",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271723 from source identifier xccdf_mil.disa.stig_group_V-271723.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271723r1091881_rule",
       "severity": "medium",
       "title": "OL 9 must restrict the use of the su command.",
-      "tracking_issue": "TODO-V-271723",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271723"
@@ -3933,16 +3991,17 @@
       "vuln_id": "V-271724"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271725",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271725 from source identifier xccdf_mil.disa.stig_group_V-271725.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271725r1155318_rule",
       "severity": "medium",
       "title": "OL 9 must require users to provide a password for privilege escalation.",
-      "tracking_issue": "TODO-V-271725",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271725"
@@ -3995,46 +4054,49 @@
       "vuln_id": "V-271728"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271729",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271729 from source identifier xccdf_mil.disa.stig_group_V-271729.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271729r1155325_rule",
       "severity": "medium",
       "title": "OL 9 must disable core dump backtraces.",
-      "tracking_issue": "TODO-V-271729",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271729"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271730",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271730 from source identifier xccdf_mil.disa.stig_group_V-271730.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271730r1155327_rule",
       "severity": "medium",
       "title": "OL 9 must disable storing core dumps.",
-      "tracking_issue": "TODO-V-271730",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271730"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271731",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271731 from source identifier xccdf_mil.disa.stig_group_V-271731.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271731r1155302_rule",
       "severity": "medium",
       "title": "OL 9 must disable core dumps for all users.",
-      "tracking_issue": "TODO-V-271731",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271731"
@@ -4070,31 +4132,33 @@
       "vuln_id": "V-271733"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271734",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271734 from source identifier xccdf_mil.disa.stig_group_V-271734.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271734r1091914_rule",
       "severity": "medium",
       "title": "OL 9 must clear SLUB/SLAB objects to prevent use-after-free attacks.",
-      "tracking_issue": "TODO-V-271734",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271734"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271735",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271735 from source identifier xccdf_mil.disa.stig_group_V-271735.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271735r1091917_rule",
       "severity": "low",
       "title": "OL 9 must enable mitigations against processor-based vulnerabilities.",
-      "tracking_issue": "TODO-V-271735",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271735"
@@ -4115,31 +4179,33 @@
       "vuln_id": "V-271736"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271737",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271737 from source identifier xccdf_mil.disa.stig_group_V-271737.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271737r1094967_rule",
       "severity": "medium",
       "title": "OL 9 must disable virtual system calls.",
-      "tracking_issue": "TODO-V-271737",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271737"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271738",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271738 from source identifier xccdf_mil.disa.stig_group_V-271738.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271738r1092600_rule",
       "severity": "medium",
       "title": "OL 9 must clear the page allocator to prevent use-after-free attacks.",
-      "tracking_issue": "TODO-V-271738",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271738"
@@ -4208,16 +4274,17 @@
       "vuln_id": "V-271742"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271743",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271743 from source identifier xccdf_mil.disa.stig_group_V-271743.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271743r1184204_rule",
       "severity": "high",
       "title": "OL 9 IP tunnels must use 140-3 approved cryptographic algorithms.",
-      "tracking_issue": "TODO-V-271743",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271743"
@@ -4303,16 +4370,17 @@
       "vuln_id": "V-271749"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271750",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271750 from source identifier xccdf_mil.disa.stig_group_V-271750.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271750r1091962_rule",
       "severity": "medium",
       "title": "OL 9 must automatically exit interactive command shell user sessions after 15 minutes of inactivity.",
-      "tracking_issue": "TODO-V-271750",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271750"
@@ -4348,31 +4416,33 @@
       "vuln_id": "V-271752"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271753",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271753 from source identifier xccdf_mil.disa.stig_group_V-271753.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271753r1091971_rule",
       "severity": "low",
       "title": "OL 9 must limit the number of concurrent sessions to ten for all accounts and/or account types.",
-      "tracking_issue": "TODO-V-271753",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271753"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271754",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271754 from source identifier xccdf_mil.disa.stig_group_V-271754.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271754r1184208_rule",
       "severity": "medium",
       "title": "OL 9 must automatically lock an account when three unsuccessful logon attempts occur during a 15-minute time period.",
-      "tracking_issue": "TODO-V-271754",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271754"
@@ -4424,16 +4494,17 @@
       "vuln_id": "V-271758"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271759",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271759 from source identifier xccdf_mil.disa.stig_group_V-271759.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271759r1184210_rule",
       "severity": "high",
       "title": "OL 9 must implement DOD-approved encryption in the bind package.",
-      "tracking_issue": "TODO-V-271759",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271759"
@@ -5444,31 +5515,33 @@
       "vuln_id": "V-271839"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271840",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271840 from source identifier xccdf_mil.disa.stig_group_V-271840.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271840r1092232_rule",
       "severity": "medium",
       "title": "OL 9 must automatically lock the root account until the root account is released by an administrator when three unsuccessful logon attempts occur during a 15-minute time period.",
-      "tracking_issue": "TODO-V-271840",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271840"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271841",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271841 from source identifier xccdf_mil.disa.stig_group_V-271841.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271841r1092235_rule",
       "severity": "medium",
       "title": "OL 9 must log username information when unsuccessful logon attempts occur.",
-      "tracking_issue": "TODO-V-271841",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271841"
@@ -5505,46 +5578,49 @@
       "vuln_id": "V-271845"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271846",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271846 from source identifier xccdf_mil.disa.stig_group_V-271846.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271846r1092250_rule",
       "severity": "medium",
       "title": "OL 9 local interactive user accounts must be assigned a home directory upon creation.",
-      "tracking_issue": "TODO-V-271846",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271846"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271849",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271849 from source identifier xccdf_mil.disa.stig_group_V-271849.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271849r1092259_rule",
       "severity": "medium",
       "title": "OL 9 must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity.",
-      "tracking_issue": "TODO-V-271849",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271849"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271850",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271850 from source identifier xccdf_mil.disa.stig_group_V-271850.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271850r1092262_rule",
       "severity": "medium",
       "title": "OL 9 must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.",
-      "tracking_issue": "TODO-V-271850",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271850"
@@ -5566,16 +5642,17 @@
       "vuln_id": "V-271851"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271852",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271852 from source identifier xccdf_mil.disa.stig_group_V-271852.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271852r1184227_rule",
       "severity": "medium",
       "title": "OL 9 must be configured to forward audit records via TCP to a different system or media from the system being audited via rsyslog.",
-      "tracking_issue": "TODO-V-271852",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271852"
@@ -5645,16 +5722,17 @@
       "vuln_id": "V-271857"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271858",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271858 from source identifier xccdf_mil.disa.stig_group_V-271858.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271858r1092286_rule",
       "severity": "medium",
       "title": "OL 9 must protect against or limit the effects of denial-of-service (DoS) attacks by ensuring rate-limiting measures on impacted network interfaces are implemented.",
-      "tracking_issue": "TODO-V-271858",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271858"
@@ -5675,16 +5753,17 @@
       "vuln_id": "V-271860"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271861",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271861 from source identifier xccdf_mil.disa.stig_group_V-271861.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271861r1092295_rule",
       "severity": "medium",
       "title": "OL 9 systems using Domain Name Servers (DNS) resolution must have at least two name servers configured.",
-      "tracking_issue": "TODO-V-271861",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271861"
@@ -6041,16 +6120,17 @@
       "vuln_id": "V-271884"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271885",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271885 from source identifier xccdf_mil.disa.stig_group_V-271885.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271885r1092367_rule",
       "severity": "medium",
       "title": "OL 9 audit system must protect logon UIDs from unauthorized change.",
-      "tracking_issue": "TODO-V-271885",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271885"
@@ -6088,16 +6168,17 @@
       "vuln_id": "V-278952"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-279935",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-279935 from source identifier xccdf_mil.disa.stig_group_V-279935.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-279935r1156358_rule",
       "severity": "medium",
       "title": "OL 9 must terminate idle user sessions.",
-      "tracking_issue": "TODO-V-279935",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-279935"

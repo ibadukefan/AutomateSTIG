@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/auditd.conf",
+      "pattern": "freq = 100",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must periodically flush audit records to disk to prevent the loss of audit records.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258168"
+  },
   "check_content_excerpt": "Verify that audit system is configured to flush to disk after every 100 records with the following command:\n\n$ sudo grep freq /etc/audit/auditd.conf \n\nfreq = 100 \n\nIf \"freq\" isn't set to a value between \"1\" and \"100\", the value is missing, or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to flush audit to disk by adding or updating the following rule in \"/etc/audit/auditd.conf\":\n\nfreq = 100\n\nThe audit daemon must be restarted for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258168r958428_rule",
   "severity": "medium",

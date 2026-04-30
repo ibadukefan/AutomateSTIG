@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/chrony/chrony.conf",
+      "pattern": "server tick.usno.navy.mil iburst maxpoll 16",
+      "type": "file_content"
+    },
+    "description": "The Ubuntu operating system must, for networked systems, compare internal information system clocks at least every 24 hours with a server which is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, or a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS).",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238356"
+  },
   "check_content_excerpt": "If the system is not networked, this requirement is Not Applicable. \n \nThe system clock must be configured to compare the system clock at least every 24 hours to the authoritative time source. \n \nCheck the value of \"maxpoll\" in the \"/etc/chrony/chrony.conf\" file with the following command: \n \n$ sudo  grep  maxpoll /etc/chrony/chrony.conf \nserver tick.usno.navy.mil iburst maxpoll 16  \n \nIf the \"maxpoll\" option is set to a number greater than 16 or the line is commented out, this is a finding. \n \nVerify that the \"chrony.conf\" file is configured to an authoritative DoD time source by running the following command: \n \n$ grep -i server /etc/chrony/chrony.conf \nserver tick.usno.navy.mil iburst maxpoll 16 \nserver tock.usno.navy.mil iburst maxpoll 16 \nserver ntp2.usno.navy.mil iburst maxpoll 16 \n \nIf the parameter \"server\" is not set, is not set to an authoritative DoD time source, or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "If the system is not networked, this requirement is Not Applicable. \n \nTo configure the system clock to compare the system clock at least every 24 hours to the authoritative time source, edit the \"/etc/chrony/chrony.conf\" file. Add or correct the following lines, by replacing \"[source]\" in the following line with an authoritative DoD time source: \n \nserver [source] iburst maxpoll = 16 \n \nIf the \"chrony\" service was running and the value of \"maxpoll\" or \"server\" was updated, the service must be restarted using the following command: \n \n$ sudo systemctl restart chrony.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-238356r1038944_rule",
   "severity": "medium",

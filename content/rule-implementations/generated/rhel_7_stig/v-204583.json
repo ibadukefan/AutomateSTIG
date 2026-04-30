@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sssd/sssd.conf",
+      "pattern": "/etc/sssd/conf.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204583"
+  },
   "check_content_excerpt": "If LDAP is not being utilized, this requirement is Not Applicable.\n\nVerify the operating system implements cryptography to protect the integrity of remote LDAP access sessions.\n\nTo determine if LDAP is being used for authentication, use the following command:\n\n     # systemctl status sssd.service\n     sssd.service - System Security Services Daemon\n     Loaded: loaded (/usr/lib/systemd/system/sssd.service; enabled; vendor preset: disabled)\n     Active: active (running) since Wed 2018-06-27 10:58:11 EST; 1h 50min ago\n\nIf the \"sssd.service\" is \"active\", then LDAP is being used.\n\nDetermine the \"id_provider\" that the LDAP is currently using:\n\n     # grep -ir id_provider /etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf\n     id_provider = ad\n\nIf \"id_provider\" is set to \"ad\", this is Not Applicable.\n\nCheck the path to the X.509 certificate for peer authentication with the following command:\n\n     # grep -ir tls_cacert /etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf\n     ldap_tls_cacert = /etc/pki/tls/certs/ca-bundle.crt\n\nVerify the \"ldap_tls_cacert\" option points to a file that contains the trusted CA certificate.\n\nIf this file does not exist, or the option is commented out or missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to implement cryptography to protect the integrity of LDAP remote access sessions.\n\nAdd or modify the following line in \"/etc/sssd/sssd.conf\":\n\n     ldap_tls_cacert = /etc/pki/tls/certs/ca-bundle.crt",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204583r991554_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/pwquality.conf",
+      "pattern": "/etc/security/pwquality.conf.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must ensure the password complexity module in the system-auth file is configured for three retries or less.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258091"
+  },
   "check_content_excerpt": "Verify RHEL 9 is configured to limit the \"pwquality\" retry option to \"3\".\n\nCheck for the use of the retry option in the security directory with the following command:\n\n$ grep -w retry /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf\n \nretry = 3\n \nIf the value of \"retry\" is set to \"0\" or greater than \"3\", or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to limit the \"pwquality\" retry option to \"3\".\n\nAdd or update the following line in the \"/etc/security/pwquality.conf\" file or a file in the \"/etc/security/pwquality.conf.d/\" directory to contain the \"retry\" parameter:\n \nretry = 3",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258091r1045185_rule",
   "severity": "medium",

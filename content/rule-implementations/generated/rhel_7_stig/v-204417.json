@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/libuser.conf",
+      "pattern": "crypt_style = sha512",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that user and group account administration utilities are configured to store only encrypted representations of passwords.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204417"
+  },
   "check_content_excerpt": "Verify the user and group account administration utilities are configured to store only encrypted representations of passwords. The strength of encryption that must be used to hash passwords for all accounts is \"SHA512\".\n\nCheck that the system is configured to create \"SHA512\" hashed passwords with the following command:\n\n# grep -i sha512 /etc/libuser.conf \n\ncrypt_style = sha512\n\nIf the \"crypt_style\" variable is not set to \"sha512\", is not in the defaults section, is commented out, or does not exist, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to store only SHA512 encrypted representations of passwords.\n\nAdd or update the following line in \"/etc/libuser.conf\" in the [defaults] section: \n\ncrypt_style = sha512",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204417r982199_rule",
   "severity": "medium",

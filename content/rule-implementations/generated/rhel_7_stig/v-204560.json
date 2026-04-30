@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/audit.rules",
+      "pattern": "-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=unset -k modulechange",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must audit all uses of the init_module and finit_module syscalls.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204560"
+  },
   "check_content_excerpt": "Verify the operating system generates audit records upon successful/unsuccessful attempts to use the \"init_module\" and \"finit_module\" syscalls. \n\nCheck the auditing rules in \"/etc/audit/audit.rules\" with the following command:\n\n$ sudo grep init_module /etc/audit/audit.rules \n\n-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=unset -k modulechange\n\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=unset -k modulechange\n\nIf both the \"b32\" and \"b64\" audit rules are not defined for the \"init_module\" and \"finit_module\" syscalls, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to generate audit records upon successful/unsuccessful attempts to use the \"init_module\" and \"finit_module\" syscalls. \n\nAdd or update the following rules in \"/etc/audit/rules.d/audit.rules\":\n\n-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=unset -k modulechange\n\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=unset -k modulechange\n\nThe audit daemon must be restarted for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204560r991580_rule",
   "severity": "medium",

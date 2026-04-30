@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/limits.conf",
+      "pattern": "/etc/security/limits.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must limit the number of concurrent sessions to 10 for all accounts and/or account types.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270677"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS limits the number of concurrent sessions to 10 for all accounts and/or account types with the following command: \n \n$ grep -r maxlogins /etc/security/limits.conf /etc/security/limits.d/*.conf\n/etc/security/limits.d/maxlogins.conf:* hard maxlogins 10\n \nIf the \"maxlogins\" item does not have a value of \"10\" or less, is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to limit the number of concurrent sessions to 10 for all accounts and/or account types. \n \nAdd the following line to the top of the /etc/security/limits.conf or in a \".conf\" file defined in /etc/security/limits.d/: \n \n* hard maxlogins 10",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270677r1101774_rule",
   "severity": "low",

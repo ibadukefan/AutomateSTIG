@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/profile",
+      "pattern": "/etc/bashrc /etc/profile.d",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that all network connections associated with a communication session are terminated at the end of the session or after 15 minutes of inactivity from the user at a command prompt, except to fulfill documented and validated mission requirements.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204579"
+  },
   "check_content_excerpt": "Verify the operating system terminates all network connections associated with a communications session at the end of the session or based on inactivity.\n\nCheck the value of the system inactivity timeout with the following command:\n\n$ sudo grep -irw tmout /etc/profile /etc/bashrc /etc/profile.d\n\netc/profile.d/tmout.sh:declare -xr TMOUT=900\n\nIf conflicting results are returned, this is a finding.\nIf \"TMOUT\" is not set to \"900\" or less to enforce session termination after inactivity, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to terminate all network connections associated with a communications session at the end of the session or after a period of inactivity.\n\nCreate a script to enforce the inactivity timeout (for example /etc/profile.d/tmout.sh) such as:\n\n#!/bin/bash\n\ndeclare -xr TMOUT=900",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204579r970703_rule",
   "severity": "medium",

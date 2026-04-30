@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/auditd.conf",
+      "pattern": "admin_space_left_action = single",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must take action when allocated audit record storage volume reaches 95 percent of the repository maximum audit record storage capacity.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258159"
+  },
   "check_content_excerpt": "Verify that RHEL 9 is configured to take action in the event of allocated audit record storage volume reaches 95 percent of the repository maximum audit record storage capacity with the following command:\n\n$ sudo grep admin_space_left_action /etc/audit/auditd.conf\n\nadmin_space_left_action = single\n\nIf the value of the \"admin_space_left_action\" is not set to \"single\", or if the line is commented out, ask the system administrator (SA) to indicate how the system is providing real-time alerts to the SA and information system security officer (ISSO).\n\nIf there is no evidence that real-time alerts are configured on the system, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure \"auditd\" service  to take action in the event of allocated audit record storage volume reaches 95 percent of the repository maximum audit record storage capacity.\n\nEdit the following line in \"/etc/audit/auditd.conf\" to ensure that the system is forced into single user mode in the event the audit record storage volume is about to reach maximum capacity:\n\nadmin_space_left_action = single \n\nThe audit daemon must be restarted for changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258159r971542_rule",
   "severity": "medium",

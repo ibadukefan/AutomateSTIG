@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/chrony.conf",
+      "pattern": "server 0.us.pool.ntp.mil iburst maxpoll 16",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must securely compare internal information system clocks at least every 24 hours.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257945"
+  },
   "check_content_excerpt": "Verify RHEL 9 is securely comparing internal information system clocks at least every 24 hours with an NTP server with the following commands:\n\n$ sudo grep maxpoll /etc/chrony.conf\n\nserver 0.us.pool.ntp.mil iburst maxpoll 16\n\nIf the \"maxpoll\" option is set to a number greater than 16 or the line is commented out, this is a finding.\n\nVerify the \"chrony.conf\" file is configured to an authoritative DOD time source by running the following command:\n\n$ sudo grep -i server /etc/chrony.conf\nserver 0.us.pool.ntp.mil \n\nIf the parameter \"server\" is not set or is not set to an authoritative DOD time source, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to securely compare internal information system clocks at least every 24 hours with an NTP server by adding/modifying the following line in the /etc/chrony.conf file.\n\nserver [ntp.server.name] iburst maxpoll 16",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-257945r1038944_rule",
   "severity": "medium",

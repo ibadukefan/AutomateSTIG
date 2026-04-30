@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/rsyslog.conf",
+      "pattern": "/etc/rsyslog.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must send rsyslog output to a log aggregation server.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204574"
+  },
   "check_content_excerpt": "Verify \"rsyslog\" is configured to send all messages to a log aggregation server.\n\nCheck the configuration of \"rsyslog\" with the following command:\n\nNote: If another logging package is used, substitute the utility configuration file for \"/etc/rsyslog.conf\".\n\n     # grep @ /etc/rsyslog.conf /etc/rsyslog.d/*.conf\n\n     *.* @@[logaggregationserver.example.mil]:[port]\n\nIf there are no lines in the \"/etc/rsyslog.conf\" or \"/etc/rsyslog.d/*.conf\" files that contain the \"@\" or \"@@\" symbol(s), and the lines with the correct symbol(s) to send output to another system do not cover all \"rsyslog\" output, ask the system administrator to indicate how the audit logs are offloaded to a different system or media. \n\nIf the lines are commented out or there is no evidence that the audit logs are being sent to another log aggregation server, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Modify the \"/etc/rsyslog.conf\" or an \"/etc/rsyslog.d/*.conf\" file to contain a configuration line to send all \"rsyslog\" output to a log aggregation server:\n\nFor UDP:\n     *.* @[logaggregationserver.example.mil]:[port]\n\nFor TCP: \n     *.* @@[logaggregationserver.example.mil]:[port]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204574r991589_rule",
   "severity": "medium",

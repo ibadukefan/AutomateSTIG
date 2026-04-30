@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/rsyslog.conf",
+      "pattern": "/etc/rsyslog.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "The RHEL 8 audit records must be off-loaded onto a different system or storage media from the system being audited.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230479"
+  },
   "check_content_excerpt": "Verify the audit system offloads audit records onto a different system or media from the system being audited with the following command:\n\n     $ sudo grep @@ /etc/rsyslog.conf /etc/rsyslog.d/*.conf\n\n     /etc/rsyslog.conf:*.* @@[logaggregationserver.example.mil]:[port]\n\nIf a remote server is not configured, or the line is commented out, ask the system administrator to indicate how the audit logs are offloaded to a different system or media. \n\nIf there is no evidence that the audit logs are being offloaded to another system or media, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to offload audit records onto a different system or media from the system being audited by specifying the remote logging server in \"/etc/rsyslog.conf\" or \"/etc/rsyslog.d/[customfile].conf\" with the name or IP address of the log aggregation server.\n\nFor UDP:\n     *.* @[logaggregationserver.example.mil]:[port]\n\nFor TCP: \n     *.* @@[logaggregationserver.example.mil]:[port]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230479r958754_rule",
   "severity": "medium",

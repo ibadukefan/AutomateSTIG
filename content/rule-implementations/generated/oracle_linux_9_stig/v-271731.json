@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/limits.conf",
+      "pattern": "/etc/security/limits.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "OL 9 must disable core dumps for all users.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271731"
+  },
   "check_content_excerpt": "Note: If kernel dumps are disabled in accordance with OL09-00-002380, this requirement is not applicable.\n\nVerify OL 9 disables core dumps for all users by issuing the following command:\n\n$ grep -r -s core /etc/security/limits.conf /etc/security/limits.d/*.conf\n\n/etc/security/limits.conf:* hard core 0\n\nThis can be set as a global domain (with the * wildcard) but may be set differently for multiple domains.\n\nIf the \"core\" item is missing or commented out, or the value is anything other than \"0\", and the need for core dumps is not documented with the information system security officer (ISSO) as an operational requirement for all domains that have the \"core\" item assigned, this is a finding.\n\nIf entries exist for users or groups with a value set to anything other than \"0\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to disable core dumps for all users.\n\nAdd the following line to the top of the /etc/security/limits.conf or in a single \".conf\" file defined in /etc/security/limits.d/:\n\n* hard core 0\n\nRemove or comment out any entries for users or groups with a value set to anything other than \"0\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271731r1155302_rule",
   "severity": "medium",

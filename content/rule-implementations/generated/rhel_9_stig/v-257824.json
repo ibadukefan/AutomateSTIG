@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/dnf/dnf.conf",
+      "pattern": "clean_requirements_on_remove=True",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must remove all software components after updated versions have been installed.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257824"
+  },
   "check_content_excerpt": "Verify RHEL 9 removes all software components after updated versions have been installed with the following command:\n\n$ grep -i clean_requirements_on_remove /etc/dnf/dnf.conf\n\nclean_requirements_on_remove=True\n\nIf \"clean_requirements_on_remove\" is not set to \"True\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to remove all software components after updated versions have been installed.\n\nEdit the file /etc/dnf/dnf.conf by adding or editing the following line:\n\n clean_requirements_on_remove=True",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-257824r1044886_rule",
   "severity": "low",

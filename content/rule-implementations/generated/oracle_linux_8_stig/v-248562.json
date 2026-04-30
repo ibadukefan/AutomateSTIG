@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/crypto-policies/back-ends/opensshserver.config",
+      "pattern": "CRYPTO_POLICY='-oCiphers=aes256-ctr,aes192-ctr,aes128-ctr,aes256-gcm@openssh.com,aes128-gcm@openssh.com'",
+      "type": "file_content"
+    },
+    "description": "The OL 8 SSH server must be configured to use only ciphers employing FIPS 140-2 validated cryptographic algorithms.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248562"
+  },
   "check_content_excerpt": "Verify the OL 8 SSH server is configured to use only ciphers employing FIPS 140-2 approved algorithms with the following command: \n  \n     $ sudo grep -i ciphers /etc/crypto-policies/back-ends/opensshserver.config \n \n     CRYPTO_POLICY='-oCiphers=aes256-ctr,aes192-ctr,aes128-ctr,aes256-gcm@openssh.com,aes128-gcm@openssh.com'\n \nIf the cipher entries in the \"opensshserver.config\" file have any ciphers other than shown here, the order differs from the example above, or they are missing or commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the OL 8 SSH server to use only ciphers employing FIPS 140-2 approved algorithms: \n\nUpdate the \"/etc/crypto-policies/back-ends/opensshserver.config\" file to include these ciphers employing FIPS 140-2-approved algorithms: \n \nCRYPTO_POLICY='-oCiphers=aes256-ctr,aes192-ctr,aes128-ctr,aes256-gcm@openssh.com,aes128-gcm@openssh.com'\n \nA reboot is required for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248562r958510_rule",
   "severity": "medium",

@@ -197,6 +197,21 @@ If the "port" option is not set to "0", is commented out or missing, this is a f
         self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/chrony.conf', 'pattern': 'port 0', 'is_regex': False})
         self.assertEqual(candidate['expected'], {'type': 'contains'})
 
+    def test_infers_linux_grep_unquoted_key_expected_line_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230390',
+            'title': 'The RHEL 8 System must take appropriate action when an audit processing failure occurs.',
+            'check_content': '''Check that RHEL 8 takes the appropriate action when an audit processing failure occurs with the following command:
+
+$ sudo grep disk_error_action /etc/audit/auditd.conf
+
+disk_error_action = HALT
+
+If the value of the "disk_error_action" option is not "SYSLOG", "SINGLE", or "HALT", or the line is commented out, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/audit/auditd.conf', 'pattern': 'disk_error_action = HALT', 'is_regex': False})
+        self.assertEqual(candidate['expected'], {'type': 'contains'})
+
     def test_infers_windows_audit_policy_candidate_from_auditpol_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254304',

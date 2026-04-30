@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/usbguard/usbguard-daemon.conf",
+      "pattern": "AuditBackend=LinuxAudit",
+      "type": "file_content"
+    },
+    "description": "OL 8 must enable Linux audit logging for the USBGuard daemon.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248805"
+  },
   "check_content_excerpt": "Verify OL 8 enables Linux audit logging of the USBGuard daemon with the following commands. \n \nNote: If the USBGuard daemon is not installed and enabled, this requirement is not applicable. \n \n$ sudo grep -i auditbackend /etc/usbguard/usbguard-daemon.conf \n \nAuditBackend=LinuxAudit \n \nIf the \"AuditBackend\" entry does not equal \"LinuxAudit\", is missing, or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 8 to enable Linux audit logging of the USBGuard daemon by adding or modifying the following line in \"/etc/usbguard/usbguard-daemon.conf\": \n \nAuditBackend=LinuxAudit",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248805r991579_rule",
   "severity": "medium",

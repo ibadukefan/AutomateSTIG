@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/opensc.conf",
+      "pattern": "card_drivers = cac;",
+      "type": "file_content"
+    },
+    "description": "OL 9 must use the CAC smart card driver.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271610"
+  },
   "check_content_excerpt": "Verify that OL 9 loads the CAC driver with the following command:\n\n$ grep card_drivers /etc/opensc.conf\ncard_drivers = cac; \n\nIf \"cac\" is not listed as a card driver, or there is no line returned for \"card_drivers\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to load the CAC driver.\n\nAdd or modify the following line in the \"/etc/opensc.conf\" file:\n\ncard_drivers = cac;",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271610r1091542_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/auditd.conf",
+      "pattern": "log_group = root",
+      "type": "file_content"
+    },
+    "description": "OL 9 audit logs must be group-owned by root or by a restricted logging group to prevent unauthorized read access.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271583"
+  },
   "check_content_excerpt": "Verify that OL 9 audit logs are group-owned by \"root\" or a restricted logging group. \n\nFirst determine if a group other than \"root\" has been assigned to the audit logs with the following command:\n\n$ sudo grep log_group /etc/audit/auditd.conf\nlog_group = root\n\nThen determine where the audit logs are stored with the following command:\n\n$ sudo grep -iw log_file /etc/audit/auditd.conf\nlog_file = /var/log/audit/audit.log\n\nThen, using the location of the audit log file, determine if the audit log is group-owned by \"root\" using the following command:\n\n$ sudo stat -c \"%G %n\" /var/log/audit/audit.log\nroot /var/log/audit/audit.log\n\nIf the audit log is not group-owned by \"root\" or the configured alternative logging group, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 audit logs to be group-owned by \"root\" or a restricted logging group.\n\nChange the group of the directory of \"/var/log/audit\" to be owned by a correct group.\n\nIdentify the group that is configured to own audit log:\n\n$ sudo grep -P '^[ ]*log_group[ ]+=.*$' /etc/audit/auditd.conf\n\nChange the ownership to that group:\n\n$ sudo chgrp ${GROUP} /var/log/audit",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271583r1091461_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sssd/sssd.conf",
+      "pattern": "pam_cert_auth = True",
+      "type": "file_content"
+    },
+    "description": "OL 9 must enable certificate-based smart card authentication.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271607"
+  },
   "check_content_excerpt": "Verify that OL 9 has smart cards enabled in System Security Services Daemon (SSSD) if smart cards are used for MFA with the following command:\n\n$ sudo grep pam_cert_auth /etc/sssd/sssd.conf\npam_cert_auth = True \n\nIf \"pam_cert_auth\" is not set to \"True\", the line is commented out, or the line is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to enable certificate-based smart card authentication.\n\nEdit the file \"/etc/sssd/sssd.conf\" and add or edit the following line:\n\npam_cert_auth = True",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271607r1091533_rule",
   "severity": "medium",

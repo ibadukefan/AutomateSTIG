@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "UsePrivilegeSeparation sandbox",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon uses privilege separation.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204601"
+  },
   "check_content_excerpt": "Verify the SSH daemon performs privilege separation.\n\nCheck that the SSH daemon performs privilege separation with the following command:\n\n# grep -i usepriv /etc/ssh/sshd_config\n\nUsePrivilegeSeparation sandbox\n\nIf the \"UsePrivilegeSeparation\" keyword is set to \"no\", is missing, or the returned line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Uncomment the \"UsePrivilegeSeparation\" keyword in \"/etc/ssh/sshd_config\" (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor) and set the value to \"sandbox\" or \"yes\":\n\nUsePrivilegeSeparation sandbox\n\nThe SSH service must be restarted for changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204601r991589_rule",
   "severity": "medium",

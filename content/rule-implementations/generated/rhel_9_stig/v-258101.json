@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/pwquality.conf",
+      "pattern": "/etc/security/pwquality.conf.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must enforce password complexity rules for the root account.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258101"
+  },
   "check_content_excerpt": "Verify that RHEL 9 enforces password complexity rules for the root account.\n\nCheck if root user is required to use complex passwords with the following command:\n\n$ grep enforce_for_root /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf\n\n/etc/security/pwquality.conf:enforce_for_root\n\nIf \"enforce_for_root\" is commented or missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to enforce password complexity on the root account.\n\nAdd or update the following line in the \"/etc/security/pwquality.conf\" file or a configuration file in the \"/etc/security/pwquality.conf.d/\" directory to contain the \"enforce_for_root\" parameter:\n\nenforce_for_root",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258101r1045204_rule",
   "severity": "medium",

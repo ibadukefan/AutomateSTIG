@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/xinetd.d/tftp",
+      "pattern": "server_args = -s /var/lib/tftpboot",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that if the Trivial File Transfer Protocol (TFTP) server is required, the TFTP daemon is configured to operate in secure mode.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204623"
+  },
   "check_content_excerpt": "Verify the TFTP daemon is configured to operate in secure mode.\n\nCheck to see if a TFTP server has been installed with the following commands:\n\n# yum list installed tftp-server\ntftp-server.x86_64 x.x-x.el7 rhel-7-server-rpms\n\nIf a TFTP server is not installed, this is Not Applicable.\n\nIf a TFTP server is installed, check for the server arguments with the following command: \n\n# grep server_args /etc/xinetd.d/tftp\nserver_args = -s /var/lib/tftpboot\n\nIf the \"server_args\" line does not have a \"-s\" option and a subdirectory is not assigned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the TFTP daemon to operate in secure mode by adding the following line to \"/etc/xinetd.d/tftp\" (or modify the line to have the required value):\n\nserver_args = -s /var/lib/tftpboot",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204623r991589_rule",
   "severity": "medium",

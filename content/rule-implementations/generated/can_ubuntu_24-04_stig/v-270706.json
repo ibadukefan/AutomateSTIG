@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/common-auth",
+      "pattern": "auth    required    pam_faildelay.so    delay=4000000",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270706"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS enforces a delay of at least four seconds between logon prompts following a failed logon attempt with the following command: \n \n$ grep pam_faildelay /etc/pam.d/common-auth\nauth    required    pam_faildelay.so    delay=4000000\n \nIf the value for \"delay\" is not set to \"4000000\" or greater, the line is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to enforce a delay of at least four seconds between logon prompts following a failed logon attempt. \n \nEdit the file \"/etc/pam.d/common-auth\" and set the parameter \"pam_faildelay\" to a value of \"4000000\" or greater: \n \nauth    required    pam_faildelay.so    delay=4000000",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270706r1068361_rule",
   "severity": "low",

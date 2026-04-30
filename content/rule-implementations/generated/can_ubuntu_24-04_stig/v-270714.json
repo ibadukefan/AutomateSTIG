@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/common-password",
+      "pattern": "/etc/pam.d/common-auth",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must not allow accounts configured in Pluggable Authentication Modules (PAM) with blank or null passwords.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270714"
+  },
   "check_content_excerpt": "To verify null passwords cannot be used, run the following command: \n\n$ grep nullok /etc/pam.d/common-password /etc/pam.d/common-auth\n\nIf this produces any output, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "If an account is configured for password authentication but does not have an assigned password, it is possible to log on to the account without authenticating.\n\nRemove any instances of the \"nullok\" option in \"/etc/pam.d/common-password\" to prevent logons with empty passwords.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270714r1134808_rule",
   "severity": "high",

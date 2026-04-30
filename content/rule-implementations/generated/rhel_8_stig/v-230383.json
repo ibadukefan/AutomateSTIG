@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/login.defs",
+      "pattern": "UMASK 077",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must define default permissions for all authenticated users in such a way that the user can only read and modify their own files.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230383"
+  },
   "check_content_excerpt": "Verify the operating system defines default permissions for all authenticated users in such a way that the user can only read and modify their own files.\n\nCheck for the value of the \"UMASK\" parameter in \"/etc/login.defs\" file with the following command:\n\nNote: If the value of the \"UMASK\" parameter is set to \"000\" in \"/etc/login.defs\" file, the Severity is raised to a CAT I.\n\n# grep -i umask /etc/login.defs\n\nUMASK 077\n\nIf the value for the \"UMASK\" parameter is not \"077\", or the \"UMASK\" parameter is missing or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to define default permissions for all authenticated users in such a way that the user can only read and modify their own files.\n\nAdd or edit the line for the \"UMASK\" parameter in \"/etc/login.defs\" file to \"077\":\n\nUMASK 077",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230383r1017192_rule",
   "severity": "medium",

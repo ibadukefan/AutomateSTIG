@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ipsec.conf",
+      "pattern": "/etc/ipsec.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "OL 9 IP tunnels must use 140-3 approved cryptographic algorithms.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271743"
+  },
   "check_content_excerpt": "Note: If the IPsec service is not installed, this requirement is Not Applicable.\n\nVerify that the IPsec service uses the systemwide cryptographic policy with the following command:\n\n$ grep include /etc/ipsec.conf /etc/ipsec.d/*.conf\n/etc/ipsec.conf:include /etc/crypto-policies/back-ends/libreswan.config\n\nIf the IPsec configuration file does not contain \"include /etc/crypto-policies/back-ends/libreswan.config\", this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure IPsec to use the systemwide cryptographic policy.\n\nAdd the following line to \"/etc/ipsec.conf\":\n\ninclude /etc/crypto-policies/back-ends/libreswan.config",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271743r1092635_rule",
   "severity": "medium",

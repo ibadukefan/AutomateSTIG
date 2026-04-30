@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/pwquality.conf",
+      "pattern": "/etc/pwquality.conf.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "OL 9 must prevent the use of dictionary words for passwords.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271637"
+  },
   "check_content_excerpt": "Verify that OL 9 prevents the use of dictionary words for passwords with the following command:\n\n$ grep dictcheck /etc/security/pwquality.conf /etc/pwquality.conf.d/*.conf \n/etc/security/pwquality.conf:dictcheck=1 \n\nIf \"dictcheck\" does not have a value other than \"0\", or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to prevent the use of dictionary words for passwords.\n\nAdd or update the following line in the \"/etc/security/pwquality.conf\" file or a configuration file in the /etc/pwquality.conf.d/ directory to contain the \"dictcheck\" parameter:\n\ndictcheck=1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271637r1091623_rule",
   "severity": "medium",

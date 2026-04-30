@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sssd/sssd.conf",
+      "pattern": "/etc/sssd/conf.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must implement multifactor authentication for access to privileged accounts via pluggable authentication modules (PAM).",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204632"
+  },
   "check_content_excerpt": "Verify the operating system implements multifactor authentication for remote access to privileged accounts via pluggable authentication modules (PAM).\n\nCheck the \"/etc/sssd/sssd.conf\" file for the authentication services that are being used with the following command:\n\n# grep services /etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf\n\nservices = nss, pam\n\nIf the \"pam\" service is not present on all \"services\" lines, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to implement multifactor authentication for remote access to privileged accounts via pluggable authentication modules (PAM).\n\nModify all of the services lines in \"/etc/sssd/sssd.conf\" or in configuration files found under \"/etc/sssd/conf.d\" to include pam.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204632r982216_rule",
   "severity": "medium",

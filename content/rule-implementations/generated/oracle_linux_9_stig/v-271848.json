@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/home/wadea/.bash_history",
+      "pattern": "grep -i umask /etc/bashrc /etc/csh.cshrc /etc/profile",
+      "type": "file_content"
+    },
+    "description": "OL 9 must set the umask value to 077 for all local interactive user accounts.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271848"
+  },
   "check_content_excerpt": "Verify that OL 9 configures the default umask for all local interactive users to be \"077\".\n\nIdentify the locations of all local interactive user home directories by looking at the \"/etc/passwd\" file.\n\nCheck all local interactive user initialization files for interactive users with the following command:\n\nNote: The example is for a system that is configured to create users home directories in the \"/home\" directory.\n\n$ grep -ri umask /home/\n/home/wadea/.bash_history:grep -i umask /etc/bashrc /etc/csh.cshrc /etc/profile\n/home/wadea/.bash_history:grep -i umask /etc/login.defs\n\nIf any local interactive user initialization files are found to have a umask statement that sets a value less restrictive than \"077\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove the umask statement from all local interactive user's initialization files. \n\nIf the account is for an application, the requirement for a umask less restrictive than \"077\" can be documented with the information system security officer, but the user agreement for access to the account must specify that the local interactive user must log on to their account first and then switch the user to the application account with the correct option to gain the account's environment variables.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271848r1092256_rule",
   "severity": "medium",

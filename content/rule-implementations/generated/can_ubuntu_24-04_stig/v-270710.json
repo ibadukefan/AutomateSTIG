@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/login",
+      "pattern": "session     required      pam_lastlog.so showfailed",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must display the date and time of the last successful account logon upon logon.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270710"
+  },
   "check_content_excerpt": "Verify users are provided with feedback on when account accesses last occurred with the following command: \n \n$ grep pam_lastlog /etc/pam.d/login \nsession     required      pam_lastlog.so showfailed \n \nIf the line containing \"pam_lastlog\" is not set to \"required\", or the \"silent\" option is present, or the line is commented out, or the line is missing , this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to provide users with feedback on when account accesses last occurred by setting the required configuration options in \"/etc/pam.d/login\".  \n \nAdd the following line to the top of \"/etc/pam.d/login\": \n \nsession     required      pam_lastlog.so showfailed",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270710r1066619_rule",
   "severity": "low",

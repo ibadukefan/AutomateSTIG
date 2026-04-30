@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/bashrc",
+      "pattern": "umask 077",
+      "type": "file_content"
+    },
+    "description": "OL 9 must define default permissions for the bash shell.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271693"
+  },
   "check_content_excerpt": "Verify that OL 9 \"umask\" setting is configured correctly in the \"/etc/bashrc\" file with the following command:\n\nNote: If the value of the \"umask\" parameter is set to \"000\" \"/etc/bashrc\" file, the severity of this requirement is raised to a CAT I.\n\n$ grep umask /etc/bashrc \numask 077\numask 077  \n\nIf the value for the \"umask\" parameter is not \"077\", or the \"umask\" parameter is missing or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to define default permissions for all authenticated users using the bash shell.\n\nAdd or edit the lines for the \"umask\" parameter in the \"/etc/bashrc\" file to \"077\":\n\numask 077",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271693r1091791_rule",
   "severity": "medium",

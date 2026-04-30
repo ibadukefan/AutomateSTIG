@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/proc/sys/crypto/fips_enabled",
+      "pattern": "1",
+      "type": "file_content"
+    },
+    "description": "The Ubuntu operating system must implement NIST FIPS-validated cryptography to protect classified information and for the following: To provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238363"
+  },
   "check_content_excerpt": "Verify the system is configured to run in FIPS mode with the following command: \n \n$ grep -i 1 /proc/sys/crypto/fips_enabled \n1 \n \nIf a value of \"1\" is not returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the system to run in FIPS mode. Add \"fips=1\" to the kernel parameter during the Ubuntu operating systems install. \n \nEnabling a FIPS mode on a pre-existing system involves a number of modifications to the Ubuntu operating system. Refer to the Ubuntu Server 20.04 FIPS 140-2 security policy document for instructions.  \n \nA subscription to the \"Ubuntu Pro\" plan is required to obtain the FIPS Kernel cryptographic modules and enable FIPS.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-238363r1014774_rule",
   "severity": "high",

@@ -322,31 +322,33 @@
       "vuln_id": "V-204416"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204417",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204417 from source identifier xccdf_mil.disa.stig_group_V-204417.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204417r982199_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that user and group account administration utilities are configured to store only encrypted representations of passwords.",
-      "tracking_issue": "TODO-V-204417",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204417"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204418",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204418 from source identifier xccdf_mil.disa.stig_group_V-204418.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204418r982188_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that passwords for new users are restricted to a 24 hours/1 day minimum lifetime.",
-      "tracking_issue": "TODO-V-204418",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204418"
@@ -479,16 +481,17 @@
       "vuln_id": "V-204426"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204429",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204429 from source identifier xccdf_mil.disa.stig_group_V-204429.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204429r987879_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation.",
-      "tracking_issue": "TODO-V-204429",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204429"
@@ -590,46 +593,49 @@
       "vuln_id": "V-204435"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204437",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204437 from source identifier xccdf_mil.disa.stig_group_V-204437.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204437r958472_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must require authentication upon booting into single-user and maintenance modes.",
-      "tracking_issue": "TODO-V-204437",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204437"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204438",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204438 from source identifier xccdf_mil.disa.stig_group_V-204438.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204438r958472_rule",
       "severity": "high",
       "title": "Red Hat Enterprise Linux operating systems version 7.2 or newer with a Basic Input/Output System (BIOS) must require authentication upon booting into single-user and maintenance modes.",
-      "tracking_issue": "TODO-V-204438",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204438"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204440",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204440 from source identifier xccdf_mil.disa.stig_group_V-204440.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204440r958472_rule",
       "severity": "high",
       "title": "Red Hat Enterprise Linux operating systems version 7.2 or newer using Unified Extensible Firmware Interface (UEFI) must require authentication upon booting into single-user and maintenance modes.",
-      "tracking_issue": "TODO-V-204440",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204440"
@@ -665,46 +671,49 @@
       "vuln_id": "V-204443"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204445",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204445 from source identifier xccdf_mil.disa.stig_group_V-204445.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204445r958794_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that a file integrity tool verifies the baseline operating system configuration at least weekly.",
-      "tracking_issue": "TODO-V-204445",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204445"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204447",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204447 from source identifier xccdf_mil.disa.stig_group_V-204447.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204447r982212_rule",
       "severity": "high",
       "title": "The Red Hat Enterprise Linux operating system must prevent the installation of software, patches, service packs, device drivers, or operating system components from a repository without verification they have been digitally signed using a certificate that is issued by a Certificate Authority (CA) that is recognized and approved by the organization.",
-      "tracking_issue": "TODO-V-204447",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204447"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204448",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204448 from source identifier xccdf_mil.disa.stig_group_V-204448.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204448r982212_rule",
       "severity": "high",
       "title": "The Red Hat Enterprise Linux operating system must prevent the installation of software, patches, service packs, device drivers, or operating system components of local packages without verification they have been digitally signed using a certificate that is issued by a Certificate Authority (CA) that is recognized and approved by the organization.",
-      "tracking_issue": "TODO-V-204448",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204448"
@@ -757,16 +766,17 @@
       "vuln_id": "V-204451"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204452",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204452 from source identifier xccdf_mil.disa.stig_group_V-204452.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204452r958936_rule",
       "severity": "low",
       "title": "The Red Hat Enterprise Linux operating system must remove all software components after updated versions have been installed.",
-      "tracking_issue": "TODO-V-204452",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204452"
@@ -788,16 +798,17 @@
       "vuln_id": "V-204454"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204457",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204457 from source identifier xccdf_mil.disa.stig_group_V-204457.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204457r991590_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must define default permissions for all authenticated users in such a way that the user can only read and modify their own files.",
-      "tracking_issue": "TODO-V-204457",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204457"
@@ -848,16 +859,17 @@
       "vuln_id": "V-204462"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204466",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204466 from source identifier xccdf_mil.disa.stig_group_V-204466.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204466r991589_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that all local interactive user accounts, upon creation, are assigned a home directory.",
-      "tracking_issue": "TODO-V-204466",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204466"
@@ -1017,16 +1029,17 @@
       "vuln_id": "V-204496"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204497",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204497 from source identifier xccdf_mil.disa.stig_group_V-204497.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204497r958408_rule",
       "severity": "high",
       "title": "The Red Hat Enterprise Linux operating system must implement NIST FIPS-validated cryptography for the following: to provision digital signatures, to generate cryptographic hashes, and to protect data requiring data-at-rest protections in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards.",
-      "tracking_issue": "TODO-V-204497",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204497"
@@ -1128,16 +1141,17 @@
       "vuln_id": "V-204508"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204509",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204509 from source identifier xccdf_mil.disa.stig_group_V-204509.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204509r958754_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must off-load audit records onto a different system or media from the system being audited.",
-      "tracking_issue": "TODO-V-204509",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204509"
@@ -1175,31 +1189,33 @@
       "vuln_id": "V-204511"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204512",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204512 from source identifier xccdf_mil.disa.stig_group_V-204512.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204512r958754_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that the audit system takes appropriate action when there is an error sending audit records to a remote system.",
-      "tracking_issue": "TODO-V-204512",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204512"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204514",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204514 from source identifier xccdf_mil.disa.stig_group_V-204514.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204514r971542_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must immediately notify the System Administrator (SA) and Information System Security Officer (ISSO) (at a minimum) via email when the threshold for the repository maximum audit record storage capacity is reached.",
-      "tracking_issue": "TODO-V-204514",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204514"
@@ -1237,16 +1253,17 @@
       "vuln_id": "V-204516"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204517",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204517 from source identifier xccdf_mil.disa.stig_group_V-204517.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204517r958446_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must audit all uses of the chown, fchown, fchownat, and lchown syscalls.",
-      "tracking_issue": "TODO-V-204517",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204517"
@@ -1684,16 +1701,17 @@
       "vuln_id": "V-204559"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204560",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204560 from source identifier xccdf_mil.disa.stig_group_V-204560.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204560r991580_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must audit all uses of the init_module and finit_module syscalls.",
-      "tracking_issue": "TODO-V-204560",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204560"
@@ -1843,31 +1861,33 @@
       "vuln_id": "V-204576"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204578",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204578 from source identifier xccdf_mil.disa.stig_group_V-204578.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204578r958408_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux 7 operating system must implement DoD-approved encryption to protect the confidentiality of SSH connections.",
-      "tracking_issue": "TODO-V-204578",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204578"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204579",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204579 from source identifier xccdf_mil.disa.stig_group_V-204579.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204579r970703_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that all network connections associated with a communication session are terminated at the end of the session or after 15 minutes of inactivity from the user at a command prompt, except to fulfill documented and validated mission requirements.",
-      "tracking_issue": "TODO-V-204579",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204579"
@@ -1904,16 +1924,17 @@
       "vuln_id": "V-204585"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204587",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204587 from source identifier xccdf_mil.disa.stig_group_V-204587.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204587r970703_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that all network connections associated with SSH traffic are terminated after 10 minutes of becoming unresponsive.",
-      "tracking_issue": "TODO-V-204587",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204587"
@@ -1935,16 +1956,17 @@
       "vuln_id": "V-204588"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204589",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204589 from source identifier xccdf_mil.disa.stig_group_V-204589.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204589r970703_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that all network connections associated with SSH traffic terminate after becoming unresponsive.",
-      "tracking_issue": "TODO-V-204589",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204589"
@@ -1966,31 +1988,33 @@
       "vuln_id": "V-204590"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204591",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204591 from source identifier xccdf_mil.disa.stig_group_V-204591.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204591r991589_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must display the date and time of the last successful account logon upon an SSH logon.",
-      "tracking_issue": "TODO-V-204591",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204591"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204592",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204592 from source identifier xccdf_mil.disa.stig_group_V-204592.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204592r991589_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must not permit direct logons to the root account using remote access via SSH.",
-      "tracking_issue": "TODO-V-204592",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204592"
@@ -2012,31 +2036,33 @@
       "vuln_id": "V-204593"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204594",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204594 from source identifier xccdf_mil.disa.stig_group_V-204594.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204594r987796_rule",
       "severity": "high",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon is configured to only use the SSHv2 protocol.",
-      "tracking_issue": "TODO-V-204594",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204594"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204595",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204595 from source identifier xccdf_mil.disa.stig_group_V-204595.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204595r991554_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon is configured to only use Message Authentication Codes (MACs) employing FIPS 140-2 approved cryptographic hash algorithms.",
-      "tracking_issue": "TODO-V-204595",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204595"
@@ -2072,91 +2098,97 @@
       "vuln_id": "V-204597"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204598",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204598 from source identifier xccdf_mil.disa.stig_group_V-204598.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204598r958796_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon does not permit Generic Security Service Application Program Interface (GSSAPI) authentication unless needed.",
-      "tracking_issue": "TODO-V-204598",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204598"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204599",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204599 from source identifier xccdf_mil.disa.stig_group_V-204599.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204599r958796_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon does not permit Kerberos authentication unless needed.",
-      "tracking_issue": "TODO-V-204599",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204599"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204600",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204600 from source identifier xccdf_mil.disa.stig_group_V-204600.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204600r991589_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon performs strict mode checking of home directory configuration files.",
-      "tracking_issue": "TODO-V-204600",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204600"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204601",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204601 from source identifier xccdf_mil.disa.stig_group_V-204601.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204601r991589_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon uses privilege separation.",
-      "tracking_issue": "TODO-V-204601",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204601"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204602",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204602 from source identifier xccdf_mil.disa.stig_group_V-204602.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204602r991589_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon does not allow compression or only allows compression after successful authentication.",
-      "tracking_issue": "TODO-V-204602",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204602"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204605",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204605 from source identifier xccdf_mil.disa.stig_group_V-204605.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204605r991589_rule",
       "severity": "low",
       "title": "The Red Hat Enterprise Linux operating system must display the date and time of the last successful account logon upon logon.",
-      "tracking_issue": "TODO-V-204605",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204605"
@@ -2334,16 +2366,17 @@
       "vuln_id": "V-204621"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204622",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204622 from source identifier xccdf_mil.disa.stig_group_V-204622.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204622r991589_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that remote X connections are disabled except to fulfill documented and validated mission requirements.",
-      "tracking_issue": "TODO-V-204622",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204622"
@@ -2426,31 +2459,33 @@
       "vuln_id": "V-204631"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204632",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204632 from source identifier xccdf_mil.disa.stig_group_V-204632.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204632r982216_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must implement multifactor authentication for access to privileged accounts via pluggable authentication modules (PAM).",
-      "tracking_issue": "TODO-V-204632",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204632"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204633",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204633 from source identifier xccdf_mil.disa.stig_group_V-204633.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204633r982216_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must implement certificate status checking for PKI authentication.",
-      "tracking_issue": "TODO-V-204633",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204633"

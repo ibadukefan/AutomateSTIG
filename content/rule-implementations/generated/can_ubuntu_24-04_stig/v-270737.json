@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+      "pattern": "| awk '/pkcs11_module opensc {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy | grep ca",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS, for PKI-based authentication, Privileged Access Management (PAM) must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270737"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS, for PKI-based authentication, has valid certificates by constructing a certification path to an accepted trust anchor. \n \nDetermine which pkcs11 module is being used via the \"use_pkcs11_module\" in \"/etc/pam_pkcs11/pam_pkcs11.conf\" and then ensure \"ca\" is enabled in \"cert_policy\" with the following command: \n  \n$ sudo grep use_pkcs11_module /etc/pam_pkcs11/pam_pkcs11.conf | awk '/pkcs11_module opensc {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy | grep ca  \n \ncert_policy = ca,signature,ocsp_on; \n \nIf \"cert_policy\" is not set to \"ca\" or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS, for PKI-based authentication, to validate certificates by constructing a certification path to an accepted trust anchor. \n \nDetermine which pkcs11 module is being used via the \"use_pkcs11_module\" in \"/etc/pam_pkcs11/pam_pkcs11.conf\" and ensure \"ca\" is enabled in \"cert_policy\". \n \nAdd or update the \"cert_policy\" to ensure \"ca\" is enabled: \n \ncert_policy = ca,signature,ocsp_on; \n \nIf the system is missing an \"/etc/pam_pkcs11/\" directory and an \"/etc/pam_pkcs11/pam_pkcs11.conf\", find an example to copy into place and modify accordingly at \"https://manpages.ubuntu.com/manpages/xenial/man8/pam_pkcs11.8.html\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270737r1067178_rule",
   "severity": "medium",

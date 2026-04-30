@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sssd/sssd.conf",
+      "pattern": "/etc/sssd/conf.d/",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must prohibit the use of cached authenticators after one day.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258133"
+  },
   "check_content_excerpt": "Verify that the System Security Services Daemon (SSSD) prohibits the use of cached authentications after one day.\n\nNote: Cached authentication settings should be configured even if smart card authentication is not used on the system.\n\nCheck that SSSD allows cached authentications with the following command:\n\n$ sudo grep -ir cache_credentials /etc/sssd/sssd.conf /etc/sssd/conf.d/\n\ncache_credentials = true\n\nIf \"cache_credentials\" is set to \"false\" or missing from the configuration file, this is not a finding and no further checks are required.\n\nIf \"cache_credentials\" is set to \"true\", check that SSSD prohibits the use of cached authentications after one day with the following command:\n\n$ sudo grep -ir offline_credentials_expiration /etc/sssd/sssd.conf /etc/sssd/conf.d/\n\noffline_credentials_expiration = 1\n\nIf \"offline_credentials_expiration\" is not set to a value of \"1\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SSSD to prohibit the use of cached authentications after one day.\n\nEdit the file \"/etc/sssd/sssd.conf\" or a configuration file in \"/etc/sssd/conf.d\" and add or edit the following line just below the line [pam]:\n\noffline_credentials_expiration = 1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258133r1045263_rule",
   "severity": "medium",

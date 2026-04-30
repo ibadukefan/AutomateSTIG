@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 48,
+  "candidate_checks": 83,
   "cases": [
     {
       "check": {
@@ -130,6 +130,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270649"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/default/aide",
+        "pattern": "SILENTREPORTS=no",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must notify designated personnel if baseline configurations are changed in an unauthorized manner. The file integrity tool must notify the system administrator (SA) when changes to the baseline configuration or anomalies in the operation of any security functions are discovered.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/default/aide": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/default/aide": "before\nSILENTREPORTS=no\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270652"
     },
     {
       "check": {
@@ -447,6 +474,33 @@
       "check": {
         "is_regex": false,
         "path": "/boot/grub/grub.cfg",
+        "pattern": "password_pbkdf2 root grub.pbkdf2.sha512.10000.MFU48934NJA87HF8NSD34493GDHF84NG",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS when booted must require authentication upon booting into single-user and maintenance modes.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/boot/grub/grub.cfg": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/boot/grub/grub.cfg": "before\npassword_pbkdf2 root grub.pbkdf2.sha512.10000.MFU48934NJA87HF8NSD34493GDHF84NG\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270675"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/boot/grub/grub.cfg",
         "pattern": "linux   /vmlinuz-6.8.0-31-generic root=UUID=c92a542f-aee4-4af9-94b2-203624ccb8e3 ro audit=1 quiet splash $vt_handoff",
         "type": "file_content"
       },
@@ -469,6 +523,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270676"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/limits.conf",
+        "pattern": "/etc/security/limits.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must limit the number of concurrent sessions to 10 for all accounts and/or account types.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/limits.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/limits.conf": "before\n/etc/security/limits.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270677"
     },
     {
       "check": {
@@ -527,6 +608,141 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/default/useradd",
+        "pattern": "INACTIVE=35",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/default/useradd": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/default/useradd": "before\nINACTIVE=35\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270683"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-auth",
+        "pattern": "auth     [default=die]  pam_faillock.so authfail",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-auth": "before\nauth     [default=die]  pam_faillock.so authfail\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270690"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/gdm3/greeter.dconf-defaults",
+        "pattern": "banner-message-enable=true",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must enable the graphical user logon banner to display the Standard Mandatory DOD Notice and Consent Banner before granting local access to the system via a graphical user logon.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/gdm3/greeter.dconf-defaults": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/gdm3/greeter.dconf-defaults": "before\nbanner-message-enable=true\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270692"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/gdm3/greeter.dconf-defaults",
+        "pattern": "banner-message-text=\"You are accessing a U.S. Government \\(USG\\) Information System \\(IS\\) that is provided for USG-authorized use only.\\s+By using this IS \\(which includes any device attached to this IS\\), you consent to the following conditions:\\s+-The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct \\(PM\\), law enforcement \\(LE\\), and counterintelligence \\(CI\\) investigations.\\s+-At any time, the USG may inspect and seize data stored on this IS.\\s+-Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG-authorized purpose.\\s+-This IS includes security measures \\(e.g., authentication and access controls\\) to protect USG interests--not for your personal benefit or privacy.\\s+-Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details.\"",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must display the Standard Mandatory DOD Notice and Consent Banner before granting local access to the system via a graphical user logon.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/gdm3/greeter.dconf-defaults": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/gdm3/greeter.dconf-defaults": "before\nbanner-message-text=\"You are accessing a U.S. Government \\(USG\\) Information System \\(IS\\) that is provided for USG-authorized use only.\\s+By using this IS \\(which includes any device attached to this IS\\), you consent to the following conditions:\\s+-The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct \\(PM\\), law enforcement \\(LE\\), and counterintelligence \\(CI\\) investigations.\\s+-At any time, the USG may inspect and seize data stored on this IS.\\s+-Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG-authorized purpose.\\s+-This IS includes security measures \\(e.g., authentication and access controls\\) to protect USG interests--not for your personal benefit or privacy.\\s+-Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details.\"\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270693"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "dictcheck=1",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must prevent the use of dictionary words for passwords.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\ndictcheck=1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270704"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/security/pwquality.conf",
         "pattern": "enforcing",
         "type": "file_content"
@@ -550,6 +766,87 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270705"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-auth",
+        "pattern": "auth    required    pam_faildelay.so    delay=4000000",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-auth": "before\nauth    required    pam_faildelay.so    delay=4000000\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270706"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/login",
+        "pattern": "session     required      pam_lastlog.so showfailed",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must display the date and time of the last successful account logon upon logon.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/login": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/login": "before\nsession     required      pam_lastlog.so showfailed\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270710"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-password",
+        "pattern": "/etc/pam.d/common-auth",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must not allow accounts configured in Pluggable Authentication Modules (PAM) with blank or null passwords.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\n/etc/pam.d/common-auth\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270714"
     },
     {
       "check": {
@@ -604,6 +901,87 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270718"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-auth",
+        "pattern": "auth    [success=2 default=ignore] pam_pkcs11.so",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must implement smart card logins for multifactor authentication for local and network access to privileged and nonprivileged accounts.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-auth": "before\nauth    [success=2 default=ignore] pam_pkcs11.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270721"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+        "pattern": "| awk '/pkcs11_module opensc {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy | grep ocsp_on",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must electronically verify Personal Identity Verification (PIV) credentials.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam_pkcs11/pam_pkcs11.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam_pkcs11/pam_pkcs11.conf": "before\n| awk '/pkcs11_module opensc {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy | grep ocsp_on\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270723"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-password",
+        "pattern": "password [success=1 default=ignore] pam_unix.so obscure sha512 shadow rounds=100000",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must store only encrypted representations of passwords.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\npassword [success=1 default=ignore] pam_unix.so obscure sha512 shadow rounds=100000\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270725"
     },
     {
       "check": {
@@ -716,6 +1094,87 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "PASS_MIN_DAYS    1",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must enforce 24 hours/1 day as the minimum password lifetime. Passwords for new users must have a 24 hours/1 day minimum password lifetime restriction.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nPASS_MIN_DAYS    1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270730"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "PASS_MAX_DAYS    60",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must enforce a 60-day maximum password lifetime restriction. Passwords for new users must have a 60-day maximum password lifetime restriction.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nPASS_MAX_DAYS    60\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270731"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "minlen=15",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must enforce a minimum 15-character password length.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nminlen=15\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270732"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/security/pwquality.conf",
         "pattern": "ocredit=-1",
         "type": "file_content"
@@ -742,6 +1201,249 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "/etc/sssd/conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\n/etc/sssd/conf.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270734"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "certificate_verification = ca_cert,ocsp",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS, for PKI-based authentication, SSSD must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\ncertificate_verification = ca_cert,ocsp\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270735"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "ldap_user_certificate=userCertificate;binary",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\nldap_user_certificate=userCertificate;binary\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270736"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+        "pattern": "| awk '/pkcs11_module opensc {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy | grep ca",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS, for PKI-based authentication, Privileged Access Management (PAM) must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam_pkcs11/pam_pkcs11.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam_pkcs11/pam_pkcs11.conf": "before\n| awk '/pkcs11_module opensc {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy | grep ca\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270737"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+        "pattern": "| grep  -E -- 'crl_auto|crl_offline'",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam_pkcs11/pam_pkcs11.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam_pkcs11/pam_pkcs11.conf": "before\n| grep  -E -- 'crl_auto|crl_offline'\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270738"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "ENCRYPT_METHOD SHA512",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must encrypt all stored passwords with a FIPS 140-3 approved cryptographic hashing algorithm.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nENCRYPT_METHOD SHA512\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270739"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/proc/sys/crypto/fips_enabled",
+        "pattern": "1",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must implement NIST FIPS-validated cryptography to protect classified information and for the following: To provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/proc/sys/crypto/fips_enabled": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/proc/sys/crypto/fips_enabled": "before\n1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270744"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssl/certs",
+        "pattern": "DOD_PKE_CA_chain.pem",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must use DOD PKI-established certificate authorities (CAs) for verification of the establishment of protected sessions.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssl/certs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssl/certs": "before\nDOD_PKE_CA_chain.pem\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270745"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/group",
+        "pattern": "sudo:x:27:foo",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must ensure only users who need access to security functions are part of sudo group.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/group": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/group": "before\nsudo:x:27:foo\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270748"
+    },
+    {
+      "check": {
         "key": "kernel.dmesg_restrict",
         "type": "sysctl"
       },
@@ -765,6 +1467,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270749"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/chrony/chrony.conf",
+        "pattern": "makestep 1 -1",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must synchronize internal information system clocks to the authoritative time source when the time difference is greater than one second.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/chrony/chrony.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/chrony/chrony.conf": "before\nmakestep 1 -1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270752"
     },
     {
       "check": {
@@ -870,6 +1599,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/proc/cpuinfo",
+        "pattern": "| grep -w nx | sort -u",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must implement nonexecutable data to protect its memory from unauthorized code execution.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/proc/cpuinfo": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/proc/cpuinfo": "before\n| grep -w nx | sort -u\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270771"
+    },
+    {
+      "check": {
         "key": "kernel.randomize_va_space",
         "type": "sysctl"
       },
@@ -893,6 +1649,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270772"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/apt/apt.conf.d/50unattended-upgrades",
+        "pattern": "Unattended-Upgrade::Remove-Unused-Dependencies \"true\";",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured so that Advance Package Tool (APT) removes all software components after updated versions have been installed.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/apt/apt.conf.d/50unattended-upgrades": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/apt/apt.conf.d/50unattended-upgrades": "before\nUnattended-Upgrade::Remove-Unused-Dependencies \"true\";\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270773"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/lsb-release",
+        "pattern": "DISTRIB_DESCRIPTION=\"Ubuntu 24.04.1 LTS\"",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must be a vendor-supported release.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/lsb-release": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/lsb-release": "before\nDISTRIB_DESCRIPTION=\"Ubuntu 24.04.1 LTS\"\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270774"
     },
     {
       "check": {
@@ -1087,6 +1897,60 @@
       "check": {
         "is_regex": false,
         "path": "/etc/audit/auditd.conf",
+        "pattern": "log_file = /var/log/audit/audit.log",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must allocate audit record storage capacity to store at least one week's worth of audit records, when audit records are not immediately sent to a central audit record storage facility.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nlog_file = /var/log/audit/audit.log\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270816"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "space_left_action email",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must immediately notify the system administrator (SA) and information system security officer (ISSO) (at a minimum) when allocated audit record storage volume reaches 75 percent of the repository maximum audit record storage capacity.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nspace_left_action email\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270818"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
         "pattern": "action_mail_acct = <administrator_account>",
         "type": "file_content"
       },
@@ -1185,6 +2049,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270827"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_file = /var/log/audit/audit.log",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured to permit only authorized users ownership of the audit log files.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nlog_file = /var/log/audit/audit.log\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270828"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_group = root",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must permit only authorized groups ownership of the audit log files.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nlog_group = root\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270829"
     },
     {
       "check": {
@@ -1307,6 +2225,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/lsb-release",
+        "pattern": "DISTRIB_DESCRIPTION=\"Ubuntu 24.04.3 LTS\"",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must be a vendor-supported release.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/lsb-release": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/lsb-release": "before\nDISTRIB_DESCRIPTION=\"Ubuntu 24.04.3 LTS\"\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278917"
+    },
+    {
+      "check": {
         "name": "-E",
         "should_be_installed": false,
         "type": "package"
@@ -1337,5 +2282,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 48
+  "validated_candidates": 83
 }

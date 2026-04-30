@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/named.conf",
+      "pattern": "include \"/etc/crypto-policies/back-ends/bind.config\";'",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must implement DOD-approved encryption in the bind package.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-279931"
+  },
   "check_content_excerpt": "Note: If the \"bind\" package is not installed, this requirement is Not Applicable.\n\nVerify BIND uses the system crypto policy with the following command:\n\n$ sudo grep include /etc/named.conf \n\ninclude \"/etc/crypto-policies/back-ends/bind.config\";' \n\nIf BIND is installed and the BIND config file does not contain the include \"/etc/crypto-policies/back-ends/bind.config\" directive, or the line is commented out, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure BIND to use the system crypto policy.\n\nAdd the following line to the \"options\" section in \"/etc/named.conf\":\n\ninclude \"/etc/crypto-policies/back-ends/bind.config\";",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-279931r1184237_rule",
   "severity": "high",

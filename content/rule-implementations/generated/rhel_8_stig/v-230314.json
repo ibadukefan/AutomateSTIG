@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/systemd/coredump.conf",
+      "pattern": "Storage=none",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must disable storing core dumps.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230314"
+  },
   "check_content_excerpt": "Note: If kernel dumps are disabled in accordance with RHEL-08-010671, this requirement is not applicable.\n\nVerify the operating system disables storing core dumps for all users by issuing the following command:\n\n$ sudo grep -i storage /etc/systemd/coredump.conf\n\nStorage=none\n\nIf the \"Storage\" item is missing or commented out, or the value is anything other than \"none\", and the need for core dumps is not documented with the information system security officer (ISSO) as an operational requirement for all domains that have the \"core\" item assigned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to disable storing core dumps for all users.\n\nAdd or modify the following line in /etc/systemd/coredump.conf:\n\nStorage=none",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230314r1134881_rule",
   "severity": "medium",

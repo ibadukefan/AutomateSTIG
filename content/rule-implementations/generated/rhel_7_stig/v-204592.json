@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "PermitRootLogin no",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must not permit direct logons to the root account using remote access via SSH.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204592"
+  },
   "check_content_excerpt": "Verify remote access using SSH prevents users from logging on directly as root.\n\nCheck that SSH prevents users from logging on directly as root with the following command:\n\n# grep -i permitrootlogin /etc/ssh/sshd_config\nPermitRootLogin no\n\nIf the \"PermitRootLogin\" keyword is set to \"yes\", is missing, or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure SSH to stop users from logging on remotely as the root user.\n\nEdit the appropriate  \"/etc/ssh/sshd_config\" file to uncomment or add the line for the \"PermitRootLogin\" keyword and set its value to \"no\" (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor):\n\nPermitRootLogin no\n\nThe SSH service must be restarted for changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204592r991589_rule",
   "severity": "medium",

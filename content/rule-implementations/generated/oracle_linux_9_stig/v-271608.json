@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sssd/sssd.conf",
+      "pattern": "/etc/sssd/conf.d/*.conf | grep -v \"^#\"",
+      "type": "file_content"
+    },
+    "description": "OL 9 must implement certificate status checking for multifactor authentication (MFA).",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271608"
+  },
   "check_content_excerpt": "Verify that OL 9 implements Online Certificate Status Protocol (OCSP) and is using the proper digest value on the system with the following command:\n\n$ sudo grep certificate_verification /etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf | grep -v \"^#\"\ncertificate_verification = ocsp_dgst=sha512\n\nIf the certificate_verification line is missing from the [sssd] section, or is missing \"ocsp_dgst=sha512\", ask the administrator to indicate what type of multifactor authentication is being used and how the system implements certificate status checking. If there is no evidence of certificate status checking being used, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to implement certificate status checking for MFA.\n\nReview the \"/etc/sssd/conf.d/certificate_verification.conf\" file to determine if the system is configured to prevent OCSP or certificate verification.\n\nAdd the following line to the \"/etc/sssd/conf.d/certificate_verification.conf\" file:\n\ncertificate_verification = ocsp_dgst=sha512\n\nSet the correct ownership and permissions on the \"/etc/sssd/conf.d/certificate_verification.conf\" file by running these commands:\n\n$ sudo chown root:root \"/etc/sssd/conf.d/certificate_verification.conf\"\n$ sudo chmod 600 \"/etc/sssd/conf.d/certificate_verification.conf\"\n\nThe \"sssd\" service must be restarted for the changes to take effect. To restart the \"sssd\" service, run the following command:\n\n$ sudo systemctl restart sssd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271608r1091536_rule",
   "severity": "medium",

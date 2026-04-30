@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/chrony/chrony.conf",
+      "pattern": "makestep 1 -1",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must synchronize internal information system clocks to the authoritative time source when the time difference is greater than one second.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270752"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS synchronizes internal system clocks to the authoritative time source when the time difference is greater than one second. \n \nCheck the value of \"makestep\" with the following command: \n \n$ grep makestep /etc/chrony/chrony.conf\nmakestep 1 -1 \n \nIf the makestep option is not set to \"1 -1\", is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure chrony to synchronize the internal system clocks to the authoritative source when the time difference is greater than one second by doing the following: \n \nEdit the \"/etc/chrony/chrony.conf\" file and add: \n \nmakestep 1 -1 \n \nRestart the chrony service: \n \n$ sudo systemctl restart chrony.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270752r1068365_rule",
   "severity": "low",

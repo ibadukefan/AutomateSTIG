@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/gdm/custom.conf",
+      "pattern": "AutomaticLoginEnable=false",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must not allow unattended or automatic logon via the graphical user interface.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258018"
+  },
   "check_content_excerpt": "Note: This requirement assumes the use of the RHEL 9 default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nVerify RHEL 9 does not allow an unattended or automatic logon to the system via a graphical user interface.\n\nCheck for the value of the \"AutomaticLoginEnable\" in the \"/etc/gdm/custom.conf\" file with the following command:\n\n$  grep -i automaticlogin /etc/gdm/custom.conf\n\nAutomaticLoginEnable=false\n\nIf the value of \"AutomaticLoginEnable\" is not set to \"false\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the GNOME desktop display manager to disable automatic login.\n\nSet AutomaticLoginEnable to false in the [daemon] section in /etc/gdm/custom.conf. For example:\n\n[daemon]\nAutomaticLoginEnable=false",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258018r1045090_rule",
   "severity": "high",

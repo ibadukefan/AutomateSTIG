@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/resolv.conf",
+      "pattern": "nameserver 192.168.1.2",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 systems using Domain Name Servers (DNS) resolution must have at least two name servers configured.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257948"
+  },
   "check_content_excerpt": "Note: If the system is running in a cloud platform and the cloud provider gives a single, highly available IP address for DNS configuration, this control is Not Applicable.\n\nVerify the name servers used by the system with the following command:\n\n$ grep nameserver /etc/resolv.conf\n\nnameserver 192.168.1.2\nnameserver 192.168.1.3\n\nIf fewer than two lines are returned that are not commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to use two or more name servers for DNS resolution based on the DNS mode of the system.\n\t\nIf the NetworkManager DNS mode is set to \"none\", add the following lines to \"/etc/resolv.conf\":\n\t\nnameserver [name server 1]\nnameserver [name server 2]\n\t\nReplace [name server 1] and [name server 2] with the IPs of two different DNS resolvers.\n\t\nIf the NetworkManager DNS mode is set to \"default\", add two DNS servers to a NetworkManager connection using the following command:\n\t\n$ nmcli connection modify [connection name] ipv4.dns [name server 1],[name server 2]\n\t\nReplace [name server 1] and [name server 2] with the IPs of two different DNS resolvers. Replace [connection name] with a valid NetworkManager connection name on the system. Replace ipv4 with ipv6 if IPv6 DNS servers are used.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-257948r1045004_rule",
   "severity": "medium",

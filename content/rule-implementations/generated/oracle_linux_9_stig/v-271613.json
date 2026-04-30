@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/pwquality.conf",
+      "pattern": "/etc/security/pwquality.conf.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "OL 9 must enforce password complexity by requiring that at least one uppercase character be used.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271613"
+  },
   "check_content_excerpt": "Verify that OL 9 enforces password complexity by requiring at least one uppercase character.\n\nCheck the value for \"ucredit\" with the following command:\n\n$ grep ucredit /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf \nucredit = -1 \n\nIf the value of \"ucredit\" is a positive number or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to enforce password complexity by requiring that at least one uppercase character is used by setting the \"ucredit\" option.\n\nAdd the following line to /etc/security/pwquality.conf (or modify the line to have the required value):\n\nucredit = -1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271613r1091551_rule",
   "severity": "medium",

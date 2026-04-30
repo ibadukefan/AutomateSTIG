@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/pwquality.conf",
+      "pattern": "dictcheck = 1",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must prevent the use of dictionary words for passwords.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260564"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS prevents the use of dictionary words for passwords by using the following command: \n \n     $ grep -i dictcheck /etc/security/pwquality.conf \n     dictcheck = 1  \n  \nIf \"dictcheck\" is not set to \"1\", is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to prevent the use of dictionary words for passwords. \n  \nAdd or modify the following line in the \"/etc/security/pwquality.conf\" file: \n  \ndictcheck = 1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260564r991587_rule",
   "severity": "medium",

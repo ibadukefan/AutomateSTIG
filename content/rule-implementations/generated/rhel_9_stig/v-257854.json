@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/fstab",
+      "pattern": "192.168.22.2:/mnt/export /data nfs4 rw,nosuid,nodev,noexec,sync,soft,sec=krb5:krb5i:krb5p",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must prevent special devices on file systems that are imported via Network File System (NFS).",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257854"
+  },
   "check_content_excerpt": "Note: If no NFS mounts are configured, this requirement is Not Applicable.\n\nVerify RHEL 9 has the \"nodev\" option configured for all NFS mounts with the following command:\n\n$ grep nfs /etc/fstab\n\n192.168.22.2:/mnt/export /data nfs4 rw,nosuid,nodev,noexec,sync,soft,sec=krb5:krb5i:krb5p\n\nIf the system is mounting file systems via NFS and the \"nodev\" option is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Update each NFS mounted file system to use the \"nodev\" option on file systems that are being imported via NFS.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-257854r1044934_rule",
   "severity": "medium",

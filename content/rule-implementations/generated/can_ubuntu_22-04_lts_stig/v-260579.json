@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+      "pattern": "use_mappers = pwent",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260579"
+  },
   "check_content_excerpt": "Verify that \"use_mappers\" is set to \"pwent\" in \"/etc/pam_pkcs11/pam_pkcs11.conf\" file by using the following command:  \n  \n     $ grep -i use_mappers /etc/pam_pkcs11/pam_pkcs11.conf \n     use_mappers = pwent \n  \nIf \"use_mappers\" does not contain \"pwent\", is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set \"use_mappers=pwent\" in \"/etc/pam_pkcs11/pam_pkcs11.conf\" or, if there is already a comma-separated list of mappers, add it to the list, separated by comma, and before the null mapper.  \n  \nIf the system is missing an \"/etc/pam_pkcs11/\" directory and an \"/etc/pam_pkcs11/pam_pkcs11.conf\", find an example to copy into place and modify accordingly at \"/usr/share/doc/libpam-pkcs11/examples/pam_pkcs11.conf.example.gz\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260579r958452_rule",
   "severity": "high",

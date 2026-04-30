@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/boot/grub2/grub.cfg",
+      "pattern": "/vmlinuz-3.8.0-0.40.el7.x86_64 root=/dev/mapper/rhel-root ro rd.md=0 rd.dm=0 rd.lvm.lv=rhel/swap crashkernel=auto rd.luks=0 vconsole.keymap=us rd.lvm.lv=rhel/root rhgb fips=1 quiet",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must implement NIST FIPS-validated cryptography for the following: to provision digital signatures, to generate cryptographic hashes, and to protect data requiring data-at-rest protections in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204497"
+  },
   "check_content_excerpt": "Verify the operating system implements DoD-approved encryption to protect the confidentiality of remote access sessions.\n\nCheck to see if the \"dracut-fips\" package is installed with the following command:\n\n# yum list installed dracut-fips\n\ndracut-fips-033-360.el7_2.x86_64.rpm\n\nIf a \"dracut-fips\" package is installed, check to see if the kernel command line is configured to use FIPS mode with the following command:\n\nNote: GRUB 2 reads its configuration from the \"/boot/grub2/grub.cfg\" file on traditional BIOS-based machines and from the \"/boot/efi/EFI/redhat/grub.cfg\" file on UEFI machines.\n\n# grep fips /boot/grub2/grub.cfg\n/vmlinuz-3.8.0-0.40.el7.x86_64 root=/dev/mapper/rhel-root ro rd.md=0 rd.dm=0 rd.lvm.lv=rhel/swap crashkernel=auto rd.luks=0 vconsole.keymap=us rd.lvm.lv=rhel/root rhgb fips=1 quiet\n\nIf the kernel command line is configured to use FIPS mode, check to see if the system is in FIPS mode with the following command:\n\n# cat /proc/sys/crypto/fips_enabled \n1\n\nIf a \"dracut-fips\" package is not installed, the kernel command line does not have a fips entry, or the system has a value of \"0\" for \"fips_enabled\" in \"/proc/sys/crypto\", this is a finding.\n\nVerify the file /etc/system-fips exists.\n\n# ls -l /etc/system-fips\n\nIf this file does not exist, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to implement DoD-approved encryption by installing the dracut-fips package.\n\nTo enable strict FIPS compliance, the fips=1 kernel option needs to be added to the kernel command line during system installation so key generation is done with FIPS-approved algorithms and continuous monitoring tests in place.\n\nConfigure the operating system to implement DoD-approved encryption by following the steps below: \n\nThe fips=1 kernel option needs to be added to the kernel command line during system installation so that key generation is done with FIPS-approved algorithms and continuous monitoring tests in place. Users should also ensure that the system has plenty of entropy during the installation process by moving the mouse around, or if no mouse is available, ensuring that many keystrokes are typed. The recommended amount of keystrokes is 256 and more. Less than 256 keystrokes may generate a non-unique key.\n\nInstall the dracut-fips package with the following command:\n\n# yum install dracut-fips\n\nRecreate the \"initramfs\" file with the following command:\n\nNote: This command will overwrite the existing \"initramfs\" file.\n\n# dracut -f\n\nModify the kernel command line of the current kernel in the \"grub.cfg\" file by adding the following option to the GRUB_CMDLINE_LINUX key in the \"/etc/default/grub\" file and then rebuild the \"grub.cfg\" file:\n\nfips=1\n\nChanges to \"/etc/default/grub\" require rebuilding the \"grub.cfg\" file as follows:\n\nOn BIOS-based machines, use the following command:\n\n# grub2-mkconfig -o /boot/grub2/grub.cfg\n\nOn UEFI-based machines, use the following command:\n\n# grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg\n\nIf /boot or /boot/efi reside on separate partitions, the kernel parameter boot=<partition of /boot or /boot/efi> must be added to the kernel command line. You can identify a partition by running the df /boot or df /boot/efi command:\n\n# df /boot\nFilesystem 1K-blocks Used Available Use% Mounted on\n/dev/sda1 495844 53780 416464 12% /boot\n\nTo ensure the \"boot=\" configuration option will work even if device naming changes occur between boots, identify the universally unique identifier (UUID) of the partition with the following command:\n\n# blkid /dev/sda1\n/dev/sda1: UUID=\"05c000f1-a213-759e-c7a2-f11b7424c797\" TYPE=\"ext4\"\n\nFor the example above, append the following string to the kernel command line:\n\nboot=UUID=05c000f1-a213-759e-c7a2-f11b7424c797\n\nIf the file /etc/system-fips does not exists, recreate it:\n\n# touch /etc/ system-fips\n\nReboot the system for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204497r958408_rule",
   "severity": "high",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/fapolicyd/fapolicyd.conf",
+      "pattern": "permissive = 0",
+      "type": "file_content"
+    },
+    "description": "The RHEL 9 fapolicy module must be configured to employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270180"
+  },
   "check_content_excerpt": "Verify the RHEL 9 \"fapolicyd\" employs a deny-all, permit-by-exception policy.\n\nCheck that \"fapolicyd\" is in enforcement mode with the following command:\n\n$ sudo grep permissive /etc/fapolicyd/fapolicyd.conf\n\npermissive = 0\n\nCheck that \"fapolicyd\" employs a deny-all policy on system mounts with the following commands:\n\n$ sudo tail /etc/fapolicyd/compiled.rules\n\nallow exe=/usr/bin/python3.7 : ftype=text/x-python\ndeny_audit perm=any pattern=ld_so : all\ndeny perm=any all : all\n\nIf \"fapolicyd\" is not running in enforcement mode with a deny-all, permit-by-exception policy, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to employ a deny-all, permit-by-exception application allow listing policy with \"fapolicyd\".\n\nWith the \"fapolicyd\" installed and enabled, configure the daemon to function in permissive mode until the allow list is built correctly to avoid system lockout. Do this by editing the \"/etc/fapolicyd/fapolicyd.conf\" file with the following line:\n\npermissive = 1\n\nBuild the allow list in a file within the \"/etc/fapolicyd/rules.d\" directory, ensuring the last rule is \"deny perm=any all : all\".\n\nOnce it is determined the allow list is built correctly, set the \"fapolicyd\" to enforcing mode by editing the \"permissive\" line in the /etc/fapolicyd/fapolicyd.conf file.\n\npermissive = 0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270180r1045182_rule",
   "severity": "medium",

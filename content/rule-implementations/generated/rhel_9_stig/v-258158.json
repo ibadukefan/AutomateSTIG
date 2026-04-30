@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/auditd.conf",
+      "pattern": "admin_space_left = 5%",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must take action when allocated audit record storage volume reaches 95 percent of the audit record storage capacity.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258158"
+  },
   "check_content_excerpt": "Verify RHEL 9 takes action when allocated audit record storage volume reaches 95 percent of the repository maximum audit record storage capacity with the following command:\n\n$ sudo grep -w admin_space_left /etc/audit/auditd.conf\n\nadmin_space_left = 5%\n\nIf the value of the \"admin_space_left\" keyword is not set to 5 percent of the storage volume allocated to audit logs, or if the line is commented out, ask the system administrator (SA) to indicate how the system is taking action if the allocated storage is about to reach capacity. If the \"space_left\" value is not configured to the correct value, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to initiate an action when allocated audit record storage volume reaches 95 percent of the repository maximum audit record storage capacity by adding/modifying the following line in the /etc/audit/auditd.conf file.\n\nadmin_space_left  = 5%",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258158r971542_rule",
   "severity": "medium",

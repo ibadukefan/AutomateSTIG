@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ipsec.conf",
+      "pattern": "/etc/ipsec.d/",
+      "type": "file_content"
+    },
+    "description": "OL 9 must not have unauthorized IP tunnels configured.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271863"
+  },
   "check_content_excerpt": "Verify that OL 9 does not have unauthorized IP tunnels configured.\n\nDetermine if the IPsec service is active with the following command:\n\n$ systemctl status ipsec\nipsec.service - Internet Key Exchange (IKE) Protocol Daemon for IPsec\nLoaded: loaded (/usr/lib/systemd/system/ipsec.service; disabled)\nActive: inactive (dead)\n\nIf the IPsec service is active, check for configured IPsec connections (\"conn\"), with the following command:\n\n$ grep -rni conn /etc/ipsec.conf /etc/ipsec.d/ \n\nVerify any returned results are documented with the ISSO.\n\nIf the IPsec tunnels are active and not approved, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove all unapproved tunnels from the system, or document them with the ISSO.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271863r1092639_rule",
   "severity": "medium",

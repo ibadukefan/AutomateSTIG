@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sssd/sssd.conf",
+      "pattern": "ldap_user_certificate=userCertificate;binary",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270736"
+  },
   "check_content_excerpt": "Verify that authenticated certificates are mapped to the appropriate user group in the \"/etc/sssd/sssd.conf\" file with the following command: \n \n$ grep -i ldap_user_certificate /etc/sssd/sssd.conf\nldap_user_certificate=userCertificate;binary",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure sssd to map authenticated certificates to the appropriate user group by adding the following line to the \"/etc/sssd/sssd.conf\" file:\n\nldap_user_certificate=userCertificate;binary",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270736r1066697_rule",
   "severity": "high",

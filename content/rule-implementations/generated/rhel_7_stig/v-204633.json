@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+      "pattern": "| grep -v \"^#\"",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must implement certificate status checking for PKI authentication.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204633"
+  },
   "check_content_excerpt": "Verify the operating system implements certificate status checking for PKI authentication.\n\nCheck to see if Online Certificate Status Protocol (OCSP) is enabled on the system with the following command:\n\n# grep cert_policy /etc/pam_pkcs11/pam_pkcs11.conf | grep -v \"^#\"\n\ncert_policy = ca, ocsp_on, signature;\ncert_policy = ca, ocsp_on, signature;\ncert_policy = ca, ocsp_on, signature;\n\nThere should be at least three lines returned. \n\nIf \"ocsp_on\" is not present in all uncommented \"cert_policy\" lines in \"/etc/pam_pkcs11/pam_pkcs11.conf\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to do certificate status checking for PKI authentication.\n\nModify all of the \"cert_policy\" lines in \"/etc/pam_pkcs11/pam_pkcs11.conf\" to include \"ocsp_on\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204633r982216_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/faillock.conf",
+      "pattern": "unlock_time = 0",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must maintain an account lock until the locked account is released by an administrator.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258057"
+  },
   "check_content_excerpt": "Verify RHEL 9 is configured to lock an account until released by an administrator after three unsuccessful logon attempts with the command:\n\n$ sudo grep -w unlock_time /etc/security/faillock.conf\n\nunlock_time = 0\n\nIf the \"unlock_time\" option is not set to \"0\" or the line is missing or commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to lock an account until released by an administrator after three unsuccessful logon attempts with the command:\n \n$ sudo authselect enable-feature with-faillock  \n\nEdit the \"/etc/security/faillock.conf\" file as follows:\n\nunlock_time = 0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258057r1045146_rule",
   "severity": "medium",

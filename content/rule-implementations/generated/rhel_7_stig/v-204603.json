@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ntp.conf",
+      "pattern": "server 0.rhel.pool.ntp.org iburst maxpoll 16",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must, for networked systems, synchronize clocks with a server that is synchronized to one of the redundant United States Naval Observatory (USNO) time servers, a time server designated for the appropriate DoD network (NIPRNet/SIPRNet), and/or the Global Positioning System (GPS).",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204603"
+  },
   "check_content_excerpt": "Check to see if NTP is running in continuous mode:\n\n# ps -ef | grep ntp\n\nIf NTP is not running, check to see if \"chronyd\" is running in continuous mode:\n\n# ps -ef | grep chronyd\n\nIf NTP or \"chronyd\" is not running, this is a finding.\n\nIf the NTP process is found, then check the \"ntp.conf\" file for the \"maxpoll\" option setting:\n\n# grep maxpoll /etc/ntp.conf\n\nserver 0.rhel.pool.ntp.org iburst maxpoll 16\n\nIf the \"maxpoll\" option is set to a number greater than 16 or the line is commented out, this is a finding.\n\nIf the file does not exist, check the \"/etc/cron.daily\" subdirectory for a crontab file controlling the execution of the \"ntpd -q\" command.\n\n# grep -i \"ntpd -q\" /etc/cron.daily/*\n# ls -al /etc/cron.* | grep ntp\n\nntp\n\nIf a crontab file does not exist in the \"/etc/cron.daily\" that executes the \"ntpd -q\" command, this is a finding.\n\nIf the \"chronyd\" process is found, then check the \"chrony.conf\" file for the \"maxpoll\" option setting:\n\n# grep maxpoll /etc/chrony.conf\n\nserver 0.rhel.pool.ntp.org iburst maxpoll 16\n\nIf the option is not set or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the \"/etc/ntp.conf\" or \"/etc/chrony.conf\" file and add or update an entry to define \"maxpoll\" to \"16\" as follows:\n\nserver 0.rhel.pool.ntp.org iburst maxpoll 16\n\nIf NTP was running and \"maxpoll\" was updated, the NTP service must be restarted:\n\n# systemctl restart ntpd\n\nIf NTP was not running, it must be started:\n\n# systemctl start ntpd \n\nIf \"chronyd\" was running and \"maxpoll\" was updated, the service must be restarted:\n\n# systemctl restart chronyd.service\n\nIf \"chronyd\" was not running, it must be started:\n\n# systemctl start chronyd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204603r982208_rule",
   "severity": "medium",
