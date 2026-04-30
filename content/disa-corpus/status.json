@@ -2,11 +2,11 @@
   "authoritative_manifests": 87,
   "authoritative_rules": 17250,
   "authoritative_rules_tracked": 17250,
-  "automated_or_mapped_rules": 11779,
-  "coverage_percent_tracked_corpus": 68.3,
+  "automated_or_mapped_rules": 11855,
+  "coverage_percent_tracked_corpus": 68.7,
   "current_check_definitions": 3210,
-  "generated_candidate_checks_with_fixture_evidence": 2699,
-  "last_updated_utc": "2026-04-30T22:33:46Z",
+  "generated_candidate_checks_with_fixture_evidence": 2721,
+  "last_updated_utc": "2026-04-30T23:09:12Z",
   "notes": [
     "Regression ratchet prevents silent drops in tracked artifacts, authoritative manifests, authoritative rules, automated/mapped rules, or unsupported-rule ceilings.",
     "Generated candidate checks are fixture-backed scaffolding, not live production asset validation.",
@@ -33,12 +33,13 @@
     "Added conservative Windows Local Policies >> Security Options candidate inference for explicit Enabled/Disabled value findings; tracked coverage is 67.0% (11558/17250) with 5692 unsupported rules remaining.",
     "Added conservative Linux find -exec no-output candidate inference for explicit returned-item findings with escaped find terminators; tracked coverage is 67.3% (11604/17250) with 5646 unsupported rules remaining.",
     "Added SUSE/SLES platform gating for existing conservative Linux candidate inference, including sysctl, package, service, grep, command-output, and file-permission patterns; tracked coverage is 68.0% (11731/17250) with 5519 unsupported rules remaining.",
-    "Added conservative Linux auditctl multiline expected-rule candidate inference for authoritative multi-line auditctl -l grep examples while skipping arbitrary audit key examples; tracked coverage is 68.3% (11779/17250) with 5471 unsupported rules remaining."
+    "Added conservative Linux auditctl multiline expected-rule candidate inference for authoritative multi-line auditctl -l grep examples while skipping arbitrary audit key examples; tracked coverage is 68.3% (11779/17250) with 5471 unsupported rules remaining.",
+    "Added conservative Linux GNOME gsettings boolean command-output candidate inference for single-command get/writable checks with fixture-matched true/false findings; tracked coverage is 68.7% (11855/17250) with 5395 unsupported rules remaining."
   ],
   "public_disa_artifacts": 87,
   "public_disa_artifacts_indexed": 87,
   "status": "expanded_public_corpus_with_fixture_gated_candidate_mapping",
   "target": "unsupported_authoritative_rules == 0 across every authorized DISA STIG artifact",
-  "unsupported_authoritative_rules": 5471,
-  "unsupported_rules": 5471
+  "unsupported_authoritative_rules": 5395,
+  "unsupported_rules": 5395
 }

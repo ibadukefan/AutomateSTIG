@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 314,
+  "candidate_checks": 316,
   "cases": [
     {
       "check": {
@@ -4899,6 +4899,32 @@
     },
     {
       "check": {
+        "command": "gsettings get org.gnome.login-screen disable-user-list",
+        "type": "command_output"
+      },
+      "description": "OL 9 must disable the user list at logon for graphical user interfaces.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.login-screen disable-user-list": "unexpected-true"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.login-screen disable-user-list": "true"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271672"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/dconf/profile/user",
         "pattern": "system-db",
@@ -5112,6 +5138,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271686"
+    },
+    {
+      "check": {
+        "command": "gsettings get org.gnome.login-screen banner-message-enable",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured to enable the display of the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a graphical user logon.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.login-screen banner-message-enable": "unexpected-true"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.login-screen banner-message-enable": "true"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271688"
     },
     {
       "check": {
@@ -8522,5 +8574,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 314
+  "validated_candidates": 316
 }

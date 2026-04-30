@@ -439,6 +439,37 @@ If the result is not "1", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': '/usr/sbin/spctl --status | /usr/bin/grep -c "assessments enabled"'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
 
+    def test_infers_linux_gsettings_get_candidate_from_false_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-244536',
+            'title': 'RHEL 8 must disable the user list at logon for graphical user interfaces.',
+            'check_content': '''Verify the operating system disables the user logon list for graphical user interfaces with the following command:
+
+$ sudo gsettings get org.gnome.login-screen disable-user-list
+true
+
+If the setting is "false", this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'gsettings get org.gnome.login-screen disable-user-list'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'true'})
+
+    def test_infers_linux_gsettings_writable_candidate_from_true_result_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-274871',
+            'title': 'Ubuntu 24.04 LTS must conceal session lock information with a public image.',
+            'check_content': '''To verify the screensaver is configured to be blank, run the following command:
+
+$ gsettings writable org.gnome.desktop.screensaver picture-uri
+ 
+false
+ 
+If "picture-uri" is writable and the result is "true", this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'gsettings writable org.gnome.desktop.screensaver picture-uri'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'false'})
+
     def test_infers_no_output_command_candidate_from_find_file_absence_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230283',

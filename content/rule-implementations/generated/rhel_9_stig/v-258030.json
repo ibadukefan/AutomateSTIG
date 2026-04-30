@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "gsettings writable org.gnome.login-screen disable-restart-buttons",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 must prevent a user from overriding the disable-restart-buttons setting for the graphical user interface.",
+    "expected": {
+      "type": "equals",
+      "value": "false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258030"
+  },
   "check_content_excerpt": "Note: This requirement assumes the use of the RHEL 9 default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nVerify RHEL 9 prevents a user from overriding the disable-restart-buttons setting for graphical user interfaces. \n\n$ gsettings writable org.gnome.login-screen disable-restart-buttons\n \nfalse\n \nIf \"disable-restart-buttons\" is writable and the result is \"true\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to prevent a user from overriding the disable-restart-buttons setting for graphical user interfaces. \n\nCreate a database to contain the systemwide graphical user logon settings (if it does not already exist) with the following command:\n\n$ sudo touch /etc/dconf/db/local.d/locks/session\n\nAdd the following line to prevent nonprivileged users from modifying it:\n\n/org/gnome/login-screen/disable-restart-buttons\n\nRun the following command to update the database:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258030r1045112_rule",
   "severity": "medium",

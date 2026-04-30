@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "gsettings get org.gnome.desktop.screensaver lock-enabled",
+      "type": "command_output"
+    },
+    "description": "OL 8 must enable a user session lock until that user reestablishes access using established identification and authentication procedures for graphical user sessions.",
+    "expected": {
+      "type": "equals",
+      "value": "true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248671"
+  },
   "check_content_excerpt": "Note: This requirement assumes the use of the OL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable. \n \nVerify the operating system enables a user's session lock until that user reestablishes access using established identification and authentication procedures with the following command: \n \n$ sudo gsettings get org.gnome.desktop.screensaver lock-enabled \n \ntrue \n \nIf the setting is \"false\", this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 8 to enable a user's session lock until that user reestablishes access using established identification and authentication procedures. \n \nCreate a database to contain the system-wide screensaver settings (if it does not already exist) with the following example: \n \n$ sudo vi /etc/dconf/db/local.d/00-screensaver \n \nEdit the \"[org/gnome/desktop/screensaver]\" section of the database file and add or update the following lines: \n \n# Set this to true to lock the screen when the screensaver activates \nlock-enabled=true \n \nUpdate the system databases: \n \n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-248671r1015040_rule",
   "severity": "medium",

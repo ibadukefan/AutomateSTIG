@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "gsettings get org.gnome.login-screen banner-message-enable",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a graphical user logon.",
+    "expected": {
+      "type": "equals",
+      "value": "true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258012"
+  },
   "check_content_excerpt": "Verify RHEL 9 displays the Standard Mandatory DOD Notice and Consent Banner before granting access to the operating system via a graphical user logon.\n\nNote: This requirement assumes the use of the RHEL 9 default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nDetermine if the operating system displays a banner at the logon screen with the following command:\n\n$ gsettings get org.gnome.login-screen banner-message-enable\n\ntrue\n\nIf the result is \"false\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to display the Standard Mandatory DOD Notice and Consent Banner before granting access to the system via a graphical user logon.\n\nCreate a database to contain the system-wide graphical user logon settings (if it does not already exist) with the following command:\n\n$ sudo touch /etc/dconf/db/local.d/01-banner-message\n\nAdd the following lines to the [org/gnome/login-screen] section of the \"/etc/dconf/db/local.d/01-banner-message\":\n\n[org/gnome/login-screen]\n\nbanner-message-enable=true\n\nRun the following command to update the database:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258012r1014855_rule",
   "severity": "medium",

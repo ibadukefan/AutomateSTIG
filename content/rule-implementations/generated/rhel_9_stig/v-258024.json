@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "gsettings writable org.gnome.desktop.session idle-delay",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 must prevent a user from overriding the session idle-delay setting for the graphical user interface.",
+    "expected": {
+      "type": "equals",
+      "value": "false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258024"
+  },
   "check_content_excerpt": "Note: This requirement assumes the use of the RHEL 9 default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nVerify RHEL 9 prevents a user from overriding settings for graphical user interfaces. \n\n$ gsettings writable org.gnome.desktop.session idle-delay\n \nfalse\n \nIf \"idle-delay\" is writable and the result is \"true\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to prevent a user from overriding settings for graphical user interfaces.\n\nCreate a database to contain the systemwide screensaver settings (if it does not already exist) with the following command: \n\nNote: The example below is using the database \"local\" for the system. If the system is using another database in \"/etc/dconf/profile/user\", the file should be created under the appropriate subdirectory.\n\n$ sudo touch /etc/dconf/db/local.d/locks/session\n\nAdd the following setting to prevent nonprivileged users from modifying it:\n\n/org/gnome/desktop/session/idle-delay\n\nRun the following command to update the database:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258024r1045100_rule",
   "severity": "medium",

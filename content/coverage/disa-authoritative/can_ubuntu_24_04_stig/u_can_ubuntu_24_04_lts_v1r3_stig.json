@@ -2975,46 +2975,49 @@
       "vuln_id": "V-274870"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-274871",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-274871r1107302_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must conceal, via the session lock, information previously visible on the display with a publicly viewable image.",
-      "tracking_issue": "TODO-V-274871",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/46b6503794ce48b93d54a118e15606ad665da9164bf94ede9f1669481e7f25ac/U_CAN_Ubuntu_24-04_LTS_V1R3_STIG.zip"
       ],
       "vuln_id": "V-274871"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-274872",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-274872r1107297_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must prevent a user from overriding the disabling of the graphical user interface autorun function.",
-      "tracking_issue": "TODO-V-274872",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/46b6503794ce48b93d54a118e15606ad665da9164bf94ede9f1669481e7f25ac/U_CAN_Ubuntu_24-04_LTS_V1R3_STIG.zip"
       ],
       "vuln_id": "V-274872"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-274873",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-274873r1107300_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must prevent a user from overriding the disabling of the graphical user smart card removal action.",
-      "tracking_issue": "TODO-V-274873",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/46b6503794ce48b93d54a118e15606ad665da9164bf94ede9f1669481e7f25ac/U_CAN_Ubuntu_24-04_LTS_V1R3_STIG.zip"
       ],
       "vuln_id": "V-274873"

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 126,
+  "candidate_checks": 129,
   "cases": [
     {
       "check": {
@@ -3416,6 +3416,84 @@
     },
     {
       "check": {
+        "command": "gsettings writable org.gnome.desktop.screensaver picture-uri",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must conceal, via the session lock, information previously visible on the display with a publicly viewable image.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.desktop.screensaver picture-uri": "unexpected-false"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.desktop.screensaver picture-uri": "false"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274871"
+    },
+    {
+      "check": {
+        "command": "gsettings writable org.gnome.desktop.media-handling autorun-never",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must prevent a user from overriding the disabling of the graphical user interface autorun function.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.desktop.media-handling autorun-never": "unexpected-false"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.desktop.media-handling autorun-never": "false"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274872"
+    },
+    {
+      "check": {
+        "command": "gsettings writable org.gnome.settings-daemon.peripherals.smartcard removal-action",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must prevent a user from overriding the disabling of the graphical user smart card removal action.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.settings-daemon.peripherals.smartcard removal-action": "unexpected-false"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.settings-daemon.peripherals.smartcard removal-action": "false"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274873"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/lsb-release",
         "pattern": "DISTRIB_DESCRIPTION=\"Ubuntu 24.04.3 LTS\"",
@@ -3473,5 +3551,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 126
+  "validated_candidates": 129
 }

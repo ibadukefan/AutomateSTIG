@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "gsettings writable org.gnome.settings-daemon.peripherals.smartcard removal-action",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must prevent a user from overriding the disabling of the graphical user smart card removal action.",
+    "expected": {
+      "type": "equals",
+      "value": "false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-274873"
+  },
   "check_content_excerpt": "Note: This requirement assumes the use of the Ubuntu 24.04 LTS default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nVerify Ubuntu 24.04 LTS disables the ability of the user to override the smart card removal action setting.\n\n$ gsettings writable org.gnome.settings-daemon.peripherals.smartcard removal-action\n \nfalse\n \nIf \"removal-action\" is writable and the result is \"true\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to prevent a user from overriding the disabling of the graphical user smart card removal action.\n\nAdd the following line to \"/etc/dconf/db/local.d/locks/00-security-settings-lock\":\n\n/org/gnome/settings-daemon/peripherals/smartcard/removal-action\n\nUpdate the dconf system databases:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-274873r1107300_rule",
   "severity": "medium",

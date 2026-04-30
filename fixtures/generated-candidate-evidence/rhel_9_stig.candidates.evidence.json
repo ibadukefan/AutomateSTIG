@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 283,
+  "candidate_checks": 295,
   "cases": [
     {
       "check": {
@@ -3514,6 +3514,58 @@
     },
     {
       "check": {
+        "command": "gsettings get org.gnome.login-screen banner-message-enable",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a graphical user logon.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.login-screen banner-message-enable": "unexpected-true"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.login-screen banner-message-enable": "true"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258012"
+    },
+    {
+      "check": {
+        "command": "gsettings writable org.gnome.login-screen banner-message-enable",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must prevent a user from overriding the banner-message-enable setting for the graphical user interface.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.login-screen banner-message-enable": "unexpected-false"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.login-screen banner-message-enable": "false"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258013"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/dconf/profile/user",
         "pattern": "system-db",
@@ -3541,6 +3593,32 @@
     },
     {
       "check": {
+        "command": "gsettings writable org.gnome.desktop.media-handling autorun-never",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must prevent a user from overriding the disabling of the graphical user interface autorun function.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.desktop.media-handling autorun-never": "unexpected-false"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.desktop.media-handling autorun-never": "false"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258017"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/gdm/custom.conf",
         "pattern": "AutomaticLoginEnable=false",
@@ -3565,6 +3643,240 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-258018"
+    },
+    {
+      "check": {
+        "command": "gsettings writable org.gnome.settings-daemon.peripherals.smartcard removal-action",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must prevent a user from overriding the disabling of the graphical user smart card removal action.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.settings-daemon.peripherals.smartcard removal-action": "unexpected-false"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.settings-daemon.peripherals.smartcard removal-action": "false"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258020"
+    },
+    {
+      "check": {
+        "command": "gsettings get org.gnome.desktop.screensaver lock-enabled",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must enable a user session lock until that user re-establishes access using established identification and authentication procedures for graphical user sessions.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.desktop.screensaver lock-enabled": "unexpected-true"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.desktop.screensaver lock-enabled": "true"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258021"
+    },
+    {
+      "check": {
+        "command": "gsettings writable org.gnome.desktop.screensaver lock-enabled",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must prevent a user from overriding the screensaver lock-enabled setting for the graphical user interface.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.desktop.screensaver lock-enabled": "unexpected-false"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.desktop.screensaver lock-enabled": "false"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258022"
+    },
+    {
+      "check": {
+        "command": "gsettings writable org.gnome.desktop.session idle-delay",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must prevent a user from overriding the session idle-delay setting for the graphical user interface.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.desktop.session idle-delay": "unexpected-false"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.desktop.session idle-delay": "false"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258024"
+    },
+    {
+      "check": {
+        "command": "gsettings writable org.gnome.desktop.screensaver lock-delay",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must prevent a user from overriding the session lock-delay setting for the graphical user interface.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.desktop.screensaver lock-delay": "unexpected-false"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.desktop.screensaver lock-delay": "false"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258026"
+    },
+    {
+      "check": {
+        "command": "gsettings writable org.gnome.desktop.screensaver picture-uri",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must conceal, via the session lock, information previously visible on the display with a publicly viewable image.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.desktop.screensaver picture-uri": "unexpected-false"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.desktop.screensaver picture-uri": "false"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258027"
+    },
+    {
+      "check": {
+        "command": "gsettings writable org.gnome.login-screen disable-restart-buttons",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must prevent a user from overriding the disable-restart-buttons setting for the graphical user interface.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.login-screen disable-restart-buttons": "unexpected-false"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.login-screen disable-restart-buttons": "false"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258030"
+    },
+    {
+      "check": {
+        "command": "gsettings writable org.gnome.settings-daemon.plugins.media-keys logout",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must prevent a user from overriding the Ctrl-Alt-Del sequence settings for the graphical user interface.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.settings-daemon.plugins.media-keys logout": "unexpected-false"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings writable org.gnome.settings-daemon.plugins.media-keys logout": "false"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258032"
+    },
+    {
+      "check": {
+        "command": "gsettings get org.gnome.login-screen disable-user-list",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must disable the user list at logon for graphical user interfaces.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.login-screen disable-user-list": "unexpected-true"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.login-screen disable-user-list": "true"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258033"
     },
     {
       "check": {
@@ -7722,5 +8034,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 283
+  "validated_candidates": 295
 }

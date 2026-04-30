@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "gsettings writable org.gnome.desktop.screensaver picture-uri",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 must conceal, via the session lock, information previously visible on the display with a publicly viewable image.",
+    "expected": {
+      "type": "equals",
+      "value": "false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258027"
+  },
   "check_content_excerpt": "Note: This requirement assumes the use of the RHEL 9 default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nTo ensure the screensaver is configured to be blank, run the following command:\n\n$ gsettings writable org.gnome.desktop.screensaver picture-uri\n \nfalse\n \nIf \"picture-uri\" is writable and the result is \"true\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to prevent a user from overriding the picture-uri setting for graphical user interfaces.\n\nIn the file \"/etc/dconf/db/local.d/00-security-settings\", add or update the following lines:\n\n[org/gnome/desktop/screensaver]\npicture-uri=''\n\nPrevent user modification by adding the following line to \"/etc/dconf/db/local.d/locks/00-security-settings-lock\":\n\n/org/gnome/desktop/screensaver/picture-uri\n\nUpdate the dconf system databases:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258027r1045106_rule",
   "severity": "medium",

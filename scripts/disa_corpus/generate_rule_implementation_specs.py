@@ -491,6 +491,48 @@ def _normalize_command(command: str) -> str:
     return command.strip()
 
 
+def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    command_matches = list(re.finditer(
+        r'^\s*\**\s*\$\s*(?P<command>(?:sudo\s+)?gsettings\s+(?:get|writable)\s+[A-Za-z0-9_.-]+\s+[A-Za-z0-9_.-]+)\s*$',
+        content,
+        re.MULTILINE,
+    ))
+    if len(command_matches) != 1:
+        return None
+    command = _normalize_command(command_matches[0].group('command'))
+    expected_line = None
+    for line in content[command_matches[0].end():].splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.lower().startswith(('if ', 'note:', '$', '#', '>')):
+            break
+        expected_line = stripped
+        break
+    if expected_line not in ('true', 'false'):
+        return None
+    if re.search(r'if[^.\n]+(?:setting|result)\s+is\s+["“]false["”]', content, re.IGNORECASE):
+        expected_value = 'true'
+    elif re.search(r'if[^.\n]+result\s+is\s+["“]true["”]', content, re.IGNORECASE):
+        expected_value = 'false'
+    elif re.search(r'is\s+not\s+set\s+to\s+["“]?true["”]?', content, re.IGNORECASE):
+        expected_value = 'true'
+    else:
+        return None
+    if expected_line != expected_value:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': expected_value},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     command_matches = list(re.finditer(r'^\s*[$#>]\s*(?P<command>(?:sudo\s+)?(?:/[A-Za-z0-9_./:+-]+|[A-Za-z0-9_.:+-]+)\b[^\n\r]*)$', content, re.MULTILINE))
@@ -658,6 +700,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
                 'expected': {'type': 'is_false'},
                 'description': rule.get('title', ''),
             }
+
+    gsettings_candidate = _gsettings_candidate(rule, stig_id)
+    if gsettings_candidate:
+        return gsettings_candidate
 
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:

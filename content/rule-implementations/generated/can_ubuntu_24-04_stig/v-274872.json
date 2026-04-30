@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "gsettings writable org.gnome.desktop.media-handling autorun-never",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must prevent a user from overriding the disabling of the graphical user interface autorun function.",
+    "expected": {
+      "type": "equals",
+      "value": "false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-274872"
+  },
   "check_content_excerpt": "Note: This requirement assumes the use of the Ubuntu 24.04 LTS default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nVerify Ubuntu 24.04 LTS disables ability of the user to override the graphical user interface autorun setting.\n\nDetermine which profile the system database is using with the following command:\n\n$ gsettings writable org.gnome.desktop.media-handling autorun-never\n \nfalse\n \nIf \"autorun-never\" is writable, the result is \"true\". If this is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the Ubuntu 24.04 LTS GNOME desktop to not allow a user to change the setting that disables autorun on removable media.\n\nAdd the following line to \"/etc/dconf/db/local.d/locks/00-security-settings-lock\" to prevent user modification:\n\n/org/gnome/desktop/media-handling/autorun-never\n\nUpdate the dconf system databases:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-274872r1107297_rule",
   "severity": "medium",

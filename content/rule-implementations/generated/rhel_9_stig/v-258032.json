@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "gsettings writable org.gnome.settings-daemon.plugins.media-keys logout",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 must prevent a user from overriding the Ctrl-Alt-Del sequence settings for the graphical user interface.",
+    "expected": {
+      "type": "equals",
+      "value": "false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258032"
+  },
   "check_content_excerpt": "Note: This requirement assumes the use of the RHEL 9 default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nVerify that users cannot enable the Ctrl-Alt-Del sequence in the GNOME desktop with the following command:\n\n$ gsettings writable org.gnome.settings-daemon.plugins.media-keys logout\n \nfalse\n \nIf \"logout\" is writable and the result is \"true\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to disallow the user changing the Ctrl-Alt-Del sequence in the GNOME desktop.\n\nCreate a database to contain the systemwide graphical user logon settings (if it does not already exist) with the following command:\n\n$ sudo touch /etc/dconf/db/local.d/locks/session\n\nAdd the following line to the session locks file to prevent nonprivileged users from modifying the Ctrl-Alt-Del setting:\n\n/org/gnome/settings-daemon/plugins/media-keys/logout\n\nRun the following command to update the database:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258032r1045117_rule",
   "severity": "medium",

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "gsettings writable org.gnome.settings-daemon.peripherals.smartcard removal-action",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 must prevent a user from overriding the disabling of the graphical user smart card removal action.",
+    "expected": {
+      "type": "equals",
+      "value": "false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258020"
+  },
   "check_content_excerpt": "Note: This requirement assumes the use of the RHEL 9 default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nVerify RHEL 9 disables ability of the user to override the smart card removal action setting.\n\n$ gsettings writable org.gnome.settings-daemon.peripherals.smartcard removal-action\n \nfalse\n \nIf \"removal-action\" is writable and the result is \"true\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Add the following line to \"/etc/dconf/db/local.d/locks/00-security-settings-lock\" to prevent user override of the smart card removal action:\n\n/org/gnome/settings-daemon/peripherals/smartcard/removal-action\n\nThen update the dconf system databases:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258020r1045094_rule",
   "severity": "medium",

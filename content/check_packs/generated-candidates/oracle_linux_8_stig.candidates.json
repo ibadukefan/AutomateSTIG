@@ -1166,6 +1166,32 @@
     },
     {
       "check": {
+        "command": "gsettings get org.gnome.desktop.screensaver lock-enabled",
+        "type": "command_output"
+      },
+      "description": "OL 8 must enable a user session lock until that user reestablishes access using established identification and authentication procedures for graphical user sessions.",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248671"
+    },
+    {
+      "check": {
+        "command": "gsettings get org.gnome.login-screen disable-user-list",
+        "type": "command_output"
+      },
+      "description": "OL 8 must disable the user list at logon for graphical user interfaces.",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248673"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/dconf/profile/user",
         "pattern": "system-db",
