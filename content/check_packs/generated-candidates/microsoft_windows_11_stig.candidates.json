@@ -730,6 +730,20 @@
     },
     {
       "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Cryptography\\Configuration\\SSL\\00010002",
+        "type": "registry",
+        "value_name": "EccCurves"
+      },
+      "description": "Windows 11 must be configured to prioritize ECC Curves with longer key lengths first.",
+      "expected": {
+        "type": "equals",
+        "value": "NistP384 NistP256"
+      },
+      "platform": "windows",
+      "vuln_id": "V-253363"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy",
         "type": "registry",
         "value_name": "fMinimizeConnections"
@@ -1444,6 +1458,34 @@
     },
     {
       "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows\\System",
+        "type": "registry",
+        "value_name": "AllowDomainPINLogon"
+      },
+      "description": "The convenience PIN for Windows 11 must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-253423"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\WindowsInkWorkspace",
+        "type": "registry",
+        "value_name": "AllowWindowsInkWorkspace"
+      },
+      "description": "Windows Ink Workspace must be configured to disallow access above the lock.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253424"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "LimitBlankPasswordUse"
@@ -1570,6 +1612,20 @@
     },
     {
       "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "LegalNoticeText"
+      },
+      "description": "The required legal notice must be configured to display before console logon.",
+      "expected": {
+        "type": "equals",
+        "value": "You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only."
+      },
+      "platform": "windows",
+      "vuln_id": "V-253445"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon",
         "type": "registry",
         "value_name": "CachedLogonsCount"
@@ -1693,6 +1749,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-253456"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "RestrictRemoteSAM"
+      },
+      "description": "Remote calls to the Security Account Manager (SAM) must be restricted to Administrators.",
+      "expected": {
+        "type": "equals",
+        "value": "O:BAG:BAD:(A;;RC;;;BA)"
+      },
+      "platform": "windows",
+      "vuln_id": "V-253457"
     },
     {
       "check": {

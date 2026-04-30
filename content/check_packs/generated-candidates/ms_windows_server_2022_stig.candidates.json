@@ -1190,6 +1190,20 @@
     },
     {
       "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "RestrictRemoteSAM"
+      },
+      "description": "Windows Server 2022 must restrict remote calls to the Security Account Manager (SAM) to Administrators on domain-joined member servers and standalone or nondomain-joined systems.",
+      "expected": {
+        "type": "equals",
+        "value": "O:BAG:BAD:(A;;RC;;;BA)"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254433"
+    },
+    {
+      "check": {
         "key": "SeDenyNetworkLogonRight",
         "section": "Privilege Rights",
         "type": "security_policy"

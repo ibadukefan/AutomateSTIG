@@ -57,6 +57,22 @@ Value: 0x00000000 (0)'''
         self.assertEqual(candidate['check']['value_name'], 'AllowUnencryptedTraffic')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
 
+    def test_infers_registry_candidate_check_from_concrete_string_value(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254433',
+            'title': 'Windows Server must restrict remote calls to the Security Account Manager.',
+            'check_content': '''If the following registry value does not exist or is not configured as specified, this is a finding:
+Registry Hive: HKEY_LOCAL_MACHINE
+Registry Path: \\SYSTEM\\CurrentControlSet\\Control\\Lsa\\
+Value Name: RestrictRemoteSAM
+Value Type: REG_SZ
+Value: O:BAG:BAD:(A;;RC;;;BA)'''
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate['check']['type'], 'registry')
+        self.assertEqual(candidate['check']['path'], 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa')
+        self.assertEqual(candidate['check']['value_name'], 'RestrictRemoteSAM')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'O:BAG:BAD:(A;;RC;;;BA)'})
+
     def test_infers_windows_feature_candidate_check_from_powershell_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254269',

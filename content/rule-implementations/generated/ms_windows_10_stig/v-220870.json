@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\Software\\Policies\\Microsoft\\Windows\\System",
+      "type": "registry",
+      "value_name": "AllowDomainPINLogon"
+    },
+    "description": "The convenience PIN for Windows 10 must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-220870"
+  },
   "check_content_excerpt": "If the following registry value does not exist or is not configured as specified, this is a finding.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\Software\\Policies\\Microsoft\\Windows\\System\n\nValue Name: AllowDomainPINLogon\nValue Type: REG_DWORD\nValue data: 0",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Disable the convenience PIN sign-in. \n\nIf this needs to be corrected configure the policy value for Computer Configuration >> Administrative Templates >> System >> Logon >> Set \"Turn on convenience PIN sign-in\" to \"Disabled\u201d.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-220870r958478_rule",
   "severity": "medium",

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 141,
+  "candidate_checks": 146,
   "cases": [
     {
       "check": {
@@ -1407,6 +1407,33 @@
     },
     {
       "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Cryptography\\Configuration\\SSL\\00010002",
+        "type": "registry",
+        "value_name": "EccCurves"
+      },
+      "description": "Windows 11 must be configured to prioritize ECC Curves with longer key lengths first.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "NistP384 NistP256"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Cryptography\\Configuration\\SSL\\00010002\\EccCurves": "unexpected-NistP384 NistP256"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Cryptography\\Configuration\\SSL\\00010002\\EccCurves": "NistP384 NistP256"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253363"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy",
         "type": "registry",
         "value_name": "fMinimizeConnections"
@@ -2784,6 +2811,60 @@
     },
     {
       "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows\\System",
+        "type": "registry",
+        "value_name": "AllowDomainPINLogon"
+      },
+      "description": "The convenience PIN for Windows 11 must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows\\System\\AllowDomainPINLogon": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows\\System\\AllowDomainPINLogon": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253423"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\WindowsInkWorkspace",
+        "type": "registry",
+        "value_name": "AllowWindowsInkWorkspace"
+      },
+      "description": "Windows Ink Workspace must be configured to disallow access above the lock.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\WindowsInkWorkspace\\AllowWindowsInkWorkspace": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\WindowsInkWorkspace\\AllowWindowsInkWorkspace": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253424"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "LimitBlankPasswordUse"
@@ -3027,6 +3108,33 @@
     },
     {
       "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "LegalNoticeText"
+      },
+      "description": "The required legal notice must be configured to display before console logon.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only."
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\LegalNoticeText": "unexpected-You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only."
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\LegalNoticeText": "You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only."
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253445"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon",
         "type": "registry",
         "value_name": "CachedLogonsCount"
@@ -3267,6 +3375,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-253456"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "RestrictRemoteSAM"
+      },
+      "description": "Remote calls to the Security Account Manager (SAM) must be restricted to Administrators.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "O:BAG:BAD:(A;;RC;;;BA)"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\RestrictRemoteSAM": "unexpected-O:BAG:BAD:(A;;RC;;;BA)"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\RestrictRemoteSAM": "O:BAG:BAD:(A;;RC;;;BA)"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253457"
     },
     {
       "check": {
@@ -3814,5 +3949,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 141
+  "validated_candidates": 146
 }

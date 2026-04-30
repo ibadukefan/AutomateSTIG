@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 154,
+  "candidate_checks": 155,
   "cases": [
     {
       "check": {
@@ -1021,6 +1021,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205745"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "RestrictRemoteSAM"
+      },
+      "description": "Windows Server 2019 must restrict remote calls to the Security Account Manager (SAM) to Administrators on domain-joined member servers and standalone or nondomain-joined systems.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "O:BAG:BAD:(A;;RC;;;BA)"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\RestrictRemoteSAM": "unexpected-O:BAG:BAD:(A;;RC;;;BA)"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\RestrictRemoteSAM": "O:BAG:BAD:(A;;RC;;;BA)"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205747"
     },
     {
       "check": {
@@ -4160,5 +4187,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 154
+  "validated_candidates": 155
 }

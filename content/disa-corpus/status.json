@@ -2,11 +2,11 @@
   "authoritative_manifests": 87,
   "authoritative_rules": 17250,
   "authoritative_rules_tracked": 17250,
-  "automated_or_mapped_rules": 10392,
-  "coverage_percent_tracked_corpus": 60.2,
+  "automated_or_mapped_rules": 10448,
+  "coverage_percent_tracked_corpus": 60.6,
   "current_check_definitions": 3189,
-  "generated_candidate_checks_with_fixture_evidence": 2089,
-  "last_updated_utc": "2026-04-30T18:19:52Z",
+  "generated_candidate_checks_with_fixture_evidence": 2145,
+  "last_updated_utc": "2026-04-30T18:33:09Z",
   "notes": [
     "Regression ratchet prevents silent drops in tracked artifacts, authoritative manifests, authoritative rules, automated/mapped rules, or unsupported-rule ceilings.",
     "Generated candidate checks are fixture-backed scaffolding, not live production asset validation.",
@@ -21,12 +21,13 @@
     "Added Windows account policy candidate inference from authoritative fix text/title; tracked coverage is 48.9% (8435/17250) with 8815 unsupported rules remaining.",
     "Added Linux dpkg package candidate inference and sysctl fix text fallback; tracked coverage is 49.8% (8592/17250) with 8658 unsupported rules remaining.",
     "Added Linux unquoted grep expected-line candidate inference; tracked coverage is 60.2% (10386/17250) with 6864 unsupported rules remaining.",
-    "Added conservative Linux systemctl status active-service candidate inference (service units only; target/masked units skipped); tracked coverage is 60.2% (10392/17250) with 6858 unsupported rules remaining."
+    "Added conservative Linux systemctl status active-service candidate inference (service units only; target/masked units skipped); tracked coverage is 60.2% (10392/17250) with 6858 unsupported rules remaining.",
+    "Added conservative Windows registry candidate inference for concrete REG_SZ/REG_MULTI_SZ and Value data entries while skipping referential banner placeholders and multi-value rules; tracked coverage is 60.6% (10448/17250) with 6802 unsupported rules remaining."
   ],
   "public_disa_artifacts": 87,
   "public_disa_artifacts_indexed": 87,
   "status": "expanded_public_corpus_with_fixture_gated_candidate_mapping",
   "target": "unsupported_authoritative_rules == 0 across every authorized DISA STIG artifact",
   "unsupported_authoritative_rules": 11154,
-  "unsupported_rules": 6858
+  "unsupported_rules": 6802
 }

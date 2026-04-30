@@ -58,14 +58,22 @@ def _registry_hive_abbrev(hive: str) -> str:
 
 
 def _registry_value(check_content: str):
-    match = re.search(r'^\s*Value\s*:\s*(0x[0-9a-fA-F]+|[-+]?\d+)\s*(?:\(([-+]?\d+)\))?', check_content, re.MULTILINE)
-    if not match:
+    match = re.search(r'^\s*Value(?:\s+data)?\s*:\s*(0x[0-9a-fA-F]+|[-+]?\d+)\s*(?:\(([-+]?\d+)\))?', check_content, re.IGNORECASE | re.MULTILINE)
+    if match:
+        raw = match.group(2) or match.group(1)
+        try:
+            return int(raw, 16) if raw.lower().startswith('0x') else int(raw)
+        except ValueError:
+            return raw
+
+    type_match = re.search(r'^(?:\s*Value\s+Type|\s*Type)\s*:\s*(REG_(?:SZ|MULTI_SZ))\s*$', check_content, re.IGNORECASE | re.MULTILINE)
+    value_match = re.search(r'^\s*Value\s*:\s*(\S[^\n\r]*)$', check_content, re.IGNORECASE | re.MULTILINE)
+    if not type_match or not value_match:
         return None
-    raw = match.group(2) or match.group(1)
-    try:
-        return int(raw, 16) if raw.lower().startswith('0x') else int(raw)
-    except ValueError:
-        return raw
+    raw = value_match.group(1).strip()
+    if not raw or re.match(r'^(?:see|refer)\b', raw, re.IGNORECASE):
+        return None
+    return raw
 
 
 def _normalize_registry_path(path: str) -> str:
@@ -427,6 +435,8 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     path = re.search(r'Registry\s+Path:\s*([^\n\r]+)', content, re.IGNORECASE)
     value_name = re.search(r'Value\s+Name:\s*([^\n\r]+)', content, re.IGNORECASE)
     if hive and path and value_name:
+        if len(re.findall(r'Value\s+Name\s*:', content, re.IGNORECASE)) > 1:
+            return None
         reg_path = path.group(1).strip().strip('\\/')
         expected_value = _registry_value(content)
         if expected_value is not None:
