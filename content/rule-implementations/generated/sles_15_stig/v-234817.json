@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+      "pattern": "cert_policy = ca,oscp_on,signature,crl_auto;",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234817"
+  },
   "check_content_excerpt": "Verify the SUSE operating system for PKI-based authentication had valid certificates by constructing a certification path (which includes status information) to an accepted trust anchor.\n\nCheck that the certification path to an accepted trust anchor for multifactor authentication is implemented with the following command:\n\n> grep cert_policy /etc/pam_pkcs11/pam_pkcs11.conf\n\ncert_policy = ca,oscp_on,signature,crl_auto;\n\nIf \"cert_policy\" is not set to include \"ca\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system for PKI-based authentication to validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.\n\nModify all of the cert_policy lines in \"/etc/pam_pkcs11/pam_pkcs11.conf\" to include \"ca\":\n\ncert_policy = ca,signature,oscp_on;\n\nNote: Additional certificate validation polices are permitted.\n\nAdditional information on the configuration of multifactor authentication on the SUSE operating system can be found at https://www.suse.com/communities/blog/configuring-smart-card-authentication-suse-linux-enterprise/.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234817r1009611_rule",
   "severity": "medium",

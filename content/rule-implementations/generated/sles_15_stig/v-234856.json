@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/modprobe.d/50-blacklist.conf",
+      "pattern": "blacklist usb-storage",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must disable the USB mass storage kernel module.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234856"
+  },
   "check_content_excerpt": "Verify the SUSE operating system does not automount USB mass storage devices when connected to the host.\n\nCheck that \"usb-storage\" is blacklisted in the \"/etc/modprobe.d/50-blacklist.conf\" file with the following command:\n\n> grep usb-storage /etc/modprobe.d/50-blacklist.conf\nblacklist usb-storage\n\nIf nothing is output from the command, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to prevent USB mass storage devices from automounting when connected to the host.\n\nAdd or update the following line to the \"/etc/modprobe.d/50-blacklist.conf\" file:\n\nblacklist usb-storage",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234856r958820_rule",
   "severity": "medium",

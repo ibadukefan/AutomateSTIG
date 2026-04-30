@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/common-auth",
+      "pattern": "auth required pam_tally2.so onerr=fail deny=3",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must lock an account after three consecutive invalid access attempts.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234867"
+  },
   "check_content_excerpt": "Verify the SUSE operating system locks a user account after three consecutive failed access attempts until the locked account is released by an administrator. \n\nCheck that the system locks a user account after three consecutive failed login attempts using the following command: \n\n> grep pam_tally2.so /etc/pam.d/common-auth \nauth required pam_tally2.so onerr=fail deny=3 \n\nIf no line is returned or the line is commented out, this is a finding.\nIf the line is missing \"onerr=fail\", this is a finding.\nIf the line has \"deny\" set to a value other than 1, 2, or 3, this is a finding.\n\nCheck that the system resets the failed login attempts counter after a successful login using the following command: \n\n> grep pam_tally2.so /etc/pam.d/common-account \naccount required pam_tally2.so\n\nIf the account option is missing, or commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to lock an account when three unsuccessful access attempts occur.\n\nModify the first line of the auth section \"/etc/pam.d/common-auth\" file to match the following lines:\n\nauth required pam_tally2.so onerr=fail silent audit deny=3\n\nAdd or modify the following line in the /etc/pam.d/common-account file:\naccount required pam_tally2.so \n\nNote: Manual changes to the listed files may be overwritten by the \"pam-config\" program. The \"pam-config\" program should not be used to update the configurations listed in this requirement.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234867r958388_rule",
   "severity": "medium",

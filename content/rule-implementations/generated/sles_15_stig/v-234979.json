@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/audisp-remote.conf",
+      "pattern": "disk_full_action = syslog",
+      "type": "file_content"
+    },
+    "description": "Audispd must take appropriate action when the SUSE operating system audit storage is full.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234979"
+  },
   "check_content_excerpt": "Verify the audit system off-loads audit records if the SUSE operating system storage volume becomes full.\n\nCheck that the records are properly off-loaded to a remote server with the following command:\n\n> sudo grep -i \"disk_full_action\" /etc/audit/audisp-remote.conf\ndisk_full_action = syslog\n\nIf \"disk_full_action\" is not set to \"syslog\", \"single\", or \"halt\" or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to take the appropriate action if the audit storage is full.\n\nAdd, edit, or uncomment the \"disk_full_action\" option in \"/etc/audit/audisp-remote.conf\". Set it to \"syslog\", \"single\" or \"halt\" as in the example below:\n\ndisk_full_action = syslog",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234979r1009576_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "IgnoreUserKnownHosts yes",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system SSH daemon must be configured to not allow authentication using known hosts authentication.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-235007"
+  },
   "check_content_excerpt": "Verify the SUSE operating system SSH daemon is configured to not allow authentication using \"known hosts\" authentication.\n\nTo determine how the SSH daemon's \"IgnoreUserKnownHosts\" option is set, run the following command:\n\n> sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*ignoreuserknownhosts'\n\nIgnoreUserKnownHosts yes\n\nIf the value is returned as \"no\", the returned line is commented out, or no output is returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system SSH daemon to not allow authentication using \"known hosts\" authentication.\n\nAdd the following line in \"/etc/ssh/sshd_config\", or uncomment the line and set the value to \"yes\":\n\nIgnoreUserKnownHosts yes",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-235007r991589_rule",
   "severity": "medium",

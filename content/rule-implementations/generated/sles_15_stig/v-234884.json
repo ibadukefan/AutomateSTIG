@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/common-password",
+      "pattern": "pam_cracklib.so",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must enforce passwords that contain at least one numeric character.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234884"
+  },
   "check_content_excerpt": "Verify the SUSE operating system enforces password complexity by requiring that at least one numeric character.\n\nCheck that the operating system enforces password complexity by requiring that at least one numeric character be used by using the following command:\n\n> grep pam_cracklib.so /etc/pam.d/common-password\npassword requisite pam_cracklib.so dcredit=-1\n\nIf the command does not return anything, the returned line is commented out, or has a second column value different from \"requisite\", or does not contain \"dcredit=-1\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to enforce password complexity by requiring at least one numeric character.\n\nEdit \"/etc/pam.d/common-password\" and edit the line containing \"pam_cracklib.so\" to contain the option \"dcredit=-1\" after the third column.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234884r1009623_rule",
   "severity": "medium",

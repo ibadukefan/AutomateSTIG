@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/audisp-remote.conf",
+      "pattern": "network_failure_action = syslog",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must off-load audit records onto a different system or media from the system being audited.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234978"
+  },
   "check_content_excerpt": "Verify what action the audit system takes if it cannot off-load audit records to a different system or storage media from the SUSE operating system being audited.\n\nCheck the action that the audit system takes in the event of a network failure with the following command:\n\n> sudo grep -i \"network_failure_action\" /etc/audit/audisp-remote.conf\n\nnetwork_failure_action = syslog\n\nIf the \"network_failure_action\" option is not set to \"syslog\", \"single\", or \"halt\" or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to take the appropriate action if it cannot off-load audit records to a different system or storage media from the system being audited due to a network failure.\n\nUncomment the \"network_failure_action\" option in \"/etc/audit/audisp-remote.conf\" and set it to \"syslog\", \"single\", or \"halt\". See the example below:\n\nnetwork_failure_action = syslog",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234978r1009573_rule",
   "severity": "medium",

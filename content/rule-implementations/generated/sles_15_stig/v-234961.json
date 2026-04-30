@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/permissions.local",
+      "pattern": "^/usr/sbin/au",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system audit tools must have the proper permissions configured to protect against unauthorized access.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234961"
+  },
   "check_content_excerpt": "Verify that the SUSE operating system audit tools have the proper permissions configured in the permissions profile to protect from unauthorized access.\n\nCheck that \"permissions.local\" file contains the correct permissions rules with the following command:\n\n> grep \"^/usr/sbin/au\" /etc/permissions.local\n\n/usr/sbin/audispd root:root 0750\n/usr/sbin/auditctl root:root 0750\n/usr/sbin/auditd root:root 0750\n/usr/sbin/ausearch root:root 0755\n/usr/sbin/aureport root:root 0755\n/usr/sbin/autrace root:root 0750\n/usr/sbin/augenrules root:root 0750\n\nIf the command does not return any output, this is a finding.\n\nCheck that all of the audit information files and folders have the correct permissions with the following command:\n\n> sudo chkstat /etc/permissions.local\n\nIf the command returns any output, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system audit tools to have proper permissions set in the permissions profile to protect from unauthorized access.\n\nEdit the file \"/etc/permissions.local\" and insert the following text:\n\n/usr/sbin/audispd root:root 0750\n/usr/sbin/auditctl root:root 0750\n/usr/sbin/auditd root:root 0750\n/usr/sbin/ausearch root:root 0755\n/usr/sbin/aureport root:root 0755\n/usr/sbin/autrace root:root 0750\n/usr/sbin/augenrules root:root 0750\n\nSet the correct permissions with the following command:\n\n> sudo chkstat --set /etc/permissions.local",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234961r991557_rule",
   "severity": "medium",

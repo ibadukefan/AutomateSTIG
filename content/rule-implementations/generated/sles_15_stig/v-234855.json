@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+      "pattern": "| awk '/pkcs11_module coolkey {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must implement certificate status checking for multifactor authentication.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234855"
+  },
   "check_content_excerpt": "Verify the SUSE operating system implements certificate status checking for multifactor authentication.\n\nCheck that certificate status checking for multifactor authentication is implemented with the following command:\n\n> grep use_pkcs11_module /etc/pam_pkcs11/pam_pkcs11.conf | awk '/pkcs11_module coolkey {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy\n\ncert_policy = ca,ocsp_on,signature,crl_auto;\n\nIf \"cert_policy\" is not set to include \"ocsp_on\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to certificate status checking for PKI authentication.\n\nModify all of the cert_policy lines in \"/etc/pam_pkcs11/pam_pkcs11.conf\" to include \"ocsp_on\".\n\nNote: OCSP allows sending request for certificate status information. Additional certificate validation polices are permitted.\n\nAdditional information on the configuration of multifactor authentication on the SUSE operating system can be found at https://www.suse.com/communities/blog/configuring-smart-card-authentication-suse-linux-enterprise/.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234855r1155789_rule",
   "severity": "medium",

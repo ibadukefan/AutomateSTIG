@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/login.defs",
+      "pattern": "PASS_MIN_DAYS 1",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must be configured to create or update passwords with a minimum lifetime of 24 hours (one day).",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234889"
+  },
   "check_content_excerpt": "Verify the SUSE operating system creates or updates passwords with minimum password age of one day or greater.\n\nTo check that the SUSE operating system enforces 24 hours/one day as the minimum password age, run the following command:\n\n> grep '^PASS_MIN_DAYS' /etc/login.defs\n\nPASS_MIN_DAYS 1\n\nIf no output is produced, or if \"PASS_MIN_DAYS\" does not have a value of \"1\" or greater, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to enforce 24 hours/one day or greater as the minimum password age.\n\nEdit the file \"/etc/login.defs\" and add or correct the following line. Replace [DAYS] with the appropriate amount of days:\n\nPASS_MIN_DAYS [DAYS]\n\nThe DOD requirement is \"1\" but a greater value is acceptable.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234889r1009628_rule",
   "severity": "medium",

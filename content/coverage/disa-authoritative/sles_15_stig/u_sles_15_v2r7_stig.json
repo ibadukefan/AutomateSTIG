@@ -239,31 +239,33 @@
       "vuln_id": "V-234815"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234816",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234816r958408_rule",
       "severity": "medium",
       "title": "The SUSE operating system must implement DOD-approved encryption to protect the confidentiality of SSH remote connections.",
-      "tracking_issue": "TODO-V-234816",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234816"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234817",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234817r1009611_rule",
       "severity": "medium",
       "title": "The SUSE operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
-      "tracking_issue": "TODO-V-234817",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234817"
@@ -363,46 +365,49 @@
       "vuln_id": "V-234823"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234825",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234825r971535_rule",
       "severity": "medium",
       "title": "The SUSE operating system must employ FIPS 140-2 approved cryptographic hashing algorithm for system authentication (login.defs).",
-      "tracking_issue": "TODO-V-234825",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234825"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234826",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234826r958510_rule",
       "severity": "medium",
       "title": "The SUSE operating system SSH daemon must be configured to only use Message Authentication Codes (MACs) employing FIPS 140-2 approved cryptographic hash algorithms.",
-      "tracking_issue": "TODO-V-234826",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234826"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234827",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234827r986464_rule",
       "severity": "medium",
       "title": "The SUSE operating system SSH daemon must be configured with a timeout interval.",
-      "tracking_issue": "TODO-V-234827",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234827"
@@ -423,16 +428,17 @@
       "vuln_id": "V-234828"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234829",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234829r958528_rule",
       "severity": "medium",
       "title": "The SUSE operating system must be configured to use TCP syncookies.",
-      "tracking_issue": "TODO-V-234829",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234829"
@@ -736,16 +742,17 @@
       "vuln_id": "V-234848"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234849",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234849r1038944_rule",
       "severity": "medium",
       "title": "The SUSE operating system clock must, for networked systems, be synchronized to an authoritative DOD time source at least every 24 hours.",
-      "tracking_issue": "TODO-V-234849",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234849"
@@ -767,16 +774,17 @@
       "vuln_id": "V-234850"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234851",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234851r1184456_rule",
       "severity": "medium",
       "title": "Advanced Intrusion Detection Environment (AIDE) must verify the baseline SUSE operating system configuration at least weekly.",
-      "tracking_issue": "TODO-V-234851",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234851"
@@ -827,61 +835,65 @@
       "vuln_id": "V-234854"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234855",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234855r1155789_rule",
       "severity": "medium",
       "title": "The SUSE operating system must implement certificate status checking for multifactor authentication.",
-      "tracking_issue": "TODO-V-234855",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234855"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234856",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234856r958820_rule",
       "severity": "medium",
       "title": "The SUSE operating system must disable the USB mass storage kernel module.",
-      "tracking_issue": "TODO-V-234856",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234856"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234857",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234857r958828_rule",
       "severity": "medium",
       "title": "If Network Security Services (NSS) is being used by the SUSE operating system it must prohibit the use of cached authentications after one day.",
-      "tracking_issue": "TODO-V-234857",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234857"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234858",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234858r958828_rule",
       "severity": "medium",
       "title": "The SUSE operating system must configure the Linux Pluggable Authentication Modules (PAM) to prohibit the use of cached offline authentications after one day.",
-      "tracking_issue": "TODO-V-234858",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234858"
@@ -917,46 +929,49 @@
       "vuln_id": "V-234860"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234861",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234861r958928_rule",
       "severity": "medium",
       "title": "The SUSE operating system must implement kptr-restrict to prevent the leaking of internal kernel addresses.",
-      "tracking_issue": "TODO-V-234861",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234861"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234862",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234862r958928_rule",
       "severity": "medium",
       "title": "Address space layout randomization (ASLR) must be implemented by the SUSE operating system to protect memory from unauthorized code execution.",
-      "tracking_issue": "TODO-V-234862",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234862"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234863",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234863r958936_rule",
       "severity": "medium",
       "title": "The SUSE operating system must remove all outdated software components after updated versions have been installed.",
-      "tracking_issue": "TODO-V-234863",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234863"
@@ -977,16 +992,17 @@
       "vuln_id": "V-234864"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234865",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234865r1082187_rule",
       "severity": "medium",
       "title": "The SUSE operating system must off-load rsyslog messages for networked systems in real time and off-load standalone systems at least weekly.",
-      "tracking_issue": "TODO-V-234865",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234865"
@@ -1007,76 +1023,81 @@
       "vuln_id": "V-234866"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234867",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234867r958388_rule",
       "severity": "medium",
       "title": "The SUSE operating system must lock an account after three consecutive invalid access attempts.",
-      "tracking_issue": "TODO-V-234867",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234867"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234868",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234868r958398_rule",
       "severity": "low",
       "title": "The SUSE operating system must limit the number of concurrent sessions to 10 for all accounts and/or account types.",
-      "tracking_issue": "TODO-V-234868",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234868"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234869",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234869r1009617_rule",
       "severity": "medium",
       "title": "The SUSE operating system must implement multifactor authentication for access to privileged accounts via pluggable authentication modules (PAM).",
-      "tracking_issue": "TODO-V-234869",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234869"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234870",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234870r1009618_rule",
       "severity": "medium",
       "title": "The SUSE operating system must deny direct logons to the root account using remote access via SSH.",
-      "tracking_issue": "TODO-V-234870",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234870"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234871",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234871r1009619_rule",
       "severity": "medium",
       "title": "The SUSE operating system must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity after password expiration.",
-      "tracking_issue": "TODO-V-234871",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234871"
@@ -1142,151 +1163,161 @@
       "vuln_id": "V-234876"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234877",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234877r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must restrict privilege elevation to authorized personnel.",
-      "tracking_issue": "TODO-V-234877",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234877"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234878",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234878r1050789_rule",
       "severity": "medium",
       "title": "The SUSE operating system must require reauthentication when using the \"sudo\" command.",
-      "tracking_issue": "TODO-V-234878",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234878"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234879",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234879r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must use the invoking user's password for privilege escalation when using \"sudo\".",
-      "tracking_issue": "TODO-V-234879",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234879"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234880",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234880r991589_rule",
       "severity": "medium",
       "title": "All SUSE operating system local interactive user accounts, upon creation, must be assigned a home directory.",
-      "tracking_issue": "TODO-V-234880",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234880"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234881",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234881r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must display the date and time of the last successful account logon upon an SSH logon.",
-      "tracking_issue": "TODO-V-234881",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234881"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234882",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234882r1009621_rule",
       "severity": "medium",
       "title": "The SUSE operating system must enforce passwords that contain at least one uppercase character.",
-      "tracking_issue": "TODO-V-234882",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234882"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234883",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234883r1009622_rule",
       "severity": "medium",
       "title": "The SUSE operating system must enforce passwords that contain at least one lowercase character.",
-      "tracking_issue": "TODO-V-234883",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234883"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234884",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234884r1009623_rule",
       "severity": "medium",
       "title": "The SUSE operating system must enforce passwords that contain at least one numeric character.",
-      "tracking_issue": "TODO-V-234884",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234884"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234885",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234885r1009624_rule",
       "severity": "medium",
       "title": "The SUSE operating system must require the change of at least eight of the total number of characters when passwords are changed.",
-      "tracking_issue": "TODO-V-234885",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234885"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234886",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234886r1009625_rule",
       "severity": "medium",
       "title": "The SUSE operating system must configure the Linux Pluggable Authentication Modules (PAM) to only store encrypted representations of passwords.",
-      "tracking_issue": "TODO-V-234886",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234886"
@@ -1322,16 +1353,17 @@
       "vuln_id": "V-234888"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234889",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234889r1009628_rule",
       "severity": "medium",
       "title": "The SUSE operating system must be configured to create or update passwords with a minimum lifetime of 24 hours (one day).",
-      "tracking_issue": "TODO-V-234889",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234889"
@@ -1352,16 +1384,17 @@
       "vuln_id": "V-234890"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234891",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234891r1038967_rule",
       "severity": "medium",
       "title": "The SUSE operating system must be configured to create or update passwords with a maximum lifetime of 60 days.",
-      "tracking_issue": "TODO-V-234891",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234891"
@@ -1382,46 +1415,49 @@
       "vuln_id": "V-234892"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234895",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234895r1009632_rule",
       "severity": "medium",
       "title": "The SUSE operating system must employ passwords with a minimum of 15 characters.",
-      "tracking_issue": "TODO-V-234895",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234895"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234896",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234896r1009633_rule",
       "severity": "medium",
       "title": "The SUSE operating system must enforce passwords that contain at least one special character.",
-      "tracking_issue": "TODO-V-234896",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234896"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234897",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234897r991587_rule",
       "severity": "medium",
       "title": "The SUSE operating system must prevent the use of dictionary words for passwords.",
-      "tracking_issue": "TODO-V-234897",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234897"
@@ -2072,91 +2108,97 @@
       "vuln_id": "V-234955"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234956",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234956r958424_rule",
       "severity": "medium",
       "title": "The Information System Security Officer (ISSO) and System Administrator (SA), at a minimum, must be alerted of a SUSE operating system audit processing failure event.",
-      "tracking_issue": "TODO-V-234956",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234956"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234957",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234957r958424_rule",
       "severity": "medium",
       "title": "The Information System Security Officer (ISSO) and System Administrator (SA), at a minimum, must have mail aliases to be notified of a SUSE operating system audit processing failure.",
-      "tracking_issue": "TODO-V-234957",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234957"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234958",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234958r1038966_rule",
       "severity": "medium",
       "title": "The SUSE operating system audit system must take appropriate action when the audit storage volume is full.",
-      "tracking_issue": "TODO-V-234958",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234958"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234959",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234959r958434_rule",
       "severity": "medium",
       "title": "The SUSE operating system must protect audit rules from unauthorized modification.",
-      "tracking_issue": "TODO-V-234959",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234959"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234961",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234961r991557_rule",
       "severity": "medium",
       "title": "The SUSE operating system audit tools must have the proper permissions configured to protect against unauthorized access.",
-      "tracking_issue": "TODO-V-234961",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234961"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234962",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234962r991567_rule",
       "severity": "medium",
       "title": "The SUSE operating system file integrity tool must be configured to protect the integrity of the audit tools.",
-      "tracking_issue": "TODO-V-234962",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234962"
@@ -2192,16 +2234,17 @@
       "vuln_id": "V-234964"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234965",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234965r958752_rule",
       "severity": "medium",
       "title": "The SUSE operating system must allocate audit record storage capacity to store at least one week of audit records when audit records are not immediately sent to a central audit record storage facility.",
-      "tracking_issue": "TODO-V-234965",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234965"
@@ -2222,46 +2265,49 @@
       "vuln_id": "V-234966"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234967",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234967r1009567_rule",
       "severity": "low",
       "title": "The SUSE operating system audit event multiplexor must be configured to use Kerberos.",
-      "tracking_issue": "TODO-V-234967",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234967"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234968",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234968r1009570_rule",
       "severity": "low",
       "title": "Audispd must off-load audit records onto a different system or media from the SUSE operating system being audited.",
-      "tracking_issue": "TODO-V-234968",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234968"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234969",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234969r971542_rule",
       "severity": "medium",
       "title": "The SUSE operating system auditd service must notify the System Administrator (SA) and Information System Security Officer (ISSO) immediately when audit storage capacity is 75 percent full.",
-      "tracking_issue": "TODO-V-234969",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234969"
@@ -2282,136 +2328,145 @@
       "vuln_id": "V-234973"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234975",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234975r991581_rule",
       "severity": "medium",
       "title": "The SUSE operating system must generate audit records for the /run/utmp file.",
-      "tracking_issue": "TODO-V-234975",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234975"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234976",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234976r991581_rule",
       "severity": "medium",
       "title": "The SUSE operating system must generate audit records for the /var/log/wtmp file.",
-      "tracking_issue": "TODO-V-234976",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234976"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234977",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234977r991581_rule",
       "severity": "medium",
       "title": "The SUSE operating system must generate audit records for the /var/log/btmp file.",
-      "tracking_issue": "TODO-V-234977",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234977"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234978",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234978r1009573_rule",
       "severity": "medium",
       "title": "The SUSE operating system must off-load audit records onto a different system or media from the system being audited.",
-      "tracking_issue": "TODO-V-234978",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234978"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234979",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234979r1009576_rule",
       "severity": "medium",
       "title": "Audispd must take appropriate action when the SUSE operating system audit storage is full.",
-      "tracking_issue": "TODO-V-234979",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234979"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234980",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234980r991589_rule",
       "severity": "low",
       "title": "The SUSE operating system must use a separate file system for the system audit data path.",
-      "tracking_issue": "TODO-V-234980",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234980"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234981",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234981r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not disable syscall auditing.",
-      "tracking_issue": "TODO-V-234981",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234981"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234982",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234982r991588_rule",
       "severity": "medium",
       "title": "The SUSE operating system must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.",
-      "tracking_issue": "TODO-V-234982",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234982"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234983",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234983r991588_rule",
       "severity": "medium",
       "title": "The SUSE operating system must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.",
-      "tracking_issue": "TODO-V-234983",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234983"
@@ -2567,16 +2622,17 @@
       "vuln_id": "V-234993"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234994",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234994r1184477_rule",
       "severity": "medium",
       "title": "All SUSE operating system local interactive user home directories must be group-owned by the home directory owner's primary group.",
-      "tracking_issue": "TODO-V-234994",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234994"
@@ -2657,31 +2713,33 @@
       "vuln_id": "V-234999"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235000",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235000r991589_rule",
       "severity": "medium",
       "title": "SUSE operating system file systems that are being imported via Network File System (NFS) must be mounted to prevent files with the setuid and setgid bit set from being executed.",
-      "tracking_issue": "TODO-V-235000",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235000"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235001",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235001r991589_rule",
       "severity": "medium",
       "title": "SUSE operating system file systems that are being imported via Network File System (NFS) must be mounted to prevent binary files from being executed.",
-      "tracking_issue": "TODO-V-235001",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235001"
@@ -2717,31 +2775,33 @@
       "vuln_id": "V-235003"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235004",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235004r1184485_rule",
       "severity": "low",
       "title": "A separate file system must be used for SUSE operating system user home directories (such as /home or an equivalent).",
-      "tracking_issue": "TODO-V-235004",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235004"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235005",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235005r991589_rule",
       "severity": "low",
       "title": "The SUSE operating system must use a separate file system for /var.",
-      "tracking_issue": "TODO-V-235005",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235005"
@@ -2763,16 +2823,17 @@
       "vuln_id": "V-235006"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235007",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235007r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system SSH daemon must be configured to not allow authentication using known hosts authentication.",
-      "tracking_issue": "TODO-V-235007",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235007"
@@ -2808,226 +2869,241 @@
       "vuln_id": "V-235009"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235010",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235010r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system SSH daemon must perform strict mode checking of home directory configuration files.",
-      "tracking_issue": "TODO-V-235010",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235010"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235013",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235013r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system SSH daemon must disable forwarded remote X connections for interactive users, unless to fulfill documented and validated mission requirements.",
-      "tracking_issue": "TODO-V-235013",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235013"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235014",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235014r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not forward Internet Protocol version 4 (IPv4) source-routed packets.",
-      "tracking_issue": "TODO-V-235014",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235014"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235015",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235015r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not forward Internet Protocol version 6 (IPv6) source-routed packets.",
-      "tracking_issue": "TODO-V-235015",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235015"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235016",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235016r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not forward Internet Protocol version 4 (IPv4) source-routed packets by default.",
-      "tracking_issue": "TODO-V-235016",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235016"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235017",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235017r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not forward Internet Protocol version 6 (IPv6) source-routed packets by default.",
-      "tracking_issue": "TODO-V-235017",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235017"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235018",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235018r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must prevent Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
-      "tracking_issue": "TODO-V-235018",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235018"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235019",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235019r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not allow interfaces to accept Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages by default.",
-      "tracking_issue": "TODO-V-235019",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235019"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235020",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235020r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must prevent Internet Protocol version 6 (IPv6) Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
-      "tracking_issue": "TODO-V-235020",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235020"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235021",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235021r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not allow interfaces to accept Internet Protocol version 6 (IPv6) Internet Control Message Protocol (ICMP) redirect messages by default.",
-      "tracking_issue": "TODO-V-235021",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235021"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235022",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235022r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not allow interfaces to send Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages by default.",
-      "tracking_issue": "TODO-V-235022",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235022"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235023",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235023r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not send Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirects.",
-      "tracking_issue": "TODO-V-235023",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235023"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235024",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235024r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not be performing Internet Protocol version 4 (IPv4) packet forwarding unless the system is a router.",
-      "tracking_issue": "TODO-V-235024",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235024"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235025",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235025r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not be performing Internet Protocol version 6 (IPv6) packet forwarding unless the system is a router.",
-      "tracking_issue": "TODO-V-235025",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235025"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235026",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235026r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not be performing Internet Protocol version 6 (IPv6) packet forwarding by default unless the system is a router.",
-      "tracking_issue": "TODO-V-235026",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235026"
@@ -3078,31 +3154,33 @@
       "vuln_id": "V-235029"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235030",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235030r991590_rule",
       "severity": "medium",
       "title": "The SUSE operating system default permissions must be defined in such a way that all authenticated users can only read and modify their own files.",
-      "tracking_issue": "TODO-V-235030",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235030"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235031",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235031r991591_rule",
       "severity": "high",
       "title": "The SUSE operating system must not allow unattended or automatic logon via the graphical user interface (GUI).",
-      "tracking_issue": "TODO-V-235031",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-235031"
@@ -3123,31 +3201,33 @@
       "vuln_id": "V-235032"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-251723",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-251723r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must specify the default \"include\" directory for the /etc/sudoers file.",
-      "tracking_issue": "TODO-V-251723",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-251723"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-251724",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-251724r1050789_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not be configured to bypass password requirements for privilege escalation.",
-      "tracking_issue": "TODO-V-251724",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-251724"
@@ -3168,31 +3248,33 @@
       "vuln_id": "V-251725"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-255920",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-255920r991554_rule",
       "severity": "medium",
       "title": "The SUSE operating system SSH server must be configured to use only FIPS-validated key exchange algorithms.",
-      "tracking_issue": "TODO-V-255920",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-255920"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-255921",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-255921r1137695_rule",
       "severity": "low",
       "title": "The SUSE operating system must restrict access to the kernel message buffer.",
-      "tracking_issue": "TODO-V-255921",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-255921"
@@ -3228,16 +3310,17 @@
       "vuln_id": "V-256983"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-274879",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-274879r1106564_rule",
       "severity": "medium",
       "title": "The SUSE operating system must audit any script or executable called by cron as root or by any privileged user.",
-      "tracking_issue": "TODO-V-274879",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-274879"

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "StrictModes yes",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system SSH daemon must perform strict mode checking of home directory configuration files.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-235010"
+  },
   "check_content_excerpt": "Verify the SUSE operating system SSH daemon performs strict mode checking of home directory configuration files.\n\nCheck that the SSH daemon performs strict mode checking of home directory configuration files with the following command:\n\n> sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*strictmodes'\n\nStrictModes yes\n\nIf \"StrictModes\" is set to \"no\", is missing, or the returned line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system SSH daemon performs strict mode checking of home directory configuration files.\n\nUncomment the \"StrictModes\" keyword in \"/etc/ssh/sshd_config\" and set the value to \"yes\":\n\nStrictModes yes",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-235010r991589_rule",
   "severity": "medium",

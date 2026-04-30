@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/common-auth",
+      "pattern": "auth sufficient pam_pkcs11.so",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must implement multifactor authentication for access to privileged accounts via pluggable authentication modules (PAM).",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234869"
+  },
   "check_content_excerpt": "Verify the SUSE operating system implements multifactor authentication for remote access to privileged accounts via PAM.\n\nCheck that the \"pam_pkcs11.so\" option is configured in the \"/etc/pam.d/common-auth\" file with the following command:\n\n> grep pam_pkcs11.so /etc/pam.d/common-auth\n\nauth sufficient pam_pkcs11.so\n\nIf \"pam_pkcs11.so\" is not set in \"/etc/pam.d/common-auth\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to implement multifactor authentication for remote access to privileged accounts via PAM.\n\nAdd or update \"pam_pkcs11.so\" in \"/etc/pam.d/common-auth\" to match the following line:\n\nauth sufficient pam_pkcs11.so",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234869r1009617_rule",
   "severity": "medium",

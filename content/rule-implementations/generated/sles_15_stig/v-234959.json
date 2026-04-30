@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/permissions.local",
+      "pattern": "audit",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must protect audit rules from unauthorized modification.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234959"
+  },
   "check_content_excerpt": "Verify that the SUSE operating system protects audit rules from unauthorized modification.\n\nCheck that \"permissions.local\" file contains the correct permissions rules with the following command:\n\n> grep -i audit /etc/permissions.local\n\n/var/log/audit root:root 600\n/var/log/audit/audit.log root:root 600\n/etc/audit/audit.rules root:root 640\n/etc/audit/rules.d/audit.rules root:root 640\n\nIf the command does not return any output, this is a finding.\n\nCheck that all of the audit information files and folders have the correct permissions with the following command:\n\n> sudo chkstat /etc/permissions.local\n\nIf the command returns any output, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to protect audit rules from unauthorized modification.\n\nAdd or update the following rules in \"/etc/permissions.local\":\n\n/var/log/audit root:root 600\n/var/log/audit/audit.log root:root 600\n/etc/audit/audit.rules root:root 640\n/etc/audit/rules.d/audit.rules root:root 640\n\nSet the correct permissions with the following command:\n\n> sudo chkstat --set /etc/permissions.local",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234959r958434_rule",
   "severity": "medium",

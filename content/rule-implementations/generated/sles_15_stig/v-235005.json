@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/fstab",
+      "pattern": "UUID=c274f65f /var ext4 noatime,nobarrier 1 2",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must use a separate file system for /var.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-235005"
+  },
   "check_content_excerpt": "Verify that the SUSE operating system has a separate file system/partition for \"/var\".\n\nCheck that a file system/partition has been created for \"/var\" with the following command:\n\n> grep /var /etc/fstab\nUUID=c274f65f /var ext4 noatime,nobarrier 1 2\n\nIf a separate entry for \"/var\" is not in use, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Create a separate file system/partition on the SUSE operating system for \"/var\".\n\nMigrate \"/var\" onto the separate file system/partition.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-235005r991589_rule",
   "severity": "low",

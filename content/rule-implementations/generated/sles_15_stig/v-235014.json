@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "net.ipv4.conf.all.accept_source_route",
+      "type": "sysctl"
+    },
+    "description": "The SUSE operating system must not forward Internet Protocol version 4 (IPv4) source-routed packets.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "linux",
+    "vuln_id": "V-235014"
+  },
   "check_content_excerpt": "Verify the SUSE operating system does not accept IPv4 source-routed packets.\n\nCheck the value of the IPv4 accept source route variable with the following command:\n\n> sudo sysctl net.ipv4.conf.all.accept_source_route\nnet.ipv4.conf.all.accept_source_route = 0\n\nIf the network parameter \"ipv4.conf.all.accept_source_route\" is not equal to \"0\" or nothing is returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to disable IPv4 source routing by running the following command as an administrator:\n\n> sudo sysctl -w net.ipv4.conf.all.accept_source_route=0\n\nIf \"0\" is not the system's default value, add or update the following line in \"/etc/sysctl.d/99-stig.conf\":\n\n> sudo sh -c 'echo \"net.ipv4.conf.all.accept_source_route=0\" >> /etc/sysctl.d/99-stig.conf'\n\n> sudo sysctl --system",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "sysctl",
   "remediation": "planned",
   "rule_id": "SV-235014r991589_rule",
   "severity": "medium",

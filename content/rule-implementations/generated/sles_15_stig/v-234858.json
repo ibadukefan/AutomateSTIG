@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sssd/sssd.conf",
+      "pattern": "offline_credentials_expiration = 1",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must configure the Linux Pluggable Authentication Modules (PAM) to prohibit the use of cached offline authentications after one day.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234858"
+  },
   "check_content_excerpt": "If SSSD is not being used on the operating system, this is Not Applicable.\n\nVerify that the SUSE operating system PAM prohibits the use of cached off line authentications after one day.\n\nCheck that cached off line authentications cannot be used after one day with the following command:\n\n> sudo grep \"offline_credentials_expiration\" /etc/sssd/sssd.conf\n\noffline_credentials_expiration = 1\n\nIf \"offline_credentials_expiration\" is not set to a value of \"1\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system PAM to prohibit the use of cached authentications after one day. \n\nAdd or change the following line in \"/etc/sssd/sssd.conf\" just below the line \"[pam]\":\n\noffline_credentials_expiration = 1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234858r958828_rule",
   "severity": "medium",

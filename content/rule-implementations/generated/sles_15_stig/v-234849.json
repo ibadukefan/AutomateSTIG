@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/chrony.conf",
+      "pattern": "server 0.us.pool.ntp.mil maxpoll 16",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system clock must, for networked systems, be synchronized to an authoritative DOD time source at least every 24 hours.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234849"
+  },
   "check_content_excerpt": "The SUSE operating system clock must be configured to synchronize to an authoritative DOD time source when the time difference is greater than one second. \n\nCheck that the SUSE operating system clock must be configured to synchronize to an authoritative DOD time source when the time difference is greater than one second with the following command:\n\n> sudo grep maxpoll /etc/chrony.conf\n\nserver 0.us.pool.ntp.mil maxpoll 16\n\nIf nothing is returned, \"maxpoll\" is greater than \"16\", or is commented out, this is a finding.\n\nVerify the \"chrony.conf\" file is configured to an authoritative DOD time source by running the following command:\n\n> sudo grep -i server /etc/chrony.conf\nserver 0.us.pool.ntp.mil \n\nIf the parameter \"server\" is not set, is not set to an authoritative DOD time source, or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "The SUSE operating system clock must be configured to synchronize to an authoritative DOD time source when the time difference is greater than one second. \n\nTo configure the system clock to synchronize to an authoritative DOD time source at least every 24 hours, edit the file \"/etc/chrony.conf\". Add or correct the following lines by replacing \"[time_source]\" with an authoritative DOD time source:\n\nserver [time_source] maxpoll 16",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234849r1038944_rule",
   "severity": "medium",

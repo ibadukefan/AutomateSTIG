@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/common-auth",
+      "pattern": "auth required pam_faildelay.so delay=4000000",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234983"
+  },
   "check_content_excerpt": "Verify the SUSE operating system enforces a delay of at least four seconds between logon prompts following a failed logon attempt.\n\n> grep pam_faildelay /etc/pam.d/common-auth\nauth required pam_faildelay.so delay=4000000\n\nIf the value of \"delay\" is not set to \"4000000\", \"delay\" is commented out, \"delay\" is missing, or the \"pam_faildelay\" line is missing completely, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to enforce a delay of at least four seconds between logon prompts following a failed logon attempt.\n\nEdit the file \"/etc/pam.d/common-auth\".\n\nAdd a parameter \"pam_faildelay\" and set it to:\n\n> delay is in micro seconds\nauth required pam_faildelay.so delay=4000000",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234983r991588_rule",
   "severity": "medium",

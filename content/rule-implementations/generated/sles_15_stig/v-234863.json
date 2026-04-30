@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/zypp/zypp.conf",
+      "pattern": "solver.upgradeRemoveDroppedPackages = true",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must remove all outdated software components after updated versions have been installed.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234863"
+  },
   "check_content_excerpt": "Verify the SUSE operating system removes all outdated software components after updated version have been installed by running the following command:\n\n> grep -i upgraderemovedroppedpackages /etc/zypp/zypp.conf \n\nsolver.upgradeRemoveDroppedPackages = true\n\nIf \"solver.upgradeRemoveDroppedPackages\" is commented out, is set to \"false\", or is missing completely, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to remove all outdated software components after an update by editing the following line in \"/etc/zypp/zypp.conf\" to match the one provided below:\n\nsolver.upgradeRemoveDroppedPackages = true",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234863r958936_rule",
   "severity": "medium",

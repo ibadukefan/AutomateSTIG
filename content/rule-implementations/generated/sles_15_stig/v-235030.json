@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/login.defs",
+      "pattern": "UMASK 077",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system default permissions must be defined in such a way that all authenticated users can only read and modify their own files.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-235030"
+  },
   "check_content_excerpt": "Verify the SUSE operating system defines default permissions for all authenticated users in such a way that the users can only read and modify their own files. \n\nCheck the system default permissions with the following command:\n\n> grep -i \"^umask\" /etc/login.defs\n\nUMASK 077\n\nIf the \"UMASK\" variable is set to \"000\", the severity is raised to a CAT I, and this is a finding.\n\nIf the value of \"UMASK\" is not set to \"077\", or \"UMASK\" is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to define the default permissions for all authenticated users in such a way that the users can only read and modify their own files.\n\nAdd or edit the \"UMASK\" parameter in the \"/etc/login.defs\" file to match the example below:\n\nUMASK 077",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-235030r991590_rule",
   "severity": "medium",

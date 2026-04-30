@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/rules.d/",
+      "pattern": "^#",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must not disable syscall auditing.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234981"
+  },
   "check_content_excerpt": "Verify syscall auditing has not been disabled:\n\n> auditctl -l | grep -i \"a task,never\"\n\nIf any results are returned, this is a finding.\n\nVerify the default rule \"-a task,never\" is not statically defined :\n\n> grep -rv \"^#\" /etc/audit/rules.d/ | grep -i \"a task,never\"\n\nIf any results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove the \"-a task,never\" rule from the /etc/audit/rules.d/audit.rules file.\n\nThe audit daemon must be restarted for the changes to take effect.\n\n> sudo systemctl restart auditd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234981r991589_rule",
   "severity": "medium",

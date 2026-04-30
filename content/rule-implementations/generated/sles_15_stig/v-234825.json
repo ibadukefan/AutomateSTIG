@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/login.defs",
+      "pattern": "ENCRYPT_METHOD SHA512",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must employ FIPS 140-2 approved cryptographic hashing algorithm for system authentication (login.defs).",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234825"
+  },
   "check_content_excerpt": "Verify the SUSE operating system requires that the \"ENCRYPT_METHOD\" value in \"/etc/login.defs\" is set to \"SHA512\".\n\nCheck the value of \"ENCRYPT_METHOD\" value in \"/etc/login.defs\" with the following command:\n\n> grep \"^ENCRYPT_METHOD \" /etc/login.defs\n\nENCRYPT_METHOD SHA512\n\nIf \"ENCRYPT_METHOD\" is not set to \"SHA512\", if any values other that \"SHA512\" are configured, or if no output is produced, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to require \"ENCRYPT_METHOD\" of \"SHA512\".\n\nEdit the \"/etc/login.defs\" file with the following line:\n\nENCRYPT_METHOD SHA512",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234825r971535_rule",
   "severity": "medium",

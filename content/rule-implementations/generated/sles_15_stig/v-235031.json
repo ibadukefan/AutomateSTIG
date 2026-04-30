@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sysconfig/displaymanager",
+      "pattern": "DISPLAYMANAGER_AUTOLOGIN=\"\"",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must not allow unattended or automatic logon via the graphical user interface (GUI).",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-235031"
+  },
   "check_content_excerpt": "Note: If a graphical user interface is not installed, this requirement is Not Applicable.\n\nVerify the SUSE operating system does not allow unattended or automatic logon via the GUI.\n\nCheck that unattended or automatic login is disabled with the following commands:\n\n> grep -i ^DISPLAYMANAGER_AUTOLOGIN /etc/sysconfig/displaymanager\n\nDISPLAYMANAGER_AUTOLOGIN=\"\"\n\n> grep -i ^DISPLAYMANAGER_PASSWORD_LESS_LOGIN /etc/sysconfig/displaymanager\n\nDISPLAYMANAGER_PASSWORD_LESS_LOGIN=\"no\"\n\nIf the \"DISPLAYMANAGER_AUTOLOGIN\" parameter includes a username or the\n\"DISPLAYMANAGER_PASSWORD_LESS_LOGIN\"\nIf parameter is not set to \"no\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Note: If a graphical user interface is not installed, this requirement is Not Applicable.\n\nConfigure the SUSE operating system GUI to not allow unattended or automatic logon to the system.\n\nAdd or edit the following lines in the \"/etc/sysconfig/displaymanager\"\nconfiguration file:\n\nDISPLAYMANAGER_AUTOLOGIN=\"\"\nDISPLAYMANAGER_PASSWORD_LESS_LOGIN=\"no\"",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-235031r991591_rule",
   "severity": "high",

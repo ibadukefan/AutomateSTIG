@@ -66,16 +66,17 @@
       "vuln_id": "V-234815"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234816",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234816 from source identifier xccdf_mil.disa.stig_group_V-234816.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234816r958408_rule",
       "severity": "medium",
       "title": "The SUSE operating system must implement DOD-approved encryption to protect the confidentiality of SSH remote connections.",
-      "tracking_issue": "TODO-V-234816",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234816"
@@ -96,61 +97,65 @@
       "vuln_id": "V-234818"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234825",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234825 from source identifier xccdf_mil.disa.stig_group_V-234825.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234825r971535_rule",
       "severity": "medium",
       "title": "The SUSE operating system must employ FIPS 140-2 approved cryptographic hashing algorithm for system authentication (login.defs).",
-      "tracking_issue": "TODO-V-234825",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234825"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234826",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234826 from source identifier xccdf_mil.disa.stig_group_V-234826.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234826r958510_rule",
       "severity": "medium",
       "title": "The SUSE operating system SSH daemon must be configured to only use Message Authentication Codes (MACs) employing FIPS 140-2 approved cryptographic hash algorithms.",
-      "tracking_issue": "TODO-V-234826",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234826"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234827",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234827 from source identifier xccdf_mil.disa.stig_group_V-234827.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234827r986464_rule",
       "severity": "medium",
       "title": "The SUSE operating system SSH daemon must be configured with a timeout interval.",
-      "tracking_issue": "TODO-V-234827",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234827"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234829",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234829 from source identifier xccdf_mil.disa.stig_group_V-234829.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234829r958528_rule",
       "severity": "medium",
       "title": "The SUSE operating system must be configured to use TCP syncookies.",
-      "tracking_issue": "TODO-V-234829",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234829"
@@ -422,61 +427,65 @@
       "vuln_id": "V-234860"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234861",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234861 from source identifier xccdf_mil.disa.stig_group_V-234861.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234861r958928_rule",
       "severity": "medium",
       "title": "The SUSE operating system must implement kptr-restrict to prevent the leaking of internal kernel addresses.",
-      "tracking_issue": "TODO-V-234861",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234861"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234862",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234862 from source identifier xccdf_mil.disa.stig_group_V-234862.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234862r958928_rule",
       "severity": "medium",
       "title": "Address space layout randomization (ASLR) must be implemented by the SUSE operating system to protect memory from unauthorized code execution.",
-      "tracking_issue": "TODO-V-234862",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234862"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234868",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234868 from source identifier xccdf_mil.disa.stig_group_V-234868.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234868r958398_rule",
       "severity": "low",
       "title": "The SUSE operating system must limit the number of concurrent sessions to 10 for all accounts and/or account types.",
-      "tracking_issue": "TODO-V-234868",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234868"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234870",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234870 from source identifier xccdf_mil.disa.stig_group_V-234870.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234870r1009618_rule",
       "severity": "medium",
       "title": "The SUSE operating system must deny direct logons to the root account using remote access via SSH.",
-      "tracking_issue": "TODO-V-234870",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234870"
@@ -497,76 +506,81 @@
       "vuln_id": "V-234876"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234877",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234877 from source identifier xccdf_mil.disa.stig_group_V-234877.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234877r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must restrict privilege elevation to authorized personnel.",
-      "tracking_issue": "TODO-V-234877",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234877"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234878",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234878 from source identifier xccdf_mil.disa.stig_group_V-234878.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234878r1050789_rule",
       "severity": "medium",
       "title": "The SUSE operating system must require reauthentication when using the \"sudo\" command.",
-      "tracking_issue": "TODO-V-234878",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234878"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234879",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234879 from source identifier xccdf_mil.disa.stig_group_V-234879.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234879r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must use the invoking user's password for privilege escalation when using \"sudo\".",
-      "tracking_issue": "TODO-V-234879",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234879"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234880",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234880 from source identifier xccdf_mil.disa.stig_group_V-234880.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234880r991589_rule",
       "severity": "medium",
       "title": "All SUSE operating system local interactive user accounts, upon creation, must be assigned a home directory.",
-      "tracking_issue": "TODO-V-234880",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234880"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234881",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234881 from source identifier xccdf_mil.disa.stig_group_V-234881.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234881r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must display the date and time of the last successful account logon upon an SSH logon.",
-      "tracking_issue": "TODO-V-234881",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234881"
@@ -602,16 +616,17 @@
       "vuln_id": "V-234888"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234889",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234889 from source identifier xccdf_mil.disa.stig_group_V-234889.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234889r1009628_rule",
       "severity": "medium",
       "title": "The SUSE operating system must be configured to create or update passwords with a minimum lifetime of 24 hours (one day).",
-      "tracking_issue": "TODO-V-234889",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234889"
@@ -632,16 +647,17 @@
       "vuln_id": "V-234890"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234891",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234891 from source identifier xccdf_mil.disa.stig_group_V-234891.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234891r1038967_rule",
       "severity": "medium",
       "title": "The SUSE operating system must be configured to create or update passwords with a maximum lifetime of 60 days.",
-      "tracking_issue": "TODO-V-234891",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234891"
@@ -1352,76 +1368,81 @@
       "vuln_id": "V-234973"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234975",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234975 from source identifier xccdf_mil.disa.stig_group_V-234975.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234975r991581_rule",
       "severity": "medium",
       "title": "The SUSE operating system must generate audit records for the /run/utmp file.",
-      "tracking_issue": "TODO-V-234975",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234975"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234976",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234976 from source identifier xccdf_mil.disa.stig_group_V-234976.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234976r991581_rule",
       "severity": "medium",
       "title": "The SUSE operating system must generate audit records for the /var/log/wtmp file.",
-      "tracking_issue": "TODO-V-234976",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234976"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234977",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234977 from source identifier xccdf_mil.disa.stig_group_V-234977.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234977r991581_rule",
       "severity": "medium",
       "title": "The SUSE operating system must generate audit records for the /var/log/btmp file.",
-      "tracking_issue": "TODO-V-234977",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234977"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234978",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234978 from source identifier xccdf_mil.disa.stig_group_V-234978.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234978r1009573_rule",
       "severity": "medium",
       "title": "The SUSE operating system must off-load audit records onto a different system or media from the system being audited.",
-      "tracking_issue": "TODO-V-234978",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234978"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234981",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234981 from source identifier xccdf_mil.disa.stig_group_V-234981.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234981r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not disable syscall auditing.",
-      "tracking_issue": "TODO-V-234981",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234981"
@@ -1487,61 +1508,65 @@
       "vuln_id": "V-234995"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235000",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235000 from source identifier xccdf_mil.disa.stig_group_V-235000.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235000r991589_rule",
       "severity": "medium",
       "title": "SUSE operating system file systems that are being imported via Network File System (NFS) must be mounted to prevent files with the setuid and setgid bit set from being executed.",
-      "tracking_issue": "TODO-V-235000",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235000"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235001",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235001 from source identifier xccdf_mil.disa.stig_group_V-235001.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235001r991589_rule",
       "severity": "medium",
       "title": "SUSE operating system file systems that are being imported via Network File System (NFS) must be mounted to prevent binary files from being executed.",
-      "tracking_issue": "TODO-V-235001",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235001"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235005",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235005 from source identifier xccdf_mil.disa.stig_group_V-235005.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235005r991589_rule",
       "severity": "low",
       "title": "The SUSE operating system must use a separate file system for /var.",
-      "tracking_issue": "TODO-V-235005",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235005"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235007",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235007 from source identifier xccdf_mil.disa.stig_group_V-235007.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235007r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system SSH daemon must be configured to not allow authentication using known hosts authentication.",
-      "tracking_issue": "TODO-V-235007",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235007"
@@ -1577,286 +1602,305 @@
       "vuln_id": "V-235009"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235010",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235010 from source identifier xccdf_mil.disa.stig_group_V-235010.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235010r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system SSH daemon must perform strict mode checking of home directory configuration files.",
-      "tracking_issue": "TODO-V-235010",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235010"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235013",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235013 from source identifier xccdf_mil.disa.stig_group_V-235013.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235013r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system SSH daemon must disable forwarded remote X connections for interactive users, unless to fulfill documented and validated mission requirements.",
-      "tracking_issue": "TODO-V-235013",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235013"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235014",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235014 from source identifier xccdf_mil.disa.stig_group_V-235014.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235014r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not forward Internet Protocol version 4 (IPv4) source-routed packets.",
-      "tracking_issue": "TODO-V-235014",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235014"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235015",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235015 from source identifier xccdf_mil.disa.stig_group_V-235015.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235015r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not forward Internet Protocol version 6 (IPv6) source-routed packets.",
-      "tracking_issue": "TODO-V-235015",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235015"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235016",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235016 from source identifier xccdf_mil.disa.stig_group_V-235016.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235016r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not forward Internet Protocol version 4 (IPv4) source-routed packets by default.",
-      "tracking_issue": "TODO-V-235016",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235016"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235017",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235017 from source identifier xccdf_mil.disa.stig_group_V-235017.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235017r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not forward Internet Protocol version 6 (IPv6) source-routed packets by default.",
-      "tracking_issue": "TODO-V-235017",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235017"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235018",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235018 from source identifier xccdf_mil.disa.stig_group_V-235018.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235018r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must prevent Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
-      "tracking_issue": "TODO-V-235018",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235018"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235019",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235019 from source identifier xccdf_mil.disa.stig_group_V-235019.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235019r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not allow interfaces to accept Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages by default.",
-      "tracking_issue": "TODO-V-235019",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235019"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235020",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235020 from source identifier xccdf_mil.disa.stig_group_V-235020.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235020r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must prevent Internet Protocol version 6 (IPv6) Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
-      "tracking_issue": "TODO-V-235020",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235020"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235021",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235021 from source identifier xccdf_mil.disa.stig_group_V-235021.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235021r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not allow interfaces to accept Internet Protocol version 6 (IPv6) Internet Control Message Protocol (ICMP) redirect messages by default.",
-      "tracking_issue": "TODO-V-235021",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235021"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235022",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235022 from source identifier xccdf_mil.disa.stig_group_V-235022.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235022r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not allow interfaces to send Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages by default.",
-      "tracking_issue": "TODO-V-235022",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235022"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235023",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235023 from source identifier xccdf_mil.disa.stig_group_V-235023.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235023r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not send Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirects.",
-      "tracking_issue": "TODO-V-235023",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235023"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235024",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235024 from source identifier xccdf_mil.disa.stig_group_V-235024.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235024r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not be performing Internet Protocol version 4 (IPv4) packet forwarding unless the system is a router.",
-      "tracking_issue": "TODO-V-235024",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235024"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235025",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235025 from source identifier xccdf_mil.disa.stig_group_V-235025.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235025r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not be performing Internet Protocol version 6 (IPv6) packet forwarding unless the system is a router.",
-      "tracking_issue": "TODO-V-235025",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235025"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235026",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235026 from source identifier xccdf_mil.disa.stig_group_V-235026.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235026r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system must not be performing Internet Protocol version 6 (IPv6) packet forwarding by default unless the system is a router.",
-      "tracking_issue": "TODO-V-235026",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235026"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235030",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235030 from source identifier xccdf_mil.disa.stig_group_V-235030.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235030r991590_rule",
       "severity": "medium",
       "title": "The SUSE operating system default permissions must be defined in such a way that all authenticated users can only read and modify their own files.",
-      "tracking_issue": "TODO-V-235030",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235030"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235031",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235031 from source identifier xccdf_mil.disa.stig_group_V-235031.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235031r991591_rule",
       "severity": "high",
       "title": "The SUSE operating system must not allow unattended or automatic logon via the graphical user interface (GUI).",
-      "tracking_issue": "TODO-V-235031",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235031"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-255920",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-255920 from source identifier xccdf_mil.disa.stig_group_V-255920.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-255920r991554_rule",
       "severity": "medium",
       "title": "The SUSE operating system SSH server must be configured to use only FIPS-validated key exchange algorithms.",
-      "tracking_issue": "TODO-V-255920",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-255920"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-255921",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-255921 from source identifier xccdf_mil.disa.stig_group_V-255921.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-255921r1137695_rule",
       "severity": "low",
       "title": "The SUSE operating system must restrict access to the kernel message buffer.",
-      "tracking_issue": "TODO-V-255921",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-255921"

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/audisp-remote.conf",
+      "pattern": "remote_server = 192.168.1.101",
+      "type": "file_content"
+    },
+    "description": "Audispd must off-load audit records onto a different system or media from the SUSE operating system being audited.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234968"
+  },
   "check_content_excerpt": "Verify \"audispd\" off-loads audit records onto a different system or media from the SUSE operating system being audited.\n\nCheck if \"audispd\" is configured to off-load audit records onto a different system or media from the SUSE operating system by running the following command:\n\n> sudo grep remote_server /etc/audit/audisp-remote.conf\nremote_server = 192.168.1.101\n\nIf \"remote_server\" is not set to an external server or media, or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system \"/etc/audit/audisp-remote.conf\" file to off-load audit records onto a different system or media by adding or editing the following line with the correct IP address:\n\nremote_server = [IP ADDRESS]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234968r1009570_rule",
   "severity": "low",

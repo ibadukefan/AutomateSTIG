@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "kernel.randomize_va_space",
+      "type": "sysctl"
+    },
+    "description": "Address space layout randomization (ASLR) must be implemented by the SUSE operating system to protect memory from unauthorized code execution.",
+    "expected": {
+      "type": "equals",
+      "value": "2"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234862"
+  },
   "check_content_excerpt": "Verify the SUSE operating system implements ASLR.\n\nCheck that the SUSE operating system implements ASLR by running the following command:\n\n> sudo sysctl kernel.randomize_va_space\nKernel.randomize_va_space = 2\n\nIf the kernel parameter \"randomize_va_space\" is not equal to \"2\" or nothing is returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "2"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to implement ASLR by running the following command as an administrator:\n\n> sudo sysctl -w kernel.randomize_va_space=2\n\nIf \"2\" is not the system's default value, add or update the following line in \"/etc/sysctl.d/99-stig.conf\":\n\n> sudo sh -c 'echo \"kernel.randomize_va_space=2\" >> /etc/sysctl.d/99-stig.conf'\n\n> sudo sysctl --system",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "sysctl",
   "remediation": "planned",
   "rule_id": "SV-234862r958928_rule",
   "severity": "medium",

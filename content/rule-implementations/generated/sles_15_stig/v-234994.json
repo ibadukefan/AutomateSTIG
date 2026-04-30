@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/group",
+      "pattern": "users:x:250:doduser,doduser,nsauser",
+      "type": "file_content"
+    },
+    "description": "All SUSE operating system local interactive user home directories must be group-owned by the home directory owner's primary group.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234994"
+  },
   "check_content_excerpt": "Verify the assigned home directory of all SUSE operating system local interactive users is group-owned by that user's primary GID.\n\nCheck the home directory assignment for all nonprivileged users on the system with the following command:\n\nNote: This may miss local interactive users that have been assigned a privileged User Identifier (UID). Evidence of interactive use may be obtained from a number of log files containing system logon information. The returned directory \"/home/doduser\" is used as an example.\n\n> awk -F: '($3>=1000)&&($7 !~ /nologin/){print $4, $6}' /etc/passwd)\n250:/home/doduser\n\nCheck the user's primary group with the following command:\n\n> grep users /etc/group\nusers:x:250:doduser,doduser,nsauser\n\nIf the user home directory referenced in \"/etc/passwd\" is not group-owned by that user's primary GID, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the group owner of a SUSE operating system local interactive user's home directory to the group found in \"/etc/passwd\". To change the group owner of a local interactive user's home directory, use the following command:\n\nNote: The example will be for the user \"doduser\", who has a home directory of \"/home/doduser\", and has a primary group of users.\n\n> sudo chgrp users /home/doduser",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234994r1184477_rule",
   "severity": "medium",

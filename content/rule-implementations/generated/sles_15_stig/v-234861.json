@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "kernel.kptr_restrict",
+      "type": "sysctl"
+    },
+    "description": "The SUSE operating system must implement kptr-restrict to prevent the leaking of internal kernel addresses.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234861"
+  },
   "check_content_excerpt": "Verify the SUSE operating system prevents leaking of internal kernel addresses.\n\nCheck that the SUSE operating system prevents leaking of internal kernel addresses by running the following command:\n\n> sudo sysctl kernel.kptr_restrict\nkernel.kptr_restrict = 1\n\nIf the kernel parameter \"kptr_restrict\" is not equal to \"1\" or nothing is returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to prevent leaking of internal kernel addresses by running the following command: \n\n> sudo sysctl -w kernel.kptr_restrict=1\n\nIf \"1\" is not the system's default value, add or update the following line in \"/etc/sysctl.d/99-stig.conf\":\n\n> sudo sh -c 'echo \"kernel.kptr_restrict=1\" >> /etc/sysctl.d/99-stig.conf'\n\n> sudo sysctl --system",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "sysctl",
   "remediation": "planned",
   "rule_id": "SV-234861r958928_rule",
   "severity": "medium",

@@ -1,6 +1,167 @@
 {
-  "candidate_checks": 7,
+  "candidate_checks": 90,
   "cases": [
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "Ciphers aes256-ctr,aes192-ctr,aes128-ctr",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must implement DOD-approved encryption to protect the confidentiality of SSH remote connections.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nCiphers aes256-ctr,aes192-ctr,aes128-ctr\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234816"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+        "pattern": "cert_policy = ca,oscp_on,signature,crl_auto;",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam_pkcs11/pam_pkcs11.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam_pkcs11/pam_pkcs11.conf": "before\ncert_policy = ca,oscp_on,signature,crl_auto;\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234817"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "ENCRYPT_METHOD SHA512",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must employ FIPS 140-2 approved cryptographic hashing algorithm for system authentication (login.defs).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nENCRYPT_METHOD SHA512\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234825"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "MACs hmac-sha2-512,hmac-sha2-256",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system SSH daemon must be configured to only use Message Authentication Codes (MACs) employing FIPS 140-2 approved cryptographic hash algorithms.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nMACs hmac-sha2-512,hmac-sha2-256\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234826"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "ClientAliveInterval 600",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system SSH daemon must be configured with a timeout interval.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nClientAliveInterval 600\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234827"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.tcp_syncookies",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must be configured to use TCP syncookies.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.tcp_syncookies": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.tcp_syncookies": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234829"
+    },
     {
       "check": {
         "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm /022 -exec stat -c \"%n %a\" {} +",
@@ -159,6 +320,1459 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/chrony.conf",
+        "pattern": "server 0.us.pool.ntp.mil maxpoll 16",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system clock must, for networked systems, be synchronized to an authoritative DOD time source at least every 24 hours.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/chrony.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/chrony.conf": "before\nserver 0.us.pool.ntp.mil maxpoll 16\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234849"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/crontab",
+        "pattern": "/etc/cron.*",
+        "type": "file_content"
+      },
+      "description": "Advanced Intrusion Detection Environment (AIDE) must verify the baseline SUSE operating system configuration at least weekly.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/crontab": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/crontab": "before\n/etc/cron.*\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234851"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
+        "pattern": "| awk '/pkcs11_module coolkey {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must implement certificate status checking for multifactor authentication.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam_pkcs11/pam_pkcs11.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam_pkcs11/pam_pkcs11.conf": "before\n| awk '/pkcs11_module coolkey {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234855"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/50-blacklist.conf",
+        "pattern": "blacklist usb-storage",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must disable the USB mass storage kernel module.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/50-blacklist.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/50-blacklist.conf": "before\nblacklist usb-storage\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234856"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "memcache_timeout = 86400",
+        "type": "file_content"
+      },
+      "description": "If Network Security Services (NSS) is being used by the SUSE operating system it must prohibit the use of cached authentications after one day.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\nmemcache_timeout = 86400\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234857"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "offline_credentials_expiration = 1",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must configure the Linux Pluggable Authentication Modules (PAM) to prohibit the use of cached offline authentications after one day.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sssd/sssd.conf": "before\noffline_credentials_expiration = 1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234858"
+    },
+    {
+      "check": {
+        "key": "kernel.kptr_restrict",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must implement kptr-restrict to prevent the leaking of internal kernel addresses.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.kptr_restrict": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.kptr_restrict": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234861"
+    },
+    {
+      "check": {
+        "key": "kernel.randomize_va_space",
+        "type": "sysctl"
+      },
+      "description": "Address space layout randomization (ASLR) must be implemented by the SUSE operating system to protect memory from unauthorized code execution.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "2"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.randomize_va_space": "unexpected-2"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.randomize_va_space": "2"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234862"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/zypp/zypp.conf",
+        "pattern": "solver.upgradeRemoveDroppedPackages = true",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must remove all outdated software components after updated versions have been installed.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/zypp/zypp.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/zypp/zypp.conf": "before\nsolver.upgradeRemoveDroppedPackages = true\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234863"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "| grep \"@\" | grep -v \"^#\"",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must off-load rsyslog messages for networked systems in real time and off-load standalone systems at least weekly.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\n| grep \"@\" | grep -v \"^#\"\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234865"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-auth",
+        "pattern": "auth required pam_tally2.so onerr=fail deny=3",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must lock an account after three consecutive invalid access attempts.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-auth": "before\nauth required pam_tally2.so onerr=fail deny=3\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234867"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/limits.conf",
+        "pattern": "The result must contain the following line:",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must limit the number of concurrent sessions to 10 for all accounts and/or account types.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/limits.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/limits.conf": "before\nThe result must contain the following line:\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234868"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-auth",
+        "pattern": "auth sufficient pam_pkcs11.so",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must implement multifactor authentication for access to privileged accounts via pluggable authentication modules (PAM).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-auth": "before\nauth sufficient pam_pkcs11.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234869"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PermitRootLogin no",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must deny direct logons to the root account using remote access via SSH.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nPermitRootLogin no\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234870"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/default/useradd",
+        "pattern": "INACTIVE=35",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity after password expiration.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/default/useradd": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/default/useradd": "before\nINACTIVE=35\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234871"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d/*",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must restrict privilege elevation to authorized personnel.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers": "before\n/etc/sudoers.d/*\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234877"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must require reauthentication when using the \"sudo\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers": "before\n/etc/sudoers.d\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234878"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers:Defaults",
+        "pattern": "!targetpw",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must use the invoking user's password for privilege escalation when using \"sudo\".",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers:Defaults": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers:Defaults": "before\n!targetpw\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234879"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "CREATE_HOME yes",
+        "type": "file_content"
+      },
+      "description": "All SUSE operating system local interactive user accounts, upon creation, must be assigned a home directory.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nCREATE_HOME yes\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234880"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PrintLastLog yes",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must display the date and time of the last successful account logon upon an SSH logon.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nPrintLastLog yes\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234881"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-password",
+        "pattern": "pam_cracklib.so",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must enforce passwords that contain at least one uppercase character.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\npam_cracklib.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234882"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-password",
+        "pattern": "pam_cracklib.so",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must enforce passwords that contain at least one lowercase character.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\npam_cracklib.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234883"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-password",
+        "pattern": "pam_cracklib.so",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must enforce passwords that contain at least one numeric character.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\npam_cracklib.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234884"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-password",
+        "pattern": "pam_cracklib.so",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must require the change of at least eight of the total number of characters when passwords are changed.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\npam_cracklib.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234885"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-password",
+        "pattern": "pam_unix.so",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must configure the Linux Pluggable Authentication Modules (PAM) to only store encrypted representations of passwords.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\npam_unix.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234886"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "PASS_MIN_DAYS 1",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must be configured to create or update passwords with a minimum lifetime of 24 hours (one day).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nPASS_MIN_DAYS 1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234889"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "The DOD requirement is \"60\" days or less (greater than zero, as zero days will lock the account immediately).",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must be configured to create or update passwords with a maximum lifetime of 60 days.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nThe DOD requirement is \"60\" days or less (greater than zero, as zero days will lock the account immediately).\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234891"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-password",
+        "pattern": "pam_cracklib.so",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must employ passwords with a minimum of 15 characters.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\npam_cracklib.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234895"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-password",
+        "pattern": "pam_cracklib.so",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must enforce passwords that contain at least one special character.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\npam_cracklib.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234896"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-password",
+        "pattern": "pam_cracklib.so",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must prevent the use of dictionary words for passwords.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-password": "before\npam_cracklib.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234897"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "action_mail_acct = root",
+        "type": "file_content"
+      },
+      "description": "The Information System Security Officer (ISSO) and System Administrator (SA), at a minimum, must be alerted of a SUSE operating system audit processing failure event.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\naction_mail_acct = root\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234956"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aliases",
+        "pattern": "^postmaster:",
+        "type": "file_content"
+      },
+      "description": "The Information System Security Officer (ISSO) and System Administrator (SA), at a minimum, must have mail aliases to be notified of a SUSE operating system audit processing failure.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/aliases": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/aliases": "before\n^postmaster:\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234957"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "disk_full_action = SYSLOG",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system audit system must take appropriate action when the audit storage volume is full.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\ndisk_full_action = SYSLOG\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234958"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/permissions.local",
+        "pattern": "audit",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must protect audit rules from unauthorized modification.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/permissions.local": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/permissions.local": "before\naudit\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234959"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/permissions.local",
+        "pattern": "^/usr/sbin/au",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system audit tools must have the proper permissions configured to protect against unauthorized access.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/permissions.local": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/permissions.local": "before\n^/usr/sbin/au\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234961"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aide.conf",
+        "pattern": "/usr/sbin/auditctl p+i+n+u+g+s+b+acl+selinux+xattrs+sha512",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system file integrity tool must be configured to protect the integrity of the audit tools.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/aide.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/aide.conf": "before\n/usr/sbin/auditctl p+i+n+u+g+s+b+acl+selinux+xattrs+sha512\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234962"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_file = /var/log/audit/audit.log",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must allocate audit record storage capacity to store at least one week of audit records when audit records are not immediately sent to a central audit record storage facility.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nlog_file = /var/log/audit/audit.log\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234965"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audisp-remote.conf",
+        "pattern": "transport = krb5",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system audit event multiplexor must be configured to use Kerberos.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audisp-remote.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audisp-remote.conf": "before\ntransport = krb5\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234967"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audisp-remote.conf",
+        "pattern": "remote_server = 192.168.1.101",
+        "type": "file_content"
+      },
+      "description": "Audispd must off-load audit records onto a different system or media from the SUSE operating system being audited.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audisp-remote.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audisp-remote.conf": "before\nremote_server = 192.168.1.101\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234968"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_file = /var/log/audit/audit.log",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system auditd service must notify the System Administrator (SA) and Information System Security Officer (ISSO) immediately when audit storage capacity is 75 percent full.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nlog_file = /var/log/audit/audit.log\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234969"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for the /run/utmp file.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-w /run/utmp -p wa -k login_mod",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-w /run/utmp -p wa -k login_mod\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234975"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for the /var/log/wtmp file.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-w /var/log/wtmp -p wa -k login_mod",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-w /var/log/wtmp -p wa -k login_mod\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234976"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for the /var/log/btmp file.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-w /var/log/btmp -p wa -k login_mod",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-w /var/log/btmp -p wa -k login_mod\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234977"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audisp-remote.conf",
+        "pattern": "network_failure_action = syslog",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must off-load audit records onto a different system or media from the system being audited.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audisp-remote.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audisp-remote.conf": "before\nnetwork_failure_action = syslog\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234978"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audisp-remote.conf",
+        "pattern": "disk_full_action = syslog",
+        "type": "file_content"
+      },
+      "description": "Audispd must take appropriate action when the SUSE operating system audit storage is full.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audisp-remote.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audisp-remote.conf": "before\ndisk_full_action = syslog\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234979"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/fstab",
+        "pattern": "UUID=3645951a /var/log/audit ext4 defaults 1 2",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must use a separate file system for the system audit data path.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/fstab": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/fstab": "before\nUUID=3645951a /var/log/audit ext4 defaults 1 2\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234980"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/rules.d/",
+        "pattern": "^#",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must not disable syscall auditing.",
+      "evidence_type": "linux_file_content_absent",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/rules.d/": "before\n^#\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/rules.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234981"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "FAIL_DELAY 4",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nFAIL_DELAY 4\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234982"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/common-auth",
+        "pattern": "auth required pam_faildelay.so delay=4000000",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/common-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/common-auth": "before\nauth required pam_faildelay.so delay=4000000\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234983"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/group",
+        "pattern": "users:x:250:doduser,doduser,nsauser",
+        "type": "file_content"
+      },
+      "description": "All SUSE operating system local interactive user home directories must be group-owned by the home directory owner's primary group.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/group": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/group": "before\nusers:x:250:doduser,doduser,nsauser\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234994"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/fstab",
+        "pattern": "UUID=e06097bb-cfcd-437b-9e4d-a691f5662a7d /store nfs rw,nosuid 0 0",
+        "type": "file_content"
+      },
+      "description": "SUSE operating system file systems that are being imported via Network File System (NFS) must be mounted to prevent files with the setuid and setgid bit set from being executed.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/fstab": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/fstab": "before\nUUID=e06097bb-cfcd-437b-9e4d-a691f5662a7d /store nfs rw,nosuid 0 0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235000"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/fstab",
+        "pattern": "UUID=e06097bb-cfcd-437b-9e4d-a691f5662a7d /store nfs rw,noexec 0 0",
+        "type": "file_content"
+      },
+      "description": "SUSE operating system file systems that are being imported via Network File System (NFS) must be mounted to prevent binary files from being executed.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/fstab": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/fstab": "before\nUUID=e06097bb-cfcd-437b-9e4d-a691f5662a7d /store nfs rw,noexec 0 0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235001"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/fstab",
+        "pattern": "UUID=333ada18 /home ext4 noatime,nobarrier,nodev 1 2",
+        "type": "file_content"
+      },
+      "description": "A separate file system must be used for SUSE operating system user home directories (such as /home or an equivalent).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/fstab": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/fstab": "before\nUUID=333ada18 /home ext4 noatime,nobarrier,nodev 1 2\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235004"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/fstab",
+        "pattern": "UUID=c274f65f /var ext4 noatime,nobarrier 1 2",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must use a separate file system for /var.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/fstab": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/fstab": "before\nUUID=c274f65f /var ext4 noatime,nobarrier 1 2\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235005"
+    },
+    {
+      "check": {
         "command": "find /etc/pam.d/ -type l -iname \"common-*\"",
         "type": "command_output"
       },
@@ -182,6 +1796,613 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-235006"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "IgnoreUserKnownHosts yes",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system SSH daemon must be configured to not allow authentication using known hosts authentication.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nIgnoreUserKnownHosts yes\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235007"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "StrictModes yes",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system SSH daemon must perform strict mode checking of home directory configuration files.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nStrictModes yes\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235010"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "X11Forwarding no",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system SSH daemon must disable forwarded remote X connections for interactive users, unless to fulfill documented and validated mission requirements.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nX11Forwarding no\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235013"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must not forward Internet Protocol version 4 (IPv4) source-routed packets.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235014"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must not forward Internet Protocol version 6 (IPv6) source-routed packets.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235015"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must not forward Internet Protocol version 4 (IPv4) source-routed packets by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235016"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must not forward Internet Protocol version 6 (IPv6) source-routed packets by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235017"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must prevent Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235018"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must not allow interfaces to accept Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235019"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must prevent Internet Protocol version 6 (IPv6) Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235020"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must not allow interfaces to accept Internet Protocol version 6 (IPv6) Internet Control Message Protocol (ICMP) redirect messages by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235021"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.send_redirects",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must not allow interfaces to send Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.send_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.send_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235022"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.send_redirects",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must not send Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirects.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.send_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.send_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235023"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.ip_forward",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must not be performing Internet Protocol version 4 (IPv4) packet forwarding unless the system is a router.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.ip_forward": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.ip_forward": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235024"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.forwarding",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must not be performing Internet Protocol version 6 (IPv6) packet forwarding unless the system is a router.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.forwarding": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.forwarding": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235025"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.forwarding",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must not be performing Internet Protocol version 6 (IPv6) packet forwarding by default unless the system is a router.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.forwarding": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.forwarding": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235026"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "UMASK 077",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system default permissions must be defined in such a way that all authenticated users can only read and modify their own files.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nUMASK 077\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235030"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sysconfig/displaymanager",
+        "pattern": "DISPLAYMANAGER_AUTOLOGIN=\"\"",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must not allow unattended or automatic logon via the graphical user interface (GUI).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sysconfig/displaymanager": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sysconfig/displaymanager": "before\nDISPLAYMANAGER_AUTOLOGIN=\"\"\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235031"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "@includedir /etc/sudoers.d",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must specify the default \"include\" directory for the /etc/sudoers file.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers": "before\n@includedir /etc/sudoers.d\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251723"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/sudo",
+        "pattern": "pam_succeed_if",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must not be configured to bypass password requirements for privilege escalation.",
+      "evidence_type": "linux_file_content_absent",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/sudo": "before\npam_succeed_if\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/sudo": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251724"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "KexAlgorithms ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system SSH server must be configured to use only FIPS-validated key exchange algorithms.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nKexAlgorithms ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-255920"
+    },
+    {
+      "check": {
+        "key": "kernel.dmesg_restrict",
+        "type": "sysctl"
+      },
+      "description": "The SUSE operating system must restrict access to the kernel message buffer.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.dmesg_restrict": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.dmesg_restrict": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-255921"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/cron.d",
+        "pattern": "-w /etc/cron.d -p wa -k cronjobs",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system must audit any script or executable called by cron as root or by any privileged user.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/cron.d": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/cron.d": "before\n-w /etc/cron.d -p wa -k cronjobs\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274879"
     }
   ],
   "production_claim": false,
@@ -189,5 +2410,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 7
+  "validated_candidates": 90
 }

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/login.defs",
+      "pattern": "FAIL_DELAY 4",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234982"
+  },
   "check_content_excerpt": "Verify the SUSE operating system enforces a delay of at least four seconds between logon prompts following a failed logon attempt.\n\nCheck that the SUSE operating system enforces a delay of at least four seconds between logon prompts following a failed logon attempt with the following command:\n\n> grep FAIL_DELAY /etc/login.defs\nFAIL_DELAY 4\n\nIf the value of \"FAIL_DELAY\" is not set to \"4\", \"FAIL_DELAY\" is commented out, or \"FAIL_DELAY\" is missing, then this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to enforce a delay of at least four seconds between logon prompts following a failed logon attempt.\n\nAdd or update the following variable in \"/etc/login.defs\" to match the line below (\"FAIL_DELAY\" must have a value of \"4\" or higher):\n\nFAIL_DELAY 4",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234982r991588_rule",
   "severity": "medium",

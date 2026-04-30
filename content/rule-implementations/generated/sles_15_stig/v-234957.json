@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/aliases",
+      "pattern": "^postmaster:",
+      "type": "file_content"
+    },
+    "description": "The Information System Security Officer (ISSO) and System Administrator (SA), at a minimum, must have mail aliases to be notified of a SUSE operating system audit processing failure.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234957"
+  },
   "check_content_excerpt": "Verify the administrators are notified in the event of a SUSE operating system audit processing failure by checking that \"/etc/aliases\" has a defined value for root.\n\n> grep -i \"^postmaster:\" /etc/aliases\n\npostmaster: root\n\nIf the above command does not return a value of \"root\", or the output is commented out, this is a finding\n\nVerify the alias for root forwards to a monitored e-mail account:\n\n> grep -i \"^root:\" /etc/aliases\nroot: person@server.mil\n\nIf the alias for root does not forward to a monitored e-mail account, or the output is commented out, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the auditd service to notify the administrators in the event of a SUSE operating system audit processing failure. \n\nConfigure an alias value for the postmaster with the following command:\n\n> sudo sh -c 'echo \"postmaster: root\" >> /etc/aliases' \n\nConfigure an alias for root that forwards to a monitored email address with the following command:\n\n> sudo sh -c 'echo \"root: box@server.mil\" >> /etc/aliases'\n\nThe following command must be run to implement changes to the /etc/aliases file:\n\n> sudo newaliases",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234957r958424_rule",
   "severity": "medium",

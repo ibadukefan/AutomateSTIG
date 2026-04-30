@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "MACs hmac-sha2-512,hmac-sha2-256",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system SSH daemon must be configured to only use Message Authentication Codes (MACs) employing FIPS 140-2 approved cryptographic hash algorithms.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234826"
+  },
   "check_content_excerpt": "Verify the SUSE operating system SSH daemon is configured to only use MACs that employ FIPS 140-2 approved hashes.\n\nCheck that the SSH daemon is configured to only use MACs that employ FIPS 140-2 approved hashes with the following command:\n\n> sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*macs'\n\nMACs hmac-sha2-512,hmac-sha2-256\n\nIf any ciphers other than \"hmac-sha2-512\" or \"hmac-sha2-256\" are listed, the order differs from the example above, they are missing, or the returned line is commented out, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system SSH daemon to only use MACs that employ FIPS 140-2 approved hashes.\n\nEdit the \"/etc/ssh/sshd_config\" file to uncomment or add the line for the \"MACs\" keyword and set its value to \"hmac-sha2-512\" and/or \"hmac-sha2-256\" (The file might be named differently or be in a different location):\n\nMACs hmac-sha2-512,hmac-sha2-256",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234826r958510_rule",
   "severity": "medium",

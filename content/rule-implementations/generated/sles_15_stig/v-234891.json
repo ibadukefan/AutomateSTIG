@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/login.defs",
+      "pattern": "The DOD requirement is \"60\" days or less (greater than zero, as zero days will lock the account immediately).",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system must be configured to create or update passwords with a maximum lifetime of 60 days.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234891"
+  },
   "check_content_excerpt": "Verify that the SUSE operating system is configured to create or update passwords with a maximum password age of 60 days or less.\n\nCheck that the SUSE operating system enforces 60 days or less as the maximum password age with the following command:\n\n> grep '^PASS_MAX_DAYS' /etc/login.defs\n\nThe DOD requirement is \"60\" days or less (greater than zero, as zero days will lock the account immediately).\n\nIf no output is produced, or if \"PASS_MAX_DAYS\" is not set to \"60\" days or less, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to enforce a maximum password age of 60 days or less.\n\nEdit the file \"/etc/login.defs\" and add or correct the following line. Replace [DAYS] with the appropriate amount of days:\n\nPASS_MAX_DAYS [DAYS]\n\nThe DOD requirement is 60 days or less (greater than zero, as zero days will lock the account immediately).",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234891r1038967_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/fstab",
+      "pattern": "UUID=e06097bb-cfcd-437b-9e4d-a691f5662a7d /store nfs rw,nosuid 0 0",
+      "type": "file_content"
+    },
+    "description": "SUSE operating system file systems that are being imported via Network File System (NFS) must be mounted to prevent files with the setuid and setgid bit set from being executed.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-235000"
+  },
   "check_content_excerpt": "Verify SUSE operating system file systems that are being NFS exported are mounted with the \"nosuid\" option.\n\nFind the file system(s) that contain the directories being exported with the following command:\n\n> grep nfs /etc/fstab\n\nUUID=e06097bb-cfcd-437b-9e4d-a691f5662a7d /store nfs rw,nosuid 0 0\n\nIf a file system found in \"/etc/fstab\" refers to NFS and it does not have the \"nosuid\" option set, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system \"/etc/fstab\" file to use the \"nosuid\" option on file systems that are being exported via NFS.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-235000r991589_rule",
   "severity": "medium",

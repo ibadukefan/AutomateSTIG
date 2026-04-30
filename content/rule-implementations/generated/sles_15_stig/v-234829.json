@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "net.ipv4.tcp_syncookies",
+      "type": "sysctl"
+    },
+    "description": "The SUSE operating system must be configured to use TCP syncookies.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234829"
+  },
   "check_content_excerpt": "Verify the SUSE operating system is configured to use IPv4 TCP syncookies.\n\nCheck to see if syncookies are used with the following command:\n\n> sudo sysctl net.ipv4.tcp_syncookies\nnet.ipv4.tcp_syncookies = 1\n\nIf the network parameter \"ipv4.tcp_syncookies\" is not equal to \"1\" or nothing is returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to use IPv4 TCP syncookies by running the following command as an administrator:\n\n> sudo sysctl -w net.ipv4.tcp_syncookies=1\n\nIf \"1\" is not the system's default value, add or update the following line in \"/etc/sysctl.d/99-stig.conf\":\n\n> sudo sh -c 'echo \"net.ipv4.tcp_syncookies=1\" >> /etc/sysctl.d/99-stig.conf'\n\n> sudo sysctl --system",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "sysctl",
   "remediation": "planned",
   "rule_id": "SV-234829r958528_rule",
   "severity": "medium",

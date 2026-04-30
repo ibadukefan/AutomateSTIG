@@ -124,6 +124,23 @@ Windows method:
         self.assertEqual(candidate['check'], {'type': 'sysctl', 'key': 'kernel.kexec_load_disabled'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
 
+    def test_infers_linux_sysctl_candidate_check_from_sles_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-235015',
+            'title': 'The SUSE operating system must not forward Internet Protocol version 6 source-routed packets.',
+            'check_content': '''Verify the SUSE operating system does not accept IPv6 source-routed packets.
+
+Check the value of the IPv6 accept source route variable with the following command:
+
+> sudo sysctl net.ipv6.conf.all.accept_source_route
+net.ipv6.conf.all.accept_source_route = 0
+
+If the network parameter "ipv6.conf.all.accept_source_route" is not equal to "0" or nothing is returned, this is a finding.'''
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'sysctl', 'key': 'net.ipv6.conf.all.accept_source_route'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '0'})
+
     def test_infers_linux_package_absent_candidate_check_from_rhel_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230239',

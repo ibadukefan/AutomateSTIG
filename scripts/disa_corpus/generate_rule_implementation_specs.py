@@ -131,7 +131,7 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
 
 def _linux_platform(stig_id: str) -> bool:
     lower = stig_id.lower()
-    return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'ubuntu'))
+    return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'ubuntu', 'sles', 'suse'))
 
 
 def _windows_platform(stig_id: str) -> bool:

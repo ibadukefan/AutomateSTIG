@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "net.ipv6.conf.all.forwarding",
+      "type": "sysctl"
+    },
+    "description": "The SUSE operating system must not be performing Internet Protocol version 6 (IPv6) packet forwarding unless the system is a router.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "linux",
+    "vuln_id": "V-235025"
+  },
   "check_content_excerpt": "Verify the SUSE operating system is not performing IPv6 packet forwarding, unless the system is a router.\n\nCheck to see if IPv6 forwarding is enabled using the following command:\n\n> sudo sysctl net.ipv6.conf.all.forwarding\nnet.ipv6.conf.all.forwarding = 0\n\nIf the network parameter \"ipv6.conf.all.forwarding\" is not equal to \"0\" or nothing is returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to not performing IPv6 packet forwarding by running the following command as an administrator:\n\n> sudo sysctl -w net.ipv6.conf.all.forwarding=0\n\nIf \"0\" is not the system's default value, add or update the following line in \"/etc/sysctl.d/99-stig.conf\":\n\n> sudo sh -c 'echo \"net.ipv6.conf.all.forwarding=0\" >> /etc/sysctl.d/99-stig.conf'\n\n> sudo sysctl --system",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "sysctl",
   "remediation": "planned",
   "rule_id": "SV-235025r991589_rule",
   "severity": "medium",
