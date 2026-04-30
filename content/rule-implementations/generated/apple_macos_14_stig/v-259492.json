@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If the device or operating system does not have a camera installed, this requirement is not applicable.\n\nThis requirement is not applicable to mobile devices (smartphones and tablets), where the use of the camera is a local authorizing official (AO) decision.\n\nThis requirement is not applicable to dedicated VTC suites located in approved VTC locations that are centrally managed.\n\nFor an external camera, if there is not a method for the operator to manually disconnect camera at the end of collaborative computing sessions, this is a finding.\n\nFor a built-in camera, the camera must be protected by a camera cover (e.g., laptop camera cover slide) when not in use. If the built-in camera is not protected with a camera cover, or is not physically disabled, this is a finding.\n\nIf the camera is not disconnected, covered, or physically disabled, verify the macOS system is configured to disable the camera with the following command:\n\n/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('allowCamera').js\nEOS\n\nIf the result is not \"false\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the macOS system to disable the camera by installing the \"com.apple.applicationaccess\" configuration profile.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-259492r1009529_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_14_stig/u_apple_macos_14_v2r4_stig.json",
+  "source_version": "U_Apple_macOS_14_V2R4_STIG.zip",
+  "stig_id": "Apple_macOS_14_STIG",
+  "title": "The macOS system must disable the camera.",
+  "tracking_issue": "TODO-V-259492",
+  "vuln_id": "V-259492"
+}

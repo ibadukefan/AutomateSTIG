@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the macOS system is configured to enforce auto logout after 86400 seconds of inactivity with the following command:\n\n/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('.GlobalPreferences')\\\n.objectForKey('com.apple.autologout.AutoLogOutDelay').js\nEOS\n\nIf the result is not \"86400\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the macOS system to enforce auto logout after 86400 seconds of inactivity by installing the \"com.apple.GlobalPreferences\" configuration profile.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-259449r958636_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_14_stig/u_apple_macos_14_v2r4_stig.json",
+  "source_version": "U_Apple_macOS_14_V2R4_STIG.zip",
+  "stig_id": "Apple_macOS_14_STIG",
+  "title": "The macOS system must enforce auto logout after 86400 seconds of inactivity.",
+  "tracking_issue": "TODO-V-259449",
+  "vuln_id": "V-259449"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Real-time Protection >> \"Configure local setting override for scanning all downloaded files and attachments\" is set to \"Disabled\" or \"Not Configured\".\n \nProcedure: Use the Windows Registry Editor to navigate to the following key: \nHKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\n\nCriteria: If the value \"LocalSettingOverrideDisableIOAVProtection\" is REG_DWORD = 0, this is not a finding.\n\nIf the value does not exist, this is not a finding.\n\nIf the value is 1, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Real-time Protection >> \"Configure local setting override for scanning all downloaded files and attachments\" to \"Disabled\" or \"Not Configured\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-213439r961089_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_defender_antivirus/u_ms_defender_antivirus_v2r6_stig.json",
+  "source_version": "U_MS_Defender_Antivirus_V2R6_STIG.zip",
+  "stig_id": "MS_Defender_Antivirus",
+  "title": "Microsoft Defender AV must be configured to not allow override of scanning for downloaded files and attachments.",
+  "tracking_issue": "TODO-V-213439",
+  "vuln_id": "V-213439"
+}

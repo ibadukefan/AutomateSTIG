@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Exclusions >> \"Path Exclusions\" is set to \"Disabled\" or \"Not Configured.\n \nProcedure: Use the Windows Registry Editor to navigate to the following key: \nHKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Exclusions\n \nCriteria: If the value \"Exclusions_Paths\" does not exist, this is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Exclusions >> \"Path Exclusions\" to \"Disabled\" or \"Not Configured\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-213429r961194_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_defender_antivirus/u_ms_defender_antivirus_v2r6_stig.json",
+  "source_version": "U_MS_Defender_Antivirus_V2R6_STIG.zip",
+  "stig_id": "MS_Defender_Antivirus",
+  "title": "Microsoft Defender AV must be configured to not exclude files for scanning.",
+  "tracking_issue": "TODO-V-213429",
+  "vuln_id": "V-213429"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the macOS system is configured to require administrator privileges to modify systemwide settings with the following command:\n\nauthDBs=(\"system.preferences\" \"system.preferences.energysaver\" \"system.preferences.network\" \"system.preferences.printing\" \"system.preferences.sharing\" \"system.preferences.softwareupdate\" \"system.preferences.startupdisk\" \"system.preferences.timemachine\")\nresult=\"1\"\nfor section in ${authDBs[@]}; do\n  if [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"shared\")]/following-sibling::*[1])' -) != \"false\" ]]; then\n    result=\"0\"\n  fi\ndone\necho $result\n\nIf the result is not \"1\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the macOS system to require administrator privileges to modify systemwide settings with the following command:\n\nauthDBs=(\"system.preferences\" \"system.preferences.energysaver\" \"system.preferences.network\" \"system.preferences.printing\" \"system.preferences.sharing\" \"system.preferences.softwareupdate\" \"system.preferences.startupdisk\" \"system.preferences.timemachine\")\n\nfor section in ${authDBs[@]}; do\n/usr/bin/security -q authorizationdb read \"$section\" > \"/tmp/$section.plist\"\nkey_value=$(/usr/libexec/PlistBuddy -c \"Print :shared\" \"/tmp/$section.plist\" 2>&1)\nif [[ \"$key_value\" == *\"Does Not Exist\"* ]]; then\n  /usr/libexec/PlistBuddy -c \"Add :shared bool false\" \"/tmp/$section.plist\"\nelse\n  /usr/libexec/PlistBuddy -c \"Set :shared false\" \"/tmp/$section.plist\"\nfi\n  /usr/bin/security -q authorizationdb write \"$section\" < \"/tmp/$section.plist\"\ndone",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-259515r958726_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_14_stig/u_apple_macos_14_v2r4_stig.json",
+  "source_version": "U_Apple_macOS_14_V2R4_STIG.zip",
+  "stig_id": "Apple_macOS_14_STIG",
+  "title": "The macOS system must require administrator privileges to modify systemwide settings.",
+  "tracking_issue": "TODO-V-259515",
+  "vuln_id": "V-259515"
+}

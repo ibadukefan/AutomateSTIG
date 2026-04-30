@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This setting is applicable starting with v1709 of Windows 10, it is NA for prior versions.\n\nVerify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Microsoft Defender Exploit Guard >> Network Protection >> \"Prevent users and apps from accessing dangerous websites\" is set to \"Enabled\u201d and \"Block\" is selected in the drop-down box.\n\nProcedure: Use the Windows Registry Editor to navigate to the following key: \nHKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\Network Protection\n\nCriteria: If the value \"EnableNetworkProtection\" is REG_DWORD = 1, this is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Windows Defender Exploit Guard >> Network Protection >> \"Prevent users and apps from accessing dangerous websites\" to \"Enabled\" and select \"Block\" in the drop-down box.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-213463r961092_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_defender_antivirus/u_ms_defender_antivirus_v2r6_stig.json",
+  "source_version": "U_MS_Defender_Antivirus_V2R6_STIG.zip",
+  "stig_id": "MS_Defender_Antivirus",
+  "title": "Microsoft Defender AV must be configured to prevent user and apps from accessing dangerous websites.",
+  "tracking_issue": "TODO-V-213463",
+  "vuln_id": "V-213463"
+}

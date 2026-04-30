@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify Ubuntu 24.04 LTS is configured to audit the execution of any system call made by cron as root or as any privileged user.\n\n$ sudo auditctl -l | grep /etc/cron.d\n-w /etc/cron.d -p wa -k cronjobs\n\n$ sudo auditctl -l | grep /var/spool/cron\n-w /var/spool/cron -p wa -k cronjobs\n\nIf either of these commands does not return the expected output, or the lines are commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to audit the execution of any system call made by cron as root or as any privileged user.\n\nAdd or update the following file system rules to \"/etc/audit/rules.d/audit.rules\":\n-w /etc/cron.d/ -p wa -k cronjobs\n-w /var/spool/cron/ -p wa -k cronjobs\n\nTo load the rules to the kernel immediately, use the following command:\n\n$ sudo augenrules --load",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-274870r1155243_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R4_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must audit any script or executable called by cron as root or by any privileged user.",
+  "tracking_issue": "TODO-V-274870",
+  "vuln_id": "V-274870"
+}

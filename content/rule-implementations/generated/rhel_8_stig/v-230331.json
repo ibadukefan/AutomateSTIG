@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that temporary accounts have been provisioned with an expiration date of 72 hours.\n\nFor every existing temporary account, run the following command to obtain its account expiration information.\n\n$ sudo chage -l system_account_name\n\nVerify each of these accounts has an expiration date set within 72 hours.\n\nIf any temporary accounts have no expiration date set or do not expire within 72 hours, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "If a temporary account must be created configure the system to terminate the account after a 72 hour time period with the following command to set an expiration date on it. Substitute \"system_account_name\" with the account to be created.\n\n$ sudo chage -E `date -d \"+3 days\" +%Y-%m-%d` system_account_name",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230331r1017143_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r4_stig.json",
+  "source_version": "U_RHEL_8_V2R4_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 temporary user accounts must be provisioned with an expiration time of 72 hours or less.",
+  "tracking_issue": "TODO-V-230331",
+  "vuln_id": "V-230331"
+}

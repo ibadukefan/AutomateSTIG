@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify users are provided with feedback on when account accesses last occurred with the following command:\n\n$ sudo grep pam_lastlog /etc/pam.d/postlogin\n\nsession required pam_lastlog.so showfailed\n\nIf \"pam_lastlog.so\" is missing from \"/etc/pam.d/postlogin\" file, or the silent option is present, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to provide users with feedback on when account accesses last occurred by setting the required configuration options in \"/etc/pam.d/postlogin\". \n\nAdd the following line to the top of \"/etc/pam.d/postlogin\":\n\nsession required pam_lastlog.so showfailed",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230381r1069295_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r5_stig.json",
+  "source_version": "U_RHEL_8_V2R5_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must display the date and time of the last successful account logon upon logon.",
+  "tracking_issue": "TODO-V-230381",
+  "vuln_id": "V-230381"
+}

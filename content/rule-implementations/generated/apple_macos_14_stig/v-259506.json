@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the macOS system is configured to disable the TouchID System Settings pane with the following command:\n\n/usr/bin/profiles show -output stdout-xml | /usr/bin/xmllint --xpath '//key[text()=\"DisabledSystemSettings\"]/following-sibling::*[1]' - | /usr/bin/grep -c \"com.apple.Touch-ID-Settings.extension\"\n\nIf the result is not \"1\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the macOS system to disable the TouchID System Settings pane by installing the \"com.apple.systempreferences\" configuration profile.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-259506r958478_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_14_stig/u_apple_macos_14_v2r4_stig.json",
+  "source_version": "U_Apple_macOS_14_V2R4_STIG.zip",
+  "stig_id": "Apple_macOS_14_STIG",
+  "title": "The macOS system must disable the TouchID System Settings pane.",
+  "tracking_issue": "TODO-V-259506",
+  "vuln_id": "V-259506"
+}

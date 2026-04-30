@@ -306,16 +306,17 @@
       "vuln_id": "V-242007"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242008",
+      "check_pack": "generated-candidates/windows_firewall_with_advanced_security.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242008r922966_rule",
       "severity": "low",
       "title": "Windows Defender Firewall with Advanced Security must log successful connections when connected to a public network.",
-      "tracking_issue": "TODO-V-242008",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_firewall_with_advanced_security.candidates.json",
         "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
       ],
       "vuln_id": "V-242008"

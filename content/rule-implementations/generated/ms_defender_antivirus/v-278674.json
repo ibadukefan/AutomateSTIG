@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Features >> Enable EDR in block mode is set to \"Enabled\"; otherwise, this is a finding.\n\nProcedure: Use the Windows Registry Editor to navigate to the following key: \nHKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Features\n\nCriteria: If the value \"PassiveRemediation\" is REG_DWORD = 1, this is not a finding.\n\nIf the value is 0, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Features >> Enable EDR in block mode to \"Enabled\".\n\nClick \"OK\".\n\nClick \"Apply\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278674r1144071_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_defender_antivirus/u_ms_defender_antivirus_v2r6_stig.json",
+  "source_version": "U_MS_Defender_Antivirus_V2R6_STIG.zip",
+  "stig_id": "MS_Defender_Antivirus",
+  "title": "Microsoft Defender AV must enable EDR in block mode.",
+  "tracking_issue": "TODO-V-278674",
+  "vuln_id": "V-278674"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: This requirement assumes the use of the Ubuntu 24.04 LTS default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nTo verify the screensaver is configured to be blank, run the following command:\n\n$ gsettings writable org.gnome.desktop.screensaver picture-uri\n \nfalse\n \nIf \"picture-uri\" is writable and the result is \"true\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to prevent a user from overriding the picture-uri setting for graphical user interfaces.\n\nIn the file \"/etc/dconf/db/local.d/00-security-settings\", add or update the following lines:\n\n[org/gnome/desktop/screensaver]\npicture-uri=''\n\nPrevent user modification by adding the following line to \"/etc/dconf/db/local.d/locks/00-security-settings-lock\":\n\n/org/gnome/desktop/screensaver/picture-uri\n\nUpdate the dconf system databases:\n\n$ sudo dconf update",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-274871r1107302_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R4_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must conceal, via the session lock, information previously visible on the display with a publicly viewable image.",
+  "tracking_issue": "TODO-V-274871",
+  "vuln_id": "V-274871"
+}

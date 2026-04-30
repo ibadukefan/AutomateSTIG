@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that local initialization files do not execute world-writable programs.\n\nCheck the system for world-writable files.\n\nThe following command will discover and print world-writable files. Run it once for each local partition [PART]: \n\n$ sudo find [PART] -xdev -type f -perm -0002 -print\n\nFor all files listed, check for their presence in the local initialization files with the following commands:\n\nNote: The example will be for a system that is configured to create user home directories in the \"/home\" directory.\n\n$ sudo grep <file> /home/*/.*\n\nIf any local initialization files are found to reference world-writable files, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the mode on files being executed by the local initialization files with the following command:\n\n$ sudo chmod 0755 <file>",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230309r1017119_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r5_stig.json",
+  "source_version": "U_RHEL_8_V2R5_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "Local RHEL 8 initialization files must not execute world-writable programs.",
+  "tracking_issue": "TODO-V-230309",
+  "vuln_id": "V-230309"
+}

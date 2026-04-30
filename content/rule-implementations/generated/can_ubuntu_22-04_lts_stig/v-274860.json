@@ -1,5 +1,5 @@
 {
-  "check_content_excerpt": "Verify that \"/etc/sudoers\" has no occurrences of \"NOPASSWD\" with the following command:\n\n$ sudo egrep -iR 'NOPASSWD' /etc/sudoers /etc/sudoers.d/\n\nIf any occurrences of \"NOPASSWD\" are returned from the command and have not been documented with the information system security officer (ISSO) as an organizationally defined administrative group using multifactor authentication (MFA), this is a finding.",
+  "check_content_excerpt": "Verify \"/etc/sudoers\" has no occurrences of \"NOPASSWD\" with the following command:\n\n$ sudo egrep -iR 'NOPASSWD' /etc/sudoers /etc/sudoers.d/\n\nIf any occurrences of \"NOPASSWD\" are returned from the command and have not been documented with the information system security officer (ISSO) as an organizationally defined administrative group using multifactor authentication (MFA), this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
@@ -19,13 +19,13 @@
   "na_conditions": [],
   "normalizer": "planned",
   "remediation": "planned",
-  "rule_id": "SV-274860r1107272_rule",
+  "rule_id": "SV-274860r1155210_rule",
   "severity": "medium",
   "source_benchmark": "",
-  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
-  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r7_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R7_STIG.zip",
   "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
-  "title": "The operating system must require users to provide a password for privilege escalation.",
+  "title": "Ubuntu 22.04 LTS must require users to provide a password for privilege escalation.",
   "tracking_issue": "TODO-V-274860",
   "vuln_id": "V-274860"
 }

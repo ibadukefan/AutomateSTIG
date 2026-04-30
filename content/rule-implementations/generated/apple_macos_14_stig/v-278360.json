@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system version.\n\nClick the Apple icon on the menu at the top-left corner of the screen.\n\nSelect the \"About This Mac\" option.\n\nIf the operating system version is no longer supported by the vendor, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Upgrade to a supported version of the operating system.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278360r1131175_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_14_stig/u_apple_macos_14_v2r4_stig.json",
+  "source_version": "U_Apple_macOS_14_V2R4_STIG.zip",
+  "stig_id": "Apple_macOS_14_STIG",
+  "title": "The macOS system must be a version supported by the vendor.",
+  "tracking_issue": "TODO-V-278360",
+  "vuln_id": "V-278360"
+}

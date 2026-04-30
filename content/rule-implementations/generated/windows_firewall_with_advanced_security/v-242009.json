@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This requirement is NA for servers and non domain workstations.\n\nVerify firewall exceptions for inbound connections on domain workstations only allow authorized management systems and remote management hosts.\n\nReview inbound firewall exception rules in Microsoft Defender Firewall with Advanced Security. Firewall rules can be complex and should be reviewed with the firewall administrator.\n\nOne method for restricting inbound connections is to only allow exceptions for a specific scope of remote IP addresses.\n\nIf allowed inbound exceptions are not limited to authorized management systems and remote management hosts, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Ensure firewall exceptions to inbound connections on domain workstations only allow authorized management systems and remote management hosts.\n\nFirewall rules can be complex and should be thoroughly tested before applying in a production environment.\n\nOne method for restricting inbound connections is to only allow exceptions for a specific scope of remote IP addresses. For any inbound rules that allow connections from other systems, configure the Scope for Remote IP addresses to those of authorized management systems and remote management hosts. This may be defined as an IP address, subnet, or range. Apply the rule to all firewall profiles.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-242009r922967_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/windows_firewall_with_advanced_security/u_ms_windows_defender_firewall_v2r2_stig.json",
+  "source_version": "U_MS_Windows_Defender_Firewall_V2R2_STIG.zip",
+  "stig_id": "Windows_Firewall_with_Advanced_Security",
+  "title": "Inbound exceptions to the firewall on domain workstations must only allow authorized remote management hosts.",
+  "tracking_issue": "TODO-V-242009",
+  "vuln_id": "V-242009"
+}

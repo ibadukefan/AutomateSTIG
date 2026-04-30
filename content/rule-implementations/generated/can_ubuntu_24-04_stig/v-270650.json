@@ -1,5 +1,5 @@
 {
-  "check_content_excerpt": "Note: If AIDE is not installed, this finding is not applicable.\n\nVerify Advanced Intrusion Detection Environment (AIDE) is configured on the system by preforming a manual check:\n\n$ sudo aide -c /etc/aide/aide.conf --check\n\nExample output:\n...\nStart timestamp: 2024-10-30 14:22:38 -0400 (AIDE 0.18.6)\nAIDE found differences between database and filesystem!!\n...\n\nIf AIDE is being used for system file integrity checking and the command fails, this is a finding.",
+  "check_content_excerpt": "Note: If a file integrity tool other than Advanced Intrusion Detection Environment (AIDE) is employed, this requirement is not applicable.\n\nVerify AIDE is configured on the system by performing a manual check:\n\n$ sudo aide -c /etc/aide/aide.conf --check\n\nExample output:\n...\nStart timestamp: 2024-10-30 14:22:38 -0400 (AIDE 0.18.6)\nAIDE found differences between database and filesystem!!\n...\n\nIf AIDE is being used for system file integrity checking and the command fails, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
@@ -19,13 +19,13 @@
   "na_conditions": [],
   "normalizer": "planned",
   "remediation": "planned",
-  "rule_id": "SV-270650r1066439_rule",
+  "rule_id": "SV-270650r1155241_rule",
   "severity": "medium",
   "source_benchmark": "",
-  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
-  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R4_STIG.zip",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "title": "Ubuntu 24.04 LTS must configure AIDE to preform file integrity checking on the file system.",
+  "title": "Ubuntu 24.04 LTS must configure AIDE to perform file integrity checking on the file system if installed.",
   "tracking_issue": "TODO-V-270650",
   "vuln_id": "V-270650"
 }

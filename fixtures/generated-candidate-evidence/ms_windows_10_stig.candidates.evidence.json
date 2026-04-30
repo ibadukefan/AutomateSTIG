@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 116,
+  "candidate_checks": 118,
   "cases": [
     {
       "check": {
@@ -54,6 +54,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-220704"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\Connectivity",
+        "type": "registry",
+        "value_name": "AllowBluetooth"
+      },
+      "description": "Bluetooth must be turned off unless approved by the organization.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\Connectivity\\AllowBluetooth": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\Connectivity\\AllowBluetooth": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220734"
     },
     {
       "check": {
@@ -3132,6 +3159,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-252903"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftAccount",
+        "type": "registry",
+        "value_name": "DisableUserAuth"
+      },
+      "description": "Windows 10 systems must block consumer account user authentication.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftAccount\\DisableUserAuth": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftAccount\\DisableUserAuth": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-279687"
     }
   ],
   "production_claim": false,
@@ -3139,5 +3193,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 116
+  "validated_candidates": 118
 }

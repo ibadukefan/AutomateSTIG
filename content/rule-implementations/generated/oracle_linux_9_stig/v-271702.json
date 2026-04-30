@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/modprobe.d/",
+      "pattern": "usb-storage",
+      "type": "file_content"
+    },
+    "description": "OL 9 must disable automatic mounting of Universal Serial Bus (USB) mass storage driver.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271702"
+  },
+  "check_content_excerpt": "Verify that OL 9 disables automatic mounting of the USB storage kernel module with the following command:\n\n$ grep usb-storage /etc/modprobe.d/* | grep \"/bin/true\" \ninstall usb-storage /bin/true\n\nIf the command does not return any output, or the line is commented out, this is a finding.\n\nVerify the operating system disables the ability to use USB mass storage device.\n\n$ grep usb-storage /etc/modprobe.d/* | grep -i \"blacklist\"\nblacklist usb-storage\n\nIf the command does not return any output, or the line is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to disable using the USB storage kernel module. \n\nCreate a file under \"/etc/modprobe.d\" to contain the following:\n\n# sudo su -c \"echo install usb-storage /bin/true >> /etc/modprobe.d/DISASTIG.conf\"\n\nConfigure the operating system to disable the ability to use USB mass storage devices.\n\n# sudo su -c \"echo blacklist usb-storage >> /etc/modprobe.d/DISASTIG.conf\"",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-271702r1091818_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r2_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R2_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must disable automatic mounting of Universal Serial Bus (USB) mass storage driver.",
+  "tracking_issue": "TODO-V-271702",
+  "vuln_id": "V-271702"
+}

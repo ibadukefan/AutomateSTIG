@@ -1,6 +1,33 @@
 {
-  "candidate_checks": 10,
+  "candidate_checks": 11,
   "cases": [
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must prevent a user from overriding the disabling of the graphical user interface automount function.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nsystem-db\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270679"
+    },
     {
       "check": {
         "is_regex": false,
@@ -329,5 +356,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 10
+  "validated_candidates": 11
 }

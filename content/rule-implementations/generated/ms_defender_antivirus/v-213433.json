@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This is applicable to unclassified systems. For other systems this is NA.\n\nVerify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> MAPS >> \"Configure the 'Block at First Sight' feature\" is set to \"Enabled\".\n     \nProcedure: Use the Windows Registry Editor to navigate to the following key: \nHKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet\n\nCriteria: If the value \"DisableBlockAtFirstSeen\" is REG_DWORD = 0, this is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "This is applicable to unclassified systems. For other systems this is NA.\n\nSet the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft  Defender Antivirus >> MAPS >> \"Configure the 'Block at First Sight' feature\" to \"Enabled\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-213433r961194_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_defender_antivirus/u_ms_defender_antivirus_v2r6_stig.json",
+  "source_version": "U_MS_Defender_Antivirus_V2R6_STIG.zip",
+  "stig_id": "MS_Defender_Antivirus",
+  "title": "Microsoft Defender AV must be configured to check in real time with MAPS before content is run or accessed.",
+  "tracking_issue": "TODO-V-213433",
+  "vuln_id": "V-213433"
+}

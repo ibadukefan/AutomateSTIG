@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 107,
+  "candidate_checks": 108,
   "cases": [
     {
       "check": {
@@ -1637,6 +1637,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "usb-storage",
+        "type": "file_content"
+      },
+      "description": "OL 9 must disable automatic mounting of Universal Serial Bus (USB) mass storage driver.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nusb-storage\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271702"
+    },
+    {
+      "check": {
         "key": "user.max_user_namespaces",
         "type": "sysctl"
       },
@@ -2959,5 +2986,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 107
+  "validated_candidates": 108
 }

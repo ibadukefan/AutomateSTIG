@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the macOS system is configured to display the contents of \"/etc/banner\" before granting access to the system with the following command:\n\n/usr/sbin/sshd -G | /usr/bin/grep -c \"^banner /etc/banner\"\n\nIf the command does not return \"1\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the macOS system to display the contents of \"/etc/banner\" before granting access to the system by creating a plain text file in the /private/etc/ssh/sshd_config.d/ directory containing the following:\n\nbanner /etc/banner",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-259430r958390_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_14_stig/u_apple_macos_14_v2r4_stig.json",
+  "source_version": "U_Apple_macOS_14_V2R4_STIG.zip",
+  "stig_id": "Apple_macOS_14_STIG",
+  "title": "The macOS system must enforce SSH to display the Standard Mandatory DOD Notice and Consent Banner.",
+  "tracking_issue": "TODO-V-259430",
+  "vuln_id": "V-259430"
+}

@@ -3,6 +3,20 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must prevent a user from overriding the disabling of the graphical user interface automount function.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270679"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/security/pwquality.conf",
         "pattern": "enforcing",
         "type": "file_content"

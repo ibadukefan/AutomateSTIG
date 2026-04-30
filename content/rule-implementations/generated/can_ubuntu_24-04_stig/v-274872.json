@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: This requirement assumes the use of the Ubuntu 24.04 LTS default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nVerify Ubuntu 24.04 LTS disables ability of the user to override the graphical user interface autorun setting.\n\nDetermine which profile the system database is using with the following command:\n\n$ gsettings writable org.gnome.desktop.media-handling autorun-never\n \nfalse\n \nIf \"autorun-never\" is writable, the result is \"true\". If this is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the Ubuntu 24.04 LTS GNOME desktop to not allow a user to change the setting that disables autorun on removable media.\n\nAdd the following line to \"/etc/dconf/db/local.d/locks/00-security-settings-lock\" to prevent user modification:\n\n/org/gnome/desktop/media-handling/autorun-never\n\nUpdate the dconf system databases:\n\n$ sudo dconf update",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-274872r1107297_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R4_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must prevent a user from overriding the disabling of the graphical user interface autorun function.",
+  "tracking_issue": "TODO-V-274872",
+  "vuln_id": "V-274872"
+}

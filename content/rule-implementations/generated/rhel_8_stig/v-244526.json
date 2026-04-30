@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that system-wide crypto policies are in effect:\n\n$ sudo grep CRYPTO_POLICY /etc/sysconfig/sshd\n\n# CRYPTO_POLICY=\n\nIf the \"CRYPTO_POLICY \" is uncommented, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the RHEL 8 SSH daemon to use system-wide crypto policies by adding the following line to /etc/sysconfig/sshd:\n\n# CRYPTO_POLICY=\n\nA reboot is required for the changes to take effect.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-244526r1017332_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r5_stig.json",
+  "source_version": "U_RHEL_8_V2R5_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "The RHEL 8 SSH daemon must be configured to use system-wide crypto policies.",
+  "tracking_issue": "TODO-V-244526",
+  "vuln_id": "V-244526"
+}

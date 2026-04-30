@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system restricts privilege elevation to authorized personnel with the following command:\n\n$ sudo grep -iwR 'ALL' /etc/sudoers /etc/sudoers.d/ | grep -v '#'\n\nIf either of the following entries are returned, this is a finding:\nALL     ALL=(ALL) ALL\nALL     ALL=(ALL:ALL) ALL",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to restrict privilege elevation to authorized personnel.\n\nRemove the following entries from the /etc/sudoers file or any configuration file under /etc/sudoers.d/:\n\nALL     ALL=(ALL) ALL\nALL     ALL=(ALL:ALL) ALL",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-274869r1107312_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R4_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must restrict privilege elevation to authorized personnel.",
+  "tracking_issue": "TODO-V-274869",
+  "vuln_id": "V-274869"
+}

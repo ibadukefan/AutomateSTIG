@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftAccount",
+      "type": "registry",
+      "value_name": "DisableUserAuth"
+    },
+    "description": "Windows 11 systems must block consumer account user authentication.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-279688"
+  },
+  "check_content_excerpt": "Verify the \"block all consumer Microsoft account user authentication\" is enabled.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Policies\\Microsoft\\MicrosoftAccount\n\nValue Name: DisableUserAuth\n\nValue Type: REG_DWORD\nValue: 0x00000001 (1)\n\nIf the registry value is not \"1\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the following Group Policy:\nComputer Configuration >> Administrative Templates >> Windows Components >> Microsoft Account \"block all consumer Microsoft account user authentication\" to \"Enabled\".\n\nFor systems managed by Intune, apply the DOD Windows 11 STIG Settings Catalog (or equivalent Intune policy) found in the Intune policy package available on cyber.mil.\nSteps to create an Intune policy:\n1. Sign in to the Intune admin center >> Devices >> Configuration >> Create >> New Policy.\n2. Platform: Windows 10 and later. Profile type: Settings Catalog, then click \"Create\".\n3. Basics: Provide a Name and Description of the profile, then click \"Next\".\n4. Configuration settings: Click \"+ Add settings\" and search for consumer under the Settings picker. Under the Administrative Templates\\Windows Components\\Microsoft account category, check the box next to \"Block all consumer Microsoft account user authentication\". Click the Enabled radio button, then click \"Next\".\n5. Scope tags: (optional), then click \"Next\".\n6. Assignments: Assign the policy to Entra security groups that contain the target users or devices, then click \"Next\".\n7. Review + create: Review the deployment summary, then click \"Create\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-279688r1153564_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/microsoft_windows_11_stig/u_ms_windows_11_v2r6_stig.json",
+  "source_version": "U_MS_Windows_11_V2R6_STIG.zip",
+  "stig_id": "Microsoft_Windows_11_STIG",
+  "title": "Windows 11 systems must block consumer account user authentication.",
+  "tracking_issue": "TODO-V-279688",
+  "vuln_id": "V-279688"
+}

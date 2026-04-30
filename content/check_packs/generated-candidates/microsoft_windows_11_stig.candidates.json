@@ -1441,6 +1441,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-253478"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftAccount",
+        "type": "registry",
+        "value_name": "DisableUserAuth"
+      },
+      "description": "Windows 11 systems must block consumer account user authentication.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-279688"
     }
   ],
   "platform": "windows",

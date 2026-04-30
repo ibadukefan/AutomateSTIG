@@ -823,6 +823,20 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "usb-storage",
+        "type": "file_content"
+      },
+      "description": "OL 9 must disable automatic mounting of Universal Serial Bus (USB) mass storage driver.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271702"
+    },
+    {
+      "check": {
         "key": "user.max_user_namespaces",
         "type": "sysctl"
       },

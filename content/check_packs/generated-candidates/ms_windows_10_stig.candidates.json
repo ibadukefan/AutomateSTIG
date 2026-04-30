@@ -30,6 +30,20 @@
     },
     {
       "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\Connectivity",
+        "type": "registry",
+        "value_name": "AllowBluetooth"
+      },
+      "description": "Bluetooth must be turned off unless approved by the organization.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-220734"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application",
         "type": "registry",
         "value_name": "MaxSize"
@@ -1623,6 +1637,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-252903"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftAccount",
+        "type": "registry",
+        "value_name": "DisableUserAuth"
+      },
+      "description": "Windows 10 systems must block consumer account user authentication.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-279687"
     }
   ],
   "platform": "windows",

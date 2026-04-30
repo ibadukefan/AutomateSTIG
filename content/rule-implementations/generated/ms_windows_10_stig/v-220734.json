@@ -1,9 +1,23 @@
 {
-  "check_content_excerpt": "This is NA if the system does not have Bluetooth.\n\nVerify the Bluetooth radio is turned off unless approved by the organization. If it is not, this is a finding.\n\nApproval must be documented with the ISSO.",
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\Connectivity",
+      "type": "registry",
+      "value_name": "AllowBluetooth"
+    },
+    "description": "Bluetooth must be turned off unless approved by the organization.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-220734"
+  },
+  "check_content_excerpt": "This is NA if the system does not have Bluetooth.\n\nVerify the Bluetooth radio is turned off unless approved by the organization. If it is not, this is a finding.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\Connectivity\\\n\nValue Name: AllowBluetooth\n\nValue Type: REG_DWORD\nValue: 0x00000000 (0)\n\nApproval must be documented with the ISSO.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,19 +25,22 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
   "external_acceptance_refs": [],
-  "fix_text_excerpt": "Turn off Bluetooth radios not organizationally approved. Establish an organizational policy for the use of Bluetooth.",
+  "fix_text_excerpt": "Turn off Bluetooth radios not organizationally approved.\n\nFor systems managed by Intune, apply the DOD Windows 10 STIG Settings Catalog (or equivalent Intune policy) found in the Intune policy package available on cyber.mil.\nSteps to create an Intune policy:\n1. Sign in to the Intune admin center >> Devices >> Configuration >> Create >> New Policy.\n2. Platform: Windows 10 and later. Profile type: Settings Catalog, then click \"Create\".\n3. Basics: Provide a Name and Description of the profile, then click \"Next\".\n4. Configuration settings: Click \"+ Add settings\" and search for connectivity under the Settings picker. Under the Connectivity category, check the box next to Allow Bluetooth setting. Choose the first option, Disallow Bluetooth, then click \"Next\".\n5. Scope tags: (optional), then click \"Next\".\n6. Assignments: Assign the policy to Entra security groups that contain the target users or devices, then click \"Next\".\n7. Review + create: Review the deployment summary, then click \"Create\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
-  "rule_id": "SV-220734r958478_rule",
+  "rule_id": "SV-220734r1153416_rule",
   "severity": "medium",
   "source_benchmark": "",
-  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_10_stig/u_ms_windows_10_v3r4_stig.json",
-  "source_version": "U_MS_Windows_10_V3R4_STIG.zip",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_10_stig/u_ms_windows_10_v3r6_stig.json",
+  "source_version": "U_MS_Windows_10_V3R6_STIG.zip",
   "stig_id": "MS_Windows_10_STIG",
   "title": "Bluetooth must be turned off unless approved by the organization.",
   "tracking_issue": "TODO-V-220734",
