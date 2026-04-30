@@ -599,46 +599,49 @@
       "vuln_id": "V-260506"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260507",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-260507r1101725_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must configure audit tools to be owned by \"root\".",
-      "tracking_issue": "TODO-V-260507",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/ddb2d451682ed2cc119f5c7b0bedcce2bf5baf45ebf690d9c62adb3ad55781d4/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip"
       ],
       "vuln_id": "V-260507"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260508",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-260508r958566_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must configure the \"/var/log\" directory to be owned by \"root\".",
-      "tracking_issue": "TODO-V-260508",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/ddb2d451682ed2cc119f5c7b0bedcce2bf5baf45ebf690d9c62adb3ad55781d4/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip"
       ],
       "vuln_id": "V-260508"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260509",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-260509r958566_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must configure the \"/var/log\" directory to be group-owned by \"syslog\".",
-      "tracking_issue": "TODO-V-260509",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/ddb2d451682ed2cc119f5c7b0bedcce2bf5baf45ebf690d9c62adb3ad55781d4/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip"
       ],
       "vuln_id": "V-260509"

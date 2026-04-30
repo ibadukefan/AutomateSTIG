@@ -93,7 +93,10 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
             'mode': check.get('mode'),
         }
         unexpected_perm = dict(expected_perm)
-        unexpected_perm['mode'] = _alternate_value(expected_perm.get('mode'))
+        for field in ('mode', 'owner', 'group'):
+            if expected_perm.get(field) is not None:
+                unexpected_perm[field] = _alternate_value(expected_perm.get(field))
+                break
         pass_fixture['file_permissions'] = {path: expected_perm}
         fail_fixture['file_permissions'] = {path: unexpected_perm}
         evidence_type = 'linux_file_permission'

@@ -506,15 +506,47 @@ def _file_permission_candidate(rule: dict) -> dict | None:
         path_match = re.search(r'\b(?:permissions|mode)[^\n.]+\s+(/[A-Za-z0-9_./:+-]+)', content, re.IGNORECASE)
     if not path_match:
         return None
+    path = path_match.group(1)
+    owner = None
+    group = None
+    mode = None
     mode_match = re.search(r'\b(?:mode|permissions?)\s+(?:is|are|of)?\s*(?:not\s+)?["“]?([0-7]{3,4})["”]?', content, re.IGNORECASE)
     if not mode_match:
         mode_match = re.search(r'If\s+the\s+mode\s+is\s+not\s+["“]([0-7]{3,4})["”]', content, re.IGNORECASE)
-    if not mode_match:
+    if mode_match:
+        mode = mode_match.group(1)
+
+    stat_match = re.search(r'\bstat\s+-c\s+["\'](?P<format>[^"\']+)["\']\s+' + re.escape(path), content)
+    if stat_match:
+        fields = re.findall(r'%[aAUGn]', stat_match.group('format'))
+        sample_match = re.search(r'^\s*' + re.escape(path) + r'\s+(?P<values>\S(?:.*\S)?)\s*$', content, re.MULTILINE)
+        if sample_match:
+            values = sample_match.group('values').split()
+            if fields and fields[0] == '%n':
+                fields = fields[1:]
+            for field, value in zip(fields, values):
+                if field in ('%a', '%A') and re.fullmatch(r'[0-7]{3,4}', value):
+                    mode = mode or value
+                elif field == '%U':
+                    owner = value
+                elif field == '%G':
+                    group = value
+
+    if owner is None:
+        owner_match = re.search(r'not\s+owned\s+by\s+["“]?([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
+        if owner_match:
+            owner = owner_match.group(1).strip('"”.,')
+    if group is None:
+        group_match = re.search(r'not\s+group-owned\s+by\s+["“]?([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
+        if group_match:
+            group = group_match.group(1).strip('"”.,')
+
+    if owner is None and group is None and mode is None:
         return None
     return {
         'vuln_id': rule.get('vuln_id', ''),
         'platform': 'linux',
-        'check': {'type': 'file_permission', 'path': path_match.group(1), 'owner': None, 'group': None, 'mode': mode_match.group(1)},
+        'check': {'type': 'file_permission', 'path': path, 'owner': owner, 'group': group, 'mode': mode},
         'expected': {'type': 'is_true'},
         'description': rule.get('title', ''),
     }

@@ -1,9 +1,24 @@
 {
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": null,
+      "owner": "root",
+      "path": "/sbin/auditctl",
+      "type": "file_permission"
+    },
+    "description": "RHEL 8 audit tools must be owned by root.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230473"
+  },
   "check_content_excerpt": "Verify the audit tools are owned by \"root\" to prevent any unauthorized access, deletion, or modification.\n\nCheck the owner of each audit tool by running the following command:\n\n$ sudo stat -c \"%U %n\" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/rsyslogd /sbin/augenrules\n\nroot /sbin/auditctl\nroot /sbin/aureport\nroot /sbin/ausearch\nroot /sbin/autrace\nroot /sbin/auditd\nroot /sbin/rsyslogd\nroot /sbin/augenrules\n\nIf any of the audit tools are not owned by \"root\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +26,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit tools to be owned by \"root\", by running the following command:\n\n$ sudo chown root [audit_tool]\n\nReplace \"[audit_tool]\" with each audit tool not owned by \"root\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_permission",
   "remediation": "planned",
   "rule_id": "SV-230473r1017264_rule",
   "severity": "medium",

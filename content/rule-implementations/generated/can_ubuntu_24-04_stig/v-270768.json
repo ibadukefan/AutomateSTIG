@@ -1,9 +1,24 @@
 {
+  "candidate_check": {
+    "check": {
+      "group": "adm",
+      "mode": null,
+      "owner": null,
+      "path": "/var/log/syslog",
+      "type": "file_permission"
+    },
+    "description": "Ubuntu 24.04 LTS must configure the /var/log/syslog file to be group-owned by adm.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270768"
+  },
   "check_content_excerpt": "Verify that Ubuntu 24.04 LTS configures the /var/log/syslog file to be group-owned by \"adm\" with the following command: \n \n$ stat -c \"%n %G\" /var/log/syslog \n/var/log/syslog adm \n \nIf the /var/log/syslog file is not group-owned by \"adm\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +26,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to have adm group-own the /var/log/syslog file by running the following command: \n \n$ sudo chgrp adm /var/log/syslog",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_permission",
   "remediation": "planned",
   "rule_id": "SV-270768r1066793_rule",
   "severity": "medium",

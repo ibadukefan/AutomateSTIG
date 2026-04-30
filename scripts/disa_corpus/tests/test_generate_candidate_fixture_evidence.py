@@ -66,6 +66,12 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
                         'expected': {'type': 'is_true'},
                     },
                     {
+                        'vuln_id': 'V-7B',
+                        'platform': 'linux',
+                        'check': {'type': 'file_permission', 'path': '/var/log/syslog', 'owner': 'syslog', 'group': None, 'mode': None},
+                        'expected': {'type': 'is_true'},
+                    },
+                    {
                         'vuln_id': 'V-8',
                         'platform': 'windows',
                         'check': {'type': 'audit_policy', 'subcategory': 'User Account Management', 'setting': 'Success'},
@@ -90,8 +96,8 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
 
             self.assertEqual(written, 1)
             evidence = json.loads((out / 'mixed.candidates.evidence.json').read_text())
-            self.assertEqual(evidence['candidate_checks'], 10)
-            self.assertEqual(evidence['validated_candidates'], 10)
+            self.assertEqual(evidence['candidate_checks'], 11)
+            self.assertEqual(evidence['validated_candidates'], 11)
             cases = {case['vuln_id']: case for case in evidence['cases']}
             self.assertEqual(cases['V-1']['pass_fixture']['registry']['HKLM\\Software\\Example\\Enabled'], 1)
             self.assertNotEqual(cases['V-1']['fail_fixture']['registry']['HKLM\\Software\\Example\\Enabled'], 1)
@@ -107,6 +113,8 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
             self.assertNotEqual(cases['V-6']['fail_fixture']['services']['telnet'], 'disabled')
             self.assertEqual(cases['V-7']['pass_fixture']['file_permissions']['/var/log/audit/audit.log']['mode'], '600')
             self.assertNotEqual(cases['V-7']['fail_fixture']['file_permissions']['/var/log/audit/audit.log']['mode'], '600')
+            self.assertEqual(cases['V-7B']['pass_fixture']['file_permissions']['/var/log/syslog']['owner'], 'syslog')
+            self.assertNotEqual(cases['V-7B']['fail_fixture']['file_permissions']['/var/log/syslog']['owner'], 'syslog')
             self.assertEqual(cases['V-8']['evidence_type'], 'windows_audit_policy_contains')
             self.assertEqual(cases['V-8']['pass_fixture']['audit_policy']['User Account Management'], 'Success')
             self.assertEqual(cases['V-8']['fail_fixture']['audit_policy']['User Account Management'], 'No Auditing')

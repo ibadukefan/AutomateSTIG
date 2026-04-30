@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 89,
+  "candidate_checks": 92,
   "cases": [
     {
       "check": {
@@ -248,6 +248,120 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-260500"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 22.04 LTS must configure audit tools to be owned by \"root\".",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/sbin/auditctl": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/sbin/auditctl": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260507"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 22.04 LTS must configure the \"/var/log\" directory to be owned by \"root\".",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/var/log": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/var/log": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260508"
+    },
+    {
+      "check": {
+        "group": "syslog",
+        "mode": null,
+        "owner": null,
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 22.04 LTS must configure the \"/var/log\" directory to be group-owned by \"syslog\".",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/var/log": {
+            "exists": true,
+            "group": "unexpected-syslog",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/var/log": {
+            "exists": true,
+            "group": "syslog",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260509"
     },
     {
       "check": {
@@ -2394,5 +2508,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
-  "validated_candidates": 89
+  "validated_candidates": 92
 }

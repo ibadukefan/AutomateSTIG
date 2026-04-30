@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 276,
+  "candidate_checks": 277,
   "cases": [
     {
       "check": {
@@ -1768,6 +1768,44 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257921"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/cron",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 cron configuration files directory must be owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/cron": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/cron": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257926"
     },
     {
       "check": {
@@ -7528,5 +7566,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 276
+  "validated_candidates": 277
 }

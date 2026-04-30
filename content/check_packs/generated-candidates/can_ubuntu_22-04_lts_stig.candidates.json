@@ -123,6 +123,51 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 22.04 LTS must configure audit tools to be owned by \"root\".",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260507"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 22.04 LTS must configure the \"/var/log\" directory to be owned by \"root\".",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260508"
+    },
+    {
+      "check": {
+        "group": "syslog",
+        "mode": null,
+        "owner": null,
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 22.04 LTS must configure the \"/var/log\" directory to be group-owned by \"syslog\".",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260509"
+    },
+    {
+      "check": {
         "name": "ufw",
         "should_be_installed": true,
         "type": "package"

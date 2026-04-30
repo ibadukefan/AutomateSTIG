@@ -3520,31 +3520,33 @@
       "vuln_id": "V-230472"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230473",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230473r1017264_rule",
       "severity": "medium",
       "title": "RHEL 8 audit tools must be owned by root.",
-      "tracking_issue": "TODO-V-230473",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/5311a0d5d7f77f0494bea07818449ec292f9914b929260009fd716671c1e057f/U_RHEL_8_V2R3_STIG.zip"
       ],
       "vuln_id": "V-230473"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230474",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230474r1017265_rule",
       "severity": "medium",
       "title": "RHEL 8 audit tools must be group-owned by root.",
-      "tracking_issue": "TODO-V-230474",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/5311a0d5d7f77f0494bea07818449ec292f9914b929260009fd716671c1e057f/U_RHEL_8_V2R3_STIG.zip"
       ],
       "vuln_id": "V-230474"

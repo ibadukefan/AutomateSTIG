@@ -666,6 +666,36 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "The Ubuntu operating system must configure audit tools to be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238301"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "The Ubuntu operating system must configure the audit tools to be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238302"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/auditd.conf",
         "pattern": "log_file = /var/log/audit/audit.log",
@@ -866,6 +896,36 @@
     },
     {
       "check": {
+        "group": "syslog",
+        "mode": null,
+        "owner": null,
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "The Ubuntu operating system must configure the /var/log directory to be group-owned by syslog.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238338"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "The Ubuntu operating system must configure the /var/log directory to be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238339"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "755",
         "owner": null,
@@ -878,6 +938,36 @@
       },
       "platform": "linux",
       "vuln_id": "V-238340"
+    },
+    {
+      "check": {
+        "group": "adm",
+        "mode": null,
+        "owner": null,
+        "path": "/var/log/syslog",
+        "type": "file_permission"
+      },
+      "description": "The Ubuntu operating system must configure the /var/log/syslog file to be group-owned by adm.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238341"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "syslog",
+        "path": "/var/log/syslog",
+        "type": "file_permission"
+      },
+      "description": "The Ubuntu operating system must configure /var/log/syslog file to be owned by syslog.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238342"
     },
     {
       "check": {

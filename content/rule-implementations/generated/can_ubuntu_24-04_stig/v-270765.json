@@ -1,9 +1,24 @@
 {
+  "candidate_check": {
+    "check": {
+      "group": "syslog",
+      "mode": null,
+      "owner": null,
+      "path": "/var/log",
+      "type": "file_permission"
+    },
+    "description": "Ubuntu 24.04 LTS must configure the /var/log directory to be group-owned by syslog.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270765"
+  },
   "check_content_excerpt": "Verify that Ubuntu 24.04 LTS configures the /var/log directory to be group-owned by \"syslog\" with the following command: \n \n$ stat -c \"%n %G\" /var/log\n/var/log syslog \n \nIf the \"/var/log\" directory is not group-owned by syslog, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +26,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to have syslog group-own the /var/log directory with the following command: \n \n$ sudo chgrp syslog /var/log",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_permission",
   "remediation": "planned",
   "rule_id": "SV-270765r1066784_rule",
   "severity": "medium",

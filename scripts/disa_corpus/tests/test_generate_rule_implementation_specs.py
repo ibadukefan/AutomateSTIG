@@ -248,6 +248,34 @@ If the debug-shell.service is loaded and not masked, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/var/log/audit/audit.log', 'owner': None, 'group': None, 'mode': '600'})
         self.assertEqual(candidate['expected'], {'type': 'is_true'})
 
+    def test_infers_linux_file_permission_owner_candidate_from_stat_output(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270769',
+            'title': 'Ubuntu must configure /var/log/syslog file to be owned by syslog.',
+            'check_content': '''Verify that Ubuntu configures the /var/log/syslog file to be owned by "syslog" with the following command:
+
+$ stat -c "%n %U" /var/log/syslog
+/var/log/syslog syslog
+
+If the "/var/log/syslog" file is not owned by syslog, this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/var/log/syslog', 'owner': 'syslog', 'group': None, 'mode': None})
+        self.assertEqual(candidate['expected'], {'type': 'is_true'})
+
+    def test_infers_linux_file_permission_group_candidate_from_stat_output(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270768',
+            'title': 'Ubuntu must configure the /var/log/syslog file to be group-owned by adm.',
+            'check_content': '''Verify that Ubuntu configures the /var/log/syslog file to be group-owned by "adm" with the following command:
+
+$ stat -c "%n %G" /var/log/syslog
+/var/log/syslog adm
+
+If the "/var/log/syslog" file is not group-owned by adm, this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/var/log/syslog', 'owner': None, 'group': 'adm', 'mode': None})
+        self.assertEqual(candidate['expected'], {'type': 'is_true'})
+
     def test_infers_linux_sshd_config_keyword_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230555',

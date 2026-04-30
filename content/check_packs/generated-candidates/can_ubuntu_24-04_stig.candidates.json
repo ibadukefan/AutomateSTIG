@@ -925,6 +925,36 @@
     },
     {
       "check": {
+        "group": "syslog",
+        "mode": null,
+        "owner": null,
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 24.04 LTS must configure the /var/log directory to be group-owned by syslog.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270765"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 24.04 LTS must configure the /var/log directory to be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270766"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "755",
         "owner": null,
@@ -937,6 +967,36 @@
       },
       "platform": "linux",
       "vuln_id": "V-270767"
+    },
+    {
+      "check": {
+        "group": "adm",
+        "mode": null,
+        "owner": null,
+        "path": "/var/log/syslog",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 24.04 LTS must configure the /var/log/syslog file to be group-owned by adm.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270768"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "syslog",
+        "path": "/var/log/syslog",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 24.04 LTS must configure /var/log/syslog file to be owned by syslog.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270769"
     },
     {
       "check": {
@@ -1461,6 +1521,36 @@
       },
       "platform": "linux",
       "vuln_id": "V-270821"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 24.04 LTS must configure audit tools to be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270822"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 24.04 LTS must configure the audit tools to be group owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270823"
     },
     {
       "check": {

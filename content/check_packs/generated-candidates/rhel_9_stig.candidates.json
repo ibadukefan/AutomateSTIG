@@ -865,6 +865,21 @@
     {
       "check": {
         "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/cron",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 cron configuration files directory must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257926"
+    },
+    {
+      "check": {
+        "group": null,
         "mode": "0000",
         "owner": null,
         "path": "/etc/shadow",

@@ -1,9 +1,24 @@
 {
+  "candidate_check": {
+    "check": {
+      "group": "root",
+      "mode": null,
+      "owner": null,
+      "path": "/sbin/auditctl",
+      "type": "file_permission"
+    },
+    "description": "OL 8 audit tools must be group-owned by root.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248809"
+  },
   "check_content_excerpt": "Verify the audit tools are group-owned by \"root\" to prevent any unauthorized access, deletion, or modification. \n \nCheck the owner of each audit tool by running the following commands: \n \n$ sudo stat -c \"%G %n\" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/rsyslogd /sbin/augenrules \n \nroot /sbin/auditctl \nroot /sbin/aureport \nroot /sbin/ausearch \nroot /sbin/autrace \nroot /sbin/auditd \nroot /sbin/rsyslogd \nroot /sbin/augenrules \n \nIf any of the audit tools are not group-owned by \"root\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +26,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit tools to be group-owned by \"root\" by running the following command: \n \n$ sudo chgrp root [audit_tool] \n \nReplace \"[audit_tool]\" with each audit tool not group-owned by \"root\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_permission",
   "remediation": "planned",
   "rule_id": "SV-248809r991557_rule",
   "severity": "medium",

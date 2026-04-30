@@ -1162,31 +1162,33 @@
       "vuln_id": "V-238300"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238301",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238301 from source identifier xccdf_mil.disa.stig_group_V-238301.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238301r991557_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must configure audit tools to be owned by root.",
-      "tracking_issue": "TODO-V-238301",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238301"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238302",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238302 from source identifier xccdf_mil.disa.stig_group_V-238302.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238302r991557_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must configure the audit tools to be group-owned by root.",
-      "tracking_issue": "TODO-V-238302",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238302"
@@ -1428,31 +1430,33 @@
       "vuln_id": "V-238337"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238338",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238338 from source identifier xccdf_mil.disa.stig_group_V-238338.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238338r958566_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must configure the /var/log directory to be group-owned by syslog.",
-      "tracking_issue": "TODO-V-238338",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238338"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238339",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238339 from source identifier xccdf_mil.disa.stig_group_V-238339.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238339r958566_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must configure the /var/log directory to be owned by root.",
-      "tracking_issue": "TODO-V-238339",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238339"
@@ -1474,31 +1478,33 @@
       "vuln_id": "V-238340"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238341",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238341 from source identifier xccdf_mil.disa.stig_group_V-238341.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238341r958566_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must configure the /var/log/syslog file to be group-owned by adm.",
-      "tracking_issue": "TODO-V-238341",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238341"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238342",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238342 from source identifier xccdf_mil.disa.stig_group_V-238342.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238342r958566_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must configure /var/log/syslog file to be owned by syslog.",
-      "tracking_issue": "TODO-V-238342",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238342"
