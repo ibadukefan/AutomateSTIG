@@ -3153,6 +3153,58 @@
     },
     {
       "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit uses of the \"execve\" system call.",
+      "expected": {
+        "substring": "-a always,exit -S arch=b32 -S execve -C uid!=euid -F euid=0 -F key=execpriv\n-a always,exit -S arch=b64 -S execve -C uid!=euid -F euid=0 -F key=execpriv\n-a always,exit -S arch=b32 -S execve -C gid!=egid -F egid=0 -F key=execpriv\n-a always,exit -S arch=b64 -S execve -C gid!=egid -F egid=0 -F key=execpriv",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258176"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the chmod, fchmod, and fchmodat system calls.",
+      "expected": {
+        "substring": "-a always,exit -S arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -F key=perm_mod\n-a always,exit -S arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -F key=perm_mod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258177"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the chown, fchown, fchownat, and lchown system calls.",
+      "expected": {
+        "substring": "-a always,exit -S arch=b32 -S lchown,fchown,chown,fchownat -F auid>=1000 -F auid!=-1 -F key=perm_mod\n-a always,exit -S arch=b64 -S chown,fchown,lchown,fchownat -F auid>=1000 -F auid!=-1 -F key=perm_mod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258178"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls.",
+      "expected": {
+        "substring": "-a always,exit -S arch=b32 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>=1000 -F auid!=-1 -F key=perm_mod\n-a always,exit -S arch=b64 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>=1000 -F auid!=-1 -F key=perm_mod\n-a always,exit -S arch=b32 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid=0 -F key=perm_mod\n-a always,exit -S arch=b64 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid=0 -F key=perm_mod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258179"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/usr/bin/umount",
         "pattern": "-a always,exit -S all -F path=/usr/bin/umount -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-mount",
@@ -3242,6 +3294,32 @@
       },
       "platform": "linux",
       "vuln_id": "V-258186"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the delete_module system call.",
+      "expected": {
+        "substring": "-a always,exit -S arch=b32 -S delete_module -F auid>=1000 -F auid!=-1 -F key=module_chng\n-a always,exit -S arch=b64 -S delete_module -F auid>=1000 -F auid!=-1 -F key=module_chng",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258189"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the init_module and finit_module system calls.",
+      "expected": {
+        "substring": "-a always,exit -S arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=-1 -F key=module_chng\n-a always,exit -S arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=-1 -F key=module_chng",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258190"
     },
     {
       "check": {

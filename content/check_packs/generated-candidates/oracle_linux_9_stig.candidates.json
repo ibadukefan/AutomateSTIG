@@ -990,6 +990,19 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "OL 9 must audit all uses of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls.",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=unset -k perm_mod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271536"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "OL 9 must audit all uses of the chage command.",
       "expected": {
         "substring": "-a always,exit -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=unset -k privileged-chage",
@@ -1200,6 +1213,32 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "OL 9 must audit all uses of the chmod, fchmod, and fchmodat system calls.",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -k perm_mod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271555"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the chown, fchown, fchownat, and lchown system calls.",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_mod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271556"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "OL 9 must audit all uses of the semanage command.",
       "expected": {
         "substring": "-a always,exit -F path=/usr/sbin/semanage -F perm=x -F auid>=1000 -F auid!=unset -k privileged-unix-update",
@@ -1279,6 +1318,32 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "OL 9 must audit all uses of the delete_module system call.",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271564"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the init_module and finit_module system calls.",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=unset -k module_chng\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=unset -k module_chng",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271565"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "OL 9 must audit all uses of the kmod command.",
       "expected": {
         "substring": "-a always,exit -F path=/usr/bin/kmod -F perm=x -F auid>=1000 -F auid!=unset -k modules",
@@ -1314,6 +1379,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-271569"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit uses of the execve system call.",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k execpriv\n-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k execpriv\n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k execpriv\n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k execpriv",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271570"
     },
     {
       "check": {

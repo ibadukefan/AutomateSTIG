@@ -5937,61 +5937,65 @@
       "vuln_id": "V-258175"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258176",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258176r1106366_rule",
       "severity": "medium",
       "title": "RHEL 9 must audit uses of the \"execve\" system call.",
-      "tracking_issue": "TODO-V-258176",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/172096bcd53edbdc11d66c915b6b0d3230c6ce43979567e46fe3cc7ee79aca29/U_RHEL_9_V2R5_STIG.zip"
       ],
       "vuln_id": "V-258176"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258177",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258177r1106368_rule",
       "severity": "medium",
       "title": "RHEL 9 must audit all uses of the chmod, fchmod, and fchmodat system calls.",
-      "tracking_issue": "TODO-V-258177",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/172096bcd53edbdc11d66c915b6b0d3230c6ce43979567e46fe3cc7ee79aca29/U_RHEL_9_V2R5_STIG.zip"
       ],
       "vuln_id": "V-258177"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258178",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258178r1106370_rule",
       "severity": "medium",
       "title": "RHEL 9 must audit all uses of the chown, fchown, fchownat, and lchown system calls.",
-      "tracking_issue": "TODO-V-258178",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/172096bcd53edbdc11d66c915b6b0d3230c6ce43979567e46fe3cc7ee79aca29/U_RHEL_9_V2R5_STIG.zip"
       ],
       "vuln_id": "V-258178"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258179",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258179r1106371_rule",
       "severity": "medium",
       "title": "RHEL 9 must audit all uses of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls.",
-      "tracking_issue": "TODO-V-258179",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/172096bcd53edbdc11d66c915b6b0d3230c6ce43979567e46fe3cc7ee79aca29/U_RHEL_9_V2R5_STIG.zip"
       ],
       "vuln_id": "V-258179"
@@ -6139,31 +6143,33 @@
       "vuln_id": "V-258188"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258189",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258189r1106377_rule",
       "severity": "medium",
       "title": "RHEL 9 must audit all uses of the delete_module system call.",
-      "tracking_issue": "TODO-V-258189",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/172096bcd53edbdc11d66c915b6b0d3230c6ce43979567e46fe3cc7ee79aca29/U_RHEL_9_V2R5_STIG.zip"
       ],
       "vuln_id": "V-258189"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258190",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258190r1106379_rule",
       "severity": "medium",
       "title": "RHEL 9 must audit all uses of the init_module and finit_module system calls.",
-      "tracking_issue": "TODO-V-258190",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/172096bcd53edbdc11d66c915b6b0d3230c6ce43979567e46fe3cc7ee79aca29/U_RHEL_9_V2R5_STIG.zip"
       ],
       "vuln_id": "V-258190"

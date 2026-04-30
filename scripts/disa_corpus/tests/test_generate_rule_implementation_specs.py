@@ -206,6 +206,60 @@ If the command does not return a line that matches the example or the line is co
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': '-w /etc/shadow -p wa -k usergroup_modification'})
 
+    def test_infers_linux_auditctl_multiline_expected_rules_when_keys_are_authoritative(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258177',
+            'title': 'RHEL 9 must audit all uses of the chmod, fchmod, and fchmodat system calls.',
+            'check_content': '''Verify RHEL 9 is configured to audit the execution of the "chmod", "fchmod", and "fchmodat" system calls with the following command:
+
+$ sudo auditctl -l | grep chmod
+
+-a always,exit -S arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -F key=perm_mod
+-a always,exit -S arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -F key=perm_mod
+
+If both the "b32" and "b64" audit rules are not defined for the "chmod", "fchmod", and "fchmodat" system calls, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
+        self.assertEqual(candidate['expected'], {
+            'type': 'contains',
+            'substring': '-a always,exit -S arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -F key=perm_mod\n-a always,exit -S arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -F key=perm_mod',
+        })
+
+    def test_skips_linux_auditctl_multiline_rules_when_key_is_arbitrary(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270786',
+            'title': 'Ubuntu must audit chmod syscalls.',
+            'check_content': '''$ sudo auditctl -l | grep chmod
+-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -k perm_chng
+-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -k perm_chng
+
+If the command does not return audit rules for the "chmod", "fchmod" and "fchmodat" syscalls or the lines are commented out, this is a finding.
+
+Notes:
+- The "-k" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertIsNone(candidate)
+
+    def test_infers_linux_auditctl_multiline_rules_across_blank_separated_blocks(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271536',
+            'title': 'OL 9 must audit all uses of the setxattr syscalls.',
+            'check_content': '''Verify that OL 9 is configured to audit the execution of the setxattr syscalls with the following command:
+
+$ sudo auditctl -l | grep xattr
+-a always,exit -F arch=b32 -S setxattr,fsetxattr -F auid>=1000 -F auid!=unset -k perm_mod
+-a always,exit -F arch=b64 -S setxattr,fsetxattr -F auid>=1000 -F auid!=unset -k perm_mod
+
+-a always,exit -F arch=b32 -S setxattr,fsetxattr -F auid=0 -k perm_mod
+-a always,exit -F arch=b64 -S setxattr,fsetxattr -F auid=0 -k perm_mod
+
+If both the "b32" and "b64" audit rules are not defined for the setxattr system calls, or any of the lines returned are commented out, this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['expected'], {
+            'type': 'contains',
+            'substring': '-a always,exit -F arch=b32 -S setxattr,fsetxattr -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S setxattr,fsetxattr -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b32 -S setxattr,fsetxattr -F auid=0 -k perm_mod\n-a always,exit -F arch=b64 -S setxattr,fsetxattr -F auid=0 -k perm_mod',
+        })
+
     def test_infers_linux_service_disabled_candidate_from_systemctl_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-251234',

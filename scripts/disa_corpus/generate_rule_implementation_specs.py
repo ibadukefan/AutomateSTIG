@@ -405,23 +405,48 @@ def _auditctl_expected_rule_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     if not re.search(r'\bauditctl\s+-l\s*\|\s*grep\b', content, re.IGNORECASE):
         return None
-    if not re.search(r'does\s+not\s+return\s+(?:a\s+line|lines?)\s+that\s+match(?:es)?\s+the\s+example|line\s+is\s+commented\s+out', content, re.IGNORECASE):
+    if not re.search(r'does\s+not\s+return\s+(?:a\s+line|lines?)\s+that\s+match(?:es)?\s+the\s+example|line\s+is\s+commented\s+out|audit\s+rules?\s+are\s+not\s+defined|both\s+the\s+"b32"\s+and\s+"b64"\s+audit\s+rules\s+are\s+not\s+defined|does\s+not\s+return\s+all\s+lines', content, re.IGNORECASE):
         return None
     match = re.search(
         r'[$#>]\s*(?:sudo\s+)?auditctl\s+-l\s*\|\s*grep\s+(?:-[A-Za-z]+\s+)?(?:"[^"]+"|\'[^\']+\'|\S+)\s+(?P<expected>-(?:w|a)\s+.*?)(?:\s+If\s+the\s+command\s+does\s+not\s+return\s+(?:a\s+line|lines?)\b)',
         content,
         re.IGNORECASE | re.DOTALL,
     )
-    if not match:
+    if match:
+        expected_line = ' '.join(match.group('expected').split())
+        if not expected_line or len(re.findall(r'\s-(?:w|a)\s+', ' ' + expected_line)) != 1:
+            return None
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'auditctl -l'},
+            'expected': {'type': 'contains', 'substring': expected_line},
+            'description': rule.get('title', ''),
+        }
+
+    if re.search(r'arbitrary\s+identifier|string\s+(?:after|following)\s+(?:it|"-k")\s+does\s+not\s+need\s+to\s+match', content, re.IGNORECASE):
         return None
-    expected_line = ' '.join(match.group('expected').split())
-    if not expected_line or len(re.findall(r'\s-(?:w|a)\s+', ' ' + expected_line)) != 1:
+    command_match = re.search(r'[$#>]\s*(?:sudo\s+)?auditctl\s+-l\s*\|\s*grep\b[^\n\r]*', content, re.IGNORECASE)
+    if not command_match:
+        return None
+    expected_lines: list[str] = []
+    for line in content[command_match.end():].splitlines():
+        stripped = ' '.join(line.strip().split())
+        if not stripped:
+            continue
+        if stripped.lower().startswith(('if ', 'note:', 'notes:')):
+            break
+        if stripped.startswith(('-a ', '-w ')):
+            expected_lines.append(stripped)
+        elif expected_lines:
+            break
+    if len(expected_lines) < 2:
         return None
     return {
         'vuln_id': rule.get('vuln_id', ''),
         'platform': 'linux',
         'check': {'type': 'command_output', 'command': 'auditctl -l'},
-        'expected': {'type': 'contains', 'substring': expected_line},
+        'expected': {'type': 'contains', 'substring': '\n'.join(expected_lines)},
         'description': rule.get('title', ''),
     }
 

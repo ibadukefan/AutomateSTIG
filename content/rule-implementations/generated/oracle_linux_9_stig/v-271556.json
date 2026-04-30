@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "OL 9 must audit all uses of the chown, fchown, fchownat, and lchown system calls.",
+    "expected": {
+      "substring": "-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_mod",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271556"
+  },
   "check_content_excerpt": "Verify that OL 9 is configured to audit the execution of the chown, fchown, fchownat, and lchown system calls with the following command:\n\n$ sudo auditctl -l | grep chown\n-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_mod\n\nIf both the \"b32\" and \"b64\" audit rules are not defined for the chown, fchown, fchownat, and lchown system calls, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_mod",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to generate audit records upon successful/unsuccessful attempts to use the chown, fchown, fchownat, and lchown system calls.\n\nAdd or update the following rules in \"/etc/audit/rules.d/audit.rules\":\n\n-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=unset -k perm_mod\n\nThe audit daemon must be restarted for the changes to take effect.\n\nRestart auditd:\n$ sudo service auditd restart",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271556r1092532_rule",
   "severity": "medium",
