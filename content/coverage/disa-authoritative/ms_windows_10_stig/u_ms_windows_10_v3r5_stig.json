@@ -646,16 +646,17 @@
       "vuln_id": "V-220738"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-220739",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-220739r958736_rule",
       "severity": "medium",
       "title": "Windows 10 account lockout duration must be configured to 15 minutes or greater.",
-      "tracking_issue": "TODO-V-220739",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/9b16b466a847e8fa201ce49e4e86670ab840ce363e788e39d13e1c3f4e757545/U_MS_Windows_10_V3R5_STIG.zip"
       ],
       "vuln_id": "V-220739"
@@ -693,46 +694,49 @@
       "vuln_id": "V-220741"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-220742",
+      "check_pack": "generated-candidates/ms_windows_10_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-220742r1000079_rule",
       "severity": "medium",
       "title": "The password history must be configured to 24 passwords remembered.",
-      "tracking_issue": "TODO-V-220742",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
         "content/disa-corpus/artifacts/9b16b466a847e8fa201ce49e4e86670ab840ce363e788e39d13e1c3f4e757545/U_MS_Windows_10_V3R5_STIG.zip"
       ],
       "vuln_id": "V-220742"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-220743",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-220743r1051020_rule",
       "severity": "medium",
       "title": "The maximum password age must be configured to 60 days or less.",
-      "tracking_issue": "TODO-V-220743",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/9b16b466a847e8fa201ce49e4e86670ab840ce363e788e39d13e1c3f4e757545/U_MS_Windows_10_V3R5_STIG.zip"
       ],
       "vuln_id": "V-220743"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-220744",
+      "check_pack": "generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-220744r1051021_rule",
       "severity": "medium",
       "title": "The minimum password age must be configured to at least 1 day.",
-      "tracking_issue": "TODO-V-220744",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_10_v3r4_stig_scap_1-3_benchmark.candidates.json",
         "content/disa-corpus/artifacts/9b16b466a847e8fa201ce49e4e86670ab840ce363e788e39d13e1c3f4e757545/U_MS_Windows_10_V3R5_STIG.zip"
       ],
       "vuln_id": "V-220744"

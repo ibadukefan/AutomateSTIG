@@ -2,11 +2,11 @@
   "authoritative_manifests": 87,
   "authoritative_rules": 17250,
   "authoritative_rules_tracked": 17250,
-  "automated_or_mapped_rules": 8389,
-  "coverage_percent_tracked_corpus": 48.6,
+  "automated_or_mapped_rules": 8435,
+  "coverage_percent_tracked_corpus": 48.9,
   "current_check_definitions": 3189,
-  "generated_candidate_checks_with_fixture_evidence": 1562,
-  "last_updated_utc": "2026-04-30T16:27:33Z",
+  "generated_candidate_checks_with_fixture_evidence": 1577,
+  "last_updated_utc": "2026-04-30T16:51:19Z",
   "notes": [
     "Regression ratchet prevents silent drops in tracked artifacts, authoritative manifests, authoritative rules, automated/mapped rules, or unsupported-rule ceilings.",
     "Generated candidate checks are fixture-backed scaffolding, not live production asset validation.",
@@ -17,12 +17,13 @@
     "Added generic Linux grep expected-line candidate inference and fixture evidence; tracked coverage is 43.3% (7469/17250) with 9781 unsupported rules remaining.",
     "Added Windows audit policy candidate inference and fixture evidence; tracked coverage is 46.5% (8026/17250) with 9224 unsupported rules remaining.",
     "Added Windows security policy candidate inference and fixture evidence; tracked coverage is 48.4% (8342/17250) with 8908 unsupported rules remaining.",
-    "Added required SID user-right candidate inference and fixture evidence; tracked coverage is 48.6% (8389/17250) with 8861 unsupported rules remaining."
+    "Added required SID user-right candidate inference and fixture evidence; tracked coverage is 48.6% (8389/17250) with 8861 unsupported rules remaining.",
+    "Added Windows account policy candidate inference from authoritative fix text/title; tracked coverage is 48.9% (8435/17250) with 8815 unsupported rules remaining."
   ],
   "public_disa_artifacts": 87,
   "public_disa_artifacts_indexed": 87,
   "status": "expanded_public_corpus_with_fixture_gated_candidate_mapping",
   "target": "unsupported_authoritative_rules == 0 across every authorized DISA STIG artifact",
   "unsupported_authoritative_rules": 11154,
-  "unsupported_rules": 8861
+  "unsupported_rules": 8815
 }

@@ -126,6 +126,11 @@ def _linux_platform(stig_id: str) -> bool:
     return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'ubuntu'))
 
 
+def _windows_platform(stig_id: str) -> bool:
+    lower = stig_id.lower()
+    return 'windows' in lower or 'ms_windows' in lower
+
+
 def _windows_audit_policy_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
@@ -159,58 +164,61 @@ def _windows_audit_policy_candidate(rule: dict) -> dict | None:
 
 def _windows_security_policy_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
-    if not re.search(r'\bsecedit\b', content, re.IGNORECASE):
-        return None
+    fix_text = rule.get('fix_text', '') or ''
+    title = rule.get('title', '') or ''
+    policy_text = '\n'.join(part for part in (content, fix_text, title) if part)
+    has_secedit_context = bool(re.search(r'\bsecedit\b', content, re.IGNORECASE))
 
-    required_sids_match = re.search(
-        r'following\s+SIDs\s+are\s+not\s+defined\s+for\s+the\s+"(Se[A-Za-z0-9]+)"\s+user\s+right(?P<body>.*?)(?:\n\s*\n\s*If\b|\Z)',
-        content,
-        re.IGNORECASE | re.DOTALL,
-    )
-    if required_sids_match:
-        key = required_sids_match.group(1)
-        body = required_sids_match.group('body')
-        sids = sorted(set(re.findall(r'\bS-\d+(?:-\d+)+(?!-)', body)))
-        if sids:
-            pattern = ''.join(f'(?=.*{sid})' for sid in sids)
+    if has_secedit_context:
+        required_sids_match = re.search(
+            r'following\s+SIDs\s+are\s+not\s+defined\s+for\s+the\s+"(Se[A-Za-z0-9]+)"\s+user\s+right(?P<body>.*?)(?:\n\s*\n\s*If\b|\Z)',
+            content,
+            re.IGNORECASE | re.DOTALL,
+        )
+        if required_sids_match:
+            key = required_sids_match.group(1)
+            body = required_sids_match.group('body')
+            sids = sorted(set(re.findall(r'\bS-\d+(?:-\d+)+(?!-)', body)))
+            if sids:
+                pattern = ''.join(f'(?=.*{sid})' for sid in sids)
+                return {
+                    'vuln_id': rule.get('vuln_id', ''),
+                    'platform': 'windows',
+                    'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': key},
+                    'expected': {'type': 'matches', 'pattern': pattern},
+                    'description': rule.get('title', ''),
+                }
+
+        privilege_match = re.search(r'"(Se[A-Za-z0-9]+Privilege)"\s+user\s+right', content)
+        if privilege_match:
+            key = privilege_match.group(1)
+            expected = {'type': 'equals', 'value': ''}
+            allowed_sids = re.search(r'other\s+than\s+([^\.\n\r]+)\s+are\s+granted\s+the\s+"' + re.escape(key) + r'"', content, re.IGNORECASE)
+            if allowed_sids:
+                sid_match = re.search(r'\*S-1-[0-9-]+', allowed_sids.group(1))
+                if sid_match:
+                    expected = {'type': 'equals', 'value': sid_match.group(0)}
             return {
                 'vuln_id': rule.get('vuln_id', ''),
                 'platform': 'windows',
                 'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': key},
-                'expected': {'type': 'matches', 'pattern': pattern},
+                'expected': expected,
                 'description': rule.get('title', ''),
             }
 
-    privilege_match = re.search(r'"(Se[A-Za-z0-9]+Privilege)"\s+user\s+right', content)
-    if privilege_match:
-        key = privilege_match.group(1)
-        expected = {'type': 'equals', 'value': ''}
-        allowed_sids = re.search(r'other\s+than\s+([^\.\n\r]+)\s+are\s+granted\s+the\s+"' + re.escape(key) + r'"', content, re.IGNORECASE)
-        if allowed_sids:
-            sid_match = re.search(r'\*S-1-[0-9-]+', allowed_sids.group(1))
-            if sid_match:
-                expected = {'type': 'equals', 'value': sid_match.group(0)}
-        return {
-            'vuln_id': rule.get('vuln_id', ''),
-            'platform': 'windows',
-            'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': key},
-            'expected': expected,
-            'description': rule.get('title', ''),
-        }
-
     account_keys = {
-        'LockoutBadCount': (r'LockoutBadCount', {'type': 'less_or_equal', 'value': 3}),
-        'ResetLockoutCount': (r'ResetLockoutCount', {'type': 'greater_or_equal', 'value': 15}),
-        'LockoutDuration': (r'LockoutDuration', {'type': 'greater_or_equal', 'value': 15}),
-        'MinimumPasswordAge': (r'MinimumPasswordAge', {'type': 'greater_or_equal', 'value': 1}),
-        'MaximumPasswordAge': (r'MaximumPasswordAge', {'type': 'less_or_equal', 'value': 60}),
-        'MinimumPasswordLength': (r'MinimumPasswordLength', {'type': 'greater_or_equal', 'value': 14}),
-        'PasswordHistorySize': (r'PasswordHistorySize', {'type': 'greater_or_equal', 'value': 24}),
-        'PasswordComplexity': (r'PasswordComplexity', {'type': 'equals', 'value': '1'}),
-        'ClearTextPassword': (r'ClearTextPassword', {'type': 'equals', 'value': '0'}),
+        'LockoutBadCount': (r'LockoutBadCount|Account lockout threshold', {'type': 'less_or_equal', 'value': 3}),
+        'ResetLockoutCount': (r'ResetLockoutCount|Reset account lockout counter after', {'type': 'greater_or_equal', 'value': 15}),
+        'LockoutDuration': (r'LockoutDuration|Account lockout duration', {'type': 'greater_or_equal', 'value': 15}),
+        'MinimumPasswordAge': (r'MinimumPasswordAge|Minimum password age', {'type': 'greater_or_equal', 'value': 1}),
+        'MaximumPasswordAge': (r'MaximumPasswordAge|Maximum password age', {'type': 'less_or_equal', 'value': 60}),
+        'MinimumPasswordLength': (r'MinimumPasswordLength|Minimum password length', {'type': 'greater_or_equal', 'value': 14}),
+        'PasswordHistorySize': (r'PasswordHistorySize|Enforce password history', {'type': 'greater_or_equal', 'value': 24}),
+        'PasswordComplexity': (r'PasswordComplexity|Password must meet complexity requirements', {'type': 'equals', 'value': '1'}),
+        'ClearTextPassword': (r'ClearTextPassword|Store passwords using reversible encryption', {'type': 'equals', 'value': '0'}),
     }
     for key, (pattern, expected) in account_keys.items():
-        if re.search(pattern, content, re.IGNORECASE):
+        if re.search(pattern, policy_text, re.IGNORECASE):
             return {
                 'vuln_id': rule.get('vuln_id', ''),
                 'platform': 'windows',
@@ -406,27 +414,28 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
                 'description': rule.get('title', ''),
             }
 
-    policy_candidate = _windows_registry_policy_candidate(rule, stig_id)
-    if policy_candidate:
-        return policy_candidate
+    if _windows_platform(stig_id):
+        policy_candidate = _windows_registry_policy_candidate(rule, stig_id)
+        if policy_candidate:
+            return policy_candidate
 
-    audit_policy_candidate = _windows_audit_policy_candidate(rule)
-    if audit_policy_candidate:
-        return audit_policy_candidate
+        audit_policy_candidate = _windows_audit_policy_candidate(rule)
+        if audit_policy_candidate:
+            return audit_policy_candidate
 
-    security_policy_candidate = _windows_security_policy_candidate(rule)
-    if security_policy_candidate:
-        return security_policy_candidate
+        security_policy_candidate = _windows_security_policy_candidate(rule)
+        if security_policy_candidate:
+            return security_policy_candidate
 
-    feature = re.search(r'Get-WindowsFeature\s*\|\s*Where\s+Name\s+-eq\s+([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
-    if feature and re.search(r'Installed[^\n.]+is[^\n.]+finding|If[^\n.]+Installed[^\n.]+finding', content, re.IGNORECASE):
-        return {
-            'vuln_id': rule.get('vuln_id', ''),
-            'platform': 'windows',
-            'check': {'type': 'windows_feature', 'name': feature.group(1), 'should_be_installed': False},
-            'expected': {'type': 'is_false'},
-            'description': rule.get('title', ''),
-        }
+        feature = re.search(r'Get-WindowsFeature\s*\|\s*Where\s+Name\s+-eq\s+([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
+        if feature and re.search(r'Installed[^\n.]+is[^\n.]+finding|If[^\n.]+Installed[^\n.]+finding', content, re.IGNORECASE):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'windows',
+                'check': {'type': 'windows_feature', 'name': feature.group(1), 'should_be_installed': False},
+                'expected': {'type': 'is_false'},
+                'description': rule.get('title', ''),
+            }
 
     if _linux_platform(stig_id):
         for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _service_candidate, _file_permission_candidate):

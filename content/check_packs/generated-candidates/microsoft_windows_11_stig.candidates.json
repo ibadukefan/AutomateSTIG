@@ -30,6 +30,90 @@
     },
     {
       "check": {
+        "key": "LockoutDuration",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Windows 11 account lockout duration must be configured to 15 minutes or greater.",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 15
+      },
+      "platform": "windows",
+      "vuln_id": "V-253297"
+    },
+    {
+      "check": {
+        "key": "LockoutBadCount",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "The number of allowed bad logon attempts must be configured to three or less.",
+      "expected": {
+        "type": "less_or_equal",
+        "value": 3
+      },
+      "platform": "windows",
+      "vuln_id": "V-253298"
+    },
+    {
+      "check": {
+        "key": "ResetLockoutCount",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "The period of time before the bad logon counter is reset must be configured to 15 minutes.",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 15
+      },
+      "platform": "windows",
+      "vuln_id": "V-253299"
+    },
+    {
+      "check": {
+        "key": "MinimumPasswordAge",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "The minimum password age must be configured to at least 1 day.",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-253302"
+    },
+    {
+      "check": {
+        "key": "MinimumPasswordLength",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Passwords must, at a minimum, be 14 characters.",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 14
+      },
+      "platform": "windows",
+      "vuln_id": "V-253303"
+    },
+    {
+      "check": {
+        "key": "PasswordComplexity",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "The built-in Microsoft password complexity filter must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "windows",
+      "vuln_id": "V-253304"
+    },
+    {
+      "check": {
         "setting": "Success",
         "subcategory": "Credential Validation",
         "type": "audit_policy"

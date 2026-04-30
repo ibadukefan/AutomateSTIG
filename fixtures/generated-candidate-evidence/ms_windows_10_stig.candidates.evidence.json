@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 148,
+  "candidate_checks": 152,
   "cases": [
     {
       "check": {
@@ -81,6 +81,114 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-220734"
+    },
+    {
+      "check": {
+        "key": "LockoutDuration",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Windows 10 account lockout duration must be configured to 15 minutes or greater.",
+      "evidence_type": "windows_security_policy_greater_or_equal",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 15
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\LockoutDuration": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\LockoutDuration": 15
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220739"
+    },
+    {
+      "check": {
+        "key": "PasswordHistorySize",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "The password history must be configured to 24 passwords remembered.",
+      "evidence_type": "windows_security_policy_greater_or_equal",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 24
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\PasswordHistorySize": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\PasswordHistorySize": 24
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220742"
+    },
+    {
+      "check": {
+        "key": "MaximumPasswordAge",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "The maximum password age must be configured to 60 days or less.",
+      "evidence_type": "windows_security_policy_less_or_equal",
+      "expected": {
+        "type": "less_or_equal",
+        "value": 60
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MaximumPasswordAge": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MaximumPasswordAge": 60
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220743"
+    },
+    {
+      "check": {
+        "key": "MinimumPasswordAge",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "The minimum password age must be configured to at least 1 day.",
+      "evidence_type": "windows_security_policy_greater_or_equal",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MinimumPasswordAge": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MinimumPasswordAge": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220744"
     },
     {
       "check": {
@@ -4003,5 +4111,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 148
+  "validated_candidates": 152
 }

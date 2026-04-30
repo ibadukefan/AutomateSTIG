@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "LockoutDuration",
+      "section": "System Access",
+      "type": "security_policy"
+    },
+    "description": "Windows 11 account lockout duration must be configured to 15 minutes or greater.",
+    "expected": {
+      "type": "greater_or_equal",
+      "value": 15
+    },
+    "platform": "windows",
+    "vuln_id": "V-253297"
+  },
   "check_content_excerpt": "Verify the effective setting in Local Group Policy Editor.\nRun \"gpedit.msc\".\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Account Lockout Policy.\n\nIf the \"Account lockout duration\" is less than \"15\" minutes (excluding \"0\"), this is a finding.\n\nConfiguring this to \"0\", requiring an administrator to unlock the account, is more restrictive and is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "greater_or_equal",
+    "value": 15
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Account Lockout Policy >> \"Account lockout duration\" to \"15\" minutes or greater.\n\nA value of \"0\" is also acceptable, requiring an administrator to unlock the account.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "SV-253297r958736_rule",
   "severity": "medium",

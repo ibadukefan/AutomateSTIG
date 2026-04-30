@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 135,
+  "candidate_checks": 141,
   "cases": [
     {
       "check": {
@@ -54,6 +54,168 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-253288"
+    },
+    {
+      "check": {
+        "key": "LockoutDuration",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Windows 11 account lockout duration must be configured to 15 minutes or greater.",
+      "evidence_type": "windows_security_policy_greater_or_equal",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 15
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\LockoutDuration": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\LockoutDuration": 15
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253297"
+    },
+    {
+      "check": {
+        "key": "LockoutBadCount",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "The number of allowed bad logon attempts must be configured to three or less.",
+      "evidence_type": "windows_security_policy_less_or_equal",
+      "expected": {
+        "type": "less_or_equal",
+        "value": 3
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\LockoutBadCount": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\LockoutBadCount": 3
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253298"
+    },
+    {
+      "check": {
+        "key": "ResetLockoutCount",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "The period of time before the bad logon counter is reset must be configured to 15 minutes.",
+      "evidence_type": "windows_security_policy_greater_or_equal",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 15
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\ResetLockoutCount": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\ResetLockoutCount": 15
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253299"
+    },
+    {
+      "check": {
+        "key": "MinimumPasswordAge",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "The minimum password age must be configured to at least 1 day.",
+      "evidence_type": "windows_security_policy_greater_or_equal",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MinimumPasswordAge": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MinimumPasswordAge": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253302"
+    },
+    {
+      "check": {
+        "key": "MinimumPasswordLength",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Passwords must, at a minimum, be 14 characters.",
+      "evidence_type": "windows_security_policy_greater_or_equal",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 14
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MinimumPasswordLength": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MinimumPasswordLength": 14
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253303"
+    },
+    {
+      "check": {
+        "key": "PasswordComplexity",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "The built-in Microsoft password complexity filter must be enabled.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\PasswordComplexity": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\PasswordComplexity": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253304"
     },
     {
       "check": {
@@ -3652,5 +3814,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 135
+  "validated_candidates": 141
 }

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "MinimumPasswordAge",
+      "section": "System Access",
+      "type": "security_policy"
+    },
+    "description": "The minimum password age must be configured to at least 1 day.",
+    "expected": {
+      "type": "greater_or_equal",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-253302"
+  },
   "check_content_excerpt": "Verify the effective setting in Local Group Policy Editor.\nRun \"gpedit.msc\".\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Password Policy.\n\nIf the value for the \"Minimum password age\" is less than \"1\" day, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "greater_or_equal",
+    "value": 1
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Password Policy >> \"Minimum Password Age\" to at least \"1\" day.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "SV-253302r1051043_rule",
   "severity": "medium",

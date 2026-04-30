@@ -1,8 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "MaximumPasswordAge",
+      "section": "System Access",
+      "type": "security_policy"
+    },
+    "description": "The maximum password age must be configured to 60 days or less.",
+    "expected": {
+      "type": "less_or_equal",
+      "value": 60
+    },
+    "platform": "windows",
+    "vuln_id": "V-220743"
+  },
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,12 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "less_or_equal",
+    "value": 60
+  },
   "external_acceptance_refs": [],
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "xccdf_mil.disa.stig_rule_SV-220743r1051020_rule",
   "severity": "medium",

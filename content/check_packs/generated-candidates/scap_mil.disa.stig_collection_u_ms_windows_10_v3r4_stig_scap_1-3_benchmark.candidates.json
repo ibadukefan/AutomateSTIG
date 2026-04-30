@@ -1,0 +1,49 @@
+{
+  "checks": [
+    {
+      "check": {
+        "key": "LockoutDuration",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Windows 10 account lockout duration must be configured to 15 minutes or greater.",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 15
+      },
+      "platform": "windows",
+      "vuln_id": "V-220739"
+    },
+    {
+      "check": {
+        "key": "MaximumPasswordAge",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "The maximum password age must be configured to 60 days or less.",
+      "expected": {
+        "type": "less_or_equal",
+        "value": 60
+      },
+      "platform": "windows",
+      "vuln_id": "V-220743"
+    },
+    {
+      "check": {
+        "key": "MinimumPasswordAge",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "The minimum password age must be configured to at least 1 day.",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-220744"
+    }
+  ],
+  "platform": "windows",
+  "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark",
+  "version": "candidate-planned"
+}

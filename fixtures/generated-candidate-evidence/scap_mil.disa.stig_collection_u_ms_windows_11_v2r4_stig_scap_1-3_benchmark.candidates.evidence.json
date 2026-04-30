@@ -1,0 +1,65 @@
+{
+  "candidate_checks": 2,
+  "cases": [
+    {
+      "check": {
+        "key": "LockoutDuration",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Windows 11 account lockout duration must be configured to 15 minutes or greater.",
+      "evidence_type": "windows_security_policy_greater_or_equal",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 15
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\LockoutDuration": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\LockoutDuration": 15
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253297"
+    },
+    {
+      "check": {
+        "key": "MinimumPasswordAge",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "The minimum password age must be configured to at least 1 day.",
+      "evidence_type": "windows_security_policy_greater_or_equal",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MinimumPasswordAge": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MinimumPasswordAge": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253302"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/scap_mil.disa.stig_collection_u_ms_windows_11_v2r4_stig_scap_1-3_benchmark.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_11_V2R4_STIG_SCAP_1-3_Benchmark",
+  "validated_candidates": 2
+}

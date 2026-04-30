@@ -237,6 +237,18 @@ S-1-5-32-546 (Guests)'''
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeDenyInteractiveLogonRight'})
         self.assertEqual(candidate['expected'], {'type': 'matches', 'pattern': '(?=.*S-1-5-32-546)'})
 
+    def test_infers_windows_account_policy_candidate_from_fix_text(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254291',
+            'title': 'Windows Server 2022 minimum password length must be configured to 14 characters.',
+            'check_content': '',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Password Policy >> "Minimum password length" to "14" characters.',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'System Access', 'key': 'MinimumPasswordLength'})
+        self.assertEqual(candidate['expected'], {'type': 'greater_or_equal', 'value': 14})
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,8 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "LockoutDuration",
+      "section": "System Access",
+      "type": "security_policy"
+    },
+    "description": "Windows 10 account lockout duration must be configured to 15 minutes or greater.",
+    "expected": {
+      "type": "greater_or_equal",
+      "value": 15
+    },
+    "platform": "windows",
+    "vuln_id": "V-220739"
+  },
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -10,12 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "greater_or_equal",
+    "value": 15
+  },
   "external_acceptance_refs": [],
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "xccdf_mil.disa.stig_rule_SV-220739r958736_rule",
   "severity": "medium",
