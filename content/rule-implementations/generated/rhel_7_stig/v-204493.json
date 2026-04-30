@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/home",
+      "pattern": "/etc/fstab",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that a separate file system is used for user home directories (such as /home or an equivalent).",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204493"
+  },
   "check_content_excerpt": "Verify that a separate file system/partition has been created for non-privileged local interactive user home directories.\n\nCheck the home directory assignment for all non-privileged users (those with a UID of 1000 or greater) on the system with the following command:\n\n# awk -F: '($3>=1000)&&($7 !~ /nologin/){print $1, $3, $6, $7}' /etc/passwd\n\nadamsj 1000 /home/adamsj /bin/bash\njacksonm 1001 /home/jacksonm /bin/bash\nsmithj 1002 /home/smithj /bin/bash\n\nThe output of the command will give the directory/partition that contains the home directories for the non-privileged users on the system (in this example, /home) and users' shell. All accounts with a valid shell (such as /bin/bash) are considered interactive users.\n\nCheck that a file system/partition has been created for the non-privileged interactive users with the following command:\n\nNote: The partition of /home is used in the example.\n\n# grep /home /etc/fstab\nUUID=333ada18    /home                   ext4    noatime,nobarrier,nodev  1 2\n\nIf a separate entry for the file system/partition that contains the non-privileged interactive users' home directories does not exist, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Migrate the \"/home\" directory onto a separate file system/partition.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204493r991589_rule",
   "severity": "low",

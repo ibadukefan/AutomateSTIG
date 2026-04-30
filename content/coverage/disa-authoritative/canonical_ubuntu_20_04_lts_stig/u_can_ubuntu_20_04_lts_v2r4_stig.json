@@ -174,16 +174,17 @@
       "vuln_id": "V-238206"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238207",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-238207r1069086_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must automatically terminate a user session after inactivity timeouts have expired.",
-      "tracking_issue": "TODO-V-238207",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238207"
@@ -204,16 +205,17 @@
       "vuln_id": "V-238208"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238209",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-238209r991590_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system default filesystem permissions must be defined in such a way that all authenticated users can read and modify only their own files.",
-      "tracking_issue": "TODO-V-238209",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238209"
@@ -443,16 +445,17 @@
       "vuln_id": "V-238223"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238224",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-238224r1015147_rule",
       "severity": "low",
       "title": "The Ubuntu operating system must require the change of at least 8 characters when passwords are changed.",
-      "tracking_issue": "TODO-V-238224",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238224"
@@ -473,16 +476,17 @@
       "vuln_id": "V-238225"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238226",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-238226r1015149_rule",
       "severity": "low",
       "title": "The Ubuntu operating system must enforce password complexity by requiring that at least one special character be used.",
-      "tracking_issue": "TODO-V-238226",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238226"
@@ -752,16 +756,17 @@
       "vuln_id": "V-238243"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238244",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-238244r1038966_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must shut down by default upon audit failure (unless availability is an overriding concern).",
-      "tracking_issue": "TODO-V-238244",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238244"
@@ -1026,31 +1031,33 @@
       "vuln_id": "V-238271"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238277",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-238277r958446_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the sudo command.",
-      "tracking_issue": "TODO-V-238277",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238277"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238278",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-238278r958446_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the sudoedit command.",
-      "tracking_issue": "TODO-V-238278",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238278"
@@ -1341,16 +1348,17 @@
       "vuln_id": "V-238298"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238299",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-238299r1069095_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must initiate session audits at system start-up.",
-      "tracking_issue": "TODO-V-238299",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238299"
@@ -2506,16 +2514,17 @@
       "vuln_id": "V-255913"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-274852",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-274852r1106134_rule",
       "severity": "medium",
       "title": "Ubuntu 20.04 LTS must audit any script or executable called by cron as root or by any privileged user.",
-      "tracking_issue": "TODO-V-274852",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-274852"
@@ -2596,16 +2605,17 @@
       "vuln_id": "V-274857"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-274858",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-274858r1106125_rule",
       "severity": "medium",
       "title": "Ubuntu 20.04 LTS must restrict privilege elevation to authorized personnel.",
-      "tracking_issue": "TODO-V-274858",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-274858"

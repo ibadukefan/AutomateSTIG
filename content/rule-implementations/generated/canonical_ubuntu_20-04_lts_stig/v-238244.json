@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/auditd.conf",
+      "pattern": "disk_full_action = HALT",
+      "type": "file_content"
+    },
+    "description": "The Ubuntu operating system must shut down by default upon audit failure (unless availability is an overriding concern).",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238244"
+  },
   "check_content_excerpt": "Verify the Ubuntu operating system takes the appropriate action when the audit storage volume is full with the following command: \n \n$ sudo grep '^disk_full_action' /etc/audit/auditd.conf \n \ndisk_full_action = HALT \n \nIf the value of the \"disk_full_action\" option is not \"SYSLOG\", \"SINGLE\", or \"HALT\", or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the Ubuntu operating system to shut down by default upon audit failure (unless availability is an overriding concern). \n \nAdd or update the following line (depending on configuration, \"disk_full_action\" can be set to \"SYSLOG\", \"HALT\" or \"SINGLE\") in \"/etc/audit/auditd.conf\" file: \n \ndisk_full_action = HALT \n \nRestart the \"auditd\" service so the changes take effect: \n \n$ sudo systemctl restart auditd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-238244r1038966_rule",
   "severity": "medium",

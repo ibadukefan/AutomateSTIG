@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/password-auth",
+      "pattern": "password sufficient pam_unix.so sha512",
+      "type": "file_content"
+    },
+    "description": "OL 9 pam_unix.so module must be configured in the password-auth file to use a FIPS 140-3 approved cryptographic hashing algorithm for system authentication.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271624"
+  },
   "check_content_excerpt": "Verify that OL 9 pam_unix.so module is configured to use sha512 in /etc/pam.d/password-auth with the following command:\n\n$ grep \"^password.*pam_unix.so.*sha512\" /etc/pam.d/password-auth\npassword sufficient pam_unix.so sha512\n\nIf \"sha512\" is missing, or the line is commented out, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to use a FIPS 140-3 approved cryptographic hashing algorithm for system authentication.\n\nEdit/modify the following line in the \"/etc/pam.d/password-auth\" file to include the sha512 option for pam_unix.so:\n\npassword sufficient pam_unix.so sha512",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271624r1091584_rule",
   "severity": "medium",

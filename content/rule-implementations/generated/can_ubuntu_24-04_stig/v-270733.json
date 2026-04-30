@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/pwquality.conf",
+      "pattern": "ocredit=-1",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must enforce password complexity by requiring that at least one special character be used.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270733"
+  },
   "check_content_excerpt": "Determine if the field \"ocredit\" is set in the \"/etc/security/pwquality.conf\" file with the following command: \n \n$ grep -i \"ocredit\" /etc/security/pwquality.conf\nocredit=-1 \n \nIf the \"ocredit\" parameter is greater than \"-1\", is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to enforce password complexity by requiring that at least one special character be used.  \n \nAdd or update the following line in the \"/etc/security/pwquality.conf\" file to include the \"ocredit=-1\" parameter: \n \nocredit=-1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270733r1066688_rule",
   "severity": "medium",

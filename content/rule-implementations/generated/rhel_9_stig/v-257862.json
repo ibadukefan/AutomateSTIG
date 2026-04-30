@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/dev/sda1",
+      "pattern": "on /boot/efi type vfat (rw,nosuid,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=ascii,shortname=winnt,errors=remount-ro)",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must prevent files with the setuid and setgid bit set from being executed on the /boot/efi directory.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257862"
+  },
   "check_content_excerpt": "Note: For systems that use BIOS, this requirement is Not Applicable.\n\nVerify the /boot/efi directory is mounted with the \"nosuid\" option with the following command:\n\n$ mount | grep '\\s/boot/efi\\s'\n\n/dev/sda1 on /boot/efi type vfat (rw,nosuid,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=ascii,shortname=winnt,errors=remount-ro)\n\nIf the /boot/efi file system does not have the \"nosuid\" option set, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Modify \"/etc/fstab\" to use the \"nosuid\" option on the \"/boot/efi\" directory.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-257862r1051265_rule",
   "severity": "medium",

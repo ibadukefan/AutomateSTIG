@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 44,
+  "candidate_checks": 61,
   "cases": [
     {
       "check": {
@@ -58,6 +58,60 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/selinux/config",
+        "pattern": "| grep -v '^#'",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must enable the SELinux targeted policy.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/selinux/config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/selinux/config": "before\n| grep -v '^#'\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204454"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/shm",
+        "pattern": "tmpfs /dev/shm tmpfs defaults,nodev,nosuid,noexec 0 0",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must mount /dev/shm with secure options.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/dev/shm": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/dev/shm": "before\ntmpfs /dev/shm tmpfs defaults,nodev,nosuid,noexec 0 0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204486"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/rsyslog.conf",
         "pattern": "cron",
         "type": "file_content"
@@ -81,6 +135,141 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204489"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/home",
+        "pattern": "/etc/fstab",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that a separate file system is used for user home directories (such as /home or an equivalent).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/home": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/home": "before\n/etc/fstab\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204493"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var",
+        "pattern": "/etc/fstab",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must use a separate file system for /var.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var": "before\n/etc/fstab\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204494"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log/audit",
+        "pattern": "/etc/fstab",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must use a separate file system for the system audit data path.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log/audit": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log/audit": "before\n/etc/fstab\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204495"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/tmp",
+        "pattern": "/etc/fstab",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must use a separate file system for /tmp (or equivalent).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/tmp": "before\n/etc/fstab\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204496"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audisp/audispd.conf",
+        "pattern": "name_format = hostname",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must label all off-loaded audit logs before sending them to the central log server.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audisp/audispd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audisp/audispd.conf": "before\nname_format = hostname\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204508"
     },
     {
       "check": {
@@ -356,6 +545,33 @@
       "check": {
         "is_regex": false,
         "path": "/etc/audit/audit.rules",
+        "pattern": "-w /etc/sudoers -p wa -k privileged-actions",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the sudoers file and all files in the /etc/sudoers.d/ directory.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n-w /etc/sudoers -p wa -k privileged-actions\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204549"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
         "pattern": "/usr/sbin/postqueue",
         "type": "file_content"
       },
@@ -459,6 +675,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204558"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "-a always,exit -F arch=b32 -S create_module -F auid>=1000 -F auid!=unset -k module-change",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the create_module syscall.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n-a always,exit -F arch=b32 -S create_module -F auid>=1000 -F auid!=unset -k module-change\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204559"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module-change",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the delete_module syscall.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module-change\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204562"
     },
     {
       "check": {
@@ -621,6 +891,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204568"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "-a always,exit -F arch=b32 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=unset -k delete",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must audit all uses of the unlink, unlinkat, rename, renameat, and rmdir syscalls.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n-a always,exit -F arch=b32 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=unset -k delete\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204572"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/limits.conf",
+        "pattern": "/etc/security/limits.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must limit the number of concurrent sessions to 10 for all accounts and/or account types.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/limits.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/limits.conf": "before\n/etc/security/limits.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204576"
     },
     {
       "check": {
@@ -1070,6 +1394,141 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d/*",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must restrict privilege elevation to authorized personnel.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers": "before\n/etc/sudoers.d/*\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-237633"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d* | grep -v '#'",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must use the invoking user's password for privilege escalation when using \"sudo\".",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers": "before\n/etc/sudoers.d* | grep -v '#'\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-237634"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must require re-authentication when using the \"sudo\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers": "before\n/etc/sudoers.d\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-237635"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/boot/grub2/grub.cfg",
+        "pattern": "set superusers=\"[someuniquestringhere]\"",
+        "type": "file_content"
+      },
+      "description": "Red Hat Enterprise Linux operating systems version 7.2 or newer booted with a BIOS must have a unique name for the grub superusers account when booting into single-user and maintenance modes.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/boot/grub2/grub.cfg": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/boot/grub2/grub.cfg": "before\nset superusers=\"[someuniquestringhere]\"\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244557"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/boot/efi/EFI/redhat/grub.cfg",
+        "pattern": "set superusers=\"[someuniquestringhere]\"",
+        "type": "file_content"
+      },
+      "description": "Red Hat Enterprise Linux operating systems version 7.2 or newer booted with United Extensible Firmware Interface (UEFI) must have a unique name for the grub superusers account when booting into single-user mode and maintenance.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/boot/efi/EFI/redhat/grub.cfg": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/boot/efi/EFI/redhat/grub.cfg": "before\nset superusers=\"[someuniquestringhere]\"\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244558"
+    },
+    {
+      "check": {
         "name": "aide",
         "should_be_installed": true,
         "type": "package"
@@ -1178,5 +1637,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 44
+  "validated_candidates": 61
 }

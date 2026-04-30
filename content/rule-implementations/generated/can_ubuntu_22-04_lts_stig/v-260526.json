@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config:PermitEmptyPasswords",
+      "pattern": "no",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must not allow unattended or automatic login via SSH.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260526"
+  },
   "check_content_excerpt": "Verify that unattended or automatic login via SSH is disabled by using the following command: \n \n     $ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iEH '(permit(.*?)(passwords|environment))' \n     /etc/ssh/sshd_config:PermitEmptyPasswords no \n     /etc/ssh/sshd_config:PermitUserEnvironment no \n \nIf \"PermitEmptyPasswords\" and \"PermitUserEnvironment\" are not set to \"no\", are commented out, are missing, or conflicting results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SSH server to not allow unattended or automatic login to the system.  \n  \nAdd or modify the following lines in the \"/etc/ssh/sshd_config\" file:  \n  \nPermitEmptyPasswords no \nPermitUserEnvironment no \n  \nRestart the SSH daemon for the changes to take effect: \n  \n     $ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260526r991591_rule",
   "severity": "high",

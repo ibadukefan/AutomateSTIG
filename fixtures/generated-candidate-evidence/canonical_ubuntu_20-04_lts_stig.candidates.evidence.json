@@ -1,6 +1,60 @@
 {
-  "candidate_checks": 14,
+  "candidate_checks": 24,
   "cases": [
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/bash.bashrc",
+        "pattern": "/etc/profile.d/*",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must automatically terminate a user session after inactivity timeouts have expired.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/bash.bashrc": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/bash.bashrc": "before\n/etc/profile.d/*\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238207"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "UMASK 077",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system default filesystem permissions must be defined in such a way that all authenticated users can read and modify only their own files.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nUMASK 077\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238209"
+    },
     {
       "check": {
         "is_regex": false,
@@ -32,6 +86,60 @@
       "check": {
         "is_regex": false,
         "path": "/etc/security/pwquality.conf",
+        "pattern": "difok=8",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must require the change of at least 8 characters when passwords are changed.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\ndifok=8\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238224"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "ocredit=-1",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must enforce password complexity by requiring that at least one special character be used.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nocredit=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238226"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
         "pattern": "enforcing",
         "type": "file_content"
       },
@@ -54,6 +162,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-238228"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "disk_full_action = HALT",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must shut down by default upon audit failure (unless availability is an overriding concern).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\ndisk_full_action = HALT\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238244"
     },
     {
       "check": {
@@ -130,6 +265,87 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-238248"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/sudo",
+        "pattern": "-a always,exit -S all -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the sudo command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/usr/bin/sudo": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/usr/bin/sudo": "before\n-a always,exit -S all -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238277"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/sudoedit",
+        "pattern": "-a always,exit -S all -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the sudoedit command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/usr/bin/sudoedit": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/usr/bin/sudoedit": "before\n-a always,exit -S all -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238278"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/boot/grub/grub.cfg",
+        "pattern": "linux        /boot/vmlinuz-5.4.0-31-generic root=UUID=74d13bcd-6ebd-4493-b5d2-3ebc37d01702 ro  audit=1",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must initiate session audits at system start-up.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/boot/grub/grub.cfg": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/boot/grub/grub.cfg": "before\nlinux        /boot/vmlinuz-5.4.0-31-generic root=UUID=74d13bcd-6ebd-4493-b5d2-3ebc37d01702 ro  audit=1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238299"
     },
     {
       "check": {
@@ -452,6 +668,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-255913"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/cron.d",
+        "pattern": "-w /etc/cron.d -p wa -k cronjobs",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 20.04 LTS must audit any script or executable called by cron as root or by any privileged user.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/cron.d": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/cron.d": "before\n-w /etc/cron.d -p wa -k cronjobs\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274852"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d/ | grep -v '#'",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 20.04 LTS must restrict privilege elevation to authorized personnel.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers": "before\n/etc/sudoers.d/ | grep -v '#'\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274858"
     }
   ],
   "production_claim": false,
@@ -459,5 +729,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 14
+  "validated_candidates": 24
 }

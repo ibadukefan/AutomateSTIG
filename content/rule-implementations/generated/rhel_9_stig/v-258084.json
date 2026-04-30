@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sudoers",
+      "pattern": "/etc/sudoers.d/",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must require reauthentication when using the \"sudo\" command.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258084"
+  },
   "check_content_excerpt": "Verify RHEL 9 requires reauthentication when using the \"sudo\" command to elevate privileges with the following command:\n\n$ sudo grep -ir 'timestamp_timeout' /etc/sudoers /etc/sudoers.d/\n\n/etc/sudoers:Defaults timestamp_timeout=0\n\nIf results are returned from more than one file location, this is a finding.\n\nIf \"timestamp_timeout\" is set to a negative number, is commented out, or no results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to reauthenticate \"sudo\" commands after the specified timeout:\n\nAdd the following line to \"/etc/sudoers\" or a file in \"/etc/sudoers.d\":\n\nDefaults timestamp_timeout=0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258084r1050789_rule",
   "severity": "medium",

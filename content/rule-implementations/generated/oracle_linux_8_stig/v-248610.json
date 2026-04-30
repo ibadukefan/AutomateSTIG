@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/var/log/audit",
+      "pattern": "/etc/fstab",
+      "type": "file_content"
+    },
+    "description": "OL 8 must use a separate file system for the system audit data path.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248610"
+  },
   "check_content_excerpt": "Verify that a separate file system/partition has been created for the system audit data path with the following command: \n \nNote: \"/var/log/audit\" is used as the example as it is a common location. \n \n$ sudo grep /var/log/audit /etc/fstab \n \nUUID=3645951a /var/log/audit ext4 defaults 1 2 \n \nIf an entry for \"/var/log/audit\" does not exist, ask the System Administrator if the system audit logs are being written to a different file system/partition on the system and then grep for that file system/partition. \n \nIf a separate file system/partition does not exist for the system audit data path, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Migrate the system audit data path onto a separate file system.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248610r991589_rule",
   "severity": "low",

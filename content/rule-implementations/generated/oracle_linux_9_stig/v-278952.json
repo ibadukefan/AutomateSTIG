@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/cron.d",
+      "pattern": "-w /etc/cron.d -p wa -k cronjobs",
+      "type": "file_content"
+    },
+    "description": "OL 9 must audit any script or executable called by cron as root or by any privileged user.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-278952"
+  },
   "check_content_excerpt": "Verify that OL 9 is configured to audit the execution of any system call made by cron as root or as any privileged user.\n\n$ sudo auditctl -l | grep /etc/cron.d\n-w /etc/cron.d -p wa -k cronjobs\n\n$ sudo auditctl -l | grep /var/spool/cron\n-w /var/spool/cron -p wa -k cronjobs\n\nIf either of these commands do not return the expected output, or the lines are commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to audit the execution of any system call made by cron as root or as any privileged user.\n\nAdd or update the following file system rules to \"/etc/audit/rules.d/audit.rules\":\n\nauditctl -w /etc/cron.d/ -p wa -k cronjobs\nauditctl -w /var/spool/cron/ -p wa -k cronjobs\n\nTo load the rules to the kernel immediately, use the following command:\n\n$ sudo augenrules --load",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-278952r1135407_rule",
   "severity": "medium",

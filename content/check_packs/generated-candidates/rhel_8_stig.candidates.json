@@ -67,6 +67,20 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config:StrictModes",
+        "pattern": "yes",
+        "type": "file_content"
+      },
+      "description": "The RHEL 8 SSH daemon must perform strict mode checking of home directory configuration files.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230288"
+    },
+    {
+      "check": {
         "key": "kernel.core_pattern",
         "type": "sysctl"
       },
@@ -77,6 +91,104 @@
       },
       "platform": "linux",
       "vuln_id": "V-230311"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/home",
+        "pattern": "/etc/fstab",
+        "type": "file_content"
+      },
+      "description": "A separate RHEL 8 filesystem must be used for user home directories (such as /home or an equivalent).",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230328"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config:PermitUserEnvironment",
+        "pattern": "no",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must not allow users to override SSH environment variables.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230330"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "deny = 3",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must automatically lock an account when three unsuccessful logon attempts occur.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230333"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "fail_interval = 900",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must automatically lock an account when three unsuccessful logon attempts occur during a 15-minute time period.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230335"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "unlock_time = 0",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts occur during a 15-minute time period.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230337"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "dir = /var/log/faillock",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must ensure account lockouts persist.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230339"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/limits.conf",
+        "pattern": "/etc/security/limits.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must limit the number of concurrent sessions to ten for all accounts and/or account types.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230346"
     },
     {
       "check": {
@@ -105,6 +217,34 @@
       },
       "platform": "linux",
       "vuln_id": "V-230369"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config:PermitEmptyPasswords",
+        "pattern": "no",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must not allow accounts configured with blank or null passwords.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230380"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config:PrintLastLog",
+        "pattern": "yes",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must display the date and time of the last successful account logon upon an SSH logon.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230382"
     },
     {
       "check": {
@@ -150,6 +290,34 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "name_format = hostname",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must label all off-loaded audit logs before sending them to the central log server.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230394"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_format = ENRICHED",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must resolve audit information before writing to disk.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230395"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0600",
         "owner": null,
@@ -177,6 +345,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-230401"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "| tail -1",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 audit system must protect auditing rules from unauthorized change.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230402"
     },
     {
       "check": {
@@ -392,6 +574,20 @@
       "check": {
         "is_regex": false,
         "path": "/etc/audit/audit.rules",
+        "pattern": "-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=unset -k privileged-mount",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the mount syscall in RHEL 8 must generate an audit record.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230425"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
         "pattern": "unix_update",
         "type": "file_content"
       },
@@ -574,6 +770,20 @@
       "check": {
         "is_regex": false,
         "path": "/etc/audit/audit.rules",
+        "pattern": "-a always,exit -F arch=b32 -S rename,unlink,rmdir,renameat,unlinkat -F auid>=1000 -F auid!=unset -k delete",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the rename, unlink, rmdir, renameat, and unlinkat system calls in RHEL 8 must generate an audit record.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230439"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
         "pattern": "gpasswd",
         "type": "file_content"
       },
@@ -625,6 +835,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-230448"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "-a always,exit -F arch=b32 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EPERM -F auid>=1000 -F auid!=unset -k perm_access",
+        "type": "file_content"
+      },
+      "description": "Successful/unsuccessful uses of the truncate, ftruncate, creat, open, openat, and open_by_handle_at system calls in RHEL 8 must generate an audit record.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230449"
     },
     {
       "check": {
@@ -723,6 +947,76 @@
       },
       "platform": "linux",
       "vuln_id": "V-230467"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aide.conf",
+        "pattern": "/usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must use cryptographic mechanisms to protect the integrity of audit tools.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230475"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "/etc/rsyslog.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must encrypt the transfer of audit records off-loaded onto a different system or media from the system being audited.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230481"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "/etc/rsyslog.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must authenticate the remote logging server for off-loading audit logs.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230482"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/chrony.conf",
+        "pattern": "port 0",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must disable the chrony daemon from acting as a server.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230485"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/chrony.conf",
+        "pattern": "cmdport 0",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must disable network management of the chrony daemon.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230486"
     },
     {
       "check": {
@@ -849,6 +1143,216 @@
       },
       "platform": "linux",
       "vuln_id": "V-230507"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/shm",
+        "pattern": "tmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must mount /dev/shm with the nodev option.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230508"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/shm",
+        "pattern": "tmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must mount /dev/shm with the nosuid option.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230509"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/shm",
+        "pattern": "tmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must mount /dev/shm with the noexec option.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230510"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/tmp",
+        "pattern": "/dev/mapper/rhel-tmp on /tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must mount /tmp with the nodev option.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230511"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/tmp",
+        "pattern": "/dev/mapper/rhel-tmp on /tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must mount /tmp with the nosuid option.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230512"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/tmp",
+        "pattern": "/dev/mapper/rhel-tmp on /tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must mount /tmp with the noexec option.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230513"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log",
+        "pattern": "/dev/mapper/rhel-var-log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must mount /var/log with the nodev option.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230514"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log",
+        "pattern": "/dev/mapper/rhel-var-log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must mount /var/log with the nosuid option.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230515"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log",
+        "pattern": "/dev/mapper/rhel-var-log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must mount /var/log with the noexec option.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230516"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log/audit",
+        "pattern": "/dev/mapper/rhel-var-log-audit on /var/log/audit type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must mount /var/log/audit with the nodev option.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230517"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log/audit",
+        "pattern": "/dev/mapper/rhel-var-log-audit on /var/log/audit type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must mount /var/log/audit with the nosuid option.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230518"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log/audit",
+        "pattern": "/dev/mapper/rhel-var-log-audit on /var/log/audit type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must mount /var/log/audit with the noexec option.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230519"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/tmp",
+        "pattern": "/dev/mapper/rhel-var-tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must mount /var/tmp with the nodev option.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230520"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/tmp",
+        "pattern": "/dev/mapper/rhel-var-tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must mount /var/tmp with the nosuid option.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230521"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/tmp",
+        "pattern": "/dev/mapper/rhel-var-tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must mount /var/tmp with the noexec option.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230522"
     },
     {
       "check": {
@@ -1128,6 +1632,76 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d/ | grep -v '#'",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must restrict privilege elevation to authorized personnel.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-237641"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d* | grep -v '#'",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must use the invoking user's password for privilege escalation when using \"sudo\".",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-237642"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must require re-authentication when using the \"sudo\" command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-237643"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/boot/efi/EFI/redhat/grub.cfg",
+        "pattern": "set superusers=\"[someuniquestringhere]\"",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 operating systems booted with United Extensible Firmware Interface (UEFI) must require a unique superusers name upon booting into single-user mode and maintenance.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-244521"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/boot/grub2/grub.cfg",
+        "pattern": "set superusers=\"[someuniquestringhere]\"",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 operating systems booted with a BIOS must require  a unique superusers name upon booting into single-user and maintenance modes.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-244522"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "ClientAliveInterval 600",
         "type": "file_content"
@@ -1152,6 +1726,62 @@
       },
       "platform": "linux",
       "vuln_id": "V-244528"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/tmp",
+        "pattern": "/etc/fstab",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must use a separate file system for /var/tmp.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-244529"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/sda1",
+        "pattern": "on /boot/efi type vfat (rw,nosuid,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=ascii,shortname=winnt,errors=remount-ro)",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must prevent files with the setuid and setgid bit set from being executed on the /boot/efi directory.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-244530"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "7:auth required pam_faillock.so preauth silent",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must configure the use of the pam_faillock.so module in the /etc/pam.d/system-auth file.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-244533"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/password-auth",
+        "pattern": "7:auth required pam_faillock.so preauth silent",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must configure the use of the pam_faillock.so module in the /etc/pam.d/password-auth file.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-244534"
     },
     {
       "check": {
@@ -1284,6 +1914,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-256973"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/cron.d",
+        "pattern": "-w /etc/cron.d -p wa -k cronjobs",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must audit any script or executable called by cron as root or by any privileged user.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274877"
     },
     {
       "check": {

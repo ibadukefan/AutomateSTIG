@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/login.defs",
+      "pattern": "UMASK 077",
+      "type": "file_content"
+    },
+    "description": "OL 8 default permissions must be defined in such a way that all authenticated users can read and modify only their own files.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248719"
+  },
   "check_content_excerpt": "Verify OL 8 defines default permissions for all authenticated users in such a way that the user can read and modify only their own files with the following command: \n \n$ sudo grep -i \"umask\" /etc/login.defs \n \nUMASK 077 \n \nIf the \"UMASK\" variable is set to \"000\", this is a finding with the severity raised to a CAT I. \n \nIf the value of \"UMASK\" is not set to \"077\", \"UMASK\" is commented out, or \"UMASK\" is missing completely, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 8 to define the default permissions for all authenticated users in such a way that the user can read and modify only their own files. \n \nEdit the \"UMASK\" parameter in the \"/etc/login.defs\" file to match the example below: \n \nUMASK 077",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248719r991590_rule",
   "severity": "medium",

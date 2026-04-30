@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sssd/sssd.conf",
+      "pattern": "/etc/sssd/conf.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260581"
+  },
   "check_content_excerpt": "Verify that PAM prohibits the use of cached authentications after one day by using the following command: \n \nNote: If smart card authentication is not being used on the system, this requirement is not applicable.  \n  \n$ sudo grep -i '^\\s*offline_credentials_expiration' /etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf \n     /etc/sssd/sssd.conf:offline_credentials_expiration = 1 \n \nIf \"offline_credentials_expiration\" in \"/etc/sssd/sssd.conf\" or in a file with a name ending in .conf in the \"/etc/sssd/conf.d/\" directory, is not set to \"1\", is commented out, is missing, or conflicting results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure PAM to prohibit the use of cached authentications after one day.  \n \nAdd or modify the following line in the \"/etc/sssd/sssd.conf\" file, just below the line \"[pam]\": \n  \noffline_credentials_expiration = 1 \n  \nNote: It is valid for this configuration to be in a file with a name that ends with \".conf\" and does not begin with a \".\" in the \"/etc/sssd/conf.d/\" directory instead of the \"/etc/sssd/sssd.conf\" file.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260581r1155206_rule",
   "severity": "low",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/audit.rules",
+      "pattern": "-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=unset -k privileged-mount",
+      "type": "file_content"
+    },
+    "description": "Successful/unsuccessful uses of the mount syscall in RHEL 8 must generate an audit record.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230425"
+  },
   "check_content_excerpt": "Verify that an audit event is generated for any successful/unsuccessful use of the \"mount\" syscall by performing the following command to check the file system rules in \"/etc/audit/audit.rules\":\n\n$ sudo grep -w \"\\-S mount\" /etc/audit/audit.rules\n\n-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=unset -k privileged-mount\n-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=unset -k privileged-mount\n\nIf the command does not return a line, or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit system to generate an audit event for any successful/unsuccessful use of the \"mount\" syscall by adding or updating the following rules in the \"/etc/audit/rules.d/audit.rules\" file:\n\n-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=unset -k privileged-mount\n-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=unset -k privileged-mount\n\nThe audit daemon must be restarted for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230425r1017226_rule",
   "severity": "medium",

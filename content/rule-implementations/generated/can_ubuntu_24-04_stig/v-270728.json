@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/pwquality.conf",
+      "pattern": "dcredit=-1",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must enforce password complexity by requiring that at least one numeric character be used.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270728"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS enforces password complexity by requiring that at least one numeric character be used. \n \nDetermine if the field \"dcredit\" is set in the \"/etc/security/pwquality.conf\" file with the following command: \n \n$ grep -i \"dcredit\" /etc/security/pwquality.conf\ndcredit=-1 \n \nIf the \"dcredit\" parameter is greater than \"-1\", is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to enforce password complexity by requiring that at least one numeric character be used. \n \nAdd or update the \"/etc/security/pwquality.conf\" file to contain the \"dcredit\" parameter: \n \ndcredit=-1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270728r1066673_rule",
   "severity": "medium",

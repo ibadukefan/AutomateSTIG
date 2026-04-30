@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config:PrintLastLog",
+      "pattern": "yes",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must display the date and time of the last successful account logon upon an SSH logon.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230382"
+  },
   "check_content_excerpt": "Verify SSH provides users with feedback on when account accesses last occurred with the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*printlastlog'\n\n/etc/ssh/sshd_config:PrintLastLog yes\n\nIf the \"PrintLastLog\" keyword is set to \"no\", is missing, or is commented out, this is a finding.\n\nIf conflicting results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure SSH to provide users with feedback on when account accesses last occurred by setting the required configuration options in \"/etc/pam.d/sshd\" or in the \"sshd_config\" file used by the system (\"/etc/ssh/sshd_config\" will be used in the example) (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor).\n\nModify the \"PrintLastLog\" line in \"/etc/ssh/sshd_config\" to match the following:\n\nPrintLastLog yes\n\nThe SSH service must be restarted for changes to \"sshd_config\" to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230382r1069309_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/bash.bashrc",
+      "pattern": "/etc/profile.d/*",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must automatically terminate a user session after inactivity timeouts have expired.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270680"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS automatically terminates a user session after inactivity timeouts have expired with the following command:\n \n$ sudo grep -E \"\\bTMOUT=[0-9]+\" /etc/bash.bashrc /etc/profile.d/*\n/etc/profile.d/99-terminal_tmout.sh:TMOUT=600 \n\nIf \"TMOUT\" is not set, or if the value is \"0\" or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to automatically terminate a user session after inactivity timeouts have expired or at shutdown. \n \nCreate the file \"/etc/profile.d/99-terminal_tmout.sh\" file if it does not exist. \n \nModify or append the following line in the \"/etc/profile.d/99-terminal_tmout.sh \" file: \n \nTMOUT=600 \n \nThis will set a timeout value of 10 minutes for all future sessions. \n \nTo set the timeout for the current sessions, execute the following command over the terminal session: \n \n$ export TMOUT=600",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270680r1066529_rule",
   "severity": "medium",

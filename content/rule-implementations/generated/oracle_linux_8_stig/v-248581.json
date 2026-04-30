@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sudoers",
+      "pattern": "/etc/sudoers.d/",
+      "type": "file_content"
+    },
+    "description": "OL 8 must require users to provide a password for privilege escalation.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248581"
+  },
   "check_content_excerpt": "Verify that \"/etc/sudoers\" has no occurrences of \"NOPASSWD\".\n\nCheck that the \"/etc/sudoers\" file has no occurrences of \"NOPASSWD\" by running the following command:\n\n$ sudo grep -iR 'NOPASSWD' /etc/sudoers /etc/sudoers.d/\n\n%admin ALL=(ALL) NOPASSWD: ALL\n\nIf any occurrences of \"NOPASSWD\" are returned from the command and have not been documented with the information system security officer (ISSO) as an organizationally defined administrative group using multifactor authentication (MFA), this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to require users to supply a password for privilege escalation.\n\nCheck the configuration of the \"/etc/sudoers\" file with the following command:\n$ sudo visudo\n\nRemove any occurrences of \"NOPASSWD\" tags in the file.\n\nCheck the configuration of the /etc/sudoers.d/* files with the following command:\n$ sudo grep -ir nopasswd /etc/sudoers.d\n\nRemove any occurrences of \"NOPASSWD\" tags in the file.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248581r1101870_rule",
   "severity": "medium",

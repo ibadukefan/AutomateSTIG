@@ -159,6 +159,20 @@ If the "X11Forwarding" keyword is set to "yes" and is not documented with the in
         self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/ssh/sshd_config', 'pattern': 'X11Forwarding no', 'is_regex': False})
         self.assertEqual(candidate['expected'], {'type': 'contains'})
 
+    def test_infers_linux_grep_expected_line_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230485',
+            'title': 'RHEL 8 must disable the chrony daemon from acting as a server.',
+            'check_content': '''Verify RHEL 8 disables the chrony daemon from acting as a server with the following command:
+
+$ sudo grep -w 'port' /etc/chrony.conf
+port 0
+
+If the "port" option is not set to "0", is commented out or missing, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/chrony.conf', 'pattern': 'port 0', 'is_regex': False})
+        self.assertEqual(candidate['expected'], {'type': 'contains'})
+
 
 if __name__ == '__main__':
     unittest.main()

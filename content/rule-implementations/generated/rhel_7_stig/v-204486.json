@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/dev/shm",
+      "pattern": "tmpfs /dev/shm tmpfs defaults,nodev,nosuid,noexec 0 0",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must mount /dev/shm with secure options.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204486"
+  },
   "check_content_excerpt": "Verify that the \"nodev\",\"nosuid\", and \"noexec\" options are configured for /dev/shm:\n\n# cat /etc/fstab | grep /dev/shm\n\ntmpfs /dev/shm tmpfs defaults,nodev,nosuid,noexec 0 0\n\nIf results are returned and the \"nodev\", \"nosuid\", or \"noexec\" options are missing, this is a finding.\n\nVerify \"/dev/shm\" is mounted with the \"nodev\", \"nosuid\", and \"noexec\" options:\n\n# mount | grep /dev/shm\n\ntmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)\n\nIf /dev/shm is mounted without secure options \"nodev\", \"nosuid\", and \"noexec\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the system so that /dev/shm is mounted with the \"nodev\", \"nosuid\", and \"noexec\" options by adding /modifying the /etc/fstab with the following line:\n\ntmpfs /dev/shm tmpfs defaults,nodev,nosuid,noexec 0 0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204486r958804_rule",
   "severity": "low",

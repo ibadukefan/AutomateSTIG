@@ -2,6 +2,20 @@
   "checks": [
     {
       "check": {
+        "is_regex": false,
+        "path": "/boot/grub/grub.cfg",
+        "pattern": "linux   /vmlinuz-6.8.0-31-generic root=UUID=c92a542f-aee4-4af9-94b2-203624ccb8e3 ro audit=1 quiet splash $vt_handoff",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must initiate session audits at system startup.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260471"
+    },
+    {
+      "check": {
         "key": "kernel.dmesg_restrict",
         "type": "sysctl"
       },
@@ -30,6 +44,188 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config:Banner",
+        "pattern": "/etc/issue.net",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must display the Standard Mandatory DOD Notice and Consent Banner before granting any local or remote connection to the system.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260525"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config:PermitEmptyPasswords",
+        "pattern": "no",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must not allow unattended or automatic login via SSH.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260526"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config:ClientAliveCountMax",
+        "pattern": "1",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must be configured so that all network connections associated with SSH traffic terminate after becoming unresponsive.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260527"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config:ClientAliveInterval",
+        "pattern": "600",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must be configured so that all network connections associated with SSH traffic are terminated after 10 minutes of becoming unresponsive.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260528"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config:X11Forwarding",
+        "pattern": "no",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260529"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "audit",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260549"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/limits.conf",
+        "pattern": "/etc/security/limits.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must limit the number of concurrent sessions to ten for all accounts and/or account types.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260552"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/bash.bashrc",
+        "pattern": "/etc/profile.d/*",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260554"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "ENCRYPT_METHOD SHA512",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must encrypt all stored passwords with a FIPS 140-3-approved cryptographic hashing algorithm.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260572"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config:PubkeyAuthentication",
+        "pattern": "yes",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must implement smart card logins for multifactor authentication for local and network access to privileged and nonprivileged accounts.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260575"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sssd/sssd.conf",
+        "pattern": "/etc/sssd/conf.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260581"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/default/aide",
+        "pattern": "SILENTREPORTS=no",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must notify designated personnel if baseline configurations are changed in an unauthorized manner. The file integrity tool must notify the system administrator when changes to the baseline configuration or anomalies in the operation of any security functions are discovered.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260584"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aide/aide.conf",
+        "pattern": "/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must use cryptographic mechanisms to protect the integrity of audit tools.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260586"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "600",
         "owner": null,
@@ -42,6 +238,104 @@
       },
       "platform": "linux",
       "vuln_id": "V-260597"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/chfn",
+        "pattern": "-a always,exit -S all -F path=/usr/bin/chfn -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-chfn",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the chfn command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260608"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/sbin/modprobe",
+        "pattern": "-w /sbin/modprobe -p x -k modules",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful attempts to use modprobe command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260614"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/mount",
+        "pattern": "-a always,exit -S all -F path=/usr/bin/mount -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-mount",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the mount command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260615"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/sudo",
+        "pattern": "-a always,exit -S all -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the sudo command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260623"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/sudoedit",
+        "pattern": "-a always,exit -S all -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the sudoedit command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260624"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d/ | grep -v '#'",
+        "type": "file_content"
+      },
+      "description": "The operating system must restrict privilege elevation to authorized personnel.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274861"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/cron.d",
+        "pattern": "-w /etc/cron.d -p wa -k cronjobs",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 22.04 LTS must audit any script or executable called by cron as root or by any privileged user.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274862"
     }
   ],
   "platform": "linux",

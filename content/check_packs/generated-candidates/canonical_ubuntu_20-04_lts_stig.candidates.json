@@ -3,6 +3,34 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/bash.bashrc",
+        "pattern": "/etc/profile.d/*",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must automatically terminate a user session after inactivity timeouts have expired.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238207"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "UMASK 077",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system default filesystem permissions must be defined in such a way that all authenticated users can read and modify only their own files.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238209"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "X11Forwarding no",
         "type": "file_content"
@@ -18,6 +46,34 @@
       "check": {
         "is_regex": false,
         "path": "/etc/security/pwquality.conf",
+        "pattern": "difok=8",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must require the change of at least 8 characters when passwords are changed.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238224"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "ocredit=-1",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must enforce password complexity by requiring that at least one special character be used.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238226"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
         "pattern": "enforcing",
         "type": "file_content"
       },
@@ -27,6 +83,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-238228"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "disk_full_action = HALT",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must shut down by default upon audit failure (unless availability is an overriding concern).",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238244"
     },
     {
       "check": {
@@ -57,6 +127,48 @@
       },
       "platform": "linux",
       "vuln_id": "V-238248"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/sudo",
+        "pattern": "-a always,exit -S all -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the sudo command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238277"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/sudoedit",
+        "pattern": "-a always,exit -S all -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the sudoedit command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238278"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/boot/grub/grub.cfg",
+        "pattern": "linux        /boot/vmlinuz-5.4.0-31-generic root=UUID=74d13bcd-6ebd-4493-b5d2-3ebc37d01702 ro  audit=1",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must initiate session audits at system start-up.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238299"
     },
     {
       "check": {
@@ -199,6 +311,34 @@
       },
       "platform": "linux",
       "vuln_id": "V-255913"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/cron.d",
+        "pattern": "-w /etc/cron.d -p wa -k cronjobs",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 20.04 LTS must audit any script or executable called by cron as root or by any privileged user.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274852"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d/ | grep -v '#'",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 20.04 LTS must restrict privilege elevation to authorized personnel.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274858"
     }
   ],
   "platform": "linux",

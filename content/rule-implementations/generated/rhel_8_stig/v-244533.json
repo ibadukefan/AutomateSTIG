@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/system-auth",
+      "pattern": "7:auth required pam_faillock.so preauth silent",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must configure the use of the pam_faillock.so module in the /etc/pam.d/system-auth file.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-244533"
+  },
   "check_content_excerpt": "Verify the pam_faillock.so module is present and is listed before the pam.unix.so line in the \"/etc/pam.d/system-auth\" file:\nNote: The first field in the output is the line number of the entry\n\n$ sudo grep -E -n 'pam_faillock.so|pam_unix.so' /etc/pam.d/system-auth\n\n7:auth required pam_faillock.so preauth silent\n13:auth sufficient pam_unix.so\n17:auth required pam_faillock.so authfail\n21:account required pam_faillock.so\n22:account required pam_unix.so\n33:password sufficient pam_unix.so sha512 shadow use_authtok\n42:session required pam_unix.so\n\nIf the pam_faillock.so module is not present in the \"/etc/pam.d/system-auth\" file with the \"preauth\" line listed before pam_unix.so, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to include the use of the pam_faillock.so module in the /etc/pam.d/system-auth file.\n\nAdd/Modify the appropriate sections of the \"/etc/pam.d/system-auth\" file to match the following lines:\nNote: The \"preauth\" line must be listed before pam_unix.so.\n\nauth required pam_faillock.so preauth\nauth required pam_faillock.so authfail\naccount required pam_faillock.so",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-244533r1069318_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/var",
+      "pattern": "/etc/fstab",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must use a separate file system for /var.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204494"
+  },
   "check_content_excerpt": "Verify that a separate file system/partition has been created for \"/var\".\n\nCheck that a file system/partition has been created for \"/var\" with the following command:\n\n# grep /var /etc/fstab\nUUID=c274f65f    /var                    ext4    noatime,nobarrier        1 2\n\nIf a separate entry for \"/var\" is not in use, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Migrate the \"/var\" path onto a separate file system.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204494r991589_rule",
   "severity": "low",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/faillock.conf",
+      "pattern": "dir = /var/log/faillock",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must ensure account lockouts persist.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230339"
+  },
   "check_content_excerpt": "Note: This check applies to RHEL versions 8.2 or newer. If the system is RHEL version 8.0 or 8.1, this check is not applicable.\n\nVerify the \"/etc/security/faillock.conf\" file is configured use a non-default faillock directory to ensure contents persist after reboot:\n\n$ sudo grep 'dir =' /etc/security/faillock.conf\n\ndir = /var/log/faillock\n\nIf the \"dir\" option is not set to a non-default documented tally log directory, is missing or commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system maintain the contents of the faillock directory after a reboot.\n\nAdd/Modify the \"/etc/security/faillock.conf\" file to match the following line:\n\ndir = /var/log/faillock",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230339r1017151_rule",
   "severity": "medium",

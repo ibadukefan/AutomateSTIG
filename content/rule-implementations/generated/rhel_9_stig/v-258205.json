@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/usr/bin/sudoedit",
+      "pattern": "-a always,exit -S all -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must audit all uses of the sudoedit command.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258205"
+  },
   "check_content_excerpt": "Verify that RHEL 9 is configured to audit the execution of the \"sudoedit\" command with the following command:\n\n$ sudo auditctl -l | grep /usr/bin/sudoedit\n\n-a always,exit -S all -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd\n\nIf the command does not return a line, or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to generate audit records upon successful/unsuccessful attempts to use the \"sudoedit\" command by adding or updating the following rule in \"/etc/audit/rules.d/audit.rules\":\n\n-a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=unset -k priv_cmd\n\nTo load the rules to the kernel immediately, use the following command:\n\n$ sudo augenrules --load",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258205r1045400_rule",
   "severity": "medium",

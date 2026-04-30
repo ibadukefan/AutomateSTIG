@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/dev/shm",
+      "pattern": "tmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must mount /dev/shm with the noexec option.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230510"
+  },
   "check_content_excerpt": "Verify \"/dev/shm\" is mounted with the \"noexec\" option:\n\n$ sudo mount | grep /dev/shm\n\ntmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)\n\nVerify that the \"noexec\" options is configured for /dev/shm:\n\n$ sudo cat /etc/fstab | grep /dev/shm\n\ntmpfs /dev/shm tmpfs defaults,nodev,nosuid,noexec 0 0\n\nIf results are returned and the \"noexec\" option is missing, or if /dev/shm is mounted without the \"noexec\" option, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the system so that /dev/shm is mounted with the \"noexec\" option by adding /modifying the /etc/fstab with the following line:\n\ntmpfs /dev/shm tmpfs defaults,nodev,nosuid,noexec 0 0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230510r958804_rule",
   "severity": "medium",

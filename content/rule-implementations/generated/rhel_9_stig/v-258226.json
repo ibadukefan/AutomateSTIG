@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/var/log/tallylog",
+      "pattern": "-w\u00a0/var/log/tallylog\u00a0-p\u00a0wa\u00a0-k\u00a0logins",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /var/log/tallylog.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258226"
+  },
   "check_content_excerpt": "Verify RHEL 9 generates audit records for all account creations, modifications, disabling, and termination events that affect \"/var/log/tallylog\" with the following command:\n\n$\u00a0sudo\u00a0auditctl\u00a0-l\u00a0|\u00a0grep\u00a0/var/log/tallylog\n\n-w\u00a0/var/log/tallylog\u00a0-p\u00a0wa\u00a0-k\u00a0logins\n\nIf\u00a0the\u00a0command\u00a0does\u00a0not\u00a0return\u00a0a\u00a0line,\u00a0or\u00a0the\u00a0line\u00a0is\u00a0commented\u00a0out, is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to generate audit records for all account creations, modifications, disabling, and termination events that affect \"/var/log/tallylog\".\n\nAdd or update the following file system rule to \"/etc/audit/rules.d/audit.rules\":\n\n-w /var/log/tallylog -p wa -k logins\n\nThe audit daemon must be restarted for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258226r958846_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/chrony.conf",
+      "pattern": "cmdport 0",
+      "type": "file_content"
+    },
+    "description": "OL 8 must disable network management of the chrony daemon.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248822"
+  },
   "check_content_excerpt": "Note: If the system is approved and documented by the information system security officer (ISSO) to function as an NTP time server, this requirement is Not Applicable.\n\nVerify OL 8 disables network management of the chrony daemon with the following command: \n \n     $ sudo grep -w 'cmdport' /etc/chrony.conf \n     cmdport 0 \n \nIf the \"cmdport\" option is not set to \"0\" or is commented out or missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 8 to disable network management of the chrony daemon by adding or modifying the following line in the \"/etc/chrony.conf\" file. \n \n     cmdport 0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248822r958478_rule",
   "severity": "low",

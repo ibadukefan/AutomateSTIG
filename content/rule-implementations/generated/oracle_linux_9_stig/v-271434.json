@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/tmp",
+      "pattern": "tmpfs /tmp tmpfs noatime,mode=1777 0 0",
+      "type": "file_content"
+    },
+    "description": "OL 9 must use a separate file system for /tmp.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271434"
+  },
   "check_content_excerpt": "Verify that OL 9 uses a separate file system/partition for \"/tmp\" with the following command:\n\n$ mount | grep /tmp \ntmpfs /tmp tmpfs noatime,mode=1777 0 0\n\nIf a separate entry for \"/tmp\" is not in use, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Migrate the \"/tmp\" path onto a separate file system.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271434r1091014_rule",
   "severity": "medium",

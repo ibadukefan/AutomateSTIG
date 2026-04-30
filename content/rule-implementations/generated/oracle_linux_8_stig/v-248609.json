@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/var/log",
+      "pattern": "/etc/fstab",
+      "type": "file_content"
+    },
+    "description": "OL 8 must use a separate file system for \"/var/log\".",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248609"
+  },
   "check_content_excerpt": "Verify that a separate file system has been created for \"/var/log\".\n\nCheck that a file system has been created for \"/var/log\" with the following command:\n\n     $ sudo grep /var/log /etc/fstab\n\n     /dev/mapper/...   /var/log   xfs   defaults,nodev,noexec,nosuid 0 0\n\nIf a separate entry for \"/var/log\" is not in use, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Migrate the \"/var/log\" path onto a separate file system.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248609r991589_rule",
   "severity": "low",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/usr/sbin/au",
+      "pattern": "/usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512",
+      "type": "file_content"
+    },
+    "description": "OL 9 must use cryptographic mechanisms to protect the integrity of audit tools.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271569"
+  },
   "check_content_excerpt": "Verify OL 9 uses cryptographic mechanisms to protect the integrity of the audit tools with the following command:\n\n$ sudo cat /etc/aide.conf | grep /usr/sbin/au\n/usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512\n \nIf AIDE is not installed, ask the system administrator (SA) how file integrity checks are performed on the system.\n\nIf any of the audit tools listed above do not have a corresponding line, ask the SA to indicate what cryptographic mechanisms are being used to protect the integrity of the audit tools. If there is no evidence of integrity protection, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to protect the integrity of the audit tools.\n\nAdd or update the following lines to /etc/aide.conf:\n \n/usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271569r1155308_rule",
   "severity": "medium",

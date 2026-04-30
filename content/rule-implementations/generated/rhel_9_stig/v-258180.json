@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/usr/bin/umount",
+      "pattern": "-a always,exit -S all -F path=/usr/bin/umount -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-mount",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must audit all uses of umount system calls.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258180"
+  },
   "check_content_excerpt": "Verify that RHEL 9 is configured to audit the execution of the \"umount\" command with the following command:\n\n$ sudo auditctl -l | grep /usr/bin/umount\n\n-a always,exit -S all -F path=/usr/bin/umount -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-mount\n\nIf the command does not return an audit rule for \"umount\" or any of the lines returned are commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to generate audit records upon successful/unsuccessful attempts to use the \"umount\" command by adding or updating the following rules in \"/etc/audit/rules.d/audit.rules\":\n\n-a always,exit -F path=/usr/bin/umount -F perm=x -F auid>=1000 -F auid!=unset -k privileged-mount\n\nTo load the rules to the kernel immediately, use the following command:\n\n$ sudo augenrules --load",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258180r1045325_rule",
   "severity": "medium",

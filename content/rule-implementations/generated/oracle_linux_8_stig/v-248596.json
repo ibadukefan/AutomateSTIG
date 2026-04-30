@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/selinux/config",
+      "pattern": "| grep -v '^#'",
+      "type": "file_content"
+    },
+    "description": "OL 8 must enable the SELinux targeted policy.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248596"
+  },
   "check_content_excerpt": "Ensure the operating system verifies correct operation of all security functions. \n \nVerify that \"SELinux\" is active and is enforcing the targeted policy with the following command: \n \n$ sudo sestatus \n \nSELinux status: enabled \nSELinuxfs mount: /sys/fs/selinux \nSELinux root directory: /etc/selinux \nLoaded policy name: targeted \nCurrent mode: enforcing \nMode from config file: enforcing \nPolicy MLS status: enabled \nPolicy deny_unknown status: allowed \nMemory protection checking: actual (secure) \nMax kernel policy version: 31 \n \nIf the \"Loaded policy name\" is not set to \"targeted\", this is a finding. \n \nVerify that the \"/etc/selinux/config\" file is configured to the \"SELINUXTYPE\" as \"targeted\": \n \n$ sudo grep -i \"selinuxtype\" /etc/selinux/config | grep -v '^#' \n \nSELINUXTYPE = targeted \n \nIf no results are returned or \"SELINUXTYPE\" is not set to \"targeted\", this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 8 to verify correct operation of all security functions. \n \nSet the \"SELinuxtype\" to the \"targeted\" policy by modifying the \"/etc/selinux/config\" file to have the following line: \n \nSELINUXTYPE=targeted \n \nA reboot is required for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248596r958944_rule",
   "severity": "medium",

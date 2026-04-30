@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/usr/bin/sudo",
+      "pattern": "-a always,exit -S all -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the sudo command.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260623"
+  },
   "check_content_excerpt": "Verify that an audit event is generated for any successful/unsuccessful use of the \"sudo\" command by using the following command: \n  \n     $ sudo auditctl -l | grep /usr/bin/sudo  \n     -a always,exit -S all -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd  \n  \nIf the command does not return a line that matches the example or the line is commented out, this is a finding.  \n  \nNote: The \"key=\" value is arbitrary and can be different from the example output above.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit system to generate an audit event for any successful/unsuccessful use of the \"sudo\" command.   \n  \nAdd or modify the following line in the \"/etc/audit/rules.d/stig.rules\" file:  \n  \n-a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=unset -k priv_cmd  \n    \nTo reload the rules file, issue the following command:  \n  \n     $ sudo augenrules --load \n \nNote: The \"-k <keyname>\" at the end of the line gives the rule a unique meaning to help during an audit investigation. The <keyname> does not need to match the example above.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260623r958446_rule",
   "severity": "medium",

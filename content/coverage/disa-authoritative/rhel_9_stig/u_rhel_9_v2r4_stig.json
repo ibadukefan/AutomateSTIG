@@ -1030,31 +1030,33 @@
       "vuln_id": "V-257842"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257843",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257843r991589_rule",
       "severity": "medium",
       "title": "A separate RHEL 9 file system must be used for user home directories (such as /home or an equivalent).",
-      "tracking_issue": "TODO-V-257843",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257843"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257844",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257844r1044918_rule",
       "severity": "medium",
       "title": "RHEL 9 must use a separate file system for /tmp.",
-      "tracking_issue": "TODO-V-257844",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257844"
@@ -1076,46 +1078,49 @@
       "vuln_id": "V-257845"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257846",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257846r1044922_rule",
       "severity": "low",
       "title": "RHEL 9 must use a separate file system for /var/log.",
-      "tracking_issue": "TODO-V-257846",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257846"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257847",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257847r1044924_rule",
       "severity": "low",
       "title": "RHEL 9 must use a separate file system for the system audit data path.",
-      "tracking_issue": "TODO-V-257847",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257847"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257848",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257848r1044926_rule",
       "severity": "medium",
       "title": "RHEL 9 must use a separate file system for /var/tmp.",
-      "tracking_issue": "TODO-V-257848",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257848"
@@ -1152,31 +1157,33 @@
       "vuln_id": "V-257850"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257851",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257851r1044932_rule",
       "severity": "medium",
       "title": "RHEL 9 must prevent files with the setuid and setgid bit set from being executed on file systems that contain user home directories.",
-      "tracking_issue": "TODO-V-257851",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257851"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257852",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257852r991589_rule",
       "severity": "medium",
       "title": "RHEL 9 must prevent code from being executed on file systems that contain user home directories.",
-      "tracking_issue": "TODO-V-257852",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257852"
@@ -1272,61 +1279,65 @@
       "vuln_id": "V-257859"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257860",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257860r1044940_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /boot with the nodev option.",
-      "tracking_issue": "TODO-V-257860",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257860"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257861",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257861r1044941_rule",
       "severity": "medium",
       "title": "RHEL 9 must prevent files with the setuid and setgid bit set from being executed on the /boot directory.",
-      "tracking_issue": "TODO-V-257861",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257861"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257862",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257862r1051265_rule",
       "severity": "medium",
       "title": "RHEL 9 must prevent files with the setuid and setgid bit set from being executed on the /boot/efi directory.",
-      "tracking_issue": "TODO-V-257862",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257862"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257863",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257863r958804_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /dev/shm with the nodev option.",
-      "tracking_issue": "TODO-V-257863",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257863"
@@ -1347,211 +1358,225 @@
       "vuln_id": "V-257864"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257865",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257865r1044946_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /dev/shm with the nosuid option.",
-      "tracking_issue": "TODO-V-257865",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257865"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257866",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257866r958804_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /tmp with the nodev option.",
-      "tracking_issue": "TODO-V-257866",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257866"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257867",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257867r958804_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /tmp with the noexec option.",
-      "tracking_issue": "TODO-V-257867",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257867"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257868",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257868r958804_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /tmp with the nosuid option.",
-      "tracking_issue": "TODO-V-257868",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257868"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257869",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257869r958804_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /var with the nodev option.",
-      "tracking_issue": "TODO-V-257869",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257869"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257870",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257870r958804_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /var/log with the nodev option.",
-      "tracking_issue": "TODO-V-257870",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257870"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257871",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257871r958804_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /var/log with the noexec option.",
-      "tracking_issue": "TODO-V-257871",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257871"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257872",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257872r958804_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /var/log with the nosuid option.",
-      "tracking_issue": "TODO-V-257872",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257872"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257873",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257873r958804_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /var/log/audit with the nodev option.",
-      "tracking_issue": "TODO-V-257873",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257873"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257874",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257874r958804_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /var/log/audit with the noexec option.",
-      "tracking_issue": "TODO-V-257874",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257874"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257875",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257875r958804_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /var/log/audit with the nosuid option.",
-      "tracking_issue": "TODO-V-257875",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257875"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257876",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257876r958804_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /var/tmp with the nodev option.",
-      "tracking_issue": "TODO-V-257876",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257876"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257877",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257877r958804_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /var/tmp with the noexec option.",
-      "tracking_issue": "TODO-V-257877",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257877"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257878",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257878r958804_rule",
       "severity": "medium",
       "title": "RHEL 9 must mount /var/tmp with the nosuid option.",
-      "tracking_issue": "TODO-V-257878",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257878"
@@ -3083,16 +3108,17 @@
       "vuln_id": "V-257980"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257981",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257981r1045019_rule",
       "severity": "medium",
       "title": "RHEL 9 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a SSH logon.",
-      "tracking_issue": "TODO-V-257981",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257981"
@@ -3178,16 +3204,17 @@
       "vuln_id": "V-257986"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257987",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257987r1014852_rule",
       "severity": "medium",
       "title": "RHEL 9 SSH daemon must be configured to use system-wide crypto policies.",
-      "tracking_issue": "TODO-V-257987",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-257987"
@@ -4171,16 +4198,17 @@
       "vuln_id": "V-258053"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258054",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258054r958736_rule",
       "severity": "medium",
       "title": "RHEL 9 must automatically lock an account when three unsuccessful logon attempts occur.",
-      "tracking_issue": "TODO-V-258054",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258054"
@@ -4456,16 +4484,17 @@
       "vuln_id": "V-258077"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258078",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258078r958944_rule",
       "severity": "high",
       "title": "RHEL 9 must use a Linux Security Module configured to enforce limits on system services.",
-      "tracking_issue": "TODO-V-258078",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258078"
@@ -4549,31 +4578,33 @@
       "vuln_id": "V-258083"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258084",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258084r1050789_rule",
       "severity": "medium",
       "title": "RHEL 9 must require reauthentication when using the \"sudo\" command.",
-      "tracking_issue": "TODO-V-258084",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258084"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258085",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258085r1045173_rule",
       "severity": "medium",
       "title": "RHEL 9 must use the invoking user's password for privilege escalation when using \"sudo\".",
-      "tracking_issue": "TODO-V-258085",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258085"
@@ -4594,16 +4625,17 @@
       "vuln_id": "V-258086"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258087",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258087r1045177_rule",
       "severity": "medium",
       "title": "RHEL 9 must restrict privilege elevation to authorized personnel.",
-      "tracking_issue": "TODO-V-258087",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258087"
@@ -4855,16 +4887,17 @@
       "vuln_id": "V-258105"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258106",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258106r1050789_rule",
       "severity": "medium",
       "title": "RHEL 9 must require users to provide a password for privilege escalation.",
-      "tracking_issue": "TODO-V-258106",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258106"
@@ -5281,16 +5314,17 @@
       "vuln_id": "V-258136"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258137",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258137r1045272_rule",
       "severity": "medium",
       "title": "RHEL 9 must use cryptographic mechanisms to protect the integrity of audit tools.",
-      "tracking_issue": "TODO-V-258137",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258137"
@@ -5388,76 +5422,81 @@
       "vuln_id": "V-258143"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258144",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258144r1045286_rule",
       "severity": "medium",
       "title": "All RHEL 9 remote access methods must be monitored.",
-      "tracking_issue": "TODO-V-258144",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258144"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258146",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258146r1045288_rule",
       "severity": "medium",
       "title": "RHEL 9 must authenticate the remote logging server for offloading audit logs via rsyslog.",
-      "tracking_issue": "TODO-V-258146",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258146"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258147",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258147r1045290_rule",
       "severity": "medium",
       "title": "RHEL 9 must encrypt the transfer of audit records offloaded onto a different system or media from the system being audited via rsyslog.",
-      "tracking_issue": "TODO-V-258147",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258147"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258148",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258148r1045292_rule",
       "severity": "medium",
       "title": "RHEL 9 must encrypt via the gtls driver the transfer of audit records offloaded onto a different system or media from the system being audited via rsyslog.",
-      "tracking_issue": "TODO-V-258148",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258148"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258149",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258149r1045294_rule",
       "severity": "medium",
       "title": "RHEL 9 must be configured to forward audit records via TCP to a different system or media from the system being audited via rsyslog.",
-      "tracking_issue": "TODO-V-258149",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258149"
@@ -5918,16 +5957,17 @@
       "vuln_id": "V-258179"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258180",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258180r1045325_rule",
       "severity": "medium",
       "title": "RHEL 9 must audit all uses of umount system calls.",
-      "tracking_issue": "TODO-V-258180",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258180"
@@ -6293,16 +6333,17 @@
       "vuln_id": "V-258204"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258205",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258205r1045400_rule",
       "severity": "medium",
       "title": "RHEL 9 must audit all uses of the sudoedit command.",
-      "tracking_issue": "TODO-V-258205",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258205"
@@ -6368,31 +6409,33 @@
       "vuln_id": "V-258209"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258210",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258210r1045415_rule",
       "severity": "medium",
       "title": "RHEL 9 must audit all uses of the mount command.",
-      "tracking_issue": "TODO-V-258210",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258210"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258211",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258211r1045418_rule",
       "severity": "medium",
       "title": "Successful/unsuccessful uses of the init command in RHEL 9 must generate an audit record.",
-      "tracking_issue": "TODO-V-258211",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258211"
@@ -6488,16 +6531,17 @@
       "vuln_id": "V-258217"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258218",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258218r1045439_rule",
       "severity": "medium",
       "title": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/sudoers.d/ directory.",
-      "tracking_issue": "TODO-V-258218",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258218"
@@ -6578,61 +6622,65 @@
       "vuln_id": "V-258223"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258224",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258224r1014988_rule",
       "severity": "medium",
       "title": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /var/log/faillock.",
-      "tracking_issue": "TODO-V-258224",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258224"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258225",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258225r1014990_rule",
       "severity": "medium",
       "title": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /var/log/lastlog.",
-      "tracking_issue": "TODO-V-258225",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258225"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258226",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258226r958846_rule",
       "severity": "medium",
       "title": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /var/log/tallylog.",
-      "tracking_issue": "TODO-V-258226",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258226"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258227",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258227r1014992_rule",
       "severity": "medium",
       "title": "RHEL 9 must take appropriate action when a critical audit processing failure occurs.",
-      "tracking_issue": "TODO-V-258227",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258227"
@@ -6653,16 +6701,17 @@
       "vuln_id": "V-258228"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258229",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258229r958434_rule",
       "severity": "medium",
       "title": "RHEL 9 audit system must protect auditing rules from unauthorized change.",
-      "tracking_issue": "TODO-V-258229",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258229"
@@ -6713,16 +6762,17 @@
       "vuln_id": "V-258232"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258233",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258233r1015136_rule",
       "severity": "medium",
       "title": "RHEL 9 pam_unix.so module must be configured in the password-auth file to use a FIPS 140-3 approved cryptographic hashing algorithm for system authentication.",
-      "tracking_issue": "TODO-V-258233",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258233"
@@ -6774,16 +6824,17 @@
       "vuln_id": "V-258237"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258241",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258241r1051259_rule",
       "severity": "medium",
       "title": "RHEL 9 must implement a FIPS 140-3 compliant systemwide cryptographic policy.",
-      "tracking_issue": "TODO-V-258241",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258241"

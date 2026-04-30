@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/audit.rules",
+      "pattern": "-a always,exit -F arch=b32 -S rename,unlink,rmdir,renameat,unlinkat -F auid>=1000 -F auid!=unset -k delete",
+      "type": "file_content"
+    },
+    "description": "Successful/unsuccessful uses of the rename, unlink, rmdir, renameat, and unlinkat system calls in RHEL 8 must generate an audit record.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230439"
+  },
   "check_content_excerpt": "Verify RHEL 8 generates an audit record upon successful/unsuccessful attempts to use the \"rename\", \"unlink\", \"rmdir\", \"renameat\", and \"unlinkat\" system calls by using the following command to check the file system rules in \"/etc/audit/audit.rules\":\n\n$ sudo grep 'rename\\|unlink\\|rmdir' /etc/audit/audit.rules\n\n-a always,exit -F arch=b32 -S rename,unlink,rmdir,renameat,unlinkat -F auid>=1000 -F auid!=unset -k delete\n-a always,exit -F arch=b64 -S rename,unlink,rmdir,renameat,unlinkat -F auid>=1000 -F auid!=unset -k delete\n\nIf the command does not return an audit rule for \"rename\", \"unlink\", \"rmdir\", \"renameat\", and \"unlinkat\" or any of the lines returned are commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit system to generate an audit event for any successful/unsuccessful use of the \"rename\", \"unlink\", \"rmdir\", \"renameat\", and \"unlinkat\" system calls by adding or updating the following rules in the \"/etc/audit/rules.d/audit.rules\" file:\n\n-a always,exit -F arch=b32 -S rename,unlink,rmdir,renameat,unlinkat -F auid>=1000 -F auid!=unset -k delete\n-a always,exit -F arch=b64 -S rename,unlink,rmdir,renameat,unlinkat -F auid>=1000 -F auid!=unset -k delete\n\nThe audit daemon must be restarted for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230439r1017243_rule",
   "severity": "medium",

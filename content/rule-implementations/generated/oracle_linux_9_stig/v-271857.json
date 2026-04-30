@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/rsyslog.conf",
+      "pattern": "/etc/rsyslog.d/*",
+      "type": "file_content"
+    },
+    "description": "OL 9 must be configured so that the rsyslog daemon does not accept log messages from other servers unless the server is being used for log aggregation.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271857"
+  },
   "check_content_excerpt": "Note: If the system administrator can demonstrate that another tool (e.g., SPLUNK) is being used to manage log offload and aggregation in lieu of rsyslog, this check is not applicable.\n\nVerify OL 9 is not configured to receive remote logs using rsyslog with the following commands:\n\n$ ss -tulnp | grep rsyslog\n\nIf no output is returned, rsyslog is not listening for remote messages, and is compliant.\n\nIf output appears, check for configured ports (514 is the default for syslog).\n\nCheck for remote logging configuration in rsyslog by examining the rsyslog configuration files:\n\n$ sudo grep -E 'InputTCPServerRun | UDPServerRun | RELPServerRun | imtcp | imudp | imrelp' /etc/rsyslog.conf /etc/rsyslog.d/*\n\nIf this command returns uncommented lines enabling network listeners, the system is accepting remote logs. If this system is not documented and authorized as a log aggregation server, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to not receive remote logs using rsyslog.\n\nRemove the lines in /etc/rsyslog.conf and any files in the /etc/rsyslog.d directory that match any of the following:\nInputTCPServerRun\nUDPServerRun\nRELPServerRun\nmodule(load=\"imtcp\")\nmodule(load=\"imudp\")\nmodule(load=\"imrelp\")\ninput(type=\"imudp\" port=\"514\")\ninput(type=\"imtcp\" port=\"514\")\ninput(type=\"imrelp\" port=\"514\")\n\nThe rsyslog daemon must be restarted for the changes to take effect:\n\n$ sudo systemctl restart rsyslog.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271857r1155339_rule",
   "severity": "medium",

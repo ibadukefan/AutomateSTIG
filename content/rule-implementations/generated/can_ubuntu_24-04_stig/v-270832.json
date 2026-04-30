@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/audit.rules",
+      "pattern": "-e 2",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS audit system must protect auditing rules from unauthorized change.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270832"
+  },
   "check_content_excerpt": "Verify the audit system prevents unauthorized changes to the rules with the following command:\n\n$ grep -E '^-e 2' /etc/audit/audit.rules\n-e 2\n\nIf the audit system is not set to be immutable by adding the \"-e 2\" option to the end of \"/etc/audit/audit.rules\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit system to set the audit rules to be immutable by adding the following line to the end of \"/etc/audit/rules.d/audit.rules\":\n\n-e 2",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270832r1068399_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/crypto-policies/state/CURRENT.pol",
+      "pattern": "hash = SHA2-256 SHA2-384 SHA2-512 SHA2-224 SHA3-256 SHA3-384 SHA3-512 SHAKE-256",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must implement a FIPS 140-3-compliant systemwide cryptographic policy.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258241"
+  },
   "check_content_excerpt": "Verify RHEL 9 is set to use a FIPS 140-3-compliant systemwide cryptographic policy with the following command:\n\n$ update-crypto-policies --show\n\nFIPS\n\nIf the systemwide crypto policy is not set to \"FIPS\", this is a finding.\n\nNote: If subpolicies have been configured, they could be listed in a colon-separated list starting with \"FIPS\" as follows FIPS:<SUBPOLICY-NAME>. This is not a finding.\n\nNote: Subpolicies like AD-SUPPORT must be configured according to the latest guidance from the operating system vendor.\n\nVerify the current minimum crypto-policy configuration with the following commands:\n\n$ grep -E 'rsa_size|hash' /etc/crypto-policies/state/CURRENT.pol\n\nhash = SHA2-256 SHA2-384 SHA2-512 SHA2-224 SHA3-256 SHA3-384 SHA3-512 SHAKE-256\nmin_rsa_size = 2048\n\nIf the \"hash\" values do not include at least the following FIPS 140-3-compliant algorithms \"SHA2-256 SHA2-384 SHA2-512 SHA2-224 SHA3-256 SHA3-384 SHA3-512 SHAKE-256\", this is a finding.\n\nIf there are algorithms that include \"SHA1\" or a hash value less than \"224\" this is a finding.\n\nIf the \"min_rsa_size\" is not set to a value of at least \"2048\", this is a finding.\n\nIf these commands do not return any output, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to use a FIPS 140-3-compliant systemwide cryptographic policy.\n\nCreate a subpolicy for enhancements to the base systemwide crypto-policy by creating the file /etc/crypto-policies/policies/modules/STIG.pmod with the following content:\n\n# Define ciphers and MACs for OpenSSH and libssh\ncipher@SSH=AES-256-GCM AES-256-CTR AES-128-GCM AES-128-CTR\nmac@SSH=HMAC-SHA2-512 HMAC-SHA2-256\n\nApply the policy enhancements to the FIPS systemwide cryptographic policy level with the following command:\n\n$ sudo update-crypto-policies --set FIPS:STIG\n\nNote: If additional subpolicies are being employed, they must be added to the update-crypto-policies command.\n\nTo make the cryptographic settings effective for already running services and applications, restart the system:\n\n$ sudo reboot",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258241r1106302_rule",
   "severity": "medium",

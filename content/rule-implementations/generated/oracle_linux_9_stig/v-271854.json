@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/rsyslog.conf",
+      "pattern": "/etc/rsyslog.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "OL 9 must authenticate the remote logging server for offloading audit logs via rsyslog.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271854"
+  },
   "check_content_excerpt": "Verify that OL 9 authenticates the remote logging server for off-loading audit logs with the following command:\n\n$ grep -i '$ActionSendStreamDriverAuthMode' /etc/rsyslog.conf /etc/rsyslog.d/*.conf \n /etc/rsyslog.conf:$ActionSendStreamDriverAuthMode x509/name \n\nIf the value of the \"$ActionSendStreamDriverAuthMode\" option is not set to \"x509/name\" or the line is commented out, ask the system administrator (SA) to indicate how the audit logs are offloaded to a different system or media. \n\nIf there is no evidence that the transfer of the audit logs being offloaded to another system or media is encrypted, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to authenticate the remote logging server for off-loading audit logs by setting the following option in \"/etc/rsyslog.conf\" or \"/etc/rsyslog.d/[customfile].conf\":\n\n$ActionSendStreamDriverAuthMode x509/name",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271854r1092274_rule",
   "severity": "medium",

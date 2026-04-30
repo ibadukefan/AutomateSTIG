@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sudoers",
+      "pattern": "/etc/sudoers.d/ | grep -v '#'",
+      "type": "file_content"
+    },
+    "description": "OL 8 must restrict privilege elevation to authorized personnel.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248583"
+  },
   "check_content_excerpt": "Verify the \"sudoers\" file restricts sudo access to authorized personnel.\n$ sudo grep -iwR 'ALL' /etc/sudoers /etc/sudoers.d/ | grep -v '#'\n\nIf the either of the following entries are returned, this is a finding:\nALL     ALL=(ALL) ALL\nALL     ALL=(ALL:ALL) ALL",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove the following entries from the sudoers file:\nALL     ALL=(ALL) ALL\nALL     ALL=(ALL:ALL) ALL",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248583r1101874_rule",
   "severity": "medium",

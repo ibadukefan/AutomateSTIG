@@ -422,16 +422,17 @@
       "vuln_id": "V-270675"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270676",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270676 from source identifier xccdf_mil.disa.stig_group_V-270676.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270676r1068360_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must initiate session audits at system startup.",
-      "tracking_issue": "TODO-V-270676",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270676"
@@ -452,16 +453,17 @@
       "vuln_id": "V-270677"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270680",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270680 from source identifier xccdf_mil.disa.stig_group_V-270680.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270680r1066529_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must automatically terminate a user session after inactivity timeouts have expired.",
-      "tracking_issue": "TODO-V-270680",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270680"
@@ -918,16 +920,17 @@
       "vuln_id": "V-270715"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270716",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270716 from source identifier xccdf_mil.disa.stig_group_V-270716.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270716r1066637_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS default filesystem permissions must be defined in such a way that all authenticated users can read and modify only their own files.",
-      "tracking_issue": "TODO-V-270716",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270716"
@@ -1054,61 +1057,65 @@
       "vuln_id": "V-270725"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270726",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270726 from source identifier xccdf_mil.disa.stig_group_V-270726.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270726r1066667_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must enforce password complexity by requiring that at least one uppercase character be used.",
-      "tracking_issue": "TODO-V-270726",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270726"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270727",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270727 from source identifier xccdf_mil.disa.stig_group_V-270727.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270727r1066670_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must enforce password complexity by requiring that at least one lowercase character be used.",
-      "tracking_issue": "TODO-V-270727",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270727"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270728",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270728 from source identifier xccdf_mil.disa.stig_group_V-270728.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270728r1066673_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must enforce password complexity by requiring that at least one numeric character be used.",
-      "tracking_issue": "TODO-V-270728",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270728"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270729",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270729 from source identifier xccdf_mil.disa.stig_group_V-270729.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270729r1066676_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must require the change of at least eight characters when passwords are changed.",
-      "tracking_issue": "TODO-V-270729",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270729"
@@ -1159,16 +1166,17 @@
       "vuln_id": "V-270732"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270733",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270733 from source identifier xccdf_mil.disa.stig_group_V-270733.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270733r1066688_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must enforce password complexity by requiring that at least one special character be used.",
-      "tracking_issue": "TODO-V-270733",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270733"
@@ -1689,76 +1697,81 @@
       "vuln_id": "V-270777"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270778",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270778 from source identifier xccdf_mil.disa.stig_group_V-270778.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270778r1066823_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the su command.",
-      "tracking_issue": "TODO-V-270778",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270778"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270779",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270779 from source identifier xccdf_mil.disa.stig_group_V-270779.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270779r1066826_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the chfn command.",
-      "tracking_issue": "TODO-V-270779",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270779"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270780",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270780 from source identifier xccdf_mil.disa.stig_group_V-270780.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270780r1066829_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the mount command.",
-      "tracking_issue": "TODO-V-270780",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270780"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270781",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270781 from source identifier xccdf_mil.disa.stig_group_V-270781.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270781r1066832_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the umount command.",
-      "tracking_issue": "TODO-V-270781",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270781"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270782",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270782 from source identifier xccdf_mil.disa.stig_group_V-270782.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270782r1066835_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the ssh-agent command.",
-      "tracking_issue": "TODO-V-270782",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270782"
@@ -1839,31 +1852,33 @@
       "vuln_id": "V-270787"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270788",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270788 from source identifier xccdf_mil.disa.stig_group_V-270788.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270788r1066853_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the sudo command.",
-      "tracking_issue": "TODO-V-270788",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270788"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270789",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270789 from source identifier xccdf_mil.disa.stig_group_V-270789.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270789r1066856_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the sudoedit command.",
-      "tracking_issue": "TODO-V-270789",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270789"
@@ -2442,16 +2457,17 @@
       "vuln_id": "V-270831"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270832",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270832 from source identifier xccdf_mil.disa.stig_group_V-270832.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270832r1068399_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS audit system must protect auditing rules from unauthorized change.",
-      "tracking_issue": "TODO-V-270832",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270832"
@@ -2472,31 +2488,33 @@
       "vuln_id": "V-274868"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-274869",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-274869 from source identifier xccdf_mil.disa.stig_group_V-274869.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-274869r1107312_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must restrict privilege elevation to authorized personnel.",
-      "tracking_issue": "TODO-V-274869",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-274869"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-274870",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-274870 from source identifier xccdf_mil.disa.stig_group_V-274870.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-274870r1107304_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must audit any script or executable called by cron as root or by any privileged user.",
-      "tracking_issue": "TODO-V-274870",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-274870"

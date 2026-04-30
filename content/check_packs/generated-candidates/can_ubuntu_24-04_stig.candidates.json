@@ -3,6 +3,20 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/boot/grub/grub.cfg",
+        "pattern": "linux   /vmlinuz-6.8.0-31-generic root=UUID=c92a542f-aee4-4af9-94b2-203624ccb8e3 ro audit=1 quiet splash $vt_handoff",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must initiate session audits at system startup.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270676"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/dconf/profile/user",
         "pattern": "system-db",
         "type": "file_content"
@@ -13,6 +27,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-270679"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/bash.bashrc",
+        "pattern": "/etc/profile.d/*",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must automatically terminate a user session after inactivity timeouts have expired.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270680"
     },
     {
       "check": {
@@ -31,6 +59,20 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "UMASK 077",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS default filesystem permissions must be defined in such a way that all authenticated users can read and modify only their own files.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270716"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/modprobe.d/",
         "pattern": "usb-storage",
         "type": "file_content"
@@ -41,6 +83,76 @@
       },
       "platform": "linux",
       "vuln_id": "V-270718"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "ucredit=-1",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must enforce password complexity by requiring that at least one uppercase character be used.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270726"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "lcredit=-1",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must enforce password complexity by requiring that at least one lowercase character be used.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270727"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "dcredit=-1",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must enforce password complexity by requiring that at least one numeric character be used.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270728"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "difok=8",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must require the change of at least eight characters when passwords are changed.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270729"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "ocredit=-1",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must enforce password complexity by requiring that at least one special character be used.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270733"
     },
     {
       "check": {
@@ -113,6 +225,118 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/bin/su",
+        "pattern": "-a always,exit -F path=/bin/su -F perm=x -F auid>=1000 -F auid!=-1 -k privileged-priv_change",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the su command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270778"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/chfn",
+        "pattern": "-a always,exit -F path=/usr/bin/chfn -F perm=x -F auid>=1000 -F auid!=-1 -k privileged-chfn",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the chfn command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270779"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/mount",
+        "pattern": "-a always,exit -F path=/usr/bin/mount -F perm=x -F auid>=1000 -F auid!=-1 -k privileged-mount",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the mount command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270780"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/umount",
+        "pattern": "-a always,exit -F path=/usr/bin/umount -F perm=x -F auid>=1000 -F auid!=-1 -k privileged-umount",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the umount command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270781"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/ssh-agent",
+        "pattern": "-a always,exit -F path=/usr/bin/ssh-agent -F perm=x -F auid>=1000 -F auid!=-1 -k privileged-ssh",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the ssh-agent command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270782"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/sudo",
+        "pattern": "-a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=-1 -k priv_cmd",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the sudo command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270788"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/sudoedit",
+        "pattern": "-a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=-1 -k priv_cmd",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the sudoedit command.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270789"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "action_mail_acct = <administrator_account>",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must alert the system administrator (SA) and information system security officer (ISSO) (at a minimum) in the event of an audit processing failure.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270819"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0755",
         "owner": null,
@@ -155,6 +379,48 @@
       },
       "platform": "linux",
       "vuln_id": "V-270830"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "-e 2",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS audit system must protect auditing rules from unauthorized change.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270832"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d/ | grep -v '#'",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must restrict privilege elevation to authorized personnel.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274869"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/cron.d",
+        "pattern": "-w /etc/cron.d -p wa -k cronjobs",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS must audit any script or executable called by cron as root or by any privileged user.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274870"
     }
   ],
   "platform": "linux",

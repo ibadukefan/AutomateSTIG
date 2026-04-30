@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/faillock.conf",
+      "pattern": "dir = /var/log/faillock",
+      "type": "file_content"
+    },
+    "description": "OL 9 must configure SELinux context type to allow the use of a nondefault faillock tally directory.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271836"
+  },
   "check_content_excerpt": "Note: If the system does not have SELinux enabled and enforcing a targeted policy, or if the pam_faillock module is not configured for use, this requirement is Not Applicable.\n\nVerify that OL 9 configures the SELinux context type to allow the use of a nondefault faillock tally directory.\n\nVerify the location of the nondefault tally directory for the pam_faillock module with the following command:\n\n$ grep 'dir =' /etc/security/faillock.conf\ndir = /var/log/faillock\n\nCheck the security context type of the nondefault tally directory with the following command:\n\n$ ls -Zd /var/log/faillock\nunconfined_u:object_r:faillog_t:s0 /var/log/faillock\n\nIf the security context type of the nondefault tally directory is not \"faillog_t\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to allow the use of a nondefault faillock tally directory while SELinux enforces a targeted policy.\n\nCreate a nondefault faillock tally directory (if it does not already exist) with the following example:\n\n$ sudo mkdir /var/log/faillock\n\nUpdate the /etc/selinux/targeted/contexts/files/file_contexts.local with \"faillog_t\" context type for the nondefault faillock tally directory with the following command:\n\n$ sudo semanage fcontext -a -t faillog_t \"/var/log/faillock(/.*)?\"\n\nUpdate the context type of the nondefault faillock directory/subdirectories and files with the following command:\n\n$ sudo restorecon -R -v /var/log/faillock",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271836r1092637_rule",
   "severity": "medium",

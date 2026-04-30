@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/bash.bashrc",
+      "pattern": "/etc/profile.d/*",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must automatically exit interactive command shell user sessions after 15 minutes of inactivity.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260554"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS is configured to automatically exit interactive command shell user sessions after 15 minutes of inactivity or less by using the following command: \n  \n     $ sudo grep -E \"\\bTMOUT=[0-9]+\" /etc/bash.bashrc /etc/profile.d/* \n     /etc/profile.d/99-terminal_tmout.sh:TMOUT=900 \n  \nIf \"TMOUT\" is not set to \"900\" or less, is set to \"0\", is commented out, or missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to exit interactive command shell user sessions after 15 minutes of inactivity. \n \nCreate and/or append a custom file under \"/etc/profile.d/\" by using the following command: \n \n     $ sudo su -c \"echo TMOUT=900 >> /etc/profile.d/99-terminal_tmout.sh\" \n  \nThis will set a timeout value of 15 minutes for all future sessions.  \n  \nTo set the timeout for the current sessions, execute the following command over the terminal session:  \n  \n     $ export TMOUT=900",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260554r958636_rule",
   "severity": "medium",

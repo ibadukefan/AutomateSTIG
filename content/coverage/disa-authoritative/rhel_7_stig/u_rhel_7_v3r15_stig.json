@@ -928,16 +928,17 @@
       "vuln_id": "V-204453"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204454",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204454r958944_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must enable the SELinux targeted policy.",
-      "tracking_issue": "TODO-V-204454",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204454"
@@ -1363,16 +1364,17 @@
       "vuln_id": "V-204483"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204486",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204486r958804_rule",
       "severity": "low",
       "title": "The Red Hat Enterprise Linux operating system must mount /dev/shm with secure options.",
-      "tracking_issue": "TODO-V-204486",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204486"
@@ -1469,61 +1471,65 @@
       "vuln_id": "V-204492"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204493",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204493r991589_rule",
       "severity": "low",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that a separate file system is used for user home directories (such as /home or an equivalent).",
-      "tracking_issue": "TODO-V-204493",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204493"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204494",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204494r991589_rule",
       "severity": "low",
       "title": "The Red Hat Enterprise Linux operating system must use a separate file system for /var.",
-      "tracking_issue": "TODO-V-204494",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204494"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204495",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204495r991589_rule",
       "severity": "low",
       "title": "The Red Hat Enterprise Linux operating system must use a separate file system for the system audit data path.",
-      "tracking_issue": "TODO-V-204495",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204495"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204496",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204496r991589_rule",
       "severity": "low",
       "title": "The Red Hat Enterprise Linux operating system must use a separate file system for /tmp (or equivalent).",
-      "tracking_issue": "TODO-V-204496",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204496"
@@ -1686,16 +1692,17 @@
       "vuln_id": "V-204507"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204508",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204508r958754_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must label all off-loaded audit logs before sending them to the central log server.",
-      "tracking_issue": "TODO-V-204508",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204508"
@@ -2097,16 +2104,17 @@
       "vuln_id": "V-204548"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204549",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204549r958412_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must audit all uses of the sudoers file and all files in the /etc/sudoers.d/ directory.",
-      "tracking_issue": "TODO-V-204549",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204549"
@@ -2256,16 +2264,17 @@
       "vuln_id": "V-204558"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204559",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204559r991580_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must audit all uses of the create_module syscall.",
-      "tracking_issue": "TODO-V-204559",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204559"
@@ -2286,16 +2295,17 @@
       "vuln_id": "V-204560"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204562",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204562r991580_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must audit all uses of the delete_module syscall.",
-      "tracking_issue": "TODO-V-204562",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204562"
@@ -2397,16 +2407,17 @@
       "vuln_id": "V-204568"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204572",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204572r991575_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must audit all uses of the unlink, unlinkat, rename, renameat, and rmdir syscalls.",
-      "tracking_issue": "TODO-V-204572",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204572"
@@ -2442,16 +2453,17 @@
       "vuln_id": "V-204575"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204576",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204576r958398_rule",
       "severity": "low",
       "title": "The Red Hat Enterprise Linux operating system must limit the number of concurrent sessions to 10 for all accounts and/or account types.",
-      "tracking_issue": "TODO-V-204576",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204576"
@@ -3464,76 +3476,81 @@
       "vuln_id": "V-233307"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-237633",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-237633r991589_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must restrict privilege elevation to authorized personnel.",
-      "tracking_issue": "TODO-V-237633",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-237633"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-237634",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-237634r991589_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must use the invoking user's password for privilege escalation when using \"sudo\".",
-      "tracking_issue": "TODO-V-237634",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-237634"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-237635",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-237635r987879_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must require re-authentication when using the \"sudo\" command.",
-      "tracking_issue": "TODO-V-237635",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-237635"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-244557",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-244557r958472_rule",
       "severity": "medium",
       "title": "Red Hat Enterprise Linux operating systems version 7.2 or newer booted with a BIOS must have a unique name for the grub superusers account when booting into single-user and maintenance modes.",
-      "tracking_issue": "TODO-V-244557",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-244557"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-244558",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-244558r958472_rule",
       "severity": "medium",
       "title": "Red Hat Enterprise Linux operating systems version 7.2 or newer booted with United Extensible Firmware Interface (UEFI) must have a unique name for the grub superusers account when booting into single-user mode and maintenance.",
-      "tracking_issue": "TODO-V-244558",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-244558"

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/sbin/modprobe",
+      "pattern": "-w /sbin/modprobe -p x -k modules",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful attempts to use modprobe command.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260614"
+  },
   "check_content_excerpt": "Verify if Ubuntu 22.04 LTS is configured to audit the execution of the module management program \"modprobe\" with the following command:  \n  \n     $ sudo auditctl -l | grep /sbin/modprobe \n     -w /sbin/modprobe -p x -k modules  \n  \nIf the command does not return a line, or the line is commented out, this is a finding.  \n  \nNote: The \"-k\" value is arbitrary and can be different from the example output above.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to audit the execution of the module management program \"modprobe\".  \n  \nAdd or modify the following line in the \"/etc/audit/rules.d/stig.rules\" file:  \n  \n-w /sbin/modprobe -p x -k modules  \n   \nTo reload the rules file, issue the following command:  \n  \n     $ sudo augenrules --load \n \nNote: The \"-k <keyname>\" at the end of the line gives the rule a unique meaning to help during an audit investigation. The <keyname> does not need to match the example above.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260614r991586_rule",
   "severity": "medium",

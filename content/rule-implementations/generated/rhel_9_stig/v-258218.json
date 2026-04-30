@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sudoers.d",
+      "pattern": "-w /etc/sudoers.d/ -p wa -k identity",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/sudoers.d/ directory.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258218"
+  },
   "check_content_excerpt": "Verify RHEL 9 generates audit records for all account creations, modifications, disabling, and termination events that affect \"/etc/sudoers.d/\" with the following command:\n\n$ sudo auditctl -l | grep /etc/sudoers.d\n\n-w /etc/sudoers.d/ -p wa -k identity\n\nIf the command does not return a line, or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to generate audit records for all account creations, modifications, disabling, and termination events that affect \"/etc/sudoers.d/\".\n\nAdd or update the following file system rule to \"/etc/audit/rules.d/audit.rules\":\n\n-w /etc/sudoers.d/ -p wa -k identity\n\nTo load the rules to the kernel immediately, use the following command:\n\n$ sudo augenrules --load",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258218r1101981_rule",
   "severity": "medium",

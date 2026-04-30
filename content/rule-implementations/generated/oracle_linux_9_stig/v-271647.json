@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/dev/sda1",
+      "pattern": "on /boot type xfs (rw,nodev,relatime,seclabel,attr2)",
+      "type": "file_content"
+    },
+    "description": "OL 9 must mount /boot with the nodev option.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271647"
+  },
   "check_content_excerpt": "Verify that OL 9 is configured to mount /boot with the nodev option.\n\nVerify that the \"/boot\" mount point has the \"nodev\" option is with the following command:\n\n$ mount | grep '\\s/boot\\s'\n/dev/sda1 on /boot type xfs (rw,nodev,relatime,seclabel,attr2)\n\nIf the \"/boot\" file system does not have the \"nodev\" option set, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to mount /boot with the nodev option.\n\nModify \"/etc/fstab\" to use the \"nodev\" option on the \"/boot\" directory.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271647r1091653_rule",
   "severity": "medium",

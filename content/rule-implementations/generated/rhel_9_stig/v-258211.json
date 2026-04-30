@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/usr/sbin/init",
+      "pattern": "-a always,exit -S all -F path=/usr/sbin/init -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-init",
+      "type": "file_content"
+    },
+    "description": "Successful/unsuccessful uses of the init command in RHEL 9 must generate an audit record.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258211"
+  },
   "check_content_excerpt": "Verify that RHEL 9 is configured to audit the execution of the \"init\" command with the following command:\n\n$ sudo auditctl -l | grep /usr/sbin/init\n\n-a always,exit -S all -F path=/usr/sbin/init -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-init\n\nIf the command does not return a line, or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit system to generate an audit event for any successful/unsuccessful uses of the \"init\" command by adding or updating the following rule in the \"/etc/audit/rules.d/audit.rules\" file:\n\n-a always,exit -F path=/usr/sbin/init -F perm=x -F auid>=1000 -F auid!=unset -k privileged-init\n\nTo load the rules to the kernel immediately, use the following command:\n\n$ sudo augenrules --load",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258211r1045418_rule",
   "severity": "medium",

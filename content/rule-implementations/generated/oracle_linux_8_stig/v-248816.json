@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/rsyslog.conf",
+      "pattern": "/etc/rsyslog.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "OL 8 must encrypt the transfer of audit records offloaded onto a different system or media from the system being audited.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248816"
+  },
   "check_content_excerpt": "Verify the operating system encrypts audit records offloaded onto a different system or media from the system being audited with the following commands: \n \n$ sudo grep -i '$DefaultNetstreamDriver' /etc/rsyslog.conf /etc/rsyslog.d/*.conf \n \n/etc/rsyslog.conf:$DefaultNetstreamDriver gtls \n \nIf the value of the \"$DefaultNetstreamDriver\" option is not set to \"gtls\" or the line is commented out, this is a finding. \n \n$ sudo grep -i '$ActionSendStreamDriverMode' /etc/rsyslog.conf /etc/rsyslog.d/*.conf \n \n/etc/rsyslog.conf:$ActionSendStreamDriverMode 1 \n \nIf the value of the \"$ActionSendStreamDriverMode\" option is not set to \"1\" or the line is commented out, this is a finding. \n \nIf neither of the definitions above are set, ask the System Administrator to indicate how the audit logs are offloaded to a different system or media.  \n \nIf there is no evidence that the transfer of the audit logs being offloaded to another system or media is encrypted, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to encrypt offloaded audit records by setting the following options in \"/etc/rsyslog.conf\" or \"/etc/rsyslog.d/[customfile].conf\": \n \n$DefaultNetstreamDriver gtls \n$ActionSendStreamDriverMode 1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248816r958754_rule",
   "severity": "medium",

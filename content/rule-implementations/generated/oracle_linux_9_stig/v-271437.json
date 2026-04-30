@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/var/tmp",
+      "pattern": "UUID=c274f65f-c5b5-4379-b017-bee96feb7a34 /var/log xfs noatime 1 2",
+      "type": "file_content"
+    },
+    "description": "OL 9 must use a separate file system for /var/tmp.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271437"
+  },
   "check_content_excerpt": "Verify that OL 9 uses a separate file system/partition for \"/var/tmp\" with the following command:\n\n$ mount | grep /var/tmp\nUUID=c274f65f-c5b5-4379-b017-bee96feb7a34 /var/log xfs noatime 1 2\n\nIf a separate entry for \"/var/tmp\" is not in use, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Migrate the \"/var/tmp\" path onto a separate file system.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271437r1091023_rule",
   "severity": "medium",

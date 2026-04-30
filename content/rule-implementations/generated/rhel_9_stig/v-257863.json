@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/dev/shm",
+      "pattern": "tmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must mount /dev/shm with the nodev option.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257863"
+  },
   "check_content_excerpt": "Verify \"/dev/shm\" is mounted with the \"nodev\" option with the following command:\n\n$ mount | grep /dev/shm\n\ntmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)\n\nIf the /dev/shm file system is mounted without the \"nodev\" option, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Modify \"/etc/fstab\" to use the \"nodev\" option on the \"/dev/shm\" file system.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-257863r958804_rule",
   "severity": "medium",

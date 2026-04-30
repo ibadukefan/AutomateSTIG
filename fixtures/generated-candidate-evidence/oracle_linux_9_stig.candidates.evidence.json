@@ -1,6 +1,168 @@
 {
-  "candidate_checks": 126,
+  "candidate_checks": 184,
   "cases": [
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log/audit",
+        "pattern": "UUID=2efb2979-45ac-82d7-0ae632d11f51 on /var/log/home type xfs  (rw,realtime,seclabel,attr2,inode64)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must use a separate file system for the system audit data path.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log/audit": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log/audit": "before\nUUID=2efb2979-45ac-82d7-0ae632d11f51 on /var/log/home type xfs  (rw,realtime,seclabel,attr2,inode64)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271432"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/home",
+        "pattern": "UUID=fba5000f-2ffa-4417-90eb-8c54ae74a32f on /home type ext4 (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured so that a separate file system must be used for user home directories (such as /home or an equivalent).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/home": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/home": "before\nUUID=fba5000f-2ffa-4417-90eb-8c54ae74a32f on /home type ext4 (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271433"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/tmp",
+        "pattern": "tmpfs /tmp tmpfs noatime,mode=1777 0 0",
+        "type": "file_content"
+      },
+      "description": "OL 9 must use a separate file system for /tmp.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/tmp": "before\ntmpfs /tmp tmpfs noatime,mode=1777 0 0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271434"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var",
+        "pattern": "UUID=c274f65f-c5b5-4481-b007-bee96feb8b05 /var xfs noatime 1 2",
+        "type": "file_content"
+      },
+      "description": "OL 9 must use a separate file system for /var.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var": "before\nUUID=c274f65f-c5b5-4481-b007-bee96feb8b05 /var xfs noatime 1 2\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271435"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log",
+        "pattern": "UUID=c274f65f-c5b5-4486-b021-bee96feb8b21 /var/log xfs noatime 1 2",
+        "type": "file_content"
+      },
+      "description": "OL 9 must use a separate file system for /var/log.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log": "before\nUUID=c274f65f-c5b5-4486-b021-bee96feb8b21 /var/log xfs noatime 1 2\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271436"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/tmp",
+        "pattern": "UUID=c274f65f-c5b5-4379-b017-bee96feb7a34 /var/log xfs noatime 1 2",
+        "type": "file_content"
+      },
+      "description": "OL 9 must use a separate file system for /var/tmp.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/tmp": "before\nUUID=c274f65f-c5b5-4379-b017-bee96feb7a34 /var/log xfs noatime 1 2\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271437"
+    },
     {
       "check": {
         "is_regex": false,
@@ -270,6 +432,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271450"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/selinux/config",
+        "pattern": "SELINUX=enforcing",
+        "type": "file_content"
+      },
+      "description": "OL 9 must use a Linux Security Module configured to enforce limits on system services.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/selinux/config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/selinux/config": "before\nSELINUX=enforcing\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271452"
     },
     {
       "check": {
@@ -611,6 +800,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers:Defaults",
+        "pattern": "!targetpw",
+        "type": "file_content"
+      },
+      "description": "OL 9 must use the invoking user's password for privilege escalation when using sudo.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers:Defaults": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers:Defaults": "before\n!targetpw\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271475"
+    },
+    {
+      "check": {
         "name": "crypto-policies",
         "should_be_installed": true,
         "type": "package"
@@ -637,6 +853,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/crypto-policies/state/CURRENT.pol",
+        "pattern": "hash = SHA2-256 SHA2-384 SHA2-512 SHA2-224 SHA3-256 SHA3-384 SHA3-512 SHAKE-256",
+        "type": "file_content"
+      },
+      "description": "OL 9 must implement a FIPS 140-3 compliant system-wide cryptographic policy.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/crypto-policies/state/CURRENT.pol": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/crypto-policies/state/CURRENT.pol": "before\nhash = SHA2-256 SHA2-384 SHA2-512 SHA2-224 SHA3-256 SHA3-384 SHA3-512 SHAKE-256\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271478"
+    },
+    {
+      "check": {
         "name": "openssh-server",
         "should_be_installed": true,
         "type": "package"
@@ -660,6 +903,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271482"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config:Include",
+        "pattern": "/etc/ssh/sshd_config.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "The OL 9 SSH daemon must be configured to use systemwide cryptographic policies.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config:Include": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config:Include": "before\n/etc/ssh/sshd_config.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271484"
     },
     {
       "check": {
@@ -1211,6 +1481,276 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "-w /etc/sudoers -p wa -k identity",
+        "type": "file_content"
+      },
+      "description": "OL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/sudoers.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers": "before\n-w /etc/sudoers -p wa -k identity\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271527"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers.d",
+        "pattern": "-w /etc/sudoers.d/ -p wa -k identity",
+        "type": "file_content"
+      },
+      "description": "OL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/sudoers.d/ directory.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers.d": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers.d": "before\n-w /etc/sudoers.d/ -p wa -k identity\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271528"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/su",
+        "pattern": "-a always,exit -F path=/usr/bin/su -F perm=x -F auid>=1000 -F auid!=unset -k privileged-priv_change",
+        "type": "file_content"
+      },
+      "description": "OL 9 must audit all uses of the su command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/usr/bin/su": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/usr/bin/su": "before\n-a always,exit -F path=/usr/bin/su -F perm=x -F auid>=1000 -F auid!=unset -k privileged-priv_change\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271535"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/sudoedit",
+        "pattern": "-a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=unset -k priv_cmd",
+        "type": "file_content"
+      },
+      "description": "OL 9 must audit all uses of the sudoedit command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/usr/bin/sudoedit": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/usr/bin/sudoedit": "before\n-a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=unset -k priv_cmd\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271550"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/mount",
+        "pattern": "-a always,exit -F path=/usr/bin/mount -F perm=x -F auid>=1000 -F auid!=unset -k privileged-mount",
+        "type": "file_content"
+      },
+      "description": "OL 9 must audit all uses of the mount command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/usr/bin/mount": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/usr/bin/mount": "before\n-a always,exit -F path=/usr/bin/mount -F perm=x -F auid>=1000 -F auid!=unset -k privileged-mount\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271553"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/bin/sudo",
+        "pattern": "-a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=unset -k priv_cmd",
+        "type": "file_content"
+      },
+      "description": "OL 9 must audit all uses of the sudo command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/usr/bin/sudo": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/usr/bin/sudo": "before\n-a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=unset -k priv_cmd\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271561"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log/lastlog",
+        "pattern": "-w /var/log/lastlog -p wa -k logins",
+        "type": "file_content"
+      },
+      "description": "OL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /var/log/lastlog.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log/lastlog": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log/lastlog": "before\n-w /var/log/lastlog -p wa -k logins\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271567"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/sbin/au",
+        "pattern": "/usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512",
+        "type": "file_content"
+      },
+      "description": "OL 9 must use cryptographic mechanisms to protect the integrity of audit tools.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/usr/sbin/au": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/usr/sbin/au": "before\n/usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271569"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log/faillock",
+        "pattern": "-w /var/log/faillock -p wa -k logins",
+        "type": "file_content"
+      },
+      "description": "OL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /var/log/faillock.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log/faillock": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log/faillock": "before\n-w /var/log/faillock -p wa -k logins\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271571"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log/tallylog",
+        "pattern": "-w\u00a0/var/log/tallylog\u00a0-p\u00a0wa\u00a0-k\u00a0logins",
+        "type": "file_content"
+      },
+      "description": "OL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /var/log/tallylog.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log/tallylog": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log/tallylog": "before\n-w\u00a0/var/log/tallylog\u00a0-p\u00a0wa\u00a0-k\u00a0logins\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271572"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/audit/auditd.conf",
         "pattern": "local_events",
         "type": "file_content"
@@ -1341,6 +1881,33 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "-f 2",
+        "type": "file_content"
+      },
+      "description": "OL 9 must take appropriate action when a critical audit processing failure occurs.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n-f 2\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271590"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/audit/audit.",
         "pattern": "umount",
         "type": "file_content"
@@ -1391,6 +1958,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271614"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/password-auth",
+        "pattern": "password sufficient pam_unix.so sha512",
+        "type": "file_content"
+      },
+      "description": "OL 9 pam_unix.so module must be configured in the password-auth file to use a FIPS 140-3 approved cryptographic hashing algorithm for system authentication.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/password-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/password-auth": "before\npassword sufficient pam_unix.so sha512\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271624"
     },
     {
       "check": {
@@ -1472,6 +2066,627 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271633"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/grub2.cfg",
+        "pattern": "password_pbkdf2  superusers-account   ${GRUB2_PASSWORD}",
+        "type": "file_content"
+      },
+      "description": "OL 9 must require a boot loader superuser password.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/grub2.cfg": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/grub2.cfg": "before\npassword_pbkdf2  superusers-account   ${GRUB2_PASSWORD}\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271635"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/sda1",
+        "pattern": "on /boot type xfs (rw,nodev,relatime,seclabel,attr2)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /boot with the nodev option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/dev/sda1": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/dev/sda1": "before\non /boot type xfs (rw,nodev,relatime,seclabel,attr2)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271647"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/sda1",
+        "pattern": "on /boot type xfs (rw,nosuid,relatime,seclabe,attr2,inode64,noquota)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent files with the setuid and setgid bit set from being executed on the /boot directory.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/dev/sda1": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/dev/sda1": "before\non /boot type xfs (rw,nosuid,relatime,seclabe,attr2,inode64,noquota)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271648"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/sda1",
+        "pattern": "on /boot/efi type vfat (rw,nosuid,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=ascii,shortname=winnt,errors=remount-ro)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent files with the setuid and setgid bit set from being executed on the /boot/efi directory.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/dev/sda1": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/dev/sda1": "before\non /boot/efi type vfat (rw,nosuid,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=ascii,shortname=winnt,errors=remount-ro)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271649"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/shm",
+        "pattern": "tmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /dev/shm with the nodev option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/dev/shm": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/dev/shm": "before\ntmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271650"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/shm",
+        "pattern": "tmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /dev/shm with the noexec option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/dev/shm": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/dev/shm": "before\ntmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271651"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/shm",
+        "pattern": "tmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /dev/shm with the nosuid option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/dev/shm": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/dev/shm": "before\ntmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271652"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/tmp",
+        "pattern": "/dev/mapper/ol-tmp on /tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /tmp with the nodev option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/tmp": "before\n/dev/mapper/ol-tmp on /tmp type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271653"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/tmp",
+        "pattern": "/dev/mapper/ol-tmp on /tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /tmp with the noexec option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/tmp": "before\n/dev/mapper/ol-tmp on /tmp type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271654"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/tmp",
+        "pattern": "/dev/mapper/ol-tmp on /tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /tmp with the nosuid option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/tmp": "before\n/dev/mapper/ol-tmp on /tmp type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271655"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var",
+        "pattern": "/dev/mapper/ol-var on /var type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /var with the nodev option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var": "before\n/dev/mapper/ol-var on /var type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271656"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log",
+        "pattern": "/dev/mapper/ol-var-log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /var/log with the nodev option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log": "before\n/dev/mapper/ol-var-log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271657"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log",
+        "pattern": "/dev/mapper/ol-var-log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /var/log with the noexec option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log": "before\n/dev/mapper/ol-var-log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271658"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log",
+        "pattern": "/dev/mapper/ol-var-log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /var/log with the nosuid option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log": "before\n/dev/mapper/ol-var-log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271659"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log/audit",
+        "pattern": "/dev/mapper/ol-var-log-audit on /var/log/audit type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /var/log/audit with the nodev option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log/audit": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log/audit": "before\n/dev/mapper/ol-var-log-audit on /var/log/audit type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271660"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log/audit",
+        "pattern": "/dev/mapper/ol-var-log-audit on /var/log/audit type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /var/log/audit with the noexec option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log/audit": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log/audit": "before\n/dev/mapper/ol-var-log-audit on /var/log/audit type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271661"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log/audit",
+        "pattern": "/dev/mapper/ol-var-log-audit on /var/log/audit type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /var/log/audit with the nosuid option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log/audit": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log/audit": "before\n/dev/mapper/ol-var-log-audit on /var/log/audit type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271662"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/tmp",
+        "pattern": "/dev/mapper/ol-var-tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /var/tmp with the nodev option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/tmp": "before\n/dev/mapper/ol-var-tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271663"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/tmp",
+        "pattern": "/dev/mapper/ol-var-tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /var/tmp with the noexec option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/tmp": "before\n/dev/mapper/ol-var-tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271664"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/tmp",
+        "pattern": "/dev/mapper/ol-var-tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must mount /var/tmp with the nosuid option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/tmp": "before\n/dev/mapper/ol-var-tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271665"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/home",
+        "pattern": "tmpfs on /home type tmpfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent device files from being interpreted on file systems that contain user home directories.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/home": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/home": "before\ntmpfs on /home type tmpfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271666"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/home",
+        "pattern": "tmpfs on /home type tmpfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent files with the setuid and setgid bit set from being executed on file systems that contain user home directories.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/home": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/home": "before\ntmpfs on /home type tmpfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271667"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/home",
+        "pattern": "tmpfs on /home type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent code from being executed on file systems that contain user home directories.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/home": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/home": "before\ntmpfs on /home type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271668"
     },
     {
       "check": {
@@ -2150,6 +3365,60 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d/*",
+        "type": "file_content"
+      },
+      "description": "OL 9 must require reauthentication when using the \"sudo\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers": "before\n/etc/sudoers.d/*\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271722"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d/*",
+        "type": "file_content"
+      },
+      "description": "OL 9 must require users to reauthenticate for privilege escalation.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers": "before\n/etc/sudoers.d/*\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271724"
+    },
+    {
+      "check": {
         "key": "user.max_user_namespaces",
         "type": "sysctl"
       },
@@ -2408,6 +3677,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271749"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "unlock_time = 0",
+        "type": "file_content"
+      },
+      "description": "OL 9 must maintain an account lock until the locked account is released by an administrator.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nunlock_time = 0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271755"
     },
     {
       "check": {
@@ -2896,6 +4192,114 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "dir = /var/log/faillock",
+        "type": "file_content"
+      },
+      "description": "OL 9 must configure SELinux context type to allow the use of a nondefault faillock tally directory.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\ndir = /var/log/faillock\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271836"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "deny = 3",
+        "type": "file_content"
+      },
+      "description": "OL 9 must automatically lock an account when three unsuccessful logon attempts occur.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\ndeny = 3\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271839"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "dir = /var/log/faillock",
+        "type": "file_content"
+      },
+      "description": "OL 9 must ensure account lockouts persist.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\ndir = /var/log/faillock\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271842"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "authpriv.*                                              /var/log/secure",
+        "type": "file_content"
+      },
+      "description": "OL 9 remote access methods must be monitored.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\nauthpriv.*                                              /var/log/secure\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271851"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/rsyslog.conf",
         "pattern": "cron",
         "type": "file_content"
@@ -2919,6 +4323,114 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271853"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "/etc/rsyslog.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must authenticate the remote logging server for offloading audit logs via rsyslog.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\n/etc/rsyslog.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271854"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "/etc/rsyslog.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must encrypt the transfer of audit records offloaded onto a different system or media from the system being audited via rsyslog.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\n/etc/rsyslog.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271855"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "/etc/rsyslog.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 9 must encrypt via the gtls driver the transfer of audit records offloaded onto a different system or media from the system being audited via rsyslog.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\n/etc/rsyslog.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271856"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "/etc/rsyslog.d/*",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured so that the rsyslog daemon does not accept log messages from other servers unless the server is being used for log aggregation.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\n/etc/rsyslog.d/*\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271857"
     },
     {
       "check": {
@@ -3465,6 +4977,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271884"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "| tail -1",
+        "type": "file_content"
+      },
+      "description": "OL 9 audit system must protect auditing rules from unauthorized change.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n| tail -1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271886"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/cron.d",
+        "pattern": "-w /etc/cron.d -p wa -k cronjobs",
+        "type": "file_content"
+      },
+      "description": "OL 9 must audit any script or executable called by cron as root or by any privileged user.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/cron.d": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/cron.d": "before\n-w /etc/cron.d -p wa -k cronjobs\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278952"
     }
   ],
   "production_claim": false,
@@ -3472,5 +5038,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 126
+  "validated_candidates": 184
 }

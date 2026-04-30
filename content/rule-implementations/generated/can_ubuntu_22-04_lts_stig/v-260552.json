@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/limits.conf",
+      "pattern": "/etc/security/limits.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must limit the number of concurrent sessions to ten for all accounts and/or account types.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260552"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS limits the number of concurrent sessions to 10 for all accounts and/or account types by using the following command:  \n  \n     $ sudo grep -r -s '^[^#].*maxlogins' /etc/security/limits.conf /etc/security/limits.d/*.conf \n     /etc/security/limits.conf:* hard maxlogins 10 \n \nIf \"maxlogins\" does not have a value of \"10\" or less, is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to limit the number of concurrent sessions to 10 for all accounts and/or account types.  \n  \nAdd or modify the following line at the top of the \"/etc/security/limits.conf\" file:  \n  \n* hard maxlogins 10",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260552r958398_rule",
   "severity": "low",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/dev/shm",
+      "pattern": "tmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)",
+      "type": "file_content"
+    },
+    "description": "OL 8 must mount \"/dev/shm\" with the \"nodev\" option.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248844"
+  },
   "check_content_excerpt": "Verify \"/dev/shm\" is mounted with the \"nodev\" option: \n \n$ sudo mount | grep /dev/shm \n \ntmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel) \n \nVerify that the \"nodev\" option is configured for \"/dev/shm\": \n \n$ sudo cat /etc/fstab | grep /dev/shm \n \ntmpfs /dev/shm tmpfs defaults,nodev,nosuid,noexec 0 0 \n \nIf results are returned and the \"nodev\" option is missing, or if \"/dev/shm\" is mounted without the \"nodev\" option, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 8 so that \"/dev/shm\" is mounted with the \"nodev\" option by adding/modifying \"/etc/fstab\" with the following line: \n \ntmpfs /dev/shm tmpfs defaults,nodev,nosuid,noexec 0 0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248844r958804_rule",
   "severity": "medium",

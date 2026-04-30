@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/var/log/audit",
+      "pattern": "/etc/fstab",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must use a separate file system for the system audit data path.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204495"
+  },
   "check_content_excerpt": "Determine if the operating system is configured to have the \"/var/log/audit\" path is on a separate file system.\n\n# grep /var/log/audit /etc/fstab\n\nIf no result is returned, or the operating system is not configured to have \"/var/log/audit\" on a separate file system, this is a finding.\n\nVerify that \"/var/log/audit\" is mounted on a separate file system:\n\n# mount | grep \"/var/log/audit\"\n\nIf no result is returned, or \"/var/log/audit\" is not on a separate file system, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Migrate the system audit data path onto a separate file system.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204495r991589_rule",
   "severity": "low",

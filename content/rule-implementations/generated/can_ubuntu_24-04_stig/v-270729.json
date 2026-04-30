@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/pwquality.conf",
+      "pattern": "difok=8",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must require the change of at least eight characters when passwords are changed.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270729"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS requires the change of at least eight characters when passwords are changed with the following command:\n \n$ grep -i \"difok\" /etc/security/pwquality.conf\ndifok=8 \n \nIf the \"difok\" parameter is less than \"8\" or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to require the change of at least eight characters when passwords are changed. \n \nAdd or update the \"/etc/security/pwquality.conf\" file to include the \"difok=8\" parameter: \n \ndifok=8",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-270729r1066676_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/faillock.conf",
+      "pattern": "audit",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260549"
+  },
   "check_content_excerpt": "Verify that Ubuntu 22.04 LTS utilizes the \"pam_faillock\" module by using the following command: \n \n     $ grep faillock /etc/pam.d/common-auth \n \nauth     [default=die]  pam_faillock.so authfail \nauth     sufficient     pam_faillock.so authsucc \n \nIf the \"pam_faillock.so\" module is not present in the \"/etc/pam.d/common-auth\" file, this is a finding. \n \nVerify the \"pam_faillock\" module is configured to use the following options: \n \n     $ sudo grep -Ew 'silent|audit|deny|fail_interval|unlock_time' /etc/security/faillock.conf \n     audit \n     silent \n     deny = 3 \n     fail_interval = 900 \n     unlock_time = 0 \n \nIf \"audit\" is commented out, or is missing, this is a finding.\n\nIf \"silent\" is commented out, or is missing, this is a finding.\n\nIf \"deny\" is set to a value greater than \"3\", is commented out, or is missing, this is a finding.\n \nIf \"fail_interval\" is set to a value greater than \"900\", is commented out, or is missing, this is a finding.\n \nIf \"unlock_time\" is not set to \"0\", is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to utilize the \"pam_faillock\" module.  \n \nAdd or modify the following lines in the \"/etc/pam.d/common-auth\" file, below the \"auth\" definition for \"pam_unix.so\":  \n \nauth     [default=die]  pam_faillock.so authfail \nauth     sufficient          pam_faillock.so authsucc \n \nConfigure the \"pam_faillock\" module to use the following options. \n \nAdd or modify the following lines in the \"/etc/security/faillock.conf\" file: \n \naudit \nsilent \ndeny = 3 \nfail_interval = 900 \nunlock_time = 0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260549r958388_rule",
   "severity": "low",

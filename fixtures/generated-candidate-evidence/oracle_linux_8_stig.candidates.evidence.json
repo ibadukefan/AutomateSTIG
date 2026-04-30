@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 106,
+  "candidate_checks": 157,
   "cases": [
     {
       "check": {
@@ -27,6 +27,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248526"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/boot/efi/EFI/redhat/grub.cfg",
+        "pattern": "set superusers=\"[someuniqueUserNamehere]\"",
+        "type": "file_content"
+      },
+      "description": "OL 8 operating systems booted with United Extensible Firmware Interface (UEFI) must have a unique name for the grub superusers account when booting into single-user mode and maintenance.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/boot/efi/EFI/redhat/grub.cfg": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/boot/efi/EFI/redhat/grub.cfg": "before\nset superusers=\"[someuniqueUserNamehere]\"\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248538"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/boot/grub2/grub.cfg",
+        "pattern": "set superusers=\"[someuniqueUserNamehere]\"",
+        "type": "file_content"
+      },
+      "description": "OL 8 operating systems booted with a BIOS must have a unique name for the grub superusers account when booting into single-user and maintenance modes.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/boot/grub2/grub.cfg": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/boot/grub2/grub.cfg": "before\nset superusers=\"[someuniqueUserNamehere]\"\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248539"
     },
     {
       "check": {
@@ -342,6 +396,114 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d/",
+        "type": "file_content"
+      },
+      "description": "OL 8 must require users to provide a password for privilege escalation.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers": "before\n/etc/sudoers.d/\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248581"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d/ | grep -v '#'",
+        "type": "file_content"
+      },
+      "description": "OL 8 must restrict privilege elevation to authorized personnel.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers": "before\n/etc/sudoers.d/ | grep -v '#'\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248583"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d* | grep -v '#'",
+        "type": "file_content"
+      },
+      "description": "OL 8 must use the invoking user's password for privilege escalation when using \"sudo\".",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers": "before\n/etc/sudoers.d* | grep -v '#'\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248584"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/sudoers",
+        "pattern": "/etc/sudoers.d*",
+        "type": "file_content"
+      },
+      "description": "OL 8 must require reauthentication when using the \"sudo\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/sudoers": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/sudoers": "before\n/etc/sudoers.d*\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248585"
+    },
+    {
+      "check": {
         "key": "kernel.randomize_va_space",
         "type": "sysctl"
       },
@@ -365,6 +527,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248594"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/selinux/config",
+        "pattern": "| grep -v '^#'",
+        "type": "file_content"
+      },
+      "description": "OL 8 must enable the SELinux targeted policy.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/selinux/config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/selinux/config": "before\n| grep -v '^#'\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248596"
     },
     {
       "check": {
@@ -477,6 +666,141 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/var",
+        "pattern": "/etc/fstab",
+        "type": "file_content"
+      },
+      "description": "OL 8 must use a separate file system for \"/var\".",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var": "before\n/etc/fstab\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248608"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log",
+        "pattern": "/etc/fstab",
+        "type": "file_content"
+      },
+      "description": "OL 8 must use a separate file system for \"/var/log\".",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log": "before\n/etc/fstab\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248609"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log/audit",
+        "pattern": "/etc/fstab",
+        "type": "file_content"
+      },
+      "description": "OL 8 must use a separate file system for the system audit data path.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log/audit": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log/audit": "before\n/etc/fstab\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248610"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/tmp",
+        "pattern": "/etc/fstab",
+        "type": "file_content"
+      },
+      "description": "OL 8 must use a separate file system for \"/tmp\".",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/tmp": "before\n/etc/fstab\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248611"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/tmp",
+        "pattern": "/etc/fstab",
+        "type": "file_content"
+      },
+      "description": "OL 8 must use a separate file system for /var/tmp.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/tmp": "before\n/etc/fstab\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248612"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "PermitRootLogin no",
         "type": "file_content"
@@ -500,6 +824,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248613"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/sda1",
+        "pattern": "on /boot type xfs (rw,nosuid,relatime,seclabe,attr2,inode64,noquota)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must prevent files with the setuid and setgid bit set from being executed on the /boot directory.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/dev/sda1": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/dev/sda1": "before\non /boot type xfs (rw,nosuid,relatime,seclabe,attr2,inode64,noquota)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248617"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/sda1",
+        "pattern": "on /boot/efi type vfat (rw,nosuid,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=ascii,shortname=winnt,errors=remount-ro)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must prevent files with the setuid and setgid bit set from being executed on the /boot/efi directory.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/dev/sda1": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/dev/sda1": "before\non /boot/efi type vfat (rw,nosuid,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=ascii,shortname=winnt,errors=remount-ro)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248618"
     },
     {
       "check": {
@@ -530,6 +908,60 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/security/limits.conf",
+        "pattern": "/etc/security/limits.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 8 must disable core dumps for all users.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/limits.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/limits.conf": "before\n/etc/security/limits.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248631"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/home",
+        "pattern": "/etc/fstab",
+        "type": "file_content"
+      },
+      "description": "A separate OL 8 filesystem must be used for user home directories (such as \"/home\" or an equivalent).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/home": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/home": "before\n/etc/fstab\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248648"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "PermitUserEnvironment no",
         "type": "file_content"
@@ -553,6 +985,141 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248650"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "deny = 3",
+        "type": "file_content"
+      },
+      "description": "OL 8 systems, versions 8.2 and above, must automatically lock an account when three unsuccessful logon attempts occur.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\ndeny = 3\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248653"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "fail_interval = 900",
+        "type": "file_content"
+      },
+      "description": "OL 8 systems, versions 8.2 and above, must automatically lock an account when three unsuccessful logon attempts occur during a 15-minute time period.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nfail_interval = 900\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248655"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "unlock_time = 0",
+        "type": "file_content"
+      },
+      "description": "OL 8 systems, versions 8.2 and above, must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts occur during a 15-minute time period.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nunlock_time = 0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248657"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/faillock.conf",
+        "pattern": "dir = /var/log/faillock",
+        "type": "file_content"
+      },
+      "description": "OL 8 systems, versions 8.2 and above, must ensure account lockouts persist.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/faillock.conf": "before\ndir = /var/log/faillock\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248659"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/limits.conf",
+        "pattern": "/etc/security/limits.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 8 must limit the number of concurrent sessions to 10 for all accounts and/or account types.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/limits.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/limits.conf": "before\n/etc/security/limits.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248666"
     },
     {
       "check": {
@@ -664,6 +1231,60 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "| grep -w auth",
+        "type": "file_content"
+      },
+      "description": "The OL 8 system-auth file must disable access to the system for account identifiers (individuals, groups, roles, and devices) with 35 days of inactivity.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\n| grep -w auth\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248703"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/password-auth",
+        "pattern": "| grep -w auth",
+        "type": "file_content"
+      },
+      "description": "The OL 8 password-auth file must disable access to the system for account identifiers (individuals, groups, roles, and devices) with 35 days of inactivity.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/password-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/password-auth": "before\n| grep -w auth\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248704"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0750",
         "owner": null,
@@ -757,6 +1378,33 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "UMASK 077",
+        "type": "file_content"
+      },
+      "description": "OL 8 default permissions must be defined in such a way that all authenticated users can read and modify only their own files.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nUMASK 077\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248719"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/audit/audit.rules",
         "pattern": "execve",
         "type": "file_content"
@@ -837,6 +1485,60 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "name_format = hostname",
+        "type": "file_content"
+      },
+      "description": "OL 8 must label all offloaded audit logs before sending them to the central log server.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nname_format = hostname\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248730"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "log_format = ENRICHED",
+        "type": "file_content"
+      },
+      "description": "OL 8 must resolve audit information before writing to disk.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/auditd.conf": "before\nlog_format = ENRICHED\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248731"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0600",
         "owner": null,
@@ -910,6 +1612,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248737"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "| tail -1",
+        "type": "file_content"
+      },
+      "description": "The OL 8 audit system must protect auditing rules from unauthorized change.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n| tail -1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248738"
     },
     {
       "check": {
@@ -1698,6 +2427,33 @@
       "check": {
         "is_regex": false,
         "path": "/etc/audit/audit.rules",
+        "pattern": "-a always,exit -F arch=b32 -S rename,unlink,rmdir,renameat,unlinkat -F auid>=1000 -F auid!=unset -k delete",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"rename\", \"unlink\", \"rmdir\", \"renameat\", and \"unlinkat\" system calls.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n-a always,exit -F arch=b32 -S rename,unlink,rmdir,renameat,unlinkat -F auid>=1000 -F auid!=unset -k delete\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248774"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
         "pattern": "gpasswd",
         "type": "file_content"
       },
@@ -1801,6 +2557,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248783"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "-a always,exit -F arch=b32 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EPERM -F auid>=1000 -F auid!=unset -k perm_access",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"truncate\", \"ftruncate\", \"creat\", \"open\", \"openat\", and \"open_by_handle_at\" system calls.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n-a always,exit -F arch=b32 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EPERM -F auid>=1000 -F auid!=unset -k perm_access\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248784"
     },
     {
       "check": {
@@ -1990,6 +2773,141 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248802"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aide.conf",
+        "pattern": "/usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512",
+        "type": "file_content"
+      },
+      "description": "OL 8 must use cryptographic mechanisms to protect the integrity of audit tools.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/aide.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/aide.conf": "before\n/usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248810"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "/etc/rsyslog.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 8 must encrypt the transfer of audit records offloaded onto a different system or media from the system being audited.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\n/etc/rsyslog.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248816"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "/etc/rsyslog.d/*.conf",
+        "type": "file_content"
+      },
+      "description": "OL 8 must authenticate the remote logging server for offloading audit logs.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\n/etc/rsyslog.d/*.conf\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248817"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/chrony.conf",
+        "pattern": "port 0",
+        "type": "file_content"
+      },
+      "description": "OL 8 must disable the chrony daemon from acting as a server.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/chrony.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/chrony.conf": "before\nport 0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248821"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/chrony.conf",
+        "pattern": "cmdport 0",
+        "type": "file_content"
+      },
+      "description": "OL 8 must disable network management of the chrony daemon.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/chrony.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/chrony.conf": "before\ncmdport 0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248822"
     },
     {
       "check": {
@@ -2233,6 +3151,411 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248843"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/shm",
+        "pattern": "tmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must mount \"/dev/shm\" with the \"nodev\" option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/dev/shm": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/dev/shm": "before\ntmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248844"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/shm",
+        "pattern": "tmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must mount \"/dev/shm\" with the \"nosuid\" option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/dev/shm": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/dev/shm": "before\ntmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248845"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/dev/shm",
+        "pattern": "tmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must mount \"/dev/shm\" with the \"noexec\" option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/dev/shm": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/dev/shm": "before\ntmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248846"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/tmp",
+        "pattern": "/dev/mapper/ol-tmp on /tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must mount \"/tmp\" with the \"nodev\" option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/tmp": "before\n/dev/mapper/ol-tmp on /tmp type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248847"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/tmp",
+        "pattern": "/dev/mapper/ol-tmp on /tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must mount \"/tmp\" with the \"nosuid\" option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/tmp": "before\n/dev/mapper/ol-tmp on /tmp type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248848"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/tmp",
+        "pattern": "/dev/mapper/ol-tmp on /tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must mount \"/tmp\" with the \"noexec\" option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/tmp": "before\n/dev/mapper/ol-tmp on /tmp type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248849"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log",
+        "pattern": "/dev/mapper/ol-var_log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must mount \"/var/log\" with the \"nodev\" option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log": "before\n/dev/mapper/ol-var_log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248850"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log",
+        "pattern": "/dev/mapper/ol-var_log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must mount \"/var/log\" with the \"nosuid\" option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log": "before\n/dev/mapper/ol-var_log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248851"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log",
+        "pattern": "/dev/mapper/ol-var_log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must mount \"/var/log\" with the \"noexec\" option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log": "before\n/dev/mapper/ol-var_log on /var/log type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248852"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log/audit",
+        "pattern": "/dev/mapper/ol-var_log_audit on /var/log/audit type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must mount \"/var/log/audit\" with the \"nodev\" option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log/audit": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log/audit": "before\n/dev/mapper/ol-var_log_audit on /var/log/audit type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248853"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log/audit",
+        "pattern": "/dev/mapper/ol-var_log_audit on /var/log/audit type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must mount \"/var/log/audit\" with the \"nosuid\" option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log/audit": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log/audit": "before\n/dev/mapper/ol-var_log_audit on /var/log/audit type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248854"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/log/audit",
+        "pattern": "/dev/mapper/ol-var_log_audit on /var/log/audit type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must mount \"/var/log/audit\" with the \"noexec\" option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/log/audit": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/log/audit": "before\n/dev/mapper/ol-var_log_audit on /var/log/audit type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248855"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/tmp",
+        "pattern": "/dev/mapper/ol-var_tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must mount \"/var/tmp\" with the \"nodev\" option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/tmp": "before\n/dev/mapper/ol-var_tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248856"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/tmp",
+        "pattern": "/dev/mapper/ol-var_tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must mount \"/var/tmp\" with the \"nosuid\" option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/tmp": "before\n/dev/mapper/ol-var_tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248857"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/var/tmp",
+        "pattern": "/dev/mapper/ol-var_tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)",
+        "type": "file_content"
+      },
+      "description": "OL 8 must mount \"/var/tmp\" with the \"noexec\" option.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/var/tmp": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/var/tmp": "before\n/dev/mapper/ol-var_tmp on /var/tmp type xfs (rw,nodev,nosuid,noexec,seclabel)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248858"
     },
     {
       "check": {
@@ -2757,6 +4080,33 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/aide.conf",
+        "pattern": "VarFile = OwnerMode+n+l+X+acl",
+        "type": "file_content"
+      },
+      "description": "The OL 8 file integrity tool must be configured to verify Access Control Lists (ACLs).",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/aide.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/aide.conf": "before\nVarFile = OwnerMode+n+l+X+acl\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248897"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "X11Forwarding no",
         "type": "file_content"
@@ -2885,6 +4235,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-256978"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/cron.d",
+        "pattern": "-w /etc/cron.d -p wa -k cronjobs",
+        "type": "file_content"
+      },
+      "description": "OL 8  must audit any script or executable called by cron as root or by any privileged user.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/cron.d": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/cron.d": "before\n-w /etc/cron.d -p wa -k cronjobs\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274876"
     }
   ],
   "production_claim": false,
@@ -2892,5 +4269,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 106
+  "validated_candidates": 157
 }

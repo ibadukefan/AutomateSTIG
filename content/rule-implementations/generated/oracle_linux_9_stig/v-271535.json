@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/usr/bin/su",
+      "pattern": "-a always,exit -F path=/usr/bin/su -F perm=x -F auid>=1000 -F auid!=unset -k privileged-priv_change",
+      "type": "file_content"
+    },
+    "description": "OL 9 must audit all uses of the su command.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271535"
+  },
   "check_content_excerpt": "Verify that OL 9 is configured to audit the execution of the su command with the following command:\n\n$ sudo auditctl -l | grep /usr/bin/su\n-a always,exit -F path=/usr/bin/su -F perm=x -F auid>=1000 -F auid!=unset -k privileged-priv_change\n\nIf the command does not return a line or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to generate audit records upon successful/unsuccessful attempts to use the su command by adding or updating the following rule in \"/etc/audit/rules.d/audit.rules\":\n\n-a always,exit -F path=/usr/bin/su -F perm=x -F auid>=1000 -F auid!=unset -k privileged-priv_change\n\nThe audit daemon must be restarted for the changes to take effect.\n\nRestart auditd:\n$ sudo service auditd restart",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271535r1092490_rule",
   "severity": "medium",

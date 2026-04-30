@@ -184,6 +184,41 @@ def _file_content_candidate(rule: dict) -> dict | None:
     }
 
 
+def _grep_expected_line_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    grep = re.search(r'\bgrep\s+(?:-[A-Za-z]+\s+)*(?:["\'][^"\']+["\']\s+)?(?P<path>/[A-Za-z0-9_./:*+{}-]+)', content)
+    if not grep:
+        return None
+    raw_path = grep.group('path')
+    if any(token in raw_path for token in ('*', '{', '}')):
+        return None
+    after = content[grep.end():]
+    expected_line = None
+    for line in after.splitlines():
+        line = line.strip()
+        if not line or line.startswith('$'):
+            continue
+        if line.lower().startswith(('if ', 'note:', 'ask ', 'verify ', 'check ')):
+            break
+        if line.startswith('/') and ':' in line:
+            path_part, value_part = line.split(':', 1)
+            if path_part.startswith('/'):
+                raw_path = path_part.strip()
+                line = value_part.strip()
+        if line and not line.startswith('#'):
+            expected_line = line
+            break
+    if not expected_line:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'file_content', 'path': raw_path, 'pattern': expected_line, 'is_regex': False},
+        'expected': {'type': 'contains'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sshd_config_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     if '/usr/sbin/sshd' not in content or 'grep' not in content:
@@ -291,7 +326,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         }
 
     if _linux_platform(stig_id):
-        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _sshd_config_candidate, _service_candidate, _file_permission_candidate):
+        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _service_candidate, _file_permission_candidate):
             candidate = infer(rule)
             if candidate:
                 return candidate

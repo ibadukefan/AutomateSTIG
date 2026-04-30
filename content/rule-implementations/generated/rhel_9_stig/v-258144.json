@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/rsyslog.conf",
+      "pattern": "/etc/rsyslog.d/",
+      "type": "file_content"
+    },
+    "description": "All RHEL 9 remote access methods must be monitored.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258144"
+  },
   "check_content_excerpt": "Verify that RHEL 9 monitors all remote access methods.\n\nCheck that remote access methods are being logged by running the following command:\n\n$ grep -rE '(auth.\\*|authpriv.\\*|daemon.\\*)' /etc/rsyslog.conf /etc/rsyslog.d/\n\n/etc/rsyslog.conf:authpriv.*\n \nIf \"auth.*\", \"authpriv.*\" or \"daemon.*\" are not configured to be logged, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Add or update the following lines to the \"/etc/rsyslog.conf\" file or a file in \"/etc/rsyslog.d\":\n\nauth.*;authpriv.*;daemon.* /var/log/secure\n\nThe \"rsyslog\" service must be restarted for the changes to take effect with the following command:\n\n$ sudo systemctl restart rsyslog.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258144r1045286_rule",
   "severity": "medium",

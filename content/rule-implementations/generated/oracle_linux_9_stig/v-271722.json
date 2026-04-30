@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/sudoers",
+      "pattern": "/etc/sudoers.d/*",
+      "type": "file_content"
+    },
+    "description": "OL 9 must require reauthentication when using the \"sudo\" command.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271722"
+  },
   "check_content_excerpt": "Verify that OL 9 requires reauthentication when using the \"sudo\" command to elevate privileges with the following command:\n\n$ sudo grep -i 'timestamp_timeout' /etc/sudoers /etc/sudoers.d/*\n/etc/sudoers:Defaults timestamp_timeout=0\n\nIf results are returned from more than one file location, this is a finding.\n\nIf \"timestamp_timeout\" is set to a negative number, is commented out, or no results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to reauthenticate \"sudo\" commands after the specified timeout:\n\nAdd the following line to \"/etc/sudoers\":\n\nDefaults timestamp_timeout=0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271722r1091878_rule",
   "severity": "medium",

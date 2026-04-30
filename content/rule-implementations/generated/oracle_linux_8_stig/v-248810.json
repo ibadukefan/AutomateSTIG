@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/aide.conf",
+      "pattern": "/usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512",
+      "type": "file_content"
+    },
+    "description": "OL 8 must use cryptographic mechanisms to protect the integrity of audit tools.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248810"
+  },
   "check_content_excerpt": "Verify that Advanced Intrusion Detection Environment (AIDE) is properly configured to use cryptographic mechanisms to protect the integrity of audit tools. \n \nCheck the selection lines to ensure AIDE is configured to add/check with the following command: \n \n     $ sudo grep -E '(\\/usr\\/sbin\\/(audit|au|rsys))' /etc/aide.conf \n \n     /usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512 \n     /usr/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512 \n     /usr/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512 \n     /usr/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512 \n     /usr/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512 \n     /usr/sbin/rsyslogd p+i+n+u+g+s+b+acl+xattrs+sha512 \n     /usr/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512 \n \nIf any of the audit tools listed above do not have an appropriate selection line, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Add or update the following lines to \"/etc/aide.conf\" to protect the integrity of the audit tools. \n \n# Audit Tools \n/usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512 \n/usr/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512 \n/usr/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512 \n/usr/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512 \n/usr/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512 \n/usr/sbin/rsyslogd p+i+n+u+g+s+b+acl+xattrs+sha512 \n/usr/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248810r991567_rule",
   "severity": "medium",

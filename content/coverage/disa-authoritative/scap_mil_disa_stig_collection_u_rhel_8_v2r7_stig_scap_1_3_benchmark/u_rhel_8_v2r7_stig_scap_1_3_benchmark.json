@@ -692,16 +692,17 @@
       "vuln_id": "V-230287"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230288",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230288 from source identifier xccdf_mil.disa.stig_group_V-230288.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230288r1069301_rule",
       "severity": "medium",
       "title": "The RHEL 8 SSH daemon must perform strict mode checking of home directory configuration files.",
-      "tracking_issue": "TODO-V-230288",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230288"
@@ -1078,16 +1079,17 @@
       "vuln_id": "V-230325"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230328",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230328 from source identifier xccdf_mil.disa.stig_group_V-230328.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230328r1155410_rule",
       "severity": "medium",
       "title": "A separate RHEL 8 filesystem must be used for user home directories (such as /home or an equivalent).",
-      "tracking_issue": "TODO-V-230328",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230328"
@@ -1108,16 +1110,17 @@
       "vuln_id": "V-230329"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230330",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230330 from source identifier xccdf_mil.disa.stig_group_V-230330.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230330r1069305_rule",
       "severity": "medium",
       "title": "RHEL 8 must not allow users to override SSH environment variables.",
-      "tracking_issue": "TODO-V-230330",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230330"
@@ -1138,16 +1141,17 @@
       "vuln_id": "V-230332"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230333",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230333 from source identifier xccdf_mil.disa.stig_group_V-230333.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230333r1017145_rule",
       "severity": "medium",
       "title": "RHEL 8 must automatically lock an account when three unsuccessful logon attempts occur.",
-      "tracking_issue": "TODO-V-230333",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230333"
@@ -1168,16 +1172,17 @@
       "vuln_id": "V-230334"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230335",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230335 from source identifier xccdf_mil.disa.stig_group_V-230335.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230335r1017147_rule",
       "severity": "medium",
       "title": "RHEL 8 must automatically lock an account when three unsuccessful logon attempts occur during a 15-minute time period.",
-      "tracking_issue": "TODO-V-230335",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230335"
@@ -1198,16 +1203,17 @@
       "vuln_id": "V-230336"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230337",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230337 from source identifier xccdf_mil.disa.stig_group_V-230337.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230337r1134885_rule",
       "severity": "medium",
       "title": "RHEL 8 must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts occur during a 15-minute time period.",
-      "tracking_issue": "TODO-V-230337",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230337"
@@ -1303,16 +1309,17 @@
       "vuln_id": "V-230345"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230346",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230346 from source identifier xccdf_mil.disa.stig_group_V-230346.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230346r1069306_rule",
       "severity": "low",
       "title": "RHEL 8 must limit the number of concurrent sessions to ten for all accounts and/or account types.",
-      "tracking_issue": "TODO-V-230346",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230346"
@@ -1650,31 +1657,33 @@
       "vuln_id": "V-230378"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230380",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230380 from source identifier xccdf_mil.disa.stig_group_V-230380.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230380r1069308_rule",
       "severity": "high",
       "title": "RHEL 8 must not allow accounts configured with blank or null passwords.",
-      "tracking_issue": "TODO-V-230380",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230380"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230382",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230382 from source identifier xccdf_mil.disa.stig_group_V-230382.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230382r1069309_rule",
       "severity": "medium",
       "title": "RHEL 8 must display the date and time of the last successful account logon upon an SSH logon.",
-      "tracking_issue": "TODO-V-230382",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230382"
@@ -1787,31 +1796,33 @@
       "vuln_id": "V-230393"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230394",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230394 from source identifier xccdf_mil.disa.stig_group_V-230394.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230394r958754_rule",
       "severity": "medium",
       "title": "RHEL 8 must label all off-loaded audit logs before sending them to the central log server.",
-      "tracking_issue": "TODO-V-230394",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230394"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230395",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230395 from source identifier xccdf_mil.disa.stig_group_V-230395.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230395r1017201_rule",
       "severity": "low",
       "title": "RHEL 8 must resolve audit information before writing to disk.",
-      "tracking_issue": "TODO-V-230395",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230395"
@@ -1909,16 +1920,17 @@
       "vuln_id": "V-230401"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230402",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230402 from source identifier xccdf_mil.disa.stig_group_V-230402.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230402r1017208_rule",
       "severity": "medium",
       "title": "RHEL 8 audit system must protect auditing rules from unauthorized change.",
-      "tracking_issue": "TODO-V-230402",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230402"
@@ -2194,16 +2206,17 @@
       "vuln_id": "V-230424"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230425",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230425 from source identifier xccdf_mil.disa.stig_group_V-230425.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230425r1017226_rule",
       "severity": "medium",
       "title": "Successful/unsuccessful uses of the mount syscall in RHEL 8 must generate an audit record.",
-      "tracking_issue": "TODO-V-230425",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230425"
@@ -2417,16 +2430,17 @@
       "vuln_id": "V-230438"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230439",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230439 from source identifier xccdf_mil.disa.stig_group_V-230439.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230439r1017243_rule",
       "severity": "medium",
       "title": "Successful/unsuccessful uses of the rename, unlink, rmdir, renameat, and unlinkat system calls in RHEL 8 must generate an audit record.",
-      "tracking_issue": "TODO-V-230439",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230439"
@@ -2496,16 +2510,17 @@
       "vuln_id": "V-230448"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230449",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230449 from source identifier xccdf_mil.disa.stig_group_V-230449.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230449r1017249_rule",
       "severity": "medium",
       "title": "Successful/unsuccessful uses of the truncate, ftruncate, creat, open, openat, and open_by_handle_at system calls in RHEL 8 must generate an audit record.",
-      "tracking_issue": "TODO-V-230449",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230449"
@@ -2727,16 +2742,17 @@
       "vuln_id": "V-230480"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230482",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230482 from source identifier xccdf_mil.disa.stig_group_V-230482.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230482r1069330_rule",
       "severity": "medium",
       "title": "RHEL 8 must authenticate the remote logging server for off-loading audit logs.",
-      "tracking_issue": "TODO-V-230482",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230482"
@@ -2757,31 +2773,33 @@
       "vuln_id": "V-230483"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230485",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230485 from source identifier xccdf_mil.disa.stig_group_V-230485.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230485r1017269_rule",
       "severity": "low",
       "title": "RHEL 8 must disable the chrony daemon from acting as a server.",
-      "tracking_issue": "TODO-V-230485",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230485"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230486",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230486 from source identifier xccdf_mil.disa.stig_group_V-230486.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230486r1017270_rule",
       "severity": "low",
       "title": "RHEL 8 must disable network management of the chrony daemon.",
-      "tracking_issue": "TODO-V-230486",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230486"
@@ -2990,226 +3008,241 @@
       "vuln_id": "V-230507"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230508",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230508 from source identifier xccdf_mil.disa.stig_group_V-230508.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230508r958804_rule",
       "severity": "medium",
       "title": "RHEL 8 must mount /dev/shm with the nodev option.",
-      "tracking_issue": "TODO-V-230508",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230508"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230509",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230509 from source identifier xccdf_mil.disa.stig_group_V-230509.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230509r958804_rule",
       "severity": "medium",
       "title": "RHEL 8 must mount /dev/shm with the nosuid option.",
-      "tracking_issue": "TODO-V-230509",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230509"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230510",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230510 from source identifier xccdf_mil.disa.stig_group_V-230510.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230510r958804_rule",
       "severity": "medium",
       "title": "RHEL 8 must mount /dev/shm with the noexec option.",
-      "tracking_issue": "TODO-V-230510",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230510"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230511",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230511 from source identifier xccdf_mil.disa.stig_group_V-230511.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230511r958804_rule",
       "severity": "medium",
       "title": "RHEL 8 must mount /tmp with the nodev option.",
-      "tracking_issue": "TODO-V-230511",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230511"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230512",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230512 from source identifier xccdf_mil.disa.stig_group_V-230512.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230512r958804_rule",
       "severity": "medium",
       "title": "RHEL 8 must mount /tmp with the nosuid option.",
-      "tracking_issue": "TODO-V-230512",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230512"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230513",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230513 from source identifier xccdf_mil.disa.stig_group_V-230513.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230513r958804_rule",
       "severity": "medium",
       "title": "RHEL 8 must mount /tmp with the noexec option.",
-      "tracking_issue": "TODO-V-230513",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230513"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230514",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230514 from source identifier xccdf_mil.disa.stig_group_V-230514.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230514r958804_rule",
       "severity": "medium",
       "title": "RHEL 8 must mount /var/log with the nodev option.",
-      "tracking_issue": "TODO-V-230514",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230514"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230515",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230515 from source identifier xccdf_mil.disa.stig_group_V-230515.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230515r958804_rule",
       "severity": "medium",
       "title": "RHEL 8 must mount /var/log with the nosuid option.",
-      "tracking_issue": "TODO-V-230515",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230515"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230516",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230516 from source identifier xccdf_mil.disa.stig_group_V-230516.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230516r958804_rule",
       "severity": "medium",
       "title": "RHEL 8 must mount /var/log with the noexec option.",
-      "tracking_issue": "TODO-V-230516",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230516"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230517",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230517 from source identifier xccdf_mil.disa.stig_group_V-230517.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230517r958804_rule",
       "severity": "medium",
       "title": "RHEL 8 must mount /var/log/audit with the nodev option.",
-      "tracking_issue": "TODO-V-230517",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230517"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230518",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230518 from source identifier xccdf_mil.disa.stig_group_V-230518.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230518r958804_rule",
       "severity": "medium",
       "title": "RHEL 8 must mount /var/log/audit with the nosuid option.",
-      "tracking_issue": "TODO-V-230518",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230518"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230519",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230519 from source identifier xccdf_mil.disa.stig_group_V-230519.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230519r958804_rule",
       "severity": "medium",
       "title": "RHEL 8 must mount /var/log/audit with the noexec option.",
-      "tracking_issue": "TODO-V-230519",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230519"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230520",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230520 from source identifier xccdf_mil.disa.stig_group_V-230520.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230520r958804_rule",
       "severity": "medium",
       "title": "RHEL 8 must mount /var/tmp with the nodev option.",
-      "tracking_issue": "TODO-V-230520",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230520"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230521",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230521 from source identifier xccdf_mil.disa.stig_group_V-230521.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230521r958804_rule",
       "severity": "medium",
       "title": "RHEL 8 must mount /var/tmp with the nosuid option.",
-      "tracking_issue": "TODO-V-230521",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230521"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230522",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230522 from source identifier xccdf_mil.disa.stig_group_V-230522.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230522r958804_rule",
       "severity": "medium",
       "title": "RHEL 8 must mount /var/tmp with the noexec option.",
-      "tracking_issue": "TODO-V-230522",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230522"
@@ -3776,46 +3809,49 @@
       "vuln_id": "V-237640"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-237641",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-237641 from source identifier xccdf_mil.disa.stig_group_V-237641.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-237641r1101904_rule",
       "severity": "medium",
       "title": "RHEL 8 must restrict privilege elevation to authorized personnel.",
-      "tracking_issue": "TODO-V-237641",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-237641"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-237642",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-237642 from source identifier xccdf_mil.disa.stig_group_V-237642.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-237642r991589_rule",
       "severity": "medium",
       "title": "RHEL 8 must use the invoking user's password for privilege escalation when using \"sudo\".",
-      "tracking_issue": "TODO-V-237642",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-237642"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-237643",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-237643 from source identifier xccdf_mil.disa.stig_group_V-237643.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-237643r1050789_rule",
       "severity": "medium",
       "title": "RHEL 8 must require re-authentication when using the \"sudo\" command.",
-      "tracking_issue": "TODO-V-237643",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-237643"
@@ -3913,31 +3949,33 @@
       "vuln_id": "V-244528"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-244529",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-244529 from source identifier xccdf_mil.disa.stig_group_V-244529.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-244529r1017336_rule",
       "severity": "medium",
       "title": "RHEL 8 must use a separate file system for /var/tmp.",
-      "tracking_issue": "TODO-V-244529",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-244529"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-244530",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-244530 from source identifier xccdf_mil.disa.stig_group_V-244530.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-244530r1184260_rule",
       "severity": "medium",
       "title": "RHEL 8 must prevent files with the setuid and setgid bit set from being executed on the /boot/efi directory.",
-      "tracking_issue": "TODO-V-244530",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-244530"

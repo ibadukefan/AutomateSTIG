@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audisp/audispd.conf",
+      "pattern": "name_format = hostname",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must label all off-loaded audit logs before sending them to the central log server.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204508"
+  },
   "check_content_excerpt": "Verify the audisp daemon is configured to label all off-loaded audit logs:\n\n# grep \"name_format\" /etc/audisp/audispd.conf\n\nname_format = hostname\n\nIf the \"name_format\" option is not \"hostname\", \"fqd\", or \"numeric\", or the line is commented out, ask the System Administrator to indicate how the audit logs are off-loaded to a different system or storage media, and to indicate if the logs are labeled appropriately.\n\nIf there is no evidence that the system is configured to off-load audit logs to a different system or storage media, or if the configuration does not appropriately label logs before they are off-loaded, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the /etc/audisp/audispd.conf file and add or update the \"name_format\" option:\n\nname_format = hostname\n\nThe audit daemon must be restarted for changes to take effect:\n\n# service auditd restart",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204508r958754_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/faillock.conf",
+      "pattern": "deny = 3",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must automatically lock an account when three unsuccessful logon attempts occur.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258054"
+  },
   "check_content_excerpt": "Verify RHEL 9 is configured to lock an account after three unsuccessful logon attempts with the command:\n\n$ grep 'deny =' /etc/security/faillock.conf\n\ndeny = 3\n\nIf the \"deny\" option is not set to \"3\" or less (but not \"0\"), is missing or commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to lock an account when three unsuccessful logon attempts occur.\n\nAdd/modify the \"/etc/security/faillock.conf\" file to match the following line:\n\ndeny = 3",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-258054r958736_rule",
   "severity": "medium",

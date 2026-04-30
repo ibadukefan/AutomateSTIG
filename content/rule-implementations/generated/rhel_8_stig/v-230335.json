@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/faillock.conf",
+      "pattern": "fail_interval = 900",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must automatically lock an account when three unsuccessful logon attempts occur during a 15-minute time period.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230335"
+  },
   "check_content_excerpt": "Note: This check applies to RHEL versions 8.2 or newer, if the system is RHEL version 8.0 or 8.1, this check is not applicable.\n\nVerify the \"/etc/security/faillock.conf\" file is configured to lock an account after three unsuccessful logon attempts within 15 minutes:\n\n$ sudo grep 'fail_interval =' /etc/security/faillock.conf\n\nfail_interval = 900\n\nIf the \"fail_interval\" option is not set to \"900\" or more, is missing or commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to lock an account when three unsuccessful logon attempts occur in 15 minutes.\n\nAdd/Modify the \"/etc/security/faillock.conf\" file to match the following line:\n\nfail_interval = 900",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230335r1017147_rule",
   "severity": "medium",

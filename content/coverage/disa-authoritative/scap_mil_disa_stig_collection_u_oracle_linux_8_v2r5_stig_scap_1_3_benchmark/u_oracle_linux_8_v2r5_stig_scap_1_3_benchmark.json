@@ -650,16 +650,17 @@
       "vuln_id": "V-248580"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248581",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248581 from source identifier xccdf_mil.disa.stig_group_V-248581.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248581r1101870_rule",
       "severity": "medium",
       "title": "OL 8 must require users to provide a password for privilege escalation.",
-      "tracking_issue": "TODO-V-248581",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248581"
@@ -680,46 +681,49 @@
       "vuln_id": "V-248582"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248583",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248583 from source identifier xccdf_mil.disa.stig_group_V-248583.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248583r1101874_rule",
       "severity": "medium",
       "title": "OL 8 must restrict privilege elevation to authorized personnel.",
-      "tracking_issue": "TODO-V-248583",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248583"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248584",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248584 from source identifier xccdf_mil.disa.stig_group_V-248584.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248584r991589_rule",
       "severity": "medium",
       "title": "OL 8 must use the invoking user's password for privilege escalation when using \"sudo\".",
-      "tracking_issue": "TODO-V-248584",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248584"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248585",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248585 from source identifier xccdf_mil.disa.stig_group_V-248585.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248585r1050789_rule",
       "severity": "medium",
       "title": "OL 8 must require reauthentication when using the \"sudo\" command.",
-      "tracking_issue": "TODO-V-248585",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248585"
@@ -771,16 +775,17 @@
       "vuln_id": "V-248595"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248596",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248596 from source identifier xccdf_mil.disa.stig_group_V-248596.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248596r958944_rule",
       "severity": "medium",
       "title": "OL 8 must enable the SELinux targeted policy.",
-      "tracking_issue": "TODO-V-248596",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248596"
@@ -925,76 +930,81 @@
       "vuln_id": "V-248607"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248608",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248608 from source identifier xccdf_mil.disa.stig_group_V-248608.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248608r991589_rule",
       "severity": "low",
       "title": "OL 8 must use a separate file system for \"/var\".",
-      "tracking_issue": "TODO-V-248608",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248608"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248609",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248609 from source identifier xccdf_mil.disa.stig_group_V-248609.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248609r991589_rule",
       "severity": "low",
       "title": "OL 8 must use a separate file system for \"/var/log\".",
-      "tracking_issue": "TODO-V-248609",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248609"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248610",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248610 from source identifier xccdf_mil.disa.stig_group_V-248610.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248610r991589_rule",
       "severity": "low",
       "title": "OL 8 must use a separate file system for the system audit data path.",
-      "tracking_issue": "TODO-V-248610",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248610"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248611",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248611 from source identifier xccdf_mil.disa.stig_group_V-248611.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248611r991589_rule",
       "severity": "medium",
       "title": "OL 8 must use a separate file system for \"/tmp\".",
-      "tracking_issue": "TODO-V-248611",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248611"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248612",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248612 from source identifier xccdf_mil.disa.stig_group_V-248612.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248612r991589_rule",
       "severity": "medium",
       "title": "OL 8 must use a separate file system for /var/tmp.",
-      "tracking_issue": "TODO-V-248612",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248612"
@@ -1046,31 +1056,33 @@
       "vuln_id": "V-248616"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248617",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248617 from source identifier xccdf_mil.disa.stig_group_V-248617.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248617r991589_rule",
       "severity": "medium",
       "title": "OL 8 must prevent files with the setuid and setgid bit set from being executed on the /boot directory.",
-      "tracking_issue": "TODO-V-248617",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248617"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248618",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248618 from source identifier xccdf_mil.disa.stig_group_V-248618.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248618r991589_rule",
       "severity": "medium",
       "title": "OL 8 must prevent files with the setuid and setgid bit set from being executed on the /boot/efi directory.",
-      "tracking_issue": "TODO-V-248618",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248618"
@@ -1167,16 +1179,17 @@
       "vuln_id": "V-248630"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248631",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248631 from source identifier xccdf_mil.disa.stig_group_V-248631.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248631r991589_rule",
       "severity": "medium",
       "title": "OL 8 must disable core dumps for all users.",
-      "tracking_issue": "TODO-V-248631",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248631"
@@ -1287,16 +1300,17 @@
       "vuln_id": "V-248645"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248648",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248648 from source identifier xccdf_mil.disa.stig_group_V-248648.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248648r991589_rule",
       "severity": "medium",
       "title": "A separate OL 8 filesystem must be used for user home directories (such as \"/home\" or an equivalent).",
-      "tracking_issue": "TODO-V-248648",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248648"
@@ -1348,16 +1362,17 @@
       "vuln_id": "V-248652"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248653",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248653 from source identifier xccdf_mil.disa.stig_group_V-248653.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248653r958388_rule",
       "severity": "medium",
       "title": "OL 8 systems, versions 8.2 and above, must automatically lock an account when three unsuccessful logon attempts occur.",
-      "tracking_issue": "TODO-V-248653",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248653"
@@ -1378,16 +1393,17 @@
       "vuln_id": "V-248654"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248655",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248655 from source identifier xccdf_mil.disa.stig_group_V-248655.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248655r958388_rule",
       "severity": "medium",
       "title": "OL 8 systems, versions 8.2 and above, must automatically lock an account when three unsuccessful logon attempts occur during a 15-minute time period.",
-      "tracking_issue": "TODO-V-248655",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248655"
@@ -1408,16 +1424,17 @@
       "vuln_id": "V-248656"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248657",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248657 from source identifier xccdf_mil.disa.stig_group_V-248657.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248657r958388_rule",
       "severity": "medium",
       "title": "OL 8 systems, versions 8.2 and above, must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts occur during a 15-minute time period.",
-      "tracking_issue": "TODO-V-248657",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248657"
@@ -1513,16 +1530,17 @@
       "vuln_id": "V-248665"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248666",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248666 from source identifier xccdf_mil.disa.stig_group_V-248666.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248666r958398_rule",
       "severity": "low",
       "title": "OL 8 must limit the number of concurrent sessions to 10 for all accounts and/or account types.",
-      "tracking_issue": "TODO-V-248666",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248666"
@@ -1999,16 +2017,17 @@
       "vuln_id": "V-248718"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248719",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248719 from source identifier xccdf_mil.disa.stig_group_V-248719.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248719r991590_rule",
       "severity": "medium",
       "title": "OL 8 default permissions must be defined in such a way that all authenticated users can read and modify only their own files.",
-      "tracking_issue": "TODO-V-248719",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248719"
@@ -2106,31 +2125,33 @@
       "vuln_id": "V-248729"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248730",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248730 from source identifier xccdf_mil.disa.stig_group_V-248730.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248730r958754_rule",
       "severity": "medium",
       "title": "OL 8 must label all offloaded audit logs before sending them to the central log server.",
-      "tracking_issue": "TODO-V-248730",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248730"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248731",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248731 from source identifier xccdf_mil.disa.stig_group_V-248731.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248731r991589_rule",
       "severity": "medium",
       "title": "OL 8 must resolve audit information before writing to disk.",
-      "tracking_issue": "TODO-V-248731",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248731"
@@ -2228,16 +2249,17 @@
       "vuln_id": "V-248737"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248738",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248738 from source identifier xccdf_mil.disa.stig_group_V-248738.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248738r958434_rule",
       "severity": "medium",
       "title": "The OL 8 audit system must protect auditing rules from unauthorized change.",
-      "tracking_issue": "TODO-V-248738",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248738"
@@ -2722,16 +2744,17 @@
       "vuln_id": "V-248773"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248774",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248774 from source identifier xccdf_mil.disa.stig_group_V-248774.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248774r1069140_rule",
       "severity": "medium",
       "title": "OL 8 must generate audit records for any use of the \"rename\", \"unlink\", \"rmdir\", \"renameat\", and \"unlinkat\" system calls.",
-      "tracking_issue": "TODO-V-248774",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248774"
@@ -2801,16 +2824,17 @@
       "vuln_id": "V-248783"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248784",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248784 from source identifier xccdf_mil.disa.stig_group_V-248784.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248784r958412_rule",
       "severity": "medium",
       "title": "OL 8 must generate audit records for any use of the \"truncate\", \"ftruncate\", \"creat\", \"open\", \"openat\", and \"open_by_handle_at\" system calls.",
-      "tracking_issue": "TODO-V-248784",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248784"
@@ -3032,16 +3056,17 @@
       "vuln_id": "V-248815"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248817",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248817 from source identifier xccdf_mil.disa.stig_group_V-248817.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248817r1069157_rule",
       "severity": "medium",
       "title": "OL 8 must authenticate the remote logging server for offloading audit logs.",
-      "tracking_issue": "TODO-V-248817",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248817"
@@ -3077,31 +3102,33 @@
       "vuln_id": "V-248819"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248821",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248821 from source identifier xccdf_mil.disa.stig_group_V-248821.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248821r958478_rule",
       "severity": "low",
       "title": "OL 8 must disable the chrony daemon from acting as a server.",
-      "tracking_issue": "TODO-V-248821",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248821"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248822",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248822 from source identifier xccdf_mil.disa.stig_group_V-248822.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248822r958478_rule",
       "severity": "low",
       "title": "OL 8 must disable network management of the chrony daemon.",
-      "tracking_issue": "TODO-V-248822",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248822"
@@ -3340,226 +3367,241 @@
       "vuln_id": "V-248843"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248844",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248844 from source identifier xccdf_mil.disa.stig_group_V-248844.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248844r958804_rule",
       "severity": "medium",
       "title": "OL 8 must mount \"/dev/shm\" with the \"nodev\" option.",
-      "tracking_issue": "TODO-V-248844",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248844"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248845",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248845 from source identifier xccdf_mil.disa.stig_group_V-248845.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248845r958804_rule",
       "severity": "medium",
       "title": "OL 8 must mount \"/dev/shm\" with the \"nosuid\" option.",
-      "tracking_issue": "TODO-V-248845",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248845"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248846",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248846 from source identifier xccdf_mil.disa.stig_group_V-248846.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248846r958804_rule",
       "severity": "medium",
       "title": "OL 8 must mount \"/dev/shm\" with the \"noexec\" option.",
-      "tracking_issue": "TODO-V-248846",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248846"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248847",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248847 from source identifier xccdf_mil.disa.stig_group_V-248847.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248847r958804_rule",
       "severity": "medium",
       "title": "OL 8 must mount \"/tmp\" with the \"nodev\" option.",
-      "tracking_issue": "TODO-V-248847",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248847"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248848",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248848 from source identifier xccdf_mil.disa.stig_group_V-248848.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248848r958804_rule",
       "severity": "medium",
       "title": "OL 8 must mount \"/tmp\" with the \"nosuid\" option.",
-      "tracking_issue": "TODO-V-248848",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248848"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248849",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248849 from source identifier xccdf_mil.disa.stig_group_V-248849.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248849r958804_rule",
       "severity": "medium",
       "title": "OL 8 must mount \"/tmp\" with the \"noexec\" option.",
-      "tracking_issue": "TODO-V-248849",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248849"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248850",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248850 from source identifier xccdf_mil.disa.stig_group_V-248850.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248850r958804_rule",
       "severity": "medium",
       "title": "OL 8 must mount \"/var/log\" with the \"nodev\" option.",
-      "tracking_issue": "TODO-V-248850",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248850"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248851",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248851 from source identifier xccdf_mil.disa.stig_group_V-248851.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248851r958804_rule",
       "severity": "medium",
       "title": "OL 8 must mount \"/var/log\" with the \"nosuid\" option.",
-      "tracking_issue": "TODO-V-248851",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248851"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248852",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248852 from source identifier xccdf_mil.disa.stig_group_V-248852.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248852r958804_rule",
       "severity": "medium",
       "title": "OL 8 must mount \"/var/log\" with the \"noexec\" option.",
-      "tracking_issue": "TODO-V-248852",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248852"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248853",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248853 from source identifier xccdf_mil.disa.stig_group_V-248853.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248853r958804_rule",
       "severity": "medium",
       "title": "OL 8 must mount \"/var/log/audit\" with the \"nodev\" option.",
-      "tracking_issue": "TODO-V-248853",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248853"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248854",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248854 from source identifier xccdf_mil.disa.stig_group_V-248854.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248854r958804_rule",
       "severity": "medium",
       "title": "OL 8 must mount \"/var/log/audit\" with the \"nosuid\" option.",
-      "tracking_issue": "TODO-V-248854",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248854"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248855",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248855 from source identifier xccdf_mil.disa.stig_group_V-248855.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248855r958804_rule",
       "severity": "medium",
       "title": "OL 8 must mount \"/var/log/audit\" with the \"noexec\" option.",
-      "tracking_issue": "TODO-V-248855",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248855"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248856",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248856 from source identifier xccdf_mil.disa.stig_group_V-248856.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248856r958804_rule",
       "severity": "medium",
       "title": "OL 8 must mount \"/var/tmp\" with the \"nodev\" option.",
-      "tracking_issue": "TODO-V-248856",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248856"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248857",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248857 from source identifier xccdf_mil.disa.stig_group_V-248857.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248857r958804_rule",
       "severity": "medium",
       "title": "OL 8 must mount \"/var/tmp\" with the \"nosuid\" option.",
-      "tracking_issue": "TODO-V-248857",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248857"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248858",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248858 from source identifier xccdf_mil.disa.stig_group_V-248858.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248858r958804_rule",
       "severity": "medium",
       "title": "OL 8 must mount \"/var/tmp\" with the \"noexec\" option.",
-      "tracking_issue": "TODO-V-248858",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248858"

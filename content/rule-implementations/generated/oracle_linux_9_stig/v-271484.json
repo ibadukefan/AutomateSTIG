@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config:Include",
+      "pattern": "/etc/ssh/sshd_config.d/*.conf",
+      "type": "file_content"
+    },
+    "description": "The OL 9 SSH daemon must be configured to use systemwide cryptographic policies.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271484"
+  },
   "check_content_excerpt": "Verify that OL 9 is configured to implement systemwide cryptographic policies when the SSH daemon is invoked.\n\nVerify that systemwide cryptographic policies are in effect with the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*include'\n/etc/ssh/sshd_config:Include /etc/ssh/sshd_config.d/*.conf\n/etc/ssh/sshd_config.d/50-redhat.conf:Include /etc/crypto-policies/back-ends/opensshserver.config\n\nIf \"Include /etc/ssh/sshd_config.d/*.conf\" or \"Include /etc/crypto-policies/back-ends/opensshserver.config\" are not included in the system sshd config this is a finding. \n\nAdditionally, if the file /etc/ssh/sshd_config.d/50-redhat.conf is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the OL 9 SSH daemon to use systemwide cryptographic policies by running the following commands:\n\n$ sudo dnf reinstall -y openssh-server",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271484r1092624_rule",
   "severity": "medium",

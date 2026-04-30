@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/tmp",
+      "pattern": "/etc/fstab",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must use a separate file system for /tmp (or equivalent).",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204496"
+  },
   "check_content_excerpt": "Verify that a separate file system/partition has been created for \"/tmp\".\n\nCheck that a file system/partition has been created for \"/tmp\" with the following command:\n\n# systemctl is-enabled tmp.mount\nenabled\n\nIf the \"tmp.mount\" service is not enabled, check to see if \"/tmp\" is defined in the fstab with a device and mount point:\n\n# grep -i /tmp /etc/fstab\nUUID=a411dc99-f2a1-4c87-9e05-184977be8539 /tmp   ext4   rw,relatime,discard,data=ordered,nosuid,noexec, 0 0\n\nIf \"tmp.mount\" service is not enabled or the \"/tmp\" directory is not defined in the fstab with a device and mount point, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Start the \"tmp.mount\" service with the following command:\n\n# systemctl enable tmp.mount\n   \nOR\n\nEdit the \"/etc/fstab\" file and ensure the \"/tmp\" directory is defined in the fstab with a device and mount point.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-204496r991589_rule",
   "severity": "low",

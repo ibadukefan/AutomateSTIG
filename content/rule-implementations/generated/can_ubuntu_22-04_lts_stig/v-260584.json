@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/default/aide",
+      "pattern": "SILENTREPORTS=no",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 22.04 LTS must notify designated personnel if baseline configurations are changed in an unauthorized manner. The file integrity tool must notify the system administrator when changes to the baseline configuration or anomalies in the operation of any security functions are discovered.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260584"
+  },
   "check_content_excerpt": "Verify that Advanced Intrusion Detection Environment (AIDE) notifies the system administrator when anomalies in the operation of any security functions are discovered by using the following command:  \n  \n     $ grep -i '^\\s*silentreports' /etc/default/aide  \n     SILENTREPORTS=no \n  \nIf \"SILENTREPORTS\" is set to \"yes\", is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure AIDE to notify designated personnel if baseline configurations are changed in an unauthorized manner. \n \nAdd or modify the following line in the \"/etc/default/aide\" file: \n \nSILENTREPORTS=no",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-260584r958794_rule",
   "severity": "medium",

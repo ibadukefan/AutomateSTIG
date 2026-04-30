@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/boot/grub/grub.cfg",
+      "pattern": "linux        /boot/vmlinuz-5.4.0-31-generic root=UUID=74d13bcd-6ebd-4493-b5d2-3ebc37d01702 ro  audit=1",
+      "type": "file_content"
+    },
+    "description": "The Ubuntu operating system must initiate session audits at system start-up.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238299"
+  },
   "check_content_excerpt": "Verify the Ubuntu operating system enables auditing at system startup.  \n \nVerify the auditing is enabled in grub with the following command: \n \n$ sudo grep \"^\\s*linux\" /boot/grub/grub.cfg \n \nlinux        /boot/vmlinuz-5.4.0-31-generic root=UUID=74d13bcd-6ebd-4493-b5d2-3ebc37d01702 ro  audit=1 \nlinux      /boot/vmlinuz-5.4.0-31-generic root=UUID=74d13bcd-6ebd-4493-b5d2-3ebc37d01702 ro recovery nomodeset audit=1 \n \nIf any linux lines do not contain \"audit=1\", this is a finding.\n\nNote: Output may vary by system.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the Ubuntu operating system to produce audit records at system startup.  \n \nEdit the \"/etc/default/grub\" file and add \"audit=1\" to the \"GRUB_CMDLINE_LINUX\" option and to the \"GRUB_CMDLINE_LINUX_DEFAULT\" option. \n\nGRUB_CMDLINE_LINUX_DEFAULT=\"audit=1\"\nGRUB_CMDLINE_LINUX=\"audit=1\"\n \nTo update the grub config file, run: \n \n$ sudo update-grub",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-238299r1069095_rule",
   "severity": "medium",
