@@ -160,18 +160,6 @@
     {
       "authorization": "public DISA Cyber Exchange download metadata",
       "classification": "public",
-      "id": "U_Cisco_NX-OS_Switch_Y26M04_STIG",
-      "kind": "manual_stig_zip",
-      "notes": "Cisco NX OS Switch STIG Y26M04",
-      "path": "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
-      "retrieved_at": "2026-04-28T17:48:37.840729+00:00",
-      "sha256": "122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964",
-      "size_bytes": 2298897,
-      "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
-    },
-    {
-      "authorization": "public DISA Cyber Exchange download metadata",
-      "classification": "public",
       "id": "U_CD_PGSQL_V3R1_STIG",
       "kind": "manual_stig_zip",
       "notes": "Crunchy Data PostgreSQL STIG V3R1",
@@ -180,6 +168,18 @@
       "sha256": "e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e",
       "size_bytes": 3412076,
       "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CD_PGSQL_V3R1_STIG.zip"
+    },
+    {
+      "authorization": "public DISA Cyber Exchange download metadata",
+      "classification": "public",
+      "id": "U_Cisco_NX-OS_Switch_Y26M04_STIG",
+      "kind": "manual_stig_zip",
+      "notes": "Cisco NX OS Switch STIG Y26M04",
+      "path": "content/disa-corpus/artifacts/122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+      "retrieved_at": "2026-04-28T17:48:37.840729+00:00",
+      "sha256": "122c7a7cec4efe94edac8305fc1ec39f3efc1d8a9cf26d0edf98885b4d8af964",
+      "size_bytes": 2298897,
+      "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y26M04_STIG.zip"
     },
     {
       "authorization": "public DISA Cyber Exchange download metadata",
@@ -208,6 +208,18 @@
     {
       "authorization": "public DISA Cyber Exchange download metadata",
       "classification": "public",
+      "id": "U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark",
+      "kind": "scap_benchmark_zip",
+      "notes": "Kubernetes STIG SCAP 1.3 Benchmark V2R4",
+      "path": "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip",
+      "retrieved_at": "2026-04-28T17:48:38.887862+00:00",
+      "sha256": "de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95",
+      "size_bytes": 30944,
+      "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+    },
+    {
+      "authorization": "public DISA Cyber Exchange download metadata",
+      "classification": "public",
       "id": "U_Kubernetes_V2R6_STIG",
       "kind": "manual_stig_zip",
       "notes": "Kubernetes STIG V2R6",
@@ -220,14 +232,38 @@
     {
       "authorization": "public DISA Cyber Exchange download metadata",
       "classification": "public",
-      "id": "U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark",
+      "id": "U_MOZ_Firefox_Linux_V6R6_STIG_SCAP_1-3_Benchmark",
       "kind": "scap_benchmark_zip",
-      "notes": "Kubernetes STIG SCAP 1.3 Benchmark V2R4",
-      "path": "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip",
-      "retrieved_at": "2026-04-28T17:48:38.887862+00:00",
-      "sha256": "de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95",
-      "size_bytes": 30944,
-      "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      "notes": "Mozilla Firefox for Linux STIG SCAP 1.3 Benchmark V6R6",
+      "path": "content/disa-corpus/artifacts/a2732c0da25ef738feb6494c2cf4cb32bc37e09592cbb6cbb14b6580312df822/U_MOZ_Firefox_Linux_V6R6_STIG_SCAP_1-3_Benchmark.zip",
+      "retrieved_at": "2026-04-28T17:48:42.104964+00:00",
+      "sha256": "a2732c0da25ef738feb6494c2cf4cb32bc37e09592cbb6cbb14b6580312df822",
+      "size_bytes": 17654,
+      "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_Linux_V6R6_STIG_SCAP_1-3_Benchmark.zip"
+    },
+    {
+      "authorization": "public DISA Cyber Exchange download metadata",
+      "classification": "public",
+      "id": "U_MOZ_Firefox_V6R7_STIG",
+      "kind": "manual_stig_zip",
+      "notes": "Mozilla Firefox STIG V6R7",
+      "path": "content/disa-corpus/artifacts/0dfcc0a769d367790add2620510b466b720ed2fb802a20f821e23321a8cfc30a/U_MOZ_Firefox_V6R7_STIG.zip",
+      "retrieved_at": "2026-04-28T17:48:42.011547+00:00",
+      "sha256": "0dfcc0a769d367790add2620510b466b720ed2fb802a20f821e23321a8cfc30a",
+      "size_bytes": 1346269,
+      "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R7_STIG.zip"
+    },
+    {
+      "authorization": "public DISA Cyber Exchange download metadata",
+      "classification": "public",
+      "id": "U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark",
+      "kind": "scap_benchmark_zip",
+      "notes": "Mozilla Firefox for Windows STIG SCAP 1.3 Benchmark V6R7",
+      "path": "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip",
+      "retrieved_at": "2026-04-28T17:48:42.197617+00:00",
+      "sha256": "2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8",
+      "size_bytes": 15036,
+      "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
     },
     {
       "authorization": "public DISA Cyber Exchange download metadata",
@@ -364,6 +400,18 @@
     {
       "authorization": "public DISA Cyber Exchange download metadata",
       "classification": "public",
+      "id": "U_MS_Windows_Defender_Firewall_V2R2_STIG",
+      "kind": "manual_stig_zip",
+      "notes": "Microsoft Windows Defender Firewall STIG V2R2",
+      "path": "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip",
+      "retrieved_at": "2026-04-30T11:11:50.606830+00:00",
+      "sha256": "4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3",
+      "size_bytes": 1108510,
+      "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+    },
+    {
+      "authorization": "public DISA Cyber Exchange download metadata",
+      "classification": "public",
       "id": "U_MS_Windows_Server_2019_V3R4_STIG",
       "kind": "manual_stig_zip",
       "notes": "Microsoft Windows Server 2019 STIG V3R4",
@@ -420,42 +468,6 @@
       "sha256": "60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1",
       "size_bytes": 1935575,
       "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2025_V1R1_STIG.zip"
-    },
-    {
-      "authorization": "public DISA Cyber Exchange download metadata",
-      "classification": "public",
-      "id": "U_MOZ_Firefox_V6R7_STIG",
-      "kind": "manual_stig_zip",
-      "notes": "Mozilla Firefox STIG V6R7",
-      "path": "content/disa-corpus/artifacts/0dfcc0a769d367790add2620510b466b720ed2fb802a20f821e23321a8cfc30a/U_MOZ_Firefox_V6R7_STIG.zip",
-      "retrieved_at": "2026-04-28T17:48:42.011547+00:00",
-      "sha256": "0dfcc0a769d367790add2620510b466b720ed2fb802a20f821e23321a8cfc30a",
-      "size_bytes": 1346269,
-      "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R7_STIG.zip"
-    },
-    {
-      "authorization": "public DISA Cyber Exchange download metadata",
-      "classification": "public",
-      "id": "U_MOZ_Firefox_Linux_V6R6_STIG_SCAP_1-3_Benchmark",
-      "kind": "scap_benchmark_zip",
-      "notes": "Mozilla Firefox for Linux STIG SCAP 1.3 Benchmark V6R6",
-      "path": "content/disa-corpus/artifacts/a2732c0da25ef738feb6494c2cf4cb32bc37e09592cbb6cbb14b6580312df822/U_MOZ_Firefox_Linux_V6R6_STIG_SCAP_1-3_Benchmark.zip",
-      "retrieved_at": "2026-04-28T17:48:42.104964+00:00",
-      "sha256": "a2732c0da25ef738feb6494c2cf4cb32bc37e09592cbb6cbb14b6580312df822",
-      "size_bytes": 17654,
-      "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_Linux_V6R6_STIG_SCAP_1-3_Benchmark.zip"
-    },
-    {
-      "authorization": "public DISA Cyber Exchange download metadata",
-      "classification": "public",
-      "id": "U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark",
-      "kind": "scap_benchmark_zip",
-      "notes": "Mozilla Firefox for Windows STIG SCAP 1.3 Benchmark V6R7",
-      "path": "content/disa-corpus/artifacts/2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip",
-      "retrieved_at": "2026-04-28T17:48:42.197617+00:00",
-      "sha256": "2e6177cb77e441e9933264e47487a8aea427d54793a249c7e7e8fee6792aaea8",
-      "size_bytes": 15036,
-      "source": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_Windows_V6R7_STIG_SCAP_1-3_Benchmark.zip"
     },
     {
       "authorization": "public DISA Cyber Exchange download metadata",

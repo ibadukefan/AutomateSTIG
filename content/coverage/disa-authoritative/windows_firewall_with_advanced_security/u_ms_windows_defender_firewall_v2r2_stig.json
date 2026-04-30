@@ -1,0 +1,344 @@
+{
+  "generated_from": "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip",
+  "rules": [
+    {
+      "check_id": "V-241989",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-241989r922928_rule",
+      "severity": "medium",
+      "title": "Windows Defender Firewall with Advanced Security must be enabled when connected to a domain.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-241989"
+    },
+    {
+      "check_id": "V-241990",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-241990r922930_rule",
+      "severity": "medium",
+      "title": "Windows Defender Firewall with Advanced Security must be enabled when connected to a private network.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-241990"
+    },
+    {
+      "check_id": "V-241991",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-241991r922932_rule",
+      "severity": "medium",
+      "title": "Windows Defender Firewall with Advanced Security must be enabled when connected to a public network.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-241991"
+    },
+    {
+      "check_id": "V-241992",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-241992r922934_rule",
+      "severity": "high",
+      "title": "Windows Defender Firewall with Advanced Security must block unsolicited inbound connections when connected to a domain.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-241992"
+    },
+    {
+      "check_id": "V-241993",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-241993r922936_rule",
+      "severity": "medium",
+      "title": "Windows Defender Firewall with Advanced Security must allow outbound connections, unless a rule explicitly blocks the connection when connected to a domain.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-241993"
+    },
+    {
+      "check_id": "V-241994",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-241994r922938_rule",
+      "severity": "low",
+      "title": "Windows Defender Firewall with Advanced Security log size must be configured for domain connections.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-241994"
+    },
+    {
+      "check_id": "V-241995",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-241995r922940_rule",
+      "severity": "low",
+      "title": "Windows Defender Firewall with Advanced Security must log dropped packets when connected to a domain.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-241995"
+    },
+    {
+      "check_id": "V-241996",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-241996r922942_rule",
+      "severity": "low",
+      "title": "Windows Defender Firewall with Advanced Security must log successful connections when connected to a domain.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-241996"
+    },
+    {
+      "check_id": "V-241997",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-241997r922944_rule",
+      "severity": "high",
+      "title": "Windows Defender Firewall with Advanced Security must block unsolicited inbound connections when connected to a private network.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-241997"
+    },
+    {
+      "check_id": "V-241998",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-241998r922946_rule",
+      "severity": "medium",
+      "title": "Windows Defender Firewall with Advanced Security must allow outbound connections, unless a rule explicitly blocks the connection when connected to a private network.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-241998"
+    },
+    {
+      "check_id": "V-241999",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-241999r922948_rule",
+      "severity": "low",
+      "title": "Windows Defender Firewall with Advanced Security log size must be configured for private network connections.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-241999"
+    },
+    {
+      "check_id": "V-242000",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-242000r922950_rule",
+      "severity": "low",
+      "title": "Windows Defender Firewall with Advanced Security must log dropped packets when connected to a private network.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-242000"
+    },
+    {
+      "check_id": "V-242001",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-242001r922952_rule",
+      "severity": "low",
+      "title": "Windows Defender Firewall with Advanced Security must log successful connections when connected to a private network.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-242001"
+    },
+    {
+      "check_id": "V-242002",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-242002r922954_rule",
+      "severity": "high",
+      "title": "Windows Defender Firewall with Advanced Security must block unsolicited inbound connections when connected to a public network.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-242002"
+    },
+    {
+      "check_id": "V-242003",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-242003r922956_rule",
+      "severity": "medium",
+      "title": "Windows Defender Firewall with Advanced Security must allow outbound connections, unless a rule explicitly blocks the connection when connected to a public network.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-242003"
+    },
+    {
+      "check_id": "V-242004",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-242004r922958_rule",
+      "severity": "medium",
+      "title": "Windows Defender Firewall with Advanced Security local firewall rules must not be merged with Group Policy settings when connected to a public network.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-242004"
+    },
+    {
+      "check_id": "V-242005",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-242005r922960_rule",
+      "severity": "medium",
+      "title": "Windows Defender Firewall with Advanced Security local connection rules must not be merged with Group Policy settings when connected to a public network.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-242005"
+    },
+    {
+      "check_id": "V-242006",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-242006r922962_rule",
+      "severity": "low",
+      "title": "Windows Defender Firewall with Advanced Security log size must be configured for public network connections.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-242006"
+    },
+    {
+      "check_id": "V-242007",
+      "check_pack": "windows_defender_firewall",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-242007r922964_rule",
+      "severity": "low",
+      "title": "Windows Defender Firewall with Advanced Security must log dropped packets when connected to a public network.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_firewall.json",
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-242007"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-242008r922966_rule",
+      "severity": "low",
+      "title": "Windows Defender Firewall with Advanced Security must log successful connections when connected to a public network.",
+      "tracking_issue": "TODO-V-242008",
+      "validated_by": [
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-242008"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-242009r922967_rule",
+      "severity": "medium",
+      "title": "Inbound exceptions to the firewall on domain workstations must only allow authorized remote management hosts.",
+      "tracking_issue": "TODO-V-242009",
+      "validated_by": [
+        "content/disa-corpus/artifacts/4fd9e65948717c06e00605b11e12958eedde409ac50040958e7c13e7146d25b3/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+      ],
+      "vuln_id": "V-242009"
+    }
+  ],
+  "source": "DISA XCCDF benchmark",
+  "status": "experimental",
+  "stig_id": "Windows_Firewall_with_Advanced_Security",
+  "total_rules": 21,
+  "version": "U_MS_Windows_Defender_Firewall_V2R2_STIG.zip"
+}

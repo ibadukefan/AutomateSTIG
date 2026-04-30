@@ -61,6 +61,7 @@ class IndexDisaDownloadsTests(unittest.TestCase):
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_SQL_Server_2022_Y26M04_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y26M04_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Defender_Antivirus_V2R5_STIG.zip', urls)
+        self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Office_365_ProPlus_V3R5_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Office_365_ProPlus_V3R8_STIG_SCAP_1-3_Benchmark.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R7_STIG.zip', urls)
@@ -78,7 +79,7 @@ class IndexDisaDownloadsTests(unittest.TestCase):
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Database_19c_V1R5_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y25M07_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip', urls)
-        self.assertEqual(len(rows), 53)
+        self.assertEqual(len(rows), 54)
 
 if __name__ == '__main__':
     unittest.main()

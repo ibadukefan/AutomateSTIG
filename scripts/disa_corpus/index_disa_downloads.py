@@ -54,6 +54,7 @@ SEED_DOWNLOADS=[
  {'title':'Microsoft SQL Server 2022 STIG Y26M04','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_SQL_Server_2022_Y26M04_STIG.zip'},
  {'title':'Microsoft IIS 10.0 STIG Y26M04','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y26M04_STIG.zip'},
  {'title':'Microsoft Defender Antivirus STIG V2R5','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Defender_Antivirus_V2R5_STIG.zip'},
+ {'title':'Microsoft Windows Defender Firewall STIG V2R2','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Defender_Firewall_V2R2_STIG.zip'},
  {'title':'Microsoft Office 365 ProPlus STIG V3R5','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Office_365_ProPlus_V3R5_STIG.zip'},
  {'title':'Microsoft Office 365 ProPlus STIG SCAP 1.3 Benchmark V3R8','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Office_365_ProPlus_V3R8_STIG_SCAP_1-3_Benchmark.zip'},
  {'title':'Mozilla Firefox STIG V6R7','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R7_STIG.zip'},
