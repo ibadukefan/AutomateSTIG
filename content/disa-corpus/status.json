@@ -1,17 +1,17 @@
 {
-  "authoritative_manifests": 66,
-  "authoritative_rules_tracked": 11864,
-  "automated_or_mapped_rules": 4082,
-  "coverage_percent_tracked_corpus": 34.4,
+  "authoritative_manifests": 76,
+  "authoritative_rules_tracked": 14769,
+  "automated_or_mapped_rules": 5449,
+  "coverage_percent_tracked_corpus": 36.9,
   "current_check_definitions": 3189,
   "generated_candidate_checks_with_fixture_evidence": 974,
   "notes": [
     "Regression ratchet prevents silent drops in tracked artifacts, authoritative manifests, authoritative rules, automated/mapped rules, or unsupported-rule ceilings.",
     "Generated candidate checks are fixture-backed scaffolding, not live production asset validation.",
-    "Latest pass expands the public DISA corpus in a larger batch with 8 reachable updated STIGs: Windows 10 V3R6, Windows Server 2019 V3R5, RHEL 9 V2R5, Oracle Linux 8 V2R6, Oracle Linux 9 V1R4, Ubuntu 22.04 V2R7, Ubuntu 24.04 V1R2, and Defender Antivirus V2R6. The unsupported-rule ceiling intentionally rises for the added authoritative rules pending automation."
+    "Latest pass expands the public DISA corpus in another 10-artifact batch: Windows Server 2022 V2R4-V2R7, Windows 11 V2R3, RHEL 8 V2R3-V2R6, and Microsoft Edge V2R4. The unsupported-rule ceiling intentionally rises for the added authoritative rules pending automation."
   ],
-  "public_disa_artifacts_indexed": 66,
+  "public_disa_artifacts_indexed": 76,
   "status": "expanded_public_corpus_with_fixture_gated_candidate_mapping",
   "target": "unsupported_authoritative_rules == 0 across every authorized DISA STIG artifact",
-  "unsupported_authoritative_rules": 7782
+  "unsupported_authoritative_rules": 9320
 }
