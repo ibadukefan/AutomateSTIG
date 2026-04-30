@@ -18,6 +18,17 @@ DATA_LINK_RE=re.compile(r'data-link=["\']([^"\']+?\.zip)["\']', re.I)
 TITLE_RE=re.compile(r'title=["\']([^"\']+)["\']', re.I)
 ARIA_LABEL_RE=re.compile(r'aria-label=["\'](?:Download\s+)?([^"\']+)["\']', re.I)
 SEED_DOWNLOADS=[
+ {'title':'Canonical Ubuntu 22.04 LTS STIG V2R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_22-04_LTS_V2R4_STIG.zip'},
+ {'title':'Canonical Ubuntu 22.04 LTS STIG V2R5','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_22-04_LTS_V2R5_STIG.zip'},
+ {'title':'Canonical Ubuntu 24.04 LTS STIG V1R3','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_24-04_LTS_V1R3_STIG.zip'},
+ {'title':'Canonical Ubuntu 24.04 LTS STIG V1R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_24-04_LTS_V1R4_STIG.zip'},
+ {'title':'Microsoft Defender Antivirus STIG V2R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Defender_Antivirus_V2R4_STIG.zip'},
+ {'title':'Microsoft Edge STIG V2R2','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Edge_V2R2_STIG.zip'},
+ {'title':'Microsoft Edge STIG V2R3','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Edge_V2R3_STIG.zip'},
+ {'title':'Microsoft Windows Server 2019 STIG V3R6','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2019_V3R6_STIG.zip'},
+ {'title':'Oracle Linux 8 STIG V2R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Linux_8_V2R4_STIG.zip'},
+ {'title':'Oracle Linux 9 STIG V1R1','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Linux_9_V1R1_STIG.zip'},
+ {'title':'Oracle Linux 9 STIG V1R2','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Linux_9_V1R2_STIG.zip'},
  {'title':'Microsoft Windows Server 2022 STIG V2R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_V2R4_STIG.zip'},
  {'title':'Microsoft Windows Server 2022 STIG V2R5','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_V2R5_STIG.zip'},
  {'title':'Microsoft Windows Server 2022 STIG V2R6','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2022_V2R6_STIG.zip'},
