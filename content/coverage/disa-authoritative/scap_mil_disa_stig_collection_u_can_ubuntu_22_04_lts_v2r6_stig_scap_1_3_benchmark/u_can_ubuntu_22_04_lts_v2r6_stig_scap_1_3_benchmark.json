@@ -1757,31 +1757,33 @@
       "vuln_id": "V-260605"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260606",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260606 from source identifier xccdf_mil.disa.stig_group_V-260606.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260606r958446_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the chage command.",
-      "tracking_issue": "TODO-V-260606",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260606"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260607",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260607 from source identifier xccdf_mil.disa.stig_group_V-260607.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260607r958446_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the chcon command.",
-      "tracking_issue": "TODO-V-260607",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260607"
@@ -1803,16 +1805,17 @@
       "vuln_id": "V-260608"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260609",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260609 from source identifier xccdf_mil.disa.stig_group_V-260609.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260609r958446_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the chsh command.",
-      "tracking_issue": "TODO-V-260609",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260609"
@@ -1866,16 +1869,17 @@
       "vuln_id": "V-260612"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260613",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260613 from source identifier xccdf_mil.disa.stig_group_V-260613.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260613r991586_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful attempts to use the kmod command.",
-      "tracking_issue": "TODO-V-260613",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260613"
@@ -1913,61 +1917,65 @@
       "vuln_id": "V-260615"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260616",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260616 from source identifier xccdf_mil.disa.stig_group_V-260616.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260616r958446_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the newgrp command.",
-      "tracking_issue": "TODO-V-260616",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260616"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260617",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260617 from source identifier xccdf_mil.disa.stig_group_V-260617.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260617r958446_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the pam_timestamp_check command.",
-      "tracking_issue": "TODO-V-260617",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260617"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260618",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260618 from source identifier xccdf_mil.disa.stig_group_V-260618.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260618r958446_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the passwd command.",
-      "tracking_issue": "TODO-V-260618",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260618"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260619",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260619 from source identifier xccdf_mil.disa.stig_group_V-260619.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260619r958446_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the setfacl command.",
-      "tracking_issue": "TODO-V-260619",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260619"
@@ -2085,46 +2093,49 @@
       "vuln_id": "V-260626"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260627",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260627 from source identifier xccdf_mil.disa.stig_group_V-260627.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260627r958446_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the usermod command.",
-      "tracking_issue": "TODO-V-260627",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260627"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260628",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260628 from source identifier xccdf_mil.disa.stig_group_V-260628.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260628r958368_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group.",
-      "tracking_issue": "TODO-V-260628",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260628"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260629",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260629 from source identifier xccdf_mil.disa.stig_group_V-260629.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260629r958368_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/gshadow.",
-      "tracking_issue": "TODO-V-260629",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260629"
@@ -2146,31 +2157,33 @@
       "vuln_id": "V-260630"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260631",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260631 from source identifier xccdf_mil.disa.stig_group_V-260631.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260631r958368_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/passwd.",
-      "tracking_issue": "TODO-V-260631",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260631"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260632",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260632 from source identifier xccdf_mil.disa.stig_group_V-260632.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260632r958368_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/shadow.",
-      "tracking_issue": "TODO-V-260632",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260632"
@@ -2281,121 +2294,129 @@
       "vuln_id": "V-260639"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260640",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260640 from source identifier xccdf_mil.disa.stig_group_V-260640.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260640r991589_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for all events that affect the systemd journal files.",
-      "tracking_issue": "TODO-V-260640",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260640"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260641",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260641 from source identifier xccdf_mil.disa.stig_group_V-260641.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260641r991581_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for the /var/log/btmp file.",
-      "tracking_issue": "TODO-V-260641",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260641"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260642",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260642 from source identifier xccdf_mil.disa.stig_group_V-260642.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260642r991581_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for the /var/log/wtmp file.",
-      "tracking_issue": "TODO-V-260642",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260642"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260643",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260643 from source identifier xccdf_mil.disa.stig_group_V-260643.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260643r991581_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for the /var/run/utmp file.",
-      "tracking_issue": "TODO-V-260643",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260643"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260644",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260644 from source identifier xccdf_mil.disa.stig_group_V-260644.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260644r958446_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for the use and modification of faillog file.",
-      "tracking_issue": "TODO-V-260644",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260644"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260645",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260645 from source identifier xccdf_mil.disa.stig_group_V-260645.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260645r958446_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for the use and modification of the lastlog file.",
-      "tracking_issue": "TODO-V-260645",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260645"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260646",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260646 from source identifier xccdf_mil.disa.stig_group_V-260646.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260646r991575_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records when successful/unsuccessful attempts to modify the /etc/sudoers file occur.",
-      "tracking_issue": "TODO-V-260646",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260646"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260647",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260647 from source identifier xccdf_mil.disa.stig_group_V-260647.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260647r991575_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records when successful/unsuccessful attempts to modify the /etc/sudoers.d directory occur.",
-      "tracking_issue": "TODO-V-260647",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260647"
@@ -2416,16 +2437,17 @@
       "vuln_id": "V-260648"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260649",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260649 from source identifier xccdf_mil.disa.stig_group_V-260649.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260649r986298_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must generate audit records for privileged activities, nonlocal maintenance, diagnostic sessions and other system-level access.",
-      "tracking_issue": "TODO-V-260649",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260649"

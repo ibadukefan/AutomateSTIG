@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 22.04 LTS must generate audit records for privileged activities, nonlocal maintenance, diagnostic sessions and other system-level access.",
+    "expected": {
+      "substring": "-w /var/log/sudo.log -p wa -k maintenance",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260649"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS audits activities performed during nonlocal maintenance and diagnostic sessions by using the following command:  \n  \n     $ sudo auditctl -l | grep sudo.log  \n     -w /var/log/sudo.log -p wa -k maintenance  \n  \nIf the command does not return lines that match the example or the lines are commented out, this is a finding.  \n  \nNote: The \"-k\" value is arbitrary and can be different from the example output above.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-w /var/log/sudo.log -p wa -k maintenance",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to audit activities performed during nonlocal maintenance and diagnostic sessions.  \n  \nAdd or modify the following line in the \"/etc/audit/rules.d/stig.rules\" file:  \n  \n-w /var/log/sudo.log -p wa -k maintenance  \n   \nTo reload the rules file, issue the following command:  \n  \n     $ sudo augenrules --load \n \nNote: The \"-k <keyname>\" at the end of the line gives the rule a unique meaning to help during an audit investigation. The <keyname> does not need to match the example above.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-260649r986298_rule",
   "severity": "medium",

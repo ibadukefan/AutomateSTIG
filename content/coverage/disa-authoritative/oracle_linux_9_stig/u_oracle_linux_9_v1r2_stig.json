@@ -1618,16 +1618,17 @@
       "vuln_id": "V-271533"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271534",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271534r1092488_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the unix_update command.",
-      "tracking_issue": "TODO-V-271534",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271534"
@@ -1664,121 +1665,129 @@
       "vuln_id": "V-271536"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271537",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271537r1092494_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the chage command.",
-      "tracking_issue": "TODO-V-271537",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271537"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271538",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271538r1092496_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the chcon command.",
-      "tracking_issue": "TODO-V-271538",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271538"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271539",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271539r1092498_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the setfacl command.",
-      "tracking_issue": "TODO-V-271539",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271539"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271540",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271540r1092500_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the chsh command.",
-      "tracking_issue": "TODO-V-271540",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271540"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271541",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271541r1092502_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the crontab command.",
-      "tracking_issue": "TODO-V-271541",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271541"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271542",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271542r1092504_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the gpasswd command.",
-      "tracking_issue": "TODO-V-271542",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271542"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271543",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271543r1092506_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the newgrp command.",
-      "tracking_issue": "TODO-V-271543",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271543"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271544",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271544r1092508_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the pam_timestamp_check command.",
-      "tracking_issue": "TODO-V-271544",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271544"
@@ -1799,61 +1808,65 @@
       "vuln_id": "V-271545"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271546",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271546r1092512_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the postdrop command.",
-      "tracking_issue": "TODO-V-271546",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271546"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271547",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271547r1092514_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the postqueue command.",
-      "tracking_issue": "TODO-V-271547",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271547"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271548",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271548r1092516_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the ssh-agent command.",
-      "tracking_issue": "TODO-V-271548",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271548"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271549",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271549r1092518_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the ssh-keysign command.",
-      "tracking_issue": "TODO-V-271549",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271549"
@@ -1875,31 +1888,33 @@
       "vuln_id": "V-271550"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271551",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271551r1092522_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the unix_chkpwd command.",
-      "tracking_issue": "TODO-V-271551",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271551"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271552",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271552r1092524_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the userhelper command.",
-      "tracking_issue": "TODO-V-271552",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271552"
@@ -1966,61 +1981,65 @@
       "vuln_id": "V-271556"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271557",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271557r1092534_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the semanage command.",
-      "tracking_issue": "TODO-V-271557",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271557"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271558",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271558r1092536_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the setfiles command.",
-      "tracking_issue": "TODO-V-271558",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271558"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271559",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271559r1092538_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the setsebool command.",
-      "tracking_issue": "TODO-V-271559",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271559"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271560",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271560r1092540_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the chacl command.",
-      "tracking_issue": "TODO-V-271560",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271560"
@@ -2042,16 +2061,17 @@
       "vuln_id": "V-271561"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271562",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271562r1092544_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the usermod command.",
-      "tracking_issue": "TODO-V-271562",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271562"
@@ -2102,16 +2122,17 @@
       "vuln_id": "V-271565"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271566",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271566r1092552_rule",
       "severity": "medium",
       "title": "OL 9 must audit all uses of the kmod command.",
-      "tracking_issue": "TODO-V-271566",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271566"
@@ -2211,61 +2232,65 @@
       "vuln_id": "V-271572"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271573",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271573r1092564_rule",
       "severity": "medium",
       "title": "OL 9 must be configured so that successful/unsuccessful uses of the init command generate an audit record.",
-      "tracking_issue": "TODO-V-271573",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271573"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271574",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271574r1092566_rule",
       "severity": "medium",
       "title": "OL 9 must be configured so that successful/unsuccessful uses of the poweroff command generate an audit record.",
-      "tracking_issue": "TODO-V-271574",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271574"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271575",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271575r1092568_rule",
       "severity": "medium",
       "title": "OL 9 must be configured so that successful/unsuccessful uses of the reboot command generate an audit record.",
-      "tracking_issue": "TODO-V-271575",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271575"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271576",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271576r1092570_rule",
       "severity": "medium",
       "title": "OL 9 must be configured so that successful/unsuccessful uses of the shutdown command generate an audit record.",
-      "tracking_issue": "TODO-V-271576",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271576"

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must generate audit records when successful/unsuccessful attempts to use the fdisk command.",
+    "expected": {
+      "substring": "-w /usr/sbin/fdisk -p x -k fdisk",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270815"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS is configured to audit the execution of the partition management program \"fdisk\" with the following command: \n \n$ sudo auditctl -l | grep fdisk\n-w /usr/sbin/fdisk -p x -k fdisk \n \nIf the command does not return a line, or the line is commented out, this is a finding. \n \nNote: The \"-k\" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-w /usr/sbin/fdisk -p x -k fdisk",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to audit the execution of the partition management program \"fdisk\". \n \nAdd or update the following rule in the \"/etc/audit/rules.d/stig.rules\" file: \n \n-w /usr/sbin/fdisk -p x -k fdisk \n  \nTo reload the rules file, issue the following command: \n \n$ sudo augenrules --load",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270815r1066934_rule",
   "severity": "medium",

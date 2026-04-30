@@ -175,6 +175,20 @@ $ sudo sysctl --system'''
         self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/pam.d/sudo', 'pattern': 'pam_succeed_if', 'is_regex': False})
         self.assertEqual(candidate['expected'], {'type': 'is_false'})
 
+    def test_infers_linux_auditctl_expected_rule_candidate_from_grep_command(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270686',
+            'title': 'Ubuntu must generate audit records for account modifications that affect /etc/shadow.',
+            'check_content': '''Verify Ubuntu generates audit records for all account creations, modifications, disabling, and termination events that affect "/etc/shadow" with the following command:
+
+$ sudo auditctl -l | grep shadow
+-w /etc/shadow -p wa -k usergroup_modification
+
+If the command does not return a line that matches the example or the line is commented out, this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': '-w /etc/shadow -p wa -k usergroup_modification'})
+
     def test_infers_linux_service_disabled_candidate_from_systemctl_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-251234',
@@ -240,7 +254,7 @@ If the debug-shell.service is loaded and not masked, this is a finding.'''
             'title': 'RHEL 8 remote X connections for interactive users must be disabled.',
             'check_content': '''Verify X11Forwarding is disabled with the following command:
 
-$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\r' | tr '\n' ' ' | xargs sudo grep -iH '^\s*x11forwarding'
+$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\r' | tr '\n' ' ' | xargs sudo grep -iH '^\\s*x11forwarding'
 
 X11Forwarding no
 

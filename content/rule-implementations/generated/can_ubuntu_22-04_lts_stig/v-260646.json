@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 22.04 LTS must generate audit records when successful/unsuccessful attempts to modify the /etc/sudoers file occur.",
+    "expected": {
+      "substring": "-w /etc/sudoers -p wa -k privilege_modification",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260646"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS generates audit records for all modifications that affect \"/etc/sudoers\" by using the following command:  \n  \n     $ sudo auditctl -l | grep sudoers  \n     -w /etc/sudoers -p wa -k privilege_modification  \n  \nIf the command does not return a line that matches the example or the line is commented out, this is a finding.  \n  \nNote: The \"-k\" value is arbitrary and can be different from the example output above.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-w /etc/sudoers -p wa -k privilege_modification",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to generate audit records for all modifications that affect \"/etc/sudoers\".   \n \nAdd or modify the following line to \"/etc/audit/rules.d/stig.rules\":  \n \n-w /etc/sudoers -p wa -k privilege_modification  \n \nTo reload the rules file, issue the following command:  \n \n     $ sudo augenrules --load \n \nNote: The \"-k <keyname>\" at the end of the line gives the rule a unique meaning to help during an audit investigation. The <keyname> does not need to match the example above.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-260646r991575_rule",
   "severity": "medium",

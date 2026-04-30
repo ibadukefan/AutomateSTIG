@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "The Ubuntu operating system must generate audit records for privileged activities, nonlocal maintenance, diagnostic sessions and other system-level access.",
+    "expected": {
+      "substring": "-w /var/log/sudo.log -p wa -k maintenance",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238309"
+  },
   "check_content_excerpt": "Verify the Ubuntu operating system audits activities performed during nonlocal maintenance and diagnostic sessions. \n \nCheck the currently configured audit rules with the following command: \n \n$ sudo auditctl -l | grep sudo.log \n \n-w /var/log/sudo.log -p wa -k maintenance \n \nIf the command does not return lines that match the example or the lines are commented out, this is a finding. \n \nNote: The \"-k\" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-w /var/log/sudo.log -p wa -k maintenance",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the Ubuntu operating system to audit activities performed during nonlocal maintenance and diagnostic sessions. \n \nAdd or update the following rules in the \"/etc/audit/rules.d/stig.rules\" file: \n \n-w /var/log/sudo.log -p wa -k maintenance \n  \nTo reload the rules file, issue the following command: \n \n$ sudo augenrules --load",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-238309r958846_rule",
   "severity": "medium",

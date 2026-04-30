@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group.",
+    "expected": {
+      "substring": "-w /etc/group -p wa -k usergroup_modification",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238239"
+  },
   "check_content_excerpt": "Verify the Ubuntu operating system generates audit records for all account creations, modifications, disabling, and termination events that affect \"/etc/group\". \n \nCheck the currently configured audit rules with the following command: \n \n$ sudo auditctl -l | grep group \n \n-w /etc/group -p wa -k usergroup_modification \n \nIf the command does not return a line that matches the example or the line is commented out, this is a finding. \n \nNote: The \"-k\" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-w /etc/group -p wa -k usergroup_modification",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the Ubuntu operating system to generate audit records for all account creations, modifications, disabling, and termination events that affect \"/etc/group\". \n \nAdd or update the following rule to \"/etc/audit/rules.d/stig.rules\": \n \n-w /etc/group -p wa -k usergroup_modification \n  \nTo reload the rules file, issue the following command: \n \n$ sudo augenrules --load",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-238239r958368_rule",
   "severity": "medium",

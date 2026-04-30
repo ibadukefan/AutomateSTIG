@@ -3087,6 +3087,253 @@
     },
     {
       "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the chacl command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=-1 -F key=perm_mod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258181"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the setfacl command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=-1 -F key=perm_mod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258182"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the chcon command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=-1 -F key=perm_mod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258183"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the semanage command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/semanage -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258184"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the setfiles command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/setfiles -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258185"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the setsebool command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/setsebool -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258186"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the chage command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-chage",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258191"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the chsh command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/chsh -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258192"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the crontab command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/crontab -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-crontab",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258193"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the gpasswd command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/gpasswd -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-gpasswd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258194"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the kmod command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/kmod -F perm=x -F auid>=1000 -F auid!=-1 -F key=modules",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258195"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the newgrp command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/newgrp -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258196"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the pam_timestamp_check command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/pam_timestamp_check -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-pam_timestamp_check",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258197"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the postdrop command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/postdrop -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258199"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the postqueue command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/postqueue -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258200"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the ssh-agent command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/ssh-agent -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-ssh",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258201"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the ssh-keysign command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/libexec/openssh/ssh-keysign -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-ssh",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258202"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the su command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/su -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-priv_change",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258203"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the sudo command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258204"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/usr/bin/sudoedit",
         "pattern": "-a always,exit -S all -F path=/usr/bin/sudoedit -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
@@ -3098,6 +3345,58 @@
       },
       "platform": "linux",
       "vuln_id": "V-258205"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the unix_chkpwd command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/unix_chkpwd -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258206"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the unix_update command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/unix_update -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258207"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the userhelper command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/userhelper -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258208"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the usermod command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/usermod -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-usermod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258209"
     },
     {
       "check": {
@@ -3126,6 +3425,45 @@
       },
       "platform": "linux",
       "vuln_id": "V-258211"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Successful/unsuccessful uses of the poweroff command in RHEL 9 must generate an audit record.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/poweroff -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-poweroff",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258212"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Successful/unsuccessful uses of the reboot command in RHEL 9 must generate an audit record.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/reboot -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-reboot",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258213"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/sudoers.",
+      "expected": {
+        "substring": "-w /etc/sudoers -p wa -k identity",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258217"
     },
     {
       "check": {

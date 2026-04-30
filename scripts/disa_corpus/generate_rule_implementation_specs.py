@@ -386,6 +386,31 @@ def _sshd_config_candidate(rule: dict) -> dict | None:
     }
 
 
+def _auditctl_expected_rule_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    if not re.search(r'\bauditctl\s+-l\s*\|\s*grep\b', content, re.IGNORECASE):
+        return None
+    if not re.search(r'does\s+not\s+return\s+(?:a\s+line|lines?)\s+that\s+match(?:es)?\s+the\s+example|line\s+is\s+commented\s+out', content, re.IGNORECASE):
+        return None
+    match = re.search(
+        r'[$#>]\s*(?:sudo\s+)?auditctl\s+-l\s*\|\s*grep\s+(?:-[A-Za-z]+\s+)?(?:"[^"]+"|\'[^\']+\'|\S+)\s+(?P<expected>-(?:w|a)\s+.*?)(?:\s+If\s+the\s+command\s+does\s+not\s+return\s+(?:a\s+line|lines?)\b)',
+        content,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not match:
+        return None
+    expected_line = ' '.join(match.group('expected').split())
+    if not expected_line or len(re.findall(r'\s-(?:w|a)\s+', ' ' + expected_line)) != 1:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': 'auditctl -l'},
+        'expected': {'type': 'contains', 'substring': expected_line},
+        'description': rule.get('title', ''),
+    }
+
+
 def _service_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
@@ -536,7 +561,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return command_candidate
 
     if _linux_platform(stig_id):
-        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _service_candidate, _file_permission_candidate):
+        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _auditctl_expected_rule_candidate, _service_candidate, _file_permission_candidate):
             candidate = infer(rule)
             if candidate:
                 return candidate

@@ -321,6 +321,71 @@
     },
     {
       "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/passwd.",
+      "expected": {
+        "substring": "-w /etc/passwd -p wa -k usergroup_modification",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270684"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group.",
+      "expected": {
+        "substring": "-w /etc/group -p wa -k usergroup_modification",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270685"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/shadow.",
+      "expected": {
+        "substring": "-w /etc/shadow -p wa -k usergroup_modification",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270686"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/gshadow.",
+      "expected": {
+        "substring": "-w /etc/gshadow -p wa -k usergroup_modification",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270687"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/opasswd.",
+      "expected": {
+        "substring": "-w /etc/security/opasswd -p wa -k usergroup_modification",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270688"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/common-auth",
         "pattern": "auth     [default=die]  pam_faillock.so authfail",
@@ -444,6 +509,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-270714"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for all events that affect the systemd journal files.",
+      "expected": {
+        "substring": "-w /var/log/journal -p wa -k systemd_journal",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270715"
     },
     {
       "check": {
@@ -713,6 +791,19 @@
     },
     {
       "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for privileged activities, nonlocal maintenance, diagnostic sessions, and other system-level access.",
+      "expected": {
+        "substring": "-w /var/log/sudo.log -p wa -k maintenance",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270740"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/proc/sys/crypto/fips_enabled",
         "pattern": "1",
@@ -950,6 +1041,19 @@
     },
     {
       "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the ssh-keysign command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/lib/openssh/ssh-keysign -F perm=x -F auid>=1000 -F auid!=-1 -k privileged-ssh",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270783"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/usr/bin/sudo",
         "pattern": "-a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=-1 -k priv_cmd",
@@ -975,6 +1079,292 @@
       },
       "platform": "linux",
       "vuln_id": "V-270789"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the chsh command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/chsh -F perm=x -F auid>=1000 -F auid!=-1 -k priv_cmd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270790"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the newgrp command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/newgrp -F perm=x -F auid>=1000 -F auid!=-1 -k priv_cmd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270791"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the chcon command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=-1 -k perm_chng",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270792"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the apparmor_parser command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/sbin/apparmor_parser -F perm=x -F auid>=1000 -F auid!=-1 -k perm_chng",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270793"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the setfacl command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=-1 -k perm_chng",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270794"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for the use and modification of faillog file.",
+      "expected": {
+        "substring": "-w /var/log/faillog -p wa -k logins",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270796"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for the use and modification of the lastlog file.",
+      "expected": {
+        "substring": "-w /var/log/lastlog -p wa -k logins",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270797"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the passwd command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/passwd -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-passwd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270798"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the unix_update command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/sbin/unix_update -F perm=x -F auid>=1000 -F auid!=-1 -k privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270799"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the gpasswd command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/gpasswd -F perm=x -F auid>=1000 -F auid!=-1 -k privileged-gpasswd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270800"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the chage command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=-1 -k privileged-chage",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270801"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the usermod command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/usermod -F perm=x -F auid>=1000 -F auid!=-1 -k privileged-usermod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270802"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the crontab command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/crontab -F perm=x -F auid>=1000 -F auid!=-1 -k privileged-crontab",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270803"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the pam_timestamp_check command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/pam_timestamp_check -F perm=x -F auid>=1000 -F auid!=-1 -k privileged-pam_timestamp_check",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270804"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records when successful/unsuccessful attempts to modify the /etc/sudoers file occur.",
+      "expected": {
+        "substring": "-w /etc/sudoers -p wa -k privilege_modification",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270807"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records when successful/unsuccessful attempts to modify the /etc/sudoers.d directory occur.",
+      "expected": {
+        "substring": "-w /etc/sudoers.d -p wa -k privilege_modification",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270808"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for the /var/log/wtmp file.",
+      "expected": {
+        "substring": "-w /var/log/wtmp -p wa -k logins",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270810"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for the /var/run/utmp file.",
+      "expected": {
+        "substring": "-w /var/run/utmp -p wa -k logins",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270811"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for the /var/log/btmp file.",
+      "expected": {
+        "substring": "-w /var/log/btmp -p wa -k logins",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270812"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records when successful/unsuccessful attempts to use modprobe command.",
+      "expected": {
+        "substring": "-w /sbin/modprobe -p x -k modules",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270813"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records when successful/unsuccessful attempts to use the kmod command.",
+      "expected": {
+        "substring": "-w /bin/kmod -p x -k module",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270814"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records when successful/unsuccessful attempts to use the fdisk command.",
+      "expected": {
+        "substring": "-w /usr/sbin/fdisk -p x -k fdisk",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270815"
     },
     {
       "check": {

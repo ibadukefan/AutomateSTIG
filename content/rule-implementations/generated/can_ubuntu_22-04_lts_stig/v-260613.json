@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful attempts to use the kmod command.",
+    "expected": {
+      "substring": "-w /bin/kmod -p x -k module",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260613"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS is configured to audit the execution of the module management program \"kmod\" by using the following command:  \n  \n     $ sudo auditctl -l | grep kmod  \n     -w /bin/kmod -p x -k module  \n  \nIf the command does not return a line, or the line is commented out, this is a finding.  \n  \nNote: The \"-k\" value is arbitrary and can be different from the example output above.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-w /bin/kmod -p x -k module",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to audit the execution of the module management program \"kmod\".  \n  \nAdd or modify the following line in the \"/etc/audit/rules.d/stig.rules\" file:  \n  \n-w /bin/kmod -p x -k modules \n   \nTo reload the rules file, issue the following command:  \n  \n     $ sudo augenrules --load \n \nNote: The \"-k <keyname>\" at the end of the line gives the rule a unique meaning to help during an audit investigation. The <keyname> does not need to match the example above.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-260613r991586_rule",
   "severity": "medium",

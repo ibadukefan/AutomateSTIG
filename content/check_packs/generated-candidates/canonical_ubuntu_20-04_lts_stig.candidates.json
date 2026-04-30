@@ -212,6 +212,32 @@
     },
     {
       "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/passwd.",
+      "expected": {
+        "substring": "-w /etc/passwd -p wa -k usergroup_modification",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238238"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group.",
+      "expected": {
+        "substring": "-w /etc/group -p wa -k usergroup_modification",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238239"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/auditd.conf",
         "pattern": "disk_full_action = HALT",
@@ -284,6 +310,84 @@
     },
     {
       "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the su command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/bin/su -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-priv_change",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238252"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chfn command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/chfn -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-chfn",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238253"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the mount command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/mount -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-mount",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238254"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the umount command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/umount -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-umount",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238255"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the ssh-agent command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/ssh-agent -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-ssh",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238256"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the ssh-keysign command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/lib/openssh/ssh-keysign -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-ssh",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238257"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/usr/bin/sudo",
         "pattern": "-a always,exit -S all -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
@@ -309,6 +413,214 @@
       },
       "platform": "linux",
       "vuln_id": "V-238278"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chsh command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/chsh -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238279"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the newgrp command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/newgrp -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238280"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chcon command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=-1 -F key=perm_chng",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238281"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the apparmor_parser command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/sbin/apparmor_parser -F perm=x -F auid>=1000 -F auid!=-1 -F key=perm_chng",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238282"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the setfacl command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=-1 -F key=perm_chng",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238283"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chacl command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=-1 -F key=perm_chng",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238284"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for the use and modification of the tallylog file.",
+      "expected": {
+        "substring": "-w /var/log/tallylog -p wa -k logins",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238285"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for the use and modification of faillog file.",
+      "expected": {
+        "substring": "-w /var/log/faillog -p wa -k logins",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238286"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for the use and modification of the lastlog file.",
+      "expected": {
+        "substring": "-w /var/log/lastlog -p wa -k logins",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238287"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the passwd command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/passwd -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-passwd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238288"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the unix_update command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/sbin/unix_update -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238289"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the gpasswd command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/gpasswd -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-gpasswd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238290"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chage command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-chage",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238291"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the usermod command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/usermod -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-usermod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238292"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the crontab command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/crontab -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-crontab",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238293"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the pam_timestamp_check command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/pam_timestamp_check -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-pam_timestamp_check",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238294"
     },
     {
       "check": {
@@ -393,6 +705,97 @@
       },
       "platform": "linux",
       "vuln_id": "V-238307"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for privileged activities, nonlocal maintenance, diagnostic sessions and other system-level access.",
+      "expected": {
+        "substring": "-w /var/log/sudo.log -p wa -k maintenance",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238309"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for the /var/log/wtmp file.",
+      "expected": {
+        "substring": "-w /var/log/wtmp -p wa -k logins",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238315"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for the /var/run/utmp file.",
+      "expected": {
+        "substring": "-w /var/run/utmp -p wa -k logins",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238316"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for the /var/log/btmp file.",
+      "expected": {
+        "substring": "-w /var/log/btmp -p wa -k logins",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238317"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records when successful/unsuccessful attempts to use modprobe command.",
+      "expected": {
+        "substring": "-w /sbin/modprobe -p x -k modules",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238318"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records when successful/unsuccessful attempts to use the kmod command.",
+      "expected": {
+        "substring": "-w /bin/kmod -p x -k module",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238319"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records when successful/unsuccessful attempts to use the fdisk command.",
+      "expected": {
+        "substring": "-w /usr/sbin/fdisk -p x -k fdisk",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238320"
     },
     {
       "check": {

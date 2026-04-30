@@ -960,6 +960,19 @@
     },
     {
       "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the unix_update command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/unix_update -F perm=x -F auid>=1000 -F auid!=unset -k privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271534"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/usr/bin/su",
         "pattern": "-a always,exit -F path=/usr/bin/su -F perm=x -F auid>=1000 -F auid!=unset -k privileged-priv_change",
@@ -971,6 +984,162 @@
       },
       "platform": "linux",
       "vuln_id": "V-271535"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the chage command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=unset -k privileged-chage",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271537"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the chcon command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=unset -k perm_mod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271538"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the setfacl command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=unset -k perm_mod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271539"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the chsh command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/chsh -F perm=x -F auid>=1000 -F auid!=unset -k priv_cmd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271540"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the crontab command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/crontab -F perm=x -F auid>=1000 -F auid!=unset -k privileged-crontab",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271541"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the gpasswd command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/gpasswd -F perm=x -F auid>=1000 -F auid!=unset -k privileged-gpasswd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271542"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the newgrp command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/newgrp -F perm=x -F auid>=1000 -F auid!=unset -k priv_cmd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271543"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the pam_timestamp_check command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/pam_timestamp_check -F perm=x -F auid>=1000 -F auid!=unset -k privileged-pam_timestamp_check",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271544"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the postdrop command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/postdrop -F perm=x -F auid>=1000 -F auid!=unset -k privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271546"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the postqueue command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/postqueue -F perm=x -F auid>=1000 -F auid!=unset -k privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271547"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the ssh-agent command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/ssh-agent -F perm=x -F auid>=1000 -F auid!=unset -k privileged-ssh",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271548"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the ssh-keysign command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/libexec/openssh/ssh-keysign -F perm=x -F auid>=1000 -F auid!=unset -k privileged-ssh",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271549"
     },
     {
       "check": {
@@ -988,6 +1157,32 @@
     },
     {
       "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the unix_chkpwd command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/unix_chkpwd -F perm=x -F auid>=1000 -F auid!=unset -k privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271551"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the userhelper command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/userhelper -F perm=x -F auid>=1000 -F auid!=unset -k privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271552"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/usr/bin/mount",
         "pattern": "-a always,exit -F path=/usr/bin/mount -F perm=x -F auid>=1000 -F auid!=unset -k privileged-mount",
@@ -1002,6 +1197,58 @@
     },
     {
       "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the semanage command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/semanage -F perm=x -F auid>=1000 -F auid!=unset -k privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271557"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the setfiles command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/setfiles -F perm=x -F auid>=1000 -F auid!=unset -k privileged-unix-update",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271558"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the setsebool command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/setsebool -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271559"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the chacl command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=unset -k perm_mod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271560"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/usr/bin/sudo",
         "pattern": "-a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=unset -k priv_cmd",
@@ -1013,6 +1260,32 @@
       },
       "platform": "linux",
       "vuln_id": "V-271561"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the usermod command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/usermod -F perm=x -F auid>=1000 -F auid!=unset -k privileged-usermod",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271562"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the kmod command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/kmod -F perm=x -F auid>=1000 -F auid!=unset -k modules",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271566"
     },
     {
       "check": {
@@ -1069,6 +1342,58 @@
       },
       "platform": "linux",
       "vuln_id": "V-271572"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured so that successful/unsuccessful uses of the init command generate an audit record.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/init -F perm=x -F auid>=1000 -F auid!=unset -k privileged-init",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271573"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured so that successful/unsuccessful uses of the poweroff command generate an audit record.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/poweroff -F perm=x -F auid>=1000 -F auid!=unset -k privileged-poweroff",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271574"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured so that successful/unsuccessful uses of the reboot command generate an audit record.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/reboot -F perm=x -F auid>=1000 -F auid!=unset -k privileged-reboot",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271575"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured so that successful/unsuccessful uses of the shutdown command generate an audit record.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/sbin/shutdown -F perm=x -F auid>=1000 -F auid!=unset -k privileged-shutdown",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271576"
     },
     {
       "check": {

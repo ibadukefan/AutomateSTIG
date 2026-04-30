@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chfn command.",
+    "expected": {
+      "substring": "-a always,exit -S all -F path=/usr/bin/chfn -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-chfn",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238253"
+  },
   "check_content_excerpt": "Verify the Ubuntu operating system generates audit records upon successful/unsuccessful attempts to use the \"chfn\" command.\n \nCheck the configured audit rules with the following commands: \n \n$ sudo auditctl -l | grep '/usr/bin/chfn' \n \n-a always,exit -S all -F path=/usr/bin/chfn -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-chfn\n  \nIf the command does not return lines that match the example or the lines are commented out, this is a finding.\n  \nNote: The \"key=\" value is arbitrary and can be different from the example output above.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-a always,exit -S all -F path=/usr/bin/chfn -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-chfn",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit system to generate an audit event for any successful/unsuccessful uses of the \"chfn\" command.\n \nAdd or update the following rules in the \"/etc/audit/rules.d/stig.rules\" file:\n \n-a always,exit -F path=/usr/bin/chfn -F perm=x -F auid>=1000 -F auid!=unset -k privileged-chfn\n  \nTo reload the rules file, issue the following command:\n  \n$ sudo augenrules --load\n \nNote: The \"-k <keyname>\" at the end of the line gives the rule a unique meaning to help during an audit investigation. The <keyname> does not need to match the example above.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-238253r958446_rule",
   "severity": "medium",
