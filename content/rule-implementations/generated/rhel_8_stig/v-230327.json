@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify all local files and directories on RHEL 8 have a valid group with the following command:\n\n$ df --local -P | awk {'if (NR!=1) print $6'} | sudo xargs -I '{}' find '{}' -xdev -nogroup\n\nIf any files on the system do not have an assigned group, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Either remove all files and directories from RHEL 8 that do not have a valid group, or assign a valid group to all files and directories on the system with the \"chgrp\" command:\n\n$ sudo chgrp <group> <file>",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230327r1069285_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "All RHEL 8 local files and directories must have a valid group owner.",
+  "tracking_issue": "TODO-V-230327",
+  "vuln_id": "V-230327"
+}

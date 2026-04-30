@@ -1,0 +1,52 @@
+{
+  "candidate_check": {
+    "check": {
+      "name": "krb5-server",
+      "should_be_installed": false,
+      "type": "package"
+    },
+    "description": "The krb5-server package must not be installed on RHEL 8.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-237640"
+  },
+  "check_content_excerpt": "Verify the krb5-server package has not been installed on the system with the following commands:\n\nIf the system is a workstation or is utilizing krb5-server-1.17-18.el8.x86_64 or newer, this is Not Applicable\n\n$ sudo yum list installed krb5-server\n\nkrb5-server.x86_64 1.17-9.el8 repository\n\nIf the krb5-server package is installed and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "is_false"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Document the krb5-server package with the ISSO as an operational requirement or remove it from the system with the following command:\n\n$ sudo yum remove krb5-server",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "package",
+  "remediation": "planned",
+  "rule_id": "SV-237640r1017323_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "The krb5-server package must not be installed on RHEL 8.",
+  "tracking_issue": "TODO-V-237640",
+  "vuln_id": "V-237640"
+}

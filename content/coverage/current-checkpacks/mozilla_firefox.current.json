@@ -1,0 +1,271 @@
+{
+  "stig_id": "Mozilla_Firefox_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/mozilla_firefox.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/mozilla_firefox.json",
+  "total_rules": 20,
+  "rules": [
+    {
+      "vuln_id": "V-251544",
+      "rule_id": "V-251544_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox telemetry must be disabled",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251544",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251545",
+      "rule_id": "V-251545_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox form history must be disabled",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251545",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251546",
+      "rule_id": "V-251546_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox password reveal must be disabled",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251546",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251547",
+      "rule_id": "V-251547_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox minimum SSL version must be set to TLS 1.2",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251547",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251548",
+      "rule_id": "V-251548_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox must block third-party cookies",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251548",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251549",
+      "rule_id": "V-251549_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox must disable 3DES cipher suites",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251549",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251550",
+      "rule_id": "V-251550_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox must disable RC4 cipher suites",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251550",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251551",
+      "rule_id": "V-251551_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox must disable RC4-MD5 cipher suites",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251551",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251552",
+      "rule_id": "V-251552_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox popup blocking must be enabled",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251552",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251553",
+      "rule_id": "V-251553_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox must not offer to save logins",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251553",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251554",
+      "rule_id": "V-251554_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox must prevent scripts from moving or resizing windows",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251554",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251555",
+      "rule_id": "V-251555_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox must prevent scripts from raising or lowering windows",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251555",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251556",
+      "rule_id": "V-251556_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox Pocket integration must be disabled",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251556",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251557",
+      "rule_id": "V-251557_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox Shield studies must be disabled",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251557",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251558",
+      "rule_id": "V-251558_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox feedback commands must be disabled",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251558",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251559",
+      "rule_id": "V-251559_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox TLS minimum version must be 1.2 (value 3)",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251559",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251560",
+      "rule_id": "V-251560_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox DNS prefetching must be disabled",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251560",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251561",
+      "rule_id": "V-251561_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox link prefetching must be disabled",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251561",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251562",
+      "rule_id": "V-251562_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox built-in password manager must be disabled",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251562",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-251563",
+      "rule_id": "V-251563_automatestig_check",
+      "classification": "automated",
+      "reason": "Firefox geolocation must be disabled",
+      "check_pack": "mozilla_firefox",
+      "check_id": "V-251563",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mozilla_firefox.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

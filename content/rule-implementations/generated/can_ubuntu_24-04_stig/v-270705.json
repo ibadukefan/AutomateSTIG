@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/pwquality.conf",
+      "pattern": "enforcing",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must be configured so that when passwords are changed or new passwords are established, pwquality must be used.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270705"
+  },
+  "check_content_excerpt": "Verify that Ubuntu 24.04 LTS uses \"pwquality\" to enforce the password complexity rules.  \n \nVerify the pwquality module is being enforced by Ubuntu 24.04 LTS with the following command: \n \n$ grep -i enforcing /etc/security/pwquality.conf\nenforcing = 1 \n \nIf the value of \"enforcing\" is not \"1\", or the line is commented out, this is a finding. \n \nCheck for the use of \"pwquality\" with the following command: \n \n$ cat /etc/pam.d/common-password | grep requisite | grep pam_pwquality\npassword requisite pam_pwquality.so retry=3 \n \nIf the value of \"retry\" is set to \"0\" or is greater than \"3\", or if a line is not returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to use \"pwquality\" to enforce password complexity rules. \n \nAdd the following line to \"/etc/security/pwquality.conf\" (or modify the line to have the required value): \n \nenforcing = 1 \n \nAdd the following line to \"/etc/pam.d/common-password\" (or modify the line to have the required value): \n \npassword requisite pam_pwquality.so retry=3 \n \nNote: Ensure the value of \"retry\" is between \"1\" and \"3\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-270705r1066604_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must be configured so that when passwords are changed or new passwords are established, pwquality must be used.",
+  "tracking_issue": "TODO-V-270705",
+  "vuln_id": "V-270705"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that authenticated certificates are mapped to the appropriate user group in the \"/etc/sssd/sssd.conf\" file with the following command: \n \n$ grep -i ldap_user_certificate /etc/sssd/sssd.conf\nldap_user_certificate=userCertificate;binary",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure sssd to map authenticated certificates to the appropriate user group by adding the following line to the \"/etc/sssd/sssd.conf\" file:\n\nldap_user_certificate=userCertificate;binary",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-274865r1101731_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must map the authenticated identity to the user or group account for PKI-based authentication.",
+  "tracking_issue": "TODO-V-274865",
+  "vuln_id": "V-274865"
+}

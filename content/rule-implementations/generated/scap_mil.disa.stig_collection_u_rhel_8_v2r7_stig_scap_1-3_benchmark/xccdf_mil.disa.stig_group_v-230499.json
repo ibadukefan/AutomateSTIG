@@ -1,0 +1,30 @@
+{
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable the ability to use the firewire-core kernel module.\n\nAdd or update the following lines in the file \"/etc/modprobe.d/blacklist.conf\":\n\n     install firewire-core /bin/false\n     blacklist firewire-core\n\nReboot the system for the settings to take effect.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-230499r1069315_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_rhel_8_v2r7_stig_scap_1_3_benchmark/u_rhel_8_v2r7_stig_scap_1_3_benchmark.json",
+  "source_version": "U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark",
+  "title": "RHEL 8 must disable IEEE 1394 (FireWire) Support.",
+  "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-230499",
+  "vuln_id": "xccdf_mil.disa.stig_group_V-230499"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If the data owner does not have a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process, and the requirement is documented and authorized, this is not a finding.\n\nIf Database Mirroring is in use, run the following to check for encrypted transmissions:\nSELECT name, type_desc, encryption_algorithm_desc\nFROM sys.database_mirroring_endpoints\nWHERE encryption_algorithm != 2\n\nIf any records are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Run the following to enable encryption on the mirroring endpoint:\nALTER ENDPOINT <Endpoint Name>\nFOR DATABASE_MIRRORING\n(ENCRYPTION = REQUIRED ALGORITHM AES)",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-274447r1111109_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "The SQL Server Mirroring endpoint must use AES encryption.",
+  "tracking_issue": "TODO-V-274447",
+  "vuln_id": "V-274447"
+}

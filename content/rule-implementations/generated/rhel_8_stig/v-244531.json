@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify all files and directories contained in a local interactive user home directory, excluding local initialization files, have a mode of \"0750\".\nFiles that begin with a \".\" are excluded from this requirement.\n\nNote: The example will be for the user \"smithj\", who has a home directory of \"/home/smithj\".\n\n$ sudo ls -lLR /home/smithj\n-rwxr-x--- 1 smithj smithj 18 Mar 5 17:06 file1\n-rwxr----- 1 smithj smithj 193 Mar 5 17:06 file2\n-rw-r-x--- 1 smithj smithj 231 Mar 5 17:06 file3\n\nIf any files or directories are found with a mode more permissive than \"0750\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the mode on files and directories in the local interactive user home directory with the following command:\n\nNote: The example will be for the user smithj, who has a home directory of \"/home/smithj\" and is a member of the users group.\n\n$ sudo chmod 0750 /home/smithj/<file or directory>",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-244531r1017338_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "All RHEL 8 local interactive user home directory files must have mode 0750 or less permissive.",
+  "tracking_issue": "TODO-V-244531",
+  "vuln_id": "V-244531"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If the \"bind\" package is not installed, this requirement is Not Applicable.\n\nVerify BIND uses the system crypto policy with the following command:\n\n$ sudo grep include /etc/named.conf \n\ninclude \"/etc/crypto-policies/back-ends/bind.config\";' \n\nIf BIND is installed and the BIND config file does not contain the include \"/etc/crypto-policies/back-ends/bind.config\" directive, or the line is commented out, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure BIND to use the system crypto policy.\n\nAdd the following line to the \"options\" section in \"/etc/named.conf\":\n\ninclude \"/etc/crypto-policies/back-ends/bind.config\";",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-279931r1184237_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must implement DOD-approved encryption in the bind package.",
+  "tracking_issue": "TODO-V-279931",
+  "vuln_id": "V-279931"
+}

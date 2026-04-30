@@ -1,0 +1,401 @@
+{
+  "stig_id": "CentOS_7_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/centos_7.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/centos_7.json",
+  "total_rules": 30,
+  "rules": [
+    {
+      "vuln_id": "V-204500",
+      "rule_id": "V-204500_automatestig_check",
+      "classification": "automated",
+      "reason": "CentOS 7 SSH must not allow direct root login",
+      "check_pack": "centos_7",
+      "check_id": "V-204500",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204501",
+      "rule_id": "V-204501_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must not allow empty passwords",
+      "check_pack": "centos_7",
+      "check_id": "V-204501",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204502",
+      "rule_id": "V-204502_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveInterval must be set to 600 seconds or less",
+      "check_pack": "centos_7",
+      "check_id": "V-204502",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204503",
+      "rule_id": "V-204503_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveCountMax must be set to 0",
+      "check_pack": "centos_7",
+      "check_id": "V-204503",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204504",
+      "rule_id": "V-204504_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must display a DoD-approved banner",
+      "check_pack": "centos_7",
+      "check_id": "V-204504",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204505",
+      "rule_id": "V-204505_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must use protocol version 2",
+      "check_pack": "centos_7",
+      "check_id": "V-204505",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204506",
+      "rule_id": "V-204506_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH X11 forwarding must be disabled",
+      "check_pack": "centos_7",
+      "check_id": "V-204506",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204507",
+      "rule_id": "V-204507_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must use FIPS 140-2 compliant ciphers",
+      "check_pack": "centos_7",
+      "check_id": "V-204507",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204510",
+      "rule_id": "V-204510_automatestig_check",
+      "classification": "automated",
+      "reason": "IP forwarding must be disabled unless acting as a router",
+      "check_pack": "centos_7",
+      "check_id": "V-204510",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204511",
+      "rule_id": "V-204511_automatestig_check",
+      "classification": "automated",
+      "reason": "Source-routed packets must not be accepted",
+      "check_pack": "centos_7",
+      "check_id": "V-204511",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204513",
+      "rule_id": "V-204513_automatestig_check",
+      "classification": "automated",
+      "reason": "ICMP redirects must not be accepted",
+      "check_pack": "centos_7",
+      "check_id": "V-204513",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204515",
+      "rule_id": "V-204515_automatestig_check",
+      "classification": "automated",
+      "reason": "System must not send ICMP redirects",
+      "check_pack": "centos_7",
+      "check_id": "V-204515",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204516",
+      "rule_id": "V-204516_automatestig_check",
+      "classification": "automated",
+      "reason": "System must ignore ICMP broadcast echo requests",
+      "check_pack": "centos_7",
+      "check_id": "V-204516",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204518",
+      "rule_id": "V-204518_automatestig_check",
+      "classification": "automated",
+      "reason": "TCP SYN cookies must be enabled",
+      "check_pack": "centos_7",
+      "check_id": "V-204518",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204519",
+      "rule_id": "V-204519_automatestig_check",
+      "classification": "automated",
+      "reason": "ASLR must be fully enabled",
+      "check_pack": "centos_7",
+      "check_id": "V-204519",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204520",
+      "rule_id": "V-204520_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/shadow must be mode 0000 and owned by root",
+      "check_pack": "centos_7",
+      "check_id": "V-204520",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204521",
+      "rule_id": "V-204521_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/passwd must be mode 0644 and owned by root",
+      "check_pack": "centos_7",
+      "check_id": "V-204521",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204522",
+      "rule_id": "V-204522_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/group must be mode 0644 and owned by root",
+      "check_pack": "centos_7",
+      "check_id": "V-204522",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204524",
+      "rule_id": "V-204524_automatestig_check",
+      "classification": "automated",
+      "reason": "sshd_config must be mode 0600 and owned by root",
+      "check_pack": "centos_7",
+      "check_id": "V-204524",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204530",
+      "rule_id": "V-204530_automatestig_check",
+      "classification": "automated",
+      "reason": "AIDE must be installed for file integrity checking",
+      "check_pack": "centos_7",
+      "check_id": "V-204530",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204531",
+      "rule_id": "V-204531_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit package must be installed",
+      "check_pack": "centos_7",
+      "check_id": "V-204531",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204532",
+      "rule_id": "V-204532_automatestig_check",
+      "classification": "automated",
+      "reason": "Telnet server must not be installed",
+      "check_pack": "centos_7",
+      "check_id": "V-204532",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204540",
+      "rule_id": "V-204540_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit daemon must be running",
+      "check_pack": "centos_7",
+      "check_id": "V-204540",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204541",
+      "rule_id": "V-204541_automatestig_check",
+      "classification": "automated",
+      "reason": "Firewalld service must be running",
+      "check_pack": "centos_7",
+      "check_id": "V-204541",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204542",
+      "rule_id": "V-204542_automatestig_check",
+      "classification": "automated",
+      "reason": "SELinux must be set to enforcing mode",
+      "check_pack": "centos_7",
+      "check_id": "V-204542",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204550",
+      "rule_id": "V-204550_automatestig_check",
+      "classification": "automated",
+      "reason": "Minimum password length must be 15 or more characters",
+      "check_pack": "centos_7",
+      "check_id": "V-204550",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204551",
+      "rule_id": "V-204551_automatestig_check",
+      "classification": "automated",
+      "reason": "Maximum password age must be 60 days or less",
+      "check_pack": "centos_7",
+      "check_id": "V-204551",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204552",
+      "rule_id": "V-204552_automatestig_check",
+      "classification": "automated",
+      "reason": "Passwords must be hashed with SHA-512",
+      "check_pack": "centos_7",
+      "check_id": "V-204552",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204553",
+      "rule_id": "V-204553_automatestig_check",
+      "classification": "automated",
+      "reason": "Password quality must require minimum length of 15",
+      "check_pack": "centos_7",
+      "check_id": "V-204553",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-204554",
+      "rule_id": "V-204554_automatestig_check",
+      "classification": "automated",
+      "reason": "Password quality must require at least one digit",
+      "check_pack": "centos_7",
+      "check_id": "V-204554",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/centos_7.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

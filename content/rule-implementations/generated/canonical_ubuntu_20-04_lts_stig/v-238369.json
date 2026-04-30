@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "kernel.randomize_va_space",
+      "type": "sysctl"
+    },
+    "description": "The Ubuntu operating system must implement address space layout randomization to protect its memory from unauthorized code execution.",
+    "expected": {
+      "type": "equals",
+      "value": "2"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238369"
+  },
+  "check_content_excerpt": "Verify the Ubuntu operating system implements address space layout randomization (ASLR) with the following command: \n \n$ sudo sysctl kernel.randomize_va_space \n \nkernel.randomize_va_space = 2 \n \nIf nothing is returned, verify the kernel parameter \"randomize_va_space\" is set to \"2\" with the following command: \n \n$ cat /proc/sys/kernel/randomize_va_space \n \n2 \n \nIf \"kernel.randomize_va_space\" is not set to \"2\", this is a finding. \n \nVerify that a saved value of the \"kernel.randomize_va_space\" variable is not defined. \n \n$ sudo egrep -R \"^kernel.randomize_va_space=[^2]\" /etc/sysctl.conf /etc/sysctl.d \n \nIf this returns a result, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "2"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Remove the \"kernel.randomize_va_space\" entry found in the \"/etc/sysctl.conf\" file or any file located in the \"/etc/sysctl.d/\" directory. \n \nAfter the line has been removed, the kernel settings from all system configuration files must be reloaded before any of the changes will take effect. Run the following command to reload all of the kernel system configuration files: \n \n$ sudo sysctl --system",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-238369r958928_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/canonical_ubuntu_20_04_lts_stig/u_can_ubuntu_20_04_lts_v2r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip",
+  "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
+  "title": "The Ubuntu operating system must implement address space layout randomization to protect its memory from unauthorized code execution.",
+  "tracking_issue": "TODO-V-238369",
+  "vuln_id": "V-238369"
+}

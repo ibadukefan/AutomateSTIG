@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system generates an audit record when all modifications to the \"tallylog\" file occur.\n\nCheck that the file is being audited by performing the following command:\n\n> sudo auditctl -l | grep -w '/var/log/tallylog'\n\n-w /var/log/tallylog -p wa -k logins\n\nIf the command does not return a line, this is a finding.\n\nNote:\nThe \"-k\" allows for specifying an arbitrary identifier. The string following \"-k\" does not need to match the example output above.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to generate an audit record for any all modifications to the \"tallylog\" file occur. \n\nAdd or update the following rule to \"/etc/audit/rules.d/audit.rules\":\n\n-w /var/log/tallylog -p wa -k logins\n\nTo reload the rules file, restart the audit daemon\n\n> sudo systemctl restart auditd.service\n\nor issue the following command:\n\n> sudo augenrules --load",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234946r958412_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must generate audit records for all modifications to the tallylog file must generate an audit record.",
+  "tracking_issue": "TODO-V-234946",
+  "vuln_id": "V-234946"
+}

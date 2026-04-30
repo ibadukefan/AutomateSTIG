@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Check whether the minimum time period between password changes for each user account is one day or greater.\n\n$ sudo awk -F: '$4 < 1 {print $1 \" \" $4}' /etc/shadow\n\nIf any results are returned that are not associated with a system account, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure non-compliant accounts to enforce a 24 hours/1 day minimum password lifetime:\n\n$ sudo chage -m 1 [user]",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230364r1017176_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 passwords must have a 24 hours/1 day minimum password lifetime restriction in /etc/shadow.",
+  "tracking_issue": "TODO-V-230364",
+  "vuln_id": "V-230364"
+}

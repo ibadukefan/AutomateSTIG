@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "At the command prompt, run the following command:\n\n# xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\".*\"//g' | xmllint --xpath '//param-name[text()=\"debug\"]/parent::init-param' -\n\nExample result:\n\n<init-param>\n      <param-name>debug</param-name>\n      <param-value>0</param-value>\n</init-param>\n\nIf the \"debug\" parameter is specified and is not \"0\", this is a finding.\n\nIf the \"debug\" parameter does not exist, this is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/web.xml\n\nNavigate to all <debug> nodes that are not set to \"0\".\n\nSet the <param-value> to \"0\" in all <param-name>debug</param-name> nodes.\n\nNote: The debug setting should look like the following:\n\n<init-param>\n      <param-name>debug</param-name>\n      <param-value>0</param-value>\n</init-param>\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-259058r960963_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/vmw_vsphere_8_0_vcsa_lookup_svc_stig/u_vmw_vsphere_8_0_y25m07_stig.json",
+  "source_version": "U_VMW_vSphere_8-0_Y25M07_STIG.zip",
+  "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
+  "title": "The vCenter Lookup service debug parameter must be disabled.",
+  "tracking_issue": "TODO-V-259058",
+  "vuln_id": "V-259058"
+}

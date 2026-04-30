@@ -1,0 +1,753 @@
+{
+  "stig_id": "RHEL_8_STIG",
+  "version": "001",
+  "source": "Generated from content/check_packs/rhel8.json; experimental inventory proof, not production DISA validation",
+  "status": "experimental",
+  "total_rules": 53,
+  "generated_from": "content/check_packs/rhel8.json",
+  "generated_at": "2026-04-27T00:00:00Z",
+  "rules": [
+    {
+      "vuln_id": "V-230223",
+      "rule_id": "SV-230223_automatestig_rule",
+      "title": "RHEL 8 SSH must not allow direct root login",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230223",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230224",
+      "rule_id": "SV-230224_automatestig_rule",
+      "title": "SSH must not allow empty passwords",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230224",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230225",
+      "rule_id": "SV-230225_automatestig_rule",
+      "title": "SSH ClientAliveInterval must be set",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230225",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230226",
+      "rule_id": "SV-230226_automatestig_rule",
+      "title": "SSH ClientAliveCountMax must be 1 or less",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230226",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230227",
+      "rule_id": "SV-230227_automatestig_rule",
+      "title": "SSH MaxAuthTries must be 4 or fewer",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230227",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230228",
+      "rule_id": "SV-230228_automatestig_rule",
+      "title": "SSH must display a login banner",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230228",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230229",
+      "rule_id": "SV-230229_automatestig_rule",
+      "title": "SSH X11 forwarding must be disabled",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230229",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230230",
+      "rule_id": "SV-230230_automatestig_rule",
+      "title": "SSH must use FIPS 140-2 compliant ciphers",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230230",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230231",
+      "rule_id": "SV-230231_automatestig_rule",
+      "title": "SSH must use FIPS 140-2 compliant MACs",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230231",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230232",
+      "rule_id": "SV-230232_automatestig_rule",
+      "title": "SSH GSSAPI authentication must be disabled",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230232",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230233",
+      "rule_id": "SV-230233_automatestig_rule",
+      "title": "SSH Kerberos authentication must be disabled",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230233",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230240",
+      "rule_id": "SV-230240_automatestig_rule",
+      "title": "IP forwarding must be disabled",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230240",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230241",
+      "rule_id": "SV-230241_automatestig_rule",
+      "title": "Source-routed packets must not be accepted",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230241",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230242",
+      "rule_id": "SV-230242_automatestig_rule",
+      "title": "Default source route acceptance must be disabled",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230242",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230243",
+      "rule_id": "SV-230243_automatestig_rule",
+      "title": "ICMP redirects must not be accepted",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230243",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230244",
+      "rule_id": "SV-230244_automatestig_rule",
+      "title": "Default ICMP redirect acceptance must be disabled",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230244",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230245",
+      "rule_id": "SV-230245_automatestig_rule",
+      "title": "System must not send ICMP redirects",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230245",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230246",
+      "rule_id": "SV-230246_automatestig_rule",
+      "title": "Default ICMP redirect sending must be disabled",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230246",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230247",
+      "rule_id": "SV-230247_automatestig_rule",
+      "title": "System must ignore ICMP broadcast echo requests",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230247",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230248",
+      "rule_id": "SV-230248_automatestig_rule",
+      "title": "Reverse path filtering must be enabled",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230248",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230249",
+      "rule_id": "SV-230249_automatestig_rule",
+      "title": "TCP SYN cookies must be enabled",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230249",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230250",
+      "rule_id": "SV-230250_automatestig_rule",
+      "title": "ASLR must be fully enabled",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230250",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230251",
+      "rule_id": "SV-230251_automatestig_rule",
+      "title": "Kernel message buffer must be restricted",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230251",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230252",
+      "rule_id": "SV-230252_automatestig_rule",
+      "title": "Kernel pointer addresses must be restricted",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230252",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230253",
+      "rule_id": "SV-230253_automatestig_rule",
+      "title": "IPv6 source routing must be disabled",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230253",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230254",
+      "rule_id": "SV-230254_automatestig_rule",
+      "title": "IPv6 ICMP redirects must not be accepted",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230254",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230260",
+      "rule_id": "SV-230260_automatestig_rule",
+      "title": "/etc/shadow must be mode 0000 and owned by root",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230260",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230261",
+      "rule_id": "SV-230261_automatestig_rule",
+      "title": "/etc/passwd must be mode 0644 and owned by root",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230261",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230262",
+      "rule_id": "SV-230262_automatestig_rule",
+      "title": "/etc/group must be mode 0644 and owned by root",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230262",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230263",
+      "rule_id": "SV-230263_automatestig_rule",
+      "title": "/etc/gshadow must be mode 0000 and owned by root",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230263",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230264",
+      "rule_id": "SV-230264_automatestig_rule",
+      "title": "sshd_config must be mode 0600 and owned by root",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230264",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230270",
+      "rule_id": "SV-230270_automatestig_rule",
+      "title": "AIDE must be installed for file integrity checking",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230270",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230271",
+      "rule_id": "SV-230271_automatestig_rule",
+      "title": "Audit package must be installed",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230271",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230272",
+      "rule_id": "SV-230272_automatestig_rule",
+      "title": "Firewalld must be installed",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230272",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230273",
+      "rule_id": "SV-230273_automatestig_rule",
+      "title": "openssl-pkcs11 must be installed for smart card support",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230273",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230275",
+      "rule_id": "SV-230275_automatestig_rule",
+      "title": "Telnet server must not be installed",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230275",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230276",
+      "rule_id": "SV-230276_automatestig_rule",
+      "title": "RSH server must not be installed",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230276",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230277",
+      "rule_id": "SV-230277_automatestig_rule",
+      "title": "TFTP server must not be installed",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230277",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230278",
+      "rule_id": "SV-230278_automatestig_rule",
+      "title": "vsftpd must not be installed unless required",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230278",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230280",
+      "rule_id": "SV-230280_automatestig_rule",
+      "title": "Audit daemon must be running",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230280",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230281",
+      "rule_id": "SV-230281_automatestig_rule",
+      "title": "Firewall must be active",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230281",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230282",
+      "rule_id": "SV-230282_automatestig_rule",
+      "title": "SSH daemon must be running",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230282",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230290",
+      "rule_id": "SV-230290_automatestig_rule",
+      "title": "Minimum password length must be 15 or more characters",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230290",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230291",
+      "rule_id": "SV-230291_automatestig_rule",
+      "title": "Maximum password age must be 60 days or less",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230291",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230292",
+      "rule_id": "SV-230292_automatestig_rule",
+      "title": "Minimum password age must be at least 1 day",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230292",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230293",
+      "rule_id": "SV-230293_automatestig_rule",
+      "title": "Passwords must be hashed with SHA-512",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230293",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230294",
+      "rule_id": "SV-230294_automatestig_rule",
+      "title": "Password quality must require minimum length of 15",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230294",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230295",
+      "rule_id": "SV-230295_automatestig_rule",
+      "title": "Password quality must require at least one digit",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230295",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230296",
+      "rule_id": "SV-230296_automatestig_rule",
+      "title": "Password quality must require at least one uppercase character",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230296",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230297",
+      "rule_id": "SV-230297_automatestig_rule",
+      "title": "Password quality must require at least one lowercase character",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230297",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230298",
+      "rule_id": "SV-230298_automatestig_rule",
+      "title": "Password quality must require at least one special character",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230298",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230300",
+      "rule_id": "SV-230300_automatestig_rule",
+      "title": "Martian packets must be logged",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230300",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    },
+    {
+      "vuln_id": "V-230301",
+      "rule_id": "SV-230301_automatestig_rule",
+      "title": "Core dumps must be disabled or piped to /bin/false",
+      "severity": null,
+      "classification": "automated",
+      "check_pack": "rhel8",
+      "check_id": "V-230301",
+      "evidence_required": true,
+      "reason": "Current AutomateSTIG check-pack inventory contains an automated check definition for this Vuln ID. This manifest is experimental until validated against authorized DISA benchmark and scanner/checklist fixtures.",
+      "validated_by": [
+        "fixture:fixtures/authorized/manifest.example.json"
+      ]
+    }
+  ]
+}

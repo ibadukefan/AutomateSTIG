@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system disables the ability to automount devices.\n\nCheck to see if automounter service is active with the following command:\n\n# systemctl status autofs\nautofs.service - Automounts filesystems on demand\n   Loaded: loaded (/usr/lib/systemd/system/autofs.service; disabled)\n   Active: inactive (dead)\n\nIf the \"autofs\" status is set to \"active\" and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable the ability to automount devices.\n\nTurn off the automount service with the following commands:\n\n# systemctl stop autofs\n# systemctl disable autofs\n\nIf \"autofs\" is required for Network File System (NFS), it must be documented with the ISSO.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204451r958498_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must disable the file system automounter unless required.",
+  "tracking_issue": "TODO-V-204451",
+  "vuln_id": "V-204451"
+}

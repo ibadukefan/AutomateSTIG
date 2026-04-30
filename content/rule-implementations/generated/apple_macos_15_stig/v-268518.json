@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the macOS system is configured to disable Bluetooth sharing with the following commands:\n\nCURRENT_USER=$( /usr/sbin/scutil <<< \"show State:/Users/ConsoleUser\" | /usr/bin/awk '/Name :/ && ! /loginwindow/ { print $3 }' )\n/usr/bin/sudo -u \"$CURRENT_USER\" /usr/bin/defaults -currentHost read com.apple.Bluetooth PrefKeyServicesEnabled\n\nIf the result is not \"0\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the macOS system to disable Bluetooth sharing with the following commands:\n\nCURRENT_USER=$( /usr/sbin/scutil <<< \"show State:/Users/ConsoleUser\" | /usr/bin/awk '/Name :/ && ! /loginwindow/ { print $3 }' )\n/usr/bin/sudo -u \"$CURRENT_USER\" /usr/bin/defaults -currentHost write com.apple.Bluetooth PrefKeyServicesEnabled -bool false",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-268518r1137691_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_15_stig/u_apple_macos_15_v1r7_stig.json",
+  "source_version": "U_Apple_macOS_15_V1R7_STIG.zip",
+  "stig_id": "Apple_macOS_15_STIG",
+  "title": "The macOS system must disable Bluetooth Sharing.",
+  "tracking_issue": "TODO-V-268518",
+  "vuln_id": "V-268518"
+}

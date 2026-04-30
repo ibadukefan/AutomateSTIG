@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the PE switch configuration to determine if a MAC address limit has been set for each VPLS bridge domain.\n\nbridge-domain 100 \n mac limit maximum addresses nnnnn\n\nIf a limit has not been configured, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure a MAC address learning limit for each VPLS bridge domain.\n\nSW1(config)# bridge-domain 100\nSW1(config-bdomain)# mac limit maximum addresses nnnn\nSW1(config-bdomain)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221125r999734_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco PE switch must be configured to limit the number of MAC addresses it can learn for each Virtual Private LAN Services (VPLS) bridge domain.",
+  "tracking_issue": "TODO-V-221125",
+  "vuln_id": "V-221125"
+}

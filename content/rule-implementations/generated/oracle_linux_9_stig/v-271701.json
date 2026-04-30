@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 USBGuard has a policy configured with the following command:\n\n$ usbguard list-rules\nallow id 1d6b:0001 serial\n\nIf the command does not return results or an error is returned, ask the SA to indicate how unauthorized peripherals are being blocked.\n\nIf there is no evidence that unauthorized peripherals are being blocked before establishing a connection, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to enable the blocking of unauthorized peripherals with the following command:\n\nNote: This command must be run from a root shell and will create an allow list for any USB devices currently connect to the system.\n\n# usbguard generate-policy --no-hash > /etc/usbguard/rules.conf\n\nNote: Enabling and starting USBGuard without properly configuring it for an individual system will immediately prevent any access over a USB device such as a keyboard or mouse.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271701r1091815_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must block unauthorized peripherals before establishing a connection.",
+  "tracking_issue": "TODO-V-271701",
+  "vuln_id": "V-271701"
+}

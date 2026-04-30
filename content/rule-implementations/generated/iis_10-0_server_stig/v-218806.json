@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Interview the System Administrator for the IIS 10.0 web server.\n\nAsk for documentation on the disaster recovery methods tested and planned for the IIS 10.0 web server in the event of the necessity for rollback.\n\nIf documentation for a disaster recovery has not been established, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Prepare documentation for disaster recovery methods for the IIS 10.0 web server in the event of the necessity for rollback.\n\nDocument and test the disaster recovery methods designed.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-218806r961122_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/iis_10_0_server_stig/u_ms_iis_10_0_y26m04_stig.json",
+  "source_version": "U_MS_IIS_10-0_Y26M04_STIG.zip",
+  "stig_id": "IIS_10-0_Server_STIG",
+  "title": "The IIS 10.0 web server must augment re-creation to a stable and known baseline.",
+  "tracking_issue": "TODO-V-218806",
+  "vuln_id": "V-218806"
+}

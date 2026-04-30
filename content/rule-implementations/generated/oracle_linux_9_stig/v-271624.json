@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 pam_unix.so module is configured to use sha512 in /etc/pam.d/password-auth with the following command:\n\n$ grep \"^password.*pam_unix.so.*sha512\" /etc/pam.d/password-auth\npassword sufficient pam_unix.so sha512\n\nIf \"sha512\" is missing, or the line is commented out, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to use a FIPS 140-3 approved cryptographic hashing algorithm for system authentication.\n\nEdit/modify the following line in the \"/etc/pam.d/password-auth\" file to include the sha512 option for pam_unix.so:\n\npassword sufficient pam_unix.so sha512",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271624r1091584_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 pam_unix.so module must be configured in the password-auth file to use a FIPS 140-3 approved cryptographic hashing algorithm for system authentication.",
+  "tracking_issue": "TODO-V-271624",
+  "vuln_id": "V-271624"
+}

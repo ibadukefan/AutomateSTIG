@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that there are no wireless interfaces configured on the system.\n\nThis is N/A for systems that do not have wireless network adapters.\n\nCheck for the presence of active wireless interfaces with the following command:\n\n# nmcli device\nDEVICE TYPE STATE\neth0 ethernet connected\nwlp3s0 wifi disconnected\nlo loopback unmanaged\n\nIf a wireless interface is configured and its use on the system is not documented with the Information System Security Officer (ISSO), this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system to disable all wireless network interfaces with the following command:\n\n#nmcli radio wifi off",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204634r971547_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must be configured so that all wireless network adapters are disabled.",
+  "tracking_issue": "TODO-V-204634",
+  "vuln_id": "V-204634"
+}

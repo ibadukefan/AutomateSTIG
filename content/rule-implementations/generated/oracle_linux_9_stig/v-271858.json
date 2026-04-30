@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 nftables is configured to allow rate limits on any connection to the system with the following command:\n\n$ sudo grep -i firewallbackend /etc/firewalld/firewalld.conf\n# FirewallBackend\nFirewallBackend=nftables\n\nIf the \"nftables\" is not set as the \"FirewallBackend\" default, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure \"nftables\" to be the default \"firewallbackend\" for \"firewalld\" by adding or editing the following line in \"/etc/firewalld/firewalld.conf\":\n\nFirewallBackend=nftables\n\nEstablish rate-limiting rules based on organization-defined types of DoS attacks on impacted network interfaces.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271858r1092286_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must protect against or limit the effects of denial-of-service (DoS) attacks by ensuring rate-limiting measures on impacted network interfaces are implemented.",
+  "tracking_issue": "TODO-V-271858",
+  "vuln_id": "V-271858"
+}

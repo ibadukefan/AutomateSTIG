@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify OL 8 generates an audit record for any use of the \"truncate\", \"ftruncate\", \"creat\", \"open\", \"openat\", and \"open_by_handle_at\" system calls by running the following command to check the file system rules in \"/etc/audit/audit.rules\":\n\n$ sudo grep 'open\\|truncate\\|creat' /etc/audit/audit.rules\n\n-a always,exit -F arch=b32 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EPERM -F auid>=1000 -F auid!=unset -k perm_access\n-a always,exit -F arch=b64 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EPERM -F auid>=1000 -F auid!=unset -k perm_access\n\n-a always,exit -F arch=b32 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EACCES -F auid>=1000 -F auid!=unset -k perm_access\n-a always,exit -F arch=b64 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EACCES -F auid>=1000 -F auid!=unset -k perm_access\n\nIf the output does not produce rules containing \"-F exit=-EPERM\", this is a finding.\nIf the output does not produce rules containing \"-F exit=-EACCES\", this is a finding.\nIf the command does not return an audit rule for \"truncate\", \"ftruncate\", \"creat\", \"open\", \"openat\", and \"open_by_handle_at\" or any of the lines returned are commented out, this is a finding.\n\nNote: The \"-k\" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit system to generate an audit event for any use of the \"truncate\", \"ftruncate\", \"creat\", \"open\", \"openat\", and \"open_by_handle_at\" system calls by adding or updating the following rules in the \"/etc/audit/rules.d/audit.rules\" file: \n \n-a always,exit -F arch=b32 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EPERM -F auid>=1000 -F auid!=unset -k perm_access \n-a always,exit -F arch=b64 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EPERM -F auid>=1000 -F auid!=unset -k perm_access \n \n-a always,exit -F arch=b32 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EACCES -F auid>=1000 -F auid!=unset -k perm_access \n-a always,exit -F arch=b64 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EACCES -F auid>=1000 -F auid!=unset -k perm_access \n \nThe audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command: \n \n$ sudo service auditd restart",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248784r958412_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must generate audit records for any use of the \"truncate\", \"ftruncate\", \"creat\", \"open\", \"openat\", and \"open_by_handle_at\" system calls.",
+  "tracking_issue": "TODO-V-248784",
+  "vuln_id": "V-248784"
+}

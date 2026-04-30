@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "net.ipv4.tcp_syncookies",
+      "type": "sysctl"
+    },
+    "description": "The Ubuntu operating system must be configured to use TCP syncookies.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238333"
+  },
+  "check_content_excerpt": "Verify the Ubuntu operating system is configured to use TCP syncookies. \n \nCheck the value of TCP syncookies with the following command: \n \n$ sysctl net.ipv4.tcp_syncookies \nnet.ipv4.tcp_syncookies = 1 \n \nIf the value is not \"1\", this is a finding. \n \nCheck the saved value of TCP syncookies with the following command: \n \n$ sudo grep -i net.ipv4.tcp_syncookies /etc/sysctl.conf /etc/sysctl.d/* | grep -v '#' \n \nIf no output is returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the Ubuntu operating system to use TCP syncookies by running the following command: \n \n$ sudo sysctl -w net.ipv4.tcp_syncookies=1 \n \nIf \"1\" is not the system's default value, add or update the following line in \"/etc/sysctl.conf\": \n \nnet.ipv4.tcp_syncookies = 1",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-238333r958528_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/canonical_ubuntu_20_04_lts_stig/u_can_ubuntu_20_04_lts_v2r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip",
+  "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
+  "title": "The Ubuntu operating system must be configured to use TCP syncookies.",
+  "tracking_issue": "TODO-V-238333",
+  "vuln_id": "V-238333"
+}

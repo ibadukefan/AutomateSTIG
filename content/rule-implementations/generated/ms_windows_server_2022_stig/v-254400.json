@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This applies to domain controllers. It is NA for other systems.\n\nOpen an elevated \"Command Prompt\" (run as administrator).\n\nEnter \"ntdsutil\".\n\nAt the \"ntdsutil:\" prompt, enter \"LDAP policies\".\n\nAt the \"ldap policy:\" prompt, enter \"connections\".\n\nAt the \"server connections:\" prompt, enter \"connect to server [host-name]\"\n(where [host-name] is the computer name of the domain controller).\n\nAt the \"server connections:\" prompt, enter \"q\".\n\nAt the \"ldap policy:\" prompt, enter \"show values\". \n\nIf the value for MaxConnIdleTime is greater than \"300\" (5 minutes) or is not specified, this is a finding.\n\nEnter \"q\" at the \"ldap policy:\" and \"ntdsutil:\" prompts to exit.\n\nAlternately, Dsquery can be used to display MaxConnIdleTime:\n\nOpen \"Command Prompt (Admin)\".\nEnter the following command (on a single line).\n\ndsquery * \"cn=Default Query Policy,cn=Query-Policies,cn=Directory Service, cn=Windows NT,cn=Services,cn=Configuration,dc=[forest-name]\" -attr LDAPAdminLimits \n\nThe quotes are required and dc=[forest-name] is the fully qualified LDAP name of the domain being reviewed (e.g., dc=disaost,dc=mil).\n\nIf the results do not specify a \"MaxConnIdleTime\" or it has a value greater than \"300\" (5 minutes), this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the directory service to terminate LDAP-based network connections to the directory server after 5 minutes of inactivity.\n\nOpen an elevated \"Command prompt\" (run as administrator).\n\nEnter \"ntdsutil\".\n\nAt the \"ntdsutil:\" prompt, enter \"LDAP policies\".\n\nAt the \"ldap policy:\" prompt, enter \"connections\".\n\nAt the \"server connections:\" prompt, enter \"connect to server [host-name]\" (where [host-name] is the computer name of the domain controller).\n\nAt the \"server connections:\" prompt, enter \"q\".\n\nAt the \"ldap policy:\" prompt, enter \"Set MaxConnIdleTime to 300\".\n\nEnter \"Commit Changes\" to save.\n\nEnter \"Show values\" to verify changes.\n\nEnter \"q\" at the \"ldap policy:\" and \"ntdsutil:\" prompts to exit.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-254400r970703_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2022_stig/u_ms_windows_server_2022_v2r8_stig.json",
+  "source_version": "U_MS_Windows_Server_2022_V2R8_STIG.zip",
+  "stig_id": "MS_Windows_Server_2022_STIG",
+  "title": "Windows Server 2022 directory service must be configured to terminate LDAP-based network connections to the directory server after five minutes of inactivity.",
+  "tracking_issue": "TODO-V-254400",
+  "vuln_id": "V-254400"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the version of the operating system is vendor supported.\n\nNote: The lifecycle time spans and dates are subject to adjustment.\n\nCheck the version of the operating system with the following command:\n\n$ sudo cat /etc/redhat-release\n\nRed Hat Enterprise Linux Server release 8.6 (Ootpa)\n\nCurrent End of Extended Update Support for RHEL 8.1 is 30 November 2021.\n\nCurrent End of Extended Update Support for RHEL 8.2 is 30 April 2022.\n\nCurrent End of Extended Update Support for RHEL 8.4 is 31 May 2023.\n\nCurrent End of Maintenance Support for RHEL 8.5 is 31 May 2022.\n\nCurrent End of Extended Update Support for RHEL 8.6 is 31 May 2024.\n\nCurrent End of Maintenance Support for RHEL 8.7 is 31 May 2023.\n\nCurrent End of Extended Update Support for RHEL 8.8 is 31 May 2025.\n\nCurrent End of Maintenance Support for RHEL 8.9 is 31 May 2024.\n\nCurrent End of Maintenance Support for RHEL 8.10 is 31 May 2029.\n\nIf the release is not supported by the vendor, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Upgrade to a supported version of RHEL 8.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230221r1017040_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must be a vendor-supported release.",
+  "tracking_issue": "TODO-V-230221",
+  "vuln_id": "V-230221"
+}

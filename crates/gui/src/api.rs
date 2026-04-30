@@ -46,14 +46,20 @@ pub fn routes() -> Router<AppState> {
         .route("/stigman/config", post(stigman_set_config))
         .route("/stigman/test", post(stigman_test_connection))
         .route("/stigman/collections", get(stigman_list_collections))
-        .route("/stigman/collections/{cid}/assets", get(stigman_list_assets))
+        .route(
+            "/stigman/collections/{cid}/assets",
+            get(stigman_list_assets),
+        )
         .route("/stigman/sync/{cid}", post(stigman_sync_assets))
         .route("/stigman/diff/{cid}", get(stigman_diff_assets))
         .route("/stigman/push/{checklist_id}", post(stigman_push_checklist))
         // Batch evaluation
         .route("/evaluate/batch", post(evaluate_batch))
         // Finding editing
-        .route("/checklists/{id}/findings/{vuln_id}", axum::routing::patch(update_finding))
+        .route(
+            "/checklists/{id}/findings/{vuln_id}",
+            axum::routing::patch(update_finding),
+        )
         // Scan import (file upload -> evaluate)
         .route("/evaluate/with-scan", post(evaluate_with_scan))
         // Agent config
@@ -72,7 +78,10 @@ pub fn routes() -> Router<AppState> {
         // Credential vault
         .route("/credentials", get(list_credentials))
         .route("/credentials", post(create_credential))
-        .route("/credentials/{id}", axum::routing::delete(delete_credential))
+        .route(
+            "/credentials/{id}",
+            axum::routing::delete(delete_credential),
+        )
         // Schedules
         .route("/schedules", get(list_schedules))
         .route("/schedules", post(create_schedule))
@@ -83,7 +92,10 @@ pub fn routes() -> Router<AppState> {
         .route("/assets/bulk-assign-stig", post(bulk_assign_stig))
         .route("/assets/bulk-update", post(bulk_update_assets))
         .route("/checklists/{id}/re-evaluate", post(re_evaluate))
-        .route("/checklists/{id}/findings/{vuln_id}/poam", axum::routing::patch(update_poam))
+        .route(
+            "/checklists/{id}/findings/{vuln_id}/poam",
+            axum::routing::patch(update_poam),
+        )
         .route("/checklists/compare", post(compare_checklists))
         .route("/trends/{hostname}", get(compliance_trends))
         // Answer file management
@@ -104,7 +116,13 @@ pub fn routes() -> Router<AppState> {
 /// Sanitize a filename for Content-Disposition headers.
 fn sanitize_filename(s: &str) -> String {
     s.chars()
-        .map(|c| if c.is_alphanumeric() || c == '_' || c == '-' || c == '.' { c } else { '_' })
+        .map(|c| {
+            if c.is_alphanumeric() || c == '_' || c == '-' || c == '.' {
+                c
+            } else {
+                '_'
+            }
+        })
         .collect()
 }
 
@@ -141,11 +159,7 @@ async fn get_status(State(state): State<AppState>) -> Json<serde_json::Value> {
         .library()
         .map(|l| l.list_benchmarks().len())
         .unwrap_or(0);
-    let checklist_count = state
-        .db()
-        .list_checklists()
-        .map(|c| c.len())
-        .unwrap_or(0);
+    let checklist_count = state.db().list_checklists().map(|c| c.len()).unwrap_or(0);
 
     api_ok(StatusResponse {
         version: env!("CARGO_PKG_VERSION").to_string(),
@@ -221,10 +235,10 @@ async fn get_benchmark(
     State(state): State<AppState>,
     axum::extract::Path(id): axum::extract::Path<String>,
 ) -> Json<serde_json::Value> {
-    match state.library().and_then(|l| {
-        l.load_benchmark(&id)
-            .map_err(|e| anyhow::anyhow!("{}", e))
-    }) {
+    match state
+        .library()
+        .and_then(|l| l.load_benchmark(&id).map_err(|e| anyhow::anyhow!("{}", e)))
+    {
         Ok(b) => {
             let cat_i = b.rules_by_severity(Severity::High).len();
             let cat_ii = b.rules_by_severity(Severity::Medium).len();
@@ -314,14 +328,21 @@ async fn import_disa(
                                         match library.add_benchmark(&benchmark) {
                                             Ok(()) => {
                                                 // Auto-generate check pack from check-content text.
-                                                let conv = automatestig_core::converter::convert_benchmark(&benchmark);
+                                                let conv =
+                                                    automatestig_core::converter::convert_benchmark(
+                                                        &benchmark,
+                                                    );
                                                 if conv.automated > 0 {
-                                                    let packs_dir = library.root().join("auto_check_packs");
+                                                    let packs_dir =
+                                                        library.root().join("auto_check_packs");
                                                     let _ = std::fs::create_dir_all(&packs_dir);
                                                     if let Ok(json) = automatestig_core::converter::check_pack_to_json(&conv.check_pack) {
                                                         let _ = std::fs::write(packs_dir.join(format!("{}.json", benchmark.id)), &json);
                                                     }
-                                                    details.push(format!("Imported: {} (auto-generated {} checks)", info, conv.automated));
+                                                    details.push(format!(
+                                                        "Imported: {} (auto-generated {} checks)",
+                                                        info, conv.automated
+                                                    ));
                                                 } else {
                                                     details.push(format!("Imported: {}", info));
                                                 }
@@ -362,10 +383,18 @@ async fn import_disa(
                             if conv.automated > 0 {
                                 let packs_dir = library.root().join("auto_check_packs");
                                 let _ = std::fs::create_dir_all(&packs_dir);
-                                if let Ok(json) = automatestig_core::converter::check_pack_to_json(&conv.check_pack) {
-                                    let _ = std::fs::write(packs_dir.join(format!("{}.json", benchmark.id)), &json);
+                                if let Ok(json) = automatestig_core::converter::check_pack_to_json(
+                                    &conv.check_pack,
+                                ) {
+                                    let _ = std::fs::write(
+                                        packs_dir.join(format!("{}.json", benchmark.id)),
+                                        &json,
+                                    );
                                 }
-                                details.push(format!("Imported: {} (auto-generated {} checks)", info, conv.automated));
+                                details.push(format!(
+                                    "Imported: {} (auto-generated {} checks)",
+                                    info, conv.automated
+                                ));
                             } else {
                                 details.push(format!("Imported: {}", info));
                             }
@@ -420,7 +449,39 @@ async fn import_stigpack(
             Err(e) => return api_error(&e.to_string()),
         };
 
-        match automatestig_stigpack::importer::import_pack(tmp.path(), &mut library) {
+        let allow_unsigned = std::env::var("AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK")
+            .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
+            .unwrap_or(false);
+        let import_result = if allow_unsigned {
+            automatestig_stigpack::importer::import_pack(tmp.path(), &mut library)
+        } else {
+            let mut trust_store = automatestig_stigpack::signing::TrustStore::new();
+            let trust_dir = std::env::var("AUTOMATESTIG_TRUSTED_KEYS_DIR")
+                .map(std::path::PathBuf::from)
+                .unwrap_or_else(|_| {
+                    std::env::var("HOME")
+                        .or_else(|_| std::env::var("USERPROFILE"))
+                        .map(std::path::PathBuf::from)
+                        .unwrap_or_else(|_| std::path::PathBuf::from("."))
+                        .join(".automatestig")
+                        .join("trusted_keys")
+                });
+            if let Err(e) = trust_store.load_from_directory(&trust_dir) {
+                return api_error(&format!("Failed to load trusted .stigpack keys: {}", e));
+            }
+            if trust_store.is_empty() {
+                return api_error(
+                    "Trusted .stigpack signature required, but no trusted keys are configured. Add Ed25519 .pub files to AUTOMATESTIG_TRUSTED_KEYS_DIR or set AUTOMATESTIG_ALLOW_UNSIGNED_STIGPACK=1 for explicit lab-only import.",
+                );
+            }
+            automatestig_stigpack::importer::import_pack_trusted(
+                tmp.path(),
+                &mut library,
+                &trust_store,
+            )
+        };
+
+        match import_result {
             Ok(result) => api_ok(ImportResult {
                 imported: result.benchmarks_imported,
                 skipped: 0,
@@ -542,7 +603,11 @@ async fn get_checklist(
                     vuln_id: f.vuln_id.clone(),
                     rule_id: f.rule_id.clone(),
                     title: f.rule_title.clone(),
-                    severity: f.severity_override.unwrap_or(f.severity).as_cat_str().to_string(),
+                    severity: f
+                        .severity_override
+                        .unwrap_or(f.severity)
+                        .as_cat_str()
+                        .to_string(),
                     status: f.status.to_string(),
                     finding_details: f.finding_details.clone(),
                     comments: f.comments.clone(),
@@ -743,9 +808,7 @@ async fn disa_fetch(
 }
 
 /// Fetch all available STIGs from DISA.
-async fn disa_fetch_all(
-    State(state): State<AppState>,
-) -> Json<serde_json::Value> {
+async fn disa_fetch_all(State(state): State<AppState>) -> Json<serde_json::Value> {
     match crate::disa::fetch_all_content(&state).await {
         Ok(result) => api_ok(result),
         Err(e) => api_error(&e),
@@ -753,9 +816,7 @@ async fn disa_fetch_all(
 }
 
 /// Check for updates without downloading.
-async fn disa_check_updates(
-    State(state): State<AppState>,
-) -> Json<serde_json::Value> {
+async fn disa_check_updates(State(state): State<AppState>) -> Json<serde_json::Value> {
     match crate::disa::check_for_updates(&state).await {
         Ok(result) => api_ok(result),
         Err(e) => api_error(&e),
@@ -764,9 +825,7 @@ async fn disa_check_updates(
 
 /// Generate an offline update package (.stigpack) from the current library
 /// for transfer to air-gapped systems.
-async fn generate_offline_pack(
-    State(state): State<AppState>,
-) -> impl IntoResponse {
+async fn generate_offline_pack(State(state): State<AppState>) -> impl IntoResponse {
     let library = match state.library() {
         Ok(l) => l,
         Err(e) => {
@@ -789,7 +848,10 @@ async fn generate_offline_pack(
 
     // Build a stigpack with all current library content.
     let mut builder = automatestig_stigpack::builder::PackBuilder::new(
-        &format!("automatestig-offline-{}", chrono::Utc::now().format("%Y%m%d")),
+        &format!(
+            "automatestig-offline-{}",
+            chrono::Utc::now().format("%Y%m%d")
+        ),
         "AutomateSTIG Offline Update",
         &chrono::Utc::now().format("%Y.%m.%d").to_string(),
     )
@@ -891,10 +953,13 @@ async fn stigman_set_config(
             .flatten()
             .unwrap_or_else(|| {
                 // Generate a random salt on first use.
-                let salt = format!("{:x}", std::time::SystemTime::now()
-                    .duration_since(std::time::UNIX_EPOCH)
-                    .unwrap_or_default()
-                    .as_nanos());
+                let salt = format!(
+                    "{:x}",
+                    std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .unwrap_or_default()
+                        .as_nanos()
+                );
                 let _ = db.set_config("_encryption_salt", &salt);
                 salt
             });
@@ -1034,7 +1099,11 @@ async fn stigman_sync_assets(
                     local_assets[idx].address = ip.clone();
                 }
             }
-            details.push(format!("Updated: {} ({} STIGs)", sm_asset.name, stig_ids.len()));
+            details.push(format!(
+                "Updated: {} ({} STIGs)",
+                sm_asset.name,
+                stig_ids.len()
+            ));
         } else {
             // Create new local asset from STIG-Manager data.
             let mut asset = automatestig_core::inventory::assets::ManagedAsset::new(
@@ -1051,7 +1120,11 @@ async fn stigman_sync_assets(
             }
             asset.notes = sm_asset.description.clone();
             asset.tags = vec!["stigman-sync".to_string()];
-            details.push(format!("Created: {} ({} STIGs)", sm_asset.name, stig_ids.len()));
+            details.push(format!(
+                "Created: {} ({} STIGs)",
+                sm_asset.name,
+                stig_ids.len()
+            ));
             local_assets.push(asset);
         }
         synced += 1;
@@ -1103,12 +1176,20 @@ async fn stigman_diff_assets(
         sm_assets.iter().map(|a| a.name.clone()).collect();
 
     // Assets in SM but not local.
-    let new_in_sm: Vec<&str> = sm_names.difference(&local_names).map(|s| s.as_str()).collect();
+    let new_in_sm: Vec<&str> = sm_names
+        .difference(&local_names)
+        .map(|s| s.as_str())
+        .collect();
 
     // Assets local but not in SM.
     let removed_from_sm: Vec<&str> = local_names
         .iter()
-        .filter(|n| !sm_names.contains(*n) && local_assets.iter().any(|a| a.name == **n && a.tags.contains(&"stigman-sync".to_string())))
+        .filter(|n| {
+            !sm_names.contains(*n)
+                && local_assets
+                    .iter()
+                    .any(|a| a.name == **n && a.tags.contains(&"stigman-sync".to_string()))
+        })
         .map(|s| s.as_str())
         .collect();
 
@@ -1116,12 +1197,14 @@ async fn stigman_diff_assets(
     let mut stig_changes = Vec::new();
     for sm_asset in &sm_assets {
         if let Some(local) = local_assets.iter().find(|a| a.name == sm_asset.name) {
-            let sm_stigs: Vec<String> = match client.list_asset_stigs(&cid, &sm_asset.asset_id).await {
-                Ok(stigs) => stigs.iter().map(|s| s.benchmark_id.clone()).collect(),
-                Err(_) => continue,
-            };
+            let sm_stigs: Vec<String> =
+                match client.list_asset_stigs(&cid, &sm_asset.asset_id).await {
+                    Ok(stigs) => stigs.iter().map(|s| s.benchmark_id.clone()).collect(),
+                    Err(_) => continue,
+                };
 
-            let local_set: std::collections::HashSet<&String> = local.assigned_stigs.iter().collect();
+            let local_set: std::collections::HashSet<&String> =
+                local.assigned_stigs.iter().collect();
             let sm_set: std::collections::HashSet<&String> = sm_stigs.iter().collect();
 
             let added: Vec<&String> = sm_set.difference(&local_set).copied().collect();
@@ -1137,7 +1220,8 @@ async fn stigman_diff_assets(
         }
     }
 
-    let has_changes = !new_in_sm.is_empty() || !removed_from_sm.is_empty() || !stig_changes.is_empty();
+    let has_changes =
+        !new_in_sm.is_empty() || !removed_from_sm.is_empty() || !stig_changes.is_empty();
 
     api_ok(serde_json::json!({
         "has_changes": has_changes,
@@ -1516,7 +1600,9 @@ async fn update_finding(
         };
 
         if let Some(ref status_str) = req.status {
-            if let Some(status) = automatestig_core::models::finding::FindingStatus::from_ckl_str(status_str) {
+            if let Some(status) =
+                automatestig_core::models::finding::FindingStatus::from_ckl_str(status_str)
+            {
                 finding.status = status;
                 finding.source = automatestig_core::models::finding::FindingSource::Manual;
                 finding.evaluated_at = chrono::Utc::now();
@@ -1593,13 +1679,11 @@ async fn get_drift_report(
 
     // Find the previous checklist for the same asset+STIG.
     let all = db.list_checklists().unwrap_or_default();
-    let previous = all
-        .iter()
-        .rfind(|row| {
-            row.asset_hostname == current.asset.hostname
-                && row.stig_id == current.stig_info.stig_id
-                && row.id != id
-        });
+    let previous = all.iter().rfind(|row| {
+        row.asset_hostname == current.asset.hostname
+            && row.stig_id == current.stig_info.stig_id
+            && row.id != id
+    });
 
     match previous {
         Some(prev_row) => match db.load_checklist(&prev_row.id) {
@@ -1620,7 +1704,9 @@ async fn get_drift_report(
 // Asset Inventory
 // ---------------------------------------------------------------------------
 
-fn load_assets(db: &automatestig_storage::Database) -> Vec<automatestig_core::inventory::assets::ManagedAsset> {
+fn load_assets(
+    db: &automatestig_storage::Database,
+) -> Vec<automatestig_core::inventory::assets::ManagedAsset> {
     db.get_config("asset_inventory")
         .ok()
         .flatten()
@@ -1628,7 +1714,10 @@ fn load_assets(db: &automatestig_storage::Database) -> Vec<automatestig_core::in
         .unwrap_or_default()
 }
 
-fn save_assets(db: &automatestig_storage::Database, assets: &[automatestig_core::inventory::assets::ManagedAsset]) {
+fn save_assets(
+    db: &automatestig_storage::Database,
+    assets: &[automatestig_core::inventory::assets::ManagedAsset],
+) {
     if let Ok(json) = serde_json::to_string(assets) {
         let _ = db.set_config("asset_inventory", &json);
     }
@@ -1694,49 +1783,60 @@ async fn delete_asset_inv(
 // Credential Vault
 // ---------------------------------------------------------------------------
 
-fn save_vault(db: &automatestig_storage::Database, vault: &automatestig_core::inventory::credentials::CredentialVault) {
+fn save_vault(
+    db: &automatestig_storage::Database,
+    vault: &automatestig_core::inventory::credentials::CredentialVault,
+) -> Result<(), String> {
     let key_material = db
         .get_config("_encryption_salt")
-        .ok()
-        .flatten()
+        .map_err(|e| e.to_string())?
         .unwrap_or_else(|| {
-            let salt = format!("{:x}", std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .unwrap_or_default()
-                .as_nanos());
+            let rng = ring::rand::SystemRandom::new();
+            let mut bytes = [0u8; 32];
+            ring::rand::SecureRandom::fill(&rng, &mut bytes)
+                .expect("Failed to generate encryption salt");
+            let salt: String = bytes.iter().map(|b| format!("{:02x}", b)).collect();
             let _ = db.set_config("_encryption_salt", &salt);
             salt
         });
 
-    if let Ok(json) = serde_json::to_string(vault) {
-        // Encrypt the entire vault JSON before storing.
-        match crate::secrets::encrypt_secret(&json, &key_material) {
-            Ok(encrypted) => { let _ = db.set_config("credential_vault", &format!("enc:{}", encrypted)); }
-            Err(_) => { let _ = db.set_config("credential_vault", &json); } // Fallback to plaintext if encryption fails.
-        }
-    }
+    let json = serde_json::to_string(vault).map_err(|e| e.to_string())?;
+    let encrypted = crate::secrets::encrypt_secret(&json, &key_material)?;
+    db.set_config("credential_vault", &format!("enc:{}", encrypted))
+        .map_err(|e| e.to_string())?;
+    db.set_config("credential_vault_format", "encrypted-v1")
+        .map_err(|e| e.to_string())?;
+    Ok(())
 }
 
-fn load_vault(db: &automatestig_storage::Database) -> automatestig_core::inventory::credentials::CredentialVault {
-    let raw = db.get_config("credential_vault").ok().flatten().unwrap_or_default();
+fn load_vault(
+    db: &automatestig_storage::Database,
+) -> Result<automatestig_core::inventory::credentials::CredentialVault, String> {
+    let raw = db
+        .get_config("credential_vault")
+        .map_err(|e| e.to_string())?
+        .unwrap_or_default();
     if raw.is_empty() {
-        return automatestig_core::inventory::credentials::CredentialVault::default();
+        return Ok(automatestig_core::inventory::credentials::CredentialVault::default());
     }
 
-    // Decrypt if encrypted.
-    let json = if let Some(encrypted) = raw.strip_prefix("enc:") {
-        let key_material = db.get_config("_encryption_salt").ok().flatten().unwrap_or_default();
-        crate::secrets::decrypt_secret(encrypted, &key_material).unwrap_or(raw)
-    } else {
-        raw
-    };
-
-    serde_json::from_str(&json).unwrap_or_default()
+    let encrypted = raw.strip_prefix("enc:").ok_or_else(|| {
+        "Credential vault is plaintext/legacy and must be migrated before use".to_string()
+    })?;
+    let key_material = db
+        .get_config("_encryption_salt")
+        .map_err(|e| e.to_string())?
+        .ok_or_else(|| "Credential vault encryption salt is missing".to_string())?;
+    let json = crate::secrets::decrypt_secret(encrypted, &key_material)?;
+    serde_json::from_str(&json).map_err(|e| e.to_string())
 }
 
 async fn list_credentials(State(state): State<AppState>) -> Json<serde_json::Value> {
     let db = state.db();
-    let vault = load_vault(&db);
+    let vault = match load_vault(&db) {
+        Ok(vault) => vault,
+        Err(e) => return api_error(&format!("Failed to load credential vault: {}", e)),
+    };
     api_ok(vault.list_summary())
 }
 
@@ -1745,24 +1845,41 @@ async fn create_credential(
     Json(cred): Json<automatestig_core::inventory::credentials::StoredCredential>,
 ) -> Json<serde_json::Value> {
     let db = state.db();
-    let mut vault = load_vault(&db);
+    let mut vault = match load_vault(&db) {
+        Ok(vault) => vault,
+        Err(e) => return api_error(&format!("Failed to load credential vault: {}", e)),
+    };
     let summary = automatestig_core::inventory::credentials::CredentialSummary {
         id: cred.id.clone(),
         label: cred.label.clone(),
         credential_type: match &cred.credential {
-            automatestig_core::inventory::credentials::CredentialType::Password { .. } => "password".to_string(),
-            automatestig_core::inventory::credentials::CredentialType::SshKey { .. } => "ssh_key".to_string(),
-            automatestig_core::inventory::credentials::CredentialType::SshCertificate { .. } => "ssh_certificate".to_string(),
-            automatestig_core::inventory::credentials::CredentialType::Kerberos { .. } => "kerberos".to_string(),
-            automatestig_core::inventory::credentials::CredentialType::Token { .. } => "token".to_string(),
-            automatestig_core::inventory::credentials::CredentialType::ClientCertificate { .. } => "client_certificate".to_string(),
+            automatestig_core::inventory::credentials::CredentialType::Password { .. } => {
+                "password".to_string()
+            }
+            automatestig_core::inventory::credentials::CredentialType::SshKey { .. } => {
+                "ssh_key".to_string()
+            }
+            automatestig_core::inventory::credentials::CredentialType::SshCertificate {
+                ..
+            } => "ssh_certificate".to_string(),
+            automatestig_core::inventory::credentials::CredentialType::Kerberos { .. } => {
+                "kerberos".to_string()
+            }
+            automatestig_core::inventory::credentials::CredentialType::Token { .. } => {
+                "token".to_string()
+            }
+            automatestig_core::inventory::credentials::CredentialType::ClientCertificate {
+                ..
+            } => "client_certificate".to_string(),
         },
         username: cred.username().map(|s| s.to_string()),
         is_expired: cred.is_expired(),
         last_used: cred.last_used,
     };
     vault.add(cred);
-    save_vault(&db, &vault);
+    if let Err(e) = save_vault(&db, &vault) {
+        return api_error(&format!("Failed to save credential vault: {}", e));
+    }
     api_ok(summary)
 }
 
@@ -1771,9 +1888,14 @@ async fn delete_credential(
     axum::extract::Path(id): axum::extract::Path<String>,
 ) -> Json<serde_json::Value> {
     let db = state.db();
-    let mut vault = load_vault(&db);
+    let mut vault = match load_vault(&db) {
+        Ok(vault) => vault,
+        Err(e) => return api_error(&format!("Failed to load credential vault: {}", e)),
+    };
     let removed = vault.remove(&id);
-    save_vault(&db, &vault);
+    if let Err(e) = save_vault(&db, &vault) {
+        return api_error(&format!("Failed to save credential vault: {}", e));
+    }
     api_ok(removed)
 }
 
@@ -1781,7 +1903,9 @@ async fn delete_credential(
 // Schedules
 // ---------------------------------------------------------------------------
 
-fn load_schedules(db: &automatestig_storage::Database) -> automatestig_core::inventory::scheduler::SchedulerConfig {
+fn load_schedules(
+    db: &automatestig_storage::Database,
+) -> automatestig_core::inventory::scheduler::SchedulerConfig {
     db.get_config("scheduler_config")
         .ok()
         .flatten()
@@ -1789,7 +1913,10 @@ fn load_schedules(db: &automatestig_storage::Database) -> automatestig_core::inv
         .unwrap_or_default()
 }
 
-fn save_schedules(db: &automatestig_storage::Database, config: &automatestig_core::inventory::scheduler::SchedulerConfig) {
+fn save_schedules(
+    db: &automatestig_storage::Database,
+    config: &automatestig_core::inventory::scheduler::SchedulerConfig,
+) {
     if let Ok(json) = serde_json::to_string(config) {
         let _ = db.set_config("scheduler_config", &json);
     }
@@ -1962,8 +2089,15 @@ async fn save_answer_file(
     let templates_dir = lib_path.join("answer_templates");
     let _ = std::fs::create_dir_all(&templates_dir);
 
-    let filename = format!("{}.json", af.name.replace(' ', "_").to_lowercase());
-    let path = templates_dir.join(&filename);
+    let filename_base = match automatestig_core::path_safety::safe_filename(&af.name) {
+        Ok(name) => name.to_lowercase(),
+        Err(e) => return api_error(&format!("Unsafe answer file name: {}", e)),
+    };
+    let filename = format!("{}.json", filename_base);
+    let path = match automatestig_core::path_safety::safe_join_under(&templates_dir, &filename) {
+        Ok(path) => path,
+        Err(e) => return api_error(&format!("Unsafe answer file path: {}", e)),
+    };
 
     match af.save_json(&path) {
         Ok(()) => {
@@ -1989,9 +2123,11 @@ struct WebhookTestRequest {
     message: Option<String>,
 }
 
-async fn test_webhook(
-    Json(req): Json<WebhookTestRequest>,
-) -> Json<serde_json::Value> {
+async fn test_webhook(Json(req): Json<WebhookTestRequest>) -> Json<serde_json::Value> {
+    if let Err(e) = validate_webhook_url(&req.url) {
+        return api_error(&e);
+    }
+
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(10))
         .build()
@@ -2025,6 +2161,10 @@ async fn test_webhook(
 /// Send a webhook notification (used internally by the scheduler).
 #[allow(dead_code)] // Called by scheduler when implemented.
 pub async fn send_webhook_notification(url: &str, event: &str, data: &serde_json::Value) {
+    if validate_webhook_url(url).is_err() {
+        return;
+    }
+
     let client = match reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(10))
         .build()
@@ -2041,6 +2181,57 @@ pub async fn send_webhook_notification(url: &str, event: &str, data: &serde_json
     });
 
     let _ = client.post(url).json(&payload).send().await;
+}
+
+fn validate_webhook_url(url: &str) -> Result<(), String> {
+    let parsed = reqwest::Url::parse(url).map_err(|e| format!("Invalid webhook URL: {}", e))?;
+    if parsed.scheme() != "https" {
+        return Err("Webhook URL must use HTTPS".to_string());
+    }
+    if !parsed.username().is_empty() || parsed.password().is_some() {
+        return Err("Webhook URL must not include embedded credentials".to_string());
+    }
+    let host = parsed
+        .host_str()
+        .ok_or_else(|| "Webhook URL must include a host".to_string())?;
+    if host.eq_ignore_ascii_case("localhost") || host.ends_with(".localhost") {
+        return Err("Webhook URL must not target localhost".to_string());
+    }
+    if let Ok(ip) = host
+        .trim_start_matches('[')
+        .trim_end_matches(']')
+        .parse::<std::net::IpAddr>()
+    {
+        let allow_private = std::env::var("AUTOMATESTIG_ALLOW_PRIVATE_WEBHOOKS")
+            .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
+            .unwrap_or(false);
+        if !allow_private && !is_public_ip(ip) {
+            return Err(
+                "Webhook URL resolves to a non-public address; set AUTOMATESTIG_ALLOW_PRIVATE_WEBHOOKS only for trusted lab deployments"
+                    .to_string(),
+            );
+        }
+    }
+    Ok(())
+}
+
+fn is_public_ip(ip: std::net::IpAddr) -> bool {
+    match ip {
+        std::net::IpAddr::V4(ip) => {
+            !(ip.is_private()
+                || ip.is_loopback()
+                || ip.is_link_local()
+                || ip.is_broadcast()
+                || ip.is_documentation()
+                || ip.octets()[0] == 0)
+        }
+        std::net::IpAddr::V6(ip) => {
+            !(ip.is_loopback()
+                || ip.is_unspecified()
+                || ip.is_unique_local()
+                || ip.is_unicast_link_local())
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -2106,10 +2297,10 @@ async fn scan_winrm(
 ) -> Json<serde_json::Value> {
     let winrm_config = crate::winrm::WinrmConfig {
         host: req.host.clone(),
-        port: req.port.unwrap_or(5985),
+        port: req.port.unwrap_or(5986),
         username: req.username,
         password: req.password,
-        use_https: req.use_https.unwrap_or(false),
+        use_https: req.use_https.unwrap_or(true),
         verify_tls: true,
         timeout_secs: 60,
     };
@@ -2445,11 +2636,17 @@ async fn export_ckl(
     let db = state.db();
     match db.load_checklist(&id) {
         Ok(cl) => {
-            let filename = sanitize_filename(&format!("{}_{}.ckl", cl.asset.hostname, cl.stig_info.stig_id));
+            let filename = sanitize_filename(&format!(
+                "{}_{}.ckl",
+                cl.asset.hostname, cl.stig_info.stig_id
+            ));
             match ckl::write_ckl(&cl) {
                 Ok(xml) => (
                     [
-                        (axum::http::header::CONTENT_TYPE, "application/xml".to_string()),
+                        (
+                            axum::http::header::CONTENT_TYPE,
+                            "application/xml".to_string(),
+                        ),
                         (
                             axum::http::header::CONTENT_DISPOSITION,
                             format!("attachment; filename=\"{}\"", filename),
@@ -2480,11 +2677,17 @@ async fn export_cklb(
     let db = state.db();
     match db.load_checklist(&id) {
         Ok(cl) => {
-            let filename = sanitize_filename(&format!("{}_{}.cklb", cl.asset.hostname, cl.stig_info.stig_id));
+            let filename = sanitize_filename(&format!(
+                "{}_{}.cklb",
+                cl.asset.hostname, cl.stig_info.stig_id
+            ));
             match cklb::write_cklb(&cl) {
                 Ok(json) => (
                     [
-                        (axum::http::header::CONTENT_TYPE, "application/json".to_string()),
+                        (
+                            axum::http::header::CONTENT_TYPE,
+                            "application/json".to_string(),
+                        ),
                         (
                             axum::http::header::CONTENT_DISPOSITION,
                             format!("attachment; filename=\"{}\"", filename),
@@ -2513,7 +2716,11 @@ async fn export_all_zip(State(state): State<AppState>) -> impl IntoResponse {
     let rows = db.list_checklists().unwrap_or_default();
 
     if rows.is_empty() {
-        return (axum::http::StatusCode::BAD_REQUEST, "No checklists to export").into_response();
+        return (
+            axum::http::StatusCode::BAD_REQUEST,
+            "No checklists to export",
+        )
+            .into_response();
     }
 
     let mut zip_buffer = std::io::Cursor::new(Vec::new());
@@ -2524,7 +2731,10 @@ async fn export_all_zip(State(state): State<AppState>) -> impl IntoResponse {
 
         for row in &rows {
             if let Ok(cl) = db.load_checklist(&row.id) {
-                let filename = sanitize_filename(&format!("{}_{}.ckl", cl.asset.hostname, cl.stig_info.stig_id));
+                let filename = sanitize_filename(&format!(
+                    "{}_{}.ckl",
+                    cl.asset.hostname, cl.stig_info.stig_id
+                ));
                 if let Ok(xml) = ckl::write_ckl(&cl) {
                     let _ = zip.start_file(&filename, options);
                     let _ = std::io::Write::write_all(&mut zip, xml.as_bytes());
@@ -2535,12 +2745,21 @@ async fn export_all_zip(State(state): State<AppState>) -> impl IntoResponse {
     }
 
     let data = zip_buffer.into_inner();
-    let filename = format!("automatestig-export-{}.zip", chrono::Utc::now().format("%Y%m%d-%H%M"));
+    let filename = format!(
+        "automatestig-export-{}.zip",
+        chrono::Utc::now().format("%Y%m%d-%H%M")
+    );
 
     (
         [
-            (axum::http::header::CONTENT_TYPE, "application/zip".to_string()),
-            (axum::http::header::CONTENT_DISPOSITION, format!("attachment; filename=\"{}\"", filename)),
+            (
+                axum::http::header::CONTENT_TYPE,
+                "application/zip".to_string(),
+            ),
+            (
+                axum::http::header::CONTENT_DISPOSITION,
+                format!("attachment; filename=\"{}\"", filename),
+            ),
         ],
         data,
     )
@@ -2548,3 +2767,31 @@ async fn export_all_zip(State(state): State<AppState>) -> impl IntoResponse {
 }
 
 use axum::response::IntoResponse;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn webhook_validation_rejects_ssrf_targets_by_default() {
+        for url in [
+            "http://example.com/hook",
+            "https://localhost/hook",
+            "https://127.0.0.1/hook",
+            "https://10.0.0.1/hook",
+            "https://[::1]/hook",
+            "https://user:pass@example.com/hook",
+        ] {
+            assert!(
+                validate_webhook_url(url).is_err(),
+                "{url} should be rejected"
+            );
+        }
+    }
+
+    #[test]
+    fn webhook_validation_allows_https_public_hosts() {
+        assert!(validate_webhook_url("https://example.com/hook").is_ok());
+        assert!(validate_webhook_url("https://8.8.8.8/hook").is_ok());
+    }
+}

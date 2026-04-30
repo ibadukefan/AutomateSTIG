@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This applies to member servers and stand-alone or nondomain-joined systems. A separate version applies to domain controllers.\n\nVerify the effective setting in Local Group Policy Editor.\n\nRun gpedit.msc.\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.\n\nIf the following accounts or groups are not defined for the \"Deny log on as a service\" user right on domain-joined systems, this is a finding:\n- Enterprise Admins Group.\n- Domain Admins Group.\n\nIf any accounts or groups are defined for the \"Deny log on as a service\" user right on nondomain-joined systems, this is a finding.\n\nFor server core installations, run the following command:\n\nSecedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt\n\nReview the text file.\n\nIf the following SIDs are not defined for the \"SeDenyServiceLogonRight\" user right on domain-joined systems, this is a finding:\n\nS-1-5-root domain-519 (Enterprise Admins)\nS-1-5-domain-512 (Domain Admins)\n\nIf any SIDs are defined for the user right on nondomain-joined systems, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Deny log on as a service to include the following:\n\nDomain systems:\n- Enterprise Admins Group.\n- Domain Admins Group.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278186r1182299_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "The Windows Server 2025 \"Deny log on as a service\" user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts. No other groups or accounts must be assigned this right.",
+  "tracking_issue": "TODO-V-278186",
+  "vuln_id": "V-278186"
+}

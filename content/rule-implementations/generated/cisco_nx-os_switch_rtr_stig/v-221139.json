@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the configuration of the DR to verify that it is filtering IGMP or MLD report messages, allowing hosts to only join multicast groups from sources that have been approved.\n\nStep 1: Verify that all host-facing interfaces are configured to filter IGMP Membership Report messages (IGMP joins) as shown in the example below:\n\ninterface Ethernet2/4\n no switchport\n ip address 10.2.22.3/24 \n ip pim sparse-mode\n ip igmp version 3\n ip igmp report-policy ALLOWED_SOURCES\n\nStep 2: Verify that the report policy permits only sources that have been approved by the organization.\n\nroute-map ALLOWED_SOURCES permit 10\n match ip multicast source x.1.2.6/32 \nroute-map ALLOWED_SOURCES permit 20\n match ip multicast source x.1.2.7/32 \nroute-map ALLOWED_SOURCES deny 30\n match ip multicast source 0.0.0.0/0\n\nNote: This requirement is only applicable to Source Specific Multicast (SSM) implementation.\n\nIf the DR is not filtering IGMP or MLD report messages, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Step 1: Configure the report policy to filter IGMP Membership Report messages as shown in the example below:\n\nSW1(config-route-map)# route-map ALLOWED_SOURCES permit 10\nSW1(config-route-map)# match ip multicast source x.1.2.6/32\nSW1(config-route-map)# route-map ALLOWED_SOURCES permit 20\nSW1(config-route-map)# match ip multicast source x.1.2.7/32\nSW1(config-route-map)# route-map ALLOWED_SOURCES deny 30\nSW1(config-route-map)# match ip multicast source 0.0.0.0/0\nSW1(config-route-map)# exit\n\nStep 2: Apply the report policy to all applicable interfaces.\n\nSW1(config)# int e2/4\nSW1(config-if)# ip igmp report-policy ALLOWED_SOURCES \nSW1(config-if)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221139r999748_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco multicast Designated switch (DR) must be configured to filter the Internet Group Management Protocol (IGMP) and Multicast Listener Discovery (MLD) Report messages to allow hosts to join a multicast group only from sources that have been approved by the organization.",
+  "tracking_issue": "TODO-V-221139",
+  "vuln_id": "V-221139"
+}

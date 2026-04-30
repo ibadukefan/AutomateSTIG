@@ -33,7 +33,10 @@ pub fn run(input: &str, output: &str, include_unreviewed: bool) -> Result<()> {
 
     let answer_file = generate_answer_template(&checklist, include_unreviewed);
 
-    let out_ext = out_path.extension().and_then(|e| e.to_str()).unwrap_or("json");
+    let out_ext = out_path
+        .extension()
+        .and_then(|e| e.to_str())
+        .unwrap_or("json");
     match out_ext {
         "json" => answer_file.save_json(out_path)?,
         "yaml" | "yml" => answer_file.save_yaml(out_path)?,

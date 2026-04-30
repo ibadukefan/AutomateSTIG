@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "At the command prompt, run the following commands:\n\n# xmllint --xpath \"//Server/@port\" /usr/lib/vmware-lookupsvc/conf/server.xml\n# grep 'base.shutdown.port' /usr/lib/vmware-lookupsvc/conf/catalina.properties\n\nExample results:\n\nport=\"${base.shutdown.port}\"\nbase.shutdown.port=-1\n\nIf \"port\" does not equal \"${base.shutdown.port}\", this is a finding.\n\nIf \"base.shutdown.port\" does not equal \"-1\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/catalina.properties\n\nAdd or modify the setting \"base.shutdown.port=-1\" in the \"catalina.properties\" file.\n\nNavigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/server.xml\n\nConfigure the <Server> node with the value:\n\nport=\"${base.shutdown.port}\"\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-259057r960963_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/vmw_vsphere_8_0_vcsa_lookup_svc_stig/u_vmw_vsphere_8_0_y25m07_stig.json",
+  "source_version": "U_VMW_vSphere_8-0_Y25M07_STIG.zip",
+  "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
+  "title": "The vCenter Lookup service shutdown port must be disabled.",
+  "tracking_issue": "TODO-V-259057",
+  "vuln_id": "V-259057"
+}

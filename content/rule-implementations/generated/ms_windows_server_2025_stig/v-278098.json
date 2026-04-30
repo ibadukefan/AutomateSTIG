@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat",
+      "type": "registry",
+      "value_name": "DisableInventory"
+    },
+    "description": "Windows Server 2025 Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-278098"
+  },
+  "check_content_excerpt": "If the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat\\\n\nValue Name: DisableInventory\n\nType: REG_DWORD\nValue: 0x00000001 (1)",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Application Compatibility >> Turn off Inventory Collector to \"Enabled\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-278098r1181000_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft.",
+  "tracking_issue": "TODO-V-278098",
+  "vuln_id": "V-278098"
+}

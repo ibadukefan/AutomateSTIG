@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Type \"about:policies\" in the browser address bar. \n\nIf \"UserMessaging\" is not displayed under Policy Name or the Policy Value is not \"ExtensionRecommendations\" with a value of \"false\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Windows group policy:\n1. Open the group policy editor tool with \"gpedit.msc\".\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\\User Messaging\nPolicy Name: Extension Recommendations\nPolicy State: Disabled\n\nmacOS \"plist\" file:\nAdd the following:\n<key>UserMessaging</key>\n<dict>\n  <key>ExtensionRecommendations</key>\n  <false/>\n</dict>\n\nLinux \"policies.json\" file:\nAdd the following in the policies section:\n\"UserMessaging\": {\n  \"ExtensionRecommendations\": false\n}",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-251572r960963_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/moz_firefox_stig/u_moz_firefox_v6r7_stig.json",
+  "source_version": "U_MOZ_Firefox_V6R7_STIG.zip",
+  "stig_id": "MOZ_Firefox_STIG",
+  "title": "Firefox must not recommend extensions as the user is using the browser.",
+  "tracking_issue": "TODO-V-251572",
+  "vuln_id": "V-251572"
+}

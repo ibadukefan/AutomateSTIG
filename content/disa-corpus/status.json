@@ -1,0 +1,17 @@
+{
+  "authoritative_manifests": 53,
+  "authoritative_rules_tracked": 8623,
+  "automated_or_mapped_rules": 2866,
+  "coverage_percent_tracked_corpus": 33.2,
+  "current_check_definitions": 3189,
+  "generated_candidate_checks_with_fixture_evidence": 974,
+  "notes": [
+    "Regression ratchet prevents silent drops in tracked artifacts, authoritative manifests, authoritative rules, automated/mapped rules, or unsupported-rule ceilings.",
+    "Generated candidate checks are fixture-backed scaffolding, not live production asset validation.",
+    "Latest pass expands endpoint-security coverage with Microsoft Defender Antivirus V2R5. Coverage percentage dropped because total tracked rules increased while fixture-backed mappings were unchanged; absolute automated/mapped rules did not regress."
+  ],
+  "public_disa_artifacts_indexed": 53,
+  "status": "expanded_public_corpus_with_fixture_gated_candidate_mapping",
+  "target": "unsupported_authoritative_rules == 0 across every authorized DISA STIG artifact",
+  "unsupported_authoritative_rules": 5757
+}

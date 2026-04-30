@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify RHEL 9 for PKI-based authentication has valid certificates by constructing a certification path (which includes status information) to an accepted trust anchor.\n\nCheck that the system has a valid DOD root CA installed with the following command:\n\n$ sudo openssl x509 -text -in /etc/sssd/pki/sssd_auth_ca_db.pem\n\nExample output:\n\nCertificate:\n    Data:\n        Version: 3 (0x2)\n        Serial Number: 1 (0x1)\n        Signature Algorithm: sha256WithRSAEncryption\n        Issuer: C = US, O = U.S. Government, OU = DoD, OU = PKI, CN = DoD Root CA 3\n        Validity\n        Not Before: Mar 20 18:46:41 2012 GMT\n        Not After: Dec 30 18:46:41 2029 GMT\n        Subject: C = US, O = U.S. Government, OU = DoD, OU = PKI, CN = DoD Root CA 3\n        Subject Public Key Info:\n            Public Key Algorithm: rsaEncryption\n\nIf the root CA file is not a DOD-issued certificate with a valid date and installed in the \"/etc/sssd/pki/sssd_auth_ca_db.pem\" location, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 9, for PKI-based authentication, to validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.\n\nObtain a valid copy of the DOD root CA file from the PKI CA certificate bundle from cyber.mil and copy the DoD_PKE_CA_chain.pem into the following file:\n/etc/sssd/pki/sssd_auth_ca_db.pem",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-258131r1015125_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
+  "tracking_issue": "TODO-V-258131",
+  "vuln_id": "V-258131"
+}

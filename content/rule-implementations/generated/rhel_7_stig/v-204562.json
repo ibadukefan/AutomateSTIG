@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system generates audit records when successful/unsuccessful attempts to use the \"delete_module\" syscall occur. \n\nCheck the auditing rules in \"/etc/audit/audit.rules\" with the following command:\n\n$ sudo grep -w \"delete_module\" /etc/audit/audit.rules\n\n-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module-change\n\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -k module-change\n\nIf both the \"b32\" and \"b64\" audit rules are not defined for the \"delete_module\" syscall, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to generate audit records when successful/unsuccessful attempts to use the \"delete_module\" syscall occur. \n\nAdd or update the following rules in \"/etc/audit/rules.d/audit.rules\": \n\n-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module-change\n\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -k module-change\n\nThe audit daemon must be restarted for the changes to take effect.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204562r991580_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must audit all uses of the delete_module syscall.",
+  "tracking_issue": "TODO-V-204562",
+  "vuln_id": "V-204562"
+}

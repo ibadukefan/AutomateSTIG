@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "The policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Content settings/Control use of the Web Bluetooth API\" must be set to \"enabled\" with the option value set to \"Do not allow any site to request access to Bluetooth devices via the Web Bluetooth API\".\n\nUse the Windows Registry Editor to navigate to the following key:\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\n\nIf the value for \"DefaultWebBluetoothGuardSetting\" is not set to \"REG_DWORD = 2\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Content settings/Control use of the Web Bluetooth API\" to \"enabled\" with the option value set to \"Do not allow any site to request access to Bluetooth devices via the Web Bluetooth API.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-235744r960963_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_edge_stig/u_ms_edge_v2r5_stig.json",
+  "source_version": "U_MS_Edge_V2R5_STIG.zip",
+  "stig_id": "MS_Edge_STIG",
+  "title": "Web Bluetooth API must be disabled.",
+  "tracking_issue": "TODO-V-235744",
+  "vuln_id": "V-235744"
+}

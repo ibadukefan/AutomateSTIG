@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system SSH daemon public host key files have mode \"0644\" or less permissive.\n\nNote: SSH public key files may be found in other directories on the system depending on the installation.\n\nThe following command will find all SSH public key files on the system:\n\n> find /etc/ssh -name 'ssh_host*key.pub' -exec stat -c \"%a %n\" {} \\;\n\n644 /etc/ssh/ssh_host_rsa_key.pub\n644 /etc/ssh/ssh_host_dsa_key.pub\n644 /etc/ssh/ssh_host_ecdsa_key.pub\n644 /etc/ssh/ssh_host_ed25519_key.pub\n\nIf any file has a mode more permissive than \"0644\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system SSH daemon public host key files have mode \"0644\" or less permissive.\n\nNote: SSH public key files may be found in other directories on the system depending on the installation. \n\nChange the mode of public host key files under \"/etc/ssh\" to \"0644\" with the following command:\n\n> sudo chmod 0644 /etc/ssh/ssh_host*key.pub",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-235008r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system SSH daemon public host key files must have mode 0644 or less permissive.",
+  "tracking_issue": "TODO-V-235008",
+  "vuln_id": "V-235008"
+}

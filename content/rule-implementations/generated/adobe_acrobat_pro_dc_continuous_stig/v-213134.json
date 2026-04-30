@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the following registry configuration:\n\nUsing the Registry Editor, navigate to the following: HKEY_LOCAL_MACHINE\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\cServices\n\nValue Name: bToggleWebConnectors\nType: REG_DWORD\nValue: 1\n\nIf the value for bToggleWebConnectors is not set to \u201c1\u201d and Type is not configured to REG_DWORD or does not exist, this is a finding.\n\nAdmin Template path: Computer Configuration > Administrative Template > Adobe Acrobat Pro DC Continuous > Preferences > 'Third-party web connectors' must be set to 'Disabled'.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the following registry value:\n\nRegistry Hive:\nHKEY_LOCAL_MACHINE\nRegistry Path:\n\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\cServices\n\nValue Name: bToggleWebConnectors\nType: REG_DWORD\nValue: 1\n\nConfigure the policy value for Computer Configuration > Administrative Template > Adobe Acrobat Pro DC Continuous > Preferences > 'Third-party web connectors' to 'Disabled'.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-213134r766556_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/adobe_acrobat_pro_dc_continuous_stig/u_adobe_acrobat_pro_dc_continuous_v2r1_stig.json",
+  "source_version": "U_Adobe_Acrobat_Pro_DC_Continuous_V2R1_STIG.zip",
+  "stig_id": "Adobe_Acrobat_Pro_DC_Continuous_STIG",
+  "title": "Adobe Acrobat Pro DC Continuous third-party web connectors must be disabled.",
+  "tracking_issue": "TODO-V-213134",
+  "vuln_id": "V-213134"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the SUSE operating system AppArmor tool is configured to control whitelisted applications and user home directory access control.\n\nCheck that \"pam_apparmor\" is installed on the system with the following command:\n\n> zypper info pam_apparmor | grep \"Installed\"\n\nIf the package \"pam_apparmor\" is not installed on the system, this is a finding.\n\nCheck that the \"apparmor\" daemon is running with the following command:\n\n> systemctl status apparmor.service | grep -i active\n\nActive: active (exited) since Fri 2017-01-13 01:01:01 GMT; 1day 1h ago\n\nIf something other than \"Active: active\" is returned, this is a finding.\n\nNote: \"pam_apparmor\" must have properly configured profiles. All configurations will be based on the actual system setup and organization. See the \"pam_apparmor\" documentation for more information on configuring profiles.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to blacklist all applications by default and permit by whitelist.\n\nInstall \"pam_apparmor\" (if it is not installed) with the following command:\n\n> sudo zypper in pam_apparmor\n\nEnable/activate \"Apparmor\" (if it is not already active) with the following command:\n\n> sudo systemctl enable apparmor.service\n\nStart \"Apparmor\" with the following command:\n\n> sudo systemctl start apparmor.service\n\nNote: \"pam_apparmor\" must have properly configured profiles. All configurations will be based on the actual system setup and organization. See the \"pam_apparmor\" documentation for more information on configuring profiles.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234848r958702_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "SUSE operating system AppArmor tool must be configured to control whitelisted applications and user home directory access control.",
+  "tracking_issue": "TODO-V-234848",
+  "vuln_id": "V-234848"
+}

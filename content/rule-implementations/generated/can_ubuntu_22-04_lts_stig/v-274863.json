@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If smart card authentication is not being used on the system, this is not applicable. \n\nVerify that PAM prohibits the use of cached authentications after one day with the following command:\n \n$ sudo grep offline_credentials_expiration /etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf \noffline_credentials_expiration = 1 \n \nIf \"offline_credentials_expiration\" is not set to a value of \"1\" in \"/etc/sssd/sssd.conf\" or in a file with a name ending in .conf in the \"/etc/sssd/conf.d/\" directory, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure PAM to prohibit the use of cached authentications after one day. Add or change the following line in \"/etc/sssd/sssd.conf\" just below the line \"[pam]\": \n \noffline_credentials_expiration = 1 \n \nNote: It is valid for this configuration to be in a file with a name that ends with \".conf\" and does not begin with a \".\" in the \"/etc/sssd/conf.d/\" directory instead of the \"/etc/sssd/sssd.conf\" file.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-274863r1107271_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must be configured such that Pluggable Authentication Module (PAM) prohibits the use of cached authentications after one day.",
+  "tracking_issue": "TODO-V-274863",
+  "vuln_id": "V-274863"
+}

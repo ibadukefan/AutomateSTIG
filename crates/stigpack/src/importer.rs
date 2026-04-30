@@ -1,13 +1,18 @@
 //! Stigpack importer — extracts and imports .stigpack content into the STIG library.
 
 use std::io::Read;
-use std::path::Path;
+use std::path::{Component, Path};
 
 use automatestig_core::library::StigLibrary;
 use automatestig_core::models::stig::StigBenchmark;
 
-use crate::verifier::verify_pack;
+use crate::signing::TrustStore;
+use crate::verifier::{verify_pack, verify_pack_with_trust};
 use crate::{StigpackError, StigpackResult};
+
+const MAX_STIGPACK_ENTRIES: usize = 1_000;
+const MAX_STIGPACK_UNCOMPRESSED_BYTES: u64 = 256 * 1024 * 1024;
+const MAX_STIGPACK_MEMBER_BYTES: u64 = 50 * 1024 * 1024;
 
 /// Import result with details about what was imported.
 #[derive(Debug)]
@@ -40,8 +45,34 @@ pub struct ImportResult {
 /// 3. Extract benchmarks and add to library.
 /// 4. Extract answer templates and remediation scripts.
 pub fn import_pack(pack_path: &Path, library: &mut StigLibrary) -> StigpackResult<ImportResult> {
+    // Existing programmatic/import tests use integrity verification only. UI and
+    // production callers should use import_pack_trusted when policy requires
+    // trusted signatures.
+    import_pack_with_verification(pack_path, library, verify_pack(pack_path)?)
+}
+
+/// Import a .stigpack file after verifying its signature against a trust store.
+pub fn import_pack_trusted(
+    pack_path: &Path,
+    library: &mut StigLibrary,
+    trust_store: &TrustStore,
+) -> StigpackResult<ImportResult> {
+    let verification = verify_pack_with_trust(pack_path, Some(trust_store))?;
+    if verification.signature_valid != Some(true) {
+        return Err(StigpackError::SignatureError(format!(
+            "trusted signature required for .stigpack import: {:?}",
+            verification.issues
+        )));
+    }
+    import_pack_with_verification(pack_path, library, verification)
+}
+
+fn import_pack_with_verification(
+    pack_path: &Path,
+    library: &mut StigLibrary,
+    verification: crate::verifier::VerificationResult,
+) -> StigpackResult<ImportResult> {
     // Step 1 & 2: Verify.
-    let verification = verify_pack(pack_path)?;
     if !verification.manifest_valid {
         return Err(StigpackError::ManifestError(
             "Failed to parse manifest".to_string(),
@@ -58,10 +89,13 @@ pub fn import_pack(pack_path: &Path, library: &mut StigLibrary) -> StigpackResul
     // Step 3: Extract and import.
     let file = std::fs::File::open(pack_path)?;
     let mut archive = zip::ZipArchive::new(file)?;
+    validate_archive_resource_limits(&mut archive)?;
 
     // Read manifest.
     let manifest = {
-        let mut mf = archive.by_name("manifest.json").map_err(StigpackError::Zip)?;
+        let mut mf = archive
+            .by_name("manifest.json")
+            .map_err(StigpackError::Zip)?;
         let mut json = String::new();
         mf.read_to_string(&mut json)?;
         crate::manifest::PackManifest::from_json(&json)
@@ -79,6 +113,7 @@ pub fn import_pack(pack_path: &Path, library: &mut StigLibrary) -> StigpackResul
 
     // Import benchmarks.
     for path in manifest.files.keys() {
+        validate_pack_member_path(path)?;
         if path.starts_with("benchmarks/") && path.ends_with(".json") {
             match read_zip_file(&mut archive, path) {
                 Ok(content) => {
@@ -119,7 +154,9 @@ pub fn import_pack(pack_path: &Path, library: &mut StigLibrary) -> StigpackResul
                     result.answer_templates_imported += 1;
                 }
             } else {
-                result.warnings.push(format!("Rejected unsafe path: {}", path));
+                result
+                    .warnings
+                    .push(format!("Rejected unsafe path: {}", path));
             }
         }
 
@@ -134,7 +171,9 @@ pub fn import_pack(pack_path: &Path, library: &mut StigLibrary) -> StigpackResul
                     result.remediation_scripts_imported += 1;
                 }
             } else {
-                result.warnings.push(format!("Rejected unsafe path: {}", path));
+                result
+                    .warnings
+                    .push(format!("Rejected unsafe path: {}", path));
             }
         }
     }
@@ -145,25 +184,81 @@ pub fn import_pack(pack_path: &Path, library: &mut StigLibrary) -> StigpackResul
 /// Safely join a path from a ZIP entry onto a root, preventing path traversal.
 /// Returns None if the resolved path would escape the root directory.
 fn safe_join_path(root: &Path, relative: &str) -> Option<std::path::PathBuf> {
-    // Reject paths containing ".." components or absolute paths.
-    if relative.contains("..") || relative.starts_with('/') || relative.starts_with('\\') {
-        return None;
-    }
+    validate_pack_member_path(relative).ok()?;
     let dest = root.join(relative);
-    // Canonicalize-style check: ensure the resolved path starts with root.
-    // Since the directories may not exist yet, we check component-by-component.
-    let root_canonical = root.to_path_buf();
-    if dest.starts_with(&root_canonical) {
+    if dest.starts_with(root) {
         Some(dest)
     } else {
         None
     }
 }
 
+fn validate_pack_member_path(relative: &str) -> StigpackResult<()> {
+    if relative.trim().is_empty() || relative.contains('\\') || relative.contains('\0') {
+        return Err(StigpackError::ManifestError(format!(
+            "unsafe .stigpack member path: {}",
+            relative
+        )));
+    }
+    let path = Path::new(relative);
+    if path.is_absolute() {
+        return Err(StigpackError::ManifestError(format!(
+            "absolute .stigpack member paths are not allowed: {}",
+            relative
+        )));
+    }
+    for component in path.components() {
+        match component {
+            Component::Normal(part) if !part.is_empty() => {}
+            _ => {
+                return Err(StigpackError::ManifestError(format!(
+                    "unsafe .stigpack member path: {}",
+                    relative
+                )));
+            }
+        }
+    }
+    Ok(())
+}
+
+fn validate_archive_resource_limits(
+    archive: &mut zip::ZipArchive<std::fs::File>,
+) -> StigpackResult<()> {
+    if archive.len() > MAX_STIGPACK_ENTRIES {
+        return Err(StigpackError::ManifestError(format!(
+            ".stigpack contains {} entries, exceeding limit of {}",
+            archive.len(),
+            MAX_STIGPACK_ENTRIES
+        )));
+    }
+
+    let mut total_uncompressed = 0u64;
+    for idx in 0..archive.len() {
+        let file = archive.by_index(idx).map_err(StigpackError::Zip)?;
+        validate_pack_member_path(file.name())?;
+        if file.size() > MAX_STIGPACK_MEMBER_BYTES {
+            return Err(StigpackError::ManifestError(format!(
+                ".stigpack member exceeds {} byte limit: {}",
+                MAX_STIGPACK_MEMBER_BYTES,
+                file.name()
+            )));
+        }
+        total_uncompressed = total_uncompressed.saturating_add(file.size());
+        if total_uncompressed > MAX_STIGPACK_UNCOMPRESSED_BYTES {
+            return Err(StigpackError::ManifestError(format!(
+                ".stigpack uncompressed size exceeds {} byte limit",
+                MAX_STIGPACK_UNCOMPRESSED_BYTES
+            )));
+        }
+    }
+    Ok(())
+}
+
 fn read_zip_file(
     archive: &mut zip::ZipArchive<std::fs::File>,
     name: &str,
 ) -> StigpackResult<Vec<u8>> {
+    validate_pack_member_path(name)?;
     let mut file = archive
         .by_name(name)
         .map_err(|_| StigpackError::MissingFile(name.to_string()))?;
@@ -175,8 +270,8 @@ fn read_zip_file(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use automatestig_core::models::stig::*;
     use crate::builder::PackBuilder;
+    use automatestig_core::models::stig::*;
 
     fn make_test_benchmark() -> StigBenchmark {
         StigBenchmark {
@@ -210,6 +305,25 @@ mod tests {
                 remediation_ids: vec![],
             }],
         }
+    }
+
+    #[test]
+    fn rejects_unsafe_pack_member_paths() {
+        for path in [
+            "",
+            "/absolute/file",
+            "../escape.json",
+            "benchmarks/../../escape.json",
+            "benchmarks\\evil.json",
+            "benchmarks/evil\0.json",
+        ] {
+            assert!(
+                validate_pack_member_path(path).is_err(),
+                "{path} should be rejected"
+            );
+            assert!(safe_join_path(Path::new("/tmp/stiglib"), path).is_none());
+        }
+        assert!(validate_pack_member_path("benchmarks/Test_STIG.json").is_ok());
     }
 
     #[test]

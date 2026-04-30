@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the database management system (DBMS) is configured to require immediate selection of a new password upon account recovery.\n\nAll scripts, functions, triggers, and stored procedures that are used to create a user or reset a user's password should include a line similar to the following:\nalter user <username> password expire;\n\nIf they do not, this is a finding.\n\nIf the DBMS is not configured to require immediate selection of a new password upon account recovery, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the DBMS to require immediate selection of a new password upon account recovery.\n\nOne way to configure this is to ensure that all scripts, functions, triggers, and stored procedures that are used to create a user or reset a user's password should include a line similar to the following:\nalter user <username> password expire;",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270588r1065042_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Oracle Database must, for password-based authentication, require immediate selection of a new password upon account recovery.",
+  "tracking_issue": "TODO-V-270588",
+  "vuln_id": "V-270588"
+}

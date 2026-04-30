@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SSH public host key files have mode \"0644\" or less permissive with the following command:\n\n$ sudo ls -l /etc/ssh/*.pub\n\n-rw-r--r-- 1 root root 618 Nov 28 06:43 ssh_host_dsa_key.pub\n-rw-r--r-- 1 root root 347 Nov 28 06:43 ssh_host_key.pub\n-rw-r--r-- 1 root root 238 Nov 28 06:43 ssh_host_rsa_key.pub\n\nIf any key.pub file has a mode more permissive than \"0644\", this is a finding.\n\nNote: SSH public key files may be found in other directories on the system depending on the installation.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the mode of public host key files under \"/etc/ssh\" to \"0644\" with the following command:\n\n$ sudo chmod 0644 /etc/ssh/*key.pub\n\nThe SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command:\n\n$ sudo systemctl restart sshd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230286r1017097_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "The RHEL 8 SSH public host key files must have mode 0644 or less permissive.",
+  "tracking_issue": "TODO-V-230286",
+  "vuln_id": "V-230286"
+}

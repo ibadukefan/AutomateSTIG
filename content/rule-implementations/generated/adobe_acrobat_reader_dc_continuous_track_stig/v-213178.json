@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the following registry configuration:\n\nNote: The Key Name \"cServices\" is not created by default in the Adobe Reader DC install and must be created.\n\nUtilizing the Registry Editor, navigate to the following: HKEY_LOCAL_MACHINE\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cServices\n\nValue Name: bToggleAdobeDocumentServices\nType: REG_DWORD\nValue: 1\n\nIf the value for bToggleAdobeDocumentServices is not set to \u201c1\u201d and Type configured to REG_DWORD or does not exist, then this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the following registry value:\n\nNote: The Key Name \"cServices\" is not created by default in the Adobe Reader DC install and must be created.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cServices\n\nValue Name: bToggleAdobeDocumentServices\nType: REG_DWORD\nValue: 1",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-213178r395853_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/adobe_acrobat_reader_dc_continuous_track_stig/u_adobe_acrobat_reader_dc_continuous_v2r1_stig.json",
+  "source_version": "U_Adobe_Acrobat_Reader_DC_Continuous_V2R1_STIG.zip",
+  "stig_id": "Adobe_Acrobat_Reader_DC_Continuous_Track_STIG",
+  "title": "Adobe Reader DC must disable all service access to Document Cloud Services.",
+  "tracking_issue": "TODO-V-213178",
+  "vuln_id": "V-213178"
+}

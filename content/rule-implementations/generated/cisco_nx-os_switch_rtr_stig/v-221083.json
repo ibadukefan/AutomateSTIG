@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to determine if it is compliant with this requirement. IP directed broadcast command must not be found on any interface as shown in the example below:\n\ninterface Ethernet2/2\n no switchport\n ip address 10.1.12.1/24\n ip directed-broadcast\n\nIf IP directed broadcast is not disabled on all interfaces, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Disable IP directed broadcast on all interfaces as shown in the example below:\n\nSW1(config)# int e2/2\nSW1(config-if)# no ip directed-broadcast \nSW1(config-if)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221083r999692_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco switch must be configured to have IP directed broadcast disabled on all interfaces.",
+  "tracking_issue": "TODO-V-221083",
+  "vuln_id": "V-221083"
+}

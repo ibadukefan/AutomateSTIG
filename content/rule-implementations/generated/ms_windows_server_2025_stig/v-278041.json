@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Determine if a process to back up log data to a different system or media than the system being audited has been implemented.\n\nIf it has not, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Establish and implement a process for backing up log data to another system or media other than the system being audited.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278041r1180829_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 audit records must be backed up to a different system or media than the system being audited.",
+  "tracking_issue": "TODO-V-278041",
+  "vuln_id": "V-278041"
+}

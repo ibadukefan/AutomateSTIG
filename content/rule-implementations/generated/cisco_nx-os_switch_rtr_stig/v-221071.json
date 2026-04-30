@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If Virtual Routing and Forwarding (VRF) is used to segment traffic and force traffic to traverse through next generation firewalls with ACLs, this requirement is not applicable.\n\nReview the switch configuration to verify that ACLs are configured to allow or deny traffic for specific source and destination addresses as well as ports and protocols. For example, the configuration below will allow only printer traffic into subnet 10.1.12.0/24 and SQL traffic into subnet 10.1.13.0/24. ICMP is allowed for troubleshooting and OSPF is the routing protocol used within the network.\n\ninterface Ethernet2/3\n no switchport\n ip access-group FILTER_SERVER_TRAFFIC in\n ip address 10.1.23.2/24\n no shutdown \n\u2026\n\u2026\n\u2026\nip access-list FILTER_SERVER_TRAFFIC\n 10 permit tcp any 10.1.12.0/24 eq lpd \n 20 permit tcp any 10.1.12.0/24 eq 631 \n 30 permit tcp any 10.1.12.0/24 eq 9100 \n 40 permit tcp any 10.1.13.0/24 eq 1433 \n 50 permit tcp any 10.1.13.0/24 eq 1434 \n 60 permit tcp any 10.1.13.0/24 eq 4022 \n 70 permit icmp any any \n 80 permit ospf any any \n 90 deny ip any any\n\nAlternate: Inter-VLAN routing\n\ninterface Vlan12\n ip address 10.1.12.1 255.255.255.0\n ip access-group FILTER_PRINTER_VLAN out\n!\ninterface Vlan13\n ip address 10.1.13.1 255.255.255.0\n ip access-group FILTER_SQL_VLAN out\n\u2026\n\u2026\n\u2026\nip access-list FILTER_PRINTER_VLAN\n 10 permit tcp any any eq lpd \n 20 permit tcp any any eq 631 \n 30 permit tcp any any eq 9100 \n 40 permit icmp any any \n 50 deny ip any any\nip access-list FILTER_SQL_VLAN\n 10 permit tcp any any eq 1433 \n 20 permit tcp any any eq 1434 \n 30 permit tcp any any eq 4033 \n 40 permit icmp any any \n 50 deny ip any any\n\nIf the switch is not configured to enforce approved authorizations for controlling the flow of information within the network based on organization-defined information flow control policies, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure ACLs to allow or deny traffic for specific source and destination addresses as well as ports and protocols between various subnets as required. The commands used below were used to create the configuration as shown in the check content.\n\nSW1(config)# ip access-list FILTER_SERVER_TRAFFIC\nSW1(config-acl)# permit tcp any 10.1.12.0 0.0.0.255 eq lpd \nSW1(config-acl)# permit tcp any 10.1.12.0 0.0.0.255 eq 631\nSW1(config-acl)# permit tcp any 10.1.12.0 0.0.0.255 eq 9100\nSW1(config-acl)# permit tcp any 10.1.13.0 0.0.0.255 eq 1433\nSW1(config-acl)# permit tcp any 10.1.13.0 0.0.0.255 eq 1434\nSW1(config-acl)# permit tcp any 10.1.13.0 0.0.0.255 eq 4022\nSW1(config-acl)# permit icmp any any\nSW1(config-acl)# permit ospf any any\nSW1(config-acl)# deny ip any any\nSW1(config-acl)# exit\nSW1(config)# int e2/3\nSW1(config-if)# ip access-group FILTER_SERVER_TRAFFIC in\nSW1(config-if)# end\n\nAlternate: Inter-VLAN routing\n\nSW1(config)# ip access-list FILTER_PRINTER_VLAN\nSW1(config-acl)# permit tcp any any eq lpd \nSW1(config-acl)# permit tcp any any eq 631\nSW1(config-acl)# permit tcp any any eq 9100\nSW1(config-acl)# permit icmp any any\nSW1(config-acl)# deny ip any any\nSW1(config-acl)# exit\nSW1(config)# ip access-list FILTER_SQL_VLAN\nSW1(config-acl)# permit tcp any any eq 1433\nSW1(config-acl)# permit tcp any any eq 1434\nSW1(config-acl)# permit tcp any any eq 4033\nSW1(config-acl)# permit icmp any any\nSW1(config-acl)# deny ip any any\nSW1(config-acl)# exit\nSW1(config)# int vlan 12\nSW1(config-if)# ip access-group FILTER_PRINTER_VLAN out\nSW1(config-if)# exit\nSW1(config)# int vlan 13\nSW1(config-if)# ip access-group FILTER_SQL_VLAN out\nSW1(config-if)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221071r1195277_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco switch must be configured to enforce approved authorizations for controlling the flow of information within the network based on organization-defined information flow control policies.",
+  "tracking_issue": "TODO-V-221071",
+  "vuln_id": "V-221071"
+}

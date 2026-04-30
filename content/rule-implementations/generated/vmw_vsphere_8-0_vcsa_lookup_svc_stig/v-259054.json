@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "At the command prompt, run the following command:\n\n# xmllint --xpath \"//*[contains(text(), 'setCharacterEncodingFilter')]/parent::*\" /usr/lib/vmware-lookupsvc/conf/web.xml\n\nExpected result:\n\n<filter-mapping>\n  <filter-name>setCharacterEncodingFilter</filter-name>\n  <url-pattern>/*</url-pattern>\n</filter-mapping>\n<filter>\n  <filter-name>setCharacterEncodingFilter</filter-name>\n  <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>\n  <async-supported>true</async-supported>\n  <init-param>\n    <param-name>encoding</param-name>\n    <param-value>UTF-8</param-value>\n  </init-param>\n  <init-param>\n    <param-name>ignore</param-name>\n    <param-value>true</param-value>\n  </init-param>\n</filter>\n\nIf the output is does not match the expected result, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/web.xml\n\nConfigure the <web-app> node with the child nodes listed below:\n\n<filter-mapping>\n  <filter-name>setCharacterEncodingFilter</filter-name>\n  <url-pattern>/*</url-pattern>\n</filter-mapping>\n\n<filter>\n  <filter-name>setCharacterEncodingFilter</filter-name>\n  <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>\n  <async-supported>true</async-supported>\n  <init-param>\n    <param-name>encoding</param-name>\n    <param-value>UTF-8</param-value>\n  </init-param>\n  <init-param>\n    <param-name>ignore</param-name>\n    <param-value>true</param-value>\n  </init-param>\n</filter>\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-259054r961158_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/vmw_vsphere_8_0_vcsa_lookup_svc_stig/u_vmw_vsphere_8_0_y25m07_stig.json",
+  "source_version": "U_VMW_vSphere_8-0_Y25M07_STIG.zip",
+  "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
+  "title": "The vCenter Lookup service must configure the \"setCharacterEncodingFilter\" filter.",
+  "tracking_issue": "TODO-V-259054",
+  "vuln_id": "V-259054"
+}

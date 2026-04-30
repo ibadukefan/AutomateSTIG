@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system initiates a session lock a for graphical user interfaces when the screensaver is activated with the following command:\n\nNote: This requirement assumes the use of the RHEL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\n$ sudo gsettings get org.gnome.desktop.screensaver lock-delay\n\nuint32 5\n\nIf the \"uint32\" setting is missing, or is not set to \"5\" or less, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to initiate a session lock for graphical user interfaces when a screensaver is activated.\n\nCreate a database to contain the system-wide screensaver settings (if it does not already exist) with the following command: \n\nNote: The example below is using the database \"local\" for the system, so if the system is using another database in \"/etc/dconf/profile/user\", the file should be created under the appropriate subdirectory.\n\n$ sudo touch /etc/dconf/db/local.d/00-screensaver\n\n[org/gnome/desktop/screensaver]\nlock-delay=uint32 5\n\nThe \"uint32\" must be included along with the integer key values as shown.\n\nUpdate the system databases:\n\n$ sudo dconf update",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-244535r1017342_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must initiate a session lock for graphical user interfaces when the screensaver is activated.",
+  "tracking_issue": "TODO-V-244535",
+  "vuln_id": "V-244535"
+}

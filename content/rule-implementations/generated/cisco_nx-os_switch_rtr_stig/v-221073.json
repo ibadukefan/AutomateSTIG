@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the start times for each key within the configured key chains used for routing protocol authentication as shown in the example below:\n\nkey chain OSPF_KEY\n key 1\n key-string 7 070d2e4e4c10\n accept-lifetime 00:00:00 Oct 01 2019 01:05:00 Jan 01 2020\n send-lifetime 00:00:00 Oct 01 2019 23:59:59 Dec 31 2019\n key 2\n key-string 7 0704205e4b07\n accept-lifetime 23:55:00 Dec 31 2019 01:05:00 Apr 01 2020\n send-lifetime 00:00:00 Jan 01 2020 23:59:59 Mar 31 2020\n\nNote: Key chains must be configured to authenticate routing protocol messages as it is the only way to set an expiration.\n\nIf any key has a lifetime of more than 180 days, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure each key used for routing protocol authentication to have a lifetime of no more than 180 days as shown in the example below:\n\nSW1(config)# key chain OSPF_KEY\nSW1(config-keychain)# key 1\nSW1(config-keychain-key)# key-string xxxxxxxxxxxx\nSW1(config-keychain-key)# send-lifetime 00:00:00 Oct 1 2019 23:59:59 Dec 31 2019\nSW1(config-keychain-key)# accept-lifetime 00:00:00 Oct 1 2019 01:05:00 Jan 1 2020\nSW1(config-keychain-key)# key 2\nSW1(config-keychain-key)# key-string kxxxxxxxxxxxxx\nSW1(config-keychain-key)# send-lifetime 00:00:00 Jan 1 2020 23:59:59 Mar 31 2020 \nSW1(config-keychain-key)# accept-lifetime 23:55:00 Dec 31 2019 01:05:00 Apr 1 2020\nSW1(config-keychain-key)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221073r999682_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco switch must be configured to use keys with a duration not exceeding 180 days for authenticating routing protocol messages.",
+  "tracking_issue": "TODO-V-221073",
+  "vuln_id": "V-221073"
+}

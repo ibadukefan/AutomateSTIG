@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the assigned home directory of all local interactive users is group-owned by that user's primary GID.\n\nCheck the home directory assignment for all local interactive users on the system with the following command:\n\n     # ls -ld $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd)\n     -rwxr-x--- 1 smithj users 13 Apr 1 04:20 /home/smithj\n\nCheck the user's primary group with the following command:\n\n     # grep $(grep smithj /etc/passwd | awk -F: '{print $4}') /etc/group\n     users:x:250:smithj,marinc,chongt\n\nIf the user home directory referenced in \"/etc/passwd\" is not group-owned by that user's primary GID, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the group owner of a local interactive user's home directory to the group found in \"/etc/passwd\". To change the group owner of a local interactive user's home directory, use the following command:\n\nNote: The example will be for the user \"smithj\", who has a home directory of \"/home/smithj\", and has a primary group of users.\n\n     # chgrp users /home/smithj",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204470r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must be configured so that all local interactive user home directories are group-owned by the home directory owners primary group.",
+  "tracking_issue": "TODO-V-204470",
+  "vuln_id": "V-204470"
+}

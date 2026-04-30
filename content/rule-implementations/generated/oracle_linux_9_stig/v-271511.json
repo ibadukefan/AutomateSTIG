@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 has enabled the hardware random number generator entropy gatherer service with the following command:\n\n$ systemctl is-active rngd\nactive\n\nIf the rngd service is not active, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the rng-tools package with the following command:\n\n$ sudo dnf install -y rng-tools\n\nEnable the rngd service run the following command:\n\n$ sudo systemctl enable --now rngd",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271511r1091245_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must enable the hardware random number generator entropy gatherer service.",
+  "tracking_issue": "TODO-V-271511",
+  "vuln_id": "V-271511"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "On the Kubernetes Control Plane and Worker nodes, run the command:\nps -ef | grep kubelet\n\nCheck the config file (path identified by: --config):\n\nChange to the directory identified by --config (example /etc/sysconfig/) and run the command:\nls -l kubelet\n\nEach KubeletConfiguration file must have permissions of \"644\" or more restrictive.\n\nIf any KubeletConfiguration file is less restrictive than \"644\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "On the Kubernetes Control Plane and Worker nodes, run the command:\nps -ef | grep kubelet\n\nCheck the config file (path identified by: --config):\n\nChange to the directory identified by --config (example /etc/sysconfig/) and run the command:\nchmod 644 kubelet\n\nTo verify the change took place, run the command:\nls -l kubelet\n\nThe kubelet file should now have the permissions of \"644\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-242407r960960_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/kubernetes_stig/u_kubernetes_v2r6_stig.json",
+  "source_version": "U_Kubernetes_V2R6_STIG.zip",
+  "stig_id": "Kubernetes_STIG",
+  "title": "The Kubernetes KubeletConfiguration files must have file permissions set to 644 or more restrictive.",
+  "tracking_issue": "TODO-V-242407",
+  "vuln_id": "V-242407"
+}

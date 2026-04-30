@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that all SUSE operating system local interactive user initialization files executable search path statements do not contain statements that will reference a working directory other than the user's home directory.\n\nCheck the executable search path statement for all operating system local interactive user initialization files in the user's home directory with the following commands:\n\nNote: The example will be for the user \"doduser\", who has a home directory of \"/home/doduser\".\n\n> sudo grep -i path= /home/doduser/.*\n/home/doduser/.bash_profile:PATH=$PATH:$HOME/.local/bin:$HOME/bin\n\nIf any local interactive user initialization files have executable search path statements that include directories outside of their home directory, and the additional path statements are not documented with the ISSO as an operational requirement, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Edit the SUSE operating system local interactive user initialization files to change any PATH variable statements for executables that reference directories other than their home directory. If a local interactive user requires path variables to reference a directory owned by the application, it must be documented with the ISSO.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234996r1190821_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "All SUSE operating system local interactive user initialization files executable search paths must contain only paths that resolve to the users home directory.",
+  "tracking_issue": "TODO-V-234996",
+  "vuln_id": "V-234996"
+}

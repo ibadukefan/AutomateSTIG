@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify an anti-virus solution is installed on the system. The anti-virus solution may be bundled with an approved host-based security solution.\n\nIf there is no anti-virus solution installed on the system, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install an antivirus solution on the system.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-214801r991589_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must use a virus scan program.",
+  "tracking_issue": "TODO-V-214801",
+  "vuln_id": "V-214801"
+}

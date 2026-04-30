@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Step 1: Verify all interfaces enabled for PIM have a neighbor policy bound to the interface as shown in the example below:\n\ninterface Ethernet2/1\n no switchport\n ip address 10.1.12.1/24\n ip pim sparse-mode\n ip pim neighbor-policy prefix-list PIM_NEIGHBOR\n no shutdown\n\nStep 2: Review the configured prefix list for filtering PIM neighbors as shown in the example below:\n\nip prefix-list PIM_NEIGHBOR seq 5 permit 10.1.12.2/32\nip prefix-list PIM_NEIGHBOR seq 10 deny 0.0.0.0/0 le 32\n\nIf PIM neighbor ACLs are not bound to all interfaces that have PIM enabled, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure neighbor prefix lists to only accept PIM control plane traffic from documented PIM neighbors. \n\nStep 1: Configure prefix list for each PIM neighbor.\n\nSW1(config)# ip prefix-list PIM_NEIGHBOR seq 5 permit 10.1.12.2/32\nSW1(config)# ip prefix-list PIM_NEIGHBOR deny 0.0.0.0/0 le 32\n\nStep 2: Apply a prefix to all interfaces enabled for PIM.\n\nSW1(config)# int e2/1\nSW1(config-if)# ip pim neighbor-policy prefix-list PIM_NEIGHBOR \nSW1(config-if)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221133r1137911_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco multicast switch must be configured to bind a Protocol Independent Multicast (PIM) neighbor filter to interfaces that have PIM enabled.",
+  "tracking_issue": "TODO-V-221133",
+  "vuln_id": "V-221133"
+}

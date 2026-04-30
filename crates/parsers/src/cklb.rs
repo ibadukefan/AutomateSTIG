@@ -150,12 +150,7 @@ pub fn parse_cklb(json: &str) -> ParseResult<Checklist> {
     let release = stig
         .release_info
         .as_deref()
-        .map(|r| {
-            r.split_whitespace()
-                .nth(1)
-                .unwrap_or("0")
-                .to_string()
-        })
+        .map(|r| r.split_whitespace().nth(1).unwrap_or("0").to_string())
         .unwrap_or_else(|| "0".to_string());
 
     let stig_info = ChecklistStigInfo {
@@ -190,10 +185,7 @@ pub fn parse_cklb(json: &str) -> ParseResult<Checklist> {
             .and_then(Severity::from_cat_str)
             .unwrap_or(Severity::Medium);
 
-        let status_str = rule
-            .status
-            .as_deref()
-            .unwrap_or("Not_Reviewed");
+        let status_str = rule.status.as_deref().unwrap_or("Not_Reviewed");
 
         let status = match status_str {
             "not_a_finding" | "NotAFinding" | "Not A Finding" => FindingStatus::NotAFinding,
@@ -202,7 +194,8 @@ pub fn parse_cklb(json: &str) -> ParseResult<Checklist> {
             _ => FindingStatus::NotReviewed,
         };
 
-        let mut finding = Finding::new_not_reviewed(&vuln_id, &rule_id, &group_id, &title, severity);
+        let mut finding =
+            Finding::new_not_reviewed(&vuln_id, &rule_id, &group_id, &title, severity);
         finding.status = status;
         finding.source = FindingSource::Imported;
 
@@ -295,7 +288,11 @@ pub fn write_cklb(checklist: &Checklist) -> ParseResult<String> {
     let release_info = format!(
         "Release: {} Benchmark Date: {}",
         checklist.stig_info.release,
-        checklist.stig_info.release_date.as_deref().unwrap_or("Unknown")
+        checklist
+            .stig_info
+            .release_date
+            .as_deref()
+            .unwrap_or("Unknown")
     );
 
     let cklb = CklbFile {

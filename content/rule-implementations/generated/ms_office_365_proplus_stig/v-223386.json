@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft PowerPoint 2016 >> PowerPoint Options >> Security >> Trust Center >> Protected View \"Turn off Protected View for attachments opened from Outlook\" is set to \"Disabled\".\n\nUse the Windows Registry Editor to navigate to the following key:\n\nHKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security\\protectedview\n\nIf the value DisableAttachmentsInPV is REG_DWORD = 0, this is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft PowerPoint 2016 >> PowerPoint Options >> Security >> Trust Center >> Protected View \"Turn off Protected View for attachments opened from Outlook\" to \"Disabled\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-223386r961086_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_office_365_proplus_stig/u_ms_office_365_proplus_v3r5_stig.json",
+  "source_version": "U_MS_Office_365_ProPlus_V3R5_STIG.zip",
+  "stig_id": "MS_Office_365_ProPlus_STIG",
+  "title": "PowerPoint attachments opened from Outlook must be in Protected View.",
+  "tracking_issue": "TODO-V-223386",
+  "vuln_id": "V-223386"
+}

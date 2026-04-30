@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 is not able to install packages from the EPEL with the following command:\n\n$ dnf repolist\nrepo id                                               repo name\nol9_UEKR7                                             Oracle Linux 9 UEK Release 7 (x86_64)\nol9_appstream                                         Oracle Linux 9 Application Stream Packages (x86_64)\nol9_baseos_latest                                     Oracle Linux 9 BaseOS Latest (x86_64)\nol9_oraclelinuxmanager210_client                      Oracle Linux Manager Client 2.10 for Oracle Linux 9 (x86_64)\n\nIf any repositories containing the word \"epel\" in the name exist, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "The repo package can be manually removed with the following command:\n\n$ sudo dnf remove epel-release\n\nConfigure the operating system to disable use of the EPEL repository with the following command:\n\n$ sudo dnf config-manager --set-disabled epel",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271457r1134853_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must not install packages from the Extra Packages for Enterprise Linux (EPEL) repository.",
+  "tracking_issue": "TODO-V-271457",
+  "vuln_id": "V-271457"
+}

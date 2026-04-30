@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system must require authentication upon booting into single-user and maintenance modes.\n\nCheck that the operating system requires authentication upon booting into single-user mode with the following command:\n\n# grep -i execstart /usr/lib/systemd/system/rescue.service | grep -i sulogin\n\nExecStart=-/bin/sh -c \"/usr/sbin/sulogin; /usr/bin/systemctl --fail --no-block default\"\n\nIf \"ExecStart\" does not have \"/usr/sbin/sulogin\" as an option, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to require authentication upon booting into single-user and maintenance modes.\n\nAdd or modify the \"ExecStart\" line in \"/usr/lib/systemd/system/rescue.service\" to include \"/usr/sbin/sulogin\":\n\nExecStart=-/bin/sh -c \"/usr/sbin/sulogin; /usr/bin/systemctl --fail --no-block default\"",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204437r958472_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must require authentication upon booting into single-user and maintenance modes.",
+  "tracking_issue": "TODO-V-204437",
+  "vuln_id": "V-204437"
+}

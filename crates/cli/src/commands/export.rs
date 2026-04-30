@@ -45,7 +45,10 @@ pub fn run(input: &str, output: &str, format: &str, collection: Option<&str>) ->
             let csv = emass::export_emass_csv(&results);
             std::fs::write(output, &csv)?;
             eprintln!();
-            ui::success(&format!("Exported {} test results to eMASS CSV", results.len()));
+            ui::success(&format!(
+                "Exported {} test results to eMASS CSV",
+                results.len()
+            ));
             ui::output_file("Output", output, "eMASS CSV");
         }
         _ => anyhow::bail!("Unsupported export format: {}", format),

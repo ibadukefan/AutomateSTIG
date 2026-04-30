@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From SQL*Plus:\n\nselect granted_role from dba_role_privs where grantee = 'PUBLIC';\n\nIf any roles are listed, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Revoke role grants from PUBLIC.\n\nDo not assign role privileges to PUBLIC.\n\nFrom SQL*Plus:\n\nrevoke [role name] from PUBLIC;",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270532r1064874_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Application role permissions must not be assigned to the Oracle PUBLIC role.",
+  "tracking_issue": "TODO-V-270532",
+  "vuln_id": "V-270532"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Check the \"/etc/shadow\" file for blank passwords with the following command:\n\n$ sudo awk -F: '!$2 {print $1}' /etc/shadow\n\nIf the command returns any results, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure all accounts on the system to have a password or lock the account with the following commands:\n\nPerform a password reset:\n$ sudo passwd [username]\nLock an account:\n$ sudo passwd -l [username]",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-251706r1017359_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "The RHEL 8 operating system must not have accounts configured with blank or null passwords.",
+  "tracking_issue": "TODO-V-251706",
+  "vuln_id": "V-251706"
+}

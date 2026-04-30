@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This applies to domain controllers. It is NA for other systems.\n\nReview the auditing configuration for all Group Policy objects.\n\nOpen \"Group Policy Management\" (available from various menus or run \"gpmc.msc\").\n\nNavigate to \"Group Policy Objects\" in the domain being reviewed (Forest >> Domains >> Domain).\n\nFor each Group Policy object:\n\nSelect the Group Policy object item in the left pane.\n\nSelect the \"Delegation\" tab in the right pane.\n\nSelect \"Advanced\".\n\nSelect \"Advanced\" again and then the \"Auditing\" tab.\n\nIf the audit settings for any Group Policy object are not at least as inclusive as those below, this is a finding:\n\nType - Fail\nPrincipal - Everyone\nAccess - Full Control\nApplies to - This object and all descendant objects or Descendant groupPolicyContainer objects\n\nThe three Success types listed below are defaults inherited from the Parent Object. Where Special is listed in the summary screens for Access, detailed Permissions are provided for reference.\n\nType - Success\nPrincipal - Everyone\nAccess - Special (Permissions: Write all properties, Modify permissions; Properties: all \"Write\" type selected)\nInherited from - Parent Object\nApplies to - Descendant groupPolicyContainer objects\n\nTwo instances with the following summary information will be listed:\n\nType - Success\nPrincipal - Everyone\nAccess - blank (Permissions: none selected; Properties: one instance - Write gPLink, one instance - Write gPOptions)\nInherited from - Parent Object\nApplies to - Descendant Organization Unit Objects",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit settings for Group Policy objects to include the following:\n\nThis can be done at the Policy level in Active Directory to apply to all group policies.\n\nOpen \"Active Directory Users and Computers\" (available from various menus or run \"dsa.msc\").\n\nSelect \"Advanced Features\" from the \"View\" Menu.\n\nNavigate to [Domain] >> System >> Policies in the left panel.\n\nRight-click \"Policies\", select \"Properties\".\n\nSelect the \"Security\" tab.\n\nSelect \"Advanced\".\n\nSelect the \"Auditing\" tab.\n\nType - Fail\nPrincipal - Everyone\nAccess - Full Control\nApplies to - This object and all descendant objects or Descendant groupPolicyContainer objects\n\nThe three Success types listed below are defaults inherited from the Parent Object. Where Special is listed in the summary screens for Access, detailed Permissions are provided for reference.\n\nType - Success\nPrincipal - Everyone\nAccess - Special (Permissions: Write all properties, Modify permissions; Properties: all \"Write\" type selected)\nInherited from - Parent Object\nApplies to - Descendant groupPolicyContainer objects\n\nTwo instances with the following summary information will be listed:\n\nType - Success\nPrincipal - Everyone\nAccess - blank (Permissions: none selected; Properties: one instance - Write gPLink, one instance - Write gPOptions)\nInherited from - Parent Object\nApplies to - Descendant Organization Unit Objects",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-254401r958732_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2022_stig/u_ms_windows_server_2022_v2r8_stig.json",
+  "source_version": "U_MS_Windows_Server_2022_V2R8_STIG.zip",
+  "stig_id": "MS_Windows_Server_2022_STIG",
+  "title": "Windows Server 2022 Active Directory Group Policy objects must be configured with proper audit settings.",
+  "tracking_issue": "TODO-V-254401",
+  "vuln_id": "V-254401"
+}

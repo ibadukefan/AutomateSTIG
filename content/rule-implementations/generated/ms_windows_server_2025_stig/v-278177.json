@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This applies to member servers and stand-alone or nondomain-joined systems. A separate version applies to domain controllers.\n\nOpen \"Computer Management\".\n\nNavigate to \"Groups\" under \"Local Users and Groups\".\n\nReview the local \"Administrators\" group.\n\nOnly administrator groups or accounts responsible for administration of the system may be members of the group.\n\nFor domain-joined member servers, the Domain Admins group must be replaced by a domain member server administrator group.\n\nStandard user accounts must not be members of the local Administrator group.\n\nIf accounts that do not have responsibility for administration of the system are members of the local Administrators group, this is a finding.\n\nIf the built-in Administrator account or other required administrative accounts are found on the system, this is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the local \"Administrators\" group to include only administrator groups or accounts responsible for administration of the system.\n\nFor domain-joined member servers, replace the Domain Admins group with a domain member server administrator group. \n\nRemove any standard user accounts.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278177r1182280_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 must only allow administrators responsible for the member server or stand-alone or nondomain-joined system to have Administrator rights on the system.",
+  "tracking_issue": "TODO-V-278177",
+  "vuln_id": "V-278177"
+}

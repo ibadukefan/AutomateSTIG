@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: This check applies to RHEL versions 8.2 or newer, if the system is RHEL version 8.0 or 8.1, this check is not applicable.\n\nVerify the \"/etc/security/faillock.conf\" file is configured to lock an account after three unsuccessful logon attempts within 15 minutes:\n\n$ sudo grep 'fail_interval =' /etc/security/faillock.conf\n\nfail_interval = 900\n\nIf the \"fail_interval\" option is not set to \"900\" or more, is missing or commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to lock an account when three unsuccessful logon attempts occur in 15 minutes.\n\nAdd/Modify the \"/etc/security/faillock.conf\" file to match the following line:\n\nfail_interval = 900",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230335r1017147_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must automatically lock an account when three unsuccessful logon attempts occur during a 15-minute time period.",
+  "tracking_issue": "TODO-V-230335",
+  "vuln_id": "V-230335"
+}

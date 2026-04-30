@@ -55,7 +55,6 @@ impl FindingStatus {
             Self::NotReviewed => "notchecked",
         }
     }
-
 }
 
 impl std::fmt::Display for FindingStatus {
@@ -162,7 +161,13 @@ pub struct Finding {
 
 impl Finding {
     /// Create a new finding with default "Not Reviewed" status.
-    pub fn new_not_reviewed(vuln_id: &str, rule_id: &str, group_id: &str, title: &str, severity: Severity) -> Self {
+    pub fn new_not_reviewed(
+        vuln_id: &str,
+        rule_id: &str,
+        group_id: &str,
+        title: &str,
+        severity: Severity,
+    ) -> Self {
         Self {
             id: Uuid::new_v4(),
             vuln_id: vuln_id.to_string(),
@@ -255,17 +260,20 @@ mod tests {
         let findings = vec![
             Finding::new_not_reviewed("V-1", "SV-1", "V-1", "Rule 1", Severity::High),
             {
-                let mut f = Finding::new_not_reviewed("V-2", "SV-2", "V-2", "Rule 2", Severity::High);
+                let mut f =
+                    Finding::new_not_reviewed("V-2", "SV-2", "V-2", "Rule 2", Severity::High);
                 f.status = FindingStatus::Open;
                 f
             },
             {
-                let mut f = Finding::new_not_reviewed("V-3", "SV-3", "V-3", "Rule 3", Severity::Medium);
+                let mut f =
+                    Finding::new_not_reviewed("V-3", "SV-3", "V-3", "Rule 3", Severity::Medium);
                 f.status = FindingStatus::NotAFinding;
                 f
             },
             {
-                let mut f = Finding::new_not_reviewed("V-4", "SV-4", "V-4", "Rule 4", Severity::Low);
+                let mut f =
+                    Finding::new_not_reviewed("V-4", "SV-4", "V-4", "Rule 4", Severity::Low);
                 f.status = FindingStatus::NotApplicable;
                 f
             },

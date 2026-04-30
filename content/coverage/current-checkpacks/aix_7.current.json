@@ -1,0 +1,206 @@
+{
+  "stig_id": "AIX_7_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/aix_7.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/aix_7.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-215500",
+      "rule_id": "V-215500_automatestig_check",
+      "classification": "automated",
+      "reason": "AIX 7 SSH must not allow direct root login",
+      "check_pack": "aix_7",
+      "check_id": "V-215500",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/aix_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215501",
+      "rule_id": "V-215501_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must not allow empty passwords",
+      "check_pack": "aix_7",
+      "check_id": "V-215501",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/aix_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215502",
+      "rule_id": "V-215502_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveInterval must be set",
+      "check_pack": "aix_7",
+      "check_id": "V-215502",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/aix_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215503",
+      "rule_id": "V-215503_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must display a login banner",
+      "check_pack": "aix_7",
+      "check_id": "V-215503",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/aix_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215504",
+      "rule_id": "V-215504_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH X11 forwarding must be disabled",
+      "check_pack": "aix_7",
+      "check_id": "V-215504",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/aix_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215510",
+      "rule_id": "V-215510_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/security/passwd must be mode 0640, owned by root:security",
+      "check_pack": "aix_7",
+      "check_id": "V-215510",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/aix_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215511",
+      "rule_id": "V-215511_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/passwd must be mode 0644 and owned by root",
+      "check_pack": "aix_7",
+      "check_id": "V-215511",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/aix_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215512",
+      "rule_id": "V-215512_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/group must be mode 0644 and owned by root",
+      "check_pack": "aix_7",
+      "check_id": "V-215512",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/aix_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215513",
+      "rule_id": "V-215513_automatestig_check",
+      "classification": "automated",
+      "reason": "sshd_config must be mode 0600 and owned by root",
+      "check_pack": "aix_7",
+      "check_id": "V-215513",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/aix_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215520",
+      "rule_id": "V-215520_automatestig_check",
+      "classification": "automated",
+      "reason": "Auditing must be enabled",
+      "check_pack": "aix_7",
+      "check_id": "V-215520",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/aix_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215521",
+      "rule_id": "V-215521_automatestig_check",
+      "classification": "automated",
+      "reason": "Login retry limit must be configured",
+      "check_pack": "aix_7",
+      "check_id": "V-215521",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/aix_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215522",
+      "rule_id": "V-215522_automatestig_check",
+      "classification": "automated",
+      "reason": "Root account must not be locked",
+      "check_pack": "aix_7",
+      "check_id": "V-215522",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/aix_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215523",
+      "rule_id": "V-215523_automatestig_check",
+      "classification": "automated",
+      "reason": "Minimum password length must be 15 characters",
+      "check_pack": "aix_7",
+      "check_id": "V-215523",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/aix_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215524",
+      "rule_id": "V-215524_automatestig_check",
+      "classification": "automated",
+      "reason": "Maximum password age must be set (in weeks)",
+      "check_pack": "aix_7",
+      "check_id": "V-215524",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/aix_7.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215525",
+      "rule_id": "V-215525_automatestig_check",
+      "classification": "automated",
+      "reason": "Minimum password age must be set",
+      "check_pack": "aix_7",
+      "check_id": "V-215525",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/aix_7.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,271 @@
+{
+  "stig_id": "MongoDB_6_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/mongodb_6.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/mongodb_6.json",
+  "total_rules": 20,
+  "rules": [
+    {
+      "vuln_id": "V-252134",
+      "rule_id": "V-252134_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must have authorization enabled in mongod.conf",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252134",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252135",
+      "rule_id": "V-252135_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must have the security section configured in mongod.conf",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252135",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252136",
+      "rule_id": "V-252136_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must require TLS for all network connections (net.tls.mode: requireTLS)",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252136",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252137",
+      "rule_id": "V-252137_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must have a TLS certificate key file configured",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252137",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252138",
+      "rule_id": "V-252138_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must have a TLS CA file configured for certificate validation",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252138",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252139",
+      "rule_id": "V-252139_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must disable TLS 1.0 and TLS 1.1 protocols",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252139",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252140",
+      "rule_id": "V-252140_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 audit log must be configured with destination file",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252140",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252141",
+      "rule_id": "V-252141_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must have the auditLog section configured in mongod.conf",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252141",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252142",
+      "rule_id": "V-252142_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 audit log format must be JSON or BSON",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252142",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252143",
+      "rule_id": "V-252143_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must have an audit log file path configured",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252143",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252144",
+      "rule_id": "V-252144_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must bind to localhost or specific authorized IP addresses",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252144",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252145",
+      "rule_id": "V-252145_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must not bind to all IP addresses (bindIpAll must not be true)",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252145",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252146",
+      "rule_id": "V-252146_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must have the network port explicitly configured",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252146",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252147",
+      "rule_id": "V-252147_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must use SCRAM-SHA-256 as an authentication mechanism",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252147",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252148",
+      "rule_id": "V-252148_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must enforce index key length restrictions",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252148",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252149",
+      "rule_id": "V-252149_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must audit authorization successes",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252149",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252150",
+      "rule_id": "V-252150_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must not have accounts using deprecated SCRAM-SHA-1 authentication",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252150",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252151",
+      "rule_id": "V-252151_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must enable encryption at rest",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252151",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252152",
+      "rule_id": "V-252152_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must have an encryption key file configured",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252152",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-252153",
+      "rule_id": "V-252153_automatestig_check",
+      "classification": "automated",
+      "reason": "MongoDB 6 must append to existing logs rather than overwriting (logAppend: true)",
+      "check_pack": "mongodb_6",
+      "check_id": "V-252153",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/mongodb_6.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

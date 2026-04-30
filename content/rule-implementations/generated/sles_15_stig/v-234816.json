@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system implements DOD-approved encryption to protect the confidentiality of SSH remote connections.\n\nCheck the SSH daemon configuration for allowed ciphers with the following command:\n\n> sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*ciphers'\n\nCiphers aes256-ctr,aes192-ctr,aes128-ctr\n\nIf any ciphers other than \"aes256-ctr\", \"aes192-ctr\", or \"aes128-ctr\" are listed, the order differs from the example above, or the \"Ciphers\" keyword is missing, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Edit the SSH daemon configuration (/etc/ssh/sshd_config) and remove any ciphers not starting with \"aes\" and remove any ciphers ending with \"cbc\". If necessary, add a \"Ciphers\" line:\n\nCiphers aes256-ctr,aes192-ctr,aes128-ctr\n\nRestart the SSH daemon:\n\n> sudo systemctl restart sshd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234816r958408_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must implement DOD-approved encryption to protect the confidentiality of SSH remote connections.",
+  "tracking_issue": "TODO-V-234816",
+  "vuln_id": "V-234816"
+}

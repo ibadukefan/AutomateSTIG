@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From the Tomcat server console, run the following command:\n\nsudo grep -i  LockOutRealm $CATALINA_BASE/conf/server.xml.  \n\nIf there are no results or if the LockOutRealm is not used for the Tomcat management application context, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From the Tomcat server console as a privileged user edit the $CATALINA_BASE/conf/server.xml file.\n\nsudo nano $CATALINA_BASE/conf/server.xml file\n\nLocate or add the LockOutRealm element. Make sure the LockOutRealm element is applied to the management application at a minimum (if the management application is in use on the system). This is done by ensuring the LockOutRealm is nested under the Engine, Host or directly within the management application Context container.\n\nEXAMPLE:\n\n      <Realm className=\"org.apache.catalina.realm.LockOutRealm\" failureCount=\"5\" lockOutTime=\"600\">\n...\n</Realm>",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222980r961278_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "LockOutRealms must be used for management of Tomcat.",
+  "tracking_issue": "TODO-V-222980",
+  "vuln_id": "V-222980"
+}

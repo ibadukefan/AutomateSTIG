@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "For systems that use BIOS, this is Not Applicable.\n\nVerify that a unique name is set as the \"superusers\" account:\n\n$ sudo grep -iw \"superusers\" /boot/efi/EFI/redhat/grub.cfg\nset superusers=\"[someuniquestringhere]\"\nexport superusers\n\nIf \"superusers\" is identical to any OS account name or is missing a name, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system to have a unique name for the grub superusers account.\n\nEdit the /etc/grub.d/01_users file and add or modify the following lines:\n\nset superusers=\"[someuniquestringhere]\"\nexport superusers\npassword_pbkdf2 [someuniquestringhere] ${GRUB2_PASSWORD}\n\nGenerate a new grub.cfg file with the following command:\n\n$ sudo grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-244521r1137691_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 operating systems booted with United Extensible Firmware Interface (UEFI) must require a unique superusers name upon booting into single-user mode and maintenance.",
+  "tracking_issue": "TODO-V-244521",
+  "vuln_id": "V-244521"
+}

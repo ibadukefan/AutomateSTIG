@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: The following instructions use the PGDATA and PGLOG environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-I for PGLOG.\n\nFirst, as the database administrator (shown here as \"postgres\"), create a schema, test_schema, create a table, test_table, within test_schema, and insert a value:\n\n$ sudo su - postgres\n$ psql -c \"CREATE SCHEMA test_schema\"\n$ psql -c \"CREATE TABLE test_schema.test_table(id INT)\"\n$ psql -c \"INSERT INTO test_schema.test_table(id) VALUES (0)\"\n\nNext, create a role \"bob\" and attempt to SELECT, INSERT, UPDATE, and DROP from the test table: \n\n$ psql -c \"CREATE ROLE BOB\"\n$ psql -c \"SET ROLE bob; SELECT * FROM test_schema.test_table\"\n\n$ psql -c \"SET ROLE bob; INSERT INTO test_schema.test_table VALUES (0)\"\n$ psql -c \"SET ROLE bob; UPDATE test_schema.test_table SET id = 1 WHERE id = 0\"\n$ psql -c \"SET ROLE bob; DROP TABLE test_schema.test_table\"\n$ psql -c \"SET ROLE bob; DROP SCHEMA test_schema\"\n\nNow, as the database administrator (shown here as \"postgres\"), review PostgreSQL/database security and audit settings to verify that audit records are created for unsuccessful attempts at the specified access to the specified objects:\n\n$ sudo su - postgres\n$ cat ${PGDATA?}/${PGLOG?}/<latest_log>\n2016-03-30 17:23:41.254 EDT postgres postgres ERROR: permission denied for schema test_schema at character 15\n2016-03-30 17:23:41.254 EDT postgres postgres STATEMENT: SELECT * FROM test_schema.test_table;\n2016-03-30 17:23:53.973 EDT postgres postgres ERROR: permission denied for schema test_schema at character 13\n2016-03-30 17:23:53.973 EDT postgres postgres STATEMENT: INSERT INTO test_schema.test_table VALUES (0);\n2016-03-30 17:24:32.647 EDT postgres postgres ERROR: permission denied for schema test_schema at character 8\n2016-03-30 17:24:32.647 EDT postgres postgres STATEMENT: UPDATE test_schema.test_table SET id = 1 WHERE id = 0;\n2016-03-30 17:24:46.197 EDT postgres postgres ERROR: permission denied for schema test_schema\n2016-03-30 17:24:46.197 EDT postgres postgres STATEMENT: DROP TABLE test_schema.test_table;\n2016-03-30 17:24:51.582 EDT postgres postgres ERROR: must be owner of schema test_schema\n2016-03-30 17:24:51.582 EDT postgres postgres STATEMENT: DROP SCHEMA test_schema;\n\nIf any of the above steps did not create audit records for SELECT, INSERT, UPDATE, and DROP, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure PostgreSQL to produce audit records when unsuccessful attempts to access objects occur.\n\nAll errors and denials are logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233564r961836_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must generate audit records when unsuccessful accesses to objects occur.",
+  "tracking_issue": "TODO-V-233564",
+  "vuln_id": "V-233564"
+}

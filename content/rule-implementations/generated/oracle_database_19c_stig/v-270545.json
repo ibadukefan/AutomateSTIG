@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Use this query to identify the Oracle-supplied accounts that still have their default passwords:\n\nSELECT * FROM SYS.DBA_USERS_WITH_DEFPWD;\n\nIf any accounts other than XS$NULL are listed, this is a finding.\n\nXS$NULL is an internal account that represents the absence of a user in a session. Because XS$NULL is not a user, this account can only be accessed by the Oracle Database instance. XS$NULL has no privileges and no one can authenticate as XS$NULL, nor can authentication credentials ever be assigned to XS$NULL.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change passwords for database management system (DBMS) accounts to nondefault values. Where necessary, unlock or enable accounts to change the password, and then return the account to disabled or locked status.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270545r1064913_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Oracle Database default accounts must be assigned custom passwords.",
+  "tracking_issue": "TODO-V-270545",
+  "vuln_id": "V-270545"
+}

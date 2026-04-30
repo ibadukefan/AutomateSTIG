@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify Telnet Client has not been installed.\n\nNavigate to the Windows\\System32 directory.\n\nIf the \"telnet\" application exists, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Uninstall \"Telnet Client\" from the system.\n\nRun \"Programs and Features\".\nSelect \"Turn Windows Features on or off\".\n\nDe-select \"Telnet Client\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-253278r958480_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/microsoft_windows_11_stig/u_ms_windows_11_v2r4_stig.json",
+  "source_version": "U_MS_Windows_11_V2R4_STIG.zip",
+  "stig_id": "Microsoft_Windows_11_STIG",
+  "title": "The Telnet Client must not be installed on the system.",
+  "tracking_issue": "TODO-V-253278",
+  "vuln_id": "V-253278"
+}

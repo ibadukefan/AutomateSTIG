@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/aliases",
+      "pattern": "postmaster:\\s*root$",
+      "type": "file_content"
+    },
+    "description": "OL 9 must forward mail from postmaster to the root account using a postfix alias.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271589"
+  },
+  "check_content_excerpt": "Verify that OL 9 administrators are notified in the event of an audit processing failure.\n\nCheck that the \"/etc/aliases\" file has a defined value for \"root\".\n\n$ grep \"postmaster:\\s*root$\" /etc/aliases\n\nIf the command does not return a line, or the line is commented out, ask the system administrator to indicate how they and the information systems security officer (ISSO) are notified of an audit process failure. If there is no evidence of the proper personnel being notified of an audit processing failure, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure a valid email address as an alias for the root account.\n\nAppend the following line to \"/etc/aliases\":\n\npostmaster: root\n\nThen, run the following command:\n\n$ sudo newaliases",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-271589r1091479_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must forward mail from postmaster to the root account using a postfix alias.",
+  "tracking_issue": "TODO-V-271589",
+  "vuln_id": "V-271589"
+}

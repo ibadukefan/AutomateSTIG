@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the permissions of the Kubernetes config.yaml by using the command:\n\nstat -c %a /var/lib/kubelet/config.yaml\n\nIf any of the files are have permissions more permissive than \"644\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the permissions of the config.yaml to \"644\" by executing the command:\n\nchmod 644 /var/lib/kubelet/config.yaml",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-242456r961863_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/kubernetes_stig/u_kubernetes_v2r6_stig.json",
+  "source_version": "U_Kubernetes_V2R6_STIG.zip",
+  "stig_id": "Kubernetes_STIG",
+  "title": "The Kubernetes kubelet config must have file permissions set to 644 or more restrictive.",
+  "tracking_issue": "TODO-V-242456",
+  "vuln_id": "V-242456"
+}

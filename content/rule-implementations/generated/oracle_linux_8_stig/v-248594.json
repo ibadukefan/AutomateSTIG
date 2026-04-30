@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "kernel.randomize_va_space",
+      "type": "sysctl"
+    },
+    "description": "OL 8 must implement address space layout randomization (ASLR) to protect its memory from unauthorized code execution.",
+    "expected": {
+      "type": "equals",
+      "value": "2"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248594"
+  },
+  "check_content_excerpt": "Verify that OL 8 implements ASLR with the following command: \n \n$ sudo sysctl kernel.randomize_va_space \n \nkernel.randomize_va_space = 2 \n \nIf \"kernel.randomize_va_space\" is not set to \"2\", this is a finding.\n\nCheck that the configuration files are present to enable this kernel parameter.\n\n$ sudo grep -r kernel.randomize_va_space /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf /lib/sysctl.d/*.conf /etc/sysctl.conf /etc/sysctl.d/*.conf\n\n/etc/sysctl.d/99-sysctl.conf:kernel.randomize_va_space = 2\n\nIf \"kernel.randomize_va_space\" is not set to \"2\", is missing or commented out, this is a finding.\n\nIf conflicting results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "2"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 8 to implement virtual address space randomization. \n \nSet the system to the required kernel parameter by adding the following line to \"/etc/sysctl.d/*.conf\" (or modify the line to have the required value): \n \nkernel.randomize_va_space=2 \n \nRemove any configurations that conflict with the above from the following locations: \n/run/sysctl.d/*.conf\n/usr/local/lib/sysctl.d/*.conf\n/usr/lib/sysctl.d/*.conf\n/lib/sysctl.d/*.conf\n/etc/sysctl.conf\n/etc/sysctl.d/*.conf\n\nIssue the following command to make the changes take effect: \n \n$ sudo sysctl --system",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-248594r958928_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must implement address space layout randomization (ASLR) to protect its memory from unauthorized code execution.",
+  "tracking_issue": "TODO-V-248594",
+  "vuln_id": "V-248594"
+}

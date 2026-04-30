@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If the database is setup to write audit logs using APPLICATION or SECURITY event logs rather than writing to a file, this is Not Applicable.\n\nCheck the server documentation for the SQL Audit file size configurations. Locate the Audit file path and drive. \n \nSELECT max_file_size, max_rollover_files, log_file_path AS \"Audit Path\"  \nFROM sys.server_file_audits \n \nCalculate the space needed as the maximum file size and number of files from the SQL Audit File properties. \n \nIf the calculated product of the \"max_file_size\" times the \"max_rollover_files\" exceeds the size of the storage location, this is a finding; \n\nOR if \"max_file_size\" is set to \"0\" (Unlimited), this is a finding;\n\nOR if \"max_rollover_files\" are set to \"0\" (None) or \"2147483647\" (Unlimited), this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Review the SQL Audit file location; ensure the destination has enough space available to accommodate the maximum total size of all files that could be written. \n \nConfigure the maximum number of audit log files that are to be generated, staying within the number of logs the system was sized to support. \n \nUpdate the \"max_files\" or \"max_rollover_files\" parameter of the audits to ensure the correct number of files is defined.\n\nIf writing to application event logs or security logs, space considerations are covered in the Windows Server STIGs. Be sure to reference these depending on the OS in use.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271343r1108645_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "SQL Server must allocate audit record storage capacity in accordance with organization-defined audit record storage requirements.",
+  "tracking_issue": "TODO-V-271343",
+  "vuln_id": "V-271343"
+}

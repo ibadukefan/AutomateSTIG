@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard",
+      "type": "registry",
+      "value_name": "EnableVirtualizationBasedSecurity"
+    },
+    "description": "Virtualization Based Security must be enabled on Windows 10 with the platform security level configured to Secure Boot or Secure Boot with DMA Protection.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-220811"
+  },
+  "check_content_excerpt": "Confirm virtualization-based security (VBS) is enabled and running with Secure Boot or Secure Boot and DMA Protection.\n\nFor those devices that support VBS features, including Credential Guard or protection of code integrity, this must be enabled. If the system meets the hardware and firmware dependencies for enabling VBS but it is not enabled, this is a CAT III finding.\n\nVBS, including Credential Guard, currently cannot be implemented in virtual desktop implementations (VDI) due to specific supporting requirements including a TPM, UEFI with Secure Boot, and the capability to run the Hyper-V feature within the virtual desktop.\n\nFor VDIs where the virtual desktop instance is deleted or refreshed upon logoff, this is NA.\n\nRun \"PowerShell\" with elevated privileges (run as administrator).\n\nEnter the following:\n\n\"Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\\Microsoft\\Windows\\DeviceGuard\"\n\nIf \"RequiredSecurityProperties\" does not include a value of \"2\" indicating \"Secure Boot\" (e.g., \"{1, 2}\"), this is a finding.\n\nIf \"Secure Boot and DMA Protection\" is configured, \"3\" will also be displayed in the results (e.g., \"{1, 2, 3}\").\n\nIf \"VirtualizationBasedSecurityStatus\" is not a value of \"2\" indicating \"Running\", this is a finding.\n\nAlternately:\n\nRun \"System Information\".\n\nUnder \"System Summary\", verify the following:\n\nIf \"Device Guard Virtualization based security\" does not display \"Running\", this is finding.\n\nIf \"Device Guard Required Security Properties\" does not display \"Base Virtualization Support, Secure Boot\", this is finding.\n\nIf \"Secure Boot and DMA Protection\" is configured, \"DMA Protection\" will also be displayed (e.g., \"Base Virtualization Support, Secure Boot, DMA Protection\").\n\nThe policy settings referenced in the Fix section will configure the following registry values. However, due to hardware requirements, the registry values alone do not ensure proper function.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard\\\n\nValue Name: EnableVirtualizationBasedSecurity\nValue Type: REG_DWORD\nValue: 1\n\nValue Name: RequirePlatformSecurityFeatures\nValue Type: REG_DWORD\nValue: 1 (Secure Boot only) or 3 (Secure Boot and DMA Protection)\n\nA Microsoft article on Credential Guard system requirements can be found at the following link:\n\nhttps://technet.microsoft.com/en-us/itpro/windows/keep-secure/credential-guard-requirements",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "VBS, including Credential Guard, currently cannot be implemented in virtual desktop implementations (VDI) due to specific supporting requirements including a TPM, UEFI with Secure Boot, and the capability to run the Hyper-V feature within the virtual desktop.\n\nFor VDIs where the virtual desktop instance is deleted or refreshed upon logoff, this is NA.\n\nConfigure the policy value for Computer Configuration >> Administrative Templates >> System >> Device Guard >> \"Turn On Virtualization Based Security\" to \"Enabled\" with \"Secure Boot\" or \"Secure Boot and DMA Protection\" selected for \"Select Platform Security Level:\".\n\nA Microsoft article on Credential Guard system requirements can be found at the following link:\nhttps://technet.microsoft.com/en-us/itpro/windows/keep-secure/credential-guard-requirements",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-220811r1016359_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_10_stig/u_ms_windows_10_v3r4_stig.json",
+  "source_version": "U_MS_Windows_10_V3R4_STIG.zip",
+  "stig_id": "MS_Windows_10_STIG",
+  "title": "Virtualization Based Security must be enabled on Windows 10 with the platform security level configured to Secure Boot or Secure Boot with DMA Protection.",
+  "tracking_issue": "TODO-V-220811",
+  "vuln_id": "V-220811"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Security Option \"Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings\" must be set to \"Enabled\" (WN22-SO-000050) for the detailed auditing subcategories to be effective. \n\nUse the \"AuditPol\" tool to review the current Audit Policy configuration:\n\nOpen \"PowerShell\" or a \"Command Prompt\" with elevated privileges (\"Run as administrator\").\n\nEnter \"AuditPol /get /category:*\"\n\nCompare the \"AuditPol\" settings with the following:\n\nIf the system does not audit the following, this is a finding.\n\nSystem >> Other System Events - Success",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Advanced Audit Policy Configuration >> System Audit Policies >> System >> Audit Other System Events with \"Success\" selected.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-254327r958732_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2022_stig/u_ms_windows_server_2022_v2r8_stig.json",
+  "source_version": "U_MS_Windows_Server_2022_V2R8_STIG.zip",
+  "stig_id": "MS_Windows_Server_2022_STIG",
+  "title": "Windows Server 2022 must be configured to audit System - Other System Events successes.",
+  "tracking_issue": "TODO-V-254327",
+  "vuln_id": "V-254327"
+}

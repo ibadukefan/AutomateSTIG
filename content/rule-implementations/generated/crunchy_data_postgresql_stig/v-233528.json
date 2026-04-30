@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review PostgreSQL source code (trigger procedures, functions) and application source code to identify cases of dynamic code execution.\n\nIf dynamic code execution is employed without protective measures against code injection, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Where dynamic code execution is used, modify the code to implement protections against code injection (IE: prepared statements).",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233528r961158_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL and associated applications, when making use of dynamic code execution, must scan input data for invalid values that may indicate a code injection attack.",
+  "tracking_issue": "TODO-V-233528",
+  "vuln_id": "V-233528"
+}

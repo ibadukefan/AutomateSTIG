@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Navigate to the System event log file.\n\nThe default location is the \"%SystemRoot%\\System32\\winevt\\Logs\" folder. However, the logs may have been moved to another folder.\n\nIf the permissions for the \"System.evtx\" file are not as restrictive as the default permissions listed below, this is a finding:\n\nEventlog - Full Control\nSYSTEM - Full Control\nAdministrators - Full Control",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the permissions on the System event log file (System.evtx) to prevent access by non-privileged accounts. The default permissions listed below satisfy this requirement:\n\nEventlog - Full Control\nSYSTEM - Full Control\nAdministrators - Full Control\n\nThe default location is the \"%SystemRoot%\\System32\\winevt\\Logs\" folder.\n\nIf the location of the logs has been changed, when adding Eventlog to the permissions, it must be entered as \"NT Service\\Eventlog\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-205642r958434_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/windows_server_2019_stig/u_ms_windows_server_2019_v3r4_stig.json",
+  "source_version": "U_MS_Windows_Server_2019_V3R4_STIG.zip",
+  "stig_id": "Windows_Server_2019_STIG",
+  "title": "Windows Server 2019 permissions for the System event log must prevent access by non-privileged accounts.",
+  "tracking_issue": "TODO-V-205642",
+  "vuln_id": "V-205642"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the systemwide shared library files contained in the directories \"/lib\", \"/lib64\", and \"/usr/lib\" are owned by root with the following command: \n \n$ sudo find /lib /usr/lib /lib64 ! -user root -type f -exec stat -c \"%n %U\" '{}' \\; \n \nIf any systemwide library file is returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system library files to be protected from unauthorized access. Run the following command: \n \n$ sudo find /lib /usr/lib /lib64 ! -user root -type f -exec chown root '{}' \\;",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270697r1066580_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS library files must be owned by root.",
+  "tracking_issue": "TODO-V-270697",
+  "vuln_id": "V-270697"
+}

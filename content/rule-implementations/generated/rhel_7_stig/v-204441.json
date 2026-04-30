@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system requires multifactor authentication to uniquely identify organizational users using multifactor authentication.\n\nCheck to see if smartcard authentication is enforced on the system:\n\n# authconfig --test | grep \"pam_pkcs11 is enabled\"\n\nIf no results are returned, this is a finding.\n\n# authconfig --test | grep \"smartcard removal action\"\n\nIf \"smartcard removal action\" is blank, this is a finding.\n\n# authconfig --test | grep \"smartcard module\"\n\nIf any of the above checks are not configured, ask the administrator to indicate the AO-approved multifactor authentication in use and the configuration to support it. If there is no evidence of multifactor authentication, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to require individuals to be authenticated with a multifactor authenticator.\n\nEnable smartcard logons with the following commands:\n\n# authconfig --enablesmartcard --smartcardaction=0 --update\n# authconfig --enablerequiresmartcard -update\n\nModify the \"/etc/pam_pkcs11/pkcs11_eventmgr.conf\" file to uncomment the following line:\n\n#/usr/X11R6/bin/xscreensaver-command -lock\n\nModify the \"/etc/pam_pkcs11/pam_pkcs11.conf\" file to use the cackey module if required.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204441r958482_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must uniquely identify and must authenticate organizational users (or processes acting on behalf of organizational users) using multifactor authentication.",
+  "tracking_issue": "TODO-V-204441",
+  "vuln_id": "V-204441"
+}

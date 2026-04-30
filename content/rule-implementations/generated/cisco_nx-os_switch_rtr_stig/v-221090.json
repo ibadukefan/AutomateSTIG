@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to verify that an ingress ACL applied to all external interfaces is blocking packets with Bogon source addresses.\n\nStep 1: Verify an ACL has been configured containing the current Bogon prefixes as shown in the example below:\n\nip access-list EXTERNAL_ACL\n 10 deny ip 0.0.0.0/8 any log \n 20 deny ip 10.0.0.0/8 any log \n 30 deny ip 100.64.0.0/10 any log \n 40 deny ip 127.0.0.0/8 any log \n 50 deny ip 169.254.0.0/16 any log \n 60 deny ip 172.16.0.0/12 any log \n 70 deny ip 192.0.0.0/24 any log \n 80 deny ip 192.0.2.0/24 any log \n 90 deny ip 192.168.0.0/16 any log \n 100 deny ip 198.18.0.0/15 any log \n 110 deny ip 198.51.100.0/24 any log \n 120 deny ip 203.0.113.0/24 any log \n 130 deny ip 224.0.0.0/3 any log \n 140 permit tcp any any established \n 150 permit \u2026\n \u2026\n \u2026\n \u2026\n210 deny ip any any log\n\nStep 2: Verify that the inbound ACL applied to all external interfaces will block all traffic from Bogon source addresses.\n\ninterface Ethernet2/2\n description link to DISN\n no switchport\n ip access-group EXTERNAL_ACL in\n\nIf the switch is not configured to block inbound packets with source Bogon IP address prefixes, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the perimeter to block inbound packets with Bogon source addresses.\n\nStep 1: Configure an ACL containing the current Bogon prefixes as shown below:\n\nSW1(config)# ip access-list EXTERNAL_ACL\nSW1(config-acl)# deny ip 0.0.0.0 0.255.255.255 any log\nSW1(config-acl)# deny ip 10.0.0.0 0.255.255.255 any log\nSW1(config-acl)# deny ip 100.64.0.0 0.63.255.255 any log\nSW1(config-acl)# deny ip 127.0.0.0 0.255.255.255 any log\nSW1(config-acl)# deny ip 169.254.0.0 0.0.255.255 any log\nSW1(config-acl)# deny ip 172.16.0.0 0.15.255.255 any log\nSW1(config-acl)# deny ip 192.0.0.0 0.0.0.255 any log\nSW1(config-acl)# deny ip 192.0.2.0 0.0.0.255 any log\nSW1(config-acl)# deny ip 192.168.0.0 0.0.255.255 any log\nSW1(config-acl)# deny ip 198.18.0.0 0.1.255.255 any log\nSW1(config-acl)# deny ip 198.51.100.0 0.0.0.255 any log\nSW1(config-acl)# deny ip 203.0.113.0 0.0.0.255 any log\nSW1(config-acl)# deny ip 224.0.0.0 31.255.255.255 any log\nSW1(config-acl)# deny ip 240.0.0.0 31.255.255.255 any log\nSW1(config-acl)# permit tcp any any established\nSW1(config-acl)# permit \u2026\n\u2026\n\u2026\n\u2026\nSW1(config-acl)# deny ip any any log\nSW1(config-acl)# end\n\nStep 2: Apply the ACL inbound on all external interfaces.\n\nSW1(config)#int e2/2\nSW1(config-if)# ip access-group EXTERNAL_ACL in\nSW1(config-if)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221090r999699_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco perimeter switch must be configured to block inbound packets with source Bogon IP address prefixes.",
+  "tracking_issue": "TODO-V-221090",
+  "vuln_id": "V-221090"
+}

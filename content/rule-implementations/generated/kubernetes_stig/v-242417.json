@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "On the Control Plane, run the command:\nkubectl get pods --all-namespaces\n\nReview the namespaces and pods that are returned. Kubernetes system namespaces are kube-node-lease, kube-public, and kube-system.\n\nIf any user pods are present in the Kubernetes system namespaces, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Move any user pods that are present in the Kubernetes system namespaces to user specific namespaces.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-242417r1137643_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/kubernetes_stig/u_kubernetes_v2r6_stig.json",
+  "source_version": "U_Kubernetes_V2R6_STIG.zip",
+  "stig_id": "Kubernetes_STIG",
+  "title": "Kubernetes must separate user functionality.",
+  "tracking_issue": "TODO-V-242417",
+  "vuln_id": "V-242417"
+}

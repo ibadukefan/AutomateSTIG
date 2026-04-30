@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 is configured so that the sssd.service is enabled and active with the following commands: \n \n$ sudo systemctl is-enabled sssd\nenabled\n\n$ sudo systemctl is-active sssd\nactive\n\nIf sssd.service is not active or enabled, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the sssd.service to start automatically on reboot with the following command: \n \n$ sudo systemctl enable sssd.service \n \nEnsure the sssd service is running: \n \n$ sudo systemctl start sssd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271494r1091194_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must use the SSSD package for multifactor authentication services.",
+  "tracking_issue": "TODO-V-271494",
+  "vuln_id": "V-271494"
+}

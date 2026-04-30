@@ -1,0 +1,54 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon",
+      "type": "registry",
+      "value_name": "SCRemoveOption"
+    },
+    "description": "The Smart Card removal option must be configured to Force Logoff or Lock Workstation.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-253448"
+  },
+  "check_content_excerpt": "If the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\\n\nValue Name: SCRemoveOption\n\nValue Type: REG_SZ\nValue: 1 (Lock Workstation) or 2 (Force Logoff)\n\nThis can be left not configured or set to \"No action\" on workstations with the following conditions. This must be documented with the ISSO.\n-The setting cannot be configured due to mission needs, or because it interferes with applications.\n-Policy must be in place that users manually lock workstations when leaving them unattended.\n-The screen saver is properly configured to lock as required.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> \"Interactive logon: Smart card removal behavior\" to \"Lock Workstation\" or \"Force Logoff\".",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/microsoft_windows_11_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-253448r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/microsoft_windows_11_stig/u_ms_windows_11_v2r4_stig.json",
+  "source_version": "U_MS_Windows_11_V2R4_STIG.zip",
+  "stig_id": "Microsoft_Windows_11_STIG",
+  "title": "The Smart Card removal option must be configured to Force Logoff or Lock Workstation.",
+  "tracking_issue": "TODO-V-253448",
+  "vuln_id": "V-253448"
+}

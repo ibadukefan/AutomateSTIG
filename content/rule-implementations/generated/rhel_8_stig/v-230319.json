@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "The following command will discover and print world-writable directories that are not group-owned by a system account, given the assumption that only system accounts have a gid lower than 1000. Run it once for each local partition [PART]: \n\n$ sudo find [PART] -xdev -type d -perm -0002 -gid +999 -print\n\nIf there is output, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "All directories in local partitions which are world-writable must be group-owned by root or another system account.  If any world-writable directories are not group-owned by a system account, this must be investigated.  Following this, the directories must be deleted or assigned to an appropriate group.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230319r1017130_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "All RHEL 8 world-writable directories must be group-owned by root, sys, bin, or an application group.",
+  "tracking_issue": "TODO-V-230319",
+  "vuln_id": "V-230319"
+}

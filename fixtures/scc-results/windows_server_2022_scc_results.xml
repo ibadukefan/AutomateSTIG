@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Benchmark xmlns="http://checklists.nist.gov/xccdf/1.2">
+  <TestResult id="scc_result_1" test-system="cpe:/a:disa:scc:5.7">
+    <target>sanitized-win2022.example.test</target>
+    <profile>MAC-2_Sensitive</profile>
+    <rule-result idref="SV-254239r958388_rule"><result>fail</result></rule-result>
+    <rule-result idref="SV-254240r958392_rule"><result>pass</result></rule-result>
+  </TestResult>
+</Benchmark>

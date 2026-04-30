@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 has a DNS mode configured in Network Manager.\n\n$ NetworkManager --print-config\n[main]\ndns=none\n\nIf the DNS key under main does not exist or is not set to \"none\" or \"default\", this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure NetworkManager in OL 9 to use a DNS mode.\n\nIn \"/etc/NetworkManager/NetworkManager.conf\" add the following line in the \"[main]\" section:\n\ndns = none\n\nNetworkManager must be reloaded for the change to take effect.\n\n$ sudo systemctl reload NetworkManager",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271860r1092292_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must configure a DNS processing mode set be Network Manager.",
+  "tracking_issue": "TODO-V-271860",
+  "vuln_id": "V-271860"
+}

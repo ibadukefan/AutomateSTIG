@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Step 1: Verify that a prefix list has been configured containing prefixes belonging to customers as well as the local AS as shown in the example below:\n\nip prefix-list CE_PREFIX_ADVERTISEMENTS seq 5 permit x.13.1.0/24 le 32\nip prefix-list CE_PREFIX_ADVERTISEMENTS seq 10 permit x.13.2.0/24 le 32\nip prefix-list CE_PREFIX_ADVERTISEMENTS seq 15 permit x.13.3.0/24 le 32\nip prefix-list CE_PREFIX_ADVERTISEMENTS seq 20 permit x.13.4.0/24 le 32\n\u2026\n\u2026\n\u2026\nip prefix-list CE_PREFIX_ADVERTISEMENTS seq 80 deny 0.0.0.0/0 ge 8\n\nStep 2: Verify that the prefix lists has been applied to all CE peers as shown in the example below:\n\nrouter bgp xx\n router-id 10.1.1.1\n neighbor x.55.14.2 remote-as 64514\n password 3 7b07d1b3023056a9\n address-family ipv4 unicast\n prefix-list CE_PREFIX_ADVERTISEMENTS out\n neighbor x.55.14.4 remote-as 64516\n password 3 f07a10cb41db8bb6f8f0a340049a9b02\n address-family ipv4 unicast\n prefix-list CE_PREFIX_ADVERTISEMENTS out\n\nIf the switch is not configured to reject outbound route advertisements that do not belong to any customers or the local AS, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Step 1: Configure a prefix list for containing all customer and local AS prefixes as shown in the example below:\n\nSW1(config)#ip prefix-list CE_PREFIX_ADVERTISEMENTS permit x.13.1.0/24 le 32\nSW1(config)#ip prefix-list CE_PREFIX_ADVERTISEMENTS permit x.13.2.0/24 le 32\nSW1(config)#ip prefix-list CE_PREFIX_ADVERTISEMENTS permit x.13.3.0/24 le 32\nSW1(config)#ip prefix-list CE_PREFIX_ADVERTISEMENTS permit x.13.4.0/24 le 32\n\u2026\n\u2026\n\u2026\nSW1(config)#ip prefix-list CE_PREFIX_ADVERTISEMENTS deny 0.0.0.0/0 ge 8\n\nStep 2: Apply the prefix list filter outbound to each CE neighbor as shown in the example below:\n\nSW1(config)#switch bgp 64512\nSW1(config-switch)# neighbor x.12.4.14 prefix-list CE_PREFIX_ADVERTISEMENTS out\nSW1(config-switch)# neighbor x.12.4.16 prefix-list CE_PREFIX_ADVERTISEMENTS out",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221106r1137897_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco BGP switch must be configured to reject outbound route advertisements for any prefixes that do not belong to any customers or the local autonomous system (AS).",
+  "tracking_issue": "TODO-V-221106",
+  "vuln_id": "V-221106"
+}

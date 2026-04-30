@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that a separate file system has been created for \"/var/tmp\".\n\nCheck that a file system has been created for \"/var/tmp\" with the following command:\n\n     $ sudo grep /var/tmp /etc/fstab\n\n     /dev/mapper/...   /var/tmp   xfs   defaults,nodev,noexec,nosuid 0 0\n\nIf a separate entry for \"/var/tmp\" is not in use, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Migrate the \"/var/tmp\" path onto a separate file system.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-244529r1017336_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must use a separate file system for /var/tmp.",
+  "tracking_issue": "TODO-V-244529",
+  "vuln_id": "V-244529"
+}

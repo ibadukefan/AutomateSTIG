@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If smart card authentication is not being used on the system this item is Not Applicable.\n\nVerify that the SSSD prohibits the use of cached authentications after one day.\n\nCheck that SSSD allows cached authentications with the following command:\n\n$ sudo grep cache_credentials /etc/sssd/sssd.conf\n/etc/sssd/sssd.conf:cache_credentials = true\n\nIf \"cache_credentials\" is set to \"false\" or missing from the configuration file, this is not a finding, and no further checks are required.\n\nIf \"cache_credentials\" is set to \"true\", check that SSSD prohibits the use of cached authentications after one day with the following command:\n\n$ sudo grep offline_credentials_expiration  /etc/sssd/sssd.conf\n/etc/sssd/sssd.conf:offline_credentials_expiration = 1\n\nIf \"offline_credentials_expiration\" is not set to a value of \"1\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SSSD to prohibit the use of cached authentications after one day.\n\nAdd or change the following line in \"/etc/sssd/sssd.conf\" just below the line \"[pam]\".\n\n     offline_credentials_expiration = 1",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230376r1069307_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must prohibit the use of cached authentications after one day.",
+  "tracking_issue": "TODO-V-230376",
+  "vuln_id": "V-230376"
+}

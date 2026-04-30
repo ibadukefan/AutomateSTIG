@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "At the command prompt, run the following command:\n\n# xmllint --xpath '/Server/Listener[@className=\"org.apache.catalina.security.SecurityListener\"]' /usr/lib/vmware-lookupsvc/conf/server.xml\n\nExample result:\n\n<Listener className=\"org.apache.catalina.security.SecurityListener\"/>\n\nIf the \"org.apache.catalina.security.SecurityListener\" listener is not present, this is a finding.\n\nIf the \"org.apache.catalina.security.SecurityListener\" listener is configured with a \"minimumUmask\" and is not \"0007\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/server.xml\n\nNavigate to the <Server> node and add or update the \"org.apache.catalina.security.SecurityListener\" as follows:\n\n<Listener className=\"org.apache.catalina.security.SecurityListener\"/>\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-259042r960960_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/vmw_vsphere_8_0_vcsa_lookup_svc_stig/u_vmw_vsphere_8_0_y25m07_stig.json",
+  "source_version": "U_VMW_vSphere_8-0_Y25M07_STIG.zip",
+  "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
+  "title": "The vCenter Lookup service must limit privileges for creating or modifying hosted application shared files.",
+  "tracking_issue": "TODO-V-259042",
+  "vuln_id": "V-259042"
+}

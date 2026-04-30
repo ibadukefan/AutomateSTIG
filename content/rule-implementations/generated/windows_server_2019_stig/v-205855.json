@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the effective User Rights setting in Local Group Policy Editor.\nRun \"gpedit.msc\".\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.\n\nReview each User Right listed for any unresolved SIDs to determine whether they are valid, such as due to being temporarily disconnected from the domain. (Unresolved SIDs have the format that begins with \"*S-1-\".)\n\nIf any unresolved SIDs exist and are not for currently valid accounts or groups, this is a finding.\n\nFor server core installations, run the following command:\n\nSecedit /export /areas USER_RIGHTS /cfg c:\\path\\UserRights.txt\n\nThe results in the file identify user right assignments by SID instead of group name. Review the SIDs for unidentified ones. A list of typical SIDs \\ Groups is below, search Microsoft for articles on well-known SIDs for others. \n\nIf any unresolved SIDs exist and are not for currently valid accounts or groups, this is a finding.\n\nSID - Group\nS-1-5-11 - Authenticated Users\nS-1-5-113 - Local account\nS-1-5-114 - Local account and member of Administrators group\nS-1-5-19 - Local Service\nS-1-5-20 - Network Service\nS-1-5-32-544 - Administrators\nS-1-5-32-546 - Guests\nS-1-5-6 - Service\nS-1-5-9 - Enterprise Domain Controllers\nS-1-5-domain-512 - Domain Admins\nS-1-5-root domain-519 - Enterprise Admins\nS-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420 - NT Service\\WdiServiceHost",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Remove any unresolved SIDs found in User Rights assignments and determined to not be for currently valid accounts or groups by removing the accounts or groups from the appropriate group policy.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-205855r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/windows_server_2019_stig/u_ms_windows_server_2019_v3r4_stig.json",
+  "source_version": "U_MS_Windows_Server_2019_V3R4_STIG.zip",
+  "stig_id": "Windows_Server_2019_STIG",
+  "title": "Windows Server 2019 must have orphaned security identifiers (SIDs) removed from user rights.",
+  "tracking_issue": "TODO-V-205855",
+  "vuln_id": "V-205855"
+}

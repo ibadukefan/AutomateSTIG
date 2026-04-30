@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This applies to member servers and standalone or nondomain-joined systems. A separate version applies to domain controllers.\n\nVerify the effective setting in Local Group Policy Editor.\n\nRun \"gpedit.msc\".\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.\n\nIf the following accounts or groups are not defined for the \"Deny access to this computer from the network\" user right, this is a finding:\n\nDomain Systems Only:\n- Enterprise Admins group\n- Domain Admins group\n- \"Local account and member of Administrators group\" or \"Local account\" (see Note below)\n\nAll Systems:\n- Guests group\n\nFor server core installations, run the following command:\n\nSecedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt\n\nReview the text file.\n\nIf the following SIDs are not defined for the \"SeDenyNetworkLogonRight\" user right, this is a finding.\n\nDomain Systems Only:\nS-1-5-root domain-519 (Enterprise Admins)\nS-1-5-domain-512 (Domain Admins)\nS-1-5-114 (\"Local account and member of Administrators group\") or S-1-5-113 (\"Local account\")\n\nAll Systems:\nS-1-5-32-546 (Guests)\n\nNote: These are built-in security groups. \"Local account\" is more restrictive but may cause issues on servers such as systems that provide failover clustering.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Deny access to this computer from the network to include the following:\n\nDomain Systems Only:\n- Enterprise Admins group\n- Domain Admins group\n- \"Local account and member of Administrators group\" or \"Local account\" (see Note below)\n\nAll Systems:\n- Guests group\n\nNote: These are built-in security groups. \"Local account\" is more restrictive but may cause issues on servers such as systems that provide failover clustering.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-254435r1137691_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2022_stig/u_ms_windows_server_2022_v2r8_stig.json",
+  "source_version": "U_MS_Windows_Server_2022_V2R8_STIG.zip",
+  "stig_id": "MS_Windows_Server_2022_STIG",
+  "title": "Windows Server 2022 Deny access to this computer from the network user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and local accounts and from unauthenticated access on all systems.",
+  "tracking_issue": "TODO-V-254435",
+  "vuln_id": "V-254435"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Check that a minimum number of hash rounds is configured by running the following command:\n\n     $ sudo grep -E \"^SHA_CRYPT_\" /etc/login.defs\n\nIf only one of \"SHA_CRYPT_MIN_ROUNDS\" or \"SHA_CRYPT_MAX_ROUNDS\" is set, and this value is below \"100000\", this is a finding.\n\nIf both \"SHA_CRYPT_MIN_ROUNDS\" and \"SHA_CRYPT_MAX_ROUNDS\" are set, and the value for either is below \"100000\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 8 to encrypt all stored passwords with a strong cryptographic hash. \n \nEdit/modify the following line in the \"/etc/login.defs\" file and set \"SHA_CRYPT_MIN_ROUNDS\" to a value no lower than \"100000\": \n \nSHA_CRYPT_MIN_ROUNDS 100000",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248535r1044786_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "The OL 8 shadow password suite must be configured to use a sufficient number of hashing rounds.",
+  "tracking_issue": "TODO-V-248535",
+  "vuln_id": "V-248535"
+}

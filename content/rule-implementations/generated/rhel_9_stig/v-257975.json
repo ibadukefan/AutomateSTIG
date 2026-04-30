@@ -1,0 +1,53 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "net.ipv6.conf.default.accept_ra",
+      "type": "sysctl"
+    },
+    "description": "RHEL 9 must not accept router advertisements on all IPv6 interfaces by default.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257975"
+  },
+  "check_content_excerpt": "Verify RHEL 9 does not accept router advertisements on all IPv6 interfaces by default, unless the system is a router.\n\nNote: If IPv6 is disabled on the system, this requirement is Not Applicable.\n\nDetermine if router advertisements are not accepted by default by using the following command:\n\n$ sudo sysctl net.ipv6.conf.default.accept_ra\n\nnet.ipv6.conf.default.accept_ra = 0\n\nIf the \"accept_ra\" value is not \"0\" and is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.\n\nCheck that the configuration files are present to enable this network parameter.\n\n$ sudo /usr/lib/systemd/systemd-sysctl --cat-config | egrep -v '^(#|;)' |  grep -F net.ipv6.conf.default.accept_ra | tail -1\n\nnet.ipv6.conf.default.accept_ra = 0\n\nIf \"net.ipv6.conf.default.accept_ra\" is not set to \"0\" or is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 9 to not accept router advertisements on all IPv6 interfaces by default unless the system is a router.\n\nAdd or edit the following line in a single system configuration file, in the \"/etc/sysctl.d/\" directory:\n\nnet.ipv6.conf.default.accept_ra = 0\n\nLoad settings from all system configuration files with the following command:\n\n$ sudo sysctl --system",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_9_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-257975r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must not accept router advertisements on all IPv6 interfaces by default.",
+  "tracking_issue": "TODO-V-257975",
+  "vuln_id": "V-257975"
+}

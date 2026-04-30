@@ -1,0 +1,53 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/aliases",
+      "pattern": "postmaster:\\s*root$",
+      "type": "file_content"
+    },
+    "description": "The RHEL 8 Information System Security Officer (ISSO) and System Administrator (SA) (at a minimum) must have mail aliases to be notified of an audit processing failure.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230389"
+  },
+  "check_content_excerpt": "Verify that the administrators are notified in the event of an audit processing failure.\n\nCheck that the \"/etc/aliases\" file has a defined value for \"root\".\n\n$ sudo grep \"postmaster:\\s*root$\" /etc/aliases\n\nIf the command does not return a line, or the line is commented out, ask the system administrator to indicate how they and the ISSO are notified of an audit process failure.  If there is no evidence of the proper personnel being notified of an audit processing failure, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to notify administrators in the event of an audit processing failure.\n\nAdd/update the following line in \"/etc/aliases\":\n\npostmaster: root",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-230389r1017197_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "The RHEL 8 Information System Security Officer (ISSO) and System Administrator (SA) (at a minimum) must have mail aliases to be notified of an audit processing failure.",
+  "tracking_issue": "TODO-V-230389",
+  "vuln_id": "V-230389"
+}

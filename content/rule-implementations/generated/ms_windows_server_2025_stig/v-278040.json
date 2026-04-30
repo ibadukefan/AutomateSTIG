@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the effective setting in Local Group Policy Editor.\n\nRun gpedit.msc.\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Password Policy.\n\nIf the value for \"Store passwords using reversible encryption\" is not set to \"Disabled\", this is a finding.\n\nFor server core installations, run the following command:\n\nSecedit /Export /Areas SecurityPolicy /CFG C:\\Path\\FileName.Txt\n\nIf \"ClearTextPassword\" equals \"1\" in the file, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Password Policy. Set \"Store passwords using reversible encryption\" to \"Disabled\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278040r1180826_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 reversible password encryption must be disabled.",
+  "tracking_issue": "TODO-V-278040",
+  "vuln_id": "V-278040"
+}

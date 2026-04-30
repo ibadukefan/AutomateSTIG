@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If a file integrity tool other than Advanced Intrusion Detection Environment (AIDE) is employed, this requirement is not applicable.\n\nVerify that AIDE is configured and operating correctly by using the following command (this will take a few minutes): \n \n     $ sudo aide -c /etc/aide/aide.conf --check \n \nExample output: \n \nStart timestamp: 2024-04-01 04:20:00 +1300 (AIDE 0.17.4) \nAIDE found differences between database and filesystem!! \nIgnored e2fs attributes: EIh \n... \n \nIf AIDE is being used to perform file integrity checks but the command fails, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Initialize AIDE (this will take a few minutes): \n \n     $ sudo aideinit \n     Running aide --init... \n \nExample output: \n \nStart timestamp: 2024-04-01 04:20:00 +1300 (AIDE 0.17.4) \nAIDE initialized database at /var/lib/aide/aide.db.new \nIgnored e2fs attributes: EIh \n \nNumber of entries:      146185 \n \n--------------------------------------------------- \nThe attributes of the (uncompressed) database(s): \n--------------------------------------------------- \n \n/var/lib/aide/aide.db.new \n SHA256    : UrYbC/KBOJcs8zKcSlKoifnnoPK66DEC \n             Aw6odu/BpgY= \n SHA512    : ezENbbuh937SPWvtsdjRzy3i47XjLg7j \n             L3UGmr0EcgY6u8rczxgbn2RuwJfrIpef \n             0c1qMNobzrLXyDnnqEqAqw== \n RMD160    : yBq2xio+g5ne4kvZzzMZ2v+EO9w= \n TIGER     : GkJ/xkzJGu/aSQqk9A5LN271IOAQC3d0 \n CRC32     : g/beXA== \n HAVAL     : zZm220YZiGna2edJ6Gi0rPv16AlpqeHB \n             y/XLB3hIPEY= \n WHIRLPOOL : k6veoXavJ/BH9L125pCYAfTB8w5ZJkdC \n             DvVmYS0+cgmg7M0y/S2v42FNCEJ993mc \n             3kZMXJR/VVmwKg/7ntGixQ== \n GOST      : psjiyix6mJlNsE984D0NwbfgBmB0ETGl \n             /R4PNvm/wKg= \n \nEnd timestamp: 2024-04-01 04:29:16 +1300 (run time: 9m 16s)",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-260583r1134798_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must configure AIDE to perform file integrity checking on the file system.",
+  "tracking_issue": "TODO-V-260583",
+  "vuln_id": "V-260583"
+}

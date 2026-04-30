@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Word 2016 >> Word Options >> Security >> Trust Center >> File Block Settings \"Word 2 and earlier binary documents and templates\" is set to \"Enabled: Open/Save blocked, use open policy\".\n\nUse the Windows Registry Editor to navigate to the following key:\n\nHKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\word\\security\\fileblock\n\nIf the value Word2Files is REG_DWORD = 2, this is not a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Word 2016 >> Word Options >> Security >> Trust Center >> File Block Settings \"Word 2 and earlier binary documents and templates\" to \"Enabled: Open/Save blocked, use open policy\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-223407r961086_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_office_365_proplus_stig/u_ms_office_365_proplus_v3r5_stig.json",
+  "source_version": "U_MS_Office_365_ProPlus_V3R5_STIG.zip",
+  "stig_id": "MS_Office_365_ProPlus_STIG",
+  "title": "Open/Save of Word 2 and earlier binary documents and templates must be blocked.",
+  "tracking_issue": "TODO-V-223407",
+  "vuln_id": "V-223407"
+}

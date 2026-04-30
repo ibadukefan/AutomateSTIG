@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This applies to member servers. For domain controllers and stand-alone or nondomain-joined systems, this is not applicable.\n\nIf the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry HiveHKEY_LOCAL_MACHINE\nRegistry Path\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\\n\nValue NameCachedLogonsCount\n\nValue TypeREG_SZ\nValue4 (or less)",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> Interactive Logon: Number of previous logons to cache (in case Domain Controller is not available) to \"4\" logons or less.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278181r1182288_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 must limit the caching of logon credentials to four or less on domain-joined member servers.",
+  "tracking_issue": "TODO-V-278181",
+  "vuln_id": "V-278181"
+}

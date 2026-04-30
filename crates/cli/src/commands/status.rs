@@ -1,7 +1,7 @@
 use anyhow::Result;
-use console::style;
 use automatestig_core::library::StigLibrary;
 use automatestig_storage::Database;
+use console::style;
 
 use super::{db_path, library_path};
 use crate::ui;
@@ -53,7 +53,10 @@ pub fn run(cli: &crate::Cli) -> Result<()> {
 
     eprintln!();
     ui::section("Configuration");
-    ui::detail("Data directory", &super::default_data_dir().display().to_string());
+    ui::detail(
+        "Data directory",
+        &super::default_data_dir().display().to_string(),
+    );
     ui::detail("Mode", "Air-gapped (offline only)");
     ui::detail("Determinism", "100% — zero AI/ML");
     eprintln!();

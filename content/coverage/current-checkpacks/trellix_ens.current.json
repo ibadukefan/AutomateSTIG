@@ -1,0 +1,206 @@
+{
+  "stig_id": "Trellix_ENS_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/trellix_ens.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/trellix_ens.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-292001",
+      "rule_id": "V-292001_automatestig_check",
+      "classification": "automated",
+      "reason": "Trellix ENS real-time on-access scanning must be enabled",
+      "check_pack": "trellix_ens",
+      "check_id": "V-292001",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/trellix_ens.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-292002",
+      "rule_id": "V-292002_automatestig_check",
+      "classification": "automated",
+      "reason": "On-access scanner primary action must be set to clean",
+      "check_pack": "trellix_ens",
+      "check_id": "V-292002",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/trellix_ens.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-292003",
+      "rule_id": "V-292003_automatestig_check",
+      "classification": "automated",
+      "reason": "On-access scanner must scan archive files",
+      "check_pack": "trellix_ens",
+      "check_id": "V-292003",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/trellix_ens.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-292004",
+      "rule_id": "V-292004_automatestig_check",
+      "classification": "automated",
+      "reason": "On-access scanner must scan network drives",
+      "check_pack": "trellix_ens",
+      "check_id": "V-292004",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/trellix_ens.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-292005",
+      "rule_id": "V-292005_automatestig_check",
+      "classification": "automated",
+      "reason": "Trellix ENS exploit prevention must be enabled",
+      "check_pack": "trellix_ens",
+      "check_id": "V-292005",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/trellix_ens.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-292006",
+      "rule_id": "V-292006_automatestig_check",
+      "classification": "automated",
+      "reason": "Exploit prevention action must be set to block",
+      "check_pack": "trellix_ens",
+      "check_id": "V-292006",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/trellix_ens.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-292007",
+      "rule_id": "V-292007_automatestig_check",
+      "classification": "automated",
+      "reason": "Trellix ENS firewall must be enabled",
+      "check_pack": "trellix_ens",
+      "check_id": "V-292007",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/trellix_ens.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-292008",
+      "rule_id": "V-292008_automatestig_check",
+      "classification": "automated",
+      "reason": "ENS firewall must block unsolicited inbound connections",
+      "check_pack": "trellix_ens",
+      "check_id": "V-292008",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/trellix_ens.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-292009",
+      "rule_id": "V-292009_automatestig_check",
+      "classification": "automated",
+      "reason": "Automatic DAT file updates must be enabled",
+      "check_pack": "trellix_ens",
+      "check_id": "V-292009",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/trellix_ens.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-292010",
+      "rule_id": "V-292010_automatestig_check",
+      "classification": "automated",
+      "reason": "DAT update interval must be configured",
+      "check_pack": "trellix_ens",
+      "check_id": "V-292010",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/trellix_ens.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-292011",
+      "rule_id": "V-292011_automatestig_check",
+      "classification": "automated",
+      "reason": "On-demand scanning must be enabled",
+      "check_pack": "trellix_ens",
+      "check_id": "V-292011",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/trellix_ens.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-292012",
+      "rule_id": "V-292012_automatestig_check",
+      "classification": "automated",
+      "reason": "On-demand scanner must scan all file types",
+      "check_pack": "trellix_ens",
+      "check_id": "V-292012",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/trellix_ens.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-292013",
+      "rule_id": "V-292013_automatestig_check",
+      "classification": "automated",
+      "reason": "Trellix ENS Web Control must be enabled",
+      "check_pack": "trellix_ens",
+      "check_id": "V-292013",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/trellix_ens.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-292014",
+      "rule_id": "V-292014_automatestig_check",
+      "classification": "automated",
+      "reason": "ENS self-protection must be enabled to prevent tampering",
+      "check_pack": "trellix_ens",
+      "check_id": "V-292014",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/trellix_ens.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-292015",
+      "rule_id": "V-292015_automatestig_check",
+      "classification": "automated",
+      "reason": "ENS event logging must be enabled for audit and incident response",
+      "check_pack": "trellix_ens",
+      "check_id": "V-292015",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/trellix_ens.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

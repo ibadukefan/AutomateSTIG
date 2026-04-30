@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This applies to member servers. For domain controllers and stand-alone or nondomain-joined systems, this is not applicable.\n\nIf the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry HiveHKEY_LOCAL_MACHINE\nRegistry Path\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\n\nValue NameLocalAccountTokenFilterPolicy\n\nTypeREG_DWORD\nValue: 0x00000000 (0)\n\nThis setting may cause issues with some network scanning tools if local administrative accounts are used remotely. Scans must use domain accounts where possible. If a local administrative account must be used, temporarily enabling the privileged token by configuring the registry value to \"1\" may be required.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> MS Security Guide >> Apply UAC restrictions to local accounts on network logons to \"Enabled\".\n\nThis policy setting requires the installation of the SecGuide custom templates included with the STIG package. \"SecGuide.admx\" and \" SecGuide.adml\" must be copied to the \\Windows\\PolicyDefinitions and \\Windows\\PolicyDefinitions\\en-US directories respectively.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278178r1182282_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 local administrator accounts must have their privileged token filtered to prevent elevated privileges from being used over the network on domain-joined member servers.",
+  "tracking_issue": "TODO-V-278178",
+  "vuln_id": "V-278178"
+}

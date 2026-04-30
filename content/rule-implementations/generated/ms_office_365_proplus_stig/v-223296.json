@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Microsoft Office 2016 (Machine) >> Security Settings >> IE Security \"Add-on Management\" is set to \"Enabled\" and the check box is selected for every installed Office program.\n\nUse the Windows Registry Editor to navigate to the following key:\n\nHKLM\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_ADDON_MANAGEMENT\n\nIf the value for each installed Office Program is REG_DWORD = 1, this is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Microsoft Office 2016 (Machine) >> Security Settings >> IE Security \"Add-on Management\" to \"Enabled\" and select the check boxes for  all installed Office programs.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-223296r961086_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_office_365_proplus_stig/u_ms_office_365_proplus_v3r5_stig.json",
+  "source_version": "U_MS_Office_365_ProPlus_V3R5_STIG.zip",
+  "stig_id": "MS_Office_365_ProPlus_STIG",
+  "title": "Add-on Management must be enabled for all Office 365 ProPlus programs.",
+  "tracking_issue": "TODO-V-223296",
+  "vuln_id": "V-223296"
+}

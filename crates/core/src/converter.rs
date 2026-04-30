@@ -75,10 +75,7 @@ pub fn convert_benchmark(benchmark: &StigBenchmark) -> ConversionResult {
         check_pack: CheckPack {
             stig_id: benchmark.id.clone(),
             platform,
-            version: format!(
-                "auto-{}",
-                chrono::Utc::now().format("%Y%m%d")
-            ),
+            version: format!("auto-{}", chrono::Utc::now().format("%Y%m%d")),
             checks,
         },
         automated,
@@ -124,9 +121,14 @@ fn detect_platform(benchmark: &StigBenchmark) -> CheckPlatform {
 
     if combined.contains("windows") || combined.contains("win_") || combined.contains("microsoft") {
         CheckPlatform::Windows
-    } else if combined.contains("rhel") || combined.contains("ubuntu") || combined.contains("linux")
-        || combined.contains("suse") || combined.contains("centos") || combined.contains("debian")
-        || combined.contains("oracle_linux") || combined.contains("amazon_linux")
+    } else if combined.contains("rhel")
+        || combined.contains("ubuntu")
+        || combined.contains("linux")
+        || combined.contains("suse")
+        || combined.contains("centos")
+        || combined.contains("debian")
+        || combined.contains("oracle_linux")
+        || combined.contains("amazon_linux")
     {
         CheckPlatform::Linux
     } else if combined.contains("cisco_ios") || combined.contains("ios_xe") {
@@ -492,7 +494,9 @@ mod tests {
         assert!(result.is_some());
         let (check, _, _) = result.unwrap();
         match check {
-            Check::Registry { path, value_name, .. } => {
+            Check::Registry {
+                path, value_name, ..
+            } => {
                 assert!(path.contains("Policies"));
                 assert_eq!(value_name, "DontDisplayNetworkSelectionUI");
             }
@@ -538,7 +542,10 @@ mod tests {
         assert!(result.is_some());
         let (check, _, _) = result.unwrap();
         match check {
-            Check::Package { name, should_be_installed } => {
+            Check::Package {
+                name,
+                should_be_installed,
+            } => {
                 assert_eq!(name, "telnet-server");
                 assert!(!should_be_installed);
             }
@@ -553,7 +560,10 @@ mod tests {
         assert!(result.is_some());
         let (check, _, _) = result.unwrap();
         match check {
-            Check::Service { name, expected_status } => {
+            Check::Service {
+                name,
+                expected_status,
+            } => {
                 assert_eq!(name, "auditd");
                 assert_eq!(expected_status, ServiceStatus::Running);
             }
@@ -568,7 +578,11 @@ mod tests {
         assert!(result.is_some());
         let (check, _, _) = result.unwrap();
         match check {
-            Check::ConfigLine { pattern, should_exist, .. } => {
+            Check::ConfigLine {
+                pattern,
+                should_exist,
+                ..
+            } => {
                 assert_eq!(pattern, "ip ssh version 2");
                 assert!(should_exist);
             }
@@ -630,7 +644,8 @@ mod tests {
                     title: "Manual check".to_string(),
                     discussion: "".to_string(),
                     severity: crate::models::stig::Severity::Low,
-                    check_content: "Interview the ISSO and verify a documented policy exists.".to_string(),
+                    check_content: "Interview the ISSO and verify a documented policy exists."
+                        .to_string(),
                     fix_text: "Create policy".to_string(),
                     cci_refs: vec![],
                     legacy_ids: vec![],

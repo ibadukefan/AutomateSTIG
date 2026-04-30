@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application",
+      "type": "registry",
+      "value_name": "MaxSize"
+    },
+    "description": "The Application event log size must be configured to 32768 KB or greater.",
+    "expected": {
+      "type": "equals",
+      "value": 32768
+    },
+    "platform": "windows",
+    "vuln_id": "V-220779"
+  },
+  "check_content_excerpt": "If the system is configured to send audit records directly to an audit server, this is NA.  This must be documented with the ISSO.\n\nIf the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive:  HKEY_LOCAL_MACHINE\nRegistry Path:  \\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application\\\n\nValue Name:  MaxSize\n\nValue Type:  REG_DWORD\nValue:  0x00008000 (32768) (or greater)",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 32768
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "If the system is configured to send audit records directly to an audit server, this is NA.  This must be documented with the ISSO.\n\nConfigure the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Event Log Service >> Application >> \"Specify the maximum log file size (KB)\" to \"Enabled\" with a \"Maximum Log Size (KB)\" of \"32768\" or greater.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-220779r958752_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_10_stig/u_ms_windows_10_v3r4_stig.json",
+  "source_version": "U_MS_Windows_10_V3R4_STIG.zip",
+  "stig_id": "MS_Windows_10_STIG",
+  "title": "The Application event log size must be configured to 32768 KB or greater.",
+  "tracking_issue": "TODO-V-220779",
+  "vuln_id": "V-220779"
+}

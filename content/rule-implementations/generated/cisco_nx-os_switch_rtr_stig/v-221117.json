@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Step 1: Review the design plan for deploying MPLS/L3VPN. \n\nStep 2: Review all CE-facing interfaces and verify that the proper VRF is defined via the ip vrf forwarding command. In the example below, customer 1 is bound to interface Ethernet2/1, while customer 2 is bound to Ethernet2/2.\n\ninterface Ethernet2/1\n no switchport\n vrf member CUST1\n ip address x.2.22.3/24\n\ninterface Ethernet2/2\n no switchport\n vrf member CUST2\n ip address x.2.8.4/24\n\nIf any VRFs are not bound to the appropriate physical or logical interface, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the PE switch to have each VRF bound to the appropriate physical or logical interfaces to maintain traffic separation between all MPLS L3VPNs.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221117r999771_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco PE switch must be configured to have each Virtual Routing and Forwarding (VRF) instance bound to the appropriate physical or logical interfaces to maintain traffic separation between all MPLS L3VPNs.",
+  "tracking_issue": "TODO-V-221117",
+  "vuln_id": "V-221117"
+}

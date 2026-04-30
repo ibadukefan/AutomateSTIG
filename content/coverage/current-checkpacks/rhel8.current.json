@@ -1,0 +1,700 @@
+{
+  "stig_id": "RHEL_8_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/rhel8.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/rhel8.json",
+  "total_rules": 53,
+  "rules": [
+    {
+      "vuln_id": "V-230223",
+      "rule_id": "V-230223_automatestig_check",
+      "classification": "automated",
+      "reason": "RHEL 8 SSH must not allow direct root login",
+      "check_pack": "rhel8",
+      "check_id": "V-230223",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230224",
+      "rule_id": "V-230224_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must not allow empty passwords",
+      "check_pack": "rhel8",
+      "check_id": "V-230224",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230225",
+      "rule_id": "V-230225_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveInterval must be set",
+      "check_pack": "rhel8",
+      "check_id": "V-230225",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230226",
+      "rule_id": "V-230226_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveCountMax must be 1 or less",
+      "check_pack": "rhel8",
+      "check_id": "V-230226",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230227",
+      "rule_id": "V-230227_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH MaxAuthTries must be 4 or fewer",
+      "check_pack": "rhel8",
+      "check_id": "V-230227",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230228",
+      "rule_id": "V-230228_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must display a login banner",
+      "check_pack": "rhel8",
+      "check_id": "V-230228",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230229",
+      "rule_id": "V-230229_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH X11 forwarding must be disabled",
+      "check_pack": "rhel8",
+      "check_id": "V-230229",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230230",
+      "rule_id": "V-230230_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must use FIPS 140-2 compliant ciphers",
+      "check_pack": "rhel8",
+      "check_id": "V-230230",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230231",
+      "rule_id": "V-230231_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must use FIPS 140-2 compliant MACs",
+      "check_pack": "rhel8",
+      "check_id": "V-230231",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230232",
+      "rule_id": "V-230232_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH GSSAPI authentication must be disabled",
+      "check_pack": "rhel8",
+      "check_id": "V-230232",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230233",
+      "rule_id": "V-230233_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH Kerberos authentication must be disabled",
+      "check_pack": "rhel8",
+      "check_id": "V-230233",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230240",
+      "rule_id": "V-230240_automatestig_check",
+      "classification": "automated",
+      "reason": "IP forwarding must be disabled",
+      "check_pack": "rhel8",
+      "check_id": "V-230240",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230241",
+      "rule_id": "V-230241_automatestig_check",
+      "classification": "automated",
+      "reason": "Source-routed packets must not be accepted",
+      "check_pack": "rhel8",
+      "check_id": "V-230241",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230242",
+      "rule_id": "V-230242_automatestig_check",
+      "classification": "automated",
+      "reason": "Default source route acceptance must be disabled",
+      "check_pack": "rhel8",
+      "check_id": "V-230242",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230243",
+      "rule_id": "V-230243_automatestig_check",
+      "classification": "automated",
+      "reason": "ICMP redirects must not be accepted",
+      "check_pack": "rhel8",
+      "check_id": "V-230243",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230244",
+      "rule_id": "V-230244_automatestig_check",
+      "classification": "automated",
+      "reason": "Default ICMP redirect acceptance must be disabled",
+      "check_pack": "rhel8",
+      "check_id": "V-230244",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230245",
+      "rule_id": "V-230245_automatestig_check",
+      "classification": "automated",
+      "reason": "System must not send ICMP redirects",
+      "check_pack": "rhel8",
+      "check_id": "V-230245",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230246",
+      "rule_id": "V-230246_automatestig_check",
+      "classification": "automated",
+      "reason": "Default ICMP redirect sending must be disabled",
+      "check_pack": "rhel8",
+      "check_id": "V-230246",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230247",
+      "rule_id": "V-230247_automatestig_check",
+      "classification": "automated",
+      "reason": "System must ignore ICMP broadcast echo requests",
+      "check_pack": "rhel8",
+      "check_id": "V-230247",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230248",
+      "rule_id": "V-230248_automatestig_check",
+      "classification": "automated",
+      "reason": "Reverse path filtering must be enabled",
+      "check_pack": "rhel8",
+      "check_id": "V-230248",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230249",
+      "rule_id": "V-230249_automatestig_check",
+      "classification": "automated",
+      "reason": "TCP SYN cookies must be enabled",
+      "check_pack": "rhel8",
+      "check_id": "V-230249",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230250",
+      "rule_id": "V-230250_automatestig_check",
+      "classification": "automated",
+      "reason": "ASLR must be fully enabled",
+      "check_pack": "rhel8",
+      "check_id": "V-230250",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230251",
+      "rule_id": "V-230251_automatestig_check",
+      "classification": "automated",
+      "reason": "Kernel message buffer must be restricted",
+      "check_pack": "rhel8",
+      "check_id": "V-230251",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230252",
+      "rule_id": "V-230252_automatestig_check",
+      "classification": "automated",
+      "reason": "Kernel pointer addresses must be restricted",
+      "check_pack": "rhel8",
+      "check_id": "V-230252",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230253",
+      "rule_id": "V-230253_automatestig_check",
+      "classification": "automated",
+      "reason": "IPv6 source routing must be disabled",
+      "check_pack": "rhel8",
+      "check_id": "V-230253",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230254",
+      "rule_id": "V-230254_automatestig_check",
+      "classification": "automated",
+      "reason": "IPv6 ICMP redirects must not be accepted",
+      "check_pack": "rhel8",
+      "check_id": "V-230254",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230260",
+      "rule_id": "V-230260_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/shadow must be mode 0000 and owned by root",
+      "check_pack": "rhel8",
+      "check_id": "V-230260",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230261",
+      "rule_id": "V-230261_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/passwd must be mode 0644 and owned by root",
+      "check_pack": "rhel8",
+      "check_id": "V-230261",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230262",
+      "rule_id": "V-230262_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/group must be mode 0644 and owned by root",
+      "check_pack": "rhel8",
+      "check_id": "V-230262",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230263",
+      "rule_id": "V-230263_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/gshadow must be mode 0000 and owned by root",
+      "check_pack": "rhel8",
+      "check_id": "V-230263",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230264",
+      "rule_id": "V-230264_automatestig_check",
+      "classification": "automated",
+      "reason": "sshd_config must be mode 0600 and owned by root",
+      "check_pack": "rhel8",
+      "check_id": "V-230264",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230270",
+      "rule_id": "V-230270_automatestig_check",
+      "classification": "automated",
+      "reason": "AIDE must be installed for file integrity checking",
+      "check_pack": "rhel8",
+      "check_id": "V-230270",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230271",
+      "rule_id": "V-230271_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit package must be installed",
+      "check_pack": "rhel8",
+      "check_id": "V-230271",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230272",
+      "rule_id": "V-230272_automatestig_check",
+      "classification": "automated",
+      "reason": "Firewalld must be installed",
+      "check_pack": "rhel8",
+      "check_id": "V-230272",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230273",
+      "rule_id": "V-230273_automatestig_check",
+      "classification": "automated",
+      "reason": "openssl-pkcs11 must be installed for smart card support",
+      "check_pack": "rhel8",
+      "check_id": "V-230273",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230275",
+      "rule_id": "V-230275_automatestig_check",
+      "classification": "automated",
+      "reason": "Telnet server must not be installed",
+      "check_pack": "rhel8",
+      "check_id": "V-230275",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230276",
+      "rule_id": "V-230276_automatestig_check",
+      "classification": "automated",
+      "reason": "RSH server must not be installed",
+      "check_pack": "rhel8",
+      "check_id": "V-230276",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230277",
+      "rule_id": "V-230277_automatestig_check",
+      "classification": "automated",
+      "reason": "TFTP server must not be installed",
+      "check_pack": "rhel8",
+      "check_id": "V-230277",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230278",
+      "rule_id": "V-230278_automatestig_check",
+      "classification": "automated",
+      "reason": "vsftpd must not be installed unless required",
+      "check_pack": "rhel8",
+      "check_id": "V-230278",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230280",
+      "rule_id": "V-230280_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit daemon must be running",
+      "check_pack": "rhel8",
+      "check_id": "V-230280",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230281",
+      "rule_id": "V-230281_automatestig_check",
+      "classification": "automated",
+      "reason": "Firewall must be active",
+      "check_pack": "rhel8",
+      "check_id": "V-230281",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230282",
+      "rule_id": "V-230282_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH daemon must be running",
+      "check_pack": "rhel8",
+      "check_id": "V-230282",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230290",
+      "rule_id": "V-230290_automatestig_check",
+      "classification": "automated",
+      "reason": "Minimum password length must be 15 or more characters",
+      "check_pack": "rhel8",
+      "check_id": "V-230290",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230291",
+      "rule_id": "V-230291_automatestig_check",
+      "classification": "automated",
+      "reason": "Maximum password age must be 60 days or less",
+      "check_pack": "rhel8",
+      "check_id": "V-230291",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230292",
+      "rule_id": "V-230292_automatestig_check",
+      "classification": "automated",
+      "reason": "Minimum password age must be at least 1 day",
+      "check_pack": "rhel8",
+      "check_id": "V-230292",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230293",
+      "rule_id": "V-230293_automatestig_check",
+      "classification": "automated",
+      "reason": "Passwords must be hashed with SHA-512",
+      "check_pack": "rhel8",
+      "check_id": "V-230293",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230294",
+      "rule_id": "V-230294_automatestig_check",
+      "classification": "automated",
+      "reason": "Password quality must require minimum length of 15",
+      "check_pack": "rhel8",
+      "check_id": "V-230294",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230295",
+      "rule_id": "V-230295_automatestig_check",
+      "classification": "automated",
+      "reason": "Password quality must require at least one digit",
+      "check_pack": "rhel8",
+      "check_id": "V-230295",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230296",
+      "rule_id": "V-230296_automatestig_check",
+      "classification": "automated",
+      "reason": "Password quality must require at least one uppercase character",
+      "check_pack": "rhel8",
+      "check_id": "V-230296",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230297",
+      "rule_id": "V-230297_automatestig_check",
+      "classification": "automated",
+      "reason": "Password quality must require at least one lowercase character",
+      "check_pack": "rhel8",
+      "check_id": "V-230297",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230298",
+      "rule_id": "V-230298_automatestig_check",
+      "classification": "automated",
+      "reason": "Password quality must require at least one special character",
+      "check_pack": "rhel8",
+      "check_id": "V-230298",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230300",
+      "rule_id": "V-230300_automatestig_check",
+      "classification": "automated",
+      "reason": "Martian packets must be logged",
+      "check_pack": "rhel8",
+      "check_id": "V-230300",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-230301",
+      "rule_id": "V-230301_automatestig_check",
+      "classification": "automated",
+      "reason": "Core dumps must be disabled or piped to /bin/false",
+      "check_pack": "rhel8",
+      "check_id": "V-230301",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rhel8.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

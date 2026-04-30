@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system notifies the SA when AIDE discovers anomalies in the operation of any security functions.\n\nVerify the aide cron job sends an email when executed with the following command:\n\n     > grep -i \"aide\" /etc/cron.*/aide \n     0 0 * * * /usr/bin/aide --check | /bin/mail -s \"$HOSTNAME - Daily AIDE integrity check run\" root@example_server_name.mil\n\nIf the \"aide\" file does not exist under the \"/etc/cron\" directory structure or the cron job is not configured to execute a binary to send an email (such as \"/bin/mail\"), this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to notify the SA when AIDE discovers anomalies in the operation of any security functions.\n\nCreate the aide crontab file in \"/etc/cron.daily\" and add following command replacing the \"[E-MAIL]\" parameter with a proper email address for the SA:\n\n     0 0 * * * /usr/bin/aide --check | /bin/mail -s \"$HOSTNAME - Daily AIDE integrity check run\" root@example_server_name.mil\n\nNote: Per requirement SLES-15-010418, the \"mailx\" package must be installed on the system to enable email functionality.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234864r1184462_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must notify the System Administrator (SA) when Advanced Intrusion Detection Environment (AIDE) discovers anomalies in the operation of any security functions.",
+  "tracking_issue": "TODO-V-234864",
+  "vuln_id": "V-234864"
+}

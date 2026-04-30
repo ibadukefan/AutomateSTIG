@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/security/pwquality.conf",
+      "pattern": "minlen",
+      "type": "file_content"
+    },
+    "description": "OL 9 passwords must be created with a minimum of 15 characters.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271633"
+  },
+  "check_content_excerpt": "Verify that OL 9 enforces a minimum 15-character password length with the following command:\n\n$ grep minlen /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf \nminlen = 15\n\nIf the command does not return a \"minlen\" value of \"15\" or greater, does not return a line, or the line is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to enforce a minimum 15-character password length.\n\nAdd the following line to \"/etc/security/pwquality.conf\" (or modify the line to have the required value):\n\nminlen = 15",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-271633r1091611_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 passwords must be created with a minimum of 15 characters.",
+  "tracking_issue": "TODO-V-271633",
+  "vuln_id": "V-271633"
+}

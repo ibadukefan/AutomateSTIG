@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If only system-created shares such as \"ADMIN$\", \"C$\", and \"IPC$\" exist on the system, this is not applicable. (System-created shares will display a message that it has been shared for administrative purposes when \"Properties\" is selected.)\n\nRun \"Computer Management\".\n\nNavigate to System Tools >> Shared Folders >> Shares.\n\nRight-click any nonsystem-created shares.\n\nSelect \"Properties\".\n\nSelect the \"Share Permissions\" tab.\n\nIf the file shares have not been configured to restrict permissions to the specific groups or accounts that require access, this is a finding.\n\nSelect the \"Security\" tab.\n\nIf the permissions have not been configured to restrict permissions to the specific groups or accounts that require access, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "If a nonsystem-created share is required on a system, configure the share and NTFS permissions to limit access to the specific groups or accounts that require it.\n\nRemove any unnecessary nonsystem-created shares.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278007r1181789_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 nonsystem-created file shares must limit access to groups that require it.",
+  "tracking_issue": "TODO-V-278007",
+  "vuln_id": "V-278007"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system audit records have proper permissions and ownership.\n\nList the full permissions and ownership of the audit log files with the following command.\n\n# ls -la /var/log/audit \ntotal 4512\ndrwx------. 2 root root 23 Apr 25 16:53 .\ndrwxr-xr-x. 17 root root 4096 Aug 9 13:09 ..\n-rw-------. 1 root root 8675309 Aug 9 12:54 audit.log\n\nAudit logs must be mode 0600 or less permissive. \nIf any are more permissive, this is a finding.\n\nThe owner and group owner of all audit log files must both be \"root\". If any other owner or group owner is listed, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the mode of the audit log files with the following command: \n\n# chmod 0600 [audit_file]\n\nChange the owner and group owner of the audit log files with the following command: \n\n# chown root:root [audit_file]",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-228564r958434_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must protect audit information from unauthorized read, modification, or deletion.",
+  "tracking_issue": "TODO-V-228564",
+  "vuln_id": "V-228564"
+}

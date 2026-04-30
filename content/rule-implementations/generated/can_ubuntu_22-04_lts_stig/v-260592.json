@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the audit event multiplexor is configured to offload audit records to a different system from the system being audited.  \n  \nCheck if the \"audispd-plugins\" package is installed:  \n  \n     $ dpkg -l | grep audispd-plugins \n     ii     audispd-plugins     1:3.0.7-1build1     amd64     Plugins for the audit event dispatcher \n  \nIf the \"audispd-plugins\" package is not installed, this is a finding.  \n  \nCheck that the records are being offloaded to a remote server by using the following command:  \n  \n     $ sudo grep -i active /etc/audit/plugins.d/au-remote.conf \n     active = yes  \n  \nIf \"active\" is not set to \"yes\", or the line is commented out, or is missing, this is a finding.  \n  \nCheck that audisp-remote plugin is configured to send audit logs to a different system:  \n  \n     $ sudo grep -i remote_server /etc/audit/audisp-remote.conf \n     remote_server = 240.9.19.81 \n  \nIf the \"remote_server\" parameter is not set, is set with a local IP address, or is set with an invalid IP address, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit event multiplexor to offload audit records to a different system from the system being audited.  \n  \nInstall the \"audispd-plugins\" package by using the following command:  \n  \n     $ sudo apt-get install audispd-plugins \n  \nSet the audisp-remote plugin as active by editing the \"/etc/audit/plugins.d/au-remote.conf\" file:  \n  \n     $ sudo sed -i -E 's/active\\s*=\\s*no/active = yes/' /etc/audit/plugins.d/au-remote.conf \n  \nSet the IP address of the remote system by editing the \"/etc/audit/audisp-remote.conf\" file:  \n  \n     $ sudo sed -i -E 's/(remote_server\\s*=).*/\\1 <remote_server_ip_address>/' /etc/audit/audisp-remote.conf \n  \nRestart the \"auditd.service\" for the changes to take effect:  \n  \n     $ sudo systemctl restart auditd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-260592r1101709_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS audit event multiplexor must be configured to offload audit logs onto a different system from the system being audited.",
+  "tracking_issue": "TODO-V-260592",
+  "vuln_id": "V-260592"
+}

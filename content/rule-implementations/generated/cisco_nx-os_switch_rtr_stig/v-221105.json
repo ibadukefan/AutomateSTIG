@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to verify that there are ACLs defined to only accept routes for prefixes that belong to specific customers. \n\nStep 1: Verify prefix list has been configured for each customer containing prefixes belonging to each customer as shown in the example below:\n\nip prefix-list PREFIX_FILTER_CUST1 seq 5 permit x.13.1.0/24 le 32\nip prefix-list PREFIX_FILTER_CUST1 seq 10 deny 0.0.0.0/0 ge 8\nip prefix-list PREFIX_FILTER_CUST2 seq 5 permit x.13.2.0/24 le 32\nip prefix-list PREFIX_FILTER_CUST2 seq 10 deny 0.0.0.0/0 ge 8\n\nStep 2: Verify that the prefix lists has been applied to all to the applicable CE peers as shown in the example below:\n\nrouter bgp xx\n router-id 10.1.1.1\n neighbor x.55.14.2 remote-as 64514\n password 3 7b07d1b3023056a9\n address-family ipv4 unicast\n prefix-list FILTER_PREFIXES_CUST1 in\n neighbor x.55.14.4 remote-as 64516\n password 3 f07a10cb41db8bb6f8f0a340049a9b02\n address-family ipv4 unicast\n prefix-list FILTER_PREFIXES_CUST1 in\n\nNote: Routes to PE-CE links within a VPN are needed for troubleshooting end-to-end connectivity across the MPLS/IP backbone. Hence, these prefixes are an exception to this requirement.\n\nIf the switch is not configured to reject inbound route advertisements from each CE switch for prefixes that are not allocated to that customer, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the switch to reject inbound route advertisements from each CE switch for prefixes that are not allocated to that customer.\n\nStep 1: Configure a prefix list for each customer containing prefixes belonging to each.\n\nSW1(config)# ip prefix-list PREFIX_FILTER_CUST1 permit x.13.1.0/24 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER_CUST1 deny 0.0.0.0/0 ge 8\nSW1(config)# ip prefix-list PREFIX_FILTER_CUST2 permit x.13.2.0/24 le 32\nSW1(config)# ip prefix-list PREFIX_FILTER_CUST2 deny 0.0.0.0/0 ge 8\n\nStep 2: Apply the prefix list filter inbound to each CE neighbor as shown in the example below:\n\nSW1(config)# router bgp xx\nSW1(config-router)# neighbor x.55.14.2\nSW1(config-router-neighbor)# address-family ipv4 unicast\nSW1(config-router-neighbor-af)# prefix-list PREFIX_FILTER_CUST1 in\nSW1(config-router-neighbor-af)# exit\nSW1(config-router-neighbor)# exit\nSW1(config-router)# neighbor x.55.14.4\nSW1(config-router-neighbor)# address-family ipv4 unicast\nSW1(config-router-neighbor-af)# prefix-list PREFIX_FILTER_CUST2 in\nSW1(config-router-neighbor-af)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221105r1137896_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco BGP switch must be configured to reject inbound route advertisements from a customer edge (CE) switch for prefixes that are not allocated to that customer.",
+  "tracking_issue": "TODO-V-221105",
+  "vuln_id": "V-221105"
+}

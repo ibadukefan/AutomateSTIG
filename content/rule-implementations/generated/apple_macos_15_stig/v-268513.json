@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the macOS system is configured so that permissions are set correctly on user home directories with the following command:\n\n/usr/bin/find /System/Volumes/Data/Users -mindepth 1 -maxdepth 1 -type d ! \\( -perm 700 -o -perm 711 \\) | /usr/bin/grep -v \"Shared\" | /usr/bin/grep -v \"Guest\" | /usr/bin/wc -l | /usr/bin/xargs\n\nIf the result is not \"0\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the macOS system to set the appropriate permissions for each user on the system with the following command:\n\nIFS=$'\\n'\nfor userDirs in $( /usr/bin/find /System/Volumes/Data/Users -mindepth 1 -maxdepth 1 -type d ! \\( -perm 700 -o -perm 711 \\) | /usr/bin/grep -v \"Shared\" | /usr/bin/grep -v \"Guest\" ); do\n/bin/chmod og-rwx \"$userDirs\"\ndone\nunset IFS",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-268513r1131226_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_15_stig/u_apple_macos_15_v1r7_stig.json",
+  "source_version": "U_Apple_macOS_15_V1R7_STIG.zip",
+  "stig_id": "Apple_macOS_15_STIG",
+  "title": "The macOS system must secure users' home folders.",
+  "tracking_issue": "TODO-V-268513",
+  "vuln_id": "V-268513"
+}

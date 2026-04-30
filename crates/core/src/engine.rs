@@ -144,6 +144,8 @@ impl EvaluationEngine {
                         finding.evidence = Some(evidence.clone());
                     }
 
+                    finding.comments = build_scan_provenance_comment(results, result);
+
                     if self.config.mark_automated {
                         finding.evaluated_by = self.config.evaluated_by.clone();
                     }
@@ -163,24 +165,40 @@ impl EvaluationEngine {
         benchmark: &StigBenchmark,
     ) -> Option<usize> {
         // Direct match on Vuln ID.
-        if let Some(idx) = checklist.findings.iter().position(|f| f.vuln_id == rule_ref) {
+        if let Some(idx) = checklist
+            .findings
+            .iter()
+            .position(|f| f.vuln_id == rule_ref)
+        {
             return Some(idx);
         }
 
         // Match on Rule ID.
-        if let Some(idx) = checklist.findings.iter().position(|f| f.rule_id == rule_ref) {
+        if let Some(idx) = checklist
+            .findings
+            .iter()
+            .position(|f| f.rule_id == rule_ref)
+        {
             return Some(idx);
         }
 
         // Match on Group ID.
-        if let Some(idx) = checklist.findings.iter().position(|f| f.group_id == rule_ref) {
+        if let Some(idx) = checklist
+            .findings
+            .iter()
+            .position(|f| f.group_id == rule_ref)
+        {
             return Some(idx);
         }
 
         // Match via legacy IDs in the benchmark.
         for rule in &benchmark.rules {
             if rule.legacy_ids.iter().any(|lid| lid == rule_ref) {
-                if let Some(idx) = checklist.findings.iter().position(|f| f.vuln_id == rule.vuln_id) {
+                if let Some(idx) = checklist
+                    .findings
+                    .iter()
+                    .position(|f| f.vuln_id == rule.vuln_id)
+                {
                     return Some(idx);
                 }
             }
@@ -229,11 +247,7 @@ impl EvaluationEngine {
 
     /// Merge findings from a previous checklist into a new one.
     /// Used when re-evaluating — preserves manual overrides and comments.
-    pub fn merge_previous(
-        &self,
-        current: &mut Checklist,
-        previous: &Checklist,
-    ) -> Result<()> {
+    pub fn merge_previous(&self, current: &mut Checklist, previous: &Checklist) -> Result<()> {
         for prev_finding in &previous.findings {
             if let Some(curr_finding) = current.find_by_vuln_id_mut(&prev_finding.vuln_id) {
                 // Keep the previous manual findings if current is still Not_Reviewed.
@@ -252,6 +266,47 @@ impl EvaluationEngine {
         }
         current.touch();
         Ok(())
+    }
+}
+
+fn build_scan_provenance_comment(results: &ScanResultSet, result: &ScanResult) -> String {
+    let mut lines = Vec::new();
+    lines.push(format!(
+        "Scanner: {}",
+        scanner_label(results.source.scanner)
+    ));
+    if let Some(version) = &results.source.scanner_version {
+        lines.push(format!("Scanner version: {version}"));
+    }
+    if let Some(scan_date) = results.source.scan_date {
+        lines.push(format!("Scan date: {scan_date}"));
+    }
+    if let Some(source_file) = &results.source.source_file {
+        lines.push(format!("Source file: {source_file}"));
+    }
+    if let Some(target) = &results.source.target {
+        lines.push(format!("Target: {target}"));
+    }
+    if let Some(profile) = &results.source.profile {
+        lines.push(format!("Profile: {profile}"));
+    }
+    if let Some(benchmark_ref) = &result.benchmark_ref {
+        lines.push(format!("Benchmark: {benchmark_ref}"));
+    }
+    lines.push(format!("Rule reference: {}", result.rule_ref));
+    lines.push(format!("Raw result: {}", result.raw_result));
+    lines.join("\n")
+}
+
+fn scanner_label(scanner: ScannerType) -> &'static str {
+    match scanner {
+        ScannerType::Scc => "SCC",
+        ScannerType::Acas => "ACAS",
+        ScannerType::OpenScap => "OpenSCAP",
+        ScannerType::ConfigDump => "Config dump",
+        ScannerType::EvaluateStig => "Evaluate-STIG",
+        ScannerType::AutomateStig => "AutomateSTIG",
+        ScannerType::Other => "Other",
     }
 }
 
@@ -357,9 +412,14 @@ mod tests {
             ],
         };
 
-        let checklist = engine.evaluate(&benchmark, &asset, Some(&scan), &[]).unwrap();
+        let checklist = engine
+            .evaluate(&benchmark, &asset, Some(&scan), &[])
+            .unwrap();
 
-        assert_eq!(checklist.find_by_vuln_id("V-100001").unwrap().status, FindingStatus::Open);
+        assert_eq!(
+            checklist.find_by_vuln_id("V-100001").unwrap().status,
+            FindingStatus::Open
+        );
         assert_eq!(
             checklist.find_by_vuln_id("V-100002").unwrap().status,
             FindingStatus::NotAFinding
@@ -388,7 +448,9 @@ mod tests {
             }],
         };
 
-        let checklist = engine.evaluate(&benchmark, &asset, None, &[answer]).unwrap();
+        let checklist = engine
+            .evaluate(&benchmark, &asset, None, &[answer])
+            .unwrap();
 
         let f = checklist.find_by_vuln_id("V-100001").unwrap();
         assert_eq!(f.status, FindingStatus::NotApplicable);
@@ -437,7 +499,9 @@ mod tests {
             }],
         };
 
-        let checklist = engine.evaluate(&benchmark, &asset, Some(&scan), &[answer]).unwrap();
+        let checklist = engine
+            .evaluate(&benchmark, &asset, Some(&scan), &[answer])
+            .unwrap();
 
         // Scan result (Open) should prevail because the answer file has force_override=false
         // and the finding was set by SCC scan (not Manual source).
@@ -469,7 +533,9 @@ mod tests {
             }],
         };
 
-        let checklist = engine.evaluate(&benchmark, &asset, Some(&scan), &[]).unwrap();
+        let checklist = engine
+            .evaluate(&benchmark, &asset, Some(&scan), &[])
+            .unwrap();
         assert_eq!(
             checklist.find_by_vuln_id("V-100001").unwrap().status,
             FindingStatus::NotAFinding

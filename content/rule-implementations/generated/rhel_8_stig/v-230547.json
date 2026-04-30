@@ -1,0 +1,53 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "kernel.kptr_restrict",
+      "type": "sysctl"
+    },
+    "description": "RHEL 8 must restrict exposed kernel pointer addresses access.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230547"
+  },
+  "check_content_excerpt": "Verify RHEL 8 is configured to restrict exposed kernel pointer address access.\n\nVerify the runtime status of the \"kernel.kptr_restrict\" kernel parameter with the following command:\n\n$ sudo sysctl kernel.kptr_restrict \nkernel.kptr_restrict = 1\n\nIf \"kernel.kptr_restrict\" is not set to \"1\" or is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to restrict exposed kernel pointer addresses access.\n\nCreate a drop-in if it does not already exist:\n\n$ sudo vi /etc/sysctl.d/99-kernel_kptr_restrict.conf\n\nAdd the following to the file:\nkernel.kptr_restrict = 1\n\nReload settings from all system configuration files with the following command:\n\n$ sudo sysctl --system",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-230547r1184283_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must restrict exposed kernel pointer addresses access.",
+  "tracking_issue": "TODO-V-230547",
+  "vuln_id": "V-230547"
+}

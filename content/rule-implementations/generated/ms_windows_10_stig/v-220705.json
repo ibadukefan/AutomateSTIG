@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system employs a deny-all, permit-by-exception policy to allow the execution of authorized software programs. This must include packaged apps such as the universal apps installed by default on systems.\n\nIf an application allowlisting program is not in use on the system, this is a finding.\n\nConfiguration of allowlisting applications will vary by the program.\n\nAppLocker is an allowlisting application built into Windows 10 Enterprise. A deny-by-default implementation is initiated by enabling any AppLocker rules within a category, only allowing what is specified by defined rules.\n\nIf AppLocker is used, perform the following to view the configuration of AppLocker:\nRun \"PowerShell\".\n\nExecute the following command, substituting [c:\\temp\\file.xml] with a location and file name appropriate for the system:\nGet-AppLockerPolicy -Effective -XML > c:\\temp\\file.xml\n\nThis will produce an xml file with the effective settings that can be viewed in a browser or opened in a program such as Excel for review.\n\nImplementation guidance for AppLocker is available at the following link:\n\nhttps://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-application-control/applocker/applocker-policies-deployment-guide",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure an application allowlisting program to employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs.\n\nConfiguration of allowlisting applications will vary by the program. AppLocker is an allowlisting application built into Windows 10 Enterprise.\n\nIf AppLocker is used, it is configured through group policy in Computer Configuration >> Windows Settings >> Security Settings >> Application Control Policies >> AppLocker.\n\nImplementation guidance for AppLocker is available at the following link:\n\nhttps://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-application-control/applocker/applocker-policies-deployment-guide",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-220705r958808_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_10_stig/u_ms_windows_10_v3r4_stig.json",
+  "source_version": "U_MS_Windows_10_V3R4_STIG.zip",
+  "stig_id": "MS_Windows_10_STIG",
+  "title": "The operating system must employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs.",
+  "tracking_issue": "TODO-V-220705",
+  "vuln_id": "V-220705"
+}

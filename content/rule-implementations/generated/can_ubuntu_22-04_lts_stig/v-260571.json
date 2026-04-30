@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify all accounts on the system to have a password by using the following command: \n \n     $ sudo awk -F: '!$2 {print $1}' /etc/shadow \n \nIf the command returns any results, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure all accounts on the system to have a password or lock the account by using the following commands: \n \nSet the account password: \n \n     $ sudo passwd <username> \n \nOr lock the account: \n \n     $ sudo passwd -l <username>",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-260571r991589_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must not have accounts configured with blank or null passwords.",
+  "tracking_issue": "TODO-V-260571",
+  "vuln_id": "V-260571"
+}

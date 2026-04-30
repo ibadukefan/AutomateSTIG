@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": "0644",
+      "owner": null,
+      "path": "/etc/ssh/",
+      "type": "file_permission"
+    },
+    "description": "RHEL 9 SSH public host key files must have mode 0644 or less permissive.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258001"
+  },
+  "check_content_excerpt": "Verify the SSH public host key files have a mode of \"0644\" or less permissive with the following command:\n\nNote: SSH public key files may be found in other directories on the system depending on the installation.\n\n$ sudo stat -c \"%a %n\" /etc/ssh/*.pub\n\n644 /etc/ssh/ssh_host_dsa_key.pub\n644 /etc/ssh/ssh_host_ecdsa_key.pub\n644 /etc/ssh/ssh_host_ed25519_key.pub\n644 /etc/ssh/ssh_host_rsa_key.pub\n\nIf any key.pub file has a mode more permissive than \"0644\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the mode of public host key files under \"/etc/ssh\" to \"0644\" with the following command:\n\n$ sudo chmod 0644 /etc/ssh/*key.pub\n\nRestart the SSH daemon for the changes to take effect:\n\n$ sudo systemctl restart sshd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_permission",
+  "remediation": "planned",
+  "rule_id": "SV-258001r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 SSH public host key files must have mode 0644 or less permissive.",
+  "tracking_issue": "TODO-V-258001",
+  "vuln_id": "V-258001"
+}

@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "kernel.dmesg_restrict",
+      "type": "sysctl"
+    },
+    "description": "Ubuntu 24.04 LTS must restrict access to the kernel message buffer.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270749"
+  },
+  "check_content_excerpt": "Verify Ubuntu 24.04 LTS is configured to restrict access to the kernel message buffer with the following command:\n\n$ sysctl kernel.dmesg_restrict\nkernel.dmesg_restrict = 1\n\nIf \"kernel.dmesg_restrict\" is not set to \"1\" or is missing, this is a finding.\n\nVerify there are no configurations that enable the kernel dmesg function:\n\n$ sudo grep -r kernel.dmesg_restrict /run/sysctl.d/* /etc/sysctl.d/* /usr/local/lib/sysctl.d/* /usr/lib/sysctl.d/* /lib/sysctl.d/* /etc/sysctl.conf 2> /dev/null\n/etc/sysctl.d/10-kernel-hardening.conf:kernel.dmesg_restrict = 1\n\nIf any instance of \"kernel.dmesg_restrict\" is uncommented and set to \"0\", or if conflicting results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to restrict access to the kernel message buffer.\n\nSet the system to the required kernel parameter by adding or modifying the following line in /etc/sysctl.conf or a config file in the /etc/sysctl.d/ directory:\n\n     kernel.dmesg_restrict = 1\n\nRemove any configurations that conflict with the above from the following locations: \n     /run/sysctl.d/\n     /etc/sysctl.d/\n     /usr/local/lib/sysctl.d/\n     /usr/lib/sysctl.d/\n     /lib/sysctl.d/\n     /etc/sysctl.conf\n\nReload settings from all system configuration files with the following command:\n\n     $ sudo sysctl --system",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-270749r1067179_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must restrict access to the kernel message buffer.",
+  "tracking_issue": "TODO-V-270749",
+  "vuln_id": "V-270749"
+}

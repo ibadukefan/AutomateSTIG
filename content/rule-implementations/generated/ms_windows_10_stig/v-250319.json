@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This requirement is applicable to domain-joined systems. For standalone or nondomain-joined systems, this is NA.\n\nIf the following registry values do not exist or are not configured as specified, this is a finding.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Policies\\Microsoft\\Windows\\NetworkProvider\\HardenedPaths\\\n\nValue Name: \\\\*\\NETLOGON\nValue Type: REG_SZ\nValue: RequireMutualAuthentication=1, RequireIntegrity=1\n\nValue Name: \\\\*\\SYSVOL\nValue Type: REG_SZ\nValue: RequireMutualAuthentication=1, RequireIntegrity=1\n\nAdditional entries would not be a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> Network >> Network Provider >> \"Hardened UNC Paths\" to \"Enabled\" with at least the following configured in \"Hardened UNC Paths:\" (click the \"Show\" button to display).\n\nValue Name: \\\\*\\SYSVOL\nValue: RequireMutualAuthentication=1, RequireIntegrity=1\n\nValue Name: \\\\*\\NETLOGON\nValue: RequireMutualAuthentication=1, RequireIntegrity=1",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-250319r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_10_stig/u_ms_windows_10_v3r4_stig.json",
+  "source_version": "U_MS_Windows_10_V3R4_STIG.zip",
+  "stig_id": "MS_Windows_10_STIG",
+  "title": "Hardened UNC paths must be defined to require mutual authentication and integrity for at least the \\\\*\\SYSVOL and \\\\*\\NETLOGON shares.",
+  "tracking_issue": "TODO-V-250319",
+  "vuln_id": "V-250319"
+}

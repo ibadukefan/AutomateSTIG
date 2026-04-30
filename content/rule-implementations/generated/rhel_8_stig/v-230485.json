@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If the system is approved and documented by the information system security officer (ISSO) to function as an NTP time server, this requirement is Not Applicable.\n\nVerify RHEL 8 disables the chrony daemon from acting as a server with the following command:\n\n$ sudo grep -w 'port' /etc/chrony.conf\nport 0\n\nIf the \"port\" option is not set to \"0\", is commented out or missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable the chrony daemon from acting as a server by adding or modifying the following line in the \"/etc/chrony.conf\" file:\n\nport 0",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230485r1017269_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must disable the chrony daemon from acting as a server.",
+  "tracking_issue": "TODO-V-230485",
+  "vuln_id": "V-230485"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify RHEL 8 kernel core dumps are disabled unless needed with the following command:\n\n$ sudo systemctl status kdump.service\n\no kdump.service - Crash recovery kernel arming\n   Loaded: loaded (/usr/lib/systemd/system/kdump.service; disabled; vendor preset: enabled)\n   Active: inactive (dead)\n\nIf the \"kdump\" service is active, ask the system administrator if the use of the service is required and documented with the information system security officer (ISSO).\n\nIf the service is active and is not documented, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "If kernel core dumps are not required, disable the \"kdump\" service with the following command:\n\n# systemctl disable kdump.service\n\nIf kernel core dumps are required, document the need with the ISSO.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230310r1155383_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must disable kernel dumps unless needed.",
+  "tracking_issue": "TODO-V-230310",
+  "vuln_id": "V-230310"
+}

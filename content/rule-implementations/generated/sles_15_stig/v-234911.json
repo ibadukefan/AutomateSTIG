@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system generates an audit record for any use of the \"chage\" command.\n\nCheck that the command is being audited by performing the following command:\n\n> sudo auditctl -l | grep -w '/usr/bin/chage'\n\n-a always,exit -S all -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=-1 -k privileged-chage\n\nIf the command does not return any output, this is a finding.\n\nNote:\nThe \"-k\" allows for specifying an arbitrary identifier. The string following \"-k\" does not need to match the example output above.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to generate an audit record for all uses of the \"chage\" command. \n\nAdd or update the following rules in the \"/etc/audit/rules.d/audit.rules\" file:\n\n-a always,exit -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged-chage\n\nTo reload the rules file, restart the audit daemon\n\n> sudo systemctl restart auditd.service\n\nor issue the following command:\n\n> sudo augenrules --load",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234911r958412_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must generate audit records for all uses of the chage command.",
+  "tracking_issue": "TODO-V-234911",
+  "vuln_id": "V-234911"
+}

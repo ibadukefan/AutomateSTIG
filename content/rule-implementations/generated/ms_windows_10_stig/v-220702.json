@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify all Windows 10 information systems (including SIPRNet) employ BitLocker for full disk encryption.\n\nFor virtual desktop implementations (VDIs) in which the virtual desktop instance is deleted or refreshed upon logoff, this is NA.\n\nFor Azure Virtual Desktop (AVD) implementations with no data at rest, this is NA.\n\nIf full disk encryption using BitLocker is not implemented, this is a finding.\n\nVerify BitLocker is turned on for the operating system drive and any fixed data drives.\n\nOpen \"BitLocker Drive Encryption\" from the Control Panel.\n\nIf the operating system drive or any fixed data drives have \"Turn on BitLocker\", this is a finding.\n\nNOTE: An alternate encryption application may be used in lieu of BitLocker providing it is configured for full disk encryption and satisfies the pre-boot authentication requirements (WN10-00-000031 and WN10-00-000032).",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Enable full disk encryption on all information systems (including SIPRNet) using BitLocker.\n\nBitLocker, included in Windows, can be enabled in the Control Panel under \"BitLocker Drive Encryption\" as well as other management tools.\n\nNOTE: An alternate encryption application may be used in lieu of BitLocker providing it is configured for full disk encryption and satisfies the pre-boot authentication requirements (WN10-00-000031 and WN10-00-000032).",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-220702r958552_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_10_stig/u_ms_windows_10_v3r4_stig.json",
+  "source_version": "U_MS_Windows_10_V3R4_STIG.zip",
+  "stig_id": "MS_Windows_10_STIG",
+  "title": "Windows 10 information systems must use BitLocker to encrypt all disks to protect the confidentiality and integrity of all information at rest.",
+  "tracking_issue": "TODO-V-220702",
+  "vuln_id": "V-220702"
+}

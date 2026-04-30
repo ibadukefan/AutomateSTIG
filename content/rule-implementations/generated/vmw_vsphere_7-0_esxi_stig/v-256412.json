@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From the vSphere Client, select the ESXi host and go to Configure >> Networking >> VMkernel adapters.\n\nSelect each VMkernel adapter that is \"Enabled\" for management traffic and, in the bottom pane, view the \"Enabled services\".\n\nIf any services other than \"Management\" are enabled on the Management VMkernel adapter, this is a finding.\n\nFrom the vSphere Client, select the ESXi host and go to Configure >> Networking >> VMkernel adapters.\n\nReview the VLAN associated with each VMkernel that is \"Enabled\" for management traffic. Verify with the system administrator that they are dedicated for that purpose and are logically separated from other functions.\n\nIf the network segment is accessible, except to networks where other management-related entities are located such as vCenter, this is a finding.\n\nIf there are any other systems or devices such as VMs on the ESXi management segment, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> Networking >> VMkernel adapters.\n\nSelect the Management VMkernel and click \"Edit...\". On the \"Port\" properties tab, uncheck all services except \"Management\". Click \"OK\".\n\nFrom the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> Networking >> Virtual switches.\n\nFind the port group that contains the Management VMkernel and click the \"...\" button next to the name. Click \"Edit Settings\".\n\nOn the \"Properties\" tab, change the \"VLAN ID\" to one dedicated to Management traffic. Click \"OK\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-256412r958908_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/vmw_vsphere_7_0_esxi_stig/u_vmw_vsphere_7_0_y25m04_stig.json",
+  "source_version": "U_VMW_vSphere_7-0_Y25M04_STIG.zip",
+  "stig_id": "VMW_vSphere_7-0_ESXi_STIG",
+  "title": "The ESXi host must protect the confidentiality and integrity of transmitted information by protecting ESXi management traffic.",
+  "tracking_issue": "TODO-V-256412",
+  "vuln_id": "V-256412"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If a listener is not running on the local database host server, this check is not a finding.\n\nNote: Complete this check only once per host system and once per listener. Multiple listeners may be defined on a single host system. They must all be reviewed, but only once per database home review.\n\nFor subsequent database home reviews on the same host system, this check is not a finding.\n\nDetermine all listeners running on the host.\n\nFor Windows hosts, view all Windows services with TNSListener embedded in the service name:\n\n- The service name format is:\nOracle[ORACLE_HOME_NAME]TNSListener\n\nFor Unix hosts, the Oracle Listener process will indicate the TNSLSNR executable.\n\nAt a command prompt, issue the command:\nps -ef | grep tnslsnr | grep -v grep\n\nThe alias for the listener follows tnslsnr in the command output.\n\nMust be logged on the host system using the account that owns the tnslsnr executable (Unix). If the account is denied local logon, have the system administrator (SA) assist in this task by adding \"su\" to the listener account from the root account. On Windows platforms, log on using an account with administrator privileges to complete the check.\n\nFrom a system command prompt, execute the listener control utility:\n\nlsnrctl status [LISTENER NAME]\n\nReview the results for the value of Security.\n\nIf \"Security = OFF\" is displayed, this is a finding.\n\nIf \"Security = ON: Password or Local OS Authentication\", this is a finding (Instead, use Local OS Authentication).\n\nIf \"Security = ON: Local OS Authentication\" is displayed, this is not a finding.\n\nRepeat the execution of the lsnrctl utility for all active listeners.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "By default, Oracle Net Listener permits only local administration for security reasons. As a policy, the listener can be administered only by the user who started it. \n\nOracle Listener authentication is enforced through local operating system authentication. For example, if user1 starts the listener, then only user1 can administer it. Any other user trying to administer the listener receives an error. The super user is the only exception.\n\nRemote administration of the listener must not be permitted. If listener administration from a remote system is required, granting secure remote access to the Oracle database management system (DBMS) server and performing local administration is preferred. Authorize and document this requirement in the system documentation.\n\nRefer to Oracle Database Net Services Reference for additional information.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270531r1065272_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "The Oracle Listener must be configured to require administration authentication.",
+  "tracking_issue": "TODO-V-270531",
+  "vuln_id": "V-270531"
+}

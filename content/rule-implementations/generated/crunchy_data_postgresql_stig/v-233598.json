@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "First, as the database administrator, review the current log_line_prefix settings by running the following SQL:\u00a0\n\n$ sudo su - postgres\u00a0\n$ psql -c \"SHOW log_line_prefix\"\u00a0\n\nIf log_line_prefix does not contain at least '< %m %a %u %d %r %p >', this is a finding.\u00a0\n\nNext, review the current shared_preload_libraries settings by running the following SQL:\u00a0\n\n$ psql -c \"SHOW shared_preload_libraries\"\u00a0\n\nIf shared_preload_libraries does not contain \"pgaudit\", this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nConfigure the database to supply additional auditing information to protect against a user falsely repudiating having performed organization-defined actions.\u00a0\n\nUsing \"pgaudit\", PostgreSQL can be configured to audit these requests. See supplementary content APPENDIX-B for documentation on installing pgaudit.\u00a0\n\nTo ensure logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.\u00a0\n\nModify the configuration of audit logs to include details identifying the individual user:\u00a0\n\nFirst, as the database administrator (shown here as \"postgres\"), edit postgresql.conf:\u00a0\n\n$ sudo su - postgres\u00a0\n$ vi ${PGDATA?}/postgresql.conf\u00a0\n\nExtra parameters can be added to the setting log_line_prefix to identify the user:\u00a0\n\nlog_line_prefix = '< %m %a %u %d %r %p >'\u00a0\n\nNow, as the system administrator, reload the server with the new configuration:\u00a0\n\n$ sudo systemctl reload postgresql-${PGVER?}\n\nUse accounts assigned to individual users. Where the application connects to PostgreSQL using a standard, shared account, ensure it also captures the individual user identification and passes it to PostgreSQL.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233598r960864_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must protect against a user falsely repudiating having performed organization-defined actions.",
+  "tracking_issue": "TODO-V-233598",
+  "vuln_id": "V-233598"
+}

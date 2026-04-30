@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Check the server documentation for a list of approved users with access to SQL Server Audits.\n \nTo create, alter, or drop a server audit, principals require the ALTER ANY SERVER AUDIT or the CONTROL SERVER permission.\n \nReview the SQL Server permissions granted to principals. Look for permissions ALTER ANY SERVER AUDIT, ALTER ANY DATABASE AUDIT, CONTROL SERVER: \n \nSELECT login.name, perm.permission_name, perm.state_desc \nFROM sys.server_permissions perm \nJOIN sys.server_principals login \nON perm.grantee_principal_id = login.principal_id \nWHERE permission_name in ('ALTER ANY DATABASE AUDIT', 'ALTER ANY SERVER AUDIT', 'CONTROL SERVER') \nand login.name not like '##MS_%'; \n \nIf unauthorized accounts have these privileges, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Remove audit-related permissions from individuals and roles not authorized to have them. \n \nUSE master;   \nDENY [ALTER ANY SERVER AUDIT] TO [User];   \nGO",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271283r1108465_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "SQL Server must protect its audit configuration from authorized and unauthorized access and modification.",
+  "tracking_issue": "TODO-V-271283",
+  "vuln_id": "V-271283"
+}

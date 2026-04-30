@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "To check if PostgreSQL is configured to use ssl, as the database administrator (shown here as \"postgres\"), run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"SHOW ssl\"\n\nIf this is not set to on, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nTo configure PostgreSQL to use SSL, as a database owner (shown here as \"postgres\"), edit postgresql.conf:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nAdd the following parameter:\n\nssl = on\n\nNow, as the system administrator, reload the server with the new configuration:\n\n$ sudo systemctl reload postgresql-${PGVER?}\n\n\nFor more information on configuring PostgreSQL to use SSL, see supplementary content APPENDIX-G.\n\nFor further SSL configurations, see the official documentation: https://www.postgresql.org/docs/current/static/ssl-tcp.html",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233611r961119_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must maintain the authenticity of communications sessions by guarding against man-in-the-middle attacks that guess at Session ID values.",
+  "tracking_issue": "TODO-V-233611",
+  "vuln_id": "V-233611"
+}

@@ -1,0 +1,52 @@
+{
+  "candidate_check": {
+    "check": {
+      "name": "crypto-policies",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "RHEL 8 must have the crypto-policies package installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-279933"
+  },
+  "check_content_excerpt": "Verify the RHEL 8 crypto-policies package is installed with the following command:\n\n$ sudo dnf list --installed crypto-policies\n\nUpdating Subscription Management repositories.\nInstalled Packages\ncrypto-policies.noarch                     20230731-1.git3177e06.el8                      @rhel-8-for-x86_64-baseos-rpms\n\nIf the crypto-policies package is not installed, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the crypto-policies package (if the package is not already installed) with the following command:\n\n$ sudo dnf -y install crypto-policies",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "package",
+  "remediation": "planned",
+  "rule_id": "SV-279933r1156352_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must have the crypto-policies package installed.",
+  "tracking_issue": "TODO-V-279933",
+  "vuln_id": "V-279933"
+}

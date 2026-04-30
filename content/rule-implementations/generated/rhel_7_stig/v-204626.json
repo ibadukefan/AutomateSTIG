@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify \"AUTH_GSS\" is being used to authenticate NFS mounts.\n\nTo check if the system is importing an NFS file system, look for any entries in the \"/etc/fstab\" file that have a file system type of \"nfs\" with the following command:\n\n# cat /etc/fstab | grep nfs\n192.168.21.5:/mnt/export /data1 nfs4 rw,sync ,soft,sec=krb5:krb5i:krb5p\n\nIf the system is mounting file systems via NFS and has the sec option without the \"krb5:krb5i:krb5p\" settings, the \"sec\" option has the \"sys\" setting, or the \"sec\" option is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Update the \"/etc/fstab\" file so the option \"sec\" is defined for each NFS mounted file system and the \"sec\" option does not have the \"sys\" setting. \n\nEnsure the \"sec\" option is defined as \"krb5:krb5i:krb5p\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204626r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must be configured so that the Network File System (NFS) is configured to use RPCSEC_GSS.",
+  "tracking_issue": "TODO-V-204626",
+  "vuln_id": "V-204626"
+}

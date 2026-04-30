@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Follow these steps to check streaming-connection-idle-timeout:\n\n1. On the Control Plane, run the command:\n\nps -ef | grep kubelet\n\nIf the \"--streaming-connection-idle-timeout\" option exists, this is a finding.\n\nNote the path to the config file (identified by --config).\n\n2. Run the command:\n\ngrep -i streamingConnectionIdleTimeout <path_to_config_file>\n\nIf the setting \"streamingConnectionIdleTimeout\" is set to less than \"5m\" or is not configured, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Follow these steps to configure streaming-connection-idle-timeout:\n1. On the Control Plane, run the command:\nps -ef | grep kubelet\n\nRemove the \"--streaming-connection-idle-timeout\" option if present.\n\nNote the path to the config file (identified by --config).\n\n2. Edit the Kubernetes Kubelet file in the --config directory on the Kubernetes Control Plane:\n\nSet the argument \"streamingConnectionIdleTimeout\" to a value of \"5m\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-245541r1069469_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/kubernetes_stig/u_kubernetes_v2r6_stig.json",
+  "source_version": "U_Kubernetes_V2R6_STIG.zip",
+  "stig_id": "Kubernetes_STIG",
+  "title": "Kubernetes Kubelet must not disable timeouts.",
+  "tracking_issue": "TODO-V-245541",
+  "vuln_id": "V-245541"
+}

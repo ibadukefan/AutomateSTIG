@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system implements certificate status checking for multifactor authentication.\n\nNote: If the System Administrator demonstrates the use of an approved alternate multifactor authentication method, this requirement is not applicable.\n\nCheck to see if Online Certificate Status Protocol (OCSP) is enabled and using the proper digest value on the system with the following command:\n\n$ sudo grep certificate_verification /etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf | grep -v \"^#\"\n\ncertificate_verification = ocsp_dgst=sha1\n\nIf the certificate_verification line is missing from the [sssd] section, or is missing \"ocsp_dgst=sha1\", ask the administrator to indicate what type of multifactor authentication is being utilized and how the system implements certificate status checking.  If there is no evidence of certificate status checking being used, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to implement certificate status checking for multifactor authentication.\n\nReview the \"/etc/sssd/sssd.conf\" file to determine if the system is configured to prevent OCSP or certificate verification.\n\nAdd the following line to the [sssd] section of the \"/etc/sssd/sssd.conf\" file:\n\ncertificate_verification = ocsp_dgst=sha1\n\nThe \"sssd\" service must be restarted for the changes to take effect. To restart the \"sssd\" service, run the following command:\n\n$ sudo systemctl restart sssd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230274r1017089_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must implement certificate status checking for multifactor authentication.",
+  "tracking_issue": "TODO-V-230274",
+  "vuln_id": "V-230274"
+}

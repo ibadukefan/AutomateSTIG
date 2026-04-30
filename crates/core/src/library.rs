@@ -160,10 +160,11 @@ impl StigLibrary {
     pub fn add_benchmark(&mut self, benchmark: &StigBenchmark) -> Result<()> {
         let data = serde_json::to_string_pretty(benchmark)?;
         let hash = compute_sha256(data.as_bytes());
-        let filename = format!("{}.json", benchmark.id);
+        let filename = format!("{}.json", crate::path_safety::safe_filename(&benchmark.id)?);
         let data_path = format!("benchmarks/{}", filename);
+        let path = crate::path_safety::safe_join_under(&self.root.join("benchmarks"), &filename)?;
 
-        std::fs::write(self.root.join(&data_path), &data)?;
+        std::fs::write(path, &data)?;
 
         let entry = BenchmarkEntry {
             id: benchmark.id.clone(),

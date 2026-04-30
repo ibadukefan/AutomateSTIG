@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the correct and unique VCID has been configured for the appropriate attachment circuit. In the example below Ethernet2/1 is the CE-facing interface that is configured for VPWS with the VCID of 55.\n\nStep 1: Review the L2VPN virtual circuits and determine the member attachment circuit and pseudowire.\n\nl2vpn xconnect context VC55\n member Ethernet2/1\n member Pseudowire55\n\nStep 2: Determine the VCID as configured for neighbor and verify the same VCID is defined on the remote PE device.\n\nport-profile type pseudowire MPLS_PROFILE\n encapsulation mpls\n\ninterface Pseudowire55\n neighbor 10.10.22.1 55\n inherit port-profile MPLS_PROFILE\n\nNote: VPWS is also known as Ethernet over MPLS (EoMPLS) and Ethernet Virtual Circuit (EVC).\n\nIf the correct VC ID has not been configured on both switches, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Assign globally unique VC IDs for each virtual circuit and configure the attachment circuits with the appropriate VC ID.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221121r999774_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco PE switch providing MPLS Virtual Private Wire Service (VPWS) must be configured to have the appropriate virtual circuit identification (VC ID) for each attachment circuit.",
+  "tracking_issue": "TODO-V-221121",
+  "vuln_id": "V-221121"
+}

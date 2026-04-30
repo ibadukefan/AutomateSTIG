@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system defines default permissions for all authenticated users in such a way that the users can only read and modify their own files. \n\nCheck the system default permissions with the following command:\n\n> grep -i \"^umask\" /etc/login.defs\n\nUMASK 077\n\nIf the \"UMASK\" variable is set to \"000\", the severity is raised to a CAT I, and this is a finding.\n\nIf the value of \"UMASK\" is not set to \"077\", or \"UMASK\" is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to define the default permissions for all authenticated users in such a way that the users can only read and modify their own files.\n\nAdd or edit the \"UMASK\" parameter in the \"/etc/login.defs\" file to match the example below:\n\nUMASK 077",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-235030r991590_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system default permissions must be defined in such a way that all authenticated users can only read and modify their own files.",
+  "tracking_issue": "TODO-V-235030",
+  "vuln_id": "V-235030"
+}

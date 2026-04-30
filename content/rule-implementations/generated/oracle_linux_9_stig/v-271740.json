@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "fs.protected_hardlinks",
+      "type": "sysctl"
+    },
+    "description": "OL 9 must enable kernel parameters to enforce discretionary access control on hardlinks.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271740"
+  },
+  "check_content_excerpt": "Verify that OL 9 is configured to enable DAC on hardlinks.\n\nCheck the status of the fs.protected_hardlinks kernel parameter with the following command:\n\n$ sudo sysctl fs.protected_hardlinks\nfs.protected_hardlinks = 1\n\nIf \"fs.protected_hardlinks\" is not set to \"1\" or is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to enable DAC on hardlinks with the following:\n\nAdd or edit the following line in a system configuration file in the \"/etc/sysctl.d/\" directory:\n\nfs.protected_hardlinks = 1\n\nLoad settings from all system configuration files with the following command:\n\n$ sudo sysctl --system",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-271740r1091932_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must enable kernel parameters to enforce discretionary access control on hardlinks.",
+  "tracking_issue": "TODO-V-271740",
+  "vuln_id": "V-271740"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "For stand-alone or nondomain-joined systems, this is not applicable.\n\nVerify the system has a TPM and it is ready for use.\n\nRun \"tpm.msc\".\n\nReview the sections in the center pane.\n\n\"Status\" must indicate it has been configured with a message such as \"The TPM is ready for use\" or \"The TPM is on and ownership has been taken\".\n\nTPM Manufacturer Information - Specific Version = 2.0 or 1.2\n\nIf a TPM is not found or is not ready for use, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Ensure domain-joined systems have a TPM that is configured for use. (Versions 2.0 or 1.2 support Credential Guard.)\n\nThe TPM must be enabled in the firmware.\n\nRun \"tpm.msc\" for configuration options in Windows.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-277993r1182250_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 domain-joined systems must have a Trusted Platform Module (TPM) enabled and ready for use.",
+  "tracking_issue": "TODO-V-277993",
+  "vuln_id": "V-277993"
+}

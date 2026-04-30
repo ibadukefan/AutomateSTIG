@@ -1,0 +1,206 @@
+{
+  "stig_id": "Ansible_Automation_Platform_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/ansible_tower.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/ansible_tower.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-287001",
+      "rule_id": "V-287001_automatestig_check",
+      "classification": "automated",
+      "reason": "CSRF trusted origins must be configured for Automation Platform",
+      "check_pack": "ansible_tower",
+      "check_id": "V-287001",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ansible_tower.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-287002",
+      "rule_id": "V-287002_automatestig_check",
+      "classification": "automated",
+      "reason": "Session cookie must use the Secure flag (HTTPS only)",
+      "check_pack": "ansible_tower",
+      "check_id": "V-287002",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ansible_tower.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-287003",
+      "rule_id": "V-287003_automatestig_check",
+      "classification": "automated",
+      "reason": "Session cookie must use the HttpOnly flag",
+      "check_pack": "ansible_tower",
+      "check_id": "V-287003",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ansible_tower.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-287004",
+      "rule_id": "V-287004_automatestig_check",
+      "classification": "automated",
+      "reason": "Session timeout must be configured for the Automation Platform",
+      "check_pack": "ansible_tower",
+      "check_id": "V-287004",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ansible_tower.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-287005",
+      "rule_id": "V-287005_automatestig_check",
+      "classification": "automated",
+      "reason": "LDAP authentication must use LDAPS (encrypted) connection",
+      "check_pack": "ansible_tower",
+      "check_id": "V-287005",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ansible_tower.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-287006",
+      "rule_id": "V-287006_automatestig_check",
+      "classification": "automated",
+      "reason": "SAML authentication must be configured as an identity provider",
+      "check_pack": "ansible_tower",
+      "check_id": "V-287006",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ansible_tower.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-287007",
+      "rule_id": "V-287007_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit logging must be configured in the Automation Platform settings",
+      "check_pack": "ansible_tower",
+      "check_id": "V-287007",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ansible_tower.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-287008",
+      "rule_id": "V-287008_automatestig_check",
+      "classification": "automated",
+      "reason": "Activity stream must be enabled for audit tracking",
+      "check_pack": "ansible_tower",
+      "check_id": "V-287008",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ansible_tower.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-287009",
+      "rule_id": "V-287009_automatestig_check",
+      "classification": "automated",
+      "reason": "Activity stream must be enabled for inventory sync operations",
+      "check_pack": "ansible_tower",
+      "check_id": "V-287009",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ansible_tower.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-287010",
+      "rule_id": "V-287010_automatestig_check",
+      "classification": "automated",
+      "reason": "Automation Platform base URL must use HTTPS",
+      "check_pack": "ansible_tower",
+      "check_id": "V-287010",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ansible_tower.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-287011",
+      "rule_id": "V-287011_automatestig_check",
+      "classification": "automated",
+      "reason": "Remote host headers must be configured for proper client identification",
+      "check_pack": "ansible_tower",
+      "check_id": "V-287011",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ansible_tower.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-287012",
+      "rule_id": "V-287012_automatestig_check",
+      "classification": "automated",
+      "reason": "Credential encryption key must be configured for vault secrets",
+      "check_pack": "ansible_tower",
+      "check_id": "V-287012",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ansible_tower.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-287013",
+      "rule_id": "V-287013_automatestig_check",
+      "classification": "automated",
+      "reason": "OAuth2 for external users must be disabled unless explicitly required",
+      "check_pack": "ansible_tower",
+      "check_id": "V-287013",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ansible_tower.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-287014",
+      "rule_id": "V-287014_automatestig_check",
+      "classification": "automated",
+      "reason": "Usage analytics and telemetry must be disabled",
+      "check_pack": "ansible_tower",
+      "check_id": "V-287014",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ansible_tower.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-287015",
+      "rule_id": "V-287015_automatestig_check",
+      "classification": "automated",
+      "reason": "Custom virtual environments must be configured and controlled",
+      "check_pack": "ansible_tower",
+      "check_id": "V-287015",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ansible_tower.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

@@ -61,8 +61,7 @@ impl PackBuilder {
     /// Add a file to the pack from raw bytes.
     pub fn add_file_bytes(mut self, pack_path: &str, data: &[u8]) -> Self {
         let hash = compute_sha256(data);
-        self.manifest
-            .add_file(pack_path, &hash, data.len() as u64);
+        self.manifest.add_file(pack_path, &hash, data.len() as u64);
         self.files.push((pack_path.to_string(), data.to_vec()));
         self
     }
@@ -91,8 +90,7 @@ impl PackBuilder {
             );
             let data = std::fs::read(entry.path())?;
             let hash = compute_sha256(&data);
-            self.manifest
-                .add_file(&pack_path, &hash, data.len() as u64);
+            self.manifest.add_file(&pack_path, &hash, data.len() as u64);
             self.files.push((pack_path, data));
         }
         Ok(self)
@@ -102,8 +100,8 @@ impl PackBuilder {
     pub fn build(self, output_path: &Path) -> StigpackResult<()> {
         let file = std::fs::File::create(output_path)?;
         let mut zip = ZipWriter::new(file);
-        let options = SimpleFileOptions::default()
-            .compression_method(zip::CompressionMethod::Deflated);
+        let options =
+            SimpleFileOptions::default().compression_method(zip::CompressionMethod::Deflated);
 
         // Write manifest first.
         let manifest_json = self

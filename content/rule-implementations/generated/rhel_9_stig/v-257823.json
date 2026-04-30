@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that RHEL 9 is configured so that the cryptographic hashes of system files match vendor values.\n \nList files on the system that have file hashes different from what is expected by the RPM database with the following command:\n\n$ sudo rpm -Va --noconfig | awk '$1 ~ /..5/ && $2 != \"c\"' \n\nIf there is output, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 9 so that the cryptographic hashes of system files match vendor values.\n\nGiven output from the check command, identify the package that provides the output and reinstall it. The following trimmed example output shows a package that has failed verification, been identified, and been reinstalled:\n\n$ sudo rpm -Va --noconfig | awk '$1 ~ /..5/ && $2 != \"c\"'\nS.5....T.    /usr/bin/znew\n\n$ sudo dnf provides /usr/bin/znew\n[...]\ngzip-1.10-8.el9.x86_64 : The GNU data compression program\n[...]\n\n$ sudo dnf -y reinstall gzip\n[...]\n\n$ sudo rpm -Va --noconfig | awk '$1 ~ /..5/ && $2 != \"c\"'\n[no output]",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-257823r1051231_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must be configured so that the cryptographic hashes of system files match vendor values.",
+  "tracking_issue": "TODO-V-257823",
+  "vuln_id": "V-257823"
+}

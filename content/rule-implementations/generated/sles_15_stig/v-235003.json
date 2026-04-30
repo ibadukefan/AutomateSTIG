@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that SUSE operating system kernel core dumps are disabled unless needed.\n\nCheck the status of the \"kdump\" service with the following command:\n\n> systemctl status kdump.service\nLoaded: not-found (Reason: No such file or directory)\nActive: inactive (dead)\n\nIf the \"kdump\" service is active, ask the System Administrator if the use of the service is required and documented with the Information System Security Officer (ISSO).\n\nIf the service is active and is not documented, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "If SUSE operating system kernel core dumps are not required, disable the \"kdump\" service with the following command:\n\n> sudo systemctl disable kdump.service\n\nIf kernel core dumps are required, document the need with the ISSO.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-235003r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "SUSE operating system kernel core dumps must be disabled unless needed.",
+  "tracking_issue": "TODO-V-235003",
+  "vuln_id": "V-235003"
+}

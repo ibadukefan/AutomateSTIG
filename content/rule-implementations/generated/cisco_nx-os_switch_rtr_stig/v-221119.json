@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the design plan for MPLS/L3VPN to determine what RD has been assigned for each VRF. Review the switch configuration and verify that the correct RD is configured for each VRF. In the example below, route distinguisher 13:13 has been configured for customer 1.\n\nvrf context CUST1\n rd 13:13\n address-family ipv4 unicast\n route-target export 13:13\n route-target import 13:13\n\nNote: This requirement is only applicable for MPLS L3VPN implementations.\n\nIf the wrong RD has been configured for any VRF, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the correct RD for each VRF.\n\nSW1(config)# vrf context CUST1\nSW1(config-vrf)# rd 13:13\nSW1(config-vrf)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221119r999773_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco PE switch must be configured to have each VRF with the appropriate Route Distinguisher (RD).",
+  "tracking_issue": "TODO-V-221119",
+  "vuln_id": "V-221119"
+}

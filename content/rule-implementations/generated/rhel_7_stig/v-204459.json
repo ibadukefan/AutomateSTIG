@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system security patches and updates are installed and up to date. Updates are required to be applied with a frequency determined by the site or Program Management Office (PMO). \n\nObtain the list of available package security updates from Red Hat. The URL for updates is https://rhn.redhat.com/errata/. It is important to note that updates provided by Red Hat may not be present on the system if the underlying packages are not installed.\n\nCheck that the available package security updates have been installed on the system with the following command:\n\n# yum history list | more\nLoaded plugins: langpacks, product-id, subscription-manager\nID     | Command line             | Date and time    | Action(s)      | Altered\n-------------------------------------------------------------------------------\n    70 | install aide             | 2016-05-05 10:58 | Install       |     1   \n    69 | update -y                | 2016-05-04 14:34 | Update     |   18 EE\n    68 | install vlc                | 2016-04-21 17:12 | Install        |   21   \n    67 | update -y                | 2016-04-21 17:04 | Update     |     7 EE\n    66 | update -y                | 2016-04-15 16:47 | E, I, U         |   84 EE\n\nIf package updates have not been performed on the system within the timeframe that the site/program documentation requires, this is a finding. \n\nTypical update frequency may be overridden by Information Assurance Vulnerability Alert (IAVA) notifications from CYBERCOM.\n\nIf the operating system is in non-compliance with the Information Assurance Vulnerability Management (IAVM) process, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the operating system patches or updated packages available from Red Hat within 30 days or sooner as local policy dictates.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204459r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system security patches and updates must be installed and up to date.",
+  "tracking_issue": "TODO-V-204459",
+  "vuln_id": "V-204459"
+}

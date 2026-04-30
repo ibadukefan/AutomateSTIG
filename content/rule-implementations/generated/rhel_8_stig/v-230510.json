@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify \"/dev/shm\" is mounted with the \"noexec\" option:\n\n$ sudo mount | grep /dev/shm\n\ntmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)\n\nVerify that the \"noexec\" options is configured for /dev/shm:\n\n$ sudo cat /etc/fstab | grep /dev/shm\n\ntmpfs /dev/shm tmpfs defaults,nodev,nosuid,noexec 0 0\n\nIf results are returned and the \"noexec\" option is missing, or if /dev/shm is mounted without the \"noexec\" option, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system so that /dev/shm is mounted with the \"noexec\" option by adding /modifying the /etc/fstab with the following line:\n\ntmpfs /dev/shm tmpfs defaults,nodev,nosuid,noexec 0 0",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230510r958804_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must mount /dev/shm with the noexec option.",
+  "tracking_issue": "TODO-V-230510",
+  "vuln_id": "V-230510"
+}

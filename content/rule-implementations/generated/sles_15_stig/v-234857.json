@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If NSS is not used on the operating system, this is Not Applicable.\n\nIf NSS is used by the SUSE operating system, verify it prohibits the use of cached authentications after one day.\n\nCheck that cached authentications cannot be used after one day with the following command:\n\n> sudo grep -i \"memcache_timeout\" /etc/sssd/sssd.conf\n\nmemcache_timeout = 86400\n\nIf \"memcache_timeout\" has a value greater than \"86400\", or is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure NSS, if used by the SUSE operating system, to prohibit the use of cached authentications after one day. \n\nAdd or change the following line in \"/etc/sssd/sssd.conf\" just below the line \"[nss]\":\n\nmemcache_timeout = 86400",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234857r958828_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "If Network Security Services (NSS) is being used by the SUSE operating system it must prohibit the use of cached authentications after one day.",
+  "tracking_issue": "TODO-V-234857",
+  "vuln_id": "V-234857"
+}

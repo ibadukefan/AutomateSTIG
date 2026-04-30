@@ -1,0 +1,52 @@
+{
+  "candidate_check": {
+    "check": {
+      "name": "Web-Ftp-Service",
+      "should_be_installed": false,
+      "type": "windows_feature"
+    },
+    "description": "Windows Server 2019 must not have the Microsoft FTP service installed unless required by the organization.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "windows",
+    "vuln_id": "V-205697"
+  },
+  "check_content_excerpt": "If the server has the role of an FTP server, this is NA.\n\nOpen \"PowerShell\".\n\nEnter \"Get-WindowsFeature | Where Name -eq Web-Ftp-Service\".\n\nIf \"Installed State\" is \"Installed\", this is a finding.\n\nAn Installed State of \"Available\" or \"Removed\" is not a finding.\n\nIf the system has the role of an FTP server, this must be documented with the ISSO.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "is_false"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Uninstall the \"FTP Server\" role.\n\nStart \"Server Manager\".\n\nSelect the server with the role.\n\nScroll down to \"ROLES AND FEATURES\" in the right pane.\n\nSelect \"Remove Roles and Features\" from the drop-down \"TASKS\" list.\n\nSelect the appropriate server on the \"Server Selection\" page and click \"Next\".\n\nDeselect \"FTP Server\" under \"Web Server (IIS)\" on the \"Roles\" page.\n\nClick \"Next\" and \"Remove\" as prompted.",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/windows_server_2019_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "windows_feature",
+  "remediation": "planned",
+  "rule_id": "SV-205697r958480_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/windows_server_2019_stig/u_ms_windows_server_2019_v3r4_stig.json",
+  "source_version": "U_MS_Windows_Server_2019_V3R4_STIG.zip",
+  "stig_id": "Windows_Server_2019_STIG",
+  "title": "Windows Server 2019 must not have the Microsoft FTP service installed unless required by the organization.",
+  "tracking_issue": "TODO-V-205697",
+  "vuln_id": "V-205697"
+}

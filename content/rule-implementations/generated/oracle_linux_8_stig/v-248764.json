@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/audit.rules",
+      "pattern": "semanage",
+      "type": "file_content"
+    },
+    "description": "OL 8 must generate audit records for any use of the \"semanage\" command.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248764"
+  },
+  "check_content_excerpt": "Verify if OL 8 is configured to audit the execution of the \"semanage\" command by running the following command: \n \n$ sudo grep -w semanage /etc/audit/audit.rules \n \na always,exit -F path=/usr/sbin/semanage -F perm=x -F auid>=1000 -F auid!=unset -k privileged-unix-update \n \nIf the command does not return all lines or the lines are commented out, this is a finding. \n \nNote: The \"-k\" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 8 to audit the execution of the \"semanage\" command by adding or updating the following lines to \"/etc/audit/rules.d/audit.rules\": \n \na always,exit -F path=/usr/sbin/semanage -F perm=x -F auid>=1000 -F auid!=unset -k privileged-unix-update \n \nThe audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command: \n \n$ sudo service auditd restart",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-248764r958442_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must generate audit records for any use of the \"semanage\" command.",
+  "tracking_issue": "TODO-V-248764",
+  "vuln_id": "V-248764"
+}

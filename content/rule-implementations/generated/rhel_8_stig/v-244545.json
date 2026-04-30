@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the RHEL 8 \"fapolicyd\" is enabled and running with the following command:\n\n$ sudo systemctl status fapolicyd.service\n\nfapolicyd.service - File Access Policy Daemon\nLoaded: loaded (/usr/lib/systemd/system/fapolicyd.service; enabled; vendor preset: disabled)\nActive: active (running)\n\nIf fapolicyd is not enabled and running, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Enable \"fapolicyd\" using the following command:\n\n$ sudo systemctl enable --now fapolicyd",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-244545r958804_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "The RHEL 8 fapolicy module must be enabled.",
+  "tracking_issue": "TODO-V-244545",
+  "vuln_id": "V-244545"
+}

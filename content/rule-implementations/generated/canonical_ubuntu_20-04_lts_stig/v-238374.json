@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the Uncomplicated Firewall is enabled on the system by running the following command: \n \n$ systemctl status ufw.service | grep -i \"active:\" \n \nActive: active (exited) since Mon 2016-10-17 12:30:29 CDT; 1s ago \n \nIf the above command returns the status as \"inactive\", this is a finding. \n \nIf the Uncomplicated Firewall is not installed, ask the System Administrator if another application firewall is installed. If no application firewall is installed, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Enable the Uncomplicated Firewall by using the following command: \n \n$ sudo systemctl enable ufw.service  \n \nIf the Uncomplicated Firewall is not currently running on the system, start it with the following command: \n \n$ sudo systemctl start ufw.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-238374r991593_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/canonical_ubuntu_20_04_lts_stig/u_can_ubuntu_20_04_lts_v2r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip",
+  "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
+  "title": "The Ubuntu operating system must have an application firewall enabled.",
+  "tracking_issue": "TODO-V-238374",
+  "vuln_id": "V-238374"
+}

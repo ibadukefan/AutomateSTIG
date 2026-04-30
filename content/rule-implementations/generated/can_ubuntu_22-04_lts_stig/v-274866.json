@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the \"sssd.service\" is enabled and active with the following commands: \n \n$ sudo systemctl is-enabled sssd\nenabled\n\n$ sudo systemctl is-active sssd\nactive\n\nIf \"sssd.service\" is not active or enabled, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Enable the \"sssd.service to start automatically on reboot with the following command: \n \n$ sudo systemctl enable sssd.service \n \nEnsure the \"sssd\" service is running:\n \n$ sudo systemctl start sssd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-274866r1101739_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must use the \"SSSD\" package for multifactor authentication services.",
+  "tracking_issue": "TODO-V-274866",
+  "vuln_id": "V-274866"
+}

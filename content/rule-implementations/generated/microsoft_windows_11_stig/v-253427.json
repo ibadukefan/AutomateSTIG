@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the DoD Root CA certificates are installed as Trusted Root Certification Authorities.\n\nThe certificates and thumbprints referenced below apply to unclassified systems; refer to PKE documentation for other networks.\n\nRun \"PowerShell\" as an administrator.\n\nExecute the following command:\n\nGet-ChildItem -Path Cert:Localmachine\\root | Where Subject -Like \"*DoD*\" | FL Subject, Thumbprint, NotAfter\n\nIf the following certificate \"Subject\" and \"Thumbprint\" information is not displayed, this is a finding. \n\nSubject: CN=DoD Root CA 3, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: D73CA91102A2204A36459ED32213B467D7CE97FB\nNotAfter: 12/30/2029\n\nSubject: CN=DoD Root CA 4, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: B8269F25DBD937ECAFD4C35A9838571723F2D026\nNotAfter: 7/25/2032\n\nSubject: CN=DoD Root CA 5, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: 4ECB5CC3095670454DA1CBD410FC921F46B8564B\nNotAfter: 6/14/2041\n\nSubject: CN=DoD Root CA 6 OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: D37ECF61C0B4ED88681EF3630C4E2FC787B37AEF\nNotAfter: 1/24/2053\n\nAlternately, use the Certificates MMC snap-in:\n\nRun \"MMC\".\n\nSelect \"File\", \"Add/Remove Snap-in\".\n\nSelect \"Certificates\", click \"Add\".\n\nSelect \"Computer account\", click \"Next\".\n\nSelect \"Local computer: (the computer this console is running on)\", click \"Finish\".\n\nClick \"OK\".\n\nExpand \"Certificates\" and navigate to Trusted Root Certification Authorities >> Certificates.\n\nFor each of the DoD Root CA certificates noted below:\n\nRight-click on the certificate and select \"Open\".\n\nSelect the \"Details\" tab.\n\nScroll to the bottom and select \"Thumbprint\".\n\nIf the DoD Root CA certificates below are not listed or the value for the \"Thumbprint\" field is not as noted, this is a finding.\n\nDoD Root CA 3\nThumbprint: D73CA91102A2204A36459ED32213B467D7CE97FB\nValid to: Sunday, December 30, 2029\n\nDoD Root CA 4\nThumbprint: B8269F25DBD937ECAFD4C35A9838571723F2D026\nValid to: Sunday, July 25, 2032\n\nDoD Root CA 5\nThumbprint: 4ECB5CC3095670454DA1CBD410FC921F46B8564B\nValid to: Friday, June 14, 2041\n\nDoD Root CA 6\nThumbprint : D37ECF61C0B4ED88681EF3630C4E2FC787B37AEF\nValid to: Friday, January 24, 2053",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the DoD Root CA certificates.\nDoD Root CA 3\nDoD Root CA 4\nDoD Root CA 5                                               \nDoD Root CA 6\n\nThe InstallRoot tool is available on Cyber Exchange at https://cyber.mil/pki-pke/tools-configuration-files. PKI can be found at https://crl.gds.disa.mil/.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-253427r958448_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/microsoft_windows_11_stig/u_ms_windows_11_v2r4_stig.json",
+  "source_version": "U_MS_Windows_11_V2R4_STIG.zip",
+  "stig_id": "Microsoft_Windows_11_STIG",
+  "title": "The DoD Root CA certificates must be installed in the Trusted Root Store.",
+  "tracking_issue": "TODO-V-253427",
+  "vuln_id": "V-253427"
+}

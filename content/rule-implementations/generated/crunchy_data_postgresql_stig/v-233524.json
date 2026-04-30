@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "PostgreSQL uniquely identifies and authenticates PostgreSQL users through the use of DBMS roles. \n\nTo list all roles in the database, as the database administrator (shown here as \"postgres\"), run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"\\du\"\n\nIf users are not uniquely identified per organizational documentation, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "To drop a role, as the database administrator (shown here as \"postgres\"), run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"DROP ROLE <role_to_drop>\"\n\nTo create a role, as the database administrator, run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"CREATE ROLE <role name> LOGIN\"\n\nFor the complete list of permissions allowed by roles, see the official documentation: https://www.postgresql.org/docs/current/static/sql-createrole.html",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233524r961053_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must uniquely identify and authenticate non-organizational users (or processes acting on behalf of non-organizational users).",
+  "tracking_issue": "TODO-V-233524",
+  "vuln_id": "V-233524"
+}

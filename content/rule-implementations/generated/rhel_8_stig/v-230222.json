@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If the system is not an internet connected system, this is not applicable.\n\nVerify the operating system security patches and updates are installed and up to date. Updates are required to be applied with a frequency determined by the site or Program Management Office (PMO).\n\nObtain the list of available package security updates from Red Hat. The URL for updates is https://rhn.redhat.com/errata/. It is important to note that updates provided by Red Hat may not be present on the system if the underlying packages are not installed.\n\nCheck that the available package security updates have been installed on the system with the following command:\n\n$ sudo yum history list | more\n\nLoaded plugins: langpacks, product-id, subscription-manager\nID | Command line | Date and time | Action(s) | Altered\n-------------------------------------------------------------------------------\n70 | install aide | 2020-03-05 10:58 | Install | 1 \n69 | update -y | 2020-03-04 14:34 | Update | 18 EE\n68 | install vlc | 2020-02-21 17:12 | Install | 21 \n67 | update -y | 2020-02-21 17:04 | Update | 7 EE\n\nIf package updates have not been performed on the system within the timeframe the site/program documentation requires, this is a finding.\n\nTypical update frequency may be overridden by Information Assurance Vulnerability Alert (IAVA) notifications from CYBERCOM.\n\nIf the operating system is in non-compliance with the Information Assurance Vulnerability Management (IAVM) process, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the operating system patches or updated packages available from Red Hat within 30 days or sooner as local policy dictates.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230222r1184233_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 vendor packaged system security patches and updates must be installed and up to date.",
+  "tracking_issue": "TODO-V-230222",
+  "vuln_id": "V-230222"
+}

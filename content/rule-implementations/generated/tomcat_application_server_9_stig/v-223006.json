@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the Tomcat servers System Security Plan/server documentation.\n\nEnsure that user accounts and roles with access to Tomcat management features such as the \"manager-script\" role are documented and approved by the ISSO.\n\nIf the ISSO has not approved of documented roles and users who have management rights to the Tomcat server, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Document the users and the roles that have been defined for use with the Tomcat server.\n\nEnsure that all users and roles with access to Tomcat management features and capabilities are approved by the ISSO.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-223006r961863_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "Tomcat users in a management role must be approved by the ISSO.",
+  "tracking_issue": "TODO-V-223006",
+  "vuln_id": "V-223006"
+}

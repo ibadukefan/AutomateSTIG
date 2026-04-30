@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system disables unattended or automatic logon via SSH.\n\nCheck that unattended or automatic logon via SSH is disabled with the following command:\n\n> sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iEH '^\\s*(permit(.*?)(passwords|environment))'\n\nPermitEmptyPasswords no\nPermitUserEnvironment no\n\nIf \"PermitEmptyPasswords\" or \"PermitUserEnvironment\" keywords are not set to \"no\", are missing completely, or are commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system disables unattended or automatic logon via SSH.\n\nAdd or edit the following lines in the \"/etc/ssh/sshd_config\" file:\n\nPermitEmptyPasswords no\nPermitUserEnvironment no",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-235032r991591_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must not allow unattended or automatic logon via SSH.",
+  "tracking_issue": "TODO-V-235032",
+  "vuln_id": "V-235032"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If all accounts are authenticated by the OS or an enterprise-level authentication/access mechanism and not by Oracle, this is not a finding.\n\nReview configuration settings for encrypting passwords in transit across the network. If passwords are not encrypted, this is a finding. \n\nThe database supports PKI-based authentication by using digital certificates over TLS in addition to the native encryption and data integrity capabilities of these protocols.\n\nOracle provides a complete PKI that is based on RSA Security, Inc., Public-Key Cryptography Standards, and interoperates with Oracle servers and clients. The database uses a wallet that is a container used to store authentication and signing credentials, including private keys, certificates, and trusted certificates needed by TLS. In an Oracle environment, every entity that communicates over TLS must have a wallet containing an X.509 version 3 certificate, private key, and list of trusted certificates.\n\nVerify the $ORACLE_HOME/network/admin/sqlnet.ora contains entries similar to the following to confirm TLS is installed: \n\nWALLET_LOCATION = (SOURCE=\n(METHOD = FILE) \n(METHOD_DATA = \nDIRECTORY=/wallet)\n\nSSL_CIPHER_SUITES=(SSL_cipher_suiteExample) \nSSL_VERSION = 1.1 or 1.2\nSSL_CLIENT_AUTHENTICATION=TRUE\n\nIf the sqlnet.ora file does not contain such entries, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure encryption for transmission of passwords across the network.\n\nConfigure the database to support TLS protocols and the Oracle Wallet to store authentication and signing credentials, including private keys. \n\nMore information can be found at https://docs.oracle.com/en/database/oracle/oracle-database/19/dbseg/configuring-secure-sockets-layer-authentication.html#GUID-EF8DEC69-C8BE-462B-ABDD-E621914E617E.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270565r1136921_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "If passwords are used for authentication, the Oracle Database must transmit only encrypted representations of passwords.",
+  "tracking_issue": "TODO-V-270565",
+  "vuln_id": "V-270565"
+}

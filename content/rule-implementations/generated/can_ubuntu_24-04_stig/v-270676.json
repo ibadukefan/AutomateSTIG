@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that Ubuntu 24.04 LTS enables auditing at system startup in grub with the following command \n \n$ sudo grep \"^\\s*linux\" /boot/grub/grub.cfg \nlinux   /vmlinuz-6.8.0-31-generic root=UUID=c92a542f-aee4-4af9-94b2-203624ccb8e3 ro audit=1 quiet splash $vt_handoff\nlinux   /vmlinuz-6.8.0-31-generic root=UUID=c92a542f-aee4-4af9-94b2-203624ccb8e3 ro recovery nomodeset dis_ucode_ldr audit=1\n \nIf any linux lines do not contain \"audit=1\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to produce audit records at system startup.  \n \nEdit the \"/etc/default/grub\" file and add \"audit=1\" to the \"GRUB_CMDLINE_LINUX\" option so that the line looks like this:\n\nGRUB_CMDLINE_LINUX=\"audit=1\"\n \nTo update the grub config file, run: \n \n$ sudo update-grub",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270676r1068360_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must initiate session audits at system startup.",
+  "tracking_issue": "TODO-V-270676",
+  "vuln_id": "V-270676"
+}

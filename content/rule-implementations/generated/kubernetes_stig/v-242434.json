@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "On the Control Plane, run the command:\nps -ef | grep kubelet\n\nIf the \"--protect-kernel-defaults\" option exists, this is a finding.\n\nNote the path to the config file (identified by --config).\n\nRun the command:\ngrep -i protectKernelDefaults <path_to_config_file>\n\nIf the setting \"protectKernelDefaults\" is not set or is set to false, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "On the Control Plane, run the command:\nps -ef | grep kubelet\n\nRemove the \"--protect-kernel-defaults\" option if present.\n\nNote the path to the Kubernetes Kubelet config file (identified by --config).\n\nEdit the Kubernetes Kubelet config file: \nSet \"protectKernelDefaults\" to \"true\". \n\nRestart the kubelet service using the following command:\nsystemctl daemon-reload && systemctl restart kubelet",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-242434r961131_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/kubernetes_stig/u_kubernetes_v2r6_stig.json",
+  "source_version": "U_Kubernetes_V2R6_STIG.zip",
+  "stig_id": "Kubernetes_STIG",
+  "title": "Kubernetes Kubelet must enable kernel protection.",
+  "tracking_issue": "TODO-V-242434",
+  "vuln_id": "V-242434"
+}

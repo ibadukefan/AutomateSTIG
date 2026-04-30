@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to determine if there is a receive path or interface filter to only accept MSDP packets from known MSDP peers.\n\nStep 1: Verify that interfaces used for MSDP peering have an inbound ACL as shown in the example below:\n\ninterface Ethernet2/3\n no switchport\n ip access-group EXTERNAL_ACL_INBOUND in\n ip address x.1.28.8/24\n ip pim sparse-mode\n\nStep 2: Verify that the ACL restricts MSDP peering to only known sources.\n\nip access-list EXTERNAL_ACL_INBOUND\n 10 permit tcp any any established \n 20 permit tcp x.1.28.2/32 x.1.28.8/32 eq 639 \n 30 deny tcp any x.1.28.8/32 eq 639 log \n 40 permit tcp x.1.28.2/32 10.x.28.8/32 eq bgp \n 50 permit tcp x.1.28.2/32 eq bgp x.1.28.8/32 \n 60 permit pim x.1.28.2/32 x.1.28.8/32 \n\u2026\n \u2026\n \u2026\n120 deny ip any any log\n\nNote: MSDP connections are via TCP port 639.\n\nIf the switch is not configured to only accept MSDP packets from known MSDP peers, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the receive path or interface ACLs to only accept MSDP packets from known MSDP peers.\n\nSW1(config)# ip access-list EXTERNAL_ACL_INBOUND\nSW1(config-acl) # permit tcp any any established\nSW1(config-acl) # permit tcp host x.1.28.2 host x.1.28.8 eq 639\nSW1(config-acl) # deny tcp any host x1.28.8 eq 639\nSW1(config-acl) # permit tcp host x.1.28.2 host x.1.28.8 eq bgp\nSW1(config-acl) # permit tcp host x.1.28.2 eq bgp host x.1.28.8\nSW1(config-acl) # permit pim host x.1.28.2 host x.1.28.8\n\u2026\n\u2026\n\u2026\nSW1(config-acl)# deny ip any any",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221142r999751_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to only accept MSDP packets from known MSDP peers.",
+  "tracking_issue": "TODO-V-221142",
+  "vuln_id": "V-221142"
+}

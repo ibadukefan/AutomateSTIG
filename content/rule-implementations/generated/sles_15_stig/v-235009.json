@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system SSH daemon private host key files have mode \"0640\" or less permissive.\n\nThe following command will find all SSH private key files on the system:\n\n     > sudo find / -name '*ssh_host*key' -exec ls -lL {} \\;\n\nCheck the mode of the private host key files under \"/etc/ssh\" file with the following command:\n\n     > find /etc/ssh -name 'ssh_host*key' -exec stat -c \"%a %n\" {} \\;\n\n     640 /etc/ssh/ssh_host_rsa_key\n     640 /etc/ssh/ssh_host_dsa_key\n     640 /etc/ssh/ssh_host_ecdsa_key\n     640 /etc/ssh/ssh_host_ed25519_key\n\nIf any file has a mode more permissive than \"0640\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the mode of the SUSE operating system SSH daemon private host key files under \"/etc/ssh\" to \"0640\" with the following command:\n\n     > sudo chmod 0640 /etc/ssh/ssh_host*key",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-235009r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system SSH daemon private host key files must have mode 0640 or less permissive.",
+  "tracking_issue": "TODO-V-235009",
+  "vuln_id": "V-235009"
+}

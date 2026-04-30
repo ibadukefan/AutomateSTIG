@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to verify it is using a NIST-validated FIPS 198-1 message authentication code algorithm to authenticate routing protocol messages.\n\nOSPF Example\n\nkey chain OSPF_KEY\n key 1\n key-string 7 070d2e4e4c10\n accept-lifetime 00:00:00 Oct 01 2019 01:05:00 Jan 01 2020\n send-lifetime 00:00:00 Oct 01 2019 23:59:59 Dec 31 2019\n cryptographic-algorithm hmac-sha-256\n key 2\n key-string 7 0704205e4b07\n accept-lifetime 23:55:00 Dec 31 2019 01:05:00 Apr 01 2020\n send-lifetime 00:00:00 Jan 01 2020 23:59:59 Mar 31 2020\n cryptographic-algorithm hmac-sha-256\n\u2026\n\u2026\n\u2026\ninterface Ethernet2/2\n no switchport\n ip ospf authentication key-chain OSPF_KEY\n\nNote: BGP, RIP, EIGRP, IS-IS do not support any FIPS 198-1 HMAC algorithms.\n\nIf a NIST-validated FIPS 198-1 message authentication code algorithm is not being used to authenticate routing protocol messages, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure routing protocol authentication to use a NIST-validated FIPS 198-1 message authentication code algorithm as shown in the example below:\n\nSW1(config)# key chain OSPF_KEY\nSW1(config-keychain)# key 1\nSW1(config-keychain-key)# key-string xxxxxxxxxxxx\nSW1(config-keychain-key)# send-lifetime 00:00:00 Oct 1 2019 23:59:59 Dec 31 2019\nSW1(config-keychain-key)# accept-lifetime 00:00:00 Oct 1 2019 01:05:00 Jan 1 2020\nSW1(config-keychain-key)# cryptographic-algorithm hmac-sha-256\nSW1(config-keychain-key)# key 2\nSW1(config-keychain-key)# key-string kxxxxxxxxxxxxx\nSW1(config-keychain-key)# send-lifetime 00:00:00 Jan 1 2020 23:59:59 Mar 31 2020 \nSW1(config-keychain-key)# accept-lifetime 23:55:00 Dec 31 2019 01:05:00 Apr 1 2020\nSW1(config-keychain-key)# cryptographic-algorithm hmac-sha-256\nSW1(config-keychain-key)# end\nSW1(config)# int e2/2\nSW2(config-if)# ip ospf authentication key-chain OSPF_KEY",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221075r999684_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco switch must be configured to authenticate all routing protocol messages using NIST-validated FIPS 198-1 message authentication code algorithm.",
+  "tracking_issue": "TODO-V-221075",
+  "vuln_id": "V-221075"
+}

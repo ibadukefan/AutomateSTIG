@@ -1,0 +1,46 @@
+{
+  "candidate_check": {
+    "check": {
+      "name": "openssh-clients",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "OL 9 must have the openssh-clients package installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271488"
+  },
+  "check_content_excerpt": "Verify that OL 9 has the openssh-clients package installed with the following command:\n\n$ dnf list --installed openssh-clients\nInstalled Packages\nopenssh-clients.x86_64                          8.7p1-38.0.2.el9_4.4                          @ol9_baseos_latest\n\nIf the openssh-clients package is not installed, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the openssh-clients package with the following command:\n \n$ sudo dnf install -y openssh-clients",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "package",
+  "remediation": "planned",
+  "rule_id": "SV-271488r1091176_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must have the openssh-clients package installed.",
+  "tracking_issue": "TODO-V-271488",
+  "vuln_id": "V-271488"
+}

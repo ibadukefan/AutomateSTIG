@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that Advanced Intrusion Detection Environment (AIDE) is properly configured to use cryptographic mechanisms to protect the integrity of audit tools with the following command: \n \n$ egrep '(\\/sbin\\/(audit|au))' /etc/aide/aide.conf\n/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512 \n/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512 \n/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512 \n/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512 \n/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512 \n/sbin/audispd p+i+n+u+g+s+b+acl+xattrs+sha512 \n/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512 \n \nIf any of the seven audit tools do not have appropriate selection lines, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Add or update the following selection lines for \"/etc/aide/aide.conf\" to protect the integrity of the audit tools: \n \n# Audit Tools \n/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512 \n/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512 \n/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512 \n/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512 \n/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512 \n/sbin/audispd p+i+n+u+g+s+b+acl+xattrs+sha512 \n/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270831r1066982_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must use cryptographic mechanisms to protect the integrity of audit tools.",
+  "tracking_issue": "TODO-V-270831",
+  "vuln_id": "V-270831"
+}

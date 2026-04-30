@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Time Configuration.\n\nUnder \"Current Time Configuration\", verify \"Time Synchronization\" is set to \"Network Time Protocol\". \n\nUnder \"Network Time Protocol\", verify the \"NTP Servers\" are authorized DOD time sources.\n\nIf the ESXi host is not configured to pull time from authoritative DOD time sources, this is a finding.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\nGet-VMHost | Get-VMHostNTPServer\nGet-VMHost | Get-VMHostService | Where {$_.Label -eq \"NTP Daemon\"}\n\nIf the NTP service is not configured with authoritative DOD time sources or the service does not have a \"Policy\" of \"on\" or is stopped, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Time Configuration.\n\nUnder \"Network Time Protocol\", click \"Edit...\". Ensure the \"NTP Servers\" are authorized DOD time sources. \n\nEnsure the \"NTP Service Startup Policy\" is set to \"Start and stop with host\". \n\nEnsure the \"Enable\" checkbox, in the upper left, is checked. Click \"OK\".\n\nClick \"Edit\" to configure the NTP service to start and stop with the host and with authoritative DOD time sources.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\n$NTPServers = \"ntpserver1\",\"ntpserver2\"\nGet-VMHost | Add-VMHostNTPServer $NTPServers\nGet-VMHost | Get-VMHostService | Where {$_.Label -eq \"NTP Daemon\"} | Set-VMHostService -Policy On\nGet-VMHost | Get-VMHostService | Where {$_.Label -eq \"NTP Daemon\"} | Start-VMHostService",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-256409r1038976_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/vmw_vsphere_7_0_esxi_stig/u_vmw_vsphere_7_0_y25m04_stig.json",
+  "source_version": "U_VMW_vSphere_7-0_Y25M04_STIG.zip",
+  "stig_id": "VMW_vSphere_7-0_ESXi_STIG",
+  "title": "The ESXi host must configure NTP time synchronization.",
+  "tracking_issue": "TODO-V-256409",
+  "vuln_id": "V-256409"
+}

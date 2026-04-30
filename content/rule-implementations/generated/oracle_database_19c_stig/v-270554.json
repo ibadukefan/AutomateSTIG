@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Run this query to check to verify what integrated components are installed in the database:\n\nSELECT parameter, value\nfrom v$option\nwhere parameter in \n(\n'Data Mining',\n'Oracle Database Extensions for .NET',\n'OLAP',\n'Partitioning',\n'Real Application Testing'\n);\n\nThis will return all of the relevant database options and their status. TRUE means that the option is installed. If the option is not installed, the option will be set to FALSE.\n\nReview the options and check the system documentation to verify what is required. If all listed components are authorized to be in use, this is not a finding.\n\nIf any unused components or features are listed by the query as TRUE, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "In the system documentation list the integrated components required for operation of applications that will be accessing the DBMS.\n\nFor Oracle Database 12.1 and higher, only the following components can be enabled/disabled:\n\nOracle Data Mining (dm)\nOracle Database Extensions for .NET (ode_net)\nOracle OLAP (olap)\nOracle Partitioning (partitioning)\nReal Application Testing (rat)\n\nUse the chopt utility (an Oracle-supplied operating system command that resides in the <Oracle Home path>/bin directory) to disable each option that should not be available. The command format is \nchopt <enable|disable> <option>\nwhere <option> is any of the abbreviations in parentheses in the list above. For example, to disable Real Application Testing, issue the following command at an OS prompt:\n\nchopt disable rat\n\nRestart the Oracle service.\n\nRefer to My Oracle Support Document 948061.1 for more on the chopt command.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270554r1065221_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Unused database components that are integrated in the database management system (DBMS) and cannot be uninstalled must be disabled.",
+  "tracking_issue": "TODO-V-270554",
+  "vuln_id": "V-270554"
+}

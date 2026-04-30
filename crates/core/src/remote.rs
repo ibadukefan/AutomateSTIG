@@ -344,7 +344,10 @@ mod tests {
     fn test_collection_plan_linux() {
         let plan = generate_collection_plan(CheckPlatform::Linux);
         assert!(!plan.commands.is_empty());
-        assert!(plan.commands.iter().any(|c| c.description.contains("sysctl")));
+        assert!(plan
+            .commands
+            .iter()
+            .any(|c| c.description.contains("sysctl")));
     }
 
     #[test]
@@ -370,7 +373,10 @@ mod tests {
         );
 
         let data = assemble_system_data(CheckPlatform::Linux, "testhost", &outputs);
-        assert_eq!(data.sysctl.get("net.ipv4.ip_forward"), Some(&"0".to_string()));
+        assert_eq!(
+            data.sysctl.get("net.ipv4.ip_forward"),
+            Some(&"0".to_string())
+        );
         assert!(data.file_contents.contains_key("/etc/ssh/sshd_config"));
     }
 }

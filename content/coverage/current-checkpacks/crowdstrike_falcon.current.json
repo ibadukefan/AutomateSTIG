@@ -1,0 +1,206 @@
+{
+  "stig_id": "CrowdStrike_Falcon_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/crowdstrike_falcon.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/crowdstrike_falcon.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-293001",
+      "rule_id": "V-293001_automatestig_check",
+      "classification": "automated",
+      "reason": "CrowdStrike Falcon sensor must be in normal operational mode",
+      "check_pack": "crowdstrike_falcon",
+      "check_id": "V-293001",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/crowdstrike_falcon.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-293002",
+      "rule_id": "V-293002_automatestig_check",
+      "classification": "automated",
+      "reason": "CrowdStrike Falcon must maintain cloud connectivity",
+      "check_pack": "crowdstrike_falcon",
+      "check_id": "V-293002",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/crowdstrike_falcon.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-293003",
+      "rule_id": "V-293003_automatestig_check",
+      "classification": "automated",
+      "reason": "CrowdStrike prevention policy must be enabled",
+      "check_pack": "crowdstrike_falcon",
+      "check_id": "V-293003",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/crowdstrike_falcon.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-293004",
+      "rule_id": "V-293004_automatestig_check",
+      "classification": "automated",
+      "reason": "CrowdStrike sensor update policy must be enabled",
+      "check_pack": "crowdstrike_falcon",
+      "check_id": "V-293004",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/crowdstrike_falcon.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-293005",
+      "rule_id": "V-293005_automatestig_check",
+      "classification": "automated",
+      "reason": "Malware detection must be enabled in prevention policy",
+      "check_pack": "crowdstrike_falcon",
+      "check_id": "V-293005",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/crowdstrike_falcon.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-293006",
+      "rule_id": "V-293006_automatestig_check",
+      "classification": "automated",
+      "reason": "Exploit mitigation must be enabled in prevention policy",
+      "check_pack": "crowdstrike_falcon",
+      "check_id": "V-293006",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/crowdstrike_falcon.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-293007",
+      "rule_id": "V-293007_automatestig_check",
+      "classification": "automated",
+      "reason": "Script-based execution monitoring must be enabled",
+      "check_pack": "crowdstrike_falcon",
+      "check_id": "V-293007",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/crowdstrike_falcon.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-293008",
+      "rule_id": "V-293008_automatestig_check",
+      "classification": "automated",
+      "reason": "Credential theft prevention must be enabled",
+      "check_pack": "crowdstrike_falcon",
+      "check_id": "V-293008",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/crowdstrike_falcon.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-293009",
+      "rule_id": "V-293009_automatestig_check",
+      "classification": "automated",
+      "reason": "Lateral movement detection must be enabled",
+      "check_pack": "crowdstrike_falcon",
+      "check_id": "V-293009",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/crowdstrike_falcon.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-293010",
+      "rule_id": "V-293010_automatestig_check",
+      "classification": "automated",
+      "reason": "Ransomware protection must be enabled",
+      "check_pack": "crowdstrike_falcon",
+      "check_id": "V-293010",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/crowdstrike_falcon.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-293011",
+      "rule_id": "V-293011_automatestig_check",
+      "classification": "automated",
+      "reason": "USB device control policy must be enabled",
+      "check_pack": "crowdstrike_falcon",
+      "check_id": "V-293011",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/crowdstrike_falcon.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-293012",
+      "rule_id": "V-293012_automatestig_check",
+      "classification": "automated",
+      "reason": "Falcon firewall management must be enabled",
+      "check_pack": "crowdstrike_falcon",
+      "check_id": "V-293012",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/crowdstrike_falcon.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-293013",
+      "rule_id": "V-293013_automatestig_check",
+      "classification": "automated",
+      "reason": "Sensor tamper protection must be enabled",
+      "check_pack": "crowdstrike_falcon",
+      "check_id": "V-293013",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/crowdstrike_falcon.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-293014",
+      "rule_id": "V-293014_automatestig_check",
+      "classification": "automated",
+      "reason": "Uninstall protection must be enabled to prevent unauthorized removal",
+      "check_pack": "crowdstrike_falcon",
+      "check_id": "V-293014",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/crowdstrike_falcon.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-293015",
+      "rule_id": "V-293015_automatestig_check",
+      "classification": "automated",
+      "reason": "Indicator of Attack (IOA) detection must be enabled",
+      "check_pack": "crowdstrike_falcon",
+      "check_id": "V-293015",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/crowdstrike_falcon.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

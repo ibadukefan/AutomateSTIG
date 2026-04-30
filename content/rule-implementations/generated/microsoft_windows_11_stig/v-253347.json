@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Use the AuditPol tool to review the current Audit Policy configuration:\nOpen a Command Prompt with elevated privileges (\"Run as Administrator\").\nEnter \"AuditPol /get /category:*\".\n\nCompare the AuditPol settings with the following. If the system does not audit the following, this is a finding:\n\nObject Access >> Detailed File Share - Failure",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Advanced Audit Policy Configuration >> System Audit Policies >> Object Access >> Audit Detailed File Share\" with \"Failure\" selected.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-253347r958412_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/microsoft_windows_11_stig/u_ms_windows_11_v2r4_stig.json",
+  "source_version": "U_MS_Windows_11_V2R4_STIG.zip",
+  "stig_id": "Microsoft_Windows_11_STIG",
+  "title": "Windows 11 must be configured to audit Detailed File Share Failures.",
+  "tracking_issue": "TODO-V-253347",
+  "vuln_id": "V-253347"
+}

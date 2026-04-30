@@ -1,0 +1,1448 @@
+{
+  "checks": [
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/lib/systemd/system/emergency.service",
+        "pattern": "sulogin-shell",
+        "type": "file_content"
+      },
+      "description": "OL 9 must require authentication to access emergency mode.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271441"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/lib/systemd/system/rescue.service",
+        "pattern": "sulogin",
+        "type": "file_content"
+      },
+      "description": "OL 9 must require authentication to access single-user mode.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271442"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "atm",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured to disable the Asynchronous Transfer Mode (ATM) kernel module.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271443"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "can",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured to disable the Controller Area Network (CAN) kernel module.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271444"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "firewire-core",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured to disable the FireWire kernel module.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271445"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "sctp",
+        "type": "file_content"
+      },
+      "description": "OL 9 must disable the Stream Control Transmission Protocol (SCTP) kernel module.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271446"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "tipc",
+        "type": "file_content"
+      },
+      "description": "OL 9 must disable the Transparent Inter Process Communication (TIPC) kernel module.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271447"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "cramfs",
+        "type": "file_content"
+      },
+      "description": "OL 9 must disable mounting of cramfs.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271448"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "bluetooth",
+        "type": "file_content"
+      },
+      "description": "OL 9 Bluetooth must be disabled.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271449"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.conf",
+        "pattern": "usb-storage",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured to disable USB mass storage.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271450"
+    },
+    {
+      "check": {
+        "name": "nfs-utils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have the nfs-utils package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271456"
+    },
+    {
+      "check": {
+        "name": "telnet-server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have the telnet-server package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271458"
+    },
+    {
+      "check": {
+        "name": "gssproxy",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have the gssproxy package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271459"
+    },
+    {
+      "check": {
+        "name": "iprutils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have the iprutils package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271460"
+    },
+    {
+      "check": {
+        "name": "tuned",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have the tuned package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271461"
+    },
+    {
+      "check": {
+        "name": "server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have a File Transfer Protocol (FTP) server package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271462"
+    },
+    {
+      "check": {
+        "name": "server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have a Trivial File Transfer Protocol (TFTP) server package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271463"
+    },
+    {
+      "check": {
+        "name": "quagga",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have the quagga package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271464"
+    },
+    {
+      "check": {
+        "name": "sendmail",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have the sendmail package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271466"
+    },
+    {
+      "check": {
+        "name": "policycoreutils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have policycoreutils package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271467"
+    },
+    {
+      "check": {
+        "name": "policycoreutils-python-utils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 policycoreutils-python-utils package must be installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271468"
+    },
+    {
+      "check": {
+        "name": "firewalld",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the firewalld package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271469"
+    },
+    {
+      "check": {
+        "name": "sudo",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the sudo package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271474"
+    },
+    {
+      "check": {
+        "name": "crypto-policies",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the crypto-policies package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271477"
+    },
+    {
+      "check": {
+        "name": "openssh-server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 networked systems must have SSH installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271482"
+    },
+    {
+      "check": {
+        "name": "openssh-clients",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the openssh-clients package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271488"
+    },
+    {
+      "check": {
+        "name": "openssl-pkcs11",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the openssl-pkcs11 package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271491"
+    },
+    {
+      "check": {
+        "name": "libpam-pkcs11",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must implement multifactor authentication for remote access to privileged accounts in such a way that one of the factors is provided by a device separate from the system gaining access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271492"
+    },
+    {
+      "check": {
+        "name": "sssd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the SSSD package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271493"
+    },
+    {
+      "check": {
+        "name": "s-nail",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the s-nail package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271495"
+    },
+    {
+      "check": {
+        "name": "aide",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the Advanced Intrusion Detection Environment (AIDE) package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271496"
+    },
+    {
+      "check": {
+        "name": "chrony",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the chrony package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271501"
+    },
+    {
+      "check": {
+        "name": "usbguard",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the USBGuard package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271503"
+    },
+    {
+      "check": {
+        "name": "fapolicyd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the fapolicy module installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271506"
+    },
+    {
+      "check": {
+        "name": "rsyslog",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the rsyslog package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271508"
+    },
+    {
+      "check": {
+        "name": "rsyslog-gnutls",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the packages required for encrypting offloaded audit logs installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271510"
+    },
+    {
+      "check": {
+        "name": "rng-tools",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the rng-tools package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271512"
+    },
+    {
+      "check": {
+        "name": "nss-tools",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the nss-tools package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271513"
+    },
+    {
+      "check": {
+        "name": "pcsc-lite",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the pcsc-lite package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271514"
+    },
+    {
+      "check": {
+        "name": "opensc",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the opensc package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271515"
+    },
+    {
+      "check": {
+        "name": "libreswan",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the libreswan package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271517"
+    },
+    {
+      "check": {
+        "name": "gnutls-utils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the gnutls-utils package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271518"
+    },
+    {
+      "check": {
+        "name": "audit",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the audit package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271519"
+    },
+    {
+      "check": {
+        "name": "audispd-plugins",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the audispd-plugins package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271521"
+    },
+    {
+      "check": {
+        "name": "--queryformat",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must ensure cryptographic verification of vendor software packages.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271526"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/auditd.conf",
+        "pattern": "local_events",
+        "type": "file_content"
+      },
+      "description": "OL 9 audit system must audit local events.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271586"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/etc/audit/rules.d/",
+        "type": "file_permission"
+      },
+      "description": "OL 9 must allow only the information system security manager (ISSM) (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271587"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/etc/audit/auditd.conf",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/audit/auditd.conf file must have 0640 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271588"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aliases",
+        "pattern": "postmaster:\\s*root$",
+        "type": "file_content"
+      },
+      "description": "OL 9 must forward mail from postmaster to the root account using a postfix alias.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271589"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.",
+        "pattern": "umount",
+        "type": "file_content"
+      },
+      "description": "OL 9 must be configured so that successful/unsuccessful uses of the umount system call generate an audit record.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271594"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/password-auth",
+        "pattern": "pam_pwquality",
+        "type": "file_content"
+      },
+      "description": "OL 9 must ensure the password complexity module is enabled in the password-auth file.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271614"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/password-auth",
+        "pattern": "rounds",
+        "type": "file_content"
+      },
+      "description": "OL 9 password-auth must be configured to use a sufficient number of hashing rounds.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271625"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "rounds",
+        "type": "file_content"
+      },
+      "description": "OL 9 system-auth must be configured to use a sufficient number of hashing rounds.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271626"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "minlen",
+        "type": "file_content"
+      },
+      "description": "OL 9 passwords must be created with a minimum of 15 characters.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271633"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent a user from overriding the disabling of the graphical user interface automount function.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271678"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent a user from overriding the disabling of the graphical user interface autorun function.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271679"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent a user from overriding the screensaver lock-enabled setting for the graphical user interface.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271681"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent a user from overriding the session idle-delay setting for the graphical user interface.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271682"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent a user from overriding the session lock-delay setting for the graphical user interface.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271683"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent a user from overriding the disabling of the graphical user smart card removal action.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271684"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 9 must prevent a user from overriding the disable-restart-buttons setting for the graphical user interface.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271686"
+    },
+    {
+      "check": {
+        "key": "user.max_user_namespaces",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must disable the use of user namespaces.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271727"
+    },
+    {
+      "check": {
+        "key": "kernel.core_pattern",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must disable the kernel.core_pattern.",
+      "expected": {
+        "type": "equals",
+        "value": "|/bin/false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271728"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "systemd-journald",
+        "type": "service"
+      },
+      "description": "OL 9 systemd-journald service must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271739"
+    },
+    {
+      "check": {
+        "key": "fs.protected_hardlinks",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must enable kernel parameters to enforce discretionary access control on hardlinks.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271740"
+    },
+    {
+      "check": {
+        "key": "fs.protected_symlinks",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must enable kernel parameters to enforce discretionary access control on symlinks.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271741"
+    },
+    {
+      "check": {
+        "key": "kernel.dmesg_restrict",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must restrict access to the kernel message buffer.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271745"
+    },
+    {
+      "check": {
+        "key": "kernel.perf_event_paranoid",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must prevent kernel profiling by nonprivileged users.",
+      "expected": {
+        "type": "equals",
+        "value": "2"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271746"
+    },
+    {
+      "check": {
+        "key": "kernel.kptr_restrict",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must restrict exposed kernel pointer addresses access.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271747"
+    },
+    {
+      "check": {
+        "key": "kernel.unprivileged_bpf_disabled",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must disable access to network bpf system call from nonprivileged processes.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271748"
+    },
+    {
+      "check": {
+        "key": "kernel.yama.ptrace_scope",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must restrict usage of ptrace to descendant processes.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271749"
+    },
+    {
+      "check": {
+        "key": "kernel.randomize_va_space",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must implement address space layout randomization (ASLR) to protect its memory from unauthorized code execution.",
+      "expected": {
+        "type": "equals",
+        "value": "2"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271761"
+    },
+    {
+      "check": {
+        "name": "tftp-server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 Trivial File Transfer Protocol (TFTP) daemon must be configured to operate in secure mode if the TFTP server is required.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271764"
+    },
+    {
+      "check": {
+        "key": "kernel.kexec_load_disabled",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must prevent the loading of a new kernel for later execution.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271766"
+    },
+    {
+      "check": {
+        "key": "net.core.bpf_jit_harden",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must enable hardening for the Berkeley Packet Filter (BPF) just-in-time compiler.",
+      "expected": {
+        "type": "equals",
+        "value": "2"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271768"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/ssh/",
+        "type": "file_permission"
+      },
+      "description": "OL 9 SSH public host key files must have mode 0644 or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271772"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/group",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/group file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271798"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/group-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/group- file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271799"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
+        "path": "/etc/gshadow-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/gshadow- file must have mode 0000 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271805"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/passwd",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/passwd file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271810"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0644",
+        "owner": null,
+        "path": "/etc/passwd-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/passwd- file must have mode 0644 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271811"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
+        "path": "/etc/shadow-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/shadow- file must have mode 0000 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271816"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
+        "path": "/etc/shadow",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/shadow file must have mode 0000 to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271817"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0755",
+        "owner": null,
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "OL 9 audit tools must have a mode of 0755 or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271826"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0600",
+        "owner": null,
+        "path": "/etc/crontab",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/crontab file must have mode 0600.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271830"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "cron",
+        "type": "file_content"
+      },
+      "description": "OL 9 must use cron logging.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271853"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must ignore Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271864"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not forward Internet Protocol version 4 (IPv4) source-routed packets.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271865"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.log_martians",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must log IPv4 packets with impossible addresses.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271866"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.log_martians",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must log IPv4 packets with impossible addresses by default.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271867"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.rp_filter",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must use reverse path filtering on all IPv4 interfaces.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271868"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must prevent IPv4 Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271869"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not forward IPv4 source-routed packets by default.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271870"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.rp_filter",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must use a reverse-path filter for IPv4 network traffic, when possible, by default.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271871"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.forwarding",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not enable IPv4 packet forwarding unless the system is a router.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271872"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.icmp_echo_ignore_broadcasts",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not respond to Internet Control Message Protocol (ICMP) echoes sent to a broadcast address.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271873"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.icmp_ignore_bogus_error_responses",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must limit the number of bogus Internet Control Message Protocol (ICMP) response errors logs.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271874"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.send_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not send Internet Control Message Protocol (ICMP) redirects.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271875"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.send_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not allow interfaces to perform Internet Control Message Protocol (ICMP) redirects by default.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271876"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_ra",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not accept router advertisements on all IPv6 interfaces.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271877"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must ignore IPv6 Internet Control Message Protocol (ICMP) redirect messages.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271878"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not forward IPv6 source-routed packets.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271879"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.forwarding",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not enable IPv6 packet forwarding unless the system is a router.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271880"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_ra",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not accept router advertisements on all IPv6 interfaces by default.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271881"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must prevent IPv6 Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271882"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must not forward IPv6 source-routed packets by default.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271883"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.tcp_syncookies",
+        "type": "sysctl"
+      },
+      "description": "OL 9 must be configured to use TCP syncookies.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271884"
+    }
+  ],
+  "platform": "linux",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "version": "candidate-planned"
+}

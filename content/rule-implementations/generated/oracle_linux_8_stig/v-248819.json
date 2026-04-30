@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify OL 8 notifies the SA and ISSO (at a minimum) when allocated audit record storage volume reaches 75 percent of the repository maximum audit record storage capacity with the following command:\n\n$ sudo grep -w space_left_action /etc/audit/auditd.conf\n\nspace_left_action = email\n\nIf the value of the \"space_left_action\" is not set to \"email\", or if the line is commented out, ask the System Administrator to indicate how the system is providing real-time alerts to the SA and ISSO.\n\nIf there is no evidence that real-time alerts are configured on the system, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to initiate an action to notify the SA and ISSO (at a minimum) when allocated audit record storage volume reaches 75 percent of the repository maximum audit record storage capacity by adding/modifying the following line in the /etc/audit/auditd.conf file.\n\nspace_left_action = email\n\nNote: Option names and values in the auditd.conf file are case insensitive.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248819r971542_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must notify the System Administrator (SA) and Information System Security Officer (ISSO) (at a minimum) when allocated audit record storage volume 75 percent utilization.",
+  "tracking_issue": "TODO-V-248819",
+  "vuln_id": "V-248819"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "When audits are enabled, they start up when the instance starts. Refer to https://msdn.microsoft.com/en-us/library/cc280386.aspx#Anchor_2 \n \nCheck if an audit is configured and enabled by executing the following query: \n \nSELECT name AS 'Audit Name', \nstatus_desc AS 'Audit Status', \naudit_file_path AS 'Current Audit File' \nFROM sys.dm_server_audit_status \nWHERE status_desc = 'STARTED' \n \nAll currently defined audits for the SQL server instance will be listed. If no audits are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SQL audit(s) to automatically start during system startup. \n \nALTER SERVER AUDIT [<Server Audit Name>] WITH STATE = ON \n \nExecute the following: \n \nSELECT name AS 'Audit Name', \n  status_desc AS 'Audit Status', \n  audit_file_path AS 'Current Audit File' \nFROM sys.dm_server_audit_status \nWHERE status_desc = 'STARTED' \n \nEnsure the SQL STIG Audit is configured to initiate session auditing upon startup.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271273r1109234_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "SQL Server must initiate session auditing upon startup.",
+  "tracking_issue": "TODO-V-271273",
+  "vuln_id": "V-271273"
+}

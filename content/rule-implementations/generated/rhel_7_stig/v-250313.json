@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system prevents privileged accounts from utilizing SSH.\nCheck the SELinux ssh_sysadm_login boolean with the following command:\n\n     $ sudo getsebool ssh_sysadm_login\n     ssh_sysadm_login --> off\n\nIf the \"ssh_sysadm_login\" boolean is not \"off\" and is not documented with the ISSO as an operational requirement, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to prevent privileged accounts from utilizing SSH.\nUse the following command to set the \"ssh_sysadm_login\" boolean to \"off\":\n\n     $ sudo setsebool -P ssh_sysadm_login off\n\nNote: SELinux confined users mapped to sysadm_u are not allowed to login to the system over SSH, by default. If this is a required function, it can be configured by setting the ssh_sysadm_login SELinux boolean to \"on\" with the following command:\n\n     $ sudo setsebool -P ssh_sysadm_login on\n\nThis must be documented with the ISSO as an operational requirement.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-250313r958726_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must not allow privileged accounts to utilize SSH.",
+  "tracking_issue": "TODO-V-250313",
+  "vuln_id": "V-250313"
+}

@@ -108,11 +108,8 @@ pub struct CheckContent {
 
 /// Convert a Checklist to STIG-Manager import format.
 pub fn checklist_to_stig_manager(checklist: &Checklist) -> StigManagerImport {
-    let reviews: Vec<StigManagerReview> = checklist
-        .findings
-        .iter()
-        .map(finding_to_review)
-        .collect();
+    let reviews: Vec<StigManagerReview> =
+        checklist.findings.iter().map(finding_to_review).collect();
 
     StigManagerImport {
         collection: String::new(), // Set by caller.
@@ -187,6 +184,30 @@ mod tests {
     use automatestig_core::models::finding::{Finding, FindingSource, FindingStatus};
     use automatestig_core::models::stig::Severity;
 
+    fn golden_checklist() -> Checklist {
+        let stig_info = ChecklistStigInfo {
+            stig_id: "Golden_STIG".to_string(),
+            title: "Golden STIG".to_string(),
+            version: "1".to_string(),
+            release: "1".to_string(),
+            release_date: None,
+            uuid: None,
+            description: None,
+            filename: None,
+        };
+
+        let mut cl = Checklist::new(Asset::new("golden-host"), stig_info);
+        let mut f =
+            Finding::new_not_reviewed("V-1", "SV-1r1_rule", "V-1", "Golden Rule", Severity::High);
+        f.status = FindingStatus::Open;
+        f.source = FindingSource::SccScan;
+        f.finding_details = "Scanner evidence: registry value missing".to_string();
+        f.comments = "Scanner: SCC\nRaw result: fail".to_string();
+        f.cci_refs = vec!["CCI-000068".to_string()];
+        cl.findings.push(f);
+        cl
+    }
+
     #[test]
     fn test_export_to_stig_manager() {
         let stig_info = ChecklistStigInfo {
@@ -216,5 +237,17 @@ mod tests {
         assert_eq!(parsed.assets[0].stigs[0].reviews[0].result, "fail");
         assert!(parsed.assets[0].stigs[0].reviews[0].auto_result);
         assert!(parsed.assets[0].stigs[0].reviews[0].result_engine.is_some());
+    }
+
+    #[test]
+    fn test_stig_manager_golden_payload() {
+        let json = export_to_stig_manager_json(&[golden_checklist()], "Golden Collection").unwrap();
+        let actual: serde_json::Value = serde_json::from_str(&json).unwrap();
+        let expected: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../fixtures/exports/stig_manager_golden.json"
+        ))
+        .unwrap();
+
+        assert_eq!(actual, expected);
     }
 }

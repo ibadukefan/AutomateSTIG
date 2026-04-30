@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If all user accounts are authenticated by the OS or an enterprise-level authentication/access mechanism and not by Oracle, this is not a finding.\n\nFor each profile that can be applied to accounts where authentication is under Oracle's control, determine the password verification function that is in use:\n\nSELECT * FROM SYS.DBA_PROFILES \nWHERE RESOURCE_NAME = 'PASSWORD_VERIFY_FUNCTION'\nORDER BY PROFILE;\n\nNote: Profiles can inherit settings from another profile so some password functions could be set to DEFAULT. If so, review the DEFAULT profile function name. \n\nIf the function name is null for any profile, this is a finding.\n\nReview the password verification functions specified for the PASSWORD_VERIFY_FUNCTION settings for each profile. Determine whether the following rules are enforced by the code in those functions. \na. Minimum of 15 characters, including at least one of each of the following character sets:\n- Uppercase\n- Lowercase\n- Numeric\n- Special characters (e.g., ~ ! @ # $ % ^ & * ( ) _ + = - ' [ ] / ? > <)\nb. Minimum number of characters changed from previous password: 50 percent of the minimum password length; that is, eight.\n\nIf any of the above password requirements are not included in the function, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "If all user accounts are authenticated by the OS or an enterprise-level authentication/access mechanism, and not by Oracle, no fix to the DBMS is required.\n\nIf any user accounts are managed by Oracle, develop, test, and implement a password verification function that enforces DOD requirements.\n\nOracle supplies a sample function called ORA12C_STIG_VERIFY_FUNCTION. This can be used as the starting point for a customized function. The script file is found in the following location on the server depending on OS:\n\nWindows:\n%ORACLE_HOME%\\RDBMS\\ADMIN\\catpvf.sql\n\nUnix/Linux:\n$ORACLE_HOME/rdbms/admin/catpvf.sql",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270561r1112485_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Oracle Database must enforce the DOD standards for password complexity.",
+  "tracking_issue": "TODO-V-270561",
+  "vuln_id": "V-270561"
+}

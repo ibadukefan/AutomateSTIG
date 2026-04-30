@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that a system using SNMP is not using default community strings.\n\nCheck to see if the \"/etc/snmp/snmpd.conf\" file exists with the following command:\n\n# ls -al /etc/snmp/snmpd.conf\n -rw-------   1 root root      52640 Mar 12 11:08 snmpd.conf\n\nIf the file does not exist, this is Not Applicable.\n\nIf the file does exist, check for the default community strings with the following commands:\n\n# grep public /etc/snmp/snmpd.conf\n# grep private /etc/snmp/snmpd.conf\n\nIf either of these commands returns any output, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "If the \"/etc/snmp/snmpd.conf\" file exists, modify any lines that contain a community string value of \"public\" or \"private\" to another string value.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204627r991589_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "SNMP community strings on the Red Hat Enterprise Linux operating system must be changed from the default.",
+  "tracking_issue": "TODO-V-204627",
+  "vuln_id": "V-204627"
+}

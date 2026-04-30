@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to determine if the hop limit has been configured for Router Advertisement messages for all internal interfaces as shown in the example.\n\ninterface Ethernet2/1\n  no switchport\n  ipv6 address 2001::1:0:1/64\n  ipv6 nd hop-limit 32\n  no shutdown \n\ninterface Ethernet2/2\n  no switchport\n  ipv6 address 2001::1:1:1/64\n  ipv6 nd hop-limit 32\n  no shutdown \n\nIf hop-limit has been configured and has not been set to at least 32, it is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the switch to advertise a hop limit of at least 32 in Router Advertisement messages as shown in the example.\n\nSW1(config)#  interface e2/1 \u2013 2\nSW1(config-if-range)#  ipv6 nd hop-limit 32\nSW1(config-if-range)#  end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-237754r999759_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco switch must be configured to advertise a hop limit of at least 32 in Switch Advertisement messages for IPv6 stateless auto-configuration deployments.",
+  "tracking_issue": "TODO-V-237754",
+  "vuln_id": "V-237754"
+}

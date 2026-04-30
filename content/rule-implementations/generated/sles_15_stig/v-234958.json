@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system takes the appropriate action when the audit storage volume is full. \n\nCheck that the SUSE operating system takes the appropriate action when the audit storage volume is full with the following command:\n\n> sudo grep disk_full_action /etc/audit/auditd.conf\n\ndisk_full_action = SYSLOG\n\nIf the value of the \"disk_full_action\" option is not \"SYSLOG\", \"SINGLE\", or \"HALT\", or the line is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to shut down by default upon audit failure (unless availability is an overriding concern).\n\nAdd or update the following line (depending on configuration \"disk_full_action\" can be set to \"SYSLOG\", \"SINGLE\", or \"HALT\" depending on configuration) in \"/etc/audit/auditd.conf\" file:\n\ndisk_full_action = HALT",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234958r1038966_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system audit system must take appropriate action when the audit storage volume is full.",
+  "tracking_issue": "TODO-V-234958",
+  "vuln_id": "V-234958"
+}

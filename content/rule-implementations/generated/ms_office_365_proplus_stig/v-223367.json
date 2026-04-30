@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Security >> Security Form Settings >> Programmatic Security >> Configure Outlook object model prompt when accessing the Formula property of a UserProperty object is set to \"Enabled (Automatically Deny)\".\n\nUse the Windows Registry to navigate to the following key:\n\nHKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\outlook\\security\n\nIf the value PromptOOMFormulaAccess is REG_DWORD = 0, this is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Security >> Security Form Settings >> Programmatic Security >> Configure Outlook object model prompt When accessing the Formula property of a UserProperty object to \"Enabled (Automatically Deny)\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-223367r961779_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_office_365_proplus_stig/u_ms_office_365_proplus_v3r5_stig.json",
+  "source_version": "U_MS_Office_365_ProPlus_V3R5_STIG.zip",
+  "stig_id": "MS_Office_365_ProPlus_STIG",
+  "title": "When a user designs a custom form in Outlook and attempts to bind an Address Information field to a combination or formula custom field, Outlook must automatically deny it.",
+  "tracking_issue": "TODO-V-223367",
+  "vuln_id": "V-223367"
+}

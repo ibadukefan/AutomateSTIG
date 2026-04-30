@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the assigned home directory of all local interactive users has a mode of \"0750\" or less permissive with the following command:\n\nNote: This may miss interactive users that have been assigned a privileged User Identifier (UID). Evidence of interactive use may be obtained from a number of log files containing system logon information.\n\n$ sudo ls -ld $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd)\n\ndrwxr-x--- 2 smithj admin 4096 Jun 5 12:41 smithj\n\nIf home directories referenced in \"/etc/passwd\" do not have a mode of \"0750\" or less permissive, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the mode of interactive user\u2019s home directories to \"0750\". To change the mode of a local interactive user\u2019s home directory, use the following command:\n\nNote: The example will be for the user \"smithj\".\n\n$ sudo chmod 0750 /home/smithj",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230321r1017132_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "All RHEL 8 local interactive user home directories must have mode 0750 or less permissive.",
+  "tracking_issue": "TODO-V-230321",
+  "vuln_id": "V-230321"
+}

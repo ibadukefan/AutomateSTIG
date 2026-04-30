@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the macOS system is configured to require passwords contain a minimum of one special character with the following command:\n\n/usr/bin/pwpolicy -getaccountpolicies 2>/dev/null | /usr/bin/tail -n +2 | /usr/bin/xmllint --xpath \"//string[contains(text(), \\\"policyAttributePassword matches '(.*[^a-zA-Z0-9].*){\\\")]\" - 2>/dev/null | /usr/bin/awk -F\"{|}\" '{if ($2 >= 1) {print \"true\"} else {print \"false\"}}'\n\nIf the result is not \"true\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the macOS system to require that passwords contain a minimum of one special character by installing the \"com.apple.mobiledevice.passwordpolicy\" configuration profile.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-268538r1131239_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_15_stig/u_apple_macos_15_v1r7_stig.json",
+  "source_version": "U_Apple_macOS_15_V1R7_STIG.zip",
+  "stig_id": "Apple_macOS_15_STIG",
+  "title": "The macOS system must require that passwords contain a minimum of one special character.",
+  "tracking_issue": "TODO-V-268538",
+  "vuln_id": "V-268538"
+}

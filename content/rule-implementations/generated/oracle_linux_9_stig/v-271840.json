@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 is configured to lock the root account after three unsuccessful logon attempts with the command:\n\n$ grep even_deny_root /etc/security/faillock.conf\neven_deny_root\n\nIf the \"even_deny_root\" option is not set, is missing or commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to lock out the \"root\" account after a number of incorrect login attempts using \"pam_faillock.so\", first enable the feature using the following command:\n \n$ sudo authselect enable-feature with-faillock  \n\nThen edit the \"/etc/security/faillock.conf\" file as follows:\n \n  add or uncomment the following line:\n even_deny_root",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271840r1092232_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must automatically lock the root account until the root account is released by an administrator when three unsuccessful logon attempts occur during a 15-minute time period.",
+  "tracking_issue": "TODO-V-271840",
+  "vuln_id": "V-271840"
+}

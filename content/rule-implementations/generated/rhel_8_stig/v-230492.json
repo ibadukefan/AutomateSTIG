@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that RHEL 8 is not able to install packages from the EPEL with the following command:\n\n$ dnf repolist\nrhel-8-for-x86_64-appstream-rpms                      Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)\nrhel-8-for-x86_64-baseos-rpms                         Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)\nrhel-8-for-x86_64-baseos-source-rpms                  Red Hat Enterprise Linux 8 for x86_64 - BaseOS (Source RPMs)\nrhel-8-for-x86_64-supplementary-rpms                  Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)\nsatellite-tools-6.10-for-rhel-8-x86_64-rpms           Red Hat Satellite Tools 6.10 for RHEL 8 x86_64 (RPMs)\n\nIf any repositories containing the word \"epel\" in the name exist, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "The repo package can be manually removed with the following command:\n\n$ sudo dnf remove epel-release\n\nConfigure the operating system to disable use of the EPEL repository with the following command:\n\n$ sudo dnf config-manager --set-disabled epel",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230492r1184277_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must not install packages from the Extra Packages for Enterprise Linux (EPEL) repository.",
+  "tracking_issue": "TODO-V-230492",
+  "vuln_id": "V-230492"
+}

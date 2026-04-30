@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: The following instructions use the PGDATA environment variable. See supplementary content APPENDIX-F for instructions on configuring PGDATA.\n\nAs the database administrator (shown here as \"postgres\"), review the authentication entries in pg_hba.conf:\n\n$ sudo su - postgres\n$ cat ${PGDATA?}/pg_hba.conf\n\nIf any entries use the auth_method (last column in records) \"password\" or \"md5\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: The following instructions use the PGDATA environment variable. See supplementary content APPENDIX-F for instructions on configuring PGDATA.\n\nAs the database administrator (shown here as \"postgres\"), edit pg_hba.conf authentication file and change all entries of \"password\" to \"scram-sha-256\":\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/pg_hba.conf\nhost all all .example.com scram-sha-256",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233519r961029_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "If passwords are used for authentication, PostgreSQL must transmit only encrypted representations of passwords.",
+  "tracking_issue": "TODO-V-233519",
+  "vuln_id": "V-233519"
+}

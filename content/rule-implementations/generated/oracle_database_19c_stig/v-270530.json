@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "A default Oracle Database installation provides a set of predefined administrative accounts and nonadministrative accounts. These are accounts that have special privileges required to administer areas of the database, such as the \"CREATE ANY TABLE\" or \"ALTER SESSION\" privilege, or \"EXECUTE\" privileges on packages owned by the SYS schema. The default tablespace for administrative accounts is either \"SYSTEM\" or \"SYSAUX\". Nonadministrative user accounts only have the minimum privileges needed to perform their jobs. Their default tablespace is \"USERS\".\n\nTo protect these accounts from unauthorized access, the installation process expires and locks most of these accounts, except where noted below. The database administrator is responsible for unlocking and resetting these accounts, as required.\n\nNon-Administrative Accounts - Expired and locked:\nAPEX_PUBLIC_USER, DIP, FLOWS_040100*, FLOWS_FILES, MDDATA, SPATIAL_WFS_ADMIN_USR, XS$NULL\n\nAdministrative Accounts - Expired and Locked:\nANONYMOUS, CTXSYS, EXFSYS, LBACSYS, , GSMADMIN_INTERNAL, MDSYS, OLAPSYS, ORACLE_OCM, ORDDATA, OWBSYS, ORDPLUGINS, ORDSYS, OUTLN, SI_INFORMTN_SCHEMA, SPATIAL_CSW_ADMIN_USR, WK_TEST, WK_SYS, WKPROXY, WMSYS, XDB\n\nAdministrative Accounts - Open:\nDBSNMP, MGMT_VIEW, SYS, SYSMAN, SYSTEM\n\n* Subject to change based on version installed.\n\nRun the SQL query:\n\nselect owner ||'.'|| table_name ||':'|| privilege from dba_tab_privs\nwhere grantee = 'PUBLIC'\nand owner not in\n(<list of nonapplicable accounts>);\n\nWith respect to the list of special accounts that are excluded from this requirement, it is expected that the database administrator (DBA) will maintain the list to suit local circumstances, adding special accounts as necessary and removing any that are not supposed to be in use in the Oracle deployment that is under review.\n\nIf there are any records returned that are not Oracle product accounts, and are not documented and authorized, this is a finding.\n\nNote: This check may return false positives where other Oracle product accounts are not included in the exclusion list.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Revoke any privileges granted to PUBLIC for objects that are not owned by Oracle product accounts.\n\nFrom SQL*Plus:\n\nrevoke [privilege name] from [username] on [object name];\n\nAssign permissions to custom application user roles based on job functions:\n\nFrom SQL*Plus:\n\ngrant [privilege name] to [user role] on [object name];",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270530r1065320_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Object permissions granted to PUBLIC must be restricted.",
+  "tracking_issue": "TODO-V-270530",
+  "vuln_id": "V-270530"
+}

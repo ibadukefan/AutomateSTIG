@@ -1,0 +1,46 @@
+{
+  "candidate_check": {
+    "check": {
+      "name": "usbguard",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "OL 9 must have the USBGuard package installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271503"
+  },
+  "check_content_excerpt": "Verify that OL 9 has USBGuard installed on the operating system with the following command:\n\n$ dnf list --installed usbguard\nInstalled Packages\nusbguard.x86_64                                       1.0.0-15.el9                                        @ol9_appstream\n\nIf the USBGuard package is not installed, ask the SA to indicate how unauthorized peripherals are being blocked.\n\nIf there is no evidence that unauthorized peripherals are being blocked before establishing a connection, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the usbguard package with the following command:\n\n$ sudo dnf install -y usbguard",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "package",
+  "remediation": "planned",
+  "rule_id": "SV-271503r1091221_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must have the USBGuard package installed.",
+  "tracking_issue": "TODO-V-271503",
+  "vuln_id": "V-271503"
+}

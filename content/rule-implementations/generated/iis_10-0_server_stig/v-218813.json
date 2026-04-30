@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Interview the System Administrator and Web Manager.\n\nAsk for documentation for the IIS 10.0 web server administration.\n\nVerify there are documented procedures for shutting down an IIS 10.0 website in the event of an attack. The procedure should, at a minimum, provide the following steps:\n\nDetermine the respective website for the application at risk of an attack.\n\nAccess the IIS 10.0 web server IIS Manager.\n\nSelect the respective website.\n\nIn the \"Actions\" pane, under \"Manage Website\", click \"Stop\".\n\nIf necessary, stop all websites.\n\nIf necessary, stop the IIS 10.0 web server by selecting the web server in the IIS Manager.\n\nIn the \"Actions\" pane, under \"Manage Server\", click \"Stop\".\n\nIf the web server is not capable or cannot be configured to disconnect or disable remote access to the hosted applications when necessary, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Prepare documented procedures for shutting down an IIS 10.0 website in the event of an attack.\n\nThe procedure should, at a minimum, provide the following steps:\n\nDetermine the respective website for the application at risk of an attack.\n\nAccess the IIS 10.0 web server IIS Manager.\n\nSelect the respective website. \n\nIn the \"Actions\" pane, under \"Manage Website\", click \"Stop\".\n\nIf necessary, stop all websites.\n\nIf necessary, stop the IIS 10.0 web server by selecting the web server in the IIS Manager.\n\nIn the \"Actions\" pane, under \"Manage Server\", click \"Stop\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-218813r961281_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/iis_10_0_server_stig/u_ms_iis_10_0_y26m04_stig.json",
+  "source_version": "U_MS_IIS_10-0_Y26M04_STIG.zip",
+  "stig_id": "IIS_10-0_Server_STIG",
+  "title": "The IIS 10.0 web server must provide the capability to immediately disconnect or disable remote access to the hosted applications.",
+  "tracking_issue": "TODO-V-218813",
+  "vuln_id": "V-218813"
+}

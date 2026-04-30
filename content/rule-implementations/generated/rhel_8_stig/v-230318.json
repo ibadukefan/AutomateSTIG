@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify RHEL 8 world writable directories are owned by root, a system account, or an application account with the following command:\n\n$ sudo find / -xdev -type d -perm -0002 -uid +999 -exec stat -c \"%U, %u, %A, %n\" {} \\; 2>/dev/null\n\nIf there is output that indicates world-writable directories are owned by any account other than root or an approved system account, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure all RHEL 8 public directories to be owned by root or a system account to prevent unauthorized and unintended information transferred via shared system resources.\n\nUse the following command template to set ownership of public directories to root or a system account:\n\n$ sudo chown [root or system account] [Public Directory]",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230318r1155352_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "All RHEL 8 world-writable directories must be owned by root, sys, bin, or an application user.",
+  "tracking_issue": "TODO-V-230318",
+  "vuln_id": "V-230318"
+}

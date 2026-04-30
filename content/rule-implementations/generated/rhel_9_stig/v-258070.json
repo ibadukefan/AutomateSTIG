@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the \"/etc/security/faillock.conf\" file is configured to log username information when unsuccessful logon attempts occur with the following command:\n\n$ sudo grep audit /etc/security/faillock.conf\n\naudit\n\nIf the \"audit\" option is not set, is missing, or is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 9 to log username information when unsuccessful logon attempts occur.\n\nEnable the feature using the following command:\n \n$ sudo authselect enable-feature with-faillock \n \nAdd/modify the \"/etc/security/faillock.conf\" file to match the following line:\n\naudit",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-258070r1045153_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must log username information when unsuccessful logon attempts occur.",
+  "tracking_issue": "TODO-V-258070",
+  "vuln_id": "V-258070"
+}

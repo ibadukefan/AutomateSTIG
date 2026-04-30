@@ -1,0 +1,206 @@
+{
+  "stig_id": "Windows_10_Application_Security_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/windows_10_app_security.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/windows_10_app_security.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-260950",
+      "rule_id": "V-260950_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Installer AlwaysInstallElevated must be disabled",
+      "check_pack": "windows_10_app_security",
+      "check_id": "V-260950",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_10_app_security.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260951",
+      "rule_id": "V-260951_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Installer must disable user installs",
+      "check_pack": "windows_10_app_security",
+      "check_id": "V-260951",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_10_app_security.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260952",
+      "rule_id": "V-260952_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Installer must not allow user control over installations",
+      "check_pack": "windows_10_app_security",
+      "check_id": "V-260952",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_10_app_security.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260960",
+      "rule_id": "V-260960_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows SmartScreen must be enabled",
+      "check_pack": "windows_10_app_security",
+      "check_id": "V-260960",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_10_app_security.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260961",
+      "rule_id": "V-260961_automatestig_check",
+      "classification": "automated",
+      "reason": "SmartScreen must be set to block unrecognized apps",
+      "check_pack": "windows_10_app_security",
+      "check_id": "V-260961",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_10_app_security.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260962",
+      "rule_id": "V-260962_automatestig_check",
+      "classification": "automated",
+      "reason": "SmartScreen for Windows Store apps must require admin approval",
+      "check_pack": "windows_10_app_security",
+      "check_id": "V-260962",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_10_app_security.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260970",
+      "rule_id": "V-260970_automatestig_check",
+      "classification": "automated",
+      "reason": "Application Compatibility Inventory must be disabled",
+      "check_pack": "windows_10_app_security",
+      "check_id": "V-260970",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_10_app_security.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260971",
+      "rule_id": "V-260971_automatestig_check",
+      "classification": "automated",
+      "reason": "Steps Recorder must be disabled",
+      "check_pack": "windows_10_app_security",
+      "check_id": "V-260971",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_10_app_security.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260975",
+      "rule_id": "V-260975_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender Exploit Guard ASR rules must be enabled",
+      "check_pack": "windows_10_app_security",
+      "check_id": "V-260975",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_10_app_security.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260976",
+      "rule_id": "V-260976_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender Exploit Guard network protection must be enabled",
+      "check_pack": "windows_10_app_security",
+      "check_id": "V-260976",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_10_app_security.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260977",
+      "rule_id": "V-260977_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender controlled folder access must be enabled",
+      "check_pack": "windows_10_app_security",
+      "check_id": "V-260977",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_10_app_security.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260980",
+      "rule_id": "V-260980_automatestig_check",
+      "classification": "automated",
+      "reason": "Software Restriction Policies default level must be Disallowed",
+      "check_pack": "windows_10_app_security",
+      "check_id": "V-260980",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_10_app_security.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260981",
+      "rule_id": "V-260981_automatestig_check",
+      "classification": "automated",
+      "reason": "Software Restriction Policies must apply to all users",
+      "check_pack": "windows_10_app_security",
+      "check_id": "V-260981",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_10_app_security.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260985",
+      "rule_id": "V-260985_automatestig_check",
+      "classification": "automated",
+      "reason": "UAC virtualization must be enabled for file and registry write failures",
+      "check_pack": "windows_10_app_security",
+      "check_id": "V-260985",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_10_app_security.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-260986",
+      "rule_id": "V-260986_automatestig_check",
+      "classification": "automated",
+      "reason": "Exploit protection mitigation audit options must be configured",
+      "check_pack": "windows_10_app_security",
+      "check_id": "V-260986",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_10_app_security.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

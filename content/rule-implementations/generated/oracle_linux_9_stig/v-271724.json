@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 requires users to reauthenticate for privilege escalation.\n\nVerify that \"/etc/sudoers\" has no occurrences of \"!authenticate\" with the following command:\n\n$ sudo grep -ri '!authenticate' /etc/sudoers /etc/sudoers.d/*\n\nIf any occurrences of \"!authenticate\" are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to not allow users to execute privileged actions without authenticating.\n\nRemove any occurrence of \"!authenticate\" found in \"/etc/sudoers\" file or files in the \"/etc/sudoers.d\" directory.\n\n$ sudo sed -i '/\\!authenticate/ s/^/# /g' /etc/sudoers /etc/sudoers.d/*",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271724r1091884_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must require users to reauthenticate for privilege escalation.",
+  "tracking_issue": "TODO-V-271724",
+  "vuln_id": "V-271724"
+}

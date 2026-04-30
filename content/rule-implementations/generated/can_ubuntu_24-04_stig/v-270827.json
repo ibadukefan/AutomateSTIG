@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": "0600",
+      "owner": null,
+      "path": "/var/log/audit/",
+      "type": "file_permission"
+    },
+    "description": "Ubuntu 24.04 LTS must be configured so that audit log files are not read or write-accessible by unauthorized users.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270827"
+  },
+  "check_content_excerpt": "Verify that the audit log files have a mode of \"0600\" or less permissive. \n \nDetermine where the audit logs are stored with the following command: \n \n$ sudo grep -iw log_file /etc/audit/auditd.conf\nlog_file = /var/log/audit/audit.log \n \nUsing the path of the directory containing the audit logs, determine if the audit log files have a mode of \"0600\" or less with the following command: \n \n$ sudo stat -c \"%n %a\" /var/log/audit/*\n/var/log/audit/audit.log 600 \n \nIf the audit log files have a mode more permissive than \"0600\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit log files to have a mode of \"0600\" or less permissive. \n \nDetermine where the audit logs are stored with the following command: \n \n$ sudo grep -iw log_file /etc/audit/auditd.conf \n\nlog_file = /var/log/audit/audit.log \n \nUsing the path of the directory containing the audit logs, configure the audit log files to have a mode of \"0600\" or less permissive by using the following command: \n \n$ sudo chmod 0600 /var/log/audit/*",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_permission",
+  "remediation": "planned",
+  "rule_id": "SV-270827r1066970_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must be configured so that audit log files are not read or write-accessible by unauthorized users.",
+  "tracking_issue": "TODO-V-270827",
+  "vuln_id": "V-270827"
+}

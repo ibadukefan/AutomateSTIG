@@ -1,0 +1,206 @@
+{
+  "stig_id": "HashiCorp_Vault_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/hashicorp_vault.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/hashicorp_vault.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-288001",
+      "rule_id": "V-288001_automatestig_check",
+      "classification": "automated",
+      "reason": "Vault must have at least one audit device enabled",
+      "check_pack": "hashicorp_vault",
+      "check_id": "V-288001",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/hashicorp_vault.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-288002",
+      "rule_id": "V-288002_automatestig_check",
+      "classification": "automated",
+      "reason": "Vault must be in an unsealed and operational state",
+      "check_pack": "hashicorp_vault",
+      "check_id": "V-288002",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/hashicorp_vault.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-288003",
+      "rule_id": "V-288003_automatestig_check",
+      "classification": "automated",
+      "reason": "Vault must use a supported seal mechanism",
+      "check_pack": "hashicorp_vault",
+      "check_id": "V-288003",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/hashicorp_vault.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-288004",
+      "rule_id": "V-288004_automatestig_check",
+      "classification": "automated",
+      "reason": "Vault must be configured as a cluster for high availability",
+      "check_pack": "hashicorp_vault",
+      "check_id": "V-288004",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/hashicorp_vault.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-288005",
+      "rule_id": "V-288005_automatestig_check",
+      "classification": "automated",
+      "reason": "Vault must be configured with an enterprise authentication method",
+      "check_pack": "hashicorp_vault",
+      "check_id": "V-288005",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/hashicorp_vault.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-288006",
+      "rule_id": "V-288006_automatestig_check",
+      "classification": "automated",
+      "reason": "Vault must have a default policy configured",
+      "check_pack": "hashicorp_vault",
+      "check_id": "V-288006",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/hashicorp_vault.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-288007",
+      "rule_id": "V-288007_automatestig_check",
+      "classification": "automated",
+      "reason": "Root token must be revoked after initial setup",
+      "check_pack": "hashicorp_vault",
+      "check_id": "V-288007",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/hashicorp_vault.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-288008",
+      "rule_id": "V-288008_automatestig_check",
+      "classification": "automated",
+      "reason": "Vault UI configuration must be reviewed for access control",
+      "check_pack": "hashicorp_vault",
+      "check_id": "V-288008",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/hashicorp_vault.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-288009",
+      "rule_id": "V-288009_automatestig_check",
+      "classification": "automated",
+      "reason": "Vault secrets engines must be properly configured",
+      "check_pack": "hashicorp_vault",
+      "check_id": "V-288009",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/hashicorp_vault.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-288010",
+      "rule_id": "V-288010_automatestig_check",
+      "classification": "automated",
+      "reason": "Vault audit device must log client IP via X-Forwarded-For header",
+      "check_pack": "hashicorp_vault",
+      "check_id": "V-288010",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/hashicorp_vault.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-288011",
+      "rule_id": "V-288011_automatestig_check",
+      "classification": "automated",
+      "reason": "Default token lease TTL must be configured",
+      "check_pack": "hashicorp_vault",
+      "check_id": "V-288011",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/hashicorp_vault.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-288012",
+      "rule_id": "V-288012_automatestig_check",
+      "classification": "automated",
+      "reason": "Maximum token lease TTL must be configured",
+      "check_pack": "hashicorp_vault",
+      "check_id": "V-288012",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/hashicorp_vault.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-288013",
+      "rule_id": "V-288013_automatestig_check",
+      "classification": "automated",
+      "reason": "CORS allowed origins must not use wildcard (*)",
+      "check_pack": "hashicorp_vault",
+      "check_id": "V-288013",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/hashicorp_vault.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-288014",
+      "rule_id": "V-288014_automatestig_check",
+      "classification": "automated",
+      "reason": "Vault listener must be configured with a TLS certificate",
+      "check_pack": "hashicorp_vault",
+      "check_id": "V-288014",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/hashicorp_vault.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-288015",
+      "rule_id": "V-288015_automatestig_check",
+      "classification": "automated",
+      "reason": "Vault TLS minimum version must be set to TLS 1.2",
+      "check_pack": "hashicorp_vault",
+      "check_id": "V-288015",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/hashicorp_vault.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

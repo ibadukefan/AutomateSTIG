@@ -1,0 +1,206 @@
+{
+  "stig_id": "Java_Runtime_Environment_8_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/java_runtime.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/java_runtime.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-234680",
+      "rule_id": "V-234680_automatestig_check",
+      "classification": "automated",
+      "reason": "Java Runtime Environment must be at version 8",
+      "check_pack": "java_runtime",
+      "check_id": "V-234680",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/java_runtime.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234681",
+      "rule_id": "V-234681_automatestig_check",
+      "classification": "automated",
+      "reason": "JRE deployment security level must be set to VERY_HIGH",
+      "check_pack": "java_runtime",
+      "check_id": "V-234681",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/java_runtime.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234682",
+      "rule_id": "V-234682_automatestig_check",
+      "classification": "automated",
+      "reason": "JRE deployment security level must be locked",
+      "check_pack": "java_runtime",
+      "check_id": "V-234682",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/java_runtime.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234683",
+      "rule_id": "V-234683_automatestig_check",
+      "classification": "automated",
+      "reason": "JRE must enable OCSP certificate validation",
+      "check_pack": "java_runtime",
+      "check_id": "V-234683",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/java_runtime.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234684",
+      "rule_id": "V-234684_automatestig_check",
+      "classification": "automated",
+      "reason": "JRE OCSP certificate validation must be locked",
+      "check_pack": "java_runtime",
+      "check_id": "V-234684",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/java_runtime.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234685",
+      "rule_id": "V-234685_automatestig_check",
+      "classification": "automated",
+      "reason": "JRE must enable CRL certificate revocation checking",
+      "check_pack": "java_runtime",
+      "check_id": "V-234685",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/java_runtime.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234686",
+      "rule_id": "V-234686_automatestig_check",
+      "classification": "automated",
+      "reason": "JRE CRL certificate revocation checking must be locked",
+      "check_pack": "java_runtime",
+      "check_id": "V-234686",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/java_runtime.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234690",
+      "rule_id": "V-234690_automatestig_check",
+      "classification": "automated",
+      "reason": "JRE must disable TLS 1.0",
+      "check_pack": "java_runtime",
+      "check_id": "V-234690",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/java_runtime.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234691",
+      "rule_id": "V-234691_automatestig_check",
+      "classification": "automated",
+      "reason": "JRE must disable TLS 1.1",
+      "check_pack": "java_runtime",
+      "check_id": "V-234691",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/java_runtime.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234692",
+      "rule_id": "V-234692_automatestig_check",
+      "classification": "automated",
+      "reason": "JRE must enable TLS 1.2",
+      "check_pack": "java_runtime",
+      "check_id": "V-234692",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/java_runtime.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234695",
+      "rule_id": "V-234695_automatestig_check",
+      "classification": "automated",
+      "reason": "JRE must disable SSLv2Hello protocol",
+      "check_pack": "java_runtime",
+      "check_id": "V-234695",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/java_runtime.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234696",
+      "rule_id": "V-234696_automatestig_check",
+      "classification": "automated",
+      "reason": "JRE must disable SSLv3 protocol",
+      "check_pack": "java_runtime",
+      "check_id": "V-234696",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/java_runtime.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234700",
+      "rule_id": "V-234700_automatestig_check",
+      "classification": "automated",
+      "reason": "JRE must disable web Java unless required",
+      "check_pack": "java_runtime",
+      "check_id": "V-234700",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/java_runtime.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234701",
+      "rule_id": "V-234701_automatestig_check",
+      "classification": "automated",
+      "reason": "JRE web Java setting must be locked",
+      "check_pack": "java_runtime",
+      "check_id": "V-234701",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/java_runtime.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234705",
+      "rule_id": "V-234705_automatestig_check",
+      "classification": "automated",
+      "reason": "JRE deployment.config must specify the system-level deployment.properties path",
+      "check_pack": "java_runtime",
+      "check_id": "V-234705",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/java_runtime.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

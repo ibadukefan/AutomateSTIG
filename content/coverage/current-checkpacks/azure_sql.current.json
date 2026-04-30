@@ -1,0 +1,206 @@
+{
+  "stig_id": "Azure_SQL_Database_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/azure_sql.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/azure_sql.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-280001",
+      "rule_id": "V-280001_automatestig_check",
+      "classification": "automated",
+      "reason": "Transparent Data Encryption (TDE) must be enabled on the Azure SQL database",
+      "check_pack": "azure_sql",
+      "check_id": "V-280001",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/azure_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-280002",
+      "rule_id": "V-280002_automatestig_check",
+      "classification": "automated",
+      "reason": "Auditing must be enabled on the Azure SQL server",
+      "check_pack": "azure_sql",
+      "check_id": "V-280002",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/azure_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-280003",
+      "rule_id": "V-280003_automatestig_check",
+      "classification": "automated",
+      "reason": "Azure SQL Database must enforce TLS 1.2 as minimum version",
+      "check_pack": "azure_sql",
+      "check_id": "V-280003",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/azure_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-280004",
+      "rule_id": "V-280004_automatestig_check",
+      "classification": "automated",
+      "reason": "Azure Active Directory admin must be configured for the SQL server",
+      "check_pack": "azure_sql",
+      "check_id": "V-280004",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/azure_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-280005",
+      "rule_id": "V-280005_automatestig_check",
+      "classification": "automated",
+      "reason": "Azure SQL firewall must not allow unrestricted access (0.0.0.0 to 255.255.255.255)",
+      "check_pack": "azure_sql",
+      "check_id": "V-280005",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/azure_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-280006",
+      "rule_id": "V-280006_automatestig_check",
+      "classification": "automated",
+      "reason": "Public network access must be disabled on the Azure SQL server",
+      "check_pack": "azure_sql",
+      "check_id": "V-280006",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/azure_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-280007",
+      "rule_id": "V-280007_automatestig_check",
+      "classification": "automated",
+      "reason": "Advanced Threat Protection must be enabled on the Azure SQL database",
+      "check_pack": "azure_sql",
+      "check_id": "V-280007",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/azure_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-280008",
+      "rule_id": "V-280008_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit log retention must be configured for at least 90 days",
+      "check_pack": "azure_sql",
+      "check_id": "V-280008",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/azure_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-280009",
+      "rule_id": "V-280009_automatestig_check",
+      "classification": "automated",
+      "reason": "Azure SQL Database must be configured for zone redundancy",
+      "check_pack": "azure_sql",
+      "check_id": "V-280009",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/azure_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-280010",
+      "rule_id": "V-280010_automatestig_check",
+      "classification": "automated",
+      "reason": "Backup storage redundancy must be set to geo-redundant",
+      "check_pack": "azure_sql",
+      "check_id": "V-280010",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/azure_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-280011",
+      "rule_id": "V-280011_automatestig_check",
+      "classification": "automated",
+      "reason": "Virtual network service endpoints must be configured for Azure SQL",
+      "check_pack": "azure_sql",
+      "check_id": "V-280011",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/azure_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-280012",
+      "rule_id": "V-280012_automatestig_check",
+      "classification": "automated",
+      "reason": "Data classification must be configured on the Azure SQL database",
+      "check_pack": "azure_sql",
+      "check_id": "V-280012",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/azure_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-280013",
+      "rule_id": "V-280013_automatestig_check",
+      "classification": "automated",
+      "reason": "TDE must use a customer-managed key stored in Azure Key Vault",
+      "check_pack": "azure_sql",
+      "check_id": "V-280013",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/azure_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-280014",
+      "rule_id": "V-280014_automatestig_check",
+      "classification": "automated",
+      "reason": "Allow Azure services firewall rule must not be enabled unless required",
+      "check_pack": "azure_sql",
+      "check_id": "V-280014",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/azure_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-280015",
+      "rule_id": "V-280015_automatestig_check",
+      "classification": "automated",
+      "reason": "Database-level auditing must be enabled on the Azure SQL database",
+      "check_pack": "azure_sql",
+      "check_id": "V-280015",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/azure_sql.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

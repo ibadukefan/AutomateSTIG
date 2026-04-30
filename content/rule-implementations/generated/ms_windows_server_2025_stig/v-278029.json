@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the Windows time service configuration.\n\nOpen an elevated command prompt (run as administrator).\n\nEnter \"W32tm /query /configuration\".\n\nDomain-joined systems (excluding the domain controller with the PDC emulator role):\n\nIf the value for \"Type\" under \"NTP Client\" is not \"NT5DS\", this is a finding.\n\nOther systems:\n\nIf systems are configured with a \"Type\" of \"NTP\", including stand-alone or nondomain-joined systems and the domain controller with the PDC Emulator role, and do not have a DOD time server defined for \"NTPServer\", this is a finding.\n\nTo determine the domain controller with the PDC Emulator role:\n\nOpen PowerShell.\n\nEnter \"Get-ADDomain | FT PDCEmulator\".",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system to synchronize time with an appropriate DOD time source.\n\nDomain-joined systems use NT5DS to synchronize time from other systems in the domain by default.\n\nIf needed, configure the system to point to an authorized time server by setting the policy value for Computer Configuration >> Administrative Templates >> System >> Windows Time Service >> Time Providers. Change \"Configure Windows NTP Client\" to \"Enabled\" and configure the \"NtpServer\" field to point to an appropriate DOD time server.\n\nThe US Naval Observatory operates stratum one-time servers, identified at https://www.usno.navy.mil/USNO/time/ntp/DOD-customers. Time synchronization will occur through a hierarchy of time servers down to the local level. Clients and lower-level servers will synchronize with an authorized time server in the hierarchy.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278029r1182267_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "The Windows Server 2025 time service must synchronize with an appropriate DOD time source.",
+  "tracking_issue": "TODO-V-278029",
+  "vuln_id": "V-278029"
+}

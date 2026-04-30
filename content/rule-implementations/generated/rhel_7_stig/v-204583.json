@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If LDAP is not being utilized, this requirement is Not Applicable.\n\nVerify the operating system implements cryptography to protect the integrity of remote LDAP access sessions.\n\nTo determine if LDAP is being used for authentication, use the following command:\n\n     # systemctl status sssd.service\n     sssd.service - System Security Services Daemon\n     Loaded: loaded (/usr/lib/systemd/system/sssd.service; enabled; vendor preset: disabled)\n     Active: active (running) since Wed 2018-06-27 10:58:11 EST; 1h 50min ago\n\nIf the \"sssd.service\" is \"active\", then LDAP is being used.\n\nDetermine the \"id_provider\" that the LDAP is currently using:\n\n     # grep -ir id_provider /etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf\n     id_provider = ad\n\nIf \"id_provider\" is set to \"ad\", this is Not Applicable.\n\nCheck the path to the X.509 certificate for peer authentication with the following command:\n\n     # grep -ir tls_cacert /etc/sssd/sssd.conf /etc/sssd/conf.d/*.conf\n     ldap_tls_cacert = /etc/pki/tls/certs/ca-bundle.crt\n\nVerify the \"ldap_tls_cacert\" option points to a file that contains the trusted CA certificate.\n\nIf this file does not exist, or the option is commented out or missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to implement cryptography to protect the integrity of LDAP remote access sessions.\n\nAdd or modify the following line in \"/etc/sssd/sssd.conf\":\n\n     ldap_tls_cacert = /etc/pki/tls/certs/ca-bundle.crt",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204583r991554_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must implement cryptography to protect the integrity of Lightweight Directory Access Protocol (LDAP) communications.",
+  "tracking_issue": "TODO-V-204583",
+  "vuln_id": "V-204583"
+}

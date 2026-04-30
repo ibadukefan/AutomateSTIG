@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Microsoft\\WcmSvc\\wifinetworkmanager\\config",
+      "type": "registry",
+      "value_name": "AutoConnectAllowedOEM"
+    },
+    "description": "Wi-Fi Sense must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-220808"
+  },
+  "check_content_excerpt": "This is NA as of v1803 of Windows 10; Wi-Fi sense is no longer available.\n\nIf the following registry value does not exist or is not configured as specified, this is a finding.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Microsoft\\WcmSvc\\wifinetworkmanager\\config\\\n\nValue Name: AutoConnectAllowedOEM\n\nType: REG_DWORD\nValue: 0x00000000 (0)",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> Network >> WLAN Service >> WLAN Settings>> \"Allow Windows to automatically connect to suggested open hotspots, to networks shared by contacts, and to hotspots offering paid services\" to \"Disabled\".   \n\nv1507 LTSB does not include this group policy setting.  It may be configured through other means such as using group policy from a later version of Windows 10 or a registry update.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-220808r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_10_stig/u_ms_windows_10_v3r4_stig.json",
+  "source_version": "U_MS_Windows_10_V3R4_STIG.zip",
+  "stig_id": "MS_Windows_10_STIG",
+  "title": "Wi-Fi Sense must be disabled.",
+  "tracking_issue": "TODO-V-220808",
+  "vuln_id": "V-220808"
+}

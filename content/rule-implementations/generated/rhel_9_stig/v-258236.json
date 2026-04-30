@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that RHEL 9 cryptographic policies are not overridden.\n\nVerify that the configured policy matches the generated policy with the following command:\n\n$ sudo update-crypto-policies --check && echo PASS\n\nThe configured policy matches the generated policy\nPASS\n\nIf the last line is not \"PASS\", this is a finding.\n\nList all of the crypto backends configured on the system with the following command:\n\n$ ls -l /etc/crypto-policies/back-ends/ \n\nlrwxrwxrwx. 1 root root  40 Nov 13 16:29 bind.config -> /usr/share/crypto-policies/FIPS/bind.txt\nlrwxrwxrwx. 1 root root  42 Nov 13 16:29 gnutls.config -> /usr/share/crypto-policies/FIPS/gnutls.txt\nlrwxrwxrwx. 1 root root  40 Nov 13 16:29 java.config -> /usr/share/crypto-policies/FIPS/java.txt\nlrwxrwxrwx. 1 root root  46 Nov 13 16:29 javasystem.config -> /usr/share/crypto-policies/FIPS/javasystem.txt\nlrwxrwxrwx. 1 root root  40 Nov 13 16:29 krb5.config -> /usr/share/crypto-policies/FIPS/krb5.txt\nlrwxrwxrwx. 1 root root  45 Nov 13 16:29 libreswan.config -> /usr/share/crypto-policies/FIPS/libreswan.txt\nlrwxrwxrwx. 1 root root  42 Nov 13 16:29 libssh.config -> /usr/share/crypto-policies/FIPS/libssh.txt\n-rw-r--r--. 1 root root 398 Nov 13 16:29 nss.config\nlrwxrwxrwx. 1 root root  43 Nov 13 16:29 openssh.config -> /usr/share/crypto-policies/FIPS/openssh.txt\nlrwxrwxrwx. 1 root root  49 Nov 13 16:29 opensshserver.config -> /usr/share/crypto-policies/FIPS/opensshserver.txt\nlrwxrwxrwx. 1 root root  46 Nov 13 16:29 opensslcnf.config -> /usr/share/crypto-policies/FIPS/opensslcnf.txt\nlrwxrwxrwx. 1 root root  43 Nov 13 16:29 openssl.config -> /usr/share/crypto-policies/FIPS/openssl.txt\nlrwxrwxrwx. 1 root root  48 Nov 13 16:29 openssl_fips.config -> /usr/share/crypto-policies/FIPS/openssl_fips.txt\n\nIf the paths do not point to the respective files under /usr/share/crypto-policies/FIPS path, this is a finding.\nNote: nss.config should not be hyperlinked.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 9 to correctly implement the systemwide cryptographic policies by reinstalling the crypto-policies package contents.\n\nReinstall crypto-policies with the following command:\n\n$ sudo dnf -y reinstall crypto-policies\n\nSet the crypto-policy to FIPS with the following command:\n\n$ sudo update-crypto-policies --set FIPS\n\nSetting system policy to FIPS\n\nNote: Systemwide crypto policies are applied on application startup. It is recommended to restart the system for the change of policies to fully take place.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-258236r1051253_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 cryptographic policy must not be overridden.",
+  "tracking_issue": "TODO-V-258236",
+  "vuln_id": "V-258236"
+}

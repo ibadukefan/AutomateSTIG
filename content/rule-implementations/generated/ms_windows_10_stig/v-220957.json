@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the effective setting in Local Group Policy Editor.\nRun \"gpedit.msc\".\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.\n\nIf any groups or accounts other than the following are granted the \"Access this computer from the network\" user right, this is a finding:\n\nAdministrators\nRemote Desktop Users\n\nIf a domain application account such as for a management tool requires this user right, this would not be a finding.\n\nVendor documentation must support the requirement for having the user right.\n\nThe requirement must be documented with the ISSO.\n\nThe application account, managed at the domain level, must meet requirements for application account passwords, such as length and frequency of changes as defined in the Windows server STIGs.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> \"Access this computer from the network\" to only include the following groups or accounts:\n\nAdministrators   \nRemote Desktop Users",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-220957r958472_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_10_stig/u_ms_windows_10_v3r4_stig.json",
+  "source_version": "U_MS_Windows_10_V3R4_STIG.zip",
+  "stig_id": "MS_Windows_10_STIG",
+  "title": "The Access this computer from the network user right must only be assigned to the Administrators and Remote Desktop Users groups.",
+  "tracking_issue": "TODO-V-220957",
+  "vuln_id": "V-220957"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify Ubuntu 24.04 LTS AppArmor active with the following commands: \n \n$ systemctl is-active apparmor.service\nactive \n \nIf \"active\" is not returned, this is a finding. \n \n$ systemctl is-enabled apparmor.service \nenabled \n \nIf \"enabled\" is not returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Enable \"apparmor\" with the following command:\n \n$ sudo systemctl enable apparmor.service \n \nStart \"apparmor\" with the following command: \n \n$ sudo systemctl start apparmor.service \n \nNote: AppArmor must have properly configured profiles for applications and home directories. All configurations will be based on the actual system setup and organization and normally are on a per role basis. Refer to the AppArmor documentation for more information on configuring profiles.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270660r1066469_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must be configured to use AppArmor.",
+  "tracking_issue": "TODO-V-270660",
+  "vuln_id": "V-270660"
+}

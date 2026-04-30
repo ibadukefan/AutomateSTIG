@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If the system does not have a graphical user interface installed, this requirement is not applicable. \n\nVerify Ubuntu 24.04 LTS is configured to display the Standard Mandatory DOD Notice and Consent Banner before granting access to Ubuntu 24.04 LTS via a graphical user logon with the following command: \n \n$ grep ^banner-message-enable /etc/gdm3/greeter.dconf-defaults\nbanner-message-enable=true\n \nIf the value for \"banner-message-enable\" is set to \"false\", the line is commented out, or no value is returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to display the Standard Mandatory DOD Notice and Consent Banner before granting access to Ubuntu 24.04 LTS via a graphical user logon.\n\nEdit the \"/etc/gdm3/greeter.dconf-defaults\" file. \n \nLook for the \"banner-message-enable\" parameter under the \"[org/gnome/login-screen]\" section and uncomment it (remove the leading \"#\" characters): \n[org/gnome/login-screen] \nbanner-message-enable=true \n \nUpdate the GDM with the new configuration: \n \n$ sudo dconf update \n$ sudo systemctl restart gdm3",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270692r1066565_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must enable the graphical user logon banner to display the Standard Mandatory DOD Notice and Consent Banner before granting local access to the system via a graphical user logon.",
+  "tracking_issue": "TODO-V-270692",
+  "vuln_id": "V-270692"
+}

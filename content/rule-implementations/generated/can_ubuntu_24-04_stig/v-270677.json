@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify Ubuntu 24.04 LTS limits the number of concurrent sessions to 10 for all accounts and/or account types with the following command: \n \n$ grep maxlogins /etc/security/limits.conf | grep -v '^* hard maxlogins' \n* hard maxlogins 10 \n \nIf the \"maxlogins\" item does not have a value of \"10\" or less, is commented out, or is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to limit the number of concurrent sessions to 10 for all accounts and/or account types. \n \nAdd the following line to the top of the /etc/security/limits.conf or in a \".conf\" file defined in /etc/security/limits.d/: \n \n* hard maxlogins 10",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270677r1066520_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must limit the number of concurrent sessions to 10 for all accounts and/or account types.",
+  "tracking_issue": "TODO-V-270677",
+  "vuln_id": "V-270677"
+}

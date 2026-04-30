@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to verify that the ingress ACL is in accordance with DoD 8551.1.\n\nStep 1: Verify that an inbound ACL is configured on all external interfaces.\n\ninterface Ethernet2/2\n description link to DISN\n no switchport\n ip access-group EXTERNAL_ACL in\n\nStep 2. Review the inbound ACL to verify that it is filtering traffic in accordance with DoD 8551.1.\n\nip access-list EXTERNAL_ACL\n 10 permit tcp any any established \n 20 permit tcp x.11.1.1/32 eq bgp x.11.1.2/32 \n 30 permit tcp x.11.1.1/32 x.11.1.2/32 eq bgp \n 40 permit icmp x.11.1.1/32 x.11.1.2/32 echo \n 50 permit icmp x.11.1.1/32 x.11.1.2/32 echo-reply \n 60 permit tcp any x.11.2.3/32 eq www \n 70 permit udp x.12.1.9/32 x.12.1.21/32 eq ntp\n\u2026\n \u2026 < must be in accordance with DoD Instruction 8551.1>\n\u2026\n140 deny ip any any log\n\nIf the switch does not filter traffic in accordance with the guidelines contained in DoD 8551, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the switch to use an inbound ACL on all external interfaces as shown in the example below to restrict traffic in accordance with the guidelines contained in DOD Instruction 8551.1.\n\nSW2(config)# ip access-list EXTERNAL_ACL\nSW2(config-acl)# permit tcp any any established\nSW2(config-acl)# permit tcp x.11.1.1/32 eq bgp x.11.1.2/32 \nSW2(config-acl)# permit tcp x.11.1.1/32 x.11.1.2/32 eq bgp \nSW2(config-acl)# permit icmp x.11.1.1/32 x.11.1.2/32 echo \nSW2(config-acl)# permit icmp x.11.1.1/32 x.11.1.2/32 echo-reply \nSW2(config-acl)# permit tcp any x.11.2.3/32 eq www \n\u2026\n\u2026 < must be in accordance with DoD Instruction 8551.1>\n\u2026\nSW2(config-acl)# deny ip any any log\nSW2(config-acl)# exit\nSW1(config)#int e2/2\nSW1(config-if)# ip access-group EXTERNAL_ACL in\nSW1(config-if)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221092r999701_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco perimeter switch must be configured to filter traffic destined to the enclave in accordance with the guidelines contained in DoD Instruction 8551.1.",
+  "tracking_issue": "TODO-V-221092",
+  "vuln_id": "V-221092"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SSH daemon does not allow Kerberos authentication with the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*kerberosauthentication'\n\nKerberosAuthentication no\n\nIf the value is returned as \"yes\", the returned line is commented out, or no output is returned or has not been documented with the information system security officer (ISSO), this is a finding.\n\nIf conflicting results are returned, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SSH daemon to not allow Kerberos authentication. \n \nAdd the following line in \"/etc/ssh/sshd_config\", or uncomment the line and set the value to \"no\": \n \nKerberosAuthentication no\n \nThe SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command: \n \n$ sudo systemctl restart sshd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248606r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "The OL 8 SSH daemon must not allow Kerberos authentication, except to fulfill documented and validated mission requirements.",
+  "tracking_issue": "TODO-V-248606",
+  "vuln_id": "V-248606"
+}

@@ -1,0 +1,46 @@
+{
+  "candidate_check": {
+    "check": {
+      "name": "aide",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "OL 9 must have the Advanced Intrusion Detection Environment (AIDE) package installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271496"
+  },
+  "check_content_excerpt": "Verify that OL 9 has the package installed with the following command:\n\n$ dnf list --installed aide\nInstalled Packages\naide.x86_64                                         0.16-100.el9                                          @ol9_appstream\n\nIf AIDE is not installed, ask the system administrator (SA) how file integrity checks are performed on the system. \n\nIf there is no application installed to perform integrity checks, this is a finding.\n\nIf AIDE is installed, check if it has been initialized with the following command:\n\n$ sudo /usr/sbin/aide --check\n\nIf the output is \"Couldn't open file /var/lib/aide/aide.db.gz for reading\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install AIDE, initialize it, and perform a manual check.\n\nInstall AIDE:\n\n$ sudo dnf install -y aide\n\nInitialize AIDE:\n     \n$ sudo /usr/sbin/aide --init\n\nExample output:\n\nStart timestamp: 2023-06-05 10:09:04 -0600 (AIDE 0.16)\nAIDE initialized database at /var/lib/aide/aide.db.new.gz\n\nNumber of entries:      86833\n\n---------------------------------------------------\nThe attributes of the (uncompressed) database(s):\n---------------------------------------------------\n\n/var/lib/aide/aide.db.new.gz\n  MD5      : coZUtPHhoFoeD7+k54fUvQ==\n  SHA1     : DVpOEMWJwo0uPgrKZAygIUgSxeM=\n  SHA256   : EQiZH0XNEk001tcDmJa+5STFEjDb4MPE\n             TGdBJ/uvZKc=\n  SHA512   : 86KUqw++PZhoPK0SZvT3zuFq9yu9nnPP\n             toei0nENVELJ1LPurjoMlRig6q69VR8l\n             +44EwO9eYyy9nnbzQsfG1g==\n\nEnd timestamp: 2023-06-05 10:09:57 -0600 (run time: 0m 53s)\n\nThe new database will need to be renamed to be read by AIDE:\n\n$ sudo mv /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz\n\nPerform a manual check:\n\n$ sudo /usr/sbin/aide --check\n\nExample output:\n\n2023-06-05 10:16:08 -0600 (AIDE 0.16)\nAIDE found NO differences between database and filesystem. Looks okay!!",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "package",
+  "remediation": "planned",
+  "rule_id": "SV-271496r1091200_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must have the Advanced Intrusion Detection Environment (AIDE) package installed.",
+  "tracking_issue": "TODO-V-271496",
+  "vuln_id": "V-271496"
+}

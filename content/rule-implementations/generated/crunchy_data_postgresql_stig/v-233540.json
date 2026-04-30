@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review procedures for controlling, granting access to, and tracking use of the PostgreSQL software installation account(s).\n\nIf access or use of this account is not restricted to the minimum number of personnel required or if unauthorized access to the account has been granted, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Develop, document, and implement procedures to restrict and track use of the PostgreSQL software installation account.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233540r960960_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "The PostgreSQL software installation account must be restricted to authorized users.",
+  "tracking_issue": "TODO-V-233540",
+  "vuln_id": "V-233540"
+}

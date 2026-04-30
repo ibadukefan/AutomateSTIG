@@ -1,0 +1,381 @@
+#!/usr/bin/env python3
+"""Generate planned implementation specs for unsupported authoritative DISA rules."""
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import sys
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+import extract_xccdf_inventory
+
+MANUAL_HINTS = (
+    'document', 'documented', 'documentation', 'approval', 'approve', 'policy',
+    'procedure', 'procedures', 'process', 'reviewed', 'organization-defined',
+    'system owner', 'isso', 'issm', 'authorizing official', 'written',
+)
+WINDOWS_HINTS = ('windows', 'registry', 'powershell', 'group policy', 'audit policy', 'event log')
+LINUX_HINTS = ('rhel', 'linux', 'sshd', 'systemd', 'rpm', 'yum', 'dnf', 'auditd', 'sysctl')
+NETWORK_HINTS = ('router', 'switch', 'firewall', 'cisco', 'interface', 'acl', 'snmp')
+
+
+def slug(value: str) -> str:
+    value = re.sub(r'[^A-Za-z0-9._-]+', '_', value.strip().lower()).strip('._-')
+    return value or 'unknown'
+
+
+def classify_rule(title: str) -> tuple[str, str]:
+    lower = title.lower()
+    if any(hint in lower for hint in MANUAL_HINTS):
+        return 'manual', 'manual_evidence_workflow'
+    if any(hint in lower for hint in WINDOWS_HINTS):
+        return 'automated', 'windows_collector'
+    if any(hint in lower for hint in LINUX_HINTS):
+        return 'automated', 'linux_collector'
+    if any(hint in lower for hint in NETWORK_HINTS):
+        return 'automated', 'network_config_collector'
+    return 'automated', 'platform_collector'
+
+
+def _registry_hive_abbrev(hive: str) -> str:
+    normalized = re.sub(r'[^A-Z_]', '', hive.upper())
+    return {
+        'HKEY_LOCAL_MACHINE': 'HKLM',
+        'HKLM': 'HKLM',
+        'HKEY_CURRENT_USER': 'HKCU',
+        'HKCU': 'HKCU',
+        'HKEY_CLASSES_ROOT': 'HKCR',
+        'HKCR': 'HKCR',
+        'HKEY_USERS': 'HKU',
+        'HKU': 'HKU',
+        'HKEY_CURRENT_CONFIG': 'HKCC',
+        'HKCC': 'HKCC',
+    }.get(normalized, hive.strip())
+
+
+def _registry_value(check_content: str):
+    match = re.search(r'^\s*Value\s*:\s*(0x[0-9a-fA-F]+|[-+]?\d+)\s*(?:\(([-+]?\d+)\))?', check_content, re.MULTILINE)
+    if not match:
+        return None
+    raw = match.group(2) or match.group(1)
+    try:
+        return int(raw, 16) if raw.lower().startswith('0x') else int(raw)
+    except ValueError:
+        return raw
+
+
+def _normalize_registry_path(path: str) -> str:
+    path = path.strip().strip('"“”').strip().rstrip('\\/.')
+    path = re.sub(r'\\+', r'\\', path)
+    for hive in ('HKEY_LOCAL_MACHINE', 'HKEY_CURRENT_USER', 'HKEY_CLASSES_ROOT', 'HKEY_USERS', 'HKEY_CURRENT_CONFIG'):
+        if path.upper().startswith(hive):
+            return _registry_hive_abbrev(hive) + path[len(hive):]
+    return path
+
+
+def _parse_expected_registry_data(text: str):
+    match = re.search(r'value\s+data\s+is\s+not\s+set\s+to\s+["“]?([^"”\s,.;]+)', text, re.IGNORECASE)
+    if not match:
+        match = re.search(r'\bis\s+not\s+set\s+to\s+["“]?([^"”\s,.;]+)', text, re.IGNORECASE)
+    if not match:
+        return None
+    raw = match.group(1).strip()
+    lowered = raw.lower()
+    if lowered in ('false', 'disabled'):
+        return 0
+    if lowered in ('true', 'enabled'):
+        return 1
+    try:
+        return int(raw, 16) if lowered.startswith('0x') else int(raw)
+    except ValueError:
+        return raw
+
+
+def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    path_match = re.search(r'Navigate\s+to\s+["“]?((?:HKLM|HKCU|HKCR|HKU|HKCC|HKEY_[A-Z_]+)\\[^\n\r"”]+)', content, re.IGNORECASE)
+    if not path_match:
+        return None
+    value_match = re.search(r'If\s+the\s+["“]([^"”]+)["”]\s+(?:value\s+name|key)\s+does\s+not\s+exist[^\n\r.]*?(?:value\s+data\s+)?is\s+not\s+set\s+to', content, re.IGNORECASE)
+    if not value_match:
+        value_match = re.search(r'If\s+([A-Za-z0-9_.-]+)\s+is\s+not\s+displayed[^\n\r.]*?or\s+it\s+is\s+not\s+set\s+to', content, re.IGNORECASE)
+    if not value_match:
+        return None
+    expected_value = _parse_expected_registry_data(content)
+    if expected_value is None:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows' if 'windows' in stig_id.lower() or 'chrome' in stig_id.lower() else 'generic',
+        'check': {
+            'type': 'registry',
+            'path': _normalize_registry_path(path_match.group(1)),
+            'value_name': value_match.group(1).strip(),
+        },
+        'expected': {'type': 'equals', 'value': expected_value},
+        'description': rule.get('title', ''),
+    }
+
+
+def _linux_platform(stig_id: str) -> bool:
+    lower = stig_id.lower()
+    return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'ubuntu'))
+
+
+def _sysctl_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    match = re.search(r'\bsysctl\s+([a-zA-Z0-9_.-]+)', content)
+    if not match:
+        return None
+    key = match.group(1)
+    value_match = re.search(rf'{re.escape(key)}\s*=\s*([^\s,.;]+)', content)
+    if not value_match:
+        value_match = re.search(r'(?:value of|returned line[^.]*value of)\s+["“]([^"”]+)["”]', content, re.IGNORECASE)
+    if not value_match:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'sysctl', 'key': key},
+        'expected': {'type': 'equals', 'value': value_match.group(1).strip().strip('"')},
+        'description': rule.get('title', ''),
+    }
+
+
+def _package_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    title = rule.get('title', '') or ''
+    match = re.search(r'\b(?:dnf|yum|rpm)\s+(?:list\s+--installed|-q)\s+([A-Za-z0-9_.:+-]+)', content)
+    if not match:
+        match = re.search(r'\b([A-Za-z0-9_.:+-]+)\s+package\s+(?:has\s+)?(?:not\s+)?(?:been\s+)?installed', content, re.IGNORECASE)
+    if not match:
+        return None
+    package = match.group(1)
+    lower = f"{title}\n{content}".lower()
+    should_be_installed = not bool(re.search(r'must\s+not\s+be\s+installed|has\s+not\s+been\s+installed|if\s+the\s+[a-z0-9_.:+-]+\s+package\s+is\s+installed,?\s+this\s+is\s+a\s+finding', lower))
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'package', 'name': package, 'should_be_installed': should_be_installed},
+        'expected': {'type': 'is_true' if should_be_installed else 'is_false'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _file_content_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    grep = re.search(r'\bgrep\s+(?:-[A-Za-z]+\s+)*(?:["\']?)([^"\'\s|;]+)(?:["\']?)\s+(/[A-Za-z0-9_./:+-]+)', content)
+    if not grep:
+        return None
+    pattern, path = grep.group(1), grep.group(2)
+    lower = content.lower()
+    if 'line is not returned' not in lower and 'no output is returned' not in lower and 'does not return' not in lower:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'file_content', 'path': path, 'pattern': pattern, 'is_regex': False},
+        'expected': {'type': 'contains'},
+        'description': rule.get('title', ''),
+    }
+
+
+def _service_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    title = rule.get('title', '') or ''
+    match = re.search(r'\bsystemctl\s+is-(?:enabled|active)\s+([A-Za-z0-9_.@+-]+)(?:\.service)?\b', content)
+    if not match:
+        return None
+    name = match.group(1).removesuffix('.service')
+    lower = f"{title}\n{content}".lower()
+    if re.search(r'must\s+not\s+.*(?:enabled|running)|if\s+the\s+service\s+is\s+(?:enabled|active|running),?\s+this\s+is\s+a\s+finding', lower):
+        expected_status = 'disabled'
+    elif 'must be enabled' in lower or 'must be running' in lower:
+        expected_status = 'running'
+    else:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'service', 'name': name, 'expected_status': expected_status},
+        'expected': {'type': 'equals', 'value': expected_status},
+        'description': rule.get('title', ''),
+    }
+
+
+def _file_permission_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    path_match = re.search(r'\bstat\s+(?:-[A-Za-z]+\s+)*(?:["\'][^"\']+["\']\s+)?(/[A-Za-z0-9_./:+-]+)', content)
+    if not path_match:
+        path_match = re.search(r'\b(?:permissions|mode)[^\n.]+\s+(/[A-Za-z0-9_./:+-]+)', content, re.IGNORECASE)
+    if not path_match:
+        return None
+    mode_match = re.search(r'\b(?:mode|permissions?)\s+(?:is|are|of)?\s*(?:not\s+)?["“]?([0-7]{3,4})["”]?', content, re.IGNORECASE)
+    if not mode_match:
+        mode_match = re.search(r'If\s+the\s+mode\s+is\s+not\s+["“]([0-7]{3,4})["”]', content, re.IGNORECASE)
+    if not mode_match:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'file_permission', 'path': path_match.group(1), 'owner': None, 'group': None, 'mode': mode_match.group(1)},
+        'expected': {'type': 'is_true'},
+        'description': rule.get('title', ''),
+    }
+
+
+def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
+    """Infer a conservative executable check candidate from DISA prose.
+
+    Candidates are not marked validated; they are scaffolds requiring fixture proof
+    before a rule can be promoted from planned to implemented/validated.
+    """
+    content = rule.get('check_content', '') or ''
+    hive = re.search(r'Registry\s+Hive:\s*([^\n\r]+)', content, re.IGNORECASE)
+    path = re.search(r'Registry\s+Path:\s*([^\n\r]+)', content, re.IGNORECASE)
+    value_name = re.search(r'Value\s+Name:\s*([^\n\r]+)', content, re.IGNORECASE)
+    if hive and path and value_name:
+        reg_path = path.group(1).strip().strip('\\/')
+        expected_value = _registry_value(content)
+        if expected_value is not None:
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'windows' if 'windows' in stig_id.lower() or 'win' in stig_id.lower() else 'generic',
+                'check': {
+                    'type': 'registry',
+                    'path': f"{_registry_hive_abbrev(hive.group(1))}\\{reg_path}",
+                    'value_name': value_name.group(1).strip(),
+                },
+                'expected': {'type': 'equals', 'value': expected_value},
+                'description': rule.get('title', ''),
+            }
+
+    policy_candidate = _windows_registry_policy_candidate(rule, stig_id)
+    if policy_candidate:
+        return policy_candidate
+
+    feature = re.search(r'Get-WindowsFeature\s*\|\s*Where\s+Name\s+-eq\s+([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
+    if feature and re.search(r'Installed[^\n.]+is[^\n.]+finding|If[^\n.]+Installed[^\n.]+finding', content, re.IGNORECASE):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'windows',
+            'check': {'type': 'windows_feature', 'name': feature.group(1), 'should_be_installed': False},
+            'expected': {'type': 'is_false'},
+            'description': rule.get('title', ''),
+        }
+
+    if _linux_platform(stig_id):
+        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _service_candidate, _file_permission_candidate):
+            candidate = infer(rule)
+            if candidate:
+                return candidate
+    return None
+
+
+def spec_from_rule(manifest_path: Path, manifest: dict, rule: dict) -> dict:
+    classification, collector = classify_rule(rule.get('title', ''))
+    spec = {
+        'vuln_id': rule.get('vuln_id', ''),
+        'rule_id': rule.get('rule_id', ''),
+        'stig_id': manifest.get('stig_id', manifest.get('benchmark', 'unknown')),
+        'title': rule.get('title', ''),
+        'severity': rule.get('severity', ''),
+        'classification': classification,
+        'implementation_status': 'planned',
+        'source_coverage_manifest': str(manifest_path),
+        'source_benchmark': manifest.get('benchmark', ''),
+        'source_version': manifest.get('version', ''),
+        'collector_type': collector,
+        'collector_commands': [],
+        'normalizer': 'planned',
+        'evaluator': 'planned',
+        'expected_values': {},
+        'evidence_fields': ['rule_id', 'vuln_id', 'status', 'evidence', 'source_artifact'],
+        'na_conditions': [],
+        'remediation': 'planned',
+        'fixtures': [],
+        'external_acceptance_refs': [],
+        'tracking_issue': rule.get('tracking_issue', '') or f"TODO-{rule.get('vuln_id', rule.get('rule_id', 'UNKNOWN'))}",
+    }
+    if rule.get('check_content'):
+        spec['check_content_excerpt'] = rule.get('check_content', '')[:4000]
+    if rule.get('fix_text'):
+        spec['fix_text_excerpt'] = rule.get('fix_text', '')[:4000]
+    candidate = infer_candidate_check(rule, spec['stig_id'])
+    if candidate:
+        spec['candidate_check'] = candidate
+        spec['normalizer'] = candidate['check']['type']
+        spec['evaluator'] = 'candidate_template'
+        spec['expected_values'] = candidate['expected']
+    return spec
+
+
+def _artifact_rule_map(manifest: dict, repo_root: Path, cache: dict[Path, dict]) -> dict:
+    merged = {}
+    refs = []
+    for key in ('generated_from', 'benchmark_path'):
+        if manifest.get(key):
+            refs.append(manifest[key])
+    refs.extend(manifest.get('generated_from_refs', []))
+    refs.extend(manifest.get('validated_by', []))
+    for raw_ref in refs:
+        ref = str(raw_ref)
+        if not ref.lower().endswith(('.zip', '.xml', '.xccdf')):
+            continue
+        path = Path(ref)
+        if not path.is_absolute():
+            path = repo_root / path
+        if not path.exists():
+            continue
+        if path not in cache:
+            try:
+                inv = extract_xccdf_inventory.extract(path)
+                cache[path] = {rule.get('vuln_id') or rule.get('rule_id'): rule for rule in inv.get('rules', [])}
+            except Exception:
+                cache[path] = {}
+        merged.update(cache[path])
+    return merged
+
+
+def write_json(path: Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n')
+
+
+def generate_specs(coverage_root: Path, implementation_root: Path, repo_root: Path | None = None) -> int:
+    repo_root = repo_root or Path.cwd()
+    artifact_cache: dict[Path, dict] = {}
+    count = 0
+    for manifest_path in sorted(coverage_root.rglob('*.json')):
+        manifest = json.loads(manifest_path.read_text())
+        artifact_rules = _artifact_rule_map(manifest, repo_root, artifact_cache)
+        stig_slug = slug(manifest.get('stig_id') or manifest.get('benchmark') or manifest_path.parent.name)
+        for rule in manifest.get('rules', []):
+            if rule.get('classification') != 'unsupported':
+                continue
+            enriched = dict(rule)
+            enriched.update({k: v for k, v in artifact_rules.get(rule.get('vuln_id') or rule.get('rule_id'), {}).items() if v})
+            vuln = enriched.get('vuln_id') or enriched.get('rule_id') or 'unknown'
+            out = implementation_root / stig_slug / f'{slug(vuln)}.json'
+            write_json(out, spec_from_rule(manifest_path, manifest, enriched))
+            count += 1
+    return count
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--coverage-root', default='content/coverage/disa-authoritative')
+    parser.add_argument('--implementation-root', default='content/rule-implementations')
+    parser.add_argument('--repo-root', default='.')
+    args = parser.parse_args(argv)
+    count = generate_specs(Path(args.coverage_root), Path(args.implementation_root), Path(args.repo_root))
+    print(f'Generated {count} planned rule implementation specs')
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

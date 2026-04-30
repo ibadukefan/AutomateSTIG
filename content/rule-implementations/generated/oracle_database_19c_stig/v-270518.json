@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review system documentation to identify accounts authorized to own database objects. Review accounts in the database management systems (DBMSs) that own objects.\n\nIf any database objects are found to be owned by users not authorized to own database objects, this is a finding.\n\n- - - - -\nQuery the object DBA_OBJECTS to show the users who own objects in the database. The query below will return all of the users who own objects.\n\nsqlplus connect as sysdba\n\nSQL>select owner, object_type, count(*) from dba_objects\ngroup by owner, object_type\norder by owner, object_type;\n\nIf these owners are not authorized owners, select all of the objects these owners have generated and decide who they should belong to. To make a list of all of the objects, the unauthorized owner has to perform the following query.\n\nSQL>select * from dba_objects where owner =&unauthorized_owner;",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Update system documentation to include list of accounts authorized for object ownership.\n\nReassign ownership of authorized objects to authorized object owner accounts.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270518r1064832_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Database objects must be owned by accounts authorized for ownership.",
+  "tracking_issue": "TODO-V-270518",
+  "vuln_id": "V-270518"
+}

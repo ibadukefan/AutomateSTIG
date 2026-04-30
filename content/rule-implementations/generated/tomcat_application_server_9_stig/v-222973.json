@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From the Tomcat server as a privileged user, run the following command:\n\nsudo grep -i  recycle_facades /etc/systemd/system/tomcat.service\n\nIf there are no results, or if the org.apache.catalina.connector. RECYCLE_FACADES is not =\"true\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From the Tomcat server as a privileged user:\n\nedit the /etc/systemd/system/tomcat.service file and either add or edit the org.apache.catalina.connector. RECYCLE_FACADES setting.\n\nSet the org.apache.catalina.connector. RECYCLE_FACADES=true. \n\nEXAMPLE:\nEnvironment='CATALINA_OPTS -Dorg.apache.catalina.connector. RECYCLE_FACADES=true'\n\nRestart the Tomcat server:\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222973r1043180_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "Tomcat must be configured to limit data exposure between applications.",
+  "tracking_issue": "TODO-V-222973",
+  "vuln_id": "V-222973"
+}

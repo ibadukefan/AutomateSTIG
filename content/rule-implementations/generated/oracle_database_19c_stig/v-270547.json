@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If the organization has a policy, consistently enforced, forbidding the creation of emergency or temporary accounts, this is not a finding.\n\nIf all user accounts are authenticated by the OS or an enterprise-level authentication/access mechanism, and not by Oracle, this is not a finding.\n\nCheck database management system (DBMS) settings, OS settings, and/or enterprise-level authentication/access mechanisms settings to determine if the site uses a mechanism whereby temporary are terminated after a 72-hour time period. If not, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "If using database mechanisms to satisfy this requirement, use a profile with a distinctive name (for example, TEMPORARY_USERS), so that temporary users can be easily identified. Whenever a temporary user account is created, assign it to this profile.\n\nCreate a job to lock accounts under this profile that are more than 72 hours old.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270547r1064919_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Oracle Database must provide a mechanism to automatically remove or disable temporary user accounts after 72 hours.",
+  "tracking_issue": "TODO-V-270547",
+  "vuln_id": "V-270547"
+}

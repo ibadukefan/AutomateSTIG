@@ -1,0 +1,206 @@
+{
+  "stig_id": "Rancher_MCM_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/rancher.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/rancher.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-284001",
+      "rule_id": "V-284001_automatestig_check",
+      "classification": "automated",
+      "reason": "Rancher must use TLS for ingress connections",
+      "check_pack": "rancher",
+      "check_id": "V-284001",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rancher.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-284002",
+      "rule_id": "V-284002_automatestig_check",
+      "classification": "automated",
+      "reason": "Rancher must use a trusted TLS certificate",
+      "check_pack": "rancher",
+      "check_id": "V-284002",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rancher.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-284003",
+      "rule_id": "V-284003_automatestig_check",
+      "classification": "automated",
+      "reason": "RBAC must be configured with cluster-admin limited to authorized accounts",
+      "check_pack": "rancher",
+      "check_id": "V-284003",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rancher.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-284004",
+      "rule_id": "V-284004_automatestig_check",
+      "classification": "automated",
+      "reason": "Rancher audit logging must be enabled at level 1 or higher",
+      "check_pack": "rancher",
+      "check_id": "V-284004",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rancher.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-284005",
+      "rule_id": "V-284005_automatestig_check",
+      "classification": "automated",
+      "reason": "Rancher must be configured with an external authentication provider",
+      "check_pack": "rancher",
+      "check_id": "V-284005",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rancher.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-284006",
+      "rule_id": "V-284006_automatestig_check",
+      "classification": "automated",
+      "reason": "Rancher user session timeout must be set to 60 minutes or less",
+      "check_pack": "rancher",
+      "check_id": "V-284006",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rancher.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-284007",
+      "rule_id": "V-284007_automatestig_check",
+      "classification": "automated",
+      "reason": "Network policies must be defined for the Rancher namespace",
+      "check_pack": "rancher",
+      "check_id": "V-284007",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rancher.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-284008",
+      "rule_id": "V-284008_automatestig_check",
+      "classification": "automated",
+      "reason": "Rancher must be deployed with at least 2 replicas for availability",
+      "check_pack": "rancher",
+      "check_id": "V-284008",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rancher.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-284009",
+      "rule_id": "V-284009_automatestig_check",
+      "classification": "automated",
+      "reason": "Rancher server URL must use HTTPS",
+      "check_pack": "rancher",
+      "check_id": "V-284009",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rancher.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-284010",
+      "rule_id": "V-284010_automatestig_check",
+      "classification": "automated",
+      "reason": "Pod security policies or standards must be configured",
+      "check_pack": "rancher",
+      "check_id": "V-284010",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rancher.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-284011",
+      "rule_id": "V-284011_automatestig_check",
+      "classification": "automated",
+      "reason": "TLS secrets must be present in the cattle-system namespace",
+      "check_pack": "rancher",
+      "check_id": "V-284011",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rancher.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-284012",
+      "rule_id": "V-284012_automatestig_check",
+      "classification": "automated",
+      "reason": "Rancher must display a login banner",
+      "check_pack": "rancher",
+      "check_id": "V-284012",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rancher.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-284013",
+      "rule_id": "V-284013_automatestig_check",
+      "classification": "automated",
+      "reason": "Rancher must be configured with a custom CA certificate",
+      "check_pack": "rancher",
+      "check_id": "V-284013",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rancher.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-284014",
+      "rule_id": "V-284014_automatestig_check",
+      "classification": "automated",
+      "reason": "Rancher must use a supported and current version",
+      "check_pack": "rancher",
+      "check_id": "V-284014",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rancher.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-284015",
+      "rule_id": "V-284015_automatestig_check",
+      "classification": "automated",
+      "reason": "Rancher agent TLS mode must be set to strict",
+      "check_pack": "rancher",
+      "check_id": "V-284015",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/rancher.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

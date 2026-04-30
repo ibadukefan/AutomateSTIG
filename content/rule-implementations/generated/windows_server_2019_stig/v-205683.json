@@ -1,0 +1,54 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters",
+      "type": "registry",
+      "value_name": "SMB1"
+    },
+    "description": "Windows Server 2019 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-205683"
+  },
+  "check_content_excerpt": "Different methods are available to disable SMBv1 on Windows Server 2019, if WN19-00-000380 is configured, this is NA.\n\nIf the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters\\\n\nValue Name: SMB1\n\nType: REG_DWORD\nValue: 0x00000000 (0)",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> MS Security Guide >> \"Configure SMBv1 Server\" to \"Disabled\".\n\nThe system must be restarted for the change to take effect.\n\nThis policy setting requires the installation of the SecGuide custom templates included with the STIG package. \"SecGuide.admx\" and \"SecGuide.adml\" must be copied to the \\Windows\\PolicyDefinitions and \\Windows\\PolicyDefinitions\\en-US directories respectively.",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/windows_server_2019_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-205683r958478_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/windows_server_2019_stig/u_ms_windows_server_2019_v3r4_stig.json",
+  "source_version": "U_MS_Windows_Server_2019_V3R4_STIG.zip",
+  "stig_id": "Windows_Server_2019_STIG",
+  "title": "Windows Server 2019 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server.",
+  "tracking_issue": "TODO-V-205683",
+  "vuln_id": "V-205683"
+}

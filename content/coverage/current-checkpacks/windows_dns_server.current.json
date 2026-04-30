@@ -1,0 +1,336 @@
+{
+  "stig_id": "Windows_DNS_Server_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/windows_dns_server.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/windows_dns_server.json",
+  "total_rules": 25,
+  "rules": [
+    {
+      "vuln_id": "V-215590",
+      "rule_id": "V-215590_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS server event logging must be set to at least level 2",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215590",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215591",
+      "rule_id": "V-215591_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS debug logging must be enabled",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215591",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215592",
+      "rule_id": "V-215592_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS recursion must be disabled on authoritative name servers",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215592",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215593",
+      "rule_id": "V-215593_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS server must secure cache against pollution",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215593",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215594",
+      "rule_id": "V-215594_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS maximum cache TTL must not exceed 86400 seconds (1 day)",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215594",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215595",
+      "rule_id": "V-215595_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS maximum negative cache TTL must not exceed 900 seconds",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215595",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215596",
+      "rule_id": "V-215596_automatestig_check",
+      "classification": "automated",
+      "reason": "Zone transfers must be restricted",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215596",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215597",
+      "rule_id": "V-215597_automatestig_check",
+      "classification": "automated",
+      "reason": "BIND secondaries must be disabled unless required",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215597",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215600",
+      "rule_id": "V-215600_automatestig_check",
+      "classification": "automated",
+      "reason": "DNSSEC must be enabled",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215600",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215601",
+      "rule_id": "V-215601_automatestig_check",
+      "classification": "automated",
+      "reason": "DNSSEC validation must be enabled for recursive resolvers",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215601",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215605",
+      "rule_id": "V-215605_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS socket pool size must be at least 2500",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215605",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215606",
+      "rule_id": "V-215606_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS socket pool excluded port ranges must be configured",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215606",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215610",
+      "rule_id": "V-215610_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS server must be administratively configured",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215610",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215611",
+      "rule_id": "V-215611_automatestig_check",
+      "classification": "automated",
+      "reason": "Forward delegations must be disabled",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215611",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215615",
+      "rule_id": "V-215615_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS service must be running",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215615",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215616",
+      "rule_id": "V-215616_automatestig_check",
+      "classification": "automated",
+      "reason": "Account logon events must be audited on the DNS server",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215616",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215620",
+      "rule_id": "V-215620_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS RPC protocol must restrict to TCP only",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215620",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215621",
+      "rule_id": "V-215621_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS must prioritize local authoritative data over remote",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215621",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215625",
+      "rule_id": "V-215625_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS EDNS probes must be disabled if not required",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215625",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215626",
+      "rule_id": "V-215626_automatestig_check",
+      "classification": "automated",
+      "reason": "Dynamic updates must be disabled or restricted to secure only",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215626",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215627",
+      "rule_id": "V-215627_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS zone transfer connection timeout must not exceed 30 seconds",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215627",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215630",
+      "rule_id": "V-215630_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS must enforce strict file parsing for zone files",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215630",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215631",
+      "rule_id": "V-215631_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS version query responses must be disabled",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215631",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215632",
+      "rule_id": "V-215632_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS server must not be configured as a slave unless authorized",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215632",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-215635",
+      "rule_id": "V-215635_automatestig_check",
+      "classification": "automated",
+      "reason": "DNS server must display legal notice text before logon",
+      "check_pack": "windows_dns_server",
+      "check_id": "V-215635",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_dns_server.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

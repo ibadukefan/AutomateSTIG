@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If the operating system does not have a graphical user interface installed, this requirement is Not Applicable.\n\nVerify the operating system disables the ability to automount devices in a graphical user interface.\n\nNote: The example below is using the database \"local\" for the system, so the path is \"/etc/dconf/db/local.d\". This path must be modified if a database other than \"local\" is being used.\n\nCheck to see if automounter service is disabled with the following commands:\n# cat /etc/dconf/db/local.d/00-No-Automount\n\n[org/gnome/desktop/media-handling]\n\nautomount=false\n\nautomount-open=false\n\nautorun-never=true\n\nIf the output does not match the example above, this is a finding.\n\n# cat /etc/dconf/db/local.d/locks/00-No-Automount\n\n/org/gnome/desktop/media-handling/automount\n\n/org/gnome/desktop/media-handling/automount-open\n\n/org/gnome/desktop/media-handling/autorun-never\n\nIf the output does not match the example, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the graphical user interface to disable the ability to automount devices.\n\nNote: The example below is using the database \"local\" for the system, so the path is \"/etc/dconf/db/local.d\". This path must be modified if a database other than \"local\" is being used.\n\nCreate or edit the /etc/dconf/db/local.d/00-No-Automount file and add the following:  \n\n[org/gnome/desktop/media-handling]\n\nautomount=false\n\nautomount-open=false\n\nautorun-never=true\n\nCreate or edit the /etc/dconf/db/local.d/locks/00-No-Automount file and add the following:\n/org/gnome/desktop/media-handling/automount\n\n/org/gnome/desktop/media-handling/automount-open\n\n/org/gnome/desktop/media-handling/autorun-never\n\nRun the following command to update the database:\n\n# dconf update",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-219059r958498_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must disable the graphical user interface automounter unless required.",
+  "tracking_issue": "TODO-V-219059",
+  "vuln_id": "V-219059"
+}

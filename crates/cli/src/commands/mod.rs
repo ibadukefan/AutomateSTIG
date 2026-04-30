@@ -1,15 +1,16 @@
-pub mod evaluate;
-pub mod import;
-pub mod verify;
-pub mod library;
-pub mod convert;
-pub mod summary;
-pub mod gen_answer;
-pub mod export;
 pub mod build_pack;
+pub mod convert;
+pub mod coverage;
 pub mod disa_import;
+pub mod evaluate;
+pub mod export;
+pub mod gen_answer;
+pub mod import;
+pub mod library;
 pub mod report;
 pub mod status;
+pub mod summary;
+pub mod verify;
 
 use std::path::PathBuf;
 

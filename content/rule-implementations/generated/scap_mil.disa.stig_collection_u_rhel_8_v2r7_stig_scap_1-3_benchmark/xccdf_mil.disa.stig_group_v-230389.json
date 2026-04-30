@@ -1,0 +1,30 @@
+{
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to notify administrators in the event of an audit processing failure.\n\nAdd/update the following line in \"/etc/aliases\":\n\npostmaster: root",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-230389r1017197_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_rhel_8_v2r7_stig_scap_1_3_benchmark/u_rhel_8_v2r7_stig_scap_1_3_benchmark.json",
+  "source_version": "U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark",
+  "title": "The RHEL 8 Information System Security Officer (ISSO) and System Administrator (SA) (at a minimum) must have mail aliases to be notified of an audit processing failure.",
+  "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-230389",
+  "vuln_id": "xccdf_mil.disa.stig_group_V-230389"
+}

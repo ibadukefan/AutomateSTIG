@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system off-loads audit records onto a different system or media from the system being audited.\n\nTo determine the remote server that the records are being sent to, use the following command:\n\n# grep -i remote_server /etc/audisp/audisp-remote.conf\nremote_server = 10.0.21.1\n\nIf a remote server is not configured, or the line is commented out, ask the System Administrator to indicate how the audit logs are off-loaded to a different system or media. \n\nIf there is no evidence that the audit logs are being off-loaded to another system or media, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to off-load audit records onto a different system or media from the system being audited.\n\nSet the remote server option in \"/etc/audisp/audisp-remote.conf\" with the IP address of the log aggregation server.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204509r958754_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must off-load audit records onto a different system or media from the system being audited.",
+  "tracking_issue": "TODO-V-204509",
+  "vuln_id": "V-204509"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the Tomcat servers System Security Plan/server documentation.\n\nAccess the Tomcat server and review the $CATALINA_BASE/webapps folder.\n\nEnsure that all webapps are documented in the SSP.\n\nIf the applications that are hosted on the Tomcat server are not documented in the SSP, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Document the applications that have an ATO on the Tomcat server.\n\nRetain the information in the SSP and present to the auditor in the event of a CCRI.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-223007r961863_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "Hosted applications must be documented in the system security plan.",
+  "tracking_issue": "TODO-V-223007",
+  "vuln_id": "V-223007"
+}

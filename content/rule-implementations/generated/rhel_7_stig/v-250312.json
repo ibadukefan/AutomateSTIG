@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system confines SELinux users to roles that conform to least privilege.\n\nCheck the SELinux User list to SELinux Roles mapping by using the following command:\n\n     $ sudo semanage user -l\n\n                                     Labeling  MLS/               MLS/\n     SELinux User      Prefix       MCS Level    MCS Range          SELinux Roles\n\n     guest_u                user          s0                     s0                             guest_r\n     root                        user          s0                     s0-s0:c0.c1023    staff_r sysadm_r system_r unconfined_r\n     staff_u                  user          s0                     s0-s0:c0.c1023    staff_r sysadm_r system_r unconfined_r\n     sysadm_u            user          s0                     s0-s0:c0.c1023    sysadm_r\n     system_u             user          s0                     s0-s0:c0.c1023    system_r unconfined_r\n     unconfined_u    user          s0                     s0-s0:c0.c1023    system_r unconfined_r\n     user_u                   user          s0                     s0                            user_r\n     xguest_u              user          s0                     s0                            xguest_r\n\nIf the output differs from the above example, ask the system administrator (SA) to demonstrate how the SELinux User mappings are exercising least privilege. If deviations from the example are not documented with the information system security officer (ISSO) and do not demonstrate least privilege, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to confine SELinux users to roles that conform to least privilege.\n\nUse the following command to map the \"staff_u\" SELinux user to the \"staff_r\" and \"sysadm_r\" roles:\n\n     $ sudo semanage user -m staff_u -R staff_r -R sysadm_r\n\nUse the following command to map the \"user_u\" SELinux user to the \"user_r\" role:\n\n     $ sudo semanage -m user_u -R user_r",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-250312r958726_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must confine SELinux users to roles that conform to least privilege.",
+  "tracking_issue": "TODO-V-250312",
+  "vuln_id": "V-250312"
+}

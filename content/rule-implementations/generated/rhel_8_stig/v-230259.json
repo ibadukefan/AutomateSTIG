@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the system commands contained in the following directories are group-owned by \"root\", or a required system account, with the following command:\n\n$ sudo find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -exec ls -l {} \\;\n\nIf any system commands are returned and is not group-owned by a required system account, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system commands to be protected from unauthorized access.\n\nRun the following command, replacing \"[FILE]\" with any system command file not group-owned by \"root\" or a required system account.\n\n$ sudo chgrp root [FILE]",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230259r1017079_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 system commands must be group-owned by root or a system account.",
+  "tracking_issue": "TODO-V-230259",
+  "vuln_id": "V-230259"
+}

@@ -1,0 +1,30 @@
+{
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to use two or more name servers for DNS resolution based on the DNS mode of the system.\n\t\nIf the NetworkManager DNS mode is set to \"none\", add the following lines to \"/etc/resolv.conf\":\n\t\nnameserver [name server 1]\nnameserver [name server 2]\n\t\nReplace [name server 1] and [name server 2] with the IPs of two different DNS resolvers.\n\t\nIf the NetworkManager DNS mode is set to \"default\", add two DNS servers to a NetworkManager connection using the following command:\n\t\n$ nmcli connection modify [connection name] ipv4.dns [name server 1],[name server 2]\n\t\nReplace [name server 1] and [name server 2] with the IPs of two different DNS resolvers. Replace [connection name] with a valid NetworkManager connection name on the system. Replace ipv4 with ipv6 if IPv6 DNS servers are used.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-257948r1045004_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_rhel_9_v2r4_stig_scap_1_3_benchmark/u_rhel_9_v2r4_stig_scap_1_3_benchmark.json",
+  "source_version": "U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark",
+  "title": "RHEL 9 systems using Domain Name Servers (DNS) resolution must have at least two name servers configured.",
+  "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-257948",
+  "vuln_id": "xccdf_mil.disa.stig_group_V-257948"
+}

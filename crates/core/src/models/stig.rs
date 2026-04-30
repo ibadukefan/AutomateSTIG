@@ -47,7 +47,10 @@ impl StigBenchmark {
 
     /// Get rules filtered by severity.
     pub fn rules_by_severity(&self, severity: Severity) -> Vec<&StigRule> {
-        self.rules.iter().filter(|r| r.severity == severity).collect()
+        self.rules
+            .iter()
+            .filter(|r| r.severity == severity)
+            .collect()
     }
 }
 

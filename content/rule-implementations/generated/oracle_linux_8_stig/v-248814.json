@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the audit system offloads audit records onto a different system or media from the system being audited with the following command: \n \n     $ sudo grep @@ /etc/rsyslog.conf /etc/rsyslog.d/*.conf \n \n     /etc/rsyslog.conf:*.* @@[logaggregationserver.example.mil]:[port] \n \nIf a remote server is not configured or the line is commented out, ask the system administrator to indicate how the audit logs are offloaded to a different system or media.  \n \nIf there is no evidence that the audit logs are being offloaded to another system or media, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 8 to offload audit records onto a different system or media from the system being audited by specifying the remote logging server in \"/etc/rsyslog.conf\" or \"/etc/rsyslog.d/[customfile].conf\" with the name or IP address of the log aggregation server. \n \nFor UDP:\n     *.* @[logaggregationserver.example.mil]:[port]\n\nFor TCP: \n     *.* @@[logaggregationserver.example.mil]:[port]",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248814r958754_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "The OL 8 audit records must be offloaded onto a different system or storage media from the system being audited.",
+  "tracking_issue": "TODO-V-248814",
+  "vuln_id": "V-248814"
+}

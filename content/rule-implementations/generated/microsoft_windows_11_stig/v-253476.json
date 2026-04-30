@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If there are no enabled local Administrator accounts, this is Not Applicable.\n\nReview the password last set date for the enabled local Administrator account.\n\nOn the standalone or domain-joined workstation:\n\nOpen \"PowerShell\".\n\nEnter \"Get-LocalUser -Name * | Select-Object *\".\n\nIf the \"PasswordLastSet\" date is greater than \"60\" days old for the local Administrator account for administering the computer/domain, this is a finding.\n\nVerify LAPS is configured and operational. \n\nNavigate to Local Computer Policy >> Computer Configuration >> Administrative Templates >> System >> LAPS >> Password Settings >> Set to enabled. Password Complexity, large letters + small letters + numbers + special, Password Length 14, Password Age 60. If not configured as shown, this is a finding. \n\nVerify LAPS Operational logs >> Event Viewer >> Applications and Services Logs >> Microsoft >> Windows >> LAPS >> Operational. Verify LAPS policy process is completing. If it is not, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the enabled local Administrator account password at least every 60 days. \n\nWindows LAPS must be used to change the built-in Administrator account password. Domain-joined and nondomain-joined systems can configure this to occur more frequently. LAPS will change the password every 30 days by default. \n\nMore information is available at:\nhttps://techcommunity.microsoft.com/t5/windows-it-pro-blog/by-popular-demand-windows-laps-available-now/ba-p/3788747\nhttps://learn.microsoft.com/en-us/windows-server/identity/laps/laps-overview#windows-laps-supported-platforms-and-azure-ad-laps-preview-status",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-253476r1051060_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/microsoft_windows_11_stig/u_ms_windows_11_v2r4_stig.json",
+  "source_version": "U_MS_Windows_11_V2R4_STIG.zip",
+  "stig_id": "Microsoft_Windows_11_STIG",
+  "title": "Passwords for enabled local Administrator accounts must be changed at least every 60 days.",
+  "tracking_issue": "TODO-V-253476",
+  "vuln_id": "V-253476"
+}

@@ -1,0 +1,53 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/rsyslog.conf",
+      "pattern": "cron",
+      "type": "file_content"
+    },
+    "description": "Cron logging must be implemented in RHEL 8.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230387"
+  },
+  "check_content_excerpt": "Verify that \"rsyslog\" is configured to log cron events with the following command:\n\nNote: If another logging package is used, substitute the utility configuration file for \"/etc/rsyslog.conf\" or \"/etc/rsyslog.d/*.conf\" files.\n\n$ sudo grep -s cron /etc/rsyslog.conf /etc/rsyslog.d/*.conf\n\n/etc/rsyslog.conf:*.info;mail.none;authpriv.none;cron.none                          /var/log/messages\n/etc/rsyslog.conf:# Log cron stuff\n/etc/rsyslog.conf:cron.*                                                                                                    /var/log/cron\n\nIf the command does not return a response, check for cron logging all facilities with the following command.\n\n$ sudo grep -s /var/log/messages /etc/rsyslog.conf /etc/rsyslog.d/*.conf\n\n/etc/rsyslog.conf:*.info;mail.none;authpriv.none;cron.none                          /var/log/messages\n\nIf \"rsyslog\" is not logging messages for the cron facility or all facilities, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure \"rsyslog\" to log all cron messages by adding or updating the following line to \"/etc/rsyslog.conf\" or a configuration file in the /etc/rsyslog.d/ directory:\n\ncron.* /var/log/cron\n\nThe rsyslog daemon must be restarted for the changes to take effect:\n$ sudo systemctl restart rsyslog.service",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-230387r1017195_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "Cron logging must be implemented in RHEL 8.",
+  "tracking_issue": "TODO-V-230387",
+  "vuln_id": "V-230387"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify Ubuntu 22.04 LTS is configured to display the Standard Mandatory DOD Notice and Consent Banner before granting access to the operating system via a graphical user logon by using the following command:  \n  \nNote: If no graphical user interface is installed, this requirement is not applicable. \n  \n     $ grep -i banner-message-enable /etc/gdm3/greeter.dconf-defaults \n     banner-message-enable=true  \n  \nIf the value for \"banner-message-enable\" is set to \"false\", the line is commented out, or no value is returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to display the Standard Mandatory DOD Notice and Consent Banner before granting access to the operating system via a graphical user logon. \n \nAdd or modify the following line in the \"/etc/gdm3/greeter.dconf-defaults\" file: \n \n[org/gnome/login-screen]  \nbanner-message-enable=true  \n  \nUpdate GDM with the new configuration by using the following commands:  \n  \n     $ sudo dconf update  \n     $ sudo systemctl restart gdm3",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-260535r958390_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must enable the graphical user logon banner to display the Standard Mandatory DOD Notice and Consent Banner before granting local access to the system via a graphical user logon.",
+  "tracking_issue": "TODO-V-260535",
+  "vuln_id": "V-260535"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the macOS system is configured to issue or obtain public key certificates from an approved service provider with the following command:\n\n/usr/bin/security dump-keychain /Library/Keychains/System.keychain | /usr/bin/awk -F'\"' '/labl/ {print $4}'\n\nIf the result does not contain a list of approved certificate authorities, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the macOS system to issue or obtain public key certificates from an approved service provider by obtaining the approved certificates from the appropriate authority and install them to the System Keychain.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-268534r1034542_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/apple_macos_15_stig/u_apple_macos_15_v1r7_stig.json",
+  "source_version": "U_Apple_macOS_15_V1R7_STIG.zip",
+  "stig_id": "Apple_macOS_15_STIG",
+  "title": "The macOS system must issue or obtain public key certificates from an approved service provider.",
+  "tracking_issue": "TODO-V-268534",
+  "vuln_id": "V-268534"
+}

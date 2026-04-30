@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review DBMS code (stored procedures, functions, triggers), application code, settings, column and field definitions, and constraints to determine whether the database is protected against invalid input. \n\nIf code exists that allows invalid data to be acted upon or input into the database, this is a finding. \n\nIf column/field definitions are not reflective of the data, this is a finding. \n\nIf columns/fields do not contain constraints and validity checking where required, this is a finding. \n\nWhere a column/field is noted in the system documentation as necessarily free form, even though its name and context suggest that it should be strongly typed and constrained, the absence of these protections is not a finding. \n\nWhere a column/field is clearly identified by name, caption or context as Notes, Comments, Description, Text, etc., the absence of these protections is not a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Use parameterized queries, stored procedures, constraints and foreign keys to validate data input. \n\nModify SQL Server to properly use the correct column data types as required in the database.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271362r1108702_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "When invalid inputs are received, the SQL Server must behave in a predictable and documented manner that reflects organizational and system objectives.",
+  "tracking_issue": "TODO-V-271362",
+  "vuln_id": "V-271362"
+}

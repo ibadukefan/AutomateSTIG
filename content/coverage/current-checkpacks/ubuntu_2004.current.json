@@ -1,0 +1,401 @@
+{
+  "stig_id": "Ubuntu_20.04_LTS_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/ubuntu_2004.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/ubuntu_2004.json",
+  "total_rules": 30,
+  "rules": [
+    {
+      "vuln_id": "V-238196",
+      "rule_id": "V-238196_automatestig_check",
+      "classification": "automated",
+      "reason": "Ubuntu 20.04 SSH must not allow direct root login",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238196",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238197",
+      "rule_id": "V-238197_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must not allow empty passwords",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238197",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238198",
+      "rule_id": "V-238198_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveInterval must be set",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238198",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238199",
+      "rule_id": "V-238199_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveCountMax must be 1 or less",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238199",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238200",
+      "rule_id": "V-238200_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must display a login banner",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238200",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238201",
+      "rule_id": "V-238201_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH X11 forwarding must be disabled",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238201",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238202",
+      "rule_id": "V-238202_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must use PAM",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238202",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238210",
+      "rule_id": "V-238210_automatestig_check",
+      "classification": "automated",
+      "reason": "IP forwarding must be disabled",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238210",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238211",
+      "rule_id": "V-238211_automatestig_check",
+      "classification": "automated",
+      "reason": "Source-routed packets must not be accepted",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238211",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238212",
+      "rule_id": "V-238212_automatestig_check",
+      "classification": "automated",
+      "reason": "ICMP redirects must not be accepted",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238212",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238213",
+      "rule_id": "V-238213_automatestig_check",
+      "classification": "automated",
+      "reason": "System must not send ICMP redirects",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238213",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238214",
+      "rule_id": "V-238214_automatestig_check",
+      "classification": "automated",
+      "reason": "System must ignore ICMP broadcast echo requests",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238214",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238215",
+      "rule_id": "V-238215_automatestig_check",
+      "classification": "automated",
+      "reason": "TCP SYN cookies must be enabled",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238215",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238216",
+      "rule_id": "V-238216_automatestig_check",
+      "classification": "automated",
+      "reason": "ASLR must be fully enabled",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238216",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238217",
+      "rule_id": "V-238217_automatestig_check",
+      "classification": "automated",
+      "reason": "Kernel message buffer must be restricted",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238217",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238218",
+      "rule_id": "V-238218_automatestig_check",
+      "classification": "automated",
+      "reason": "IPv6 source routing must be disabled",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238218",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238220",
+      "rule_id": "V-238220_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/shadow must be mode 0640, owned by root:shadow",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238220",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238221",
+      "rule_id": "V-238221_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/passwd must be mode 0644 and owned by root",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238221",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238222",
+      "rule_id": "V-238222_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/group must be mode 0644 and owned by root",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238222",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238223",
+      "rule_id": "V-238223_automatestig_check",
+      "classification": "automated",
+      "reason": "sshd_config must be mode 0600 and owned by root",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238223",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238230",
+      "rule_id": "V-238230_automatestig_check",
+      "classification": "automated",
+      "reason": "Uncomplicated Firewall (UFW) must be active",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238230",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238231",
+      "rule_id": "V-238231_automatestig_check",
+      "classification": "automated",
+      "reason": "AppArmor must be active",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238231",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238232",
+      "rule_id": "V-238232_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit daemon must be running",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238232",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238233",
+      "rule_id": "V-238233_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH daemon must be running",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238233",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238240",
+      "rule_id": "V-238240_automatestig_check",
+      "classification": "automated",
+      "reason": "AIDE must be installed for file integrity checking",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238240",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238241",
+      "rule_id": "V-238241_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit package must be installed",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238241",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238242",
+      "rule_id": "V-238242_automatestig_check",
+      "classification": "automated",
+      "reason": "UFW must be installed",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238242",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238243",
+      "rule_id": "V-238243_automatestig_check",
+      "classification": "automated",
+      "reason": "Telnet server must not be installed",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238243",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238250",
+      "rule_id": "V-238250_automatestig_check",
+      "classification": "automated",
+      "reason": "Maximum password age must be 60 days or less",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238250",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-238251",
+      "rule_id": "V-238251_automatestig_check",
+      "classification": "automated",
+      "reason": "Minimum password age must be at least 1 day",
+      "check_pack": "ubuntu_2004",
+      "check_id": "V-238251",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

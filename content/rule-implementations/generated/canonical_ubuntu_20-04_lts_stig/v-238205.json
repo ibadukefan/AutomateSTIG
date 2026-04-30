@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the Ubuntu operating system contains no duplicate User IDs (UIDs) for interactive users with the following command: \n \n$ awk -F \":\" 'list[$3]++{print $1, $3}' /etc/passwd \n \nIf output is produced and the accounts listed are interactive user accounts, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Edit the file \"/etc/passwd\" and provide each interactive user account that has a duplicate UID with a unique UID.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-238205r958482_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/canonical_ubuntu_20_04_lts_stig/u_can_ubuntu_20_04_lts_v2r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip",
+  "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
+  "title": "The Ubuntu operating system must uniquely identify interactive users.",
+  "tracking_issue": "TODO-V-238205",
+  "vuln_id": "V-238205"
+}

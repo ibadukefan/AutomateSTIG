@@ -1,0 +1,271 @@
+{
+  "stig_id": "Windows_Defender_AV_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/windows_defender_antivirus.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/windows_defender_antivirus.json",
+  "total_rules": 20,
+  "rules": [
+    {
+      "vuln_id": "V-253260",
+      "rule_id": "V-253260_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender real-time protection must be enabled",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253260",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253261",
+      "rule_id": "V-253261_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender behavior monitoring must be enabled",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253261",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253262",
+      "rule_id": "V-253262_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender on-access protection must be enabled",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253262",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253263",
+      "rule_id": "V-253263_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender must scan files when real-time protection is re-enabled",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253263",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253264",
+      "rule_id": "V-253264_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender must scan all downloaded files and attachments",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253264",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253270",
+      "rule_id": "V-253270_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender cloud-delivered protection (MAPS) must be configured for advanced membership",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253270",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253271",
+      "rule_id": "V-253271_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender must automatically submit samples for cloud analysis",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253271",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253272",
+      "rule_id": "V-253272_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender cloud block level must be set to High",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253272",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253273",
+      "rule_id": "V-253273_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender cloud extended timeout must be at least 50 seconds",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253273",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253280",
+      "rule_id": "V-253280_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender potentially unwanted application (PUA) protection must be enabled",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253280",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253281",
+      "rule_id": "V-253281_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender AntiSpyware must not be disabled",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253281",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253282",
+      "rule_id": "V-253282_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender AntiVirus must not be disabled",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253282",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253290",
+      "rule_id": "V-253290_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender scheduled scan day must be configured",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253290",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253291",
+      "rule_id": "V-253291_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender scheduled scan time must be configured",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253291",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253292",
+      "rule_id": "V-253292_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender scheduled scan must be a full scan",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253292",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253293",
+      "rule_id": "V-253293_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender must scan archive files",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253293",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253294",
+      "rule_id": "V-253294_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender must scan removable drives",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253294",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253295",
+      "rule_id": "V-253295_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender must scan email content",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253295",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253300",
+      "rule_id": "V-253300_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender signature updates must occur at least every 24 hours",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253300",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-253301",
+      "rule_id": "V-253301_automatestig_check",
+      "classification": "automated",
+      "reason": "Windows Defender Antivirus Service must be running",
+      "check_pack": "windows_defender_antivirus",
+      "check_id": "V-253301",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

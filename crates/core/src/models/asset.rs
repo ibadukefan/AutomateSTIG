@@ -171,7 +171,12 @@ mod tests {
 
     #[test]
     fn test_asset_role_roundtrip() {
-        for role in [AssetRole::None, AssetRole::Workstation, AssetRole::MemberServer, AssetRole::DomainController] {
+        for role in [
+            AssetRole::None,
+            AssetRole::Workstation,
+            AssetRole::MemberServer,
+            AssetRole::DomainController,
+        ] {
             let s = role.as_ckl_str();
             assert_eq!(AssetRole::from_ckl_str(s), role);
         }

@@ -1,0 +1,336 @@
+{
+  "stig_id": "VMware_vSphere_8_vCenter_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/vmware_vsphere8_vcenter.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/vmware_vsphere8_vcenter.json",
+  "total_rules": 25,
+  "rules": [
+    {
+      "vuln_id": "V-258800",
+      "rule_id": "V-258800_automatestig_check",
+      "classification": "automated",
+      "reason": "SSO password policy maximum length must be configured",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258800",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258801",
+      "rule_id": "V-258801_automatestig_check",
+      "classification": "automated",
+      "reason": "SSO password policy must require minimum length of 15 characters",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258801",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258802",
+      "rule_id": "V-258802_automatestig_check",
+      "classification": "automated",
+      "reason": "SSO password policy must require at least one special character",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258802",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258803",
+      "rule_id": "V-258803_automatestig_check",
+      "classification": "automated",
+      "reason": "SSO password policy must require at least one uppercase character",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258803",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258804",
+      "rule_id": "V-258804_automatestig_check",
+      "classification": "automated",
+      "reason": "SSO password policy must require at least one numeric character",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258804",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258805",
+      "rule_id": "V-258805_automatestig_check",
+      "classification": "automated",
+      "reason": "SSO password history must prohibit reuse of at least 5 previous passwords",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258805",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258806",
+      "rule_id": "V-258806_automatestig_check",
+      "classification": "automated",
+      "reason": "SSO lockout must trigger after 5 or fewer failed login attempts",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258806",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258807",
+      "rule_id": "V-258807_automatestig_check",
+      "classification": "automated",
+      "reason": "SSO lockout failure time interval must be configured",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258807",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258808",
+      "rule_id": "V-258808_automatestig_check",
+      "classification": "automated",
+      "reason": "SSO account unlock time must be configured",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258808",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258809",
+      "rule_id": "V-258809_automatestig_check",
+      "classification": "automated",
+      "reason": "vSphere Client session timeout must be configured",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258809",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258810",
+      "rule_id": "V-258810_automatestig_check",
+      "classification": "automated",
+      "reason": "SSO must be configured for smart card or certificate-based authentication",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258810",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258811",
+      "rule_id": "V-258811_automatestig_check",
+      "classification": "automated",
+      "reason": "vCenter must forward logs to a remote syslog server over TCP",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258811",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258812",
+      "rule_id": "V-258812_automatestig_check",
+      "classification": "automated",
+      "reason": "NTP must be configured with an authoritative time source",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258812",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258813",
+      "rule_id": "V-258813_automatestig_check",
+      "classification": "automated",
+      "reason": "Chrony NTP daemon must be running",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258813",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258814",
+      "rule_id": "V-258814_automatestig_check",
+      "classification": "automated",
+      "reason": "File-based backup schedule must be configured",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258814",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258815",
+      "rule_id": "V-258815_automatestig_check",
+      "classification": "automated",
+      "reason": "All required vCenter services must be running",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258815",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258816",
+      "rule_id": "V-258816_automatestig_check",
+      "classification": "automated",
+      "reason": "Alarm status change events must be displayed",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258816",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258817",
+      "rule_id": "V-258817_automatestig_check",
+      "classification": "automated",
+      "reason": "vCenter TLS certificate must be valid and not expired",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258817",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258818",
+      "rule_id": "V-258818_automatestig_check",
+      "classification": "automated",
+      "reason": "vCenter TLS certificate must use SHA-256 or stronger signature algorithm",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258818",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258819",
+      "rule_id": "V-258819_automatestig_check",
+      "classification": "automated",
+      "reason": "vCenter task retention must be configured",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258819",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258820",
+      "rule_id": "V-258820_automatestig_check",
+      "classification": "automated",
+      "reason": "vCenter event retention must be configured",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258820",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258821",
+      "rule_id": "V-258821_automatestig_check",
+      "classification": "automated",
+      "reason": "vCenter must limit host rescan operations",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258821",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258822",
+      "rule_id": "V-258822_automatestig_check",
+      "classification": "automated",
+      "reason": "Required vCenter plugins must be running",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258822",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258823",
+      "rule_id": "V-258823_automatestig_check",
+      "classification": "automated",
+      "reason": "vSphere Client must display a DoD-approved login banner",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258823",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258824",
+      "rule_id": "V-258824_automatestig_check",
+      "classification": "automated",
+      "reason": "SSO password policy, lockout policy, and NTP must all be properly configured",
+      "check_pack": "vmware_vsphere8_vcenter",
+      "check_id": "V-258824",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_vcenter.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

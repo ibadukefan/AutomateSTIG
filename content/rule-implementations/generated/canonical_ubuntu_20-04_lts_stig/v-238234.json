@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the Ubuntu operating system prevents passwords from being reused for a minimum of five generations by running the following command:\n\n$ grep -i remember /etc/pam.d/common-password\n\npassword [success=1 default=ignore] pam_unix.so obscure sha512 shadow remember=5 rounds=5000\n\nIf the \"remember\" parameter value is not greater than or equal to \"5\", is commented out, or is not set at all, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the Ubuntu operating system to prevent passwords from being reused for a minimum of five generations.\n\nAdd or modify the \"remember\" parameter value to the following line in \"/etc/pam.d/common-password\" file:\n\npassword [success=1 default=ignore] pam_unix.so obscure sha512 shadow remember=5 rounds=5000",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-238234r1015152_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/canonical_ubuntu_20_04_lts_stig/u_can_ubuntu_20_04_lts_v2r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip",
+  "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
+  "title": "The Ubuntu operating system must prohibit password reuse for a minimum of five generations.",
+  "tracking_issue": "TODO-V-238234",
+  "vuln_id": "V-238234"
+}

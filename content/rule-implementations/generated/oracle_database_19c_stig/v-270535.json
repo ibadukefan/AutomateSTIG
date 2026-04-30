@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From SQL*Plus:\n\nselect value from v$parameter where name = '_trace_files_public';\n\nIf the value returned is TRUE, this is a finding.\n\nIf the parameter does not exist or is set to FALSE, this is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From SQL*Plus (shutdown database instance):\n\nshutdown immediate\n\nFrom SQL*Plus (create a pfile from spfile):\n\ncreate pfile='[PATH]init[SID].ora' from spfile;\n\nEdit the init[SID].ora file and remove the following line:\n\n*._trace_files_public=TRUE\n\nFrom SQL*Plus (update the spfile using the pfile):\n\ncreate spfile from pfile='[PATH]init[SID].ora';\n\nFrom SQL*Plus (start the database instance):\n\nstartup\n\nNote: [PATH] depends on the platform (Windows or Unix).\n\nEnsure the file is directed to a writable location.\n\n[SID] is equal to the oracle SID or database instance ID.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270535r1065307_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "The Oracle _TRACE_FILES_PUBLIC parameter if present must be set to FALSE.",
+  "tracking_issue": "TODO-V-270535",
+  "vuln_id": "V-270535"
+}

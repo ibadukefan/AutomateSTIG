@@ -1,0 +1,53 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/modprobe.d/",
+      "pattern": "atm",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must disable the asynchronous transfer mode (ATM) protocol.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230494"
+  },
+  "check_content_excerpt": "Verify the operating system disables the ability to load the ATM protocol kernel module and ensure that the ATM protocol kernel module is disabled with the following command:\n\n$ sudo grep -r atm /etc/modprobe.d/* | grep \"blacklist\"\n\n/etc/modprobe.d/blacklist.conf:install atm /bin/false\n/etc/modprobe.d/blacklist.conf:blacklist atm\n\nIf the command does not return any output, or the line is commented out, and use of the ATM protocol is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable the ability to use the ATM protocol kernel module.\n\nAdd or update the following lines in the file \"/etc/modprobe.d/blacklist.conf\":\n\n     install atm /bin/false\n     blacklist atm\n\nReboot the system for the settings to take effect.",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-230494r1069310_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must disable the asynchronous transfer mode (ATM) protocol.",
+  "tracking_issue": "TODO-V-230494",
+  "vuln_id": "V-230494"
+}

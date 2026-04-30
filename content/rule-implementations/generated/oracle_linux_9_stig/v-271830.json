@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": "0600",
+      "owner": null,
+      "path": "/etc/crontab",
+      "type": "file_permission"
+    },
+    "description": "OL 9 /etc/crontab file must have mode 0600.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271830"
+  },
+  "check_content_excerpt": "Verify that OL 9 configures permissions of /etc/crontab with the following command:\n\n$ stat -c \"%a %n\" /etc/crontab\n0600\n\nIf /etc/crontab does not have a mode of \"0600\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the OL 9 file /etc/crontab with mode 600.\n\n$ sudo chmod 0600 /etc/crontab",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_permission",
+  "remediation": "planned",
+  "rule_id": "SV-271830r1092202_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 /etc/crontab file must have mode 0600.",
+  "tracking_issue": "TODO-V-271830",
+  "vuln_id": "V-271830"
+}

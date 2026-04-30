@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to verify that storm control is enabled on CE-facing interfaces deploying VPLS as shown in the example below:\n\ninterface Ethernet2/4\n no shutdown\n no switchport\n storm-control broadcast level 40.00\n service instance 1 ethernet\n encapsulation dot1q 100\n\nIf storm control is not enabled at a minimum for broadcast traffic, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure storm control for each CE-facing interface as shown in the example below:\n\nSW1(config)# int e2/4\nSW1(config-if)# storm-control broadcast level 40 \nSW1(config-if)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221123r999732_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco PE switch providing Virtual Private LAN Services (VPLS) must be configured to have traffic storm control thresholds on CE-facing interfaces.",
+  "tracking_issue": "TODO-V-221123",
+  "vuln_id": "V-221123"
+}

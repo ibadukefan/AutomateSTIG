@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the file integrity tool is configured to verify ACLs. \n\nUse the following command to determine if the file is in a location other than \"/etc/aide/aide.conf\": \n \n     $ sudo find / -name aide.conf \n \nCheck the \"aide.conf\" file to determine if the \"acl\" rule has been added to the rule list being applied to the files and directories selection lists with the following command: \n \n     $ sudo grep -E \"[+]?acl\" /etc/aide.conf \n \n     VarFile = OwnerMode+n+l+X+acl \n \nIf the \"acl\" rule is not being used on all selection lines in the \"/etc/aide.conf\" file or is commented out, or ACLs are not being checked by another file integrity tool, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the file integrity tool to check file and directory ACLs. \n \nIf AIDE is installed, ensure the \"acl\" rule is present on all file and directory selection lists.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248897r991589_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "The OL 8 file integrity tool must be configured to verify Access Control Lists (ACLs).",
+  "tracking_issue": "TODO-V-248897",
+  "vuln_id": "V-248897"
+}

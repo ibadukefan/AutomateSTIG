@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to determine if uRPF loose mode is enabled on all CE-facing interfaces.\n\ninterface Ethernet1/2\n ip address x.1.12.2/30\n ip access-group BLOCK_TO_CORE in\n ip verify unicast source reachable-via any\n\nIf uRPF loose mode is not enabled on all CE-facing interfaces, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure uRPF loose mode on all CE-facing interfaces as shown in the example below:\n\nSW1(config)# int e1/2\nSW1(config-if)# ip verify unicast source reachable-via any\nSW1(config-if)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221127r999736_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco PE switch must be configured with Unicast Reverse Path Forwarding (uRPF) loose mode enabled on all CE-facing interfaces.",
+  "tracking_issue": "TODO-V-221127",
+  "vuln_id": "V-221127"
+}

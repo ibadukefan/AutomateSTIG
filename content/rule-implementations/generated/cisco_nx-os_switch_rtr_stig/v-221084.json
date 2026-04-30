@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to determine if it is compliant with this requirement. The ip unreachables command must not be found on any interface as shown in the example below:\n\ninterface Ethernet2/7\n no switchport\n ip address x.22.4.2/30\n ip unreachables\n\nIf ICMP unreachable notifications are sent from any external interfaces, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Disable ip unreachables on all external interfaces as shown below:\n\nSW1(config)# int e2/7\nSW1(config-if)# no ip unreachables\nSW1(config-if)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221084r999693_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco switch must be configured to have Internet Control Message Protocol (ICMP) unreachable messages disabled on all external interfaces.",
+  "tracking_issue": "TODO-V-221084",
+  "vuln_id": "V-221084"
+}

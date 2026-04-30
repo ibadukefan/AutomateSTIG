@@ -1,0 +1,30 @@
+{
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure \"auditd\" service to notify the SA and ISSO in the event of an audit processing failure. \n\nEdit the following line in \"/etc/audit/auditd.conf\" to ensure that administrators are notified via email for those situations:\n\naction_mail_acct = root",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-230388r1017196_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_rhel_8_v2r7_stig_scap_1_3_benchmark/u_rhel_8_v2r7_stig_scap_1_3_benchmark.json",
+  "source_version": "U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark",
+  "title": "The RHEL 8 System Administrator (SA) and Information System Security Officer (ISSO) (at a minimum) must be alerted of an audit processing failure event.",
+  "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-230388",
+  "vuln_id": "xccdf_mil.disa.stig_group_V-230388"
+}

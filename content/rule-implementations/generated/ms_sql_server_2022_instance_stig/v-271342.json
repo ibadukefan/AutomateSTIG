@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the server documentation to obtain a listing of accounts used for executing external processes. Execute the following to obtain a listing of accounts currently configured for use by external processes. \n \nSELECT C.name AS credential_name, C.credential_identity \nFROM sys.credentials C \nGO \n \nSELECT P.name AS proxy_name, C.name AS credential_name, C.credential_identity \nFROM sys.credentials C  \nJOIN msdb.dbo.sysproxies P ON C.credential_id = P.credential_id \nWHERE P.enabled = 1 \nGO \n \nIf any Credentials or SQL Agent Proxy accounts are returned that are not documented and authorized, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Remove any SQL Agent Proxy accounts and credentials that are not authorized. \n \nDROP CREDENTIAL <Credential Name> \nGO \n \nUSE [msdb] \nEXEC sp_delete_proxy @proxy_name = '<Proxy Name>' \nGO",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271342r1108642_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "Use of credentials and proxies must be restricted to necessary cases only.",
+  "tracking_issue": "TODO-V-271342",
+  "vuln_id": "V-271342"
+}

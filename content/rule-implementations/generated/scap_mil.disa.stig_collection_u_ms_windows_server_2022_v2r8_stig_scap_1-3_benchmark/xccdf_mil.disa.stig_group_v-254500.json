@@ -1,0 +1,30 @@
+{
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Debug programs to include only the following accounts or groups:\n\n- Administrators",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-254500r958726_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_ms_windows_server_2022_v2r8_stig_scap_1_3_benchmark/u_ms_windows_server_2022_v2r8_stig_scap_1_3_benchmark.json",
+  "source_version": "U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark",
+  "title": "Windows Server 2022 debug programs user right must only be assigned to the Administrators group.",
+  "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-254500",
+  "vuln_id": "xccdf_mil.disa.stig_group_V-254500"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "At the command prompt, run the following command:\n\n# xmllint --xpath '/Server/Service/Engine/Host/Valve[@className=\"org.apache.catalina.valves.AccessLogValve\"]/@pattern' /usr/lib/vmware-lookupsvc/conf/server.xml\n\nExample result:\n\npattern=\"%t %I [Request] &quot;%{User-Agent}i&quot; %{X-Forwarded-For}i/%h:%{remote}p %l %u to local %{local}p - &quot;%r&quot; %H %m %U%q    [Response] %s - %b bytes    [Perf] process %Dms / commit %Fms / conn [%X]\"\n\nRequired elements:\n\n%h %{X-Forwarded-For}i %l %t %u &quot;%r&quot; %s %b\n\nIf the log pattern does not contain the required elements in any order, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/server.xml\n\nInside the <Host> node, find the \"AccessLogValve\" <Valve> node and replace the \"pattern\" element as follows:\n\npattern=\"%t %I [Request] &quot;%{User-Agent}i&quot; %{X-Forwarded-For}i/%h:%{remote}p %l %u to local %{local}p - &quot;%r&quot; %H %m %U%q    [Response] %s - %b bytes    [Perf] process %Dms / commit %Fms / conn [%X]\"\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-259040r960891_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/vmw_vsphere_8_0_vcsa_lookup_svc_stig/u_vmw_vsphere_8_0_y25m07_stig.json",
+  "source_version": "U_VMW_vSphere_8-0_Y25M07_STIG.zip",
+  "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
+  "title": "The vCenter Lookup service must produce log records containing sufficient information regarding event details.",
+  "tracking_issue": "TODO-V-259040",
+  "vuln_id": "V-259040"
+}

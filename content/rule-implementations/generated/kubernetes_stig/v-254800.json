@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Change to the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Run the command:\n\n\"grep -i admission-control-config-file *\"\n\nIf the setting \"--admission-control-config-file\" is not configured in the Kubernetes API Server manifest file, this is a finding.\n\nInspect the .yaml file defined by the --admission-control-config-file. Verify PodSecurity is properly configured. \nIf least privilege is not represented, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. \n\nSet the value of \"--admission-control-config-file\" to a valid path for the file.\n\nCreate an admission controller config file:\nExample File:\n```yaml\napiVersion: apiserver.config.k8s.io/v1\nkind: AdmissionConfiguration\nplugins:\n- name: PodSecurity\n  configuration:\n    apiVersion: pod-security.admission.config.k8s.io/v1beta1\n    kind: PodSecurityConfiguration\n    # Defaults applied when a mode label is not set.\n    defaults:\n      enforce: \"privileged\"\n      enforce-version: \"latest\"\n    exemptions:\n      # Don't forget to exempt namespaces or users that are responsible for deploying\n      # cluster components, because they need to run privileged containers\n      usernames: [\"admin\"] \n      namespaces: [\"kube-system\"]\n\nSee for more details:\nMigrate from PSP to PSA:\nhttps://kubernetes.io/docs/tasks/configure-pod-container/migrate-from-psp/\n\nBest Practice: https://kubernetes.io/docs/concepts/security/pod-security-policy/#recommended-practice.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-254800r961359_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/kubernetes_stig/u_kubernetes_v2r6_stig.json",
+  "source_version": "U_Kubernetes_V2R6_STIG.zip",
+  "stig_id": "Kubernetes_STIG",
+  "title": "Kubernetes must have a\u00a0Pod Security\u00a0Admission control file configured.",
+  "tracking_issue": "TODO-V-254800",
+  "vuln_id": "V-254800"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nAs the database administrator (shown here as \"postgres\"), verify the permissions of PGDATA: \n\n$ sudo su - postgres \n$ ls -la ${PGDATA?} \n\nIf PGDATA is not owned by postgres:postgres or if files can be accessed by others, this is a finding. \n\nAs the system administrator, verify the permissions of pgsql shared objects and compiled binaries: \n\n$ ls -la /usr/pgsql-${PGVER?}/bin\n$ ls -la /usr/pgsql-${PGVER?}/include\n$ ls -la /usr/pgsql-${PGVER?}/lib\n$ ls -la /usr/pgsql-${PGVER?}/share \n\nIf any of these are not owned by root:root, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nAs the system administrator, change the permissions of PGDATA: \n\n$ sudo chown -R postgres:postgres ${PGDATA?} \n$ sudo chmod 700 ${PGDATA?} \n\nAs the system administrator, change the permissions of pgsql: \n\n$ sudo chown -R root:root /usr/pgsql-${PGVER?}",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233609r960945_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must protect its audit features from unauthorized removal.",
+  "tracking_issue": "TODO-V-233609",
+  "vuln_id": "V-233609"
+}

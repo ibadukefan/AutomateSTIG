@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system removes all software components after updated versions have been installed.\n\nCheck if yum is configured to remove unneeded packages with the following command:\n\n# grep -i clean_requirements_on_remove /etc/yum.conf\nclean_requirements_on_remove=1\n\nIf \"clean_requirements_on_remove\" is not set to \"1\", \"True\", or \"yes\", or is not set in \"/etc/yum.conf\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to remove all software components after updated versions have been installed.\n\nSet the \"clean_requirements_on_remove\" option to \"1\" in the \"/etc/yum.conf\" file:\n\nclean_requirements_on_remove=1",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204452r958936_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must remove all software components after updated versions have been installed.",
+  "tracking_issue": "TODO-V-204452",
+  "vuln_id": "V-204452"
+}

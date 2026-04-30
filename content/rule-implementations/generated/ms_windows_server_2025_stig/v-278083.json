@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters",
+      "type": "registry",
+      "value_name": "DisableIPSourceRouting"
+    },
+    "description": "Windows Server 2025 source routing must be configured to the highest protection level to prevent Internet Protocol (IP) source routing.",
+    "expected": {
+      "type": "equals",
+      "value": 2
+    },
+    "platform": "windows",
+    "vuln_id": "V-278083"
+  },
+  "check_content_excerpt": "If the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE \nRegistry Path: \\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\\n\nValue Name: DisableIPSourceRouting\n\nValue Type: REG_DWORD\nValue: 0x00000002 (2)",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 2
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> MSS (Legacy) >> MSS: (DisableIPSourceRouting) IP source routing protection level (protects against packet spoofing) to \"Enabled\" with \"Highest protection, source routing is completely disabled\" selected.\n\nThis policy setting requires the installation of the MSS-Legacy custom templates included with the STIG package. \"MSS-Legacy.admx\" and \"MSS-Legacy.adml\" must be copied to the \\Windows\\PolicyDefinitions and \\Windows\\PolicyDefinitions\\en-US directories respectively.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-278083r1180955_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 source routing must be configured to the highest protection level to prevent Internet Protocol (IP) source routing.",
+  "tracking_issue": "TODO-V-278083",
+  "vuln_id": "V-278083"
+}

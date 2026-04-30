@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the shadow password suite configuration is set to encrypt passwords with a FIPS 140-3 approved cryptographic hashing algorithm by using the following command:  \n  \n     $ grep -i '^\\s*encrypt_method' /etc/login.defs \n     ENCRYPT_METHOD SHA512  \n  \nIf \"ENCRYPT_METHOD\" does not equal SHA512 or greater, is commented out, or is missing, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to encrypt all stored passwords.   \n  \nAdd or modify the following line in the \"/etc/login.defs\" file: \n  \nENCRYPT_METHOD SHA512",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-260572r971535_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must encrypt all stored passwords with a FIPS 140-3-approved cryptographic hashing algorithm.",
+  "tracking_issue": "TODO-V-260572",
+  "vuln_id": "V-260572"
+}

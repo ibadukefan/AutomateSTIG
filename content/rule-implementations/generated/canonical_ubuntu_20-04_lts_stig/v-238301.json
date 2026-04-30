@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the Ubuntu operating system configures the audit tools to be owned by root to prevent any unauthorized access. \n \nCheck the ownership by running the following command: \n \n$ stat -c \"%n %U\" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/audispd /sbin/augenrules \n \n/sbin/auditctl root \n/sbin/aureport root \n/sbin/ausearch root \n/sbin/autrace root \n/sbin/auditd root \n/sbin/audispd root \n/sbin/augenrules root \n \nIf any of the audit tools are not owned by root, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit tools on the Ubuntu operating system to be protected from unauthorized access by setting the file owner as  root using the following command: \n \n$ sudo chown root [audit_tool] \n \nReplace \"[audit_tool]\" with each audit tool not owned by root.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-238301r991557_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/canonical_ubuntu_20_04_lts_stig/u_can_ubuntu_20_04_lts_v2r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip",
+  "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
+  "title": "The Ubuntu operating system must configure audit tools to be owned by root.",
+  "tracking_issue": "TODO-V-238301",
+  "vuln_id": "V-238301"
+}

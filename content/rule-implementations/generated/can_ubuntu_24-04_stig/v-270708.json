@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that X11Forwarding is disabled with the following command: \n \n$ sudo grep -ir x11forwarding /etc/ssh/sshd_config* | grep -v \"^#\"\nX11Forwarding no \n \nIf the \"X11Forwarding\" keyword is set to \"yes\" and is not documented with the information system security officer (ISSO) as an operational requirement, is missing, or multiple conflicting results are returned, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Edit the \"/etc/ssh/sshd_config\" file to uncomment or add the line for the \"X11Forwarding\" keyword and set its value to \"no\" (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor): \n \nX11Forwarding no \n \nRestart the SSH daemon for the changes to take effect: \n \n$ sudo systemctl restart sshd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270708r1066613_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements.",
+  "tracking_issue": "TODO-V-270708",
+  "vuln_id": "V-270708"
+}

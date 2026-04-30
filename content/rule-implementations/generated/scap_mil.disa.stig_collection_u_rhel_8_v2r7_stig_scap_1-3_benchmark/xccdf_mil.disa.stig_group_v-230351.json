@@ -1,0 +1,30 @@
+{
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to enable a user's session lock until that user re-establishes access using established identification and authentication procedures.\n\nSelect/Create an authselect profile and incorporate the \"with-smartcard-lock-on-removal\" feature with the following example:\n\n$ sudo authselect select sssd with-smartcard with-smartcard-lock-on-removal\n\nAlternatively, the dconf settings can be edited in the /etc/dconf/db/* location.\n\nEdit or add the \"[org/gnome/settings-daemon/peripherals/smartcard]\" section of the database file and add or update the following lines:\n\nremoval-action='lock-screen'\n\nUpdate the system databases:\n\n$ sudo dconf update",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-230351r1017164_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_rhel_8_v2r7_stig_scap_1_3_benchmark/u_rhel_8_v2r7_stig_scap_1_3_benchmark.json",
+  "source_version": "U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark",
+  "title": "RHEL 8 must be able to initiate directly a session lock for all connection types using smartcard when the smartcard is removed.",
+  "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-230351",
+  "vuln_id": "xccdf_mil.disa.stig_group_V-230351"
+}

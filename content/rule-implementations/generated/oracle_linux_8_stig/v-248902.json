@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If TFTP is not required, it must not be installed. If TFTP is not installed, this rule is not applicable.\n\nCheck to see if TFTP server is installed with the following command:\n\n$ sudo dnf list installed | grep tftp-server \ntftp-server.x86_64 x.x-x.el8\n\nVerify the TFTP daemon, if tftp.server is installed, is configured to operate in secure mode with the following command:\n\n$ grep -i execstart /usr/lib/systemd/system/tftp.service\nExecStart=/usr/sbin/in.tftpd -s /var/lib/tftpboot\n\nNote: The \"-s\" option ensures the TFTP server only serves files from the specified directory, which is a security measure to prevent unauthorized access to other parts of the file system.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the TFTP daemon to operate in secure mode with the following command:\n$ sudo systemctl edit tftp.service\n\nIn the editor, enter:\n[Service]\nExecStart=/usr/sbin/in.tftpd -s /var/lib/tftpboot\n\nAfter making changes, reload the systemd daemon and restart the TFTP service as follows:\n$ sudo systemctl daemon-reload\n$ sudo systemctl restart tftp.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248902r1106146_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "If the Trivial File Transfer Protocol (TFTP) server is required, the OL 8 TFTP daemon must be configured to operate in secure mode.",
+  "tracking_issue": "TODO-V-248902",
+  "vuln_id": "V-248902"
+}

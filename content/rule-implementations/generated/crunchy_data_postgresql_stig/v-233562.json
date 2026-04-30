@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: The following instructions use the PGLOG environment variable. See supplementary content APPENDIX-I for instructions on configuring PGLOG.\n\nFirst, as the database administrator (shown here as \"postgres\"), check if pgaudit is enabled by running the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"SHOW shared_preload_libraries\"\n\nIf pgaudit is not found in the results, this is a finding.\n\nNext, as the database administrator (shown here as \"postgres\"), list all role memberships for the database:\n\n$ sudo su - postgres\n$ psql -c \"\\du\"\n\nNext, verify the query was logged:\n\n$ sudo su - postgres\n$ cat ${PGLOG?}/<latest_log>\n\nThis should, as an example, return (among other rows):\n2016-01-28 19:43:12.126 UTC postgres postgres: >LOG: AUDIT: SESSION,1,1,READ,SELECT,,,\"SELECT r.rolname, r.rolsuper, r.rolinherit,\nr.rolcreaterole, r.rolcreatedb, r.rolcanlogin,\nr.rolconnlimit, r.rolvaliduntil,\nARRAY(SELECT b.rolname\nFROM pg_catalog.pg_auth_members m\nJOIN pg_catalog.pg_roles b ON (m.roleid = b.oid)\nWHERE m.member = r.oid) as memberof\n, r.rolreplication\n, r.rolbypassrls\nFROM pg_catalog.pg_roles r\nORDER BY 1;\",<none>\n\nIf audit records are not produced, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nUsing pgaudit PostgreSQL can be configured to audit these requests. See supplementary content APPENDIX-B for documentation on installing pgaudit.\n\nWith pgaudit installed the following configurations can be made:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nAdd the following parameters (or edit existing parameters):\u00a0\n\npgaudit.log_catalog = 'on'\npgaudit.log = 'read'\n\nNow, as the system administrator, reload the server with the new configuration:\n\n$ sudo systemctl reload postgresql-${PGVER?}",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233562r960885_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must be able to generate audit records when privileges/permissions are retrieved.",
+  "tracking_issue": "TODO-V-233562",
+  "vuln_id": "V-233562"
+}

@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0",
+      "type": "registry",
+      "value_name": "NTLMMinServerSec"
+    },
+    "description": "Windows Server 2025 session security for NTLM SSP-based servers must be configured to require NTLMv2 session security and 128-bit encryption.",
+    "expected": {
+      "type": "equals",
+      "value": 537395200
+    },
+    "platform": "windows",
+    "vuln_id": "V-278228"
+  },
+  "check_content_excerpt": "If the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE \nRegistry Path: \\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0\\\n\nValue Name: NTLMMinServerSec\n\nValue Type: REG_DWORD\nValue: 0x20080000 (537395200)",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 537395200
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> Network security: Minimum session security for NTLM SSP based (including secure RPC) servers to \"Require NTLMv2 session security\" and \"Require 128-bit encryption\" (all options selected).",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-278228r1181390_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 session security for NTLM SSP-based servers must be configured to require NTLMv2 session security and 128-bit encryption.",
+  "tracking_issue": "TODO-V-278228",
+  "vuln_id": "V-278228"
+}

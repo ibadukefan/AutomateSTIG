@@ -1,0 +1,30 @@
+{
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure SSH to provide users with feedback on when account accesses last occurred by setting the required configuration options in \"/etc/pam.d/sshd\" or in the \"sshd_config\" file used by the system (\"/etc/ssh/sshd_config\" will be used in the example) (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor).\n\nModify the \"PrintLastLog\" line in \"/etc/ssh/sshd_config\" to match the following:\n\nPrintLastLog yes\n\nThe SSH service must be restarted for changes to \"sshd_config\" to take effect.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-230382r1069309_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_rhel_8_v2r7_stig_scap_1_3_benchmark/u_rhel_8_v2r7_stig_scap_1_3_benchmark.json",
+  "source_version": "U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark",
+  "title": "RHEL 8 must display the date and time of the last successful account logon upon an SSH logon.",
+  "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-230382",
+  "vuln_id": "xccdf_mil.disa.stig_group_V-230382"
+}

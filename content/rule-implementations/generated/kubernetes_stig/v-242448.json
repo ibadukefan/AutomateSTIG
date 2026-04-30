@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Check if Kube-Proxy is running use the following command:\nps -ef | grep kube-proxy\n\nIf Kube-Proxy exists:\nReview the permissions of the Kubernetes Kube Proxy by using the command:\nstat -c   %U:%G <location from --kubeconfig>| grep -v root:root\n\nIf the command returns any non root:root file permissions, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the ownership of the Kube Proxy to root:root by executing the command:\n\nchown root:root <location from kubeconfig>.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-242448r961863_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/kubernetes_stig/u_kubernetes_v2r6_stig.json",
+  "source_version": "U_Kubernetes_V2R6_STIG.zip",
+  "stig_id": "Kubernetes_STIG",
+  "title": "The Kubernetes Kube Proxy kubeconfig must be owned by root.",
+  "tracking_issue": "TODO-V-242448",
+  "vuln_id": "V-242448"
+}

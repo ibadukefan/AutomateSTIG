@@ -13,18 +13,30 @@ pub fn extract_ios_settings(config: &str) -> HashMap<String, String> {
 
         // SSH settings.
         if trimmed.starts_with("ip ssh version") {
-            settings.insert("ip_ssh_version".to_string(), trimmed.replace("ip ssh version ", ""));
+            settings.insert(
+                "ip_ssh_version".to_string(),
+                trimmed.replace("ip ssh version ", ""),
+            );
         }
         if trimmed.starts_with("ip ssh time-out") {
-            settings.insert("ip_ssh_timeout".to_string(), trimmed.replace("ip ssh time-out ", ""));
+            settings.insert(
+                "ip_ssh_timeout".to_string(),
+                trimmed.replace("ip ssh time-out ", ""),
+            );
         }
 
         // Services.
         if trimmed == "service password-encryption" {
-            settings.insert("service_password_encryption".to_string(), "enabled".to_string());
+            settings.insert(
+                "service_password_encryption".to_string(),
+                "enabled".to_string(),
+            );
         }
         if trimmed == "service timestamps log datetime msec" {
-            settings.insert("service_timestamps_log".to_string(), "datetime msec".to_string());
+            settings.insert(
+                "service_timestamps_log".to_string(),
+                "datetime msec".to_string(),
+            );
         }
 
         // AAA.
@@ -73,7 +85,11 @@ pub fn config_line_in_context(config: &str, context: &str, pattern: &str) -> boo
         }
 
         if in_context {
-            if !line.starts_with(' ') && !line.starts_with('\t') && !trimmed.is_empty() && trimmed != "!" {
+            if !line.starts_with(' ')
+                && !line.starts_with('\t')
+                && !trimmed.is_empty()
+                && trimmed != "!"
+            {
                 in_context = false;
             } else if trimmed.contains(pattern) {
                 return true;
@@ -120,7 +136,10 @@ Authorized users only.
         let settings = extract_ios_settings(SAMPLE_CONFIG);
         assert_eq!(settings.get("ip_ssh_version"), Some(&"2".to_string()));
         assert_eq!(settings.get("hostname"), Some(&"CORE-RTR-01".to_string()));
-        assert_eq!(settings.get("service_password_encryption"), Some(&"enabled".to_string()));
+        assert_eq!(
+            settings.get("service_password_encryption"),
+            Some(&"enabled".to_string())
+        );
         assert_eq!(settings.get("aaa_new_model"), Some(&"enabled".to_string()));
         assert_eq!(settings.get("ntp_server_count"), Some(&"2".to_string()));
         assert_eq!(settings.get("banner_configured"), Some(&"true".to_string()));

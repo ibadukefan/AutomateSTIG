@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From the Tomcat server OS type the following command:\n\nsudo ls -l $CATALINA_BASE/webapps/examples. \n\nIf the examples folder exists or contains any content, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From the Tomcat server OS type the following command:\n\n sudo rm -rf $CATALINA_BASE/webapps/examples",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222958r960963_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "Example applications must be removed.",
+  "tracking_issue": "TODO-V-222958",
+  "vuln_id": "V-222958"
+}

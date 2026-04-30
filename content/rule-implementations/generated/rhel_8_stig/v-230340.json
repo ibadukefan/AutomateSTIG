@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the system prevents informative messages from being presented to the user pertaining to logon information with the following commands:\n\nNote: This check applies to RHEL versions 8.0 and 8.1, if the system is RHEL version 8.2 or newer, this check is not applicable.\n\n$ sudo grep pam_faillock.so /etc/pam.d/password-auth\n\nauth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0\nauth required pam_faillock.so authfail dir=/var/log/faillock unlock_time=0\naccount required pam_faillock.so\n\nIf the \"silent\" option is missing from the \"preauth\" line with the \"pam_faillock.so\" module, this is a finding.\n\n$ sudo grep pam_faillock.so /etc/pam.d/system-auth\n\nauth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0\nauth required pam_faillock.so authfail dir=/var/log/faillock unlock_time=0\naccount required pam_faillock.so\n\nIf the \"silent\" option is missing from the \"preauth\" line with the \"pam_faillock.so\" module, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to prevent informative messages from being presented at logon attempts.\n\nAdd/Modify the appropriate sections of the \"/etc/pam.d/system-auth\" and \"/etc/pam.d/password-auth\" files to match the following lines:\n\nauth required pam_faillock.so preauth dir=/var/log/faillock silent audit deny=3 even_deny_root fail_interval=900 unlock_time=0\nauth required pam_faillock.so authfail dir=/var/log/faillock unlock_time=0\naccount required pam_faillock.so\n\nThe \"sssd\" service must be restarted for the changes to take effect. To restart the \"sssd\" service, run the following command:\n\n$ sudo systemctl restart sssd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230340r1184272_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must prevent system messages from being presented when three unsuccessful logon attempts occur.",
+  "tracking_issue": "TODO-V-230340",
+  "vuln_id": "V-230340"
+}

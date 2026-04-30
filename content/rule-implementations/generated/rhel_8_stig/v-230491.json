@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify RHEL 8 enables kernel page-table isolation with the following commands:\n\n$ sudo grub2-editenv list | grep pti\n\nkernelopts=root=/dev/mapper/rhel-root ro crashkernel=auto resume=/dev/mapper/rhel-swap rd.lvm.lv=rhel/root rd.lvm.lv=rhel/swap rhgb quiet fips=1 audit=1 audit_backlog_limit=8192 pti=on boot=UUID=8d171156-cd61-421c-ba41-1c021ac29e82\n\nIf the \"pti\" entry does not equal \"on\", is missing, or the line is commented out, this is a finding.\n\nCheck that kernel page-table isolation is enabled by default to persist in kernel updates: \n\n$ sudo grep pti /etc/default/grub\n\nGRUB_CMDLINE_LINUX=\"pti=on\"\n\nIf \"pti\" is not set to \"on\", is missing or commented out, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to enable kernel page-table isolation with the following command:\n\n$ sudo grubby --update-kernel=ALL --args=\"pti=on\"\n\nAdd or modify the following line in \"/etc/default/grub\" to ensure the configuration survives kernel updates:\n\nGRUB_CMDLINE_LINUX=\"pti=on\"",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230491r1017274_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must enable mitigations against processor-based vulnerabilities.",
+  "tracking_issue": "TODO-V-230491",
+  "vuln_id": "V-230491"
+}

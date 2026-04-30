@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the audit system prevents unauthorized changes to logon UIDs with the following command:\n\n$ sudo grep -i immutable /etc/audit/audit.rules\n\n--loginuid-immutable\n\nIf the login UIDs are not set to be immutable by adding the \"--loginuid-immutable\" option to the \"/etc/audit/audit.rules\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit system to set the logon UIDs to be immutable by adding the following line to \"/etc/audit/rules.d/audit.rules\"\n\n--loginuid-immutable",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230403r1017209_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 audit system must protect logon UIDs from unauthorized change.",
+  "tracking_issue": "TODO-V-230403",
+  "vuln_id": "V-230403"
+}

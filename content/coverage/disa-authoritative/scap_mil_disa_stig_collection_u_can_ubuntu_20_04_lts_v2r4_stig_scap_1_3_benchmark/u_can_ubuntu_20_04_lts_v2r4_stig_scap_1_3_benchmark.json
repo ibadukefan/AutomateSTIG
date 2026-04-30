@@ -1,0 +1,1676 @@
+{
+  "generated_from": "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip",
+  "rules": [
+    {
+      "check_id": "V-238200",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238200 from source identifier xccdf_mil.disa.stig_group_V-238200.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238200r1015139_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must allow users to directly initiate a session lock for all connection types.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238200"
+    },
+    {
+      "check_id": "V-238201",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238201 from source identifier xccdf_mil.disa.stig_group_V-238201.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238201r958452_rule",
+      "severity": "high",
+      "title": "The Ubuntu operating system must map the authenticated identity to the user or group account for PKI-based authentication.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238201"
+    },
+    {
+      "check_id": "V-238202",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238202 from source identifier xccdf_mil.disa.stig_group_V-238202.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238202r1015140_rule",
+      "severity": "low",
+      "title": "The Ubuntu operating system must enforce 24 hours/1 day as the minimum password lifetime. Passwords for new users must have a 24 hours/1 day minimum password lifetime restriction.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238202"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238203r1038967_rule",
+      "severity": "low",
+      "title": "The Ubuntu operating system must enforce a 60-day maximum password lifetime restriction. Passwords for new users must have a 60-day maximum password lifetime restriction.",
+      "tracking_issue": "TODO-V-238203",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238203"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238204r958472_rule",
+      "severity": "high",
+      "title": "Ubuntu operating systems when booted must require authentication upon booting into single-user and maintenance modes.",
+      "tracking_issue": "TODO-V-238204",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238204"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238208r1101674_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must require users to reauthenticate for privilege escalation or when changing roles.",
+      "tracking_issue": "TODO-V-238208",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238208"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238209r991590_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system default filesystem permissions must be defined in such a way that all authenticated users can read and modify only their own files.",
+      "tracking_issue": "TODO-V-238209",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238209"
+    },
+    {
+      "check_id": "V-238210",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238210 from source identifier xccdf_mil.disa.stig_group_V-238210.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238210r1015143_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must implement smart card logins for multifactor authentication for local and network access to privileged and nonprivileged accounts.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238210"
+    },
+    {
+      "check_id": "V-238211",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238211 from source identifier xccdf_mil.disa.stig_group_V-238211.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238211r958510_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must use strong authenticators in establishing nonlocal maintenance and diagnostic sessions.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238211"
+    },
+    {
+      "check_id": "V-238212",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238212 from source identifier xccdf_mil.disa.stig_group_V-238212.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238212r1015158_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must immediately terminate all network connections associated with SSH traffic after a period of inactivity.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238212"
+    },
+    {
+      "check_id": "V-238213",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238213 from source identifier xccdf_mil.disa.stig_group_V-238213.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238213r970703_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must immediately terminate all network connections associated with SSH traffic at the end of the session or after 10 minutes of inactivity.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238213"
+    },
+    {
+      "check_id": "V-238216",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238216 from source identifier xccdf_mil.disa.stig_group_V-238216.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238216r971547_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must configure the SSH daemon to use Message Authentication Codes (MACs) employing FIPS 140-2 approved cryptographic hashes to prevent the unauthorized disclosure of information and/or detect changes to information during transmission.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238216"
+    },
+    {
+      "check_id": "V-238217",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238217 from source identifier xccdf_mil.disa.stig_group_V-238217.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238217r971547_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must configure the SSH daemon to use FIPS 140-2 approved ciphers to prevent the unauthorized disclosure of information and/or detect changes to information during transmission.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238217"
+    },
+    {
+      "check_id": "V-238218",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238218 from source identifier xccdf_mil.disa.stig_group_V-238218.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238218r991591_rule",
+      "severity": "high",
+      "title": "The Ubuntu operating system must not allow unattended or automatic login via SSH.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238218"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238219r991589_rule",
+      "severity": "high",
+      "title": "The Ubuntu operating system must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements.",
+      "tracking_issue": "TODO-V-238219",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238219"
+    },
+    {
+      "check_id": "V-238220",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238220 from source identifier xccdf_mil.disa.stig_group_V-238220.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238220r991589_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system SSH daemon must prevent remote hosts from connecting to the proxy display.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238220"
+    },
+    {
+      "check_id": "V-238221",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238221 from source identifier xccdf_mil.disa.stig_group_V-238221.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238221r1015144_rule",
+      "severity": "low",
+      "title": "The Ubuntu operating system must enforce password complexity by requiring that at least one upper-case character be used.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238221"
+    },
+    {
+      "check_id": "V-238222",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238222 from source identifier xccdf_mil.disa.stig_group_V-238222.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238222r1015145_rule",
+      "severity": "low",
+      "title": "The Ubuntu operating system must enforce password complexity by requiring that at least one lower-case character be used.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238222"
+    },
+    {
+      "check_id": "V-238223",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238223 from source identifier xccdf_mil.disa.stig_group_V-238223.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238223r1015146_rule",
+      "severity": "low",
+      "title": "The Ubuntu operating system must enforce password complexity by requiring that at least one numeric character be used.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238223"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238224r1015147_rule",
+      "severity": "low",
+      "title": "The Ubuntu operating system must require the change of at least 8 characters when passwords are changed.",
+      "tracking_issue": "TODO-V-238224",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238224"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238225r1015148_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must enforce a minimum 15-character password length.",
+      "tracking_issue": "TODO-V-238225",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238225"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238226r1015149_rule",
+      "severity": "low",
+      "title": "The Ubuntu operating system must enforce password complexity by requiring that at least one special character be used.",
+      "tracking_issue": "TODO-V-238226",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238226"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238227r991587_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must prevent the use of dictionary words for passwords.",
+      "tracking_issue": "TODO-V-238227",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238227"
+    },
+    {
+      "check_id": "V-238228",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238228 from source identifier xccdf_mil.disa.stig_group_V-238228.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238228r991587_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must be configured so that when passwords are changed or new passwords are established, pwquality must be used.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238228"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238229r1069088_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor.",
+      "tracking_issue": "TODO-V-238229",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238229"
+    },
+    {
+      "check_id": "V-238230",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238230 from source identifier xccdf_mil.disa.stig_group_V-238230.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238230r1015150_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must implement multifactor authentication for remote access to privileged accounts in such a way that one of the factors is provided by a device separate from the system gaining access.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238230"
+    },
+    {
+      "check_id": "V-238231",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238231 from source identifier xccdf_mil.disa.stig_group_V-238231.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238231r958816_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must accept Personal Identity Verification (PIV) credentials.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238231"
+    },
+    {
+      "check_id": "V-238232",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238232 from source identifier xccdf_mil.disa.stig_group_V-238232.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238232r1069954_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must electronically verify Personal Identity Verification (PIV) credentials.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238232"
+    },
+    {
+      "check_id": "V-238233",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238233 from source identifier xccdf_mil.disa.stig_group_V-238233.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238233r1015151_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system for PKI-based authentication, must implement a local cache of revocation data in case of the inability to access revocation information via the network.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238233"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238235r1069092_rule",
+      "severity": "low",
+      "title": "The Ubuntu operating system must automatically lock an account until the locked account is released by an administrator when three unsuccessful logon attempts have been made.",
+      "tracking_issue": "TODO-V-238235",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238235"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238237r991588_rule",
+      "severity": "low",
+      "title": "The Ubuntu operating system must enforce a delay of at least 4 seconds between logon prompts following a failed logon attempt.",
+      "tracking_issue": "TODO-V-238237",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238237"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238238r958368_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/passwd.",
+      "tracking_issue": "TODO-V-238238",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238238"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238239r958368_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group.",
+      "tracking_issue": "TODO-V-238239",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238239"
+    },
+    {
+      "check_id": "V-238240",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238240 from source identifier xccdf_mil.disa.stig_group_V-238240.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238240r958368_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/shadow.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238240"
+    },
+    {
+      "check_id": "V-238241",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238241 from source identifier xccdf_mil.disa.stig_group_V-238241.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238241r958368_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/gshadow.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238241"
+    },
+    {
+      "check_id": "V-238242",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238242 from source identifier xccdf_mil.disa.stig_group_V-238242.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238242r958368_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/opasswd.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238242"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238244r1038966_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must shut down by default upon audit failure (unless availability is an overriding concern).",
+      "tracking_issue": "TODO-V-238244",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238244"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238249r958444_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must be configured so that audit configuration files are not write-accessible by unauthorized users.",
+      "tracking_issue": "TODO-V-238249",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238249"
+    },
+    {
+      "check_id": "V-238250",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238250 from source identifier xccdf_mil.disa.stig_group_V-238250.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238250r958444_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must permit only authorized accounts to own the audit configuration files.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238250"
+    },
+    {
+      "check_id": "V-238251",
+      "check_pack": "ubuntu_2004",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-238251 from source identifier xccdf_mil.disa.stig_group_V-238251.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238251r958444_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must permit only authorized groups to own the audit configuration files.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/ubuntu_2004.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238251"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238252r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the su command.",
+      "tracking_issue": "TODO-V-238252",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238252"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238253r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chfn command.",
+      "tracking_issue": "TODO-V-238253",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238253"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238254r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the mount command.",
+      "tracking_issue": "TODO-V-238254",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238254"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238255r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the umount command.",
+      "tracking_issue": "TODO-V-238255",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238255"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238256r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the ssh-agent command.",
+      "tracking_issue": "TODO-V-238256",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238256"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238257r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the ssh-keysign command.",
+      "tracking_issue": "TODO-V-238257",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238257"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238258r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for any use of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls.",
+      "tracking_issue": "TODO-V-238258",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238258"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238264r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chown, fchown, fchownat, and lchown system calls.",
+      "tracking_issue": "TODO-V-238264",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238264"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238268r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chmod, fchmod, and fchmodat system calls.",
+      "tracking_issue": "TODO-V-238268",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238268"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238271r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls.",
+      "tracking_issue": "TODO-V-238271",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238271"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238277r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the sudo command.",
+      "tracking_issue": "TODO-V-238277",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238277"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238278r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the sudoedit command.",
+      "tracking_issue": "TODO-V-238278",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238278"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238279r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chsh command.",
+      "tracking_issue": "TODO-V-238279",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238279"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238280r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the newgrp command.",
+      "tracking_issue": "TODO-V-238280",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238280"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238281r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chcon command.",
+      "tracking_issue": "TODO-V-238281",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238281"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238282r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the apparmor_parser command.",
+      "tracking_issue": "TODO-V-238282",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238282"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238283r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the setfacl command.",
+      "tracking_issue": "TODO-V-238283",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238283"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238284r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chacl command.",
+      "tracking_issue": "TODO-V-238284",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238284"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238285r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for the use and modification of the tallylog file.",
+      "tracking_issue": "TODO-V-238285",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238285"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238286r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for the use and modification of faillog file.",
+      "tracking_issue": "TODO-V-238286",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238286"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238287r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for the use and modification of the lastlog file.",
+      "tracking_issue": "TODO-V-238287",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238287"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238288r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the passwd command.",
+      "tracking_issue": "TODO-V-238288",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238288"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238289r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the unix_update command.",
+      "tracking_issue": "TODO-V-238289",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238289"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238290r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the gpasswd command.",
+      "tracking_issue": "TODO-V-238290",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238290"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238291r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chage command.",
+      "tracking_issue": "TODO-V-238291",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238291"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238292r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the usermod command.",
+      "tracking_issue": "TODO-V-238292",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238292"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238293r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the crontab command.",
+      "tracking_issue": "TODO-V-238293",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238293"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238294r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the pam_timestamp_check command.",
+      "tracking_issue": "TODO-V-238294",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238294"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238295r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the init_module and finit_module syscalls.",
+      "tracking_issue": "TODO-V-238295",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238295"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238297r958446_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the delete_module syscall.",
+      "tracking_issue": "TODO-V-238297",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238297"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238298r958506_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must produce audit records and reports containing information to establish when, where, what type, the source, and the outcome for all DoD-defined auditable events and actions in near real time.",
+      "tracking_issue": "TODO-V-238298",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238298"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238299r1069095_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must initiate session audits at system start-up.",
+      "tracking_issue": "TODO-V-238299",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238299"
+    },
+    {
+      "check_id": "V-238300",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238300 from source identifier xccdf_mil.disa.stig_group_V-238300.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238300r991557_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must configure audit tools with a mode of 0755 or less permissive.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238300"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238301r991557_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must configure audit tools to be owned by root.",
+      "tracking_issue": "TODO-V-238301",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238301"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238302r991557_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must configure the audit tools to be group-owned by root.",
+      "tracking_issue": "TODO-V-238302",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238302"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238304r958730_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must prevent all software from executing at higher privilege levels than users executing the software and the audit system must be configured to audit the execution of privileged functions.",
+      "tracking_issue": "TODO-V-238304",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238304"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238310r991577_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for any successful/unsuccessful use of unlink, unlinkat, rename, renameat, and rmdir system calls.",
+      "tracking_issue": "TODO-V-238310",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238310"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238315r991581_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for the /var/log/wtmp file.",
+      "tracking_issue": "TODO-V-238315",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238315"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238316r991581_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for the /var/run/utmp file.",
+      "tracking_issue": "TODO-V-238316",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238316"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238317r991581_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records for the /var/log/btmp file.",
+      "tracking_issue": "TODO-V-238317",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238317"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238318r991586_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records when successful/unsuccessful attempts to use modprobe command.",
+      "tracking_issue": "TODO-V-238318",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238318"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238319r991586_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records when successful/unsuccessful attempts to use the kmod command.",
+      "tracking_issue": "TODO-V-238319",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238319"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238320r991586_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate audit records when successful/unsuccessful attempts to use the fdisk command.",
+      "tracking_issue": "TODO-V-238320",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238320"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238323r1101671_rule",
+      "severity": "low",
+      "title": "The Ubuntu operating system must limit the number of concurrent sessions to ten for all accounts and/or account types.",
+      "tracking_issue": "TODO-V-238323",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238323"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238325r971535_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must encrypt all stored passwords with a FIPS 140-2 approved cryptographic hashing algorithm.",
+      "tracking_issue": "TODO-V-238325",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238325"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238326r987796_rule",
+      "severity": "high",
+      "title": "The Ubuntu operating system must not have the telnet package installed.",
+      "tracking_issue": "TODO-V-238326",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238326"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238327r958478_rule",
+      "severity": "high",
+      "title": "The Ubuntu operating system must not have the rsh-server package installed.",
+      "tracking_issue": "TODO-V-238327",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238327"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238330r1015154_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity.",
+      "tracking_issue": "TODO-V-238330",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238330"
+    },
+    {
+      "check_id": "V-238333",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238333 from source identifier xccdf_mil.disa.stig_group_V-238333.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238333r958528_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must be configured to use TCP syncookies.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238333"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238337r958564_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must generate error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries.",
+      "tracking_issue": "TODO-V-238337",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238337"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238338r958566_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must configure the /var/log directory to be group-owned by syslog.",
+      "tracking_issue": "TODO-V-238338",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238338"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238339r958566_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must configure the /var/log directory to be owned by root.",
+      "tracking_issue": "TODO-V-238339",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238339"
+    },
+    {
+      "check_id": "V-238340",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238340 from source identifier xccdf_mil.disa.stig_group_V-238340.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238340r958566_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must configure the /var/log directory to have mode \"0755\" or less permissive.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238340"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238341r958566_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must configure the /var/log/syslog file to be group-owned by adm.",
+      "tracking_issue": "TODO-V-238341",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238341"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238342r958566_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must configure /var/log/syslog file to be owned by syslog.",
+      "tracking_issue": "TODO-V-238342",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238342"
+    },
+    {
+      "check_id": "V-238343",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238343 from source identifier xccdf_mil.disa.stig_group_V-238343.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238343r958566_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must configure /var/log/syslog file with mode 0640 or less permissive.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238343"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238353r991562_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must be configured to preserve log records from failure events.",
+      "tracking_issue": "TODO-V-238353",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238353"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238354r958672_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must have an application firewall installed in order to control remote access methods.",
+      "tracking_issue": "TODO-V-238354",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238354"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238357r1015156_rule",
+      "severity": "low",
+      "title": "The Ubuntu operating system must synchronize internal information system clocks to the authoritative time source when the time difference is greater than one second.",
+      "tracking_issue": "TODO-V-238357",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238357"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238359r1015157_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system's Advance Package Tool (APT) must be configured to prevent the installation of patches, service packs, device drivers, or Ubuntu operating system components without verification they have been digitally signed using a certificate that is recognized and approved by the organization.",
+      "tracking_issue": "TODO-V-238359",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238359"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238363r1014774_rule",
+      "severity": "high",
+      "title": "The Ubuntu operating system must implement NIST FIPS-validated cryptography to protect classified information and for the following: To provision digital signatures, to generate cryptographic hashes, and to protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards.",
+      "tracking_issue": "TODO-V-238363",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238363"
+    },
+    {
+      "check_id": "V-238369",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238369 from source identifier xccdf_mil.disa.stig_group_V-238369.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238369r958928_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must implement address space layout randomization to protect its memory from unauthorized code execution.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238369"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238370r958936_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must be configured so that Advance Package Tool (APT) removes all software components after updated versions have been installed.",
+      "tracking_issue": "TODO-V-238370",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238370"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238371r958944_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must use a file integrity tool to verify correct operation of all security functions.",
+      "tracking_issue": "TODO-V-238371",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238371"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238373r991589_rule",
+      "severity": "low",
+      "title": "The Ubuntu operating system must display the date and time of the last successful account logon upon logon.",
+      "tracking_issue": "TODO-V-238373",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238373"
+    },
+    {
+      "check_id": "V-238376",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238376 from source identifier xccdf_mil.disa.stig_group_V-238376.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-238376r991560_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must have system commands set to a mode of 0755 or less permissive.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-238376"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251503r991589_rule",
+      "severity": "high",
+      "title": "The Ubuntu operating system must not have accounts configured with blank or null passwords.",
+      "tracking_issue": "TODO-V-251503",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251503"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251504r1082230_rule",
+      "severity": "high",
+      "title": "The Ubuntu operating system must not allow accounts configured with blank or null passwords.",
+      "tracking_issue": "TODO-V-251504",
+      "validated_by": [
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251504"
+    },
+    {
+      "check_id": "V-251505",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-251505 from source identifier xccdf_mil.disa.stig_group_V-251505.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-251505r958820_rule",
+      "severity": "medium",
+      "title": "The Ubuntu operating system must disable automatic mounting of Universal Serial Bus (USB) mass storage driver.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
+        "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-251505"
+    }
+  ],
+  "source": "DISA XCCDF benchmark",
+  "status": "experimental",
+  "stig_id": "scap_mil.disa.stig_collection_U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark",
+  "total_rules": 109,
+  "version": "U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+}

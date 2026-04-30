@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system enables a user's session lock until that user re-establishes access using established identification and authentication procedures with the following command:\n\nThis requirement assumes the use of the RHEL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\n$ sudo grep -R removal-action /etc/dconf/db/*\n\n/etc/dconf/db/distro.d/20-authselect:removal-action='lock-screen'\n\nIf the \"removal-action='lock-screen'\" setting is missing or commented out from the dconf database files, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to enable a user's session lock until that user re-establishes access using established identification and authentication procedures.\n\nSelect/Create an authselect profile and incorporate the \"with-smartcard-lock-on-removal\" feature with the following example:\n\n$ sudo authselect select sssd with-smartcard with-smartcard-lock-on-removal\n\nAlternatively, the dconf settings can be edited in the /etc/dconf/db/* location.\n\nEdit or add the \"[org/gnome/settings-daemon/peripherals/smartcard]\" section of the database file and add or update the following lines:\n\nremoval-action='lock-screen'\n\nUpdate the system databases:\n\n$ sudo dconf update",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230351r1017164_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must be able to initiate directly a session lock for all connection types using smartcard when the smartcard is removed.",
+  "tracking_issue": "TODO-V-230351",
+  "vuln_id": "V-230351"
+}

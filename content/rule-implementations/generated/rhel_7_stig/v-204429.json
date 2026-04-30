@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system requires users to supply a password for privilege escalation.\n\nCheck the configuration of the \"/etc/sudoers\" and \"/etc/sudoers.d/*\" files with the following command:\n\n$ sudo grep -ir nopasswd /etc/sudoers /etc/sudoers.d\n\nIf any occurrences of \"NOPASSWD\" are returned from the command and have not been documented with the Information System Security Officer (ISSO) as an organizationally defined administrative group utilizing MFA, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to require users to supply a password for privilege escalation.\n\nCheck the configuration of the \"/etc/sudoers\" file with the following command:\n$ sudo visudo\n\nRemove any occurrences of \"NOPASSWD\" tags in the file.\n\nCheck the configuration of the /etc/sudoers.d/* files with the following command:\n$ sudo grep -ir nopasswd /etc/sudoers.d\n\nRemove any occurrences of \"NOPASSWD\" tags in the file.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204429r987879_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must be configured so that users must provide a password for privilege escalation.",
+  "tracking_issue": "TODO-V-204429",
+  "vuln_id": "V-204429"
+}

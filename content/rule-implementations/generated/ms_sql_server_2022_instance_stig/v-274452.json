@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "To determine if \"User Options\" option is enabled, execute the following query:\nEXEC SP_CONFIGURE 'show advanced options', '1'; \nRECONFIGURE WITH OVERRIDE; \nEXEC SP_CONFIGURE 'user options'; \n\nIf the value of \"config_value\" is \"0\", this is not a finding. \n\nIf the value of \"config_value\" is \"1\", review the system documentation to determine whether the use of \"user options\" is required and authorized. If it is not authorized, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Disable use of or remove any external application executable object definitions that are not authorized. To disable the use of the \"User Options\" option, from the query prompt:\nsp_configure 'show advanced options', 1;  \nGO  \nRECONFIGURE;  \nGO  \nsp_configure 'user options', 0;  \nGO  \nRECONFIGURE;  \nGO",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-274452r1111123_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "The SQL Server User Options feature must be disabled unless specifically required and approved.",
+  "tracking_issue": "TODO-V-274452",
+  "vuln_id": "V-274452"
+}

@@ -1,0 +1,30 @@
+{
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Edit the \"/etc/ssh/sshd_config\" file to uncomment or add the line for the \"X11Forwarding\" keyword and set its value to \"no\" (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor):\n\nX11Forwarding no\n\nThe SSH service must be restarted for changes to take effect:\n\n$ sudo systemctl restart sshd",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-230555r1017317_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_rhel_8_v2r7_stig_scap_1_3_benchmark/u_rhel_8_v2r7_stig_scap_1_3_benchmark.json",
+  "source_version": "U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark",
+  "title": "RHEL 8 remote X connections for interactive users must be disabled unless to fulfill documented and validated mission requirements.",
+  "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-230555",
+  "vuln_id": "xccdf_mil.disa.stig_group_V-230555"
+}

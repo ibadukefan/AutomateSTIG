@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/audit/audit.rules",
+      "pattern": "postdrop",
+      "type": "file_content"
+    },
+    "description": "OL 8 must generate audit records for any use of the \"postdrop\" command.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248762"
+  },
+  "check_content_excerpt": "Verify OL 8 generates an audit event for any use of the \"postdrop\" command by running the following command to check the file system rules in \"/etc/audit/audit.rules\": \n \n$ sudo grep -w \"postdrop\" /etc/audit/audit.rules \n \n-a always,exit -F path=/usr/sbin/postdrop -F perm=x -F auid>=1000 -F auid!=unset -k privileged-unix-update \n \nIf the command does not return a line or the line is commented out, this is a finding.  \n \nNote: The \"-k\" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit system to generate an audit event for any use of the \"postdrop\" command by adding or updating the following rule in the \"/etc/audit/rules.d/audit.rules\" file: \n \n-a always,exit -F path=/usr/sbin/postdrop -F perm=x -F auid>=1000 -F auid!=unset -k privileged-unix-update \n \nThe audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command: \n \n$ sudo service auditd restart",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-248762r958412_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must generate audit records for any use of the \"postdrop\" command.",
+  "tracking_issue": "TODO-V-248762",
+  "vuln_id": "V-248762"
+}

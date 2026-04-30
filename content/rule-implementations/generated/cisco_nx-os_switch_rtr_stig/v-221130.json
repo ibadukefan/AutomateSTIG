@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration and verify that a QoS policy has been configured to provide preferred treatment for mission-critical applications.\n\nStep 1: Verify that the class-maps are configured to match on DSCP values as shown in the configuration example below:\n\nclass-map match-all C2_VOICE\n match ip dscp af47\nclass-map match-all VOICE\n match ip dscp ef\nclass-map match-all VIDEO\n match ip dscp af41\nclass-map match-all CONTROL_PLANE\n match ip dscp cs6\nclass-map match-all PREFERRED_DATA\n match ip dscp af33\n\nStep 2: Verify that the policy map reserves the bandwidth for each traffic type as shown in the example below:\n\npolicy-map QOS_POLICY\nclass C2_VOICE\n priority percent 10\n class VOICE\n priority percent 15\n class VIDEO\n bandwidth percent 25\nclass CONTROL_PLANE\n priority percent 10\n class PREFERRED_DATA\n bandwidth percent 25\n class class-default\n bandwidth percent 15\n\nStep 3: Verify that an output service policy is bound to all interface as shown in the configuration example below:\n\ninterface Ethernet1/1\n ip address 10.1.15.1/30\n service-policy output QOS_POLICY\n!\ninterface Ethernet1/2\n ip address 10.1.15.4/30\n service-policy output QOS_POLICY\n\nNote: Enclaves must mark or re-mark their traffic to be consistent with the DoDIN backbone admission criteria to gain the appropriate level of service. A general DiffServ principle is to mark or trust traffic as close to the source as administratively and technically possible. However, certain traffic types might need to be re-marked before handoff to the DoDIN backbone to gain admission to the correct class. If such re-marking is required, it is recommended that the re-marking be performed at the CE egress edge.\n\nNote: The GTP QOS document (GTP-0009) can be downloaded via the following link: \nhttps://intellipedia.intelink.gov/wiki/Portal:GIG_Technical_Guidance/GTG_GTPs/GTP_Development_List\n\nIf the switch is not configured to enforce a QoS policy in accordance with the QoS GIG Technical Profile, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure to enforce a QoS policy to provide preferred treatment for mission-critical applications.\n\nStep 1: Configure class-maps to match on DSCP values as shown in the configuration example below:\n\nSW1(config-cmap)# class-map match-all C2_VOICE\nSW1(config-cmap)# match ip dscp 47\nSW1(config-cmap)# class-map match-all VOICE\nSW1(config-cmap)# match ip dscp ef\nSW1(config-cmap)# class-map match-all VIDEO\nSW1(config-cmap)# match ip dscp af41\nSW1(config-cmap)# class-map match-all CONTROL_PLANE\nSW1(config-cmap)# match ip dscp cs6\nSW1(config-cmap)# class-map match-all PREFERRED_DATA\nSW1(config-cmap)# match ip dscp af33\nSW1(config-cmap)# exit\n\nStep 2: Configure a policy map to be applied to the interfaces that reserves the bandwidth for each traffic type as shown in the example below:\n\nSW1(config)# policy-map QOS_POLICY\nSW1(config-pmap-c)# class C2_VOICE\nSW1(config-pmap-c)# priority percent 10\nSW1(config-pmap-c)# class VOICE\nSW1(config-pmap-c)# priority percent 15\nSW1(config-pmap-c)# class VIDEO\nSW1(config-pmap-c)# bandwidth percent 25\nSW1(config-pmap)# class CONTROL_PLANE\nSW1(config-pmap-c)# priority percent 10\nSW1(config-pmap-c)# class PREFERRED_DATA\nSW1(config-pmap-c)# bandwidth percent 25\nSW1(config-pmap-c)# class class-default\nSW1(config-pmap-c)# bandwidth percent 15\nSW1(config-pmap-c)# exit\nSW1(config-pmap)# exit\n\nStep 3: Apply the output service policy to all interfaces as shown in the configuration example below:\n\nSW1(config)# int e1/1\nSW1(config-if)# service-policy output QOS_POLICY\nSW1(config-if)# exit\nSW1(config)# int e1/2\nSW1(config-if)# service-policy output QOS_POLICY\nSW1(config-if)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221130r999739_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco P switch must be configured to enforce a Quality-of-Service (QoS) policy to provide preferred treatment for mission-critical applications.",
+  "tracking_issue": "TODO-V-221130",
+  "vuln_id": "V-221130"
+}

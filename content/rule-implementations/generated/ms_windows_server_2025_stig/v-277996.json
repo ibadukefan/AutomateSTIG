@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Determine whether there is a host based intrusion detection and prevention service on each server. \n\nThis requirement is not applicable on a system that has the role as the IDPS. However, this exception must be documented with the information system security officer (ISSO).\n\nIf a host-based IDPS is not installed on the system, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install a host-based IDPS on each server.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-277996r1182235_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 must have a host-based intrusion detection and prevention service (IDPS) installed.",
+  "tracking_issue": "TODO-V-277996",
+  "vuln_id": "V-277996"
+}

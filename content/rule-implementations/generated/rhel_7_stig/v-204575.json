@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the system is not accepting \"rsyslog\" messages from other systems unless it is documented as a log aggregation server.\n\nCheck the configuration of \"rsyslog\" with the following command:\n\n# grep imtcp /etc/rsyslog.conf\n$ModLoad imtcp\n# grep imudp /etc/rsyslog.conf\n$ModLoad imudp\n# grep imrelp /etc/rsyslog.conf\n$ModLoad imrelp\n\nIf any of the above modules are being loaded in the \"/etc/rsyslog.conf\" file, ask to see the documentation for the system being used for log aggregation.\n\nIf the documentation does not exist, or does not specify the server as a log aggregation system, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Modify the \"/etc/rsyslog.conf\" file to remove the \"ModLoad imtcp\", \"ModLoad imudp\", and \"ModLoad imrelp\" configuration lines, or document the system as being used for log aggregation.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204575r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must be configured so that the rsyslog daemon does not accept log messages from other servers unless the server is being used for log aggregation.",
+  "tracking_issue": "TODO-V-204575",
+  "vuln_id": "V-204575"
+}

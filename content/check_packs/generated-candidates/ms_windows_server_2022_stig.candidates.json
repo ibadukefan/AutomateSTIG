@@ -1,0 +1,1349 @@
+{
+  "checks": [
+    {
+      "check": {
+        "name": "Fax",
+        "should_be_installed": false,
+        "type": "windows_feature"
+      },
+      "description": "Windows Server 2022 must not have the Fax Server role installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254269"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters",
+        "type": "registry",
+        "value_name": "SMB1"
+      },
+      "description": "Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254276"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10",
+        "type": "registry",
+        "value_name": "Start"
+      },
+      "description": "Windows Server 2022 must have the Server Message Block (SMB) v1 protocol disabled on the SMB client.",
+      "expected": {
+        "type": "equals",
+        "value": 4
+      },
+      "platform": "windows",
+      "vuln_id": "V-254277"
+    },
+    {
+      "check": {
+        "name": "PowerShell-v2",
+        "should_be_installed": false,
+        "type": "windows_feature"
+      },
+      "description": "Windows Server 2022 must not have Windows PowerShell 2.0 installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254278"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization",
+        "type": "registry",
+        "value_name": "NoLockScreenSlideshow"
+      },
+      "description": "Windows Server 2022 must prevent the display of slide shows on the lock screen.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254333"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\\Wdigest",
+        "type": "registry",
+        "value_name": "UseLogonCredential"
+      },
+      "description": "Windows Server 2022 must have WDigest Authentication disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254334"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters",
+        "type": "registry",
+        "value_name": "EnableICMPRedirect"
+      },
+      "description": "Windows Server 2022 must be configured to prevent Internet Control Message Protocol (ICMP) redirects from overriding Open Shortest Path First (OSPF)-generated routes.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254337"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netbt\\Parameters",
+        "type": "registry",
+        "value_name": "NoNameReleaseOnDemand"
+      },
+      "description": "Windows Server 2022 must be configured to ignore NetBIOS name release requests except from WINS servers.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254338"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation",
+        "type": "registry",
+        "value_name": "AllowInsecureGuestAuth"
+      },
+      "description": "Windows Server 2022 insecure logons to an SMB server must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254339"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CredentialsDelegation",
+        "type": "registry",
+        "value_name": "AllowProtectedCreds"
+      },
+      "description": "Windows Server 2022 must be configured to enable Remote host allows delegation of nonexportable credentials.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254342"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard",
+        "type": "registry",
+        "value_name": "EnableVirtualizationBasedSecurity"
+      },
+      "description": "Windows Server 2022 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254343"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch",
+        "type": "registry",
+        "value_name": "DriverLoadPolicy"
+      },
+      "description": "Windows Server 2022 Early Launch Antimalware, Boot-Start Driver Initialization Policy must prevent boot drivers identified as bad.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254344"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "type": "registry",
+        "value_name": "DontDisplayNetworkSelectionUI"
+      },
+      "description": "Windows Server 2022 network selection user interface (UI) must not be displayed on the logon screen.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254348"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51",
+        "type": "registry",
+        "value_name": "DCSettingIndex"
+      },
+      "description": "Windows Server 2022 users must be prompted to authenticate when the system wakes from sleep (on battery).",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254349"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat",
+        "type": "registry",
+        "value_name": "DisableInventory"
+      },
+      "description": "Windows Server 2022 Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254351"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer",
+        "type": "registry",
+        "value_name": "NoAutoplayfornonVolume"
+      },
+      "description": "Windows Server 2022 Autoplay must be turned off for nonvolume devices.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254352"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+        "type": "registry",
+        "value_name": "NoAutorun"
+      },
+      "description": "Windows Server 2022 default AutoRun behavior must be configured to prevent AutoRun commands.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254353"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\policies\\Explorer",
+        "type": "registry",
+        "value_name": "NoDriveTypeAutoRun"
+      },
+      "description": "Windows Server 2022 AutoPlay must be disabled for all drives.",
+      "expected": {
+        "type": "equals",
+        "value": 255
+      },
+      "platform": "windows",
+      "vuln_id": "V-254354"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI",
+        "type": "registry",
+        "value_name": "EnumerateAdministrators"
+      },
+      "description": "Windows Server 2022 administrator accounts must not be enumerated during elevation.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254355"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+        "type": "registry",
+        "value_name": "AllowTelemetry"
+      },
+      "description": "Windows Server 2022 Diagnostic Data must be configured to send \"required diagnostic data\" or \"optional diagnostic data\".",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254356"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization",
+        "type": "registry",
+        "value_name": "DODownloadMode"
+      },
+      "description": "Windows Server 2022 Windows Update must not obtain updates from other PCs on the internet.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254357"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application",
+        "type": "registry",
+        "value_name": "MaxSize"
+      },
+      "description": "Windows Server 2022 Application event log size must be configured to 32768 KB or greater.",
+      "expected": {
+        "type": "equals",
+        "value": 32768
+      },
+      "platform": "windows",
+      "vuln_id": "V-254358"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security",
+        "type": "registry",
+        "value_name": "MaxSize"
+      },
+      "description": "The Windows Server 2022 security event log size must be configured to a value that holds at least one week's worth of audit records.",
+      "expected": {
+        "type": "equals",
+        "value": 5120000
+      },
+      "platform": "windows",
+      "vuln_id": "V-254359"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System",
+        "type": "registry",
+        "value_name": "MaxSize"
+      },
+      "description": "Windows Server 2022 System event log size must be configured to 32768 KB or greater.",
+      "expected": {
+        "type": "equals",
+        "value": 32768
+      },
+      "platform": "windows",
+      "vuln_id": "V-254360"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "type": "registry",
+        "value_name": "EnableSmartScreen"
+      },
+      "description": "Windows Server 2022 Microsoft Defender antivirus SmartScreen must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254361"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer",
+        "type": "registry",
+        "value_name": "NoDataExecutionPrevention"
+      },
+      "description": "Windows Server 2022 Explorer Data Execution Prevention must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254362"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer",
+        "type": "registry",
+        "value_name": "NoHeapTerminationOnCorruption"
+      },
+      "description": "Windows Server 2022 Turning off File Explorer heap termination on corruption must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254363"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+        "type": "registry",
+        "value_name": "PreXPSP2ShellProtocolBehavior"
+      },
+      "description": "Windows Server 2022 File Explorer shell protocol must run in protected mode.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254364"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "DisablePasswordSaving"
+      },
+      "description": "Windows Server 2022 must not save passwords in the Remote Desktop Client.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254365"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "fDisableCdm"
+      },
+      "description": "Windows Server 2022 Remote Desktop Services must prevent drive redirection.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254366"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "fPromptForPassword"
+      },
+      "description": "Windows Server 2022 Remote Desktop Services must always prompt a client for passwords upon connection.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254367"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "fEncryptRPCTraffic"
+      },
+      "description": "Windows Server 2022 Remote Desktop Services must require secure Remote Procedure Call (RPC) communications.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254368"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "MinEncryptionLevel"
+      },
+      "description": "Windows Server 2022 Remote Desktop Services must be configured with the client connection encryption set to High Level.",
+      "expected": {
+        "type": "equals",
+        "value": 3
+      },
+      "platform": "windows",
+      "vuln_id": "V-254369"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds",
+        "type": "registry",
+        "value_name": "DisableEnclosureDownload"
+      },
+      "description": "Windows Server 2022 must prevent attachments from being downloaded from RSS feeds.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254370"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds",
+        "type": "registry",
+        "value_name": "AllowBasicAuthInClear"
+      },
+      "description": "Windows Server 2022 must disable Basic authentication for RSS feeds over HTTP.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254371"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search",
+        "type": "registry",
+        "value_name": "AllowIndexingEncryptedStoresOrItems"
+      },
+      "description": "Windows Server 2022 must prevent Indexing of encrypted files.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254372"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer",
+        "type": "registry",
+        "value_name": "EnableUserControl"
+      },
+      "description": "Windows Server 2022 must prevent users from changing installation options.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254373"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer",
+        "type": "registry",
+        "value_name": "AlwaysInstallElevated"
+      },
+      "description": "Windows Server 2022 must disable the Windows Installer Always install with elevated privileges option.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254374"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer",
+        "type": "registry",
+        "value_name": "SafeForScripting"
+      },
+      "description": "Windows Server 2022 users must be notified if a web-based program attempts to install software.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254375"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "DisableAutomaticRestartSignOn"
+      },
+      "description": "Windows Server 2022 must disable automatically signing in the last interactive user after a system-initiated restart.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254376"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging",
+        "type": "registry",
+        "value_name": "EnableScriptBlockLogging"
+      },
+      "description": "Windows Server 2022 PowerShell script block logging must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254377"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client",
+        "type": "registry",
+        "value_name": "AllowBasic"
+      },
+      "description": "Windows Server 2022 Windows Remote Management (WinRM) client must not use Basic authentication.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254378"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client",
+        "type": "registry",
+        "value_name": "AllowUnencryptedTraffic"
+      },
+      "description": "Windows Server 2022 Windows Remote Management (WinRM) client must not allow unencrypted traffic.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254379"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client",
+        "type": "registry",
+        "value_name": "AllowDigest"
+      },
+      "description": "Windows Server 2022 Windows Remote Management (WinRM) client must not use Digest authentication.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254380"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service",
+        "type": "registry",
+        "value_name": "AllowBasic"
+      },
+      "description": "Windows Server 2022 Windows Remote Management (WinRM) service must not use Basic authentication.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254381"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service",
+        "type": "registry",
+        "value_name": "AllowUnencryptedTraffic"
+      },
+      "description": "Windows Server 2022 Windows Remote Management (WinRM) service must not allow unencrypted traffic.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254382"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service",
+        "type": "registry",
+        "value_name": "DisableRunAs"
+      },
+      "description": "Windows Server 2022 Windows Remote Management (WinRM) service must not store RunAs credentials.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254383"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription",
+        "type": "registry",
+        "value_name": "EnableTranscripting"
+      },
+      "description": "Windows Server 2022 must have PowerShell Transcription enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254384"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters",
+        "type": "registry",
+        "value_name": "LDAPServerIntegrity"
+      },
+      "description": "Windows Server 2022 domain controllers must require LDAP access signing.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-254416"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "RefusePasswordChange"
+      },
+      "description": "Windows Server 2022 domain controllers must be configured to allow reset of machine account passwords.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254417"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "LocalAccountTokenFilterPolicy"
+      },
+      "description": "Windows Server 2022 local administrator accounts must have their privileged token filtered to prevent elevated privileges from being used over the network on domain-joined member servers.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254429"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "type": "registry",
+        "value_name": "EnumerateLocalUsers"
+      },
+      "description": "Windows Server 2022 local users on domain-joined member servers must not be enumerated.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254430"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc",
+        "type": "registry",
+        "value_name": "RestrictRemoteClients"
+      },
+      "description": "Windows Server 2022 must restrict unauthenticated Remote Procedure Call (RPC) clients from connecting to the RPC server on domain-joined member servers and standalone or nondomain-joined systems.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254431"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon",
+        "type": "registry",
+        "value_name": "CachedLogonsCount"
+      },
+      "description": "Windows Server 2022 must limit the caching of logon credentials to four or less on domain-joined member servers.",
+      "expected": {
+        "type": "equals",
+        "value": 4
+      },
+      "platform": "windows",
+      "vuln_id": "V-254432"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard",
+        "type": "registry",
+        "value_name": "LsaCfgFlags"
+      },
+      "description": "Windows Server 2022 must be running Credential Guard on domain-joined member servers.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254441"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "LimitBlankPasswordUse"
+      },
+      "description": "Windows Server 2022 must prevent local accounts with blank passwords from being used from the network.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254446"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "SCENoApplyLegacyAuditPolicy"
+      },
+      "description": "Windows Server 2022 must force audit policy subcategory settings to override audit policy category settings.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254449"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "RequireSignOrSeal"
+      },
+      "description": "Windows Server 2022 setting Domain member: Digitally encrypt or sign secure channel data (always) must be configured to Enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254450"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "SealSecureChannel"
+      },
+      "description": "Windows Server 2022 setting Domain member: Digitally encrypt secure channel data (when possible) must be configured to Enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254451"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "SignSecureChannel"
+      },
+      "description": "Windows Server 2022 setting Domain member: Digitally sign secure channel data (when possible) must be configured to Enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254452"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "DisablePasswordChange"
+      },
+      "description": "Windows Server 2022 computer account password must not be prevented from being reset.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254453"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "MaximumPasswordAge"
+      },
+      "description": "Windows Server 2022 maximum age for machine account passwords must be configured to 30 days or less.",
+      "expected": {
+        "type": "equals",
+        "value": 30
+      },
+      "platform": "windows",
+      "vuln_id": "V-254454"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "RequireStrongKey"
+      },
+      "description": "Windows Server 2022 must be configured to require a strong session key.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254455"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "InactivityTimeoutSecs"
+      },
+      "description": "Windows Server 2022 machine inactivity limit must be set to 15 minutes or less, locking the system with the screen saver.",
+      "expected": {
+        "type": "equals",
+        "value": 900
+      },
+      "platform": "windows",
+      "vuln_id": "V-254456"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon",
+        "type": "registry",
+        "value_name": "scremoveoption"
+      },
+      "description": "Windows Server 2022 Smart Card removal option must be configured to Force Logoff or Lock Workstation.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254459"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters",
+        "type": "registry",
+        "value_name": "RequireSecuritySignature"
+      },
+      "description": "Windows Server 2022 setting Microsoft network client: Digitally sign communications (always) must be configured to Enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254460"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters",
+        "type": "registry",
+        "value_name": "EnableSecuritySignature"
+      },
+      "description": "Windows Server 2022 setting Microsoft network client: Digitally sign communications (if server agrees) must be configured to Enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254461"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters",
+        "type": "registry",
+        "value_name": "EnablePlainTextPassword"
+      },
+      "description": "Windows Server 2022 unencrypted passwords must not be sent to third-party Server Message Block (SMB) servers.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254462"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters",
+        "type": "registry",
+        "value_name": "RequireSecuritySignature"
+      },
+      "description": "Windows Server 2022 setting Microsoft network server: Digitally sign communications (always) must be configured to Enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254463"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters",
+        "type": "registry",
+        "value_name": "EnableSecuritySignature"
+      },
+      "description": "Windows Server 2022 setting Microsoft network server: Digitally sign communications (if client agrees) must be configured to Enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254464"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "RestrictAnonymousSAM"
+      },
+      "description": "Windows Server 2022 must not allow anonymous enumeration of Security Account Manager (SAM) accounts.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254466"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "RestrictAnonymous"
+      },
+      "description": "Windows Server 2022 must not allow anonymous enumeration of shares.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254467"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "EveryoneIncludesAnonymous"
+      },
+      "description": "Windows Server 2022 must be configured to prevent anonymous users from having the same permissions as the Everyone group.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254468"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters",
+        "type": "registry",
+        "value_name": "RestrictNullSessAccess"
+      },
+      "description": "Windows Server 2022 must restrict anonymous access to Named Pipes and Shares.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254469"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA",
+        "type": "registry",
+        "value_name": "UseMachineId"
+      },
+      "description": "Windows Server 2022 services using Local System that use Negotiate when reverting to NTLM authentication must use the computer identity instead of authenticating anonymously.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254470"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0",
+        "type": "registry",
+        "value_name": "allownullsessionfallback"
+      },
+      "description": "Windows Server 2022 must prevent NTLM from falling back to a Null session.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254471"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\pku2u",
+        "type": "registry",
+        "value_name": "AllowOnlineID"
+      },
+      "description": "Windows Server 2022 must prevent PKU2U authentication using online identities.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254472"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters",
+        "type": "registry",
+        "value_name": "SupportedEncryptionTypes"
+      },
+      "description": "Windows Server 2022 Kerberos encryption types must be configured to prevent the use of DES and RC4 encryption suites.",
+      "expected": {
+        "type": "equals",
+        "value": 2147483640
+      },
+      "platform": "windows",
+      "vuln_id": "V-254473"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "NoLMHash"
+      },
+      "description": "Windows Server 2022 must be configured to prevent the storage of the LAN Manager hash of passwords.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254474"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "LmCompatibilityLevel"
+      },
+      "description": "Windows Server 2022 LAN Manager authentication level must be configured to send NTLMv2 response only and to refuse LM and NTLM.",
+      "expected": {
+        "type": "equals",
+        "value": 5
+      },
+      "platform": "windows",
+      "vuln_id": "V-254475"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LDAP",
+        "type": "registry",
+        "value_name": "LDAPClientIntegrity"
+      },
+      "description": "Windows Server 2022 must be configured to at least negotiate signing for LDAP client signing.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254476"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0",
+        "type": "registry",
+        "value_name": "NTLMMinClientSec"
+      },
+      "description": "Windows Server 2022 session security for NTLM SSP-based clients must be configured to require NTLMv2 session security and 128-bit encryption.",
+      "expected": {
+        "type": "equals",
+        "value": 537395200
+      },
+      "platform": "windows",
+      "vuln_id": "V-254477"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0",
+        "type": "registry",
+        "value_name": "NTLMMinServerSec"
+      },
+      "description": "Windows Server 2022 session security for NTLM SSP-based servers must be configured to require NTLMv2 session security and 128-bit encryption.",
+      "expected": {
+        "type": "equals",
+        "value": 537395200
+      },
+      "platform": "windows",
+      "vuln_id": "V-254478"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Cryptography",
+        "type": "registry",
+        "value_name": "ForceKeyProtection"
+      },
+      "description": "Windows Server 2022 users must be required to enter a password to access private keys stored on the computer.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-254479"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\FIPSAlgorithmPolicy",
+        "type": "registry",
+        "value_name": "Enabled"
+      },
+      "description": "Windows Server 2022 must be configured to use FIPS-compliant algorithms for encryption, hashing, and signing.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254480"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager",
+        "type": "registry",
+        "value_name": "ProtectionMode"
+      },
+      "description": "Windows Server 2022 default permissions of global system objects must be strengthened.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254481"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "FilterAdministratorToken"
+      },
+      "description": "Windows Server 2022 User Account Control (UAC) approval mode for the built-in Administrator must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254482"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableUIADesktopToggle"
+      },
+      "description": "Windows Server 2022 UIAccess applications must not be allowed to prompt for elevation without using the secure desktop.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254483"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "ConsentPromptBehaviorAdmin"
+      },
+      "description": "Windows Server 2022 User Account Control (UAC) must, at a minimum, prompt administrators for consent on the secure desktop.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-254484"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "ConsentPromptBehaviorUser"
+      },
+      "description": "Windows Server 2022 User Account Control (UAC) must automatically deny standard user requests for elevation.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-254485"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableInstallerDetection"
+      },
+      "description": "Windows Server 2022 User Account Control (UAC) must be configured to detect application installations and prompt for elevation.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254486"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableSecureUIAPaths"
+      },
+      "description": "Windows Server 2022 User Account Control (UAC) must only elevate UIAccess applications that are installed in secure locations.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254487"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableLUA"
+      },
+      "description": "Windows Server 2022 User Account Control (UAC) must run all administrators in Admin Approval Mode, enabling UAC.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254488"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableVirtualization"
+      },
+      "description": "Windows Server 2022 User Account Control (UAC) must virtualize file and registry write failures to per-user locations.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-254489"
+    },
+    {
+      "check": {
+        "path": "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments",
+        "type": "registry",
+        "value_name": "SaveZoneInformation"
+      },
+      "description": "Windows Server 2022 must preserve zone information when saving attachments.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-254490"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Kdc",
+        "type": "registry",
+        "value_name": "StrongCertificateBindingEnforcement"
+      },
+      "description": "Windows Server 2022 must be configured for certificate-based authentication for domain controllers.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-271426"
+    }
+  ],
+  "platform": "windows",
+  "stig_id": "MS_Windows_Server_2022_STIG",
+  "version": "candidate-planned"
+}

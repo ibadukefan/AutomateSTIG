@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
-use console::style;
 use automatestig_core::library::StigLibrary;
 use automatestig_core::models::stig::Severity;
+use console::style;
 
 use super::library_path;
 use crate::ui;
@@ -60,7 +60,13 @@ pub fn show(id: &str, cli: &crate::Cli) -> Result<()> {
     ui::section(&benchmark.title);
     ui::detail("ID", &benchmark.id);
     ui::detail("Version", &benchmark.version_string());
-    ui::detail("Platform", &format!("{} ({})", benchmark.platform.name, benchmark.platform.family));
+    ui::detail(
+        "Platform",
+        &format!(
+            "{} ({})",
+            benchmark.platform.name, benchmark.platform.family
+        ),
+    );
     ui::detail("Total rules", &benchmark.rules.len().to_string());
 
     let cat_i = benchmark.rules_by_severity(Severity::High);
@@ -101,13 +107,19 @@ pub fn init(cli: &crate::Cli) -> Result<()> {
     ui::print_banner();
 
     if lib_path.join("index.json").exists() {
-        ui::success(&format!("STIG Library already exists at: {}", lib_path.display()));
+        ui::success(&format!(
+            "STIG Library already exists at: {}",
+            lib_path.display()
+        ));
         eprintln!();
         return Ok(());
     }
 
     StigLibrary::init(&lib_path)?;
-    ui::success(&format!("STIG Library initialized at: {}", lib_path.display()));
+    ui::success(&format!(
+        "STIG Library initialized at: {}",
+        lib_path.display()
+    ));
     eprintln!();
     ui::detail("Next step", "Import a .stigpack to add benchmarks:");
     eprintln!("    automatestig import --pack <FILE.stigpack>");

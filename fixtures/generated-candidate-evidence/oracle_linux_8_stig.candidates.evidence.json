@@ -1,0 +1,2545 @@
+{
+  "candidate_checks": 93,
+  "cases": [
+    {
+      "check": {
+        "name": "krb5-workstation",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The krb5-workstation package must not be installed on OL 8.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "krb5-workstation": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "krb5-workstation": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248546"
+    },
+    {
+      "check": {
+        "name": "krb5-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The krb5-server package must not be installed on OL 8.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "krb5-server": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "krb5-server": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248547"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/var/log/messages",
+        "type": "file_permission"
+      },
+      "description": "The OL 8 \"/var/log/messages\" file must have mode 0640 or less permissive.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/var/log/messages": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/var/log/messages": {
+            "exists": true,
+            "group": null,
+            "mode": "0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248554"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0755",
+        "owner": null,
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "The OL 8 \"/var/log\" directory must have mode 0755 or less permissive.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/var/log": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0755",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/var/log": {
+            "exists": true,
+            "group": null,
+            "mode": "0755",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248557"
+    },
+    {
+      "check": {
+        "key": "kernel.kexec_load_disabled",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must prevent the loading of a new kernel for later execution.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.kexec_load_disabled": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.kexec_load_disabled": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248576"
+    },
+    {
+      "check": {
+        "key": "fs.protected_symlinks",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must enable kernel parameters to enforce Discretionary Access Control (DAC) on symlinks.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "fs.protected_symlinks": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "fs.protected_symlinks": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248577"
+    },
+    {
+      "check": {
+        "key": "fs.protected_hardlinks",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must enable kernel parameters to enforce Discretionary Access Control (DAC) on hardlinks.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "fs.protected_hardlinks": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "fs.protected_hardlinks": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248578"
+    },
+    {
+      "check": {
+        "key": "kernel.dmesg_restrict",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must restrict access to the kernel message buffer.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.dmesg_restrict": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.dmesg_restrict": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248579"
+    },
+    {
+      "check": {
+        "key": "kernel.perf_event_paranoid",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must prevent kernel profiling by unprivileged users.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "2"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.perf_event_paranoid": "unexpected-2"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.perf_event_paranoid": "2"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248580"
+    },
+    {
+      "check": {
+        "key": "kernel.randomize_va_space",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must implement address space layout randomization (ASLR) to protect its memory from unauthorized code execution.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "2"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.randomize_va_space": "unexpected-2"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.randomize_va_space": "2"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248594"
+    },
+    {
+      "check": {
+        "key": "kernel.core_pattern",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must disable the \"kernel.core_pattern\".",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "|/bin/false"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.core_pattern": "unexpected-|/bin/false"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.core_pattern": "|/bin/false"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248629"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 8 must prevent a user from overriding the session lock-delay setting for the graphical user interface.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nsystem-db\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248682"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 8 must prevent a user from overriding the session idle-delay setting for the graphical user interface.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nsystem-db\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248683"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/dconf/profile/user",
+        "pattern": "system-db",
+        "type": "file_content"
+      },
+      "description": "OL 8 must prevent a user from overriding the session lock-enabled setting for the graphical user interface.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/dconf/profile/user": "before\nsystem-db\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248684"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/security/pwquality.conf",
+        "pattern": "minlen",
+        "type": "file_content"
+      },
+      "description": "OL 8 passwords must have a minimum of 15 characters.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/security/pwquality.conf": "before\nminlen\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248699"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0750",
+        "owner": null,
+        "path": "/usr/bin/lastlog",
+        "type": "file_permission"
+      },
+      "description": "The OL 8 lastlog command must have a mode of \"0750\" or less permissive.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/usr/bin/lastlog": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0750",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/usr/bin/lastlog": {
+            "exists": true,
+            "group": null,
+            "mode": "0750",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248705"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "execve",
+        "type": "file_content"
+      },
+      "description": "The OL 8 audit system must be configured to audit the execution of privileged functions and prevent all software from executing at higher privilege levels than users executing the software.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nexecve\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248722"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/rsyslog.conf",
+        "pattern": "cron",
+        "type": "file_content"
+      },
+      "description": "Cron logging must be implemented in OL 8.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/rsyslog.conf": "before\ncron\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248723"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/aliases",
+        "pattern": "postmaster:\\s*root$",
+        "type": "file_content"
+      },
+      "description": "The OL 8 Information System Security Officer (ISSO) and System Administrator (SA) (at a minimum) must have mail aliases to be notified of an audit processing failure.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/aliases": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/aliases": "before\npostmaster:\\s*root$\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248725"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0600",
+        "owner": null,
+        "path": "/var/log/audit/audit.log",
+        "type": "file_permission"
+      },
+      "description": "OL 8 audit logs must have a mode of \"0600\" or less permissive to prevent unauthorized read access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/var/log/audit/audit.log": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0600",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/var/log/audit/audit.log": {
+            "exists": true,
+            "group": null,
+            "mode": "0600",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248732"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0700",
+        "owner": null,
+        "path": "/var/log/audit",
+        "type": "file_permission"
+      },
+      "description": "The OL 8 audit log directory must have a mode of 0700 or less permissive to prevent unauthorized read access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/var/log/audit": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0700",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/var/log/audit": {
+            "exists": true,
+            "group": null,
+            "mode": "0700",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248737"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/shadow",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for all account creation events that affect \"/etc/shadow\".",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/etc/shadow\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248740"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/security/opasswd",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for all account creation events that affect \"/etc/security/opasswd\".",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/etc/security/opasswd\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248741"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/passwd",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for all account creation events that affect \"/etc/passwd\".",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/etc/passwd\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248742"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/gshadow",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for all account creation events that affect \"/etc/gshadow\".",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/etc/gshadow\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248743"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/group",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for all account creation events that affect \"/etc/group\".",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/etc/group\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248744"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/sudoers",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for all account creations, modifications, disabling, and termination events that affect \"/etc/sudoers\".",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/etc/sudoers\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248745"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/etc/sudoers.d/",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for all account creations, modifications, disabling, and termination events that affect \"/etc/sudoers.d/\".",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/etc/sudoers.d/\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248746"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/bin/su",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"su\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/usr/bin/su\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248747"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "xattr",
+        "type": "file_content"
+      },
+      "description": "The OL 8 audit system must be configured to audit any use of the \"setxattr\", \"fsetxattr\", \"lsetxattr\", \"removexattr\", \"fremovexattr\", and \"lremovexattr\" system calls.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nxattr\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248748"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "chage",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"chage\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nchage\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248753"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "chcon",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any uses of the \"chcon\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nchcon\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248754"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "ssh-agent",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"ssh-agent\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nssh-agent\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248756"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "passwd",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"passwd\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\npasswd\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248757"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/bin/mount",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"mount\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/usr/bin/mount\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248758"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/bin/umount",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"umount\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/usr/bin/umount\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248759"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "mount",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"mount\" syscall.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nmount\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248760"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "unix_update",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"unix_update\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nunix_update\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248761"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "postdrop",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"postdrop\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\npostdrop\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248762"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "postqueue",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"postqueue\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\npostqueue\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248763"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "semanage",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"semanage\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nsemanage\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248764"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "setfiles",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"setfiles\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nsetfiles\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248765"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "userhelper",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"userhelper\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nuserhelper\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248766"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "setsebool",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"setsebool\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nsetsebool\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248767"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "unix_chkpwd",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"unix_chkpwd\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nunix_chkpwd\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248768"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "ssh-keysign",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"ssh-keysign\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nssh-keysign\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248769"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "setfacl",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"setfacl\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nsetfacl\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248770"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "pam_timestamp_check",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"pam_timestamp_check\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\npam_timestamp_check\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248771"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "newgrp",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"newgrp\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nnewgrp\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248772"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "init_module",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"init_module\" and \"finit_module\" system calls.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\ninit_module\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248773"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "gpasswd",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"gpasswd\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\ngpasswd\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248779"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "delete_module",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the delete_module syscall.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\ndelete_module\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248781"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "crontab",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"crontab\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\ncrontab\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248782"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "chsh",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"chsh\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nchsh\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248783"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "chmod",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"chmod\", \"fchmod\", and \"fchmodat\" system calls.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nchmod\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248791"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "sudo",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"sudo\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nsudo\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248797"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "usermod",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"usermod\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nusermod\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248798"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "chacl",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"chacl\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nchacl\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248799"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "/usr/bin/kmod",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any use of the \"kmod\" command.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\n/usr/bin/kmod\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248800"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "pam_faillock.so",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any attempted modifications to the \"faillock\" log file.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\npam_faillock.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248801"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/audit/audit.rules",
+        "pattern": "lastlog",
+        "type": "file_content"
+      },
+      "description": "OL 8 must generate audit records for any attempted modifications to the \"lastlog\" file.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/audit/audit.rules": "before\nlastlog\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248802"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "uvcvideo",
+        "type": "file_content"
+      },
+      "description": "OL 8 must cover or disable the built-in or attached camera when not in use.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nuvcvideo\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248828"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "atm",
+        "type": "file_content"
+      },
+      "description": "OL 8 must not have the asynchronous transfer mode (ATM) kernel module installed if not required for operational support.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\natm\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248829"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "can",
+        "type": "file_content"
+      },
+      "description": "OL 8 must not have the Controller Area Network (CAN) kernel module installed if not required for operational support.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\ncan\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248830"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "sctp",
+        "type": "file_content"
+      },
+      "description": "OL 8 must not have the stream control transmission protocol (SCTP) kernel module installed if not required for operational support.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nsctp\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248831"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "tipc",
+        "type": "file_content"
+      },
+      "description": "OL 8 must disable the transparent inter-process communication (TIPC) protocol.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\ntipc\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248832"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "cramfs",
+        "type": "file_content"
+      },
+      "description": "OL 8 must disable mounting of cramfs.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\ncramfs\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248833"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "firewire-core",
+        "type": "file_content"
+      },
+      "description": "OL 8 must disable IEEE 1394 (FireWire) Support.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nfirewire-core\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248834"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d/",
+        "pattern": "usb-storage",
+        "type": "file_content"
+      },
+      "description": "OL 8 must be configured to disable the ability to use USB mass storage devices.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d/": "before\nusb-storage\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248837"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/modprobe.d",
+        "pattern": "bluetooth",
+        "type": "file_content"
+      },
+      "description": "OL 8 Bluetooth must be disabled.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/modprobe.d": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/modprobe.d": "before\nbluetooth\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248843"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must prevent IPv4 Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248875"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must prevent IPv6 Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248876"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.send_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must not send Internet Control Message Protocol (ICMP) redirects.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.send_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.send_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248877"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.icmp_echo_ignore_broadcasts",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must not respond to Internet Control Message Protocol (ICMP) echoes sent to a broadcast address.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.icmp_echo_ignore_broadcasts": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.icmp_echo_ignore_broadcasts": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248878"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must not forward IPv4 source-routed packets.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248879"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must not forward IPv6 source-routed packets.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248880"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must not forward IPv4 source-routed packets by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248881"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_source_route",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must not forward IPv6 source-routed packets by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_source_route": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_source_route": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248882"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.forwarding",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must not enable IPv6 packet forwarding unless the system is a router.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.forwarding": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.forwarding": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248883"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_ra",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must not accept router advertisements on all IPv6 interfaces.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_ra": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_ra": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248884"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.default.accept_ra",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must not accept router advertisements on all IPv6 interfaces by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_ra": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.default.accept_ra": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248885"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.default.send_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must not allow interfaces to perform Internet Control Message Protocol (ICMP) redirects by default.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.send_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.default.send_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248886"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must ignore IPv4 Internet Control Message Protocol (ICMP) redirect messages.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248887"
+    },
+    {
+      "check": {
+        "key": "net.ipv6.conf.all.accept_redirects",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must ignore IPv6 Internet Control Message Protocol (ICMP) redirect messages.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_redirects": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv6.conf.all.accept_redirects": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248888"
+    },
+    {
+      "check": {
+        "key": "kernel.unprivileged_bpf_disabled",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must disable access to the network \"bpf\" syscall from unprivileged processes.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.unprivileged_bpf_disabled": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.unprivileged_bpf_disabled": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248889"
+    },
+    {
+      "check": {
+        "key": "kernel.yama.ptrace_scope",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must restrict the use of \"ptrace\" to descendant processes.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.yama.ptrace_scope": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.yama.ptrace_scope": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248890"
+    },
+    {
+      "check": {
+        "key": "kernel.kptr_restrict",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must restrict exposed kernel pointer addresses access.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.kptr_restrict": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "kernel.kptr_restrict": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248891"
+    },
+    {
+      "check": {
+        "key": "user.max_user_namespaces",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must disable the use of user namespaces.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "user.max_user_namespaces": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "user.max_user_namespaces": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248892"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.rp_filter",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must use reverse path filtering on all IPv4 interfaces.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.rp_filter": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.rp_filter": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248893"
+    },
+    {
+      "check": {
+        "key": "net.core.bpf_jit_harden",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must enable hardening for the Berkeley Packet Filter Just-in-time compiler.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "2"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.core.bpf_jit_harden": "unexpected-2"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.core.bpf_jit_harden": "2"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248894"
+    },
+    {
+      "check": {
+        "name": "aide",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The OL 8 operating system must use a file integrity tool to verify correct operation of all security functions.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "aide": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "aide": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-252654"
+    },
+    {
+      "check": {
+        "key": "net.ipv4.conf.all.forwarding",
+        "type": "sysctl"
+      },
+      "description": "OL 8 must not enable IPv4 packet forwarding unless the system is a router.",
+      "evidence_type": "linux_sysctl_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.forwarding": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "sysctl": {
+          "net.ipv4.conf.all.forwarding": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-252662"
+    },
+    {
+      "check": {
+        "name": "--queryformat",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must ensure cryptographic verification of vendor software packages.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "--queryformat": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "--queryformat": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256978"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "validated_candidates": 93
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If the application owner and authorizing official have determined that encryption of data at rest is not required, this is not a finding. \n \nReview procedures for and evidence of backup of the Master Key in the System Security Plan. \n \nIf the procedures or evidence does not exist, this is a finding. \n \nIf the procedures do not indicate that a backup of the Master Key is stored in a secure location that is not on the SQL Server, this is a finding.\n\nIf procedures do not indicate access restrictions to the Master Key backup, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Document and implement procedures to safely back up and store the Master Key in a secure location that is not on the SQL Server. Include in the procedures methods to establish evidence of backup and storage, and careful, restricted access and restoration of the Master Key.\n\nBACKUP MASTER KEY TO FILE = 'path_to_file'  \nENCRYPTION BY PASSWORD = 'password';  \n \nAs this requires a password, take care to ensure it is not exposed to unauthorized persons or stored as plain text.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271322r1108582_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "The Master Key must be backed up and stored in a secure location that is not on the SQL Server.",
+  "tracking_issue": "TODO-V-271322",
+  "vuln_id": "V-271322"
+}

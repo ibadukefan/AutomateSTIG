@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to determine if refresh reduction is enabled.\n\nStep 1: Determine if MPLS TE is enabled on any interface as shown in the example below: \n\ninterface Ethernet4/47\n mpls traffic-eng tunnels\n mpls ip\n\nStep 2: If MPLS TE is enabled, verify that message pacing is enabled.\n\nip rsvp \n signaling refresh reduction bundle-max-size\n\nIf the switch with RSVP-TE configured does not have refresh reduction features enabled, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the switch to rate limit RSVP messages per interface as shown in the example below. Configure the MPLS switch to synchronize IGP and LDP, minimizing packet loss when an IGP adjacency is established prior to LDP peers completing label exchange.\n\nOSPF Example\n\nSW1(config)# router ospf 1\nSW1(config-switch)# mpls ldp sync\n\nIS-IS Example\n\nSW1(config)# router isis\nSW1(config-switch)# mpls ldp sync.\n\nSW1(config)# ip rsvp\nSW1(config-ip-rsvp)# signaling refresh reduction \nSW1(config-ip-rsvp)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221115r999724_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The MPLS switch with RSVP-TE enabled must be configured with message pacing to adjust maximum burst and maximum number of RSVP messages to an output queue based on the link speed and input queue size of adjacent core switches.",
+  "tracking_issue": "TODO-V-221115",
+  "vuln_id": "V-221115"
+}

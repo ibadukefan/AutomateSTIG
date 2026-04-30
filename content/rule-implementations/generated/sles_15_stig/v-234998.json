@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that SUSE operating system file systems that contain user home directories are mounted with the \"nosuid\" option.\n\nPrint the currently active file system mount options of the file system(s) that contain the user home directories with the following command:\n\n> for X in `awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd`; do findmnt -nkT $X; done | sort -r\n/home /dev/mapper/system-home ext4 rw,nosuid,relatime,data=ordered\n\nIf a file system containing user home directories is not mounted with the FSTYPE OPTION nosuid, this is a finding.\n\nNote: If a separate file system has not been created for the user home directories (user home directories are mounted under \"/\"), this is not a finding as the \"nosuid\" option cannot be used on the \"/\" system.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system \"/etc/fstab\" file to use the \"nosuid\" option on file systems that contain user home directories for interactive users.\n\nRe-mount the filesystems.\n\n> sudo mount -o remount /home",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234998r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "SUSE operating system file systems that contain user home directories must be mounted to prevent files with the setuid and setgid bit set from being executed.",
+  "tracking_issue": "TODO-V-234998",
+  "vuln_id": "V-234998"
+}

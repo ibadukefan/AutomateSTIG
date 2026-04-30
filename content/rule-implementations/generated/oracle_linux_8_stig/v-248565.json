@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the OpenSSL library is configured to use only DoD-approved TLS encryption:\n\nFor versions prior to crypto-policies-20210617-1.gitc776d3e.el8.noarch:\n\n$ sudo grep -i MinProtocol /etc/crypto-policies/back-ends/opensslcnf.config\n\nMinProtocol = TLSv1.2\n\nIf the \"MinProtocol\" is set to anything older than \"TLSv1.2\", this is a finding.\n\nFor version crypto-policies-20210617-1.gitc776d3e.el8.noarch and newer:\n\n$ sudo grep -i  MinProtocol /etc/crypto-policies/back-ends/opensslcnf.config\n\nTLS.MinProtocol = TLSv1.2\nDTLS.MinProtocol = DTLSv1.2\n\nIf the \"TLS.MinProtocol\" is set to anything older than \"TLSv1.2\" or the \"DTLS.MinProtocol\" is set to anything older than \"DTLSv1.2\", this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the OL 8 OpenSSL library to use only DoD-approved TLS encryption by editing the following line in the \"/etc/crypto-policies/back-ends/opensslcnf.config\" file:\n\nFor versions prior to crypto-policies-20210617-1.gitc776d3e.el8.noarch:\n\nMinProtocol = TLSv1.2\n\nFor version crypto-policies-20210617-1.gitc776d3e.el8.noarch and newer:\nTLS.MinProtocol = TLSv1.2\nDTLS.MinProtocol = DTLSv1.2\n\nA reboot is required for the changes to take effect.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248565r991554_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "The OL 8 operating system must implement DoD-approved TLS encryption in the OpenSSL package.",
+  "tracking_issue": "TODO-V-248565",
+  "vuln_id": "V-248565"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Obtain the list of approved audit maintainers from the system documentation. \n \nReview the server roles and individual logins that have the following role memberships, all of which enable the ability to create and maintain audit definitions. \n \nsysadmin \ndbcreator \n \nReview the server roles and individual logins that have the following permissions, all of which enable the ability to create and maintain audit definitions. \n \nALTER ANY SERVER AUDIT  \nCONTROL SERVER  \nALTER ANY DATABASE  \nCREATE ANY DATABASE \n \nUse the following query to determine the roles and logins that have the listed permissions: \n \nSELECT-- DISTINCT \n    CASE \n        WHEN SP.class_desc IS NOT NULL THEN  \n            CASE \n                WHEN SP.class_desc = 'SERVER' AND S.is_linked = 0 THEN 'SERVER' \n                WHEN SP.class_desc = 'SERVER' AND S.is_linked = 1 THEN 'SERVER (linked)' \n                ELSE SP.class_desc \n            END \n        WHEN E.name IS NOT NULL THEN 'ENDPOINT' \n        WHEN S.name IS NOT NULL AND S.is_linked = 0 THEN 'SERVER' \n        WHEN S.name IS NOT NULL AND S.is_linked = 1 THEN 'SERVER (linked)' \n        WHEN P.name IS NOT NULL THEN 'SERVER_PRINCIPAL' \n        ELSE '???'  \n    END                    AS [Securable Class], \n    CASE \n        WHEN E.name IS NOT NULL THEN E.name \n        WHEN S.name IS NOT NULL THEN S.name  \n        WHEN P.name IS NOT NULL THEN P.name \n        ELSE '???'  \n    END                    AS [Securable], \n    P1.name                AS [Grantee], \n    P1.type_desc           AS [Grantee Type], \n    sp.permission_name     AS [Permission], \n    sp.state_desc          AS [State], \n    P2.name                AS [Grantor], \n    P2.type_desc           AS [Grantor Type], \nR.name    AS [Role Name] \nFROM \n    sys.server_permissions SP \n    INNER JOIN sys.server_principals P1 \n        ON P1.principal_id = SP.grantee_principal_id \n    INNER JOIN sys.server_principals P2 \n        ON P2.principal_id = SP.grantor_principal_id \n \n    FULL OUTER JOIN sys.servers S \n        ON  SP.class_desc = 'SERVER' \n        AND S.server_id = SP.major_id \n \n    FULL OUTER JOIN sys.endpoints E \n        ON  SP.class_desc = 'ENDPOINT' \n        AND E.endpoint_id = SP.major_id \n \n    FULL OUTER JOIN sys.server_principals P \n        ON  SP.class_desc = 'SERVER_PRINCIPAL'         \n        AND P.principal_id = SP.major_id \n \nFULL OUTER JOIN sys.server_role_members SRM \nON P.principal_id = SRM.member_principal_id \n \nLEFT OUTER JOIN sys.server_principals R \nON SRM.role_principal_id = R.principal_id \nWHERE sp.permission_name IN ('ALTER ANY SERVER AUDIT','CONTROL SERVER','ALTER ANY DATABASE','CREATE ANY DATABASE') \nOR R.name IN ('sysadmin','dbcreator') \n \nIf any of the logins, roles, or role memberships returned have permissions that are not documented, or the documented audit maintainers do not have permissions, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Create a server role specifically for audit maintainers and give it permission to maintain audits without granting it unnecessary permissions (the role name used here is an example; other names may be used):\n \nCREATE SERVER ROLE SERVER_AUDIT_MAINTAINERS; \nGO \n \nGRANT ALTER ANY SERVER AUDIT TO SERVER_AUDIT_MAINTAINERS; \nGO     \n \nUse REVOKE and/or DENY and/or ALTER SERVER ROLE ... DROP MEMBER ... statements to remove the ALTER ANY SERVER AUDIT permission from all logins. Then, for each authorized login, run the statement:\n \nALTER SERVER ROLE SERVER_AUDIT_MAINTAINERS ADD MEMBER; \nGO \n \nUse REVOKE and/or DENY and/or ALTER SERVER ROLE ... DROP MEMBER ... statements to remove CONTROL SERVER, ALTER ANY DATABASE and CREATE ANY DATABASE permissions from logins that do not need them.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271271r1108429_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "SQL Server must allow only the information system security manager (ISSM) (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited.",
+  "tracking_issue": "TODO-V-271271",
+  "vuln_id": "V-271271"
+}

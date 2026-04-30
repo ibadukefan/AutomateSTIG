@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SSH daemon performs strict mode checking of home directory configuration files with the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*strictmodes'\n\n/etc/ssh/sshd_config:StrictModes yes\n\nIf \"StrictModes\" is set to \"no\", is missing, or the returned line is commented out, this is a finding.\n\nIf conflicting results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure SSH to perform strict mode checking of home directory configuration files. Uncomment the \"StrictModes\" keyword in \"/etc/ssh/sshd_config\" and set the value to \"yes\":\n\nStrictModes yes\n\nThe SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command:\n\n$ sudo systemctl restart sshd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230288r1069301_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "The RHEL 8 SSH daemon must perform strict mode checking of home directory configuration files.",
+  "tracking_issue": "TODO-V-230288",
+  "vuln_id": "V-230288"
+}

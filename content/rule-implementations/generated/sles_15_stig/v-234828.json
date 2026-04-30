@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system prevents unauthorized and unintended information transfer via the shared system resources.\n\nCheck that world-writable directories have the sticky bit set with the following command:\n\n> sudo find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -perm -002 -type d -exec ls -lLd {} \\;\n\n256 0 drwxrwxrwt 1 root root 4096 Jun 14 06:45 /tmp\n\nIf any of the returned directories do not have the sticky bit set, or are not documented as having the write permission for the other class, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system shared system resources to prevent any unauthorized and unintended information transfer by setting the sticky bit for all world-writable directories.\n\nAn example of a world-writable directory is \"/tmp\" directory. Set the sticky bit on all of the world-writable directories (using the \"/tmp\" directory as an example) with the following command:\n\n> sudo chmod 1777 /tmp\n\nFor every world-writable directory, replace \"/tmp\" in the command above with the world-writable directory that does not have the sticky bit set.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234828r1137695_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The sticky bit must be set on all SUSE operating system world-writable directories.",
+  "tracking_issue": "TODO-V-234828",
+  "vuln_id": "V-234828"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that pam_unix.so module is configured to use sha512.\n\nCheck that pam_unix.so module is configured to use sha512 in /etc/pam.d/system-auth with the following command:\n\n$ sudo grep password /etc/pam.d/system-auth | grep pam_unix\n\npassword sufficient pam_unix.so sha512\n\nIf \"sha512\" is missing, or is commented out, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to use a FIPS 140-2 approved cryptographic hashing algorithm for system authentication.\n\nEdit/modify the following line in the \"/etc/pam.d/system-auth\" file to include the sha512 option for pam_unix.so:\n\npassword sufficient pam_unix.so sha512",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-244524r1017330_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "The RHEL 8 pam_unix.so module must be configured in the system-auth file to use a FIPS 140-2 approved cryptographic hashing algorithm for system authentication.",
+  "tracking_issue": "TODO-V-244524",
+  "vuln_id": "V-244524"
+}

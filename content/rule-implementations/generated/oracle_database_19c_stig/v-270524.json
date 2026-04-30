@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "To verify the current status of the remote_os_roles parameter use the SQL statement: \n\nIf using a non-CDB database:\n\nFrom SQL*Plus:\n \nCOLUMN name format a20 \nCOLUMN parameter_value format a20 \n\nSELECT name, con_id, value AS PARAMETER_VALUE \nFROM sys.v_$parameter \nWHERE vp.name = 'remote_os_roles' \nORDER BY 1; \n\nIf the PARAMETER_VALUE is not FALSE, that is a finding.\n\nIf using a CDB database:\n\nFrom SQL*Plus (in the CDB database):\n \nCOLUMN name format a20 \nCOLUMN parameter_value format a20 \n\nSELECT name, inst_id, con_id, value AS PARAMETER_VALUE \nFROM sys.gv_$parameter \t\nWHERE vp.name = 'remote_os_roles' \nORDER BY 1; \n\nIn the CDB database, if the PARAMETER_VALUE is not FALSE, that is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the parameter to FALSE for all instances. If using Oracle Multitenant, set the value to FALSE for the container database and all pluggable databases will be set to FALSE as well. \n\nALTER SYSTEM SET remote_os_roles = FALSE scope=spfile; \n\nsid='container_name' is optional \n\nRestart the database for the change to take effect.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270524r1112471_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "The Oracle REMOTE_OS_ROLES parameter must be set to FALSE.",
+  "tracking_issue": "TODO-V-270524",
+  "vuln_id": "V-270524"
+}

@@ -1,0 +1,54 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments",
+      "type": "registry",
+      "value_name": "SaveZoneInformation"
+    },
+    "description": "Windows Server 2019 must preserve zone information when saving attachments.",
+    "expected": {
+      "type": "equals",
+      "value": 2
+    },
+    "platform": "windows",
+    "vuln_id": "V-205924"
+  },
+  "check_content_excerpt": "The default behavior is for Windows to mark file attachments with their zone information.\n\nIf the registry Value Name below does not exist, this is not a finding.\n\nIf it exists and is configured with a value of \"2\", this is not a finding.\n\nIf it exists and is configured with a value of \"1\", this is a finding.\n\nRegistry Hive: HKEY_CURRENT_USER\nRegistry Path: \\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments\\\n\nValue Name: SaveZoneInformation\n\nValue Type: REG_DWORD\nValue: 0x00000002 (2) (or if the Value Name does not exist)",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 2
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "The default behavior is for Windows to mark file attachments with their zone information.\n\nIf this needs to be corrected, configure the policy value for User Configuration >> Administrative Templates >> Windows Components >> Attachment Manager >> \"Do not preserve zone information in file attachments\" to \"Not Configured\" or \"Disabled\".",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/windows_server_2019_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-205924r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/windows_server_2019_stig/u_ms_windows_server_2019_v3r4_stig.json",
+  "source_version": "U_MS_Windows_Server_2019_V3R4_STIG.zip",
+  "stig_id": "Windows_Server_2019_STIG",
+  "title": "Windows Server 2019 must preserve zone information when saving attachments.",
+  "tracking_issue": "TODO-V-205924",
+  "vuln_id": "V-205924"
+}

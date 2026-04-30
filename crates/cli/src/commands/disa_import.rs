@@ -28,8 +28,8 @@ pub fn run(input: &str, cli: &crate::Cli) -> Result<()> {
     ui::detail("Source", input);
 
     let lib_path = library_path(cli);
-    let mut library = StigLibrary::open_or_init(&lib_path)
-        .context("Failed to open STIG library")?;
+    let mut library =
+        StigLibrary::open_or_init(&lib_path).context("Failed to open STIG library")?;
 
     ui::detail("Library", &lib_path.display().to_string());
     eprintln!();
@@ -56,8 +56,7 @@ pub fn run(input: &str, cli: &crate::Cli) -> Result<()> {
 ///   (and sometimes OVAL, CPE, readme files)
 fn import_zip(zip_path: &Path, library: &mut StigLibrary) -> Result<()> {
     let file = std::fs::File::open(zip_path)?;
-    let mut archive = zip::ZipArchive::new(file)
-        .context("Failed to open ZIP archive")?;
+    let mut archive = zip::ZipArchive::new(file).context("Failed to open ZIP archive")?;
 
     let mut imported = 0;
     let mut skipped = 0;
@@ -77,7 +76,10 @@ fn import_zip(zip_path: &Path, library: &mut StigLibrary) -> Result<()> {
 
     if xccdf_files.is_empty() {
         ui::warn("No XCCDF benchmark files found in ZIP archive");
-        ui::detail("Hint", "DISA XCCDF files typically end in '-xccdf.xml' or '_Manual-xccdf.xml'");
+        ui::detail(
+            "Hint",
+            "DISA XCCDF files typically end in '-xccdf.xml' or '_Manual-xccdf.xml'",
+        );
         return Ok(());
     }
 
@@ -97,10 +99,7 @@ fn import_zip(zip_path: &Path, library: &mut StigLibrary) -> Result<()> {
 
                 match library.add_benchmark(&benchmark) {
                     Ok(()) => {
-                        ui::success(&format!(
-                            "{} {} — {} rules",
-                            id, ver, rules
-                        ));
+                        ui::success(&format!("{} {} — {} rules", id, ver, rules));
                         imported += 1;
                     }
                     Err(e) => {
@@ -110,10 +109,7 @@ fn import_zip(zip_path: &Path, library: &mut StigLibrary) -> Result<()> {
                 }
             }
             Err(e) => {
-                ui::warn(&format!(
-                    "Failed to parse {}: {}",
-                    xccdf_name, e
-                ));
+                ui::warn(&format!("Failed to parse {}: {}", xccdf_name, e));
                 skipped += 1;
             }
         }
@@ -130,14 +126,15 @@ fn import_zip(zip_path: &Path, library: &mut StigLibrary) -> Result<()> {
 
 /// Import a single XCCDF benchmark XML file.
 fn import_xccdf_file(xml_path: &Path, library: &mut StigLibrary) -> Result<()> {
-    let benchmark = xccdf::parse_xccdf_benchmark(xml_path)
-        .context("Failed to parse XCCDF benchmark")?;
+    let benchmark =
+        xccdf::parse_xccdf_benchmark(xml_path).context("Failed to parse XCCDF benchmark")?;
 
     let id = benchmark.id.clone();
     let ver = benchmark.version_string();
     let rules = benchmark.rules.len();
 
-    library.add_benchmark(&benchmark)
+    library
+        .add_benchmark(&benchmark)
         .context(format!("Failed to add benchmark {}", id))?;
 
     ui::success(&format!("{} {} — {} rules", id, ver, rules));
@@ -157,7 +154,9 @@ mod tests {
 
     #[test]
     fn test_is_xccdf_benchmark() {
-        assert!(is_xccdf_benchmark("U_MS_Windows_Server_2022_V1R4_Manual-xccdf.xml"));
+        assert!(is_xccdf_benchmark(
+            "U_MS_Windows_Server_2022_V1R4_Manual-xccdf.xml"
+        ));
         assert!(is_xccdf_benchmark("U_RHEL_9_V1R2_Manual-xccdf.xml"));
         assert!(is_xccdf_benchmark("some_stig_xccdf.xml"));
         assert!(!is_xccdf_benchmark("readme.txt"));

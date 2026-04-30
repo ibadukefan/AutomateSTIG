@@ -1,0 +1,53 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "kernel.unprivileged_bpf_disabled",
+      "type": "sysctl"
+    },
+    "description": "RHEL 8 must disable access to network bpf syscall from unprivileged processes.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230545"
+  },
+  "check_content_excerpt": "Verify RHEL 8 prevents privilege escalation thru the kernel by disabling access to the bpf syscall with the following commands:\n\n$ sudo sysctl kernel.unprivileged_bpf_disabled\n\nkernel.unprivileged_bpf_disabled = 1\n\nIf the returned line does not have a value of \"1\", or a line is not returned, this is a finding.\n\nCheck that the configuration files are present to enable this network parameter.\n\n$ sudo grep -r kernel.unprivileged_bpf_disabled /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf /lib/sysctl.d/*.conf /etc/sysctl.conf /etc/sysctl.d/*.conf\n\n/etc/sysctl.d/99-sysctl.conf: kernel.unprivileged_bpf_disabled = 1\n\nIf \"kernel.unprivileged_bpf_disabled\" is not set to \"1\", is missing or commented out, this is a finding.\n\nIf conflicting results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to prevent privilege escalation thru the kernel by disabling access to the bpf syscall by adding the following line to a file, in the \"/etc/sysctl.d\" directory:\n\nkernel.unprivileged_bpf_disabled = 1\n\nRemove any configurations that conflict with the above from the following locations: \n/run/sysctl.d/*.conf\n/usr/local/lib/sysctl.d/*.conf\n/usr/lib/sysctl.d/*.conf\n/lib/sysctl.d/*.conf\n/etc/sysctl.conf\n/etc/sysctl.d/*.conf\n\nThe system configuration files need to be reloaded for the changes to take effect. To reload the contents of the files, run the following command:\n\n$ sudo sysctl --system",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-230545r1017307_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must disable access to network bpf syscall from unprivileged processes.",
+  "tracking_issue": "TODO-V-230545",
+  "vuln_id": "V-230545"
+}

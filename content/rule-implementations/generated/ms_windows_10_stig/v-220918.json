@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+      "type": "registry",
+      "value_name": "MaximumPasswordAge"
+    },
+    "description": "The maximum age for machine account passwords must be configured to 30 days or less.",
+    "expected": {
+      "type": "equals",
+      "value": 30
+    },
+    "platform": "windows",
+    "vuln_id": "V-220918"
+  },
+  "check_content_excerpt": "This is the default configuration for this setting (30 days).\n\nIf the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\\n\nValue Name: MaximumPasswordAge\n\nValue Type: REG_DWORD\nValue: 0x0000001e (30)  (or less, excluding 0)",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 30
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "This is the default configuration for this setting (30 days).\n\nConfigure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> \"Domain member: Maximum machine account password age\" to \"30\" or less (excluding 0 which is unacceptable).",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-220918r991589_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_10_stig/u_ms_windows_10_v3r4_stig.json",
+  "source_version": "U_MS_Windows_10_V3R4_STIG.zip",
+  "stig_id": "MS_Windows_10_STIG",
+  "title": "The maximum age for machine account passwords must be configured to 30 days or less.",
+  "tracking_issue": "TODO-V-220918",
+  "vuln_id": "V-220918"
+}

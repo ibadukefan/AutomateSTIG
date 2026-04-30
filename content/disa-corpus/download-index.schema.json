@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "generated_at",
+    "source",
+    "downloads"
+  ],
+  "properties": {
+    "generated_at": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "downloads": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "title",
+          "url",
+          "artifact_type"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "artifact_type": {
+            "type": "string"
+          },
+          "release": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

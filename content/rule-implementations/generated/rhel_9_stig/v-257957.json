@@ -1,0 +1,53 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "net.ipv4.tcp_syncookies",
+      "type": "sysctl"
+    },
+    "description": "RHEL 9 must be configured to use TCP syncookies.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257957"
+  },
+  "check_content_excerpt": "Verify RHEL 9 is configured to use IPv4 TCP syncookies.\n\nDetermine if syncookies are used with the following command:\n\nCheck the status of the kernel.perf_event_paranoid kernel parameter.\n\n$ sudo sysctl net.ipv4.tcp_syncookies\n\nnet.ipv4.tcp_syncookies = 1\n\nCheck that the configuration files are present to enable this kernel parameter.\n\n$ sudo /usr/lib/systemd/systemd-sysctl --cat-config | egrep -v '^(#|;)' | grep -F net.ipv4.tcp_syncookies | tail -1\n\nnet.ipv4.tcp_syncookies = 1\n\nIf the network parameter \"ipv4.tcp_syncookies\" is not equal to \"1\" or nothing is returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 9 to use TCP syncookies.\n\nAdd or edit the following line in a system configuration file in the \"/etc/sysctl.d/\" directory:\n net.ipv4.tcp_syncookies = 1\n\nLoad settings from all system configuration files with the following command:\n\n$ sudo sysctl --system",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_9_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-257957r1045009_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must be configured to use TCP syncookies.",
+  "tracking_issue": "TODO-V-257957",
+  "vuln_id": "V-257957"
+}

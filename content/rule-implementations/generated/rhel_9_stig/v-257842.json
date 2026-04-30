@@ -1,0 +1,52 @@
+{
+  "candidate_check": {
+    "check": {
+      "name": "s-nail",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "RHEL 9 must have the s-nail package installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257842"
+  },
+  "check_content_excerpt": "Verify that RHEL 9 is configured to allow sending email notifications.\n\nNote: The \"s-nail\" package provides the \"mail\" command that is used to send email messages.\n\nVerify that the \"s-nail\" package is installed on the system:\n\n$ dnf list --installed s-nail\n\ns-nail.x86_64          14.9.22-6.el9\n\t \nIf \"s-nail\" package is not installed, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "The s-nail package can be installed with the following command:\n\n$ sudo dnf install s-nail",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_9_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "package",
+  "remediation": "planned",
+  "rule_id": "SV-257842r1044916_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must have the s-nail package installed.",
+  "tracking_issue": "TODO-V-257842",
+  "vuln_id": "V-257842"
+}

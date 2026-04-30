@@ -1,0 +1,52 @@
+{
+  "candidate_check": {
+    "check": {
+      "name": "gssproxy",
+      "should_be_installed": false,
+      "type": "package"
+    },
+    "description": "The gssproxy package must not be installed unless mission essential on RHEL 8.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230559"
+  },
+  "check_content_excerpt": "Note: If NFS mounts are authorized and in use on the system, this control is not applicable.\n\nVerify the gssproxy package is not installed with the following command:\n\n$ dnf list --installed gssproxy\n\nError: No matching Packages to list\n\nIf the \"gssproxy\" package is installed and is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "is_false"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Document the gssproxy package with the ISSO as an operational requirement or remove it from the system with the following command:\n\n$ sudo yum remove gssproxy",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "package",
+  "remediation": "planned",
+  "rule_id": "SV-230559r1155398_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "The gssproxy package must not be installed unless mission essential on RHEL 8.",
+  "tracking_issue": "TODO-V-230559",
+  "vuln_id": "V-230559"
+}

@@ -1,0 +1,401 @@
+{
+  "stig_id": "VMware_vSphere_8_ESXi_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/vmware_vsphere8_esxi.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/vmware_vsphere8_esxi.json",
+  "total_rules": 30,
+  "rules": [
+    {
+      "vuln_id": "V-258700",
+      "rule_id": "V-258700_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi must enable lockdown mode to restrict direct host access",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258700",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258701",
+      "rule_id": "V-258701_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi shell interactive timeout must be configured",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258701",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258702",
+      "rule_id": "V-258702_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi shell timeout must be set to automatically disable shell",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258702",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258703",
+      "rule_id": "V-258703_automatestig_check",
+      "classification": "automated",
+      "reason": "DCUI access must be restricted to root user only",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258703",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258704",
+      "rule_id": "V-258704_automatestig_check",
+      "classification": "automated",
+      "reason": "DCUI idle timeout must be configured",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258704",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258705",
+      "rule_id": "V-258705_automatestig_check",
+      "classification": "automated",
+      "reason": "Managed Object Browser (MOB) must be disabled",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258705",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258706",
+      "rule_id": "V-258706_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi must enable FIPS 140-2/140-3 mode for SSH",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258706",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258707",
+      "rule_id": "V-258707_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi must disable TLS 1.0, TLS 1.1, and SSL 3.0 (only TLS 1.2 allowed)",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258707",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258708",
+      "rule_id": "V-258708_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi password quality must enforce complexity requirements",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258708",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258709",
+      "rule_id": "V-258709_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi must prohibit reuse of the last 5 passwords",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258709",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258710",
+      "rule_id": "V-258710_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi account lockout must be set to 5 or fewer failed attempts",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258710",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258711",
+      "rule_id": "V-258711_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi account unlock time must be at least 900 seconds (15 minutes)",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258711",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258712",
+      "rule_id": "V-258712_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi host firewall must be enabled",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258712",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258713",
+      "rule_id": "V-258713_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi host firewall default policy must be set to DROP",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258713",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258714",
+      "rule_id": "V-258714_automatestig_check",
+      "classification": "automated",
+      "reason": "SNMP must be disabled unless SNMPv3 is configured with proper authentication",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258714",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258715",
+      "rule_id": "V-258715_automatestig_check",
+      "classification": "automated",
+      "reason": "SNMP community strings must not be configured",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258715",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258716",
+      "rule_id": "V-258716_automatestig_check",
+      "classification": "automated",
+      "reason": "NTP service must be enabled for time synchronization",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258716",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258717",
+      "rule_id": "V-258717_automatestig_check",
+      "classification": "automated",
+      "reason": "NTP must be configured with an authoritative time source",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258717",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258718",
+      "rule_id": "V-258718_automatestig_check",
+      "classification": "automated",
+      "reason": "Remote syslog host must be configured",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258718",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258719",
+      "rule_id": "V-258719_automatestig_check",
+      "classification": "automated",
+      "reason": "Syslog global log host must point to a remote server",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258719",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258720",
+      "rule_id": "V-258720_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi host agent log level must be set to info",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258720",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258721",
+      "rule_id": "V-258721_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi must display a DoD-approved login banner (MOTD)",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258721",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258722",
+      "rule_id": "V-258722_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi must display a DoD-approved SSH banner (/etc/issue)",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258722",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258723",
+      "rule_id": "V-258723_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi SSH must be configured to display the login banner",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258723",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258724",
+      "rule_id": "V-258724_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi SSH must disable compression",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258724",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258725",
+      "rule_id": "V-258725_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi SSH must disable gateway ports",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258725",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258726",
+      "rule_id": "V-258726_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi SSH must disable X11 forwarding",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258726",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258727",
+      "rule_id": "V-258727_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi SSH must disable tunneling",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258727",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258728",
+      "rule_id": "V-258728_automatestig_check",
+      "classification": "automated",
+      "reason": "ESXi software acceptance level must be PartnerSupported or higher",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258728",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-258729",
+      "rule_id": "V-258729_automatestig_check",
+      "classification": "automated",
+      "reason": "Firewall, NTP, and remote syslog must all be properly configured",
+      "check_pack": "vmware_vsphere8_esxi",
+      "check_id": "V-258729",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/vmware_vsphere8_esxi.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

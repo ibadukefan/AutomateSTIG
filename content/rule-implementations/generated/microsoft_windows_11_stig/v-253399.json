@@ -1,0 +1,54 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR",
+      "type": "registry",
+      "value_name": "AllowGameDVR"
+    },
+    "description": "Windows 11 must be configured to disable Windows Game Recording and Broadcasting.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-253399"
+  },
+  "check_content_excerpt": "This is NA for Windows 11 LTSC. \n                \nIf the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR\\\n\nValue Name: AllowGameDVR\n\nType: REG_DWORD\nValue: 0x00000000 (0)",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Windows Game Recording and Broadcasting >> \"Enables or disables Windows Game Recording and Broadcasting\" to \"Disabled\".",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/microsoft_windows_11_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-253399r958478_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/microsoft_windows_11_stig/u_ms_windows_11_v2r4_stig.json",
+  "source_version": "U_MS_Windows_11_V2R4_STIG.zip",
+  "stig_id": "Microsoft_Windows_11_STIG",
+  "title": "Windows 11 must be configured to disable Windows Game Recording and Broadcasting.",
+  "tracking_issue": "TODO-V-253399",
+  "vuln_id": "V-253399"
+}

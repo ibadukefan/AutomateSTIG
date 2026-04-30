@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the default umask for all local interactive users is \"077\".\n\nIdentify the locations of all local interactive user home directories by looking at the \"/etc/passwd\" file.\n\nCheck all local interactive user initialization files for interactive users with the following command:\n\nNote: The example is for a system that is configured to create users home directories in the \"/home\" directory.\n\n$ sudo grep -ir ^umask /home | grep -v '.bash_history'\n\nIf any local interactive user initialization files are found to have a umask statement that has a value less restrictive than \"077\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Remove the umask statement from all local interactive user's initialization files. \n\nIf the account is for an application, the requirement for a umask less restrictive than \"077\" can be documented with the Information System Security Officer, but the user agreement for access to the account must specify that the local interactive user must log on to their account first and then switch the user to the application account with the correct option to gain the account's environment variables.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230384r1017193_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must set the umask value to 077 for all local interactive user accounts.",
+  "tracking_issue": "TODO-V-230384",
+  "vuln_id": "V-230384"
+}

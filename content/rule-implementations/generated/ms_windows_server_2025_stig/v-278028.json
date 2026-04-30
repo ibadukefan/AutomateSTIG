@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If FTP is not installed on the system, this is not applicable.\n\nOpen Internet Information Services (IIS) Manager.\n\nSelect \"Sites\" under the server name.\n\nFor any sites with a Binding that lists FTP, right-click the site and select \"Explore\".\n\nIf the site is not defined to a specific folder for shared FTP resources, this is a finding.\n\nIf the site includes any system areas such as root of the drive, Program Files, or Windows directories, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the FTP sites to allow access only to specific FTP shared resources. Do not allow access to other areas of the system.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278028r1182265_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 FTP servers must be configured to prevent access to the system drive.",
+  "tracking_issue": "TODO-V-278028",
+  "vuln_id": "V-278028"
+}

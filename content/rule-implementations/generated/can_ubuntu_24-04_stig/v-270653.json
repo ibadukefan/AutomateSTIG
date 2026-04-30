@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the log service is installed properly with the following command: \n \n$ dpkg -l | grep rsyslog \nii  rsyslog     8.2312.0-3ubuntu9      amd64     reliable system and kernel logging daemon \n \nIf the \"rsyslog\" package is not installed, this is a finding. \n \nCheck that the log service is enabled with the following command: \n \n$ systemctl is-enabled rsyslog\nenabled \n \nIf the command above returns \"disabled\", this is a finding. \n \nCheck that the log service is properly running and active on the system with the following command: \n \n$ systemctl is-active rsyslog\nactive \n \nIf the command above returns \"inactive\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the log service to collect failure events. \n \nInstall the log service (if the log service is not already installed) with the following command: \n \n$ sudo apt install -y rsyslog \n \nEnable the log service with the following command: \n \n$ sudo systemctl enable --now rsyslog",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270653r1067141_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must be configured to preserve log records from failure events.",
+  "tracking_issue": "TODO-V-270653",
+  "vuln_id": "V-270653"
+}

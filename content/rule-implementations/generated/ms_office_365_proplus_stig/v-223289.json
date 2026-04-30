@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Security Settings \"Automation Security\" is set to \"Enabled (Use application macro security level)\".\n\nUse the Windows Registry Editor to navigate to the following key:\n\nHKCU\\Software\\Policies\\Microsoft\\Office\\Common\\Security\n\nIf the value AutomationSecurity is REG_DWORD = 2, this is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Security Settings \"Automation Security\" to \"Enabled (Use application macro security level)\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-223289r961092_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_office_365_proplus_stig/u_ms_office_365_proplus_v3r5_stig.json",
+  "source_version": "U_MS_Office_365_ProPlus_V3R5_STIG.zip",
+  "stig_id": "MS_Office_365_ProPlus_STIG",
+  "title": "Macros in all Office applications that are opened programmatically by another application must be opened based upon macro security level.",
+  "tracking_issue": "TODO-V-223289",
+  "vuln_id": "V-223289"
+}

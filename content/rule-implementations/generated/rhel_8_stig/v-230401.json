@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": "0700",
+      "owner": null,
+      "path": "/var/log/audit",
+      "type": "file_permission"
+    },
+    "description": "RHEL 8 audit log directory must have a mode of 0700 or less permissive to prevent unauthorized read access.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230401"
+  },
+  "check_content_excerpt": "Verify the audit log directories have a mode of \"0700\" or less permissive by first determining where the audit logs are stored with the following command:\n\n$ sudo grep -iw log_file /etc/audit/auditd.conf\n\nlog_file = /var/log/audit/audit.log\n\nUsing the location of the audit log, determine the directory where the audit logs are stored (ex: \"/var/log/audit\"). Run the following command to determine the permissions for the audit log folder:\n\n$ sudo stat -c \"%a %n\" /var/log/audit\n\n700 /var/log/audit\n\nIf the audit log directory has a mode more permissive than \"0700\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit log directory to be protected from unauthorized read access by setting the correct permissive mode with the following command:\n\n$ sudo chmod 0700 [audit_log_directory]\n\nReplace \"[audit_log_directory]\" to the correct audit log directory path, by default this location is \"/var/log/audit\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_permission",
+  "remediation": "planned",
+  "rule_id": "SV-230401r1017207_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 audit log directory must have a mode of 0700 or less permissive to prevent unauthorized read access.",
+  "tracking_issue": "TODO-V-230401",
+  "vuln_id": "V-230401"
+}

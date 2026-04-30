@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system encrypts audit records off-loaded onto a different system or media from the system being audited with the following commands:\n\n$ sudo grep -i '$DefaultNetstreamDriver' /etc/rsyslog.conf /etc/rsyslog.d/*.conf\n\n/etc/rsyslog.conf:$DefaultNetstreamDriver gtls\n\nIf the value of the \"$DefaultNetstreamDriver\" option is not set to \"gtls\" or the line is commented out, this is a finding.\n\n$ sudo grep -i '$ActionSendStreamDriverMode' /etc/rsyslog.conf /etc/rsyslog.d/*.conf\n\n/etc/rsyslog.conf:$ActionSendStreamDriverMode 1\n\nIf the value of the \"$ActionSendStreamDriverMode\" option is not set to \"1\" or the line is commented out, this is a finding.\n\nIf neither of the definitions above are set, ask the System Administrator to indicate how the audit logs are off-loaded to a different system or media. \n\nIf there is no evidence that the transfer of the audit logs being off-loaded to another system or media is encrypted, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to encrypt off-loaded audit records by setting the following options in \"/etc/rsyslog.conf\" or \"/etc/rsyslog.d/[customfile].conf\":\n\n$DefaultNetstreamDriver gtls\n$ActionSendStreamDriverMode 1",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230481r958754_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must encrypt the transfer of audit records off-loaded onto a different system or media from the system being audited.",
+  "tracking_issue": "TODO-V-230481",
+  "vuln_id": "V-230481"
+}

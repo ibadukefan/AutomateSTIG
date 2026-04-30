@@ -1,0 +1,53 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/modprobe.d/",
+      "pattern": "uvcvideo",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must cover or disable the built-in or attached camera when not in use.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230493"
+  },
+  "check_content_excerpt": "If the device or operating system does not have a camera installed, this is not applicable.\n\nThis requirement is not applicable to mobile devices (smartphones and tablets), where the use of the camera is a local authorizing official (AO) decision.\n\nThis requirement is not applicable to dedicated VTC suites located in approved VTC locations that are centrally managed.\n\nFor an external camera, if there is not a method for the operator to manually disconnect the camera at the end of collaborative computing sessions, this is a finding.\n\nFor a built-in camera, the camera must be protected by a camera cover (e.g., laptop camera cover slide) when not in use. If the built-in camera is not protected with a camera cover, or is not physically disabled, this is a finding.\n\nIf the camera is not disconnected, covered, or physically disabled, determine if it is being disabled via software.\n\nVerify the operating system disables the ability to load the uvcvideo kernel module and ensure that the uvcvideo protocol module is disabled with the following command:\n\n$ sudo grep -r uvcvideo /etc/modprobe.d/* | grep \"blacklist\"\n\n/etc/modprobe.d/blacklist:install uvcvideo /bin/false\n/etc/modprobe.d/blacklist:blacklist uvcvideo\n\nIf the command does not return uncommented output and the collaborative computing device has not been authorized for use, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable the built-in or attached camera when not in use.\n\nAdd or update the followind lines in the \"/etc/modprobe.d/blacklist.conf\" file:\n\n     install uvcvideo /bin/false\n     blacklist uvcvideo\n\nReboot the system for the settings to take effect.",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-230493r1184280_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must cover or disable the built-in or attached camera when not in use.",
+  "tracking_issue": "TODO-V-230493",
+  "vuln_id": "V-230493"
+}

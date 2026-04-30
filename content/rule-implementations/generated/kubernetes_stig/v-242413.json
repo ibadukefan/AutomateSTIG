@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Change to the /etc/kubernetes/manifests/ directory on the Kubernetes Control Plane. Run the command:\ngrep kube-apiserver.manifest -I -etcd-servers *\n-edit etcd-main.manifest file:\nVIM <Manifest Name:\nReview  livenessProbe:\nHttpGet:\nPort:\nReview ports:\n- containerPort:\n       hostPort:\n- containerPort:\n       hostPort:\nRun Command:\nkubectl describe services \u2013all-namespace\nSearch labels for any apiserver names spaces.\nPort:\n\nAny manifest and namespace PPS configuration not in compliance with PPSM CAL is a finding.\n\nReview the information systems documentation and interview the team, gain an understanding of the etcd architecture, and determine applicable PPS. Any PPS in the system documentation not in compliance with the CAL PPSM is a finding. Any PPS not set in the system documentation is a finding.\n\nReview findings against the most recent PPSM CAL:\nhttps://cyber.mil/ppsm/cal/\n\nVerify etcd network boundary with the PPS associated with the CAL Assurance Categories. Any PPS not in compliance with the CAL Assurance Category requirements is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Amend any system documentation requiring revision. Update Kubernetes etcd manifest and namespace PPS configuration to comply with PPSM CAL.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-242413r1043177_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/kubernetes_stig/u_kubernetes_v2r6_stig.json",
+  "source_version": "U_Kubernetes_V2R6_STIG.zip",
+  "stig_id": "Kubernetes_STIG",
+  "title": "The Kubernetes etcd must enforce ports, protocols, and services (PPS) that adhere to the Ports, Protocols, and Services Management Category Assurance List (PPSM CAL).",
+  "tracking_issue": "TODO-V-242413",
+  "vuln_id": "V-242413"
+}

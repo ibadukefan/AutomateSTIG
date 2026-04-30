@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/modprobe.d/",
+      "pattern": "usb-storage",
+      "type": "file_content"
+    },
+    "description": "Ubuntu 24.04 LTS must disable automatic mounting of Universal Serial Bus (USB) mass storage driver.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270718"
+  },
+  "check_content_excerpt": "Verify that Ubuntu 24.04 LTS disables ability to load the USB storage kernel module with the following command:\n\n$ sudo grep usb-storage /etc/modprobe.d/* | grep \"/bin/true\" \n/etc/modprobe.d/DISASTIG.conf:install usb-storage /bin/true\n\nIf the command does not return any output, or the line is commented out, this is a finding.\n\nVerify Ubuntu 24.04 LTS disables the ability to use USB mass storage device.\n\n$ sudo grep usb-storage /etc/modprobe.d/* | grep -i \"blacklist\"\n/etc/modprobe.d/DISASTIG.conf:blacklist usb-storage\n\nIf the command does not return any output, or the line is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to disable using the USB storage kernel module with the following command: \n\n$ sudo su -c \"echo install usb-storage /bin/true >> /etc/modprobe.d/DISASTIG.conf\"\n\nConfigure Ubuntu 24.04 LTS to disable the ability to use USB mass storage devices with the following command:\n\n$ sudo su -c \"echo blacklist usb-storage >> /etc/modprobe.d/DISASTIG.conf\"",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-270718r1067128_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must disable automatic mounting of Universal Serial Bus (USB) mass storage driver.",
+  "tracking_issue": "TODO-V-270718",
+  "vuln_id": "V-270718"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the Ubuntu operating system notifies the SA and ISSO (at a minimum) when allocated audit record storage volume reaches 75% of the repository maximum audit record storage capacity with the following command: \n \n$ sudo grep ^space_left_action /etc/audit/auditd.conf \n \nspace_left_action email \n \n$ sudo grep ^space_left /etc/audit/auditd.conf \n \nspace_left 250000 \n \nIf the \"space_left\" parameter is missing, set to blanks, or set to a value less than 25% of the space free in the allocated audit record storage, this is a finding. \n \nIf the \"space_left_action\" parameter is missing or set to blanks, this is a finding. \n \nIf the \"space_left_action\" is set to \"syslog\", the system logs the event but does not generate a notification, and this is a finding. \n \nIf the \"space_left_action\" is set to \"exec\", the system executes a designated script. If this script informs the SA of the event, this is not a finding. \n \nIf the \"space_left_action\" is set to \"email\", check the value of the \"action_mail_acct\" parameter with the following command: \n \n$ sudo grep ^action_mail_acct /etc/audit/auditd.conf \n \naction_mail_acct root@localhost \n \nThe \"action_mail_acct\" parameter, if missing, defaults to \"root\". If the \"action_mail_acct parameter\" is not set to the email address of the SA(s) and/or ISSO, this is a finding.   \n \nNote: If the email address of the System Administrator\n is on a remote system, a mail package must be available.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Edit \"/etc/audit/auditd.conf\" and set the \"space_left_action\" parameter to \"exec\" or \"email\".  \n \nIf the \"space_left_action\" parameter is set to \"email\", set the \"action_mail_acct\" parameter to an email address for the SA and ISSO. \n \nIf the \"space_left_action\" parameter is set to \"exec\", ensure the command being executed notifies the SA and ISSO. \n \nEdit \"/etc/audit/auditd.conf\" and set the \"space_left\" parameter to be at least 25% of the repository maximum audit record storage capacity.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-238307r971542_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/canonical_ubuntu_20_04_lts_stig/u_can_ubuntu_20_04_lts_v2r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip",
+  "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
+  "title": "The Ubuntu operating system must immediately notify the SA and ISSO (at a minimum) when allocated audit record storage volume reaches 75% of the repository maximum audit record storage capacity.",
+  "tracking_issue": "TODO-V-238307",
+  "vuln_id": "V-238307"
+}

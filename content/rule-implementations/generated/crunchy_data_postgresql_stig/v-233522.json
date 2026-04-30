@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "To check the total amount of connections allowed by the database, as the database administrator, run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"SHOW max_connections\"\n\nIf the total amount of connections is greater than documented by an organization, this is a finding.\n\nTo check the amount of connections allowed for each role, as the database administrator, run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"SELECT rolname, rolconnlimit from pg_authid\"\n\nIf any roles have more connections configured than documented, this is a finding. A value of \"-1\" indicates Unlimited, and is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nTo configure the maximum amount of connections allowed to the database, as the database administrator (shown here as \"postgres\") change the following in postgresql.conf (the value 10 is an example; set the value to suit local conditions):\u00a0\n\n$ sudo su - postgres\u00a0\n$ vi ${PGDATA?}/postgresql.conf\u00a0\nmax_connections = 10\u00a0\n\nNext, restart the database:\u00a0\n\n$ sudo systemctl restart postgresql-${PGVER?}\n\nTo limit the amount of connections allowed by a specific role, as the database administrator, run the following SQL:\u00a0\n\n$ psql -c \"ALTER ROLE <rolname> CONNECTION LIMIT 1\";",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233522r960735_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must limit the number of concurrent sessions to an organization-defined number per user for all accounts and/or account types.",
+  "tracking_issue": "TODO-V-233522",
+  "vuln_id": "V-233522"
+}

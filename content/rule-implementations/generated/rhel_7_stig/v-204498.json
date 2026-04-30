@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the file integrity tool is configured to verify ACLs.\n\nNote: AIDE is highly configurable at install time. These commands assume the \"aide.conf\" file is under the \"/etc\" directory. \n\nUse the following command to determine if the file is in another location:\n\n     # find / -name aide.conf\n\nCheck the \"aide.conf\" file to determine if the \"acl\" rule has been added to the rule list being applied to the files and directories selection lists.\n\nAn example rule that includes the \"acl\" rule is below:\n\n     All= p+i+n+u+g+s+m+S+sha512+acl+xattrs+selinux\n     /bin All # apply the custom rule to the files in bin \n     /sbin All # apply the same custom rule to the files in sbin \n\nIf the \"acl\" rule is not being used on all uncommented selection lines in the \"/etc/aide.conf\" file, or ACLs are not being checked by another file integrity tool, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the file integrity tool to check file and directory ACLs. \n\nIf AIDE is installed, ensure the \"acl\" rule is present on all uncommented file and directory selection lists.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204498r991589_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must be configured so that the file integrity tool is configured to verify Access Control Lists (ACLs).",
+  "tracking_issue": "TODO-V-204498",
+  "vuln_id": "V-204498"
+}

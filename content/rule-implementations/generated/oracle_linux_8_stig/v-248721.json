@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the umask default for installed shells is \"077\".\n\nCheck for the value of the \"UMASK\" parameter in the \"/etc/bashrc\", \"/etc/csh.cshrc\", and \"/etc/profile\" files with the following command:\n\nNote: If the value of the \"UMASK\" parameter is set to \"000\" in the \"/etc/bashrc\", \"/etc/csh.cshrc\", or the \"/etc/profile\" files, the Severity is raised to a CAT I.\n\n$ sudo  grep -i umask /etc/bashrc /etc/csh.cshrc /etc/profile\n\n/etc/bashrc: umask 077\n/etc/bashrc: umask 077\n/etc/csh.cshrc: umask 077 \n/etc/csh.cshrc: umask 077\n/etc/profile: umask 077\n/etc/profile: umask 077\n\nIf the value for the \"UMASK\" parameter is not \"077\", or the \"UMASK\" parameter is missing or is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to define default permissions for all authenticated users in such a way that the user can only read and modify their own files.\n\nAdd or edit the lines for the \"UMASK\" parameter in the \"/etc/bashrc\", \"etc/csh.cshrc\", and \"/etc/profile\" files to \"077\":\n\nUMASK 077",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248721r991590_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must define default permissions for logon and non-logon shells.",
+  "tracking_issue": "TODO-V-248721",
+  "vuln_id": "V-248721"
+}

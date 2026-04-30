@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If new packages are available for PostgreSQL, they can be reviewed in the package manager appropriate for the server operating system:\n\nTo list the version of installed PostgreSQL using psql:\n\n$ sudo su - postgres\n$ psql --version\n\nTo list the current version of software for RPM:\n\n$ rpm -qa | grep postgres\n\nTo list the current version of software for APT:\n\n$ apt-cache policy postgres\n\nAll versions of PostgreSQL will be listed here:\nhttp://www.postgresql.org/support/versioning/\n\nAll security-relevant software updates for PostgreSQL will be listed here:\nhttp://www.postgresql.org/support/security/\n\nIf PostgreSQL is not at the latest version, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Remove or decommission all unsupported software products.\n\nUpgrade unsupported DBMS or unsupported components to a supported version of the product.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-265871r999519_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL products must be a version supported by the vendor.",
+  "tracking_issue": "TODO-V-265871",
+  "vuln_id": "V-265871"
+}

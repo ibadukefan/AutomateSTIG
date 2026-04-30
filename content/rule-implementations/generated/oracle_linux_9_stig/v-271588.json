@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": "0640",
+      "owner": null,
+      "path": "/etc/audit/auditd.conf",
+      "type": "file_permission"
+    },
+    "description": "OL 9 /etc/audit/auditd.conf file must have 0640 or less permissive to prevent unauthorized access.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271588"
+  },
+  "check_content_excerpt": "Verify that OL 9 sets the mode of /etc/audit/auditd.conf with the command:\n\n$ sudo stat -c \"%a %n\" /etc/audit/auditd.conf\n640 /etc/audit/auditd.conf\n\nIf \"/etc/audit/auditd.conf\" does not have a mode of \"0640\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the /etc/audit/auditd.conf file to have a mode of 0640 with the command:\n\n$ sudo chmod 0640 /etc/audit/auditd.conf",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_permission",
+  "remediation": "planned",
+  "rule_id": "SV-271588r1091476_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 /etc/audit/auditd.conf file must have 0640 or less permissive to prevent unauthorized access.",
+  "tracking_issue": "TODO-V-271588",
+  "vuln_id": "V-271588"
+}

@@ -1,0 +1,33 @@
+{
+  "stig_id": "Windows_Server_2022_STIG",
+  "version": "001",
+  "source": "sanitized fixture corpus; replace with authorized DISA release before production claim",
+  "status": "experimental",
+  "total_rules": 2,
+  "generated_from": "fixtures/disa-xccdf/windows_server_2022_sanitized_xccdf.xml",
+  "generated_at": "2026-04-27T00:00:00Z",
+  "rules": [
+    {
+      "vuln_id": "V-254239",
+      "rule_id": "SV-254239r958388_rule",
+      "title": "Windows Server 2022 must use TLS 1.2",
+      "severity": "high",
+      "classification": "automated",
+      "check_pack": "windows_server_2022",
+      "check_id": "windows_tls_1_2_enabled",
+      "evidence_required": true,
+      "reason": "Mapped to registry-backed check and SCC result fixture.",
+      "validated_by": ["fixture:xccdf", "fixture:scc-results"]
+    },
+    {
+      "vuln_id": "V-254240",
+      "rule_id": "SV-254240r958392_rule",
+      "title": "Windows Server 2022 password complexity",
+      "severity": "medium",
+      "classification": "scanner_import",
+      "evidence_required": true,
+      "reason": "Scanner result fixture imported; native automation must be proven before supported claim.",
+      "validated_by": ["fixture:xccdf", "fixture:scc-results"]
+    }
+  ]
+}

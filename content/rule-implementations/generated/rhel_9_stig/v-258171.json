@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the files in directory \"/etc/audit/rules.d/\" and \"/etc/audit/auditd.conf\" file have a mode of \"0640\" or less permissive with the following command:\n\n$ sudo find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f -exec stat -c \"%a %n\" {} \\;\n\n600 /etc/audit/rules.d/audit.rules\n640 /etc/audit/audit.rules\n640 /etc/audit/auditd.conf",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the files in directory \"/etc/audit/rules.d/\" and the \"/etc/audit/auditd.conf\" file to have a mode of \"0640\" with the following commands:\n\n$ sudo chmod 0640 /etc/audit/rules.d/audit.rules\n$ sudo chmod 0640 /etc/audit/rules.d/[customrulesfile].rules\n$ sudo chmod 0640 /etc/audit/auditd.conf",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-258171r1045308_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must allow only the information system security manager (ISSM) (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited.",
+  "tracking_issue": "TODO-V-258171",
+  "vuln_id": "V-258171"
+}

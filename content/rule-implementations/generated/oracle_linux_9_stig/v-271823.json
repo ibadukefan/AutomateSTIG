@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 configures the \"/var/log/messages\" file to have a mode of \"0640\" or less permissive with the following command:\n\n$ ls -la /var/log/messages\nrw-------. 1 root root 564223 July 11 11:34 /var/log/messages\n\nIf \"/var/log/messages\" does not have a mode of \"0640\" or less permissive, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the \"/var/log/messages\" file to have a mode of \"0640\" by running the following command:\n\n$ sudo chmod 0640 /var/log/messages",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271823r1092181_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 /var/log/messages file must have mode 0640 or less permissive.",
+  "tracking_issue": "TODO-V-271823",
+  "vuln_id": "V-271823"
+}

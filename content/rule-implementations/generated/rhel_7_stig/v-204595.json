@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SSH daemon is configured to only use MACs employing FIPS 140-2-approved hashes.\n\nNote: If RHEL-07-021350 is a finding, this is automatically a finding as the system cannot implement FIPS 140-2-approved cryptographic algorithms and hashes.\n\nCheck that the SSH daemon is configured to only use MACs employing FIPS 140-2-approved hashes with the following command:\n\n# grep -i macs /etc/ssh/sshd_config\nMACs hmac-sha2-512,hmac-sha2-256\n\nIf any hashes other than \"hmac-sha2-512\" or \"hmac-sha2-256\" are listed, the order differs from the example above, they are missing, or the returned line is commented out, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Edit the \"/etc/ssh/sshd_config\" file to uncomment or add the line for the \"MACs\" keyword and set its value to \"hmac-sha2-512\" and/or \"hmac-sha2-256\" (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor):\n\nMACs hmac-sha2-512,hmac-sha2-256\n\nThe SSH service must be restarted for changes to take effect.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204595r991554_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must be configured so that the SSH daemon is configured to only use Message Authentication Codes (MACs) employing FIPS 140-2 approved cryptographic hash algorithms.",
+  "tracking_issue": "TODO-V-204595",
+  "vuln_id": "V-204595"
+}

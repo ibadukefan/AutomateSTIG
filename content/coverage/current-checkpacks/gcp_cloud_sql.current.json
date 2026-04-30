@@ -1,0 +1,206 @@
+{
+  "stig_id": "GCP_Cloud_SQL_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/gcp_cloud_sql.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/gcp_cloud_sql.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-282001",
+      "rule_id": "V-282001_automatestig_check",
+      "classification": "automated",
+      "reason": "Cloud SQL instance must require SSL for all connections",
+      "check_pack": "gcp_cloud_sql",
+      "check_id": "V-282001",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/gcp_cloud_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-282002",
+      "rule_id": "V-282002_automatestig_check",
+      "classification": "automated",
+      "reason": "Automated backups must be enabled on the Cloud SQL instance",
+      "check_pack": "gcp_cloud_sql",
+      "check_id": "V-282002",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/gcp_cloud_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-282003",
+      "rule_id": "V-282003_automatestig_check",
+      "classification": "automated",
+      "reason": "Binary logging must be enabled for point-in-time recovery",
+      "check_pack": "gcp_cloud_sql",
+      "check_id": "V-282003",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/gcp_cloud_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-282004",
+      "rule_id": "V-282004_automatestig_check",
+      "classification": "automated",
+      "reason": "Cloud SQL must not authorize the 0.0.0.0/0 network (public access)",
+      "check_pack": "gcp_cloud_sql",
+      "check_id": "V-282004",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/gcp_cloud_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-282005",
+      "rule_id": "V-282005_automatestig_check",
+      "classification": "automated",
+      "reason": "Cloud SQL database flag log_connections must be enabled",
+      "check_pack": "gcp_cloud_sql",
+      "check_id": "V-282005",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/gcp_cloud_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-282006",
+      "rule_id": "V-282006_automatestig_check",
+      "classification": "automated",
+      "reason": "Cloud SQL database flag log_disconnections must be enabled",
+      "check_pack": "gcp_cloud_sql",
+      "check_id": "V-282006",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/gcp_cloud_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-282007",
+      "rule_id": "V-282007_automatestig_check",
+      "classification": "automated",
+      "reason": "Cloud SQL log_min_duration_statement must be set to -1 (disabled) to prevent logging sensitive queries",
+      "check_pack": "gcp_cloud_sql",
+      "check_id": "V-282007",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/gcp_cloud_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-282008",
+      "rule_id": "V-282008_automatestig_check",
+      "classification": "automated",
+      "reason": "Cloud SQL database flag log_checkpoints must be enabled",
+      "check_pack": "gcp_cloud_sql",
+      "check_id": "V-282008",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/gcp_cloud_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-282009",
+      "rule_id": "V-282009_automatestig_check",
+      "classification": "automated",
+      "reason": "Cloud SQL instance must use private IP and disable public IPv4",
+      "check_pack": "gcp_cloud_sql",
+      "check_id": "V-282009",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/gcp_cloud_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-282010",
+      "rule_id": "V-282010_automatestig_check",
+      "classification": "automated",
+      "reason": "Cloud SQL instance must be configured for high availability (REGIONAL)",
+      "check_pack": "gcp_cloud_sql",
+      "check_id": "V-282010",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/gcp_cloud_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-282011",
+      "rule_id": "V-282011_automatestig_check",
+      "classification": "automated",
+      "reason": "Cloud SQL maintenance window must be configured",
+      "check_pack": "gcp_cloud_sql",
+      "check_id": "V-282011",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/gcp_cloud_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-282012",
+      "rule_id": "V-282012_automatestig_check",
+      "classification": "automated",
+      "reason": "Backup retention must be at least 7 retained backups",
+      "check_pack": "gcp_cloud_sql",
+      "check_id": "V-282012",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/gcp_cloud_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-282013",
+      "rule_id": "V-282013_automatestig_check",
+      "classification": "automated",
+      "reason": "Cloud SQL database flag local_infile must be disabled",
+      "check_pack": "gcp_cloud_sql",
+      "check_id": "V-282013",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/gcp_cloud_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-282014",
+      "rule_id": "V-282014_automatestig_check",
+      "classification": "automated",
+      "reason": "Cloud SQL storage auto-resize must be enabled",
+      "check_pack": "gcp_cloud_sql",
+      "check_id": "V-282014",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/gcp_cloud_sql.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-282015",
+      "rule_id": "V-282015_automatestig_check",
+      "classification": "automated",
+      "reason": "Deletion protection must be enabled on the Cloud SQL instance",
+      "check_pack": "gcp_cloud_sql",
+      "check_id": "V-282015",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/gcp_cloud_sql.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

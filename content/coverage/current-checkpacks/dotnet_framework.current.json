@@ -1,0 +1,206 @@
+{
+  "stig_id": "DotNet_Framework_4_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/dotnet_framework.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/dotnet_framework.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-225223",
+      "rule_id": "V-225223_automatestig_check",
+      "classification": "automated",
+      "reason": ".NET Framework must not allow strong name bypass",
+      "check_pack": "dotnet_framework",
+      "check_id": "V-225223",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/dotnet_framework.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-225224",
+      "rule_id": "V-225224_automatestig_check",
+      "classification": "automated",
+      "reason": ".NET Framework must use strong cryptography",
+      "check_pack": "dotnet_framework",
+      "check_id": "V-225224",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/dotnet_framework.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-225225",
+      "rule_id": "V-225225_automatestig_check",
+      "classification": "automated",
+      "reason": ".NET Framework 32-bit must use strong cryptography",
+      "check_pack": "dotnet_framework",
+      "check_id": "V-225225",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/dotnet_framework.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-225226",
+      "rule_id": "V-225226_automatestig_check",
+      "classification": "automated",
+      "reason": ".NET Framework must use system default TLS versions",
+      "check_pack": "dotnet_framework",
+      "check_id": "V-225226",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/dotnet_framework.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-225227",
+      "rule_id": "V-225227_automatestig_check",
+      "classification": "automated",
+      "reason": ".NET Framework 32-bit must use system default TLS versions",
+      "check_pack": "dotnet_framework",
+      "check_id": "V-225227",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/dotnet_framework.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-225230",
+      "rule_id": "V-225230_automatestig_check",
+      "classification": "automated",
+      "reason": "CAS policy must disable prompting for MyComputer zone",
+      "check_pack": "dotnet_framework",
+      "check_id": "V-225230",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/dotnet_framework.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-225231",
+      "rule_id": "V-225231_automatestig_check",
+      "classification": "automated",
+      "reason": "CAS policy must disable prompting for LocalIntranet zone",
+      "check_pack": "dotnet_framework",
+      "check_id": "V-225231",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/dotnet_framework.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-225232",
+      "rule_id": "V-225232_automatestig_check",
+      "classification": "automated",
+      "reason": "CAS policy must disable prompting for Internet zone",
+      "check_pack": "dotnet_framework",
+      "check_id": "V-225232",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/dotnet_framework.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-225233",
+      "rule_id": "V-225233_automatestig_check",
+      "classification": "automated",
+      "reason": "CAS policy must disable prompting for TrustedSites zone",
+      "check_pack": "dotnet_framework",
+      "check_id": "V-225233",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/dotnet_framework.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-225234",
+      "rule_id": "V-225234_automatestig_check",
+      "classification": "automated",
+      "reason": "CAS policy must disable prompting for UntrustedSites zone",
+      "check_pack": "dotnet_framework",
+      "check_id": "V-225234",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/dotnet_framework.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-225240",
+      "rule_id": "V-225240_automatestig_check",
+      "classification": "automated",
+      "reason": "FIPS compliant algorithms must be enabled for .NET cryptographic operations",
+      "check_pack": "dotnet_framework",
+      "check_id": "V-225240",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/dotnet_framework.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-225241",
+      "rule_id": "V-225241_automatestig_check",
+      "classification": "automated",
+      "reason": "Application event log size must be at least 32768 KB for .NET event tracing",
+      "check_pack": "dotnet_framework",
+      "check_id": "V-225241",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/dotnet_framework.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-225242",
+      "rule_id": "V-225242_automatestig_check",
+      "classification": "automated",
+      "reason": "Security event log size must be at least 196608 KB for .NET event tracing",
+      "check_pack": "dotnet_framework",
+      "check_id": "V-225242",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/dotnet_framework.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-225243",
+      "rule_id": "V-225243_automatestig_check",
+      "classification": "automated",
+      "reason": "System event log size must be at least 32768 KB for .NET event tracing",
+      "check_pack": "dotnet_framework",
+      "check_id": "V-225243",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/dotnet_framework.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-225250",
+      "rule_id": "V-225250_automatestig_check",
+      "classification": "automated",
+      "reason": ".NET must enforce ViewState MAC validation for ASP.NET",
+      "check_pack": "dotnet_framework",
+      "check_id": "V-225250",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/dotnet_framework.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

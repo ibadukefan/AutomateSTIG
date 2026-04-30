@@ -1,0 +1,336 @@
+{
+  "stig_id": "SLES_12_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/sles_12.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/sles_12.json",
+  "total_rules": 25,
+  "rules": [
+    {
+      "vuln_id": "V-217100",
+      "rule_id": "V-217100_automatestig_check",
+      "classification": "automated",
+      "reason": "SLES 12 SSH must not allow direct root login",
+      "check_pack": "sles_12",
+      "check_id": "V-217100",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217101",
+      "rule_id": "V-217101_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must not allow empty passwords",
+      "check_pack": "sles_12",
+      "check_id": "V-217101",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217102",
+      "rule_id": "V-217102_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveInterval must be set",
+      "check_pack": "sles_12",
+      "check_id": "V-217102",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217103",
+      "rule_id": "V-217103_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveCountMax must be 1 or less",
+      "check_pack": "sles_12",
+      "check_id": "V-217103",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217104",
+      "rule_id": "V-217104_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must display a login banner",
+      "check_pack": "sles_12",
+      "check_id": "V-217104",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217105",
+      "rule_id": "V-217105_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH X11 forwarding must be disabled",
+      "check_pack": "sles_12",
+      "check_id": "V-217105",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217106",
+      "rule_id": "V-217106_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must use protocol version 2",
+      "check_pack": "sles_12",
+      "check_id": "V-217106",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217110",
+      "rule_id": "V-217110_automatestig_check",
+      "classification": "automated",
+      "reason": "IP forwarding must be disabled",
+      "check_pack": "sles_12",
+      "check_id": "V-217110",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217111",
+      "rule_id": "V-217111_automatestig_check",
+      "classification": "automated",
+      "reason": "Source-routed packets must not be accepted",
+      "check_pack": "sles_12",
+      "check_id": "V-217111",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217112",
+      "rule_id": "V-217112_automatestig_check",
+      "classification": "automated",
+      "reason": "ICMP redirects must not be accepted",
+      "check_pack": "sles_12",
+      "check_id": "V-217112",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217113",
+      "rule_id": "V-217113_automatestig_check",
+      "classification": "automated",
+      "reason": "System must not send ICMP redirects",
+      "check_pack": "sles_12",
+      "check_id": "V-217113",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217114",
+      "rule_id": "V-217114_automatestig_check",
+      "classification": "automated",
+      "reason": "TCP SYN cookies must be enabled",
+      "check_pack": "sles_12",
+      "check_id": "V-217114",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217115",
+      "rule_id": "V-217115_automatestig_check",
+      "classification": "automated",
+      "reason": "ASLR must be fully enabled",
+      "check_pack": "sles_12",
+      "check_id": "V-217115",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217116",
+      "rule_id": "V-217116_automatestig_check",
+      "classification": "automated",
+      "reason": "System must ignore ICMP broadcast echo requests",
+      "check_pack": "sles_12",
+      "check_id": "V-217116",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217120",
+      "rule_id": "V-217120_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/shadow must be mode 0000 and owned by root",
+      "check_pack": "sles_12",
+      "check_id": "V-217120",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217121",
+      "rule_id": "V-217121_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/passwd must be mode 0644 and owned by root",
+      "check_pack": "sles_12",
+      "check_id": "V-217121",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217122",
+      "rule_id": "V-217122_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/group must be mode 0644 and owned by root",
+      "check_pack": "sles_12",
+      "check_id": "V-217122",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217123",
+      "rule_id": "V-217123_automatestig_check",
+      "classification": "automated",
+      "reason": "sshd_config must be mode 0600 and owned by root",
+      "check_pack": "sles_12",
+      "check_id": "V-217123",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217130",
+      "rule_id": "V-217130_automatestig_check",
+      "classification": "automated",
+      "reason": "AIDE must be installed for file integrity checking",
+      "check_pack": "sles_12",
+      "check_id": "V-217130",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217131",
+      "rule_id": "V-217131_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit package must be installed",
+      "check_pack": "sles_12",
+      "check_id": "V-217131",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217132",
+      "rule_id": "V-217132_automatestig_check",
+      "classification": "automated",
+      "reason": "SuSEfirewall2 must be installed",
+      "check_pack": "sles_12",
+      "check_id": "V-217132",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217133",
+      "rule_id": "V-217133_automatestig_check",
+      "classification": "automated",
+      "reason": "Telnet server must not be installed",
+      "check_pack": "sles_12",
+      "check_id": "V-217133",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217140",
+      "rule_id": "V-217140_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit daemon must be running",
+      "check_pack": "sles_12",
+      "check_id": "V-217140",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217141",
+      "rule_id": "V-217141_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH daemon must be running",
+      "check_pack": "sles_12",
+      "check_id": "V-217141",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-217150",
+      "rule_id": "V-217150_automatestig_check",
+      "classification": "automated",
+      "reason": "Passwords must be hashed with SHA-512",
+      "check_pack": "sles_12",
+      "check_id": "V-217150",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_12.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

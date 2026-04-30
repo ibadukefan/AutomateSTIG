@@ -1,0 +1,53 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "kernel.yama.ptrace_scope",
+      "type": "sysctl"
+    },
+    "description": "RHEL 8 must restrict usage of ptrace to descendant  processes.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230546"
+  },
+  "check_content_excerpt": "Verify RHEL 8 restricts usage of ptrace to descendant processes with the following commands:\n\n$ sudo sysctl kernel.yama.ptrace_scope\n\nkernel.yama.ptrace_scope = 1\n\nIf \"kernel.yama.ptrace_scope\" is not set to \"1\", is missing, or commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to restrict usage of ptrace to descendant processes by adding the following line in a dropfile, in the \"/etc/sysctl.d\" directory with the following commands:\n\nCreate the dropfile if it doesn't already exist:\n$ sudo vi /etc/sysctl.d/99-ptrace-restrict.conf\n\nAdd the following line to the file:\nkernel.yama.ptrace_scope = 1\n\nThe system configuration files need to be reloaded for the changes to take effect. To reload the contents of the files, run the following command:\n\n$ sudo sysctl --system",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-230546r1155413_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must restrict usage of ptrace to descendant  processes.",
+  "tracking_issue": "TODO-V-230546",
+  "vuln_id": "V-230546"
+}

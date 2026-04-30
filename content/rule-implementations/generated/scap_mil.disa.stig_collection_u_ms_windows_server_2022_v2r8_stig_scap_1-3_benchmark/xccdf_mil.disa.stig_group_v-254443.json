@@ -1,0 +1,30 @@
+{
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the DoD Interoperability Root CA cross-certificates on unclassified systems.\n\nIssued To - Issued By - Thumbprint\n\nDoD Root CA 3- DoD Interoperability Root CA 2 - 49CBE933151872E17C8EAE7F0ABA97FB610F6477\n\nAdministrators must run the Federal Bridge Certification Authority (FBCA) Cross-Certificate Removal Tool once as an administrator and once as the current user.\n\nThe FBCA Cross-Certificate Remover Tool and User Guide are available on Cyber Exchange at https://cyber.mil/pki-pke/tools-configuration-files. Certificate bundles published by the PKI can be found at https://crl.gds.disa.mil/.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-254443r958448_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_ms_windows_server_2022_v2r8_stig_scap_1_3_benchmark/u_ms_windows_server_2022_v2r8_stig_scap_1_3_benchmark.json",
+  "source_version": "U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark",
+  "title": "Windows Server 2022 must have the DoD Interoperability Root Certificate Authority (CA) cross-certificates installed in the Untrusted Certificates Store on unclassified systems.",
+  "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-254443",
+  "vuln_id": "xccdf_mil.disa.stig_group_V-254443"
+}

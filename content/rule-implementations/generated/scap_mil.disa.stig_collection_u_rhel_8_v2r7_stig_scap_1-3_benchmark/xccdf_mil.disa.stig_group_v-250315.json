@@ -1,0 +1,30 @@
+{
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to allow the use of a non-default faillock tally directory while SELinux enforces a targeted policy.\n\nCreate a non-default faillock tally directory (if it does not already exist) with the following example:\n\n$ sudo mkdir /var/log/faillock\n\nUpdate the /etc/selinux/targeted/contexts/files/file_contexts.local with \"faillog_t\" context type for the non-default faillock tally directory with the following command:\n\n$ sudo semanage fcontext -a -t faillog_t \"/var/log/faillock(/.*)?\" \n\nNext, update the context type of the non-default faillock directory/subdirectories and files with the following command:\t\n\n$ sudo restorecon -R -v /var/log/faillock",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-250315r1017356_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_rhel_8_v2r7_stig_scap_1_3_benchmark/u_rhel_8_v2r7_stig_scap_1_3_benchmark.json",
+  "source_version": "U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark",
+  "title": "RHEL 8 systems, versions 8.2 and above, must configure SELinux context type to allow the use of a non-default faillock tally directory.",
+  "tracking_issue": "TODO-xccdf_mil.disa.stig_group_V-250315",
+  "vuln_id": "xccdf_mil.disa.stig_group_V-250315"
+}

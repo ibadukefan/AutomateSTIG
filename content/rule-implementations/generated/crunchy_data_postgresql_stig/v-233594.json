@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "To list all installed packages, as the system administrator, run the following:\n\n# RHEL/CENT 8 Systems\n$ sudo dnf list installed | grep postgres\n\n# RHEL/CENT 7 Systems\n$ sudo yum list installed | grep postgres\n\n# Debian Systems\n$ dpkg --get-selections | grep postgres\n\nIf any packages are installed that are not required, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "To remove any unneeded executables, as the system administrator, run the following:\n\n# RHEL/CENT Systems\n$ sudo yum erase <package_name>\n\n# Debian Systems\n$ sudo apt-get remove <package_name>",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233594r960963_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "Unused database components that are integrated in PostgreSQL and cannot be uninstalled must be disabled.",
+  "tracking_issue": "TODO-V-233594",
+  "vuln_id": "V-233594"
+}

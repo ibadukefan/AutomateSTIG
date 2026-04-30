@@ -240,12 +240,18 @@ pub fn write_ckl(checklist: &Checklist) -> ParseResult<String> {
 
     // XML declaration.
     writer
-        .write_event(Event::Decl(quick_xml::events::BytesDecl::new("1.0", Some("UTF-8"), None)))
+        .write_event(Event::Decl(quick_xml::events::BytesDecl::new(
+            "1.0",
+            Some("UTF-8"),
+            None,
+        )))
         .map_err(|e| ParseError::XmlError(e.to_string()))?;
 
     // Processing instruction for STIG Viewer compatibility.
     writer
-        .write_event(Event::PI(BytesPI::new("xml-stylesheet type='text/xsl' href='STIG_unclass.xsl'")))
+        .write_event(Event::PI(BytesPI::new(
+            "xml-stylesheet type='text/xsl' href='STIG_unclass.xsl'",
+        )))
         .map_err(|e| ParseError::XmlError(e.to_string()))?;
 
     // <CHECKLIST>
@@ -326,10 +332,7 @@ fn extract_release_number(release_info: &str) -> String {
     // Format: "Release: 4 Benchmark Date: 24 Jul 2024"
     if let Some(pos) = release_info.find("Release:") {
         let rest = &release_info[pos + 8..];
-        rest.split_whitespace()
-            .next()
-            .unwrap_or("0")
-            .to_string()
+        rest.split_whitespace().next().unwrap_or("0").to_string()
     } else {
         "0".to_string()
     }
@@ -390,7 +393,11 @@ fn build_finding_from_attrs(
     finding
 }
 
-fn write_simple_element<W: Write>(writer: &mut Writer<W>, tag: &str, text: &str) -> ParseResult<()> {
+fn write_simple_element<W: Write>(
+    writer: &mut Writer<W>,
+    tag: &str,
+    text: &str,
+) -> ParseResult<()> {
     writer
         .write_event(Event::Start(BytesStart::new(tag)))
         .map_err(|e| ParseError::XmlError(e.to_string()))?;
@@ -417,7 +424,11 @@ fn write_asset_element<W: Write>(
     write_simple_element(writer, "MARKING", &classification.to_string())?;
     write_simple_element(writer, "HOST_NAME", &asset.hostname)?;
     write_simple_element(writer, "HOST_IP", asset.ip_address.as_deref().unwrap_or(""))?;
-    write_simple_element(writer, "HOST_MAC", asset.mac_address.as_deref().unwrap_or(""))?;
+    write_simple_element(
+        writer,
+        "HOST_MAC",
+        asset.mac_address.as_deref().unwrap_or(""),
+    )?;
     write_simple_element(writer, "HOST_FQDN", asset.fqdn.as_deref().unwrap_or(""))?;
     write_simple_element(
         writer,
@@ -467,11 +478,7 @@ fn write_stig_info_element<W: Write>(
         "description",
         info.description.as_deref().unwrap_or(""),
     )?;
-    write_si_data(
-        writer,
-        "filename",
-        info.filename.as_deref().unwrap_or(""),
-    )?;
+    write_si_data(writer, "filename", info.filename.as_deref().unwrap_or(""))?;
 
     let release_info = format!(
         "Release: {} Benchmark Date: {}",
@@ -480,11 +487,7 @@ fn write_stig_info_element<W: Write>(
     );
     write_si_data(writer, "releaseinfo", &release_info)?;
     write_si_data(writer, "title", &info.title)?;
-    write_si_data(
-        writer,
-        "uuid",
-        info.uuid.as_deref().unwrap_or(""),
-    )?;
+    write_si_data(writer, "uuid", info.uuid.as_deref().unwrap_or(""))?;
     write_si_data(writer, "notice", "terms-of-use")?;
     write_si_data(writer, "source", "")?;
 
@@ -519,7 +522,11 @@ fn write_vuln_element<W: Write>(writer: &mut Writer<W>, finding: &Finding) -> Pa
     write_stig_data(writer, "Rule_ID", &finding.rule_id)?;
     write_stig_data(writer, "Rule_Title", &finding.rule_title)?;
     write_stig_data(writer, "Rule_Ver", "")?;
-    write_stig_data(writer, "Weight", &finding.severity.default_weight().to_string())?;
+    write_stig_data(
+        writer,
+        "Weight",
+        &finding.severity.default_weight().to_string(),
+    )?;
 
     for cci in &finding.cci_refs {
         write_stig_data(writer, "CCI_REF", cci)?;

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 is not configured to bypass password requirements for privilege escalation with the following command:\n\n$ grep pam_succeed_if /etc/pam.d/sudo \n\nIf any occurrences of \"pam_succeed_if\" are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to require users to supply a password for privilege escalation.\n\nRemove any occurrences of \" pam_succeed_if \" in the  \"/etc/pam.d/sudo\" file.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271726r1091890_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must not be configured to bypass password requirements for privilege escalation.",
+  "tracking_issue": "TODO-V-271726",
+  "vuln_id": "V-271726"
+}

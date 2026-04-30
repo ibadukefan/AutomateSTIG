@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "-a",
+      "type": "sysctl"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must ignore Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204615"
+  },
+  "check_content_excerpt": "Verify the system ignores IPv4 ICMP redirect messages.\n\n     # grep -r net.ipv4.conf.all.accept_redirects /run/sysctl.d/* /etc/sysctl.d/* /usr/local/lib/sysctl.d/* /usr/lib/sysctl.d/* /lib/sysctl.d/* /etc/sysctl.conf 2> /dev/null\n\nIf \"net.ipv4.conf.all.accept_redirects\" is not configured in the /etc/sysctl.conf file or in any of the other sysctl.d directories, is commented out, or does not have a value of \"0\", this is a finding.\n\nCheck that the operating system implements the \"accept_redirects\" variables with the following command:\n\n     # /sbin/sysctl -a | grep net.ipv4.conf.all.accept_redirects\n     net.ipv4.conf.all.accept_redirects = 0\n\nIf the returned line does not have a value of \"0\", this is a finding.\n\nIf conflicting results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the system to ignore IPv4 ICMP redirect messages by adding the following line to \"/etc/sysctl.conf\" or a configuration file in the /etc/sysctl.d/ directory (or modify the line to have the required value):\n\n     net.ipv4.conf.all.accept_redirects = 0   \n\nIssue the following command to make the changes take effect:\n\n     # sysctl --system",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-204615r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must ignore Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages.",
+  "tracking_issue": "TODO-V-204615",
+  "vuln_id": "V-204615"
+}

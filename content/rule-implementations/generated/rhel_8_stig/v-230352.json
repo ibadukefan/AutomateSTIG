@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify RHEL 8 initiates a session lock after a 15-minute period of inactivity for graphical user interfaces with the following command:\n\nNote: This requirement assumes the use of the RHEL 8 default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\n$ sudo gsettings get org.gnome.desktop.session idle-delay\n\nuint32 900\n\nIf \"idle-delay\" is set to \"0\" or a value greater than \"900\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to initiate a screensaver after a 15-minute period of inactivity for graphical user interfaces.\n\nCreate a database to contain the systemwide screensaver settings (if it does not already exist) with the following command:\n\n$ sudo touch /etc/dconf/db/local.d/00-screensaver\n\nEdit /etc/dconf/db/local.d/00-screensaver and add or update the following lines:\n\n[org/gnome/desktop/session]\n# Set the lock time out to 900 seconds before the session is considered idle\nidle-delay=uint32 900\n\nUpdate the system databases:\n\n$ sudo dconf update",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230352r1155401_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must automatically lock graphical user sessions after 15 minutes of inactivity.",
+  "tracking_issue": "TODO-V-230352",
+  "vuln_id": "V-230352"
+}

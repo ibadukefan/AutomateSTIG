@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the DR configuration to verify that the SPT switchover threshold is set to infinity (never switch over). \n\nip pim spt-threshold infinity group-list prefix-list SPT_GROUPS\n\nNote: The default behavior is to join the SPT immediately upon the first data packet it receives.\n\nIf the DR is not configured set SPT threshold to infinity to minimalize (S, G) state, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the DR to increase the SPT threshold or set it to infinity to minimalize (S, G) state within the multicast topology where ASM is deployed.\n\nStep 1: Configure a prefix list or route map to specify the ASM groups. The example below includes all global ASM groups.\n\nSW1(config)# ip prefix-list SPT_GROUPS permit 233.0.0.0/8\n\nStep 2. Configure the SPT threshold to infinity.\n\nSW1(config)# ip pim spt-threshold infinity group prefix-list SPT_GROUPS \nSW1(config)# end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221141r999750_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco multicast Designated switch (DR) must be configured to set the shortest-path tree (SPT) threshold to infinity to minimalize source-group (S, G) state within the multicast topology where Any Source Multicast (ASM) is deployed.",
+  "tracking_issue": "TODO-V-221141",
+  "vuln_id": "V-221141"
+}

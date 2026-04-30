@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/usr/lib/systemd/system/emergency.service",
+      "pattern": "sulogin-shell",
+      "type": "file_content"
+    },
+    "description": "OL 9 must require authentication to access emergency mode.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271441"
+  },
+  "check_content_excerpt": "Verify that OL 9 requires authentication for emergency mode with the following command:\n\n$ grep sulogin-shell /usr/lib/systemd/system/emergency.service \nExecStart=-/usr/lib/systemd/systemd-sulogin-shell emergency\n\nIf this line is not returned, or is commented out, this is a finding. If the output is different, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to require authentication for emergency mode.\n\nAdd or modify the following line in the \"/usr/lib/systemd/system/emergency.service\" file:\n\nExecStart=-/usr/lib/systemd/systemd-sulogin-shell emergency",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-271441r1117265_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must require authentication to access emergency mode.",
+  "tracking_issue": "TODO-V-271441",
+  "vuln_id": "V-271441"
+}

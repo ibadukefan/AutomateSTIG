@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SSH server automatically terminates a user session after the SSH client has been unresponsive for 10 minutes.\n\nCheck for the value of the \"ClientAliveInterval\" keyword with the following command:\n\n     # grep -iw clientaliveinterval /etc/ssh/sshd_config\n\n     ClientAliveInterval 600\n\nIf \"ClientAliveInterval\" is not configured, is commented out, or has a value of \"0\", this is a finding.\n\nIf \"ClientAliveInterval\" has a value that is greater than \"600\" and is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: This setting must be applied in conjunction with RHEL-07-040340 to function correctly.\n\nConfigure the SSH server to terminate a user session automatically after the SSH client has been unresponsive for 10 minutes.\n\nAdd the following line (or modify the line to have the required value) to the \"/etc/ssh/sshd_config\" file (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor):\n\n     ClientAliveInterval 600\n\nThe SSH service must be restarted for changes to take effect.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204587r970703_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must be configured so that all network connections associated with SSH traffic are terminated after 10 minutes of becoming unresponsive.",
+  "tracking_issue": "TODO-V-204587",
+  "vuln_id": "V-204587"
+}

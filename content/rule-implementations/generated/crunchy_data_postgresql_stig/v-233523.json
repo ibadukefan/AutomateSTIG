@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: The following instructions use the PGDATA environment variable. See supplementary content APPENDIX-F for instructions on configuring PGDATA.\n\nAs the database administrator (shown here as \"postgres\"), list all users and their permissions by running the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"\\dp *.*\"\n\nVerify that all objects have the correct privileges. If they do not, this is a finding.\n\nNext, as the database administrator (shown here as \"postgres\"), verify the permissions of the database directory on the filesystem:\n\n$ ls -la ${PGDATA?}\n\nIf permissions of the database directory are not limited to an authorized user account, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "As the database administrator, revoke any permissions from a role that are deemed unnecessary by running the following SQL:\n\nALTER ROLE bob NOCREATEDB;\nALTER ROLE bob NOCREATEROLE;\nALTER ROLE bob NOSUPERUSER;\nALTER ROLE bob NOINHERIT;\nREVOKE SELECT ON some_function FROM bob;",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233523r960960_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "The role(s)/group(s) used to modify database structure (including but not necessarily limited to tables, indexes, storage, etc.) and logic modules (functions, trigger procedures, links to software external to PostgreSQL, etc.) must be restricted to authorized users.",
+  "tracking_issue": "TODO-V-233523",
+  "vuln_id": "V-233523"
+}

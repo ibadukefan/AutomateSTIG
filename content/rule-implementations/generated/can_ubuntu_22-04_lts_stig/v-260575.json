@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the \"pam_pkcs11.so\" module is configured by using the following command: \n \n     $ grep -i pam_pkcs11.so /etc/pam.d/common-auth \n     auth     [success=3 default=ignore]     pam_pkcs11.so  \n \nIf \"pam_pkcs11.so\" is commented out or is missing, this is a finding. \n \nVerify the sshd daemon allows public key authentication by using the following command: \n  \n     $ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH 'pubkeyauthentication' \n     /etc/ssh/sshd_config:PubkeyAuthentication yes \n \nIf \"PubkeyAuthentication\" is not set to \"yes\" or is commented out or missing, or if conflicting results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to use multifactor authentication for access to accounts.  \n  \nAdd or modify the following line in the \"/etc/pam.d/common-auth\" file: \n  \nauth     [success=3 default=ignore]     pam_pkcs11.so  \n  \nAdd or modify the following line in the \"/etc/ssh/sshd_config\" file: \n \nPubkeyAuthentication yes",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-260575r1044770_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must implement smart card logins for multifactor authentication for local and network access to privileged and nonprivileged accounts.",
+  "tracking_issue": "TODO-V-260575",
+  "vuln_id": "V-260575"
+}

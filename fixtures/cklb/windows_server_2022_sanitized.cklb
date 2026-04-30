@@ -1,0 +1,30 @@
+{
+  "target_data": {
+    "host_name": "sanitized-win2022",
+    "ip_address": "192.0.2.10",
+    "mac_address": "00:00:5E:00:53:01",
+    "fqdn": "sanitized-win2022.example.test",
+    "role": "Member Server",
+    "is_web_database": false
+  },
+  "stigs": [
+    {
+      "stig_name": "Windows Server 2022 STIG",
+      "display_name": "Windows Server 2022 STIG",
+      "stig_id": "Windows_Server_2022_STIG",
+      "release_info": "Release: 4 Benchmark Date: 24 Jul 2024",
+      "version": 1,
+      "rules": [
+        {
+          "vuln_num": "V-254239",
+          "rule_id": "SV-254239r958388_rule",
+          "rule_title": "Windows Server 2022 must use TLS 1.2",
+          "severity": "high",
+          "status": "Open",
+          "finding_details": "Sanitized evidence: TLS 1.2 registry setting missing.",
+          "comments": "Fixture data only."
+        }
+      ]
+    }
+  ]
+}

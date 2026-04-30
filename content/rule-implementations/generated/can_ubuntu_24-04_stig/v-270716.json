@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify Ubuntu 24.04 LTS defines default permissions for all authenticated users in such a way that the user can read and modify only their own files with the following command:\n \n$ grep -i '^\\s*umask' /etc/login.defs\nUMASK 077 \n \nIf the \"UMASK\" variable is set to \"000\", this is a finding with the severity raised to a CAT I. \n \nIf the value of \"UMASK\" is not set to \"077\", is commented out, or is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the system to define the default permissions for all authenticated users in such a way that the user can read and modify only their own files. \n \nEdit the \"UMASK\" parameter in the \"/etc/login.defs\" file to match the example below: \n \nUMASK 077",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270716r1066637_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS default filesystem permissions must be defined in such a way that all authenticated users can read and modify only their own files.",
+  "tracking_issue": "TODO-V-270716",
+  "vuln_id": "V-270716"
+}

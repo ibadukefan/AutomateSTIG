@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "PostgreSQL's Copy command can interact with the underlying OS. Only superuser has access to this command.\n\nFirst, as the database administrator (shown here as \"postgres\"), run the following SQL to list all roles and their privileges:\n\n$ sudo su - postgres\n$ psql -x -c \"\\du\"\n\nIf any role has \"superuser\" that should not, this is a finding.\n\nIt is possible for an extension to contain code that could access external executables via SQL. To list all installed extensions, as the database administrator (shown here as \"postgres\"), run the following SQL:\n\n$ sudo su - postgres\n$ psql -x -c \"SELECT * FROM pg_available_extensions WHERE installed_version IS NOT NULL\"\n\nIf any extensions are installed that are not approved, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "To remove superuser from a role, as the database administrator (shown here as \"postgres\"), run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"ALTER ROLE <role-name> WITH NOSUPERUSER\"\n\nTo remove extensions from PostgreSQL, as the database administrator (shown here as \"postgres\"), run the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"DROP EXTENSION extension_name\"",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233593r960963_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "Access to external executables must be disabled or restricted.",
+  "tracking_issue": "TODO-V-233593",
+  "vuln_id": "V-233593"
+}

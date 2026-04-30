@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: The following instructions use the PGDATA and PGLOG environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-I for PGLOG.\n\nFirst, as the database administrator (shown here as \"postgres\"), check if log_connections is enabled by running the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"SHOW log_connections\"\n\nIf log_connections is off, this is a finding.\n\nNext, verify the logs that the previous connection to the database was logged:\n\n$ sudo su - postgres\n$ cat ${PGDATA?}/${PGLOG?}/<latest_log>\n< 2016-02-16 15:54:03.934 EST postgres postgres 56c64b8b.aeb: >LOG: connection authorized: user=postgres database=postgres\n\nIf an audit record is not generated each time a user (or other principal) logs on or connects to PostgreSQL, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nTo ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.\n\nIf logging is enabled the following configurations must be made to log connections, date/time, username, and session identifier.\n\nFirst, as the database administrator (shown here as \"postgres\"), edit postgresql.conf:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nEdit the following parameters as such:\n\nlog_connections = on\nlog_line_prefix = '< %m %u %d %c: >'\n\nWhere:\n* %m is the time and date\n* %u is the username\n* %d is the database\n* %c is the session ID for the connection\n\nNow, as the system administrator, reload the server with the new configuration:\n\n$ sudo systemctl reload postgresql-${PGVER?}",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-233558r961824_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/crunchy_data_postgresql_stig/u_cd_pgsql_v3r1_stig.json",
+  "source_version": "U_CD_PGSQL_V3R1_STIG.zip",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "title": "PostgreSQL must generate audit records when successful logons or connections occur.",
+  "tracking_issue": "TODO-V-233558",
+  "vuln_id": "V-233558"
+}

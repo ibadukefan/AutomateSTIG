@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Benchmark xmlns="http://checklists.nist.gov/xccdf/1.2">
+  <TestResult id="openscap_result_1" test-system="cpe:/a:open-scap:oscap">
+    <target>sanitized-rhel8.example.test</target>
+    <profile>stig</profile>
+    <rule-result idref="SV-230221r858734_rule"><result>pass</result></rule-result>
+    <rule-result idref="SV-230222r858736_rule"><result>fail</result></rule-result>
+  </TestResult>
+</Benchmark>

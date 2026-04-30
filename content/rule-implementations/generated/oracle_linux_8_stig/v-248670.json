@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If the system does not have SELinux enabled and enforcing a targeted policy, or if the pam_faillock module is not configured for use, this requirement is not applicable.\n\nNote: This check applies to OL versions 8.0 and 8.1. If the system is OL version 8.2 or newer, this check is not applicable.\n\nVerify the location of the non-default tally directory for the pam_faillock module with the following command:\n\n$ sudo grep -w dir /etc/pam.d/password-auth\n\nauth   required   pam_faillock.so preauth dir=/var/log/faillock\nauth   required   pam_faillock.so authfail dir=/var/log/faillock\n\nCheck the security context type of the non-default tally directory with the following command:\n\n$ sudo ls -Zd /var/log/faillock\n\nunconfined_u:object_r:faillog_t:s0 /var/log/faillock\n\nIf the security context type of the non-default tally directory is not \"faillog_t\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 8 to allow the use of a non-default faillock tally directory while SELinux enforces a targeted policy.\n\nUpdate the /etc/selinux/targeted/contexts/files/file_contexts.local with \"faillog_t\" context type for the non-default faillock tally directory with the following command:\n\n$ sudo semanage fcontext -a -t faillog_t \"/var/log/faillock(/.*)?\" \n\nNext, update the context type of the non-default faillock directory/subdirectories and files with the following command: \n\n$ sudo restorecon -R -v /var/log/faillock",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248670r958388_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 systems below version 8.2 must configure SELinux context type to allow the use of a non-default faillock tally directory.",
+  "tracking_issue": "TODO-V-248670",
+  "vuln_id": "V-248670"
+}

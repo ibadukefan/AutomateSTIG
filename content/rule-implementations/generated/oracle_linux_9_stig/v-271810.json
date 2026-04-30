@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": "0644",
+      "owner": null,
+      "path": "/etc/passwd",
+      "type": "file_permission"
+    },
+    "description": "OL 9 /etc/passwd file must have mode 0644 or less permissive to prevent unauthorized access.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271810"
+  },
+  "check_content_excerpt": "Verify that OL 9 configures the \"/etc/passwd\" file to have a mode of \"0644\" or less permissive with the following command:\n\n$ stat -c \"%a %n\" /etc/passwd\n644 /etc/passwd\n\nIf a value of \"0644\" or less permissive is not returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the mode of the file \"/etc/passwd\" to \"0644\" by running the following command:\n\n$ sudo chmod 0644 /etc/passwd",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_permission",
+  "remediation": "planned",
+  "rule_id": "SV-271810r1092142_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 /etc/passwd file must have mode 0644 or less permissive to prevent unauthorized access.",
+  "tracking_issue": "TODO-V-271810",
+  "vuln_id": "V-271810"
+}

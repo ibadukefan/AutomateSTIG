@@ -2,13 +2,17 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: ["**"]
   pull_request:
-    branches: [main]
 
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: 1
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
 
 jobs:
   check:
@@ -53,9 +57,53 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: cargo clippy --workspace --all-targets -- -D warnings
 
+  frontend-syntax:
+    name: Frontend syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node --check crates/gui/frontend/app.js
+
+  coverage-validation:
+    name: Coverage manifest validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: python3 -m py_compile scripts/disa_corpus/*.py scripts/validate-rule-implementations.py
+      - run: python3 -m unittest discover -s scripts/disa_corpus/tests -v
+      - run: python3 scripts/disa_corpus/index_disa_downloads.py --seed-only --output /tmp/disa-download-index.json
+      - run: python3 scripts/validate-all-coverage.py --repo-root .
+      - run: python3 scripts/validate-authorized-fixtures.py fixtures/authorized/manifest.example.json --repo-root .
+      - run: python3 scripts/validate-authorized-fixtures.py content/disa-corpus/artifacts.manifest.json --repo-root .
+      - run: python3 scripts/validate-rule-implementations.py --coverage-root content/coverage/disa-authoritative --implementation-root content/rule-implementations
+      - run: python3 scripts/disa_corpus/validate_corpus_regression.py --repo-root .
+      - run: python3 scripts/disa_corpus/generate_candidate_check_packs.py --implementation-root content/rule-implementations/generated --out /tmp/automatestig-candidate-check-packs
+      - run: python3 scripts/disa_corpus/generate_candidate_fixture_evidence.py --candidate-root content/check_packs/generated-candidates --out /tmp/automatestig-candidate-evidence
+      - run: python3 scripts/disa_corpus/generate_all_authoritative_manifests.py --corpus content/disa-corpus/artifacts.manifest.json --out /tmp/automatestig-authoritative-coverage --repo-root .
+      - run: python3 scripts/validate-external-workflows.py --repo-root .
+      - run: python3 scripts/run-live-external-acceptance.py --repo-root .
+
+  dependency-audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install cargo-audit
+        uses: taiki-e/install-action@cargo-audit
+      # RUSTSEC-2023-0071 is documented in docs/audit-exceptions.md. Keep the
+      # exception explicit so all other vulnerabilities fail CI.
+      - run: cargo audit --ignore RUSTSEC-2023-0071
+
   build-release:
     name: Build Release
-    needs: [check, test]
+    needs: [check, test, fmt, clippy, frontend-syntax, coverage-validation, dependency-audit]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -74,7 +122,60 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: cargo build --release --bin automatestig
+      - name: Generate formal SBOM, dependency inventory, and provenance scaffold
+        shell: bash
+        run: |
+          mkdir -p target/release/provenance
+          cargo metadata --locked --format-version 1 > target/release/provenance/cargo-metadata-${{ matrix.target }}.json
+          python3 scripts/generate-cyclonedx-sbom.py \
+            --metadata target/release/provenance/cargo-metadata-${{ matrix.target }}.json \
+            --output target/release/provenance/automatestig-${{ matrix.target }}.cdx.json \
+            --target ${{ matrix.target }}
+          cat > target/release/provenance/provenance-${{ matrix.target }}.json <<EOF
+          {
+            "artifact": "${{ matrix.artifact }}",
+            "target": "${{ matrix.target }}",
+            "repository": "${{ github.repository }}",
+            "ref": "${{ github.ref }}",
+            "sha": "${{ github.sha }}",
+            "workflow": "${{ github.workflow }}",
+            "run_id": "${{ github.run_id }}",
+            "run_attempt": "${{ github.run_attempt }}",
+            "sbom": "automatestig-${{ matrix.target }}.cdx.json"
+          }
+          EOF
+      - name: Generate SHA-256 checksum
+        shell: bash
+        run: |
+          cd target/release
+          if command -v sha256sum >/dev/null 2>&1; then
+            sha256sum "${{ matrix.artifact }}" > "${{ matrix.artifact }}.sha256"
+          else
+            shasum -a 256 "${{ matrix.artifact }}" > "${{ matrix.artifact }}.sha256"
+          fi
+      - name: Generate GitHub artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: target/release/${{ matrix.artifact }}
+      - name: Install cosign for keyless blob signing
+        uses: sigstore/cosign-installer@v3
+      - name: Generate keyless Sigstore signature bundle
+        shell: bash
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+        run: |
+          cosign sign-blob --yes \
+            --bundle "target/release/${{ matrix.artifact }}.sigstore.bundle" \
+            "target/release/${{ matrix.artifact }}"
       - uses: actions/upload-artifact@v4
         with:
           name: automatestig-${{ matrix.target }}
-          path: target/release/${{ matrix.artifact }}
+          path: |
+            target/release/${{ matrix.artifact }}
+            target/release/${{ matrix.artifact }}.sha256
+            target/release/${{ matrix.artifact }}.sigstore.bundle
+            target/release/provenance/cargo-metadata-${{ matrix.target }}.json
+            target/release/provenance/automatestig-${{ matrix.target }}.cdx.json
+            target/release/provenance/provenance-${{ matrix.target }}.json
+          retention-days: 14
+          if-no-files-found: error

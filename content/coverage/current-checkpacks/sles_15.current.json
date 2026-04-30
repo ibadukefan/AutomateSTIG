@@ -1,0 +1,336 @@
+{
+  "stig_id": "SLES_15_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/sles_15.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/sles_15.json",
+  "total_rules": 25,
+  "rules": [
+    {
+      "vuln_id": "V-234800",
+      "rule_id": "V-234800_automatestig_check",
+      "classification": "automated",
+      "reason": "SLES 15 SSH must not allow direct root login",
+      "check_pack": "sles_15",
+      "check_id": "V-234800",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234801",
+      "rule_id": "V-234801_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must not allow empty passwords",
+      "check_pack": "sles_15",
+      "check_id": "V-234801",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234802",
+      "rule_id": "V-234802_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveInterval must be set",
+      "check_pack": "sles_15",
+      "check_id": "V-234802",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234803",
+      "rule_id": "V-234803_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH ClientAliveCountMax must be 1 or less",
+      "check_pack": "sles_15",
+      "check_id": "V-234803",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234804",
+      "rule_id": "V-234804_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must display a login banner",
+      "check_pack": "sles_15",
+      "check_id": "V-234804",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234805",
+      "rule_id": "V-234805_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH X11 forwarding must be disabled",
+      "check_pack": "sles_15",
+      "check_id": "V-234805",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234806",
+      "rule_id": "V-234806_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH must use FIPS 140-2 compliant MACs",
+      "check_pack": "sles_15",
+      "check_id": "V-234806",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234810",
+      "rule_id": "V-234810_automatestig_check",
+      "classification": "automated",
+      "reason": "IP forwarding must be disabled",
+      "check_pack": "sles_15",
+      "check_id": "V-234810",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234811",
+      "rule_id": "V-234811_automatestig_check",
+      "classification": "automated",
+      "reason": "Source-routed packets must not be accepted",
+      "check_pack": "sles_15",
+      "check_id": "V-234811",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234812",
+      "rule_id": "V-234812_automatestig_check",
+      "classification": "automated",
+      "reason": "ICMP redirects must not be accepted",
+      "check_pack": "sles_15",
+      "check_id": "V-234812",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234813",
+      "rule_id": "V-234813_automatestig_check",
+      "classification": "automated",
+      "reason": "System must not send ICMP redirects",
+      "check_pack": "sles_15",
+      "check_id": "V-234813",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234814",
+      "rule_id": "V-234814_automatestig_check",
+      "classification": "automated",
+      "reason": "TCP SYN cookies must be enabled",
+      "check_pack": "sles_15",
+      "check_id": "V-234814",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234815",
+      "rule_id": "V-234815_automatestig_check",
+      "classification": "automated",
+      "reason": "ASLR must be fully enabled",
+      "check_pack": "sles_15",
+      "check_id": "V-234815",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234820",
+      "rule_id": "V-234820_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/shadow must be mode 0000 and owned by root",
+      "check_pack": "sles_15",
+      "check_id": "V-234820",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234821",
+      "rule_id": "V-234821_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/passwd must be mode 0644 and owned by root",
+      "check_pack": "sles_15",
+      "check_id": "V-234821",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234822",
+      "rule_id": "V-234822_automatestig_check",
+      "classification": "automated",
+      "reason": "/etc/group must be mode 0644 and owned by root",
+      "check_pack": "sles_15",
+      "check_id": "V-234822",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234823",
+      "rule_id": "V-234823_automatestig_check",
+      "classification": "automated",
+      "reason": "sshd_config must be mode 0600 and owned by root",
+      "check_pack": "sles_15",
+      "check_id": "V-234823",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234830",
+      "rule_id": "V-234830_automatestig_check",
+      "classification": "automated",
+      "reason": "AIDE must be installed for file integrity checking",
+      "check_pack": "sles_15",
+      "check_id": "V-234830",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234831",
+      "rule_id": "V-234831_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit package must be installed",
+      "check_pack": "sles_15",
+      "check_id": "V-234831",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234832",
+      "rule_id": "V-234832_automatestig_check",
+      "classification": "automated",
+      "reason": "Firewalld must be installed",
+      "check_pack": "sles_15",
+      "check_id": "V-234832",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234833",
+      "rule_id": "V-234833_automatestig_check",
+      "classification": "automated",
+      "reason": "Telnet server must not be installed",
+      "check_pack": "sles_15",
+      "check_id": "V-234833",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234840",
+      "rule_id": "V-234840_automatestig_check",
+      "classification": "automated",
+      "reason": "Audit daemon must be running",
+      "check_pack": "sles_15",
+      "check_id": "V-234840",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234841",
+      "rule_id": "V-234841_automatestig_check",
+      "classification": "automated",
+      "reason": "Firewall must be active",
+      "check_pack": "sles_15",
+      "check_id": "V-234841",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234842",
+      "rule_id": "V-234842_automatestig_check",
+      "classification": "automated",
+      "reason": "SSH daemon must be running",
+      "check_pack": "sles_15",
+      "check_id": "V-234842",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-234850",
+      "rule_id": "V-234850_automatestig_check",
+      "classification": "automated",
+      "reason": "Passwords must be hashed with SHA-512",
+      "check_pack": "sles_15",
+      "check_id": "V-234850",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/sles_15.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review system security plan and/or system architecture documentation and interview the system admin. Identify any proxy servers or load balancers that provide services for the Tomcat server. If there are no load balancers or proxies in use, this is not a finding.\n\nIf there is a documented risk acceptance for not mutually authenticating proxy or load balancer connections due to operational issues, or RMF system categorization this is not a finding.\n\nUsing the aforementioned documentation, identify each Tomcat IP address that is served by a load balancer or proxy.\n\nFrom the Tomcat server as a privileged user, review the $CATALINA_BASE/conf/server.xml file. Review each <SSLHostConfig> element for the address setting and the certificationVerification.\n\nsudo grep -i -B1 -A5 connector $CATALINA_BASE/conf/server.xml\n\nIf a connector has a configured IP address that is proxied or load balanced and the clientAuth setting is not \"true\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From the Tomcat server as a privileged user, edit the $CATALINA_BASE/conf/server.xml file.\n\nModify each <SSLHostConfig> element where the IP address is behind a proxy or load balancer.\n\nSet certificationVerification=\"true\", identify the applications that are associated with the connector, and edit the associated web.xml files. Ensure the <auth-method> is set to CLIENT-CERT.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222971r1136930_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "Tomcat servers must mutually authenticate proxy or load balancer connections.",
+  "tracking_issue": "TODO-V-222971",
+  "vuln_id": "V-222971"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: This check applies to RHEL versions 8.2 or newer, if the system is RHEL version 8.0 or 8.1, this check is not applicable.\n\nVerify the pam_faillock.so module is present and is listed before the pam.unix.so line in the \"/etc/pam.d/password-auth\" file:\nNote: The first field in the output is the line number of the entry\n\n$ sudo grep -E -n 'pam_faillock.so|pam_unix.so' /etc/pam.d/password-auth\n\n7:auth required pam_faillock.so preauth silent\n11:auth sufficient pam_unix.so\n15:auth required pam_faillock.so authfail\n19:account required pam_faillock.so\n20:account required pam_unix.so\n31:password sufficient pam_unix.so sha512 shadow use_authtok\n40:session required pam_unix.so\n\nIf the pam_faillock.so module is not present in the \"/etc/pam.d/password-auth\" file with the \"preauth\" line listed before pam_unix.so, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to include the use of the pam_faillock.so module in the /etc/pam.d/password-auth file.\n\nAdd/Modify the appropriate sections of the \"/etc/pam.d/password-auth\" file to match the following lines:\nNote: The \"preauth\" line must be listed before pam_unix.so.\n\nauth required pam_faillock.so preauth\nauth required pam_faillock.so authfail\naccount required pam_faillock.so",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-244534r1069319_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must configure the use of the pam_faillock.so module in the /etc/pam.d/password-auth file.",
+  "tracking_issue": "TODO-V-244534",
+  "vuln_id": "V-244534"
+}

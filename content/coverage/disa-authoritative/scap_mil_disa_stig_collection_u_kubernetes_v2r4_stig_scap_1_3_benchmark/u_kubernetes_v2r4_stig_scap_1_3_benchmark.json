@@ -1,0 +1,923 @@
+{
+  "generated_from": "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip",
+  "rules": [
+    {
+      "check_id": "V-242376",
+      "check_pack": "kubernetes",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-242376 from source identifier xccdf_mil.disa.stig_group_V-242376.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242376r960759_rule",
+      "severity": "medium",
+      "title": "The Kubernetes Controller Manager must use TLS 1.2, at a minimum, to protect the confidentiality of sensitive data during electronic dissemination.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/kubernetes.json",
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242376"
+    },
+    {
+      "check_id": "V-242377",
+      "check_pack": "kubernetes",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-242377 from source identifier xccdf_mil.disa.stig_group_V-242377.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242377r960759_rule",
+      "severity": "medium",
+      "title": "The Kubernetes Scheduler must use TLS 1.2, at a minimum, to protect the confidentiality of sensitive data during electronic dissemination.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/kubernetes.json",
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242377"
+    },
+    {
+      "check_id": "V-242378",
+      "check_pack": "kubernetes",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-242378 from source identifier xccdf_mil.disa.stig_group_V-242378.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242378r960759_rule",
+      "severity": "medium",
+      "title": "The Kubernetes API Server must use TLS 1.2, at a minimum, to protect the confidentiality of sensitive data during electronic dissemination.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/kubernetes.json",
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242378"
+    },
+    {
+      "check_id": "V-242379",
+      "check_pack": "kubernetes",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-242379 from source identifier xccdf_mil.disa.stig_group_V-242379.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242379r960759_rule",
+      "severity": "medium",
+      "title": "The Kubernetes etcd must use TLS to protect the confidentiality of sensitive data during electronic dissemination.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/kubernetes.json",
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242379"
+    },
+    {
+      "check_id": "V-242380",
+      "check_pack": "kubernetes",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-242380 from source identifier xccdf_mil.disa.stig_group_V-242380.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242380r960759_rule",
+      "severity": "medium",
+      "title": "The Kubernetes etcd must use TLS to protect the confidentiality of sensitive data during electronic dissemination.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/kubernetes.json",
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242380"
+    },
+    {
+      "check_id": "V-242381",
+      "check_pack": "kubernetes",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-242381 from source identifier xccdf_mil.disa.stig_group_V-242381.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242381r1043176_rule",
+      "severity": "high",
+      "title": "The Kubernetes Controller Manager must create unique service accounts for each work payload.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/kubernetes.json",
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242381"
+    },
+    {
+      "check_id": "V-242382",
+      "check_pack": "kubernetes",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-242382 from source identifier xccdf_mil.disa.stig_group_V-242382.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242382r1137638_rule",
+      "severity": "medium",
+      "title": "The Kubernetes API Server must enable Node,RBAC as the authorization mode.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/kubernetes.json",
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242382"
+    },
+    {
+      "check_id": "V-242384",
+      "check_pack": "kubernetes",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-242384 from source identifier xccdf_mil.disa.stig_group_V-242384.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242384r1137638_rule",
+      "severity": "medium",
+      "title": "The Kubernetes Scheduler must have secure binding.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/kubernetes.json",
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242384"
+    },
+    {
+      "check_id": "V-242385",
+      "check_pack": "kubernetes",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-242385 from source identifier xccdf_mil.disa.stig_group_V-242385.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242385r1137638_rule",
+      "severity": "medium",
+      "title": "The Kubernetes Controller Manager must have secure binding.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/kubernetes.json",
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242385"
+    },
+    {
+      "check_id": "V-242389",
+      "check_pack": "kubernetes",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-242389 from source identifier xccdf_mil.disa.stig_group_V-242389.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242389r1137640_rule",
+      "severity": "medium",
+      "title": "The Kubernetes API server must have the secure port set.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/kubernetes.json",
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242389"
+    },
+    {
+      "check_id": "V-242390",
+      "check_pack": "kubernetes",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-242390 from source identifier xccdf_mil.disa.stig_group_V-242390.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242390r1137640_rule",
+      "severity": "high",
+      "title": "The Kubernetes API server must have anonymous authentication disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/kubernetes.json",
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242390"
+    },
+    {
+      "check_id": "V-242393",
+      "check_pack": "kubernetes",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-242393 from source identifier xccdf_mil.disa.stig_group_V-242393.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242393r1137639_rule",
+      "severity": "medium",
+      "title": "Kubernetes Worker Nodes must not have sshd service running.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/kubernetes.json",
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242393"
+    },
+    {
+      "check_id": "V-242400",
+      "check_pack": "kubernetes",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-242400 from source identifier xccdf_mil.disa.stig_group_V-242400.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242400r1137638_rule",
+      "severity": "medium",
+      "title": "The Kubernetes API server must have Alpha APIs disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/kubernetes.json",
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242400"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242402r960888_rule",
+      "severity": "medium",
+      "title": "The Kubernetes API Server must have an audit log path set.",
+      "tracking_issue": "TODO-V-242402",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242402"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242403r986135_rule",
+      "severity": "medium",
+      "title": "Kubernetes API Server must generate audit records that identify what type of event has occurred, identify the source of the event, contain the event results, identify any users, and identify any containers associated with the event.",
+      "tracking_issue": "TODO-V-242403",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242403"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242404r960960_rule",
+      "severity": "medium",
+      "title": "Kubernetes Kubelet must deny hostname override.",
+      "tracking_issue": "TODO-V-242404",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242404"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242405r960960_rule",
+      "severity": "medium",
+      "title": "The Kubernetes manifests must be owned by root.",
+      "tracking_issue": "TODO-V-242405",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242405"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242406r960960_rule",
+      "severity": "medium",
+      "title": "The Kubernetes KubeletConfiguration file must be owned by root.",
+      "tracking_issue": "TODO-V-242406",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242406"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242408r960960_rule",
+      "severity": "medium",
+      "title": "The Kubernetes manifest files must have least privileges.",
+      "tracking_issue": "TODO-V-242408",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242408"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242409r960963_rule",
+      "severity": "medium",
+      "title": "Kubernetes Controller Manager must disable profiling.",
+      "tracking_issue": "TODO-V-242409",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242409"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242418r1043178_rule",
+      "severity": "medium",
+      "title": "The Kubernetes API server must use approved cipher suites.",
+      "tracking_issue": "TODO-V-242418",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242418"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242419r1043178_rule",
+      "severity": "medium",
+      "title": "Kubernetes API Server must have the SSL Certificate Authority set.",
+      "tracking_issue": "TODO-V-242419",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242419"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242420r1043178_rule",
+      "severity": "medium",
+      "title": "Kubernetes Kubelet must have the SSL Certificate Authority set.",
+      "tracking_issue": "TODO-V-242420",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242420"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242421r1043178_rule",
+      "severity": "medium",
+      "title": "Kubernetes Controller Manager must have the SSL Certificate Authority set.",
+      "tracking_issue": "TODO-V-242421",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242421"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242422r1043178_rule",
+      "severity": "medium",
+      "title": "Kubernetes API Server must have a certificate for communication.",
+      "tracking_issue": "TODO-V-242422",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242422"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242423r1043178_rule",
+      "severity": "medium",
+      "title": "Kubernetes etcd must enable client authentication to secure service.",
+      "tracking_issue": "TODO-V-242423",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242423"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242424r1043178_rule",
+      "severity": "medium",
+      "title": "Kubernetes Kubelet must enable tlsPrivateKeyFile for client authentication to secure service.",
+      "tracking_issue": "TODO-V-242424",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242424"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242425r1043178_rule",
+      "severity": "medium",
+      "title": "Kubernetes Kubelet must enable tlsCertFile for client authentication to secure service.",
+      "tracking_issue": "TODO-V-242425",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242425"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242426r1043178_rule",
+      "severity": "medium",
+      "title": "Kubernetes etcd must enable client authentication to secure service.",
+      "tracking_issue": "TODO-V-242426",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242426"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242427r1043178_rule",
+      "severity": "medium",
+      "title": "Kubernetes etcd must have a key file for secure communication.",
+      "tracking_issue": "TODO-V-242427",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242427"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242428r1043178_rule",
+      "severity": "medium",
+      "title": "Kubernetes etcd must have a certificate for communication.",
+      "tracking_issue": "TODO-V-242428",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242428"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242429r1043178_rule",
+      "severity": "medium",
+      "title": "Kubernetes etcd must have the SSL Certificate Authority set.",
+      "tracking_issue": "TODO-V-242429",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242429"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242430r1043178_rule",
+      "severity": "medium",
+      "title": "Kubernetes etcd must have a certificate for communication.",
+      "tracking_issue": "TODO-V-242430",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242430"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242431r1043178_rule",
+      "severity": "medium",
+      "title": "Kubernetes etcd must have a key file for secure communication.",
+      "tracking_issue": "TODO-V-242431",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242431"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242432r1043178_rule",
+      "severity": "medium",
+      "title": "Kubernetes etcd must have peer-cert-file set for secure communication.",
+      "tracking_issue": "TODO-V-242432",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242432"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242433r1043178_rule",
+      "severity": "medium",
+      "title": "Kubernetes etcd must have a peer-key-file set for secure communication.",
+      "tracking_issue": "TODO-V-242433",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242433"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242434r961131_rule",
+      "severity": "high",
+      "title": "Kubernetes Kubelet must enable kernel protection.",
+      "tracking_issue": "TODO-V-242434",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242434"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242438r961620_rule",
+      "severity": "medium",
+      "title": "Kubernetes API Server must configure timeouts to limit attack surface.",
+      "tracking_issue": "TODO-V-242438",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242438"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242444r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes component manifests must be owned by root.",
+      "tracking_issue": "TODO-V-242444",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242444"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242445r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes component etcd must be owned by etcd.",
+      "tracking_issue": "TODO-V-242445",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242445"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242446r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes conf files must be owned by root.",
+      "tracking_issue": "TODO-V-242446",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242446"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242449r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes Kubelet certificate authority file must have file permissions set to 644 or more restrictive.",
+      "tracking_issue": "TODO-V-242449",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242449"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242450r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes Kubelet certificate authority must be owned by root.",
+      "tracking_issue": "TODO-V-242450",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242450"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242451r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes component PKI must be owned by root.",
+      "tracking_issue": "TODO-V-242451",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242451"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242452r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes kubelet KubeConfig must have file permissions set to 644 or more restrictive.",
+      "tracking_issue": "TODO-V-242452",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242452"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242453r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes kubelet KubeConfig file must be owned by root.",
+      "tracking_issue": "TODO-V-242453",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242453"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242456r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes kubelet config must have file permissions set to 644 or more restrictive.",
+      "tracking_issue": "TODO-V-242456",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242456"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242457r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes kubelet config must be owned by root.",
+      "tracking_issue": "TODO-V-242457",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242457"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242459r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes etcd must have file permissions set to 644 or more restrictive.",
+      "tracking_issue": "TODO-V-242459",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242459"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242460r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes admin kubeconfig must have file permissions set to 644 or more restrictive.",
+      "tracking_issue": "TODO-V-242460",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242460"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242461r961863_rule",
+      "severity": "medium",
+      "title": "Kubernetes API Server audit logs must be enabled.",
+      "tracking_issue": "TODO-V-242461",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242461"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242462r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes API Server must be set to audit log max size.",
+      "tracking_issue": "TODO-V-242462",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242462"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242463r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes API Server must be set to audit log maximum backup.",
+      "tracking_issue": "TODO-V-242463",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242463"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242464r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes API Server audit log retention must be set.",
+      "tracking_issue": "TODO-V-242464",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242464"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242465r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes API Server audit log path must be set.",
+      "tracking_issue": "TODO-V-242465",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242465"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-242466r961863_rule",
+      "severity": "medium",
+      "title": "The Kubernetes PKI CRT must have file permissions set to 644 or more restrictive.",
+      "tracking_issue": "TODO-V-242466",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-242466"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-245541r1069469_rule",
+      "severity": "medium",
+      "title": "Kubernetes Kubelet must not disable timeouts.",
+      "tracking_issue": "TODO-V-245541",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-245541"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-245542r961632_rule",
+      "severity": "high",
+      "title": "Kubernetes API Server must disable basic authentication to protect information in transit.",
+      "tracking_issue": "TODO-V-245542",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-245542"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-245543r961632_rule",
+      "severity": "high",
+      "title": "Kubernetes API Server must disable token authentication to protect information in transit.",
+      "tracking_issue": "TODO-V-245543",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-245543"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-245544r961632_rule",
+      "severity": "high",
+      "title": "Kubernetes endpoints must use approved organizational certificate and key pair to protect information in transit.",
+      "tracking_issue": "TODO-V-245544",
+      "validated_by": [
+        "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-245544"
+    }
+  ],
+  "source": "DISA XCCDF benchmark",
+  "status": "experimental",
+  "stig_id": "scap_mil.disa.stig_collection_U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark",
+  "total_rules": 60,
+  "version": "U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
+}

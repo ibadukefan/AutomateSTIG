@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify Ubuntu 22.04 LTS has the packages required for multifactor authentication installed with the following command:\n\n$ dpkg -l | grep sssd\nii  sssd     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- metapackage\nii  sssd-ad     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- Active Directory back end\nii  sssd-ad-common     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- PAC responder\nii  sssd-common     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- common files\nii  sssd-ipa     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- IPA back end\nii  sssd-krb5     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- Kerberos back end\nii  sssd-krb5-common     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- Kerberos helpers\nii  sssd-ldap     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- LDAP back end\nii  sssd-proxy     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- proxy back end\n\nIf the \"sssd\" package is not installed, this is a finding. The additional sssd components listed by the command may differ from configuration to configuration.  \n\nVerify that \"libpam-sss\" (the PAM integration module for SSSD) is installed with the following command:\n\n$ dpkg -l | grep libpam-sss\ni  libpam-sss:amd64     2.9.4-1.1ubuntu6.1     amd64     Pam module for the System Security Services Daemon\n\nVerify that \"libnss-sss\" (the NSS module for retrieving user and group information) is installed with the following command:\n\n$ dpkg -l | grep libnss-sss\nii  libnss-sss:amd64     2.9.4-1.1ubuntu6.1      amd64     Nss library for the System Security Services Daemon",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install the sssd.service and the required pam packages with the following commands: \n \n$ sudo apt install sssd\n\n$ sudo apt install libpam-sss\n\n$ sudo apt install libnss-sss",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-274864r1107268_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must have the \"SSSD\" package installed.",
+  "tracking_issue": "TODO-V-274864",
+  "vuln_id": "V-274864"
+}

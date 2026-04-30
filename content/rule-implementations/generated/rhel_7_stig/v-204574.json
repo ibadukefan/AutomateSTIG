@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify \"rsyslog\" is configured to send all messages to a log aggregation server.\n\nCheck the configuration of \"rsyslog\" with the following command:\n\nNote: If another logging package is used, substitute the utility configuration file for \"/etc/rsyslog.conf\".\n\n     # grep @ /etc/rsyslog.conf /etc/rsyslog.d/*.conf\n\n     *.* @@[logaggregationserver.example.mil]:[port]\n\nIf there are no lines in the \"/etc/rsyslog.conf\" or \"/etc/rsyslog.d/*.conf\" files that contain the \"@\" or \"@@\" symbol(s), and the lines with the correct symbol(s) to send output to another system do not cover all \"rsyslog\" output, ask the system administrator to indicate how the audit logs are offloaded to a different system or media. \n\nIf the lines are commented out or there is no evidence that the audit logs are being sent to another log aggregation server, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Modify the \"/etc/rsyslog.conf\" or an \"/etc/rsyslog.d/*.conf\" file to contain a configuration line to send all \"rsyslog\" output to a log aggregation server:\n\nFor UDP:\n     *.* @[logaggregationserver.example.mil]:[port]\n\nFor TCP: \n     *.* @@[logaggregationserver.example.mil]:[port]",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204574r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must send rsyslog output to a log aggregation server.",
+  "tracking_issue": "TODO-V-204574",
+  "vuln_id": "V-204574"
+}

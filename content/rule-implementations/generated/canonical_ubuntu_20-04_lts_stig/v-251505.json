@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/modprobe.d/",
+      "pattern": "usb-storage",
+      "type": "file_content"
+    },
+    "description": "The Ubuntu operating system must disable automatic mounting of Universal Serial Bus (USB) mass storage driver.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-251505"
+  },
+  "check_content_excerpt": "Verify that Ubuntu operating system disables ability to load the USB storage kernel module.\n\n# grep usb-storage /etc/modprobe.d/* | grep \"/bin/false\" \n\ninstall usb-storage /bin/false\n\nIf the command does not return any output, or the line is commented out, this is a finding.\n\nVerify the operating system disables the ability to use USB mass storage device.\n\n# grep usb-storage /etc/modprobe.d/* | grep -i \"blacklist\"\n\nblacklist usb-storage\n\nIf the command does not return any output, or the line is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the Ubuntu operating system to disable using the USB storage kernel module. \n\nCreate a file under \"/etc/modprobe.d\" to contain the following:\n\n# sudo su -c \"echo install usb-storage /bin/false >> /etc/modprobe.d/DISASTIG.conf\"\n\nConfigure the operating system to disable the ability to use USB mass storage devices.\n\n# sudo su -c \"echo blacklist usb-storage >> /etc/modprobe.d/DISASTIG.conf\"",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-251505r958820_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/canonical_ubuntu_20_04_lts_stig/u_can_ubuntu_20_04_lts_v2r4_stig.json",
+  "source_version": "U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip",
+  "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
+  "title": "The Ubuntu operating system must disable automatic mounting of Universal Serial Bus (USB) mass storage driver.",
+  "tracking_issue": "TODO-V-251505",
+  "vuln_id": "V-251505"
+}

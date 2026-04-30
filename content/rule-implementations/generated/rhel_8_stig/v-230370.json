@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that RHEL 8 enforces a minimum 15-character password length for new user accounts by running the following command:\n\n$ sudo grep -i  pass_min_len /etc/login.defs\n\nPASS_MIN_LEN 15\n\nIf the \"PASS_MIN_LEN\" parameter value is less than \"15\", or commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure operating system to enforce a minimum 15-character password length for new user accounts.\n\nAdd, or modify the following line in the \"/etc/login.defs\" file:\n\nPASS_MIN_LEN 15",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230370r1017182_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 passwords for new users must have a minimum of 15 characters.",
+  "tracking_issue": "TODO-V-230370",
+  "vuln_id": "V-230370"
+}

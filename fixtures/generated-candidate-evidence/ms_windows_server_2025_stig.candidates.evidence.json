@@ -1,0 +1,2677 @@
+{
+  "candidate_checks": 99,
+  "cases": [
+    {
+      "check": {
+        "name": "Fax",
+        "should_be_installed": false,
+        "type": "windows_feature"
+      },
+      "description": "Windows Server 2025 must not have the Fax Server role installed.",
+      "evidence_type": "windows_feature_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "Fax": true
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "packages": {
+          "Fax": false
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278015"
+    },
+    {
+      "check": {
+        "name": "Web-Ftp-Service",
+        "should_be_installed": false,
+        "type": "windows_feature"
+      },
+      "description": "Windows Server 2025 must not have the Microsoft FTP service installed unless required by the organization.",
+      "evidence_type": "windows_feature_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "Web-Ftp-Service": true
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "packages": {
+          "Web-Ftp-Service": false
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278016"
+    },
+    {
+      "check": {
+        "name": "PNRP",
+        "should_be_installed": false,
+        "type": "windows_feature"
+      },
+      "description": "Windows Server 2025 must not have the Peer Name Resolution Protocol installed.",
+      "evidence_type": "windows_feature_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "PNRP": true
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "packages": {
+          "PNRP": false
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278019"
+    },
+    {
+      "check": {
+        "name": "Simple-TCPIP",
+        "should_be_installed": false,
+        "type": "windows_feature"
+      },
+      "description": "Windows Server 2025 must not have Simple TCP/IP Services installed.",
+      "evidence_type": "windows_feature_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "Simple-TCPIP": true
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "packages": {
+          "Simple-TCPIP": false
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278020"
+    },
+    {
+      "check": {
+        "name": "Telnet-Client",
+        "should_be_installed": false,
+        "type": "windows_feature"
+      },
+      "description": "Windows Server 2025 must not have the Telnet Client installed.",
+      "evidence_type": "windows_feature_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "Telnet-Client": true
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "packages": {
+          "Telnet-Client": false
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278021"
+    },
+    {
+      "check": {
+        "name": "TFTP-Client",
+        "should_be_installed": false,
+        "type": "windows_feature"
+      },
+      "description": "Windows Server 2025 must not have the TFTP Client installed.",
+      "evidence_type": "windows_feature_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "TFTP-Client": true
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "packages": {
+          "TFTP-Client": false
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278022"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters",
+        "type": "registry",
+        "value_name": "SMB1"
+      },
+      "description": "Windows Server 2025 must have the Server Message Block (SMB) v1 protocol disabled on the SMB server.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters\\SMB1": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters\\SMB1": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278024"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10",
+        "type": "registry",
+        "value_name": "Start"
+      },
+      "description": "Windows Server 2025 must have the Server Message Block (SMB) v1 protocol disabled on the SMB client.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 4
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10\\Start": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10\\Start": 4
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278025"
+    },
+    {
+      "check": {
+        "name": "PowerShell-v2",
+        "should_be_installed": false,
+        "type": "windows_feature"
+      },
+      "description": "Windows Server 2025 must not have Windows PowerShell 2.0 installed.",
+      "evidence_type": "windows_feature_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "PowerShell-v2": true
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "packages": {
+          "PowerShell-v2": false
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278026"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization",
+        "type": "registry",
+        "value_name": "NoLockScreenSlideshow"
+      },
+      "description": "Windows Server 2025 must prevent the display of slide shows on the lock screen.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization\\NoLockScreenSlideshow": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Personalization\\NoLockScreenSlideshow": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278080"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters",
+        "type": "registry",
+        "value_name": "DisableIPSourceRouting"
+      },
+      "description": "Windows Server 2025 Internet Protocol version 6 (IPv6) source routing must be configured to the highest protection level to prevent IP source routing.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters\\DisableIPSourceRouting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters\\DisableIPSourceRouting": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278082"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters",
+        "type": "registry",
+        "value_name": "DisableIPSourceRouting"
+      },
+      "description": "Windows Server 2025 source routing must be configured to the highest protection level to prevent Internet Protocol (IP) source routing.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\DisableIPSourceRouting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\DisableIPSourceRouting": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278083"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters",
+        "type": "registry",
+        "value_name": "EnableICMPRedirect"
+      },
+      "description": "Windows Server 2025 must be configured to prevent Internet Control Message Protocol (ICMP) redirects from overriding Open Shortest Path First (OSPF)-generated routes.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\EnableICMPRedirect": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\EnableICMPRedirect": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278084"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation",
+        "type": "registry",
+        "value_name": "AllowInsecureGuestAuth"
+      },
+      "description": "Windows Server 2025 insecure logons to an SMB server must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation\\AllowInsecureGuestAuth": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation\\AllowInsecureGuestAuth": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278086"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit",
+        "type": "registry",
+        "value_name": "ProcessCreationIncludeCmdLine_Enabled"
+      },
+      "description": "Windows Server 2025 command line data must be included in process creation events.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit\\ProcessCreationIncludeCmdLine_Enabled": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit\\ProcessCreationIncludeCmdLine_Enabled": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278088"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CredentialsDelegation",
+        "type": "registry",
+        "value_name": "AllowProtectedCreds"
+      },
+      "description": "Windows Server 2025 must be configured to enable Remote host allows delegation of nonexportable credentials.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CredentialsDelegation\\AllowProtectedCreds": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CredentialsDelegation\\AllowProtectedCreds": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278089"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard",
+        "type": "registry",
+        "value_name": "EnableVirtualizationBasedSecurity"
+      },
+      "description": "Windows Server 2025 virtualization-based security must be enabled with the platform security level configured to Secure Boot or Secure Boot with DMA Protection.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard\\EnableVirtualizationBasedSecurity": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard\\EnableVirtualizationBasedSecurity": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278090"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch",
+        "type": "registry",
+        "value_name": "DriverLoadPolicy"
+      },
+      "description": "Windows Server 2025 Early Launch Antimalware, Boot-Start Driver Initialization Policy must prevent boot drivers identified as bad.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch\\DriverLoadPolicy": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Policies\\EarlyLaunch\\DriverLoadPolicy": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278091"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Group Policy\\{35378EAC-683F-11D2-A89A-00C04FBBCFA2}",
+        "type": "registry",
+        "value_name": "NoGPOListChanges"
+      },
+      "description": "Windows Server 2025 group policy objects must be reprocessed even if they have not changed.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Group Policy\\{35378EAC-683F-11D2-A89A-00C04FBBCFA2}\\NoGPOListChanges": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Group Policy\\{35378EAC-683F-11D2-A89A-00C04FBBCFA2}\\NoGPOListChanges": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278092"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers",
+        "type": "registry",
+        "value_name": "DisableWebPnPDownload"
+      },
+      "description": "Windows Server 2025 downloading print driver packages over HTTP must be turned off.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\DisableWebPnPDownload": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\DisableWebPnPDownload": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278093"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers",
+        "type": "registry",
+        "value_name": "DisableHTTPPrinting"
+      },
+      "description": "Windows Server 2025 printing over HTTP must be turned off.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\DisableHTTPPrinting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\DisableHTTPPrinting": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278094"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "type": "registry",
+        "value_name": "DontDisplayNetworkSelectionUI"
+      },
+      "description": "Windows Server 2025 network selection user interface (UI) must not be displayed on the logon screen.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\DontDisplayNetworkSelectionUI": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\DontDisplayNetworkSelectionUI": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278095"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51",
+        "type": "registry",
+        "value_name": "DCSettingIndex"
+      },
+      "description": "Windows Server 2025 users must be prompted to authenticate when the system wakes from sleep (on battery).",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51\\DCSettingIndex": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51\\DCSettingIndex": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278096"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51",
+        "type": "registry",
+        "value_name": "ACSettingIndex"
+      },
+      "description": "Windows Server 2025 users must be prompted to authenticate when the system wakes from sleep (plugged in).",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51\\ACSettingIndex": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51\\ACSettingIndex": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278097"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat",
+        "type": "registry",
+        "value_name": "DisableInventory"
+      },
+      "description": "Windows Server 2025 Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat\\DisableInventory": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppCompat\\DisableInventory": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278098"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer",
+        "type": "registry",
+        "value_name": "NoAutoplayfornonVolume"
+      },
+      "description": "Windows Server 2025 AutoPlay must be turned off for nonvolume devices.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\NoAutoplayfornonVolume": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\NoAutoplayfornonVolume": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278099"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+        "type": "registry",
+        "value_name": "NoAutorun"
+      },
+      "description": "Windows Server 2025 default AutoRun behavior must be configured to prevent AutoRun commands.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\NoAutorun": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\NoAutorun": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278100"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI",
+        "type": "registry",
+        "value_name": "EnumerateAdministrators"
+      },
+      "description": "Windows Server 2025 administrator accounts must not be enumerated during elevation.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI\\EnumerateAdministrators": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI\\EnumerateAdministrators": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278102"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization",
+        "type": "registry",
+        "value_name": "DODownloadMode"
+      },
+      "description": "Windows Server 2025 Windows Update must not obtain updates from other PCs on the internet.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization\\DODownloadMode": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization\\DODownloadMode": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278104"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application",
+        "type": "registry",
+        "value_name": "MaxSize"
+      },
+      "description": "Windows Server 2025 Application event log size must be configured to 32768 KB or greater.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 32768
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application\\MaxSize": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application\\MaxSize": 32768
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278105"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security",
+        "type": "registry",
+        "value_name": "MaxSize"
+      },
+      "description": "Windows Server 2025 Security event log size must be configured to 196608 KB or greater.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 196608
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security\\MaxSize": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Security\\MaxSize": 196608
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278106"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System",
+        "type": "registry",
+        "value_name": "MaxSize"
+      },
+      "description": "Windows Server 2025 System event log size must be configured to 32768 KB or greater.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 32768
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System\\MaxSize": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\System\\MaxSize": 32768
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278107"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "type": "registry",
+        "value_name": "EnableSmartScreen"
+      },
+      "description": "Windows Server 2025 Microsoft Defender antivirus SmartScreen must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\EnableSmartScreen": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\EnableSmartScreen": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278108"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer",
+        "type": "registry",
+        "value_name": "NoDataExecutionPrevention"
+      },
+      "description": "Windows Server 2025 Explorer Data Execution Prevention must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\NoDataExecutionPrevention": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\NoDataExecutionPrevention": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278109"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer",
+        "type": "registry",
+        "value_name": "NoHeapTerminationOnCorruption"
+      },
+      "description": "Windows Server 2025 Turning off File Explorer heap termination on corruption must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\NoHeapTerminationOnCorruption": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer\\NoHeapTerminationOnCorruption": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278110"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+        "type": "registry",
+        "value_name": "PreXPSP2ShellProtocolBehavior"
+      },
+      "description": "Windows Server 2025 File Explorer shell protocol must run in protected mode.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\PreXPSP2ShellProtocolBehavior": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\PreXPSP2ShellProtocolBehavior": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278111"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "DisablePasswordSaving"
+      },
+      "description": "Windows Server 2025 must not save passwords in the Remote Desktop Client.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\DisablePasswordSaving": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\DisablePasswordSaving": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278112"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "fDisableCdm"
+      },
+      "description": "Windows Server 2025 Remote Desktop Services must prevent drive redirection.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\fDisableCdm": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\fDisableCdm": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278113"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "fPromptForPassword"
+      },
+      "description": "Windows Server 2025 Remote Desktop Services must always prompt a client for passwords upon connection.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\fPromptForPassword": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\fPromptForPassword": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278114"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "fEncryptRPCTraffic"
+      },
+      "description": "Windows Server 2025 Remote Desktop Services must require secure Remote Procedure Call (RPC) communications.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\fEncryptRPCTraffic": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\fEncryptRPCTraffic": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278115"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "type": "registry",
+        "value_name": "MinEncryptionLevel"
+      },
+      "description": "Windows Server 2025 Remote Desktop Services must be configured with the client connection encryption set to High Level.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 3
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\MinEncryptionLevel": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\MinEncryptionLevel": 3
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278116"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds",
+        "type": "registry",
+        "value_name": "DisableEnclosureDownload"
+      },
+      "description": "Windows Server 2025 must prevent attachments from being downloaded from RSS feeds.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds\\DisableEnclosureDownload": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds\\DisableEnclosureDownload": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278117"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds",
+        "type": "registry",
+        "value_name": "AllowBasicAuthInClear"
+      },
+      "description": "Windows Server 2025 must disable Basic authentication for RSS feeds over HTTP.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds\\AllowBasicAuthInClear": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Internet Explorer\\Feeds\\AllowBasicAuthInClear": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278118"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search",
+        "type": "registry",
+        "value_name": "AllowIndexingEncryptedStoresOrItems"
+      },
+      "description": "Windows Server 2025 must prevent Indexing of encrypted files.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search\\AllowIndexingEncryptedStoresOrItems": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search\\AllowIndexingEncryptedStoresOrItems": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278119"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer",
+        "type": "registry",
+        "value_name": "EnableUserControl"
+      },
+      "description": "Windows Server 2025 must prevent users from changing installation options.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\\EnableUserControl": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\\EnableUserControl": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278120"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer",
+        "type": "registry",
+        "value_name": "AlwaysInstallElevated"
+      },
+      "description": "Windows Server 2025 must disable the Windows Installer Always install with elevated privileges option.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\\AlwaysInstallElevated": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\\AlwaysInstallElevated": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278121"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer",
+        "type": "registry",
+        "value_name": "SafeForScripting"
+      },
+      "description": "Windows Server 2025 users must be notified if a web-based program attempts to install software.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\\SafeForScripting": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer\\SafeForScripting": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278122"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "DisableAutomaticRestartSignOn"
+      },
+      "description": "Windows Server 2025 must disable automatically signing in the last interactive user after a system-initiated restart.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\DisableAutomaticRestartSignOn": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\DisableAutomaticRestartSignOn": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278123"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging",
+        "type": "registry",
+        "value_name": "EnableScriptBlockLogging"
+      },
+      "description": "Windows Server 2025 PowerShell script block logging must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging\\EnableScriptBlockLogging": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging\\EnableScriptBlockLogging": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278124"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client",
+        "type": "registry",
+        "value_name": "AllowBasic"
+      },
+      "description": "Windows Server 2025 Windows Remote Management (WinRM) client must not use Basic authentication.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client\\AllowBasic": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client\\AllowBasic": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278125"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client",
+        "type": "registry",
+        "value_name": "AllowUnencryptedTraffic"
+      },
+      "description": "Windows Server 2025 Windows Remote Management (WinRM) client must not allow unencrypted traffic.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client\\AllowUnencryptedTraffic": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client\\AllowUnencryptedTraffic": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278126"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client",
+        "type": "registry",
+        "value_name": "AllowDigest"
+      },
+      "description": "Windows Server 2025 Windows Remote Management (WinRM) client must not use Digest authentication.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client\\AllowDigest": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Client\\AllowDigest": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278127"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service",
+        "type": "registry",
+        "value_name": "AllowBasic"
+      },
+      "description": "Windows Server 2025 Windows Remote Management (WinRM) service must not use Basic authentication.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\AllowBasic": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\AllowBasic": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278128"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service",
+        "type": "registry",
+        "value_name": "AllowUnencryptedTraffic"
+      },
+      "description": "Windows Server 2025 Windows Remote Management (WinRM) service must not allow unencrypted traffic.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\AllowUnencryptedTraffic": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\AllowUnencryptedTraffic": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278129"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service",
+        "type": "registry",
+        "value_name": "DisableRunAs"
+      },
+      "description": "Windows Server 2025 Windows Remote Management (WinRM) service must not store RunAs credentials.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\DisableRunAs": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\\DisableRunAs": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278130"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription",
+        "type": "registry",
+        "value_name": "EnableTranscripting"
+      },
+      "description": "Windows Server 2025 must have PowerShell Transcription enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription\\EnableTranscripting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription\\EnableTranscripting": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278131"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters",
+        "type": "registry",
+        "value_name": "LDAPServerIntegrity"
+      },
+      "description": "Windows Server 2025 domain controllers must require LDAP access signing.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters\\LDAPServerIntegrity": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\NTDS\\Parameters\\LDAPServerIntegrity": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278163"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "RefusePasswordChange"
+      },
+      "description": "Windows Server 2025 domain controllers must be configured to allow reset of machine account passwords.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\RefusePasswordChange": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\RefusePasswordChange": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278164"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Kdc",
+        "type": "registry",
+        "value_name": "StrongCertificateBindingEnforcement"
+      },
+      "description": "Windows Server 2025 must be configured for certificate-based authentication for domain controllers.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Kdc\\StrongCertificateBindingEnforcement": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Kdc\\StrongCertificateBindingEnforcement": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278172"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "type": "registry",
+        "value_name": "EnumerateLocalUsers"
+      },
+      "description": "Windows Server 2025 local users on domain-joined member servers must not be enumerated.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\EnumerateLocalUsers": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\EnumerateLocalUsers": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278179"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard",
+        "type": "registry",
+        "value_name": "LsaCfgFlags"
+      },
+      "description": "Windows Server 2025 must be running Credential Guard on domain-joined member servers.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard\\LsaCfgFlags": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard\\LsaCfgFlags": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278190"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "LimitBlankPasswordUse"
+      },
+      "description": "Windows Server 2025 must prevent local accounts with blank passwords from being used from the network.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LimitBlankPasswordUse": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LimitBlankPasswordUse": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278196"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "SCENoApplyLegacyAuditPolicy"
+      },
+      "description": "Windows Server 2025 must force audit policy subcategory settings to override audit policy category settings.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\SCENoApplyLegacyAuditPolicy": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\SCENoApplyLegacyAuditPolicy": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278199"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "RequireSignOrSeal"
+      },
+      "description": "The Windows Server 2025 setting Domain member: Digitally encrypt or sign secure channel data (always) must be configured to Enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\RequireSignOrSeal": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\RequireSignOrSeal": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278200"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "SealSecureChannel"
+      },
+      "description": "Windows Server 2025 setting Domain member: Digitally encrypt secure channel data (when possible) must be configured to Enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\SealSecureChannel": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\SealSecureChannel": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278201"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "SignSecureChannel"
+      },
+      "description": "The Windows Server 2025 setting Domain member: Digitally sign secure channel data (when possible) must be configured to Enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\SignSecureChannel": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\SignSecureChannel": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278202"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "DisablePasswordChange"
+      },
+      "description": "Windows Server 2025 computer account password must not be prevented from being reset.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\DisablePasswordChange": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\DisablePasswordChange": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278203"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "MaximumPasswordAge"
+      },
+      "description": "Windows Server 2025 maximum age for machine account passwords must be configured to 30 days or less.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 30
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\MaximumPasswordAge": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\MaximumPasswordAge": 30
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278204"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
+        "type": "registry",
+        "value_name": "RequireStrongKey"
+      },
+      "description": "Windows Server 2025 must be configured to require a strong session key.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\RequireStrongKey": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters\\RequireStrongKey": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278205"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "InactivityTimeoutSecs"
+      },
+      "description": "Windows Server 2025 machine inactivity limit must be set to 15 minutes or less, locking the system with the screen saver.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 900
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\InactivityTimeoutSecs": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\InactivityTimeoutSecs": 900
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278206"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon",
+        "type": "registry",
+        "value_name": "scremoveoption"
+      },
+      "description": "The Windows Server 2025 Smart Card removal option must be configured to Force Logoff or Lock Workstation.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\scremoveoption": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\scremoveoption": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278209"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters",
+        "type": "registry",
+        "value_name": "RequireSecuritySignature"
+      },
+      "description": "The Windows Server 2025 setting Microsoft network client: Digitally sign communications (always) must be configured to Enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\\RequireSecuritySignature": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\\RequireSecuritySignature": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278210"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters",
+        "type": "registry",
+        "value_name": "EnableSecuritySignature"
+      },
+      "description": "The Windows Server 2025 setting Microsoft network client: Digitally sign communications (if server agrees) must be configured to Enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\\EnableSecuritySignature": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\\EnableSecuritySignature": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278211"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters",
+        "type": "registry",
+        "value_name": "RequireSecuritySignature"
+      },
+      "description": "The Windows Server 2025 setting Microsoft network server: Digitally sign communications (always) must be configured to Enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters\\RequireSecuritySignature": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters\\RequireSecuritySignature": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278213"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters",
+        "type": "registry",
+        "value_name": "EnableSecuritySignature"
+      },
+      "description": "The Windows Server 2025 setting Microsoft network server: Digitally sign communications (if client agrees) must be configured to Enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters\\EnableSecuritySignature": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters\\EnableSecuritySignature": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278214"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "RestrictAnonymousSAM"
+      },
+      "description": "Windows Server 2025 must not allow anonymous enumeration of Security Account Manager (SAM) accounts.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\RestrictAnonymousSAM": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\RestrictAnonymousSAM": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278216"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "RestrictAnonymous"
+      },
+      "description": "Windows Server 2025 must not allow anonymous enumeration of shares.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\RestrictAnonymous": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\RestrictAnonymous": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278217"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "EveryoneIncludesAnonymous"
+      },
+      "description": "Windows Server 2025 must be configured to prevent anonymous users from having the same permissions as the Everyone group.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\EveryoneIncludesAnonymous": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\EveryoneIncludesAnonymous": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278218"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters",
+        "type": "registry",
+        "value_name": "RestrictNullSessAccess"
+      },
+      "description": "Windows Server 2025 must restrict anonymous access to Named Pipes and Shares.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters\\RestrictNullSessAccess": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters\\RestrictNullSessAccess": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278219"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA",
+        "type": "registry",
+        "value_name": "UseMachineId"
+      },
+      "description": "Windows Server 2025 services using Local System that use Negotiate when reverting to NTLM authentication must use the computer identity instead of authenticating anonymously.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\UseMachineId": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\UseMachineId": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278220"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0",
+        "type": "registry",
+        "value_name": "allownullsessionfallback"
+      },
+      "description": "Windows Server 2025 must prevent NTLM from falling back to a Null session.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0\\allownullsessionfallback": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0\\allownullsessionfallback": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278221"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\pku2u",
+        "type": "registry",
+        "value_name": "AllowOnlineID"
+      },
+      "description": "Windows Server 2025 must prevent PKU2U authentication using online identities.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\pku2u\\AllowOnlineID": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\LSA\\pku2u\\AllowOnlineID": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278222"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters",
+        "type": "registry",
+        "value_name": "SupportedEncryptionTypes"
+      },
+      "description": "Windows Server 2025 Kerberos encryption types must be configured to prevent the use of DES and RC4 encryption suites.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2147483640
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters\\SupportedEncryptionTypes": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters\\SupportedEncryptionTypes": 2147483640
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278223"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+        "type": "registry",
+        "value_name": "LmCompatibilityLevel"
+      },
+      "description": "Windows Server 2025 LAN Manager authentication level must be configured to send NTLMv2 response only and to refuse LM and NTLM.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 5
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LmCompatibilityLevel": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LmCompatibilityLevel": 5
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278225"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LDAP",
+        "type": "registry",
+        "value_name": "LDAPClientIntegrity"
+      },
+      "description": "Windows Server 2025 must be configured to at least negotiate signing for LDAP client signing.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LDAP\\LDAPClientIntegrity": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LDAP\\LDAPClientIntegrity": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278226"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0",
+        "type": "registry",
+        "value_name": "NTLMMinClientSec"
+      },
+      "description": "Windows Server 2025 session security for NTLM SSP-based clients must be configured to require NTLMv2 session security and 128-bit encryption.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 537395200
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0\\NTLMMinClientSec": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0\\NTLMMinClientSec": 537395200
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278227"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0",
+        "type": "registry",
+        "value_name": "NTLMMinServerSec"
+      },
+      "description": "Windows Server 2025 session security for NTLM SSP-based servers must be configured to require NTLMv2 session security and 128-bit encryption.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 537395200
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0\\NTLMMinServerSec": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0\\NTLMMinServerSec": 537395200
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278228"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Cryptography",
+        "type": "registry",
+        "value_name": "ForceKeyProtection"
+      },
+      "description": "Windows Server 2025 users must be required to enter a password to access private keys stored on the computer.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Cryptography\\ForceKeyProtection": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Cryptography\\ForceKeyProtection": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278229"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\FIPSAlgorithmPolicy",
+        "type": "registry",
+        "value_name": "Enabled"
+      },
+      "description": "Windows Server 2025 must be configured to use FIPS-compliant algorithms for encryption, hashing, and signing.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\FIPSAlgorithmPolicy\\Enabled": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\FIPSAlgorithmPolicy\\Enabled": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278230"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager",
+        "type": "registry",
+        "value_name": "ProtectionMode"
+      },
+      "description": "Windows Server 2025 default permissions of global system objects must be strengthened.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\ProtectionMode": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\ProtectionMode": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278231"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "FilterAdministratorToken"
+      },
+      "description": "Windows Server 2025 User Account Control (UAC) approval mode for the built-in Administrator must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\FilterAdministratorToken": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\FilterAdministratorToken": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278232"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableUIADesktopToggle"
+      },
+      "description": "Windows Server 2025 UIAccess applications must not be allowed to prompt for elevation without using the secure desktop.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableUIADesktopToggle": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableUIADesktopToggle": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278233"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "ConsentPromptBehaviorAdmin"
+      },
+      "description": "Windows Server 2025 User Account Control (UAC) must, at a minimum, prompt administrators for consent on the secure desktop.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\ConsentPromptBehaviorAdmin": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\ConsentPromptBehaviorAdmin": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278234"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "ConsentPromptBehaviorUser"
+      },
+      "description": "Windows Server 2025 User Account Control (UAC) must automatically deny standard user requests for elevation.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\ConsentPromptBehaviorUser": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\ConsentPromptBehaviorUser": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278235"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableInstallerDetection"
+      },
+      "description": "Windows Server 2025 User Account Control (UAC) must be configured to detect application installations and prompt for elevation.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableInstallerDetection": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableInstallerDetection": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278236"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableSecureUIAPaths"
+      },
+      "description": "Windows Server 2025 User Account Control (UAC) must only elevate UIAccess applications that are installed in secure locations.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableSecureUIAPaths": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableSecureUIAPaths": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278237"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableLUA"
+      },
+      "description": "Windows Server 2025 User Account Control (UAC) must run all administrators in Admin Approval Mode, enabling UAC.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableLUA": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableLUA": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278238"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "EnableVirtualization"
+      },
+      "description": "Windows Server 2025 User Account Control (UAC) must virtualize file and registry write failures to per-user locations.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableVirtualization": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableVirtualization": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278239"
+    },
+    {
+      "check": {
+        "path": "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments",
+        "type": "registry",
+        "value_name": "SaveZoneInformation"
+      },
+      "description": "Windows Server 2025 must preserve zone information when saving attachments.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments\\SaveZoneInformation": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments\\SaveZoneInformation": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278240"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "validated_candidates": 99
+}

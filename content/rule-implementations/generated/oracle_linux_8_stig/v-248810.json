@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that Advanced Intrusion Detection Environment (AIDE) is properly configured to use cryptographic mechanisms to protect the integrity of audit tools. \n \nCheck the selection lines to ensure AIDE is configured to add/check with the following command: \n \n     $ sudo grep -E '(\\/usr\\/sbin\\/(audit|au|rsys))' /etc/aide.conf \n \n     /usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512 \n     /usr/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512 \n     /usr/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512 \n     /usr/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512 \n     /usr/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512 \n     /usr/sbin/rsyslogd p+i+n+u+g+s+b+acl+xattrs+sha512 \n     /usr/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512 \n \nIf any of the audit tools listed above do not have an appropriate selection line, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Add or update the following lines to \"/etc/aide.conf\" to protect the integrity of the audit tools. \n \n# Audit Tools \n/usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512 \n/usr/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512 \n/usr/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512 \n/usr/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512 \n/usr/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512 \n/usr/sbin/rsyslogd p+i+n+u+g+s+b+acl+xattrs+sha512 \n/usr/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-248810r991567_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must use cryptographic mechanisms to protect the integrity of audit tools.",
+  "tracking_issue": "TODO-V-248810",
+  "vuln_id": "V-248810"
+}

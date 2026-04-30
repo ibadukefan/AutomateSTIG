@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system does not allow an unattended or automatic logon to the system via a graphical user interface.\n\nNote: This requirement assumes the use of the RHEL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nCheck for the value of the \"AutomaticLoginEnable\" in the \"/etc/gdm/custom.conf\" file with the following command:\n\n$ sudo grep -i automaticloginenable /etc/gdm/custom.conf\n\nAutomaticLoginEnable=false\n\nIf the value of \"AutomaticLoginEnable\" is not set to \"false\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to not allow an unattended or automatic logon to the system via a graphical user interface.\n\nAdd or edit the line for the \"AutomaticLoginEnable\" parameter in the [daemon] section of the \"/etc/gdm/custom.conf\" file to \"false\":\n\n[daemon]\nAutomaticLoginEnable=false",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230329r1017140_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "Unattended or automatic logon via the RHEL 8 graphical user interface must not be allowed.",
+  "tracking_issue": "TODO-V-230329",
+  "vuln_id": "V-230329"
+}

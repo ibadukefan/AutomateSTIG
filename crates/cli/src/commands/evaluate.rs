@@ -80,11 +80,7 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
 
     // Determine asset info.
     let hostname = host
-        .or_else(|| {
-            scan_results
-                .as_ref()
-                .and_then(|s| s.source.target.clone())
-        })
+        .or_else(|| scan_results.as_ref().and_then(|s| s.source.target.clone()))
         .unwrap_or_else(|| "Unknown".to_string());
 
     let asset = Asset::new(&hostname);
@@ -92,12 +88,8 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
 
     // Run evaluation.
     let engine = EvaluationEngine::with_defaults();
-    let mut checklist = engine.evaluate(
-        &benchmark,
-        &asset,
-        scan_results.as_ref(),
-        &answer_files,
-    )?;
+    let mut checklist =
+        engine.evaluate(&benchmark, &asset, scan_results.as_ref(), &answer_files)?;
 
     // Merge with previous if requested.
     if let Some(ref merge_path) = merge {
@@ -122,17 +114,12 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
     );
 
     // Write output.
-    let output_path = output.unwrap_or_else(|| {
-        format!("{}_{}.ckl", hostname.replace(' ', "_"), stig_id)
-    });
+    let output_path =
+        output.unwrap_or_else(|| format!("{}_{}.ckl", hostname.replace(' ', "_"), stig_id));
 
     let out_format = format
         .as_deref()
-        .or_else(|| {
-            Path::new(&output_path)
-                .extension()
-                .and_then(|e| e.to_str())
-        })
+        .or_else(|| Path::new(&output_path).extension().and_then(|e| e.to_str()))
         .unwrap_or("ckl");
 
     match out_format {
@@ -157,7 +144,11 @@ pub fn run(args: EvaluateArgs, cli: &crate::Cli) -> Result<()> {
     // Save to database.
     let db = Database::open(&db_path(cli))?;
     db.save_checklist(&checklist)?;
-    db.log_evaluation(&checklist, "cli-evaluate", Some(&format!("scan={:?}", scan)))?;
+    db.log_evaluation(
+        &checklist,
+        "cli-evaluate",
+        Some(&format!("scan={:?}", scan)),
+    )?;
 
     ui::success("Evaluation complete");
 

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to verify that Router Advertisements are suppressed on all external IPv6-enabled interfaces as shown in the example below.\n\ninterface Ethernet1/1\n  no switchport\n  ipv6 address 2001::1:24:3/64\n  ipv6 nd suppress-ra\n  no shutdown \n\n\nIf the switch is not configured to suppress Router Advertisements on all external IPv6-enabled interfaces, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the switch to suppress Router Advertisements on all external IPv6-enabled interfaces as shown in the example below.\n\nSW1(config)#  interface e1/1\nSW1(config-if-range)#  ipv6 nd suppress-ra\nSW1(config-if-range)#  end",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-237760r999764_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco perimeter switch must be configured to suppress Router Advertisements on all external IPv6-enabled interfaces.",
+  "tracking_issue": "TODO-V-237760",
+  "vuln_id": "V-237760"
+}

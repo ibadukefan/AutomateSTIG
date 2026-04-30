@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that Advanced Intrusion Detection Environment (AIDE) is installed and verifies the correct operation of all security functions.\n\nCheck that the AIDE package is installed with the following command:\n     $ sudo zypper if aide | grep \"Installed\"\n     Installed: Yes\n\nIf AIDE is not installed, ask the System Administrator how file integrity checks are performed on the system. \n\nIf there is no application installed to perform integrity checks, this is a finding.\n\nIf AIDE is installed, check if it has been initialized with the following command:\n     $ sudo aide --check\n\nIf the output is \"Couldn't open file /var/lib/aide/aide.db for reading\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Install AIDE, initialize it, and perform a manual check.\n\nInstall AIDE:\n     $ sudo zipper in aide\n\nInitialize it (this may take a few minutes):\n     $ sudo aide -i\n\nThe new database will need to be renamed to be read by AIDE:\n     $ sudo mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db\n\nPerform a manual check:\n     $ sudo aide --check\n\nExample output:\n     Summary:\n       Total number of files:        140621\n       Added files:                  1\n       Removed files:                1\n       Changed files:                0\n\nDone.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-255922r958794_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must use a file integrity tool to verify correct operation of all security functions.",
+  "tracking_issue": "TODO-V-255922",
+  "vuln_id": "V-255922"
+}

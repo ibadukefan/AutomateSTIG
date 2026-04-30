@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system does not accept IPv4 ICMP redirect messages.\n\nCheck the value of the IPv4 accept_redirects variable with the following command:\n\n> sudo sysctl net.ipv4.conf.all.accept_redirects\nnet.ipv4.conf.all.accept_redirects =0\n\nIf the network parameter \"ipv4.conf.all.accept_redirects\" is not equal to \"0\" or nothing is returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to not accept IPv4 ICMP redirect messages by running the following command as an administrator:\n\n> sudo sysctl -w net.ipv4.conf.all.accept_redirects=0\n\nIf \"0\" is not the system's default value, add or update the following line in \"/etc/sysctl.d/99-stig.conf\":\n\n> sudo sh -c 'echo \"net.ipv4.conf.all.accept_redirects=0\" >> /etc/sysctl.d/99-stig.conf'\n\n> sudo sysctl --system",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-235018r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must prevent Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages from being accepted.",
+  "tracking_issue": "TODO-V-235018",
+  "vuln_id": "V-235018"
+}

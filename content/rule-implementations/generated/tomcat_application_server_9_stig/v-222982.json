@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From the Tomcat server console, run the following command:\n\nsudo grep -i  LockOutRealm $CATALINA_BASE/conf/server.xml.  \n\nIf there are no results or if the LockOutRealm lockOutTime setting is not configured to 600 (10 minutes), this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From the Tomcat server console as a privileged user, edit the $CATALINA_BASE/conf/server.xml file.\n\nsudo nano $CATALINA_BASE/conf/server.xml file\n\nLocate or add the LockOutRealm element. Set lockOutTime=\"600\"\n\nEXAMPLE:\n      <Realm className=\"org.apache.catalina.realm.LockOutRealm\" failureCount=\"5\" lockOutTime=\"600\">\n...\n</Realm>",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222982r961281_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "LockOutRealms lockOutTime attribute must be set to 600 seconds (10 minutes) for admin users.",
+  "tracking_issue": "TODO-V-222982",
+  "vuln_id": "V-222982"
+}

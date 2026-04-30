@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/system-auth",
+      "pattern": "pam_faillock.so",
+      "type": "file_content"
+    },
+    "description": "OL 8 must generate audit records for any attempted modifications to the \"faillock\" log file.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248801"
+  },
+  "check_content_excerpt": "Verify OL 8 generates an audit record for any attempted modifications to the \"faillock\" file.  \n \nDetermine where the faillock tallies are stored with the following commands: \n \nFor OL versions 8.0 and 8.1: \n \n$ sudo grep -i pam_faillock.so /etc/pam.d/system-auth \n \nauth required pam_faillock.so preauth dir=/var/log/faillock silent deny=3 fail_interval=900 even_deny_root \n \nFor OL versions 8.2 and newer: \n \n$ sudo grep dir /etc/security/faillock.conf \n \ndir=/var/log/faillock \n \nUsing the location of the faillock log file, check that the following calls are being audited by running the following command to check the file system rules in \"/etc/audit/audit.rules\": \n \n$ sudo grep -w faillock /etc/audit/audit.rules \n \n-w /var/log/faillock -p wa -k logins \n \nIf the command does not return a line or the line is commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the audit system to generate an audit event for any attempted modifications to the \"faillock\" file by adding or updating the following rules in the \"/etc/audit/rules.d/audit.rules\" file: \n \n-w /var/log/faillock -p wa -k logins \n \nThe audit daemon must be restarted for the changes to take effect. To restart the audit daemon, run the following command: \n \n$ sudo service auditd restart",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-248801r958412_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "OL 8 must generate audit records for any attempted modifications to the \"faillock\" log file.",
+  "tracking_issue": "TODO-V-248801",
+  "vuln_id": "V-248801"
+}

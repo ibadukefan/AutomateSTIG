@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "kernel.kptr_restrict",
+      "type": "sysctl"
+    },
+    "description": "OL 9 must restrict exposed kernel pointer addresses access.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271747"
+  },
+  "check_content_excerpt": "Verify that OL 9 restricts access to exposed kernel pointers with the following command:\n\n$ sysctl kernel.kptr_restrict \nkernel.kptr_restrict = 1",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to prevent the leak of kernel pointers to unprivileged users.\n\nAdd or edit the following line in /etc/sysctl.d/99-sysctl.conf system configuration file:\n\nkernel.kptr_restrict = 1\n\nReload settings from all system configuration files with the following command:\n\n$ sudo sysctl --system",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-271747r1117266_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must restrict exposed kernel pointer addresses access.",
+  "tracking_issue": "TODO-V-271747",
+  "vuln_id": "V-271747"
+}

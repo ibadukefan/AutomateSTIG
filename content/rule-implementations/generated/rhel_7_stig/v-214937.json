@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/dconf/profile/user",
+      "pattern": "system-db",
+      "type": "file_content"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must prevent a user from overriding the screensaver lock-enabled setting for the graphical user interface.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-214937"
+  },
+  "check_content_excerpt": "Verify the operating system prevents a user from overriding the screensaver lock-enabled setting for the graphical user interface. \n\nNote: If the system does not have GNOME installed, this requirement is Not Applicable.\n\nDetermine which profile the system database is using with the following command:\n     # grep system-db /etc/dconf/profile/user\n     system-db:local\n\nCheck for the lock-enabled setting with the following command:\n\nNote: The example below is using the database \"local\" for the system, so the path is \"/etc/dconf/db/local.d\". This path must be modified if a database other than \"local\" is being used.\n\n     # grep -i lock-enabled /etc/dconf/db/local.d/locks/*\n     /org/gnome/desktop/screensaver/lock-enabled\n\nIf the command does not return a result, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to prevent a user from overriding a screensaver lock after a 15-minute period of inactivity for graphical user interfaces.\n\nCreate a database to contain the system-wide screensaver settings (if it does not already exist) with the following command: \n\nNote: The example below is using the database \"local\" for the system, so if the system is using another database in \"/etc/dconf/profile/user\", the file should be created under the appropriate subdirectory.\n\n     # touch /etc/dconf/db/local.d/locks/session\n\nAdd the setting to lock the screensaver lock-enabled setting:\n\n     /org/gnome/desktop/screensaver/lock-enabled",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-214937r958402_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must prevent a user from overriding the screensaver lock-enabled setting for the graphical user interface.",
+  "tracking_issue": "TODO-V-214937",
+  "vuln_id": "V-214937"
+}

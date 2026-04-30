@@ -1,0 +1,206 @@
+{
+  "stig_id": "Splunk_Enterprise_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/splunk.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/splunk.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-271301",
+      "rule_id": "V-271301_automatestig_check",
+      "classification": "automated",
+      "reason": "Splunk must use TLS 1.2 for inter-forwarder communication",
+      "check_pack": "splunk",
+      "check_id": "V-271301",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/splunk.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-271302",
+      "rule_id": "V-271302_automatestig_check",
+      "classification": "automated",
+      "reason": "Splunk must require client certificates for mutual TLS",
+      "check_pack": "splunk",
+      "check_id": "V-271302",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/splunk.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-271303",
+      "rule_id": "V-271303_automatestig_check",
+      "classification": "automated",
+      "reason": "Splunk must have an SSL password configured for certificate encryption",
+      "check_pack": "splunk",
+      "check_id": "V-271303",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/splunk.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-271304",
+      "rule_id": "V-271304_automatestig_check",
+      "classification": "automated",
+      "reason": "Splunk Web must have SSL enabled",
+      "check_pack": "splunk",
+      "check_id": "V-271304",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/splunk.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-271305",
+      "rule_id": "V-271305_automatestig_check",
+      "classification": "automated",
+      "reason": "Splunk Web must use TLS 1.2",
+      "check_pack": "splunk",
+      "check_id": "V-271305",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/splunk.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-271306",
+      "rule_id": "V-271306_automatestig_check",
+      "classification": "automated",
+      "reason": "Splunk Web must configure an approved cipher suite",
+      "check_pack": "splunk",
+      "check_id": "V-271306",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/splunk.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-271307",
+      "rule_id": "V-271307_automatestig_check",
+      "classification": "automated",
+      "reason": "Splunk Web session timeout must be configured",
+      "check_pack": "splunk",
+      "check_id": "V-271307",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/splunk.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-271308",
+      "rule_id": "V-271308_automatestig_check",
+      "classification": "automated",
+      "reason": "Splunk Web session cookies must be HttpOnly",
+      "check_pack": "splunk",
+      "check_id": "V-271308",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/splunk.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-271309",
+      "rule_id": "V-271309_automatestig_check",
+      "classification": "automated",
+      "reason": "Splunk Web session cookies must be marked Secure",
+      "check_pack": "splunk",
+      "check_id": "V-271309",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/splunk.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-271310",
+      "rule_id": "V-271310_automatestig_check",
+      "classification": "automated",
+      "reason": "Splunk must use an external authentication provider (LDAP, SAML, or scripted)",
+      "check_pack": "splunk",
+      "check_id": "V-271310",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/splunk.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-271311",
+      "rule_id": "V-271311_automatestig_check",
+      "classification": "automated",
+      "reason": "Splunk must lock accounts after 5 or fewer failed login attempts",
+      "check_pack": "splunk",
+      "check_id": "V-271311",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/splunk.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-271312",
+      "rule_id": "V-271312_automatestig_check",
+      "classification": "automated",
+      "reason": "Splunk account lockout duration must be configured",
+      "check_pack": "splunk",
+      "check_id": "V-271312",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/splunk.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-271313",
+      "rule_id": "V-271313_automatestig_check",
+      "classification": "automated",
+      "reason": "Splunk configuration change auditing must be enabled",
+      "check_pack": "splunk",
+      "check_id": "V-271313",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/splunk.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-271314",
+      "rule_id": "V-271314_automatestig_check",
+      "classification": "automated",
+      "reason": "Splunk must have a server certificate configured",
+      "check_pack": "splunk",
+      "check_id": "V-271314",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/splunk.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-271315",
+      "rule_id": "V-271315_automatestig_check",
+      "classification": "automated",
+      "reason": "Splunk server.conf must be mode 0600 and owned by splunk user",
+      "check_pack": "splunk",
+      "check_id": "V-271315",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/splunk.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

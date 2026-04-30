@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 GRUB 2 is configured to enable poisoning of SLUB/SLAB objects to mitigate use-after-free vulnerabilities with the following commands:\n\nCheck that the current GRUB 2 configuration has poisoning of SLUB/SLAB objects enabled:\n\n$ sudo grubby --info=ALL | grep args | grep -v 'slub_debug=P' \nIf any output is returned, this is a finding.\n\nCheck that poisoning of SLUB/SLAB objects is enabled by default to persist in kernel updates: \n\n$ sudo grep slub_debug /etc/default/grub\nGRUB_CMDLINE_LINUX=\"slub_debug=P\"\n\nIf \"slub_debug\" is not set to \"P\", is missing or commented out, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to enable poisoning of SLUB/SLAB objects with the following commands:\n\n$ sudo grubby --update-kernel=ALL --args=\"slub_debug=P\"\n\nAdd or modify the following line in \"/etc/default/grub\" to ensure the configuration survives kernel updates:\n\nGRUB_CMDLINE_LINUX=\"slub_debug=P\"",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271734r1091914_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must clear SLUB/SLAB objects to prevent use-after-free attacks.",
+  "tracking_issue": "TODO-V-271734",
+  "vuln_id": "V-271734"
+}

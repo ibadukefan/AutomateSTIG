@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This applies to member servers and stand-alone or nondomain-joined systems. A separate version applies to domain controllers.\n\nVerify the effective setting in Local Group Policy Editor.\n\nRun gpedit.msc.\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.\n\nIf any accounts or groups other than the following are granted the \"Access this computer from the network\" user right, this is a finding:\n- Administrators.\n- Authenticated Users.\n\nFor server core installations, run the following command:\n\nSecedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt\n\nReview the text file.\n\nIf any SIDs other than the following are granted the \"SeNetworkLogonRight\" user right, this is a finding:\n\nS-1-5-32-544 (Administrators)\nS-1-5-11 (Authenticated Users)\n\nIf an application requires this user right, this is not a finding.\n\nVendor documentation must support the requirement for having the user right.\n\nThe requirement must be documented with the information system security officer (ISSO).\n\nThe application account must meet requirements for application account passwords, such as length (WN25-00-000050) and required frequency of changes (WN25-00-000060).",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Access this computer from the network to include only the following accounts or groups:\n- Administrators.\n- Authenticated Users.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278183r1182327_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 \"Access this computer from the network\" user right must only be assigned to the Administrators and Authenticated Users groups on domain-joined member servers and stand-alone or nondomain-joined systems.",
+  "tracking_issue": "TODO-V-278183",
+  "vuln_id": "V-278183"
+}

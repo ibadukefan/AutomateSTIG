@@ -205,8 +205,24 @@ enum Commands {
         title: Option<String>,
     },
 
+    /// Validate rule-by-rule coverage manifests.
+    Coverage {
+        #[command(subcommand)]
+        action: CoverageAction,
+    },
+
     /// Show application version and library status.
     Status,
+}
+
+#[derive(Subcommand)]
+enum CoverageAction {
+    /// Validate a coverage manifest JSON file.
+    Validate {
+        /// Path to coverage manifest JSON.
+        #[arg(short, long)]
+        manifest: String,
+    },
 }
 
 #[derive(Subcommand)]
@@ -299,6 +315,9 @@ fn main() {
             ref output,
             ref title,
         } => commands::report::run(input, output, title.as_deref()),
+        Commands::Coverage { ref action } => match action {
+            CoverageAction::Validate { ref manifest } => commands::coverage::validate(manifest),
+        },
         Commands::Status => commands::status::run(&cli),
     };
 

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the value for \"lcredit\" with the following command:\n\n$ sudo grep -r lcredit /etc/security/pwquality.conf*\n\n/etc/security/pwquality.conf:lcredit = -1\n\nIf the value of \"lcredit\" is a positive number or is commented out, this is a finding.\nIf conflicting results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to enforce password complexity by requiring that at least one lower-case character be used by setting the \"lcredit\" option.\n\nAdd the following line to /etc/security/pwquality.conf (or modify the line to have the required value):\n\nlcredit = -1\n\nRemove any configurations that conflict with the above value.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230358r1017170_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must enforce password complexity by requiring that at least one lower-case character be used.",
+  "tracking_issue": "TODO-V-230358",
+  "vuln_id": "V-230358"
+}

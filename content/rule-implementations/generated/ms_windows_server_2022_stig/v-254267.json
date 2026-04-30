@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review temporary user accounts for expiration dates.\n\nDetermine if temporary user accounts are used and identify any that exist. If none exist, this is NA.\n\nDomain Controllers:\n\nOpen \"PowerShell\".\n\nEnter \"Search-ADAccount -AccountExpiring | FT Name, AccountExpirationDate\".\n\nIf \"AccountExpirationDate\" has not been defined within 72 hours for any temporary user account, this is a finding.\n\nMember servers and standalone or nondomain-joined systems:\n\nOpen \"Command Prompt\".\n\nRun \"Net user [username]\", where [username] is the name of the temporary user account.\n\nIf \"Account expires\" has not been defined within 72 hours for any temporary user account, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure temporary user accounts to automatically expire within 72 hours.\n\nDomain accounts can be configured with an account expiration date, under \"Account\" properties.\n\nLocal accounts can be configured to expire with the command \"Net user [username] /expires:[mm/dd/yyyy]\", where [username] is the name of the temporary user account.\n\nDelete any temporary user accounts that are no longer necessary.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-254267r958364_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2022_stig/u_ms_windows_server_2022_v2r8_stig.json",
+  "source_version": "U_MS_Windows_Server_2022_V2R8_STIG.zip",
+  "stig_id": "MS_Windows_Server_2022_STIG",
+  "title": "Windows Server 2022 must automatically remove or disable temporary user accounts after 72 hours.",
+  "tracking_issue": "TODO-V-254267",
+  "vuln_id": "V-254267"
+}

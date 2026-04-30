@@ -1,0 +1,29 @@
+{
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "xccdf_mil.disa.stig_rule_SV-270695r1066574_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/scap_mil_disa_stig_collection_u_can_ubuntu_24_04_lts_v1r1_stig_scap_1_3_benchmark/u_can_ubuntu_24_04_lts_v1r1_stig_scap_1_3_benchmark.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip",
+  "stig_id": "scap_mil.disa.stig_collection_U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark",
+  "title": "Ubuntu 24.04 LTS Advance Package Tool (APT) must be configured to prevent the installation of patches, service packs, device drivers, or Ubuntu 24.04 LTS components without verification they have been digitally signed using a certificate that is recognized and approved by the organization.",
+  "tracking_issue": "TODO-V-270695",
+  "vuln_id": "V-270695"
+}

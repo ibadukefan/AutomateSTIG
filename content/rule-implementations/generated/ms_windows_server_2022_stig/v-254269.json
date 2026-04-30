@@ -1,0 +1,52 @@
+{
+  "candidate_check": {
+    "check": {
+      "name": "Fax",
+      "should_be_installed": false,
+      "type": "windows_feature"
+    },
+    "description": "Windows Server 2022 must not have the Fax Server role installed.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "windows",
+    "vuln_id": "V-254269"
+  },
+  "check_content_excerpt": "Open \"PowerShell\".\n\nEnter \"Get-WindowsFeature | Where Name -eq Fax\".\n\nIf \"Installed State\" is \"Installed\", this is a finding.\n\nAn Installed State of \"Available\" or \"Removed\" is not a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "is_false"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Uninstall the \"Fax Server\" role.\n\nStart \"Server Manager\".\n\nSelect the server with the role.\n\nScroll down to \"ROLES AND FEATURES\" in the right pane.\n\nSelect \"Remove Roles and Features\" from the drop-down \"TASKS\" list.\n\nSelect the appropriate server on the \"Server Selection\" page and click \"Next\".\n\nDeselect \"Fax Server\" on the \"Roles\" page.\n\nClick \"Next\" and \"Remove\" as prompted.",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/ms_windows_server_2022_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "windows_feature",
+  "remediation": "planned",
+  "rule_id": "SV-254269r958478_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2022_stig/u_ms_windows_server_2022_v2r8_stig.json",
+  "source_version": "U_MS_Windows_Server_2022_V2R8_STIG.zip",
+  "stig_id": "MS_Windows_Server_2022_STIG",
+  "title": "Windows Server 2022 must not have the Fax Server role installed.",
+  "tracking_issue": "",
+  "vuln_id": "V-254269"
+}

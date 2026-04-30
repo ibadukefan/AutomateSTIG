@@ -110,7 +110,8 @@ impl AnswerFile {
 
     /// Save this answer file as YAML.
     pub fn save_yaml(&self, path: &Path) -> Result<()> {
-        let content = serde_yaml::to_string(self).map_err(|e| Error::AnswerFileError(e.to_string()))?;
+        let content =
+            serde_yaml::to_string(self).map_err(|e| Error::AnswerFileError(e.to_string()))?;
         std::fs::write(path, content)?;
         Ok(())
     }
@@ -133,8 +134,7 @@ impl AnswerFile {
 
         // Severity override requires justification.
         for entry in &self.entries {
-            if entry.severity_override.is_some()
-                && entry.severity_override_justification.is_none()
+            if entry.severity_override.is_some() && entry.severity_override_justification.is_none()
             {
                 issues.push(format!(
                     "{}: Severity override without justification",
@@ -159,8 +159,7 @@ pub fn generate_answer_template(
     );
     af.description = Some(format!(
         "Generated from checklist for {} ({})",
-        checklist.asset.hostname,
-        checklist.stig_info.title,
+        checklist.asset.hostname, checklist.stig_info.title,
     ));
 
     for finding in &checklist.findings {

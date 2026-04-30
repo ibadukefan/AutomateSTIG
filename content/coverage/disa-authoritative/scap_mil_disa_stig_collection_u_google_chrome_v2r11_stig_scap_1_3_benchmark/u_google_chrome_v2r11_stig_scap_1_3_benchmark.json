@@ -1,0 +1,583 @@
+{
+  "generated_from": "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip",
+  "rules": [
+    {
+      "check_id": "V-221558",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221558 from source identifier xccdf_mil.disa.stig_group_V-221558.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221558r960804_rule",
+      "severity": "medium",
+      "title": "Firewall traversal from remote host must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221558"
+    },
+    {
+      "check_id": "V-221559",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221559 from source identifier xccdf_mil.disa.stig_group_V-221559.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221559r961083_rule",
+      "severity": "medium",
+      "title": "Site tracking users location must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221559"
+    },
+    {
+      "check_id": "V-221561",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-221561 from source identifier xccdf_mil.disa.stig_group_V-221561.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221561r960963_rule",
+      "severity": "medium",
+      "title": "Sites ability to show pop-ups must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221561"
+    },
+    {
+      "check_id": "V-221562",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221562 from source identifier xccdf_mil.disa.stig_group_V-221562.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221562r960879_rule",
+      "severity": "medium",
+      "title": "Extensions installation must be blocklisted by default.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221562"
+    },
+    {
+      "check_id": "V-221563",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221563 from source identifier xccdf_mil.disa.stig_group_V-221563.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221563r1015468_rule",
+      "severity": "low",
+      "title": "Extensions that are approved for use must be allowlisted.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221563"
+    },
+    {
+      "check_id": "V-221564",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221564 from source identifier xccdf_mil.disa.stig_group_V-221564.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221564r960963_rule",
+      "severity": "medium",
+      "title": "The default search providers name must be set.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221564"
+    },
+    {
+      "check_id": "V-221566",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221566 from source identifier xccdf_mil.disa.stig_group_V-221566.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221566r960963_rule",
+      "severity": "medium",
+      "title": "Default search provider must be enabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221566"
+    },
+    {
+      "check_id": "V-221567",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221567 from source identifier xccdf_mil.disa.stig_group_V-221567.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221567r960963_rule",
+      "severity": "medium",
+      "title": "The Password Manager must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221567"
+    },
+    {
+      "check_id": "V-221570",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221570 from source identifier xccdf_mil.disa.stig_group_V-221570.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221570r960921_rule",
+      "severity": "medium",
+      "title": "Background processing must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221570"
+    },
+    {
+      "check_id": "V-221571",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221571 from source identifier xccdf_mil.disa.stig_group_V-221571.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221571r987620_rule",
+      "severity": "medium",
+      "title": "Google Data Synchronization must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221571"
+    },
+    {
+      "check_id": "V-221572",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221572 from source identifier xccdf_mil.disa.stig_group_V-221572.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221572r960963_rule",
+      "severity": "medium",
+      "title": "The URL protocol schema javascript must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221572"
+    },
+    {
+      "check_id": "V-221573",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221573 from source identifier xccdf_mil.disa.stig_group_V-221573.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221573r987620_rule",
+      "severity": "medium",
+      "title": "Cloud print sharing must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221573"
+    },
+    {
+      "check_id": "V-221574",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221574 from source identifier xccdf_mil.disa.stig_group_V-221574.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221574r961863_rule",
+      "severity": "medium",
+      "title": "Network prediction must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221574"
+    },
+    {
+      "check_id": "V-221575",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221575 from source identifier xccdf_mil.disa.stig_group_V-221575.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221575r960963_rule",
+      "severity": "medium",
+      "title": "Metrics reporting to Google must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221575"
+    },
+    {
+      "check_id": "V-221576",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221576 from source identifier xccdf_mil.disa.stig_group_V-221576.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221576r960963_rule",
+      "severity": "medium",
+      "title": "Search suggestions must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221576"
+    },
+    {
+      "check_id": "V-221577",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221577 from source identifier xccdf_mil.disa.stig_group_V-221577.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221577r960963_rule",
+      "severity": "medium",
+      "title": "Importing of saved passwords must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221577"
+    },
+    {
+      "check_id": "V-221578",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221578 from source identifier xccdf_mil.disa.stig_group_V-221578.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221578r960864_rule",
+      "severity": "medium",
+      "title": "Incognito mode must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221578"
+    },
+    {
+      "check_id": "V-221579",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221579 from source identifier xccdf_mil.disa.stig_group_V-221579.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221579r961893_rule",
+      "severity": "medium",
+      "title": "Online revocation checks must be performed.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221579"
+    },
+    {
+      "check_id": "V-221580",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221580 from source identifier xccdf_mil.disa.stig_group_V-221580.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221580r961083_rule",
+      "severity": "medium",
+      "title": "Safe Browsing must be enabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221580"
+    },
+    {
+      "check_id": "V-221581",
+      "check_pack": "google_chrome",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition. Matched via canonical DISA Vuln ID V-221581 from source identifier xccdf_mil.disa.stig_group_V-221581.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221581r961128_rule",
+      "severity": "medium",
+      "title": "Browser history must be saved.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/google_chrome.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221581"
+    },
+    {
+      "check_id": "V-221586",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-221586 from source identifier xccdf_mil.disa.stig_group_V-221586.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221586r960879_rule",
+      "severity": "medium",
+      "title": "Deletion of browser history must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221586"
+    },
+    {
+      "check_id": "V-221587",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-221587 from source identifier xccdf_mil.disa.stig_group_V-221587.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221587r960879_rule",
+      "severity": "medium",
+      "title": "Prompt for download location must be enabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221587"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221588r1106670_rule",
+      "severity": "medium",
+      "title": "Download restrictions must be configured.",
+      "tracking_issue": "TODO-V-221588",
+      "validated_by": [
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221588"
+    },
+    {
+      "check_id": "V-221590",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-221590 from source identifier xccdf_mil.disa.stig_group_V-221590.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221590r961083_rule",
+      "severity": "medium",
+      "title": "Safe Browsing Extended Reporting must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221590"
+    },
+    {
+      "check_id": "V-221591",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-221591 from source identifier xccdf_mil.disa.stig_group_V-221591.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221591r960963_rule",
+      "severity": "medium",
+      "title": "WebUSB must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221591"
+    },
+    {
+      "check_id": "V-221594",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-221594 from source identifier xccdf_mil.disa.stig_group_V-221594.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221594r960963_rule",
+      "severity": "medium",
+      "title": "Google Cast must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221594"
+    },
+    {
+      "check_id": "V-221595",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-221595 from source identifier xccdf_mil.disa.stig_group_V-221595.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221595r960963_rule",
+      "severity": "medium",
+      "title": "Autoplay must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221595"
+    },
+    {
+      "check_id": "V-221597",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-221597 from source identifier xccdf_mil.disa.stig_group_V-221597.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221597r961083_rule",
+      "severity": "medium",
+      "title": "Anonymized data collection must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221597"
+    },
+    {
+      "check_id": "V-221598",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-221598 from source identifier xccdf_mil.disa.stig_group_V-221598.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221598r961083_rule",
+      "severity": "medium",
+      "title": "Collection of WebRTC event logs must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221598"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-221599r961167_rule",
+      "severity": "low",
+      "title": "Chrome development tools must be disabled.",
+      "tracking_issue": "TODO-V-221599",
+      "validated_by": [
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-221599"
+    },
+    {
+      "check_id": "V-226401",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-226401 from source identifier xccdf_mil.disa.stig_group_V-226401.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-226401r961083_rule",
+      "severity": "medium",
+      "title": "Guest Mode must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-226401"
+    },
+    {
+      "check_id": "V-226402",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-226402 from source identifier xccdf_mil.disa.stig_group_V-226402.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-226402r961083_rule",
+      "severity": "medium",
+      "title": "AutoFill for credit cards must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-226402"
+    },
+    {
+      "check_id": "V-226403",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-226403 from source identifier xccdf_mil.disa.stig_group_V-226403.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-226403r961083_rule",
+      "severity": "medium",
+      "title": "AutoFill for addresses must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-226403"
+    },
+    {
+      "check_id": "V-226404",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-226404 from source identifier xccdf_mil.disa.stig_group_V-226404.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-226404r961083_rule",
+      "severity": "medium",
+      "title": "Import AutoFill form data must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-226404"
+    },
+    {
+      "check_id": "V-245538",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-245538 from source identifier xccdf_mil.disa.stig_group_V-245538.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-245538r961470_rule",
+      "severity": "medium",
+      "title": "Use of the QUIC protocol must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-245538"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "xccdf_mil.disa.stig_rule_SV-245539r960864_rule",
+      "severity": "medium",
+      "title": "Session only based cookies must be enabled.",
+      "tracking_issue": "TODO-V-245539",
+      "validated_by": [
+        "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+      ],
+      "vuln_id": "V-245539"
+    }
+  ],
+  "source": "DISA XCCDF benchmark",
+  "status": "experimental",
+  "stig_id": "scap_mil.disa.stig_collection_U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark",
+  "total_rules": 36,
+  "version": "U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
+}

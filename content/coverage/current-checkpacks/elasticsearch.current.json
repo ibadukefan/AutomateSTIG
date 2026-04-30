@@ -1,0 +1,206 @@
+{
+  "stig_id": "Elasticsearch_STIG",
+  "version": "1.0.0",
+  "source": "AutomateSTIG current check pack: content/check_packs/elasticsearch.json",
+  "status": "experimental",
+  "generated_at": "2026-04-27T16:49:47Z",
+  "generated_from": "content/check_packs/elasticsearch.json",
+  "total_rules": 15,
+  "rules": [
+    {
+      "vuln_id": "V-272101",
+      "rule_id": "V-272101_automatestig_check",
+      "classification": "automated",
+      "reason": "Elasticsearch must have xpack.security.enabled set to true",
+      "check_pack": "elasticsearch",
+      "check_id": "V-272101",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/elasticsearch.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-272102",
+      "rule_id": "V-272102_automatestig_check",
+      "classification": "automated",
+      "reason": "Elasticsearch must enable TLS for transport layer communication",
+      "check_pack": "elasticsearch",
+      "check_id": "V-272102",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/elasticsearch.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-272103",
+      "rule_id": "V-272103_automatestig_check",
+      "classification": "automated",
+      "reason": "Elasticsearch must enable TLS for HTTP layer communication",
+      "check_pack": "elasticsearch",
+      "check_id": "V-272103",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/elasticsearch.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-272104",
+      "rule_id": "V-272104_automatestig_check",
+      "classification": "automated",
+      "reason": "Elasticsearch transport TLS must verify certificates",
+      "check_pack": "elasticsearch",
+      "check_id": "V-272104",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/elasticsearch.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-272105",
+      "rule_id": "V-272105_automatestig_check",
+      "classification": "automated",
+      "reason": "Elasticsearch transport TLS key must be configured",
+      "check_pack": "elasticsearch",
+      "check_id": "V-272105",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/elasticsearch.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-272106",
+      "rule_id": "V-272106_automatestig_check",
+      "classification": "automated",
+      "reason": "Elasticsearch transport TLS certificate must be configured",
+      "check_pack": "elasticsearch",
+      "check_id": "V-272106",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/elasticsearch.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-272107",
+      "rule_id": "V-272107_automatestig_check",
+      "classification": "automated",
+      "reason": "Elasticsearch HTTP TLS key must be configured",
+      "check_pack": "elasticsearch",
+      "check_id": "V-272107",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/elasticsearch.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-272108",
+      "rule_id": "V-272108_automatestig_check",
+      "classification": "automated",
+      "reason": "Elasticsearch HTTP TLS certificate must be configured",
+      "check_pack": "elasticsearch",
+      "check_id": "V-272108",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/elasticsearch.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-272109",
+      "rule_id": "V-272109_automatestig_check",
+      "classification": "automated",
+      "reason": "Elasticsearch must have audit logging enabled",
+      "check_pack": "elasticsearch",
+      "check_id": "V-272109",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/elasticsearch.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-272110",
+      "rule_id": "V-272110_automatestig_check",
+      "classification": "automated",
+      "reason": "Elasticsearch audit output must be configured to index",
+      "check_pack": "elasticsearch",
+      "check_id": "V-272110",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/elasticsearch.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-272111",
+      "rule_id": "V-272111_automatestig_check",
+      "classification": "automated",
+      "reason": "Elasticsearch must bind to a specific network host",
+      "check_pack": "elasticsearch",
+      "check_id": "V-272111",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/elasticsearch.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-272112",
+      "rule_id": "V-272112_automatestig_check",
+      "classification": "automated",
+      "reason": "Elasticsearch HTTP port must be explicitly configured",
+      "check_pack": "elasticsearch",
+      "check_id": "V-272112",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/elasticsearch.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-272113",
+      "rule_id": "V-272113_automatestig_check",
+      "classification": "automated",
+      "reason": "Elasticsearch must configure discovery seed hosts",
+      "check_pack": "elasticsearch",
+      "check_id": "V-272113",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/elasticsearch.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-272114",
+      "rule_id": "V-272114_automatestig_check",
+      "classification": "automated",
+      "reason": "Elasticsearch anonymous access must be restricted to authorized roles only",
+      "check_pack": "elasticsearch",
+      "check_id": "V-272114",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/elasticsearch.json",
+        "cargo test --workspace"
+      ]
+    },
+    {
+      "vuln_id": "V-272115",
+      "rule_id": "V-272115_automatestig_check",
+      "classification": "automated",
+      "reason": "Elasticsearch configuration file must be mode 0600 and owned by elasticsearch user",
+      "check_pack": "elasticsearch",
+      "check_id": "V-272115",
+      "evidence_required": true,
+      "validated_by": [
+        "content/check_packs/elasticsearch.json",
+        "cargo test --workspace"
+      ]
+    }
+  ]
+}

@@ -58,8 +58,7 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
                         in_benchmark = true;
                         for attr in e.attributes().flatten() {
                             if attr.key.as_ref() == b"id" {
-                                benchmark.id =
-                                    String::from_utf8_lossy(&attr.value).to_string();
+                                benchmark.id = String::from_utf8_lossy(&attr.value).to_string();
                                 benchmark.xccdf_id = Some(benchmark.id.clone());
                             }
                         }
@@ -68,8 +67,7 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
                         in_group = true;
                         for attr in e.attributes().flatten() {
                             if attr.key.as_ref() == b"id" {
-                                current_group_id =
-                                    String::from_utf8_lossy(&attr.value).to_string();
+                                current_group_id = String::from_utf8_lossy(&attr.value).to_string();
                             }
                         }
                     }
@@ -85,8 +83,7 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
                                         String::from_utf8_lossy(&attr.value).to_string();
                                 }
                                 b"severity" => {
-                                    let sev_str =
-                                        String::from_utf8_lossy(&attr.value).to_string();
+                                    let sev_str = String::from_utf8_lossy(&attr.value).to_string();
                                     if let Some(sev) = Severity::from_cat_str(&sev_str) {
                                         current_rule.severity = sev;
                                         current_rule.weight = sev.default_weight();
@@ -106,14 +103,11 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
                     "ident" => {
                         in_ident = true;
                     }
-                    "platform" => {
-                        if in_benchmark && !in_group {
-                            for attr in e.attributes().flatten() {
-                                if attr.key.as_ref() == b"idref" {
-                                    let cpe =
-                                        String::from_utf8_lossy(&attr.value).to_string();
-                                    benchmark.platform.cpe.push(cpe);
-                                }
+                    "platform" if in_benchmark && !in_group => {
+                        for attr in e.attributes().flatten() {
+                            if attr.key.as_ref() == b"idref" {
+                                let cpe = String::from_utf8_lossy(&attr.value).to_string();
+                                benchmark.platform.cpe.push(cpe);
                             }
                         }
                     }
@@ -173,15 +167,10 @@ pub fn parse_xccdf_benchmark_str(xml: &str) -> ParseResult<StigBenchmark> {
                         "title" => benchmark.title = text,
                         "description" => benchmark.description = text,
                         "version" => benchmark.version = text,
-                        "release-info" | "plain-text" => {
-                            if text.contains("Release:") {
-                                if let Some(r) = text.split("Release:").nth(1) {
-                                    benchmark.release = r
-                                        .split_whitespace()
-                                        .next()
-                                        .unwrap_or("0")
-                                        .to_string();
-                                }
+                        "release-info" | "plain-text" if text.contains("Release:") => {
+                            if let Some(r) = text.split("Release:").nth(1) {
+                                benchmark.release =
+                                    r.split_whitespace().next().unwrap_or("0").to_string();
                             }
                         }
                         _ => {}
@@ -260,6 +249,7 @@ pub fn parse_xccdf_results_str(xml: &str) -> ParseResult<ScanResultSet> {
     let mut in_test_result = false;
     let mut current_rule_ref = String::new();
     let mut current_result = String::new();
+    let mut current_evidence = Vec::new();
 
     loop {
         match reader.read_event_into(&mut buf) {
@@ -274,8 +264,7 @@ pub fn parse_xccdf_results_str(xml: &str) -> ParseResult<ScanResultSet> {
                         for attr in e.attributes().flatten() {
                             match attr.key.as_ref() {
                                 b"test-system" => {
-                                    let sys =
-                                        String::from_utf8_lossy(&attr.value).to_string();
+                                    let sys = String::from_utf8_lossy(&attr.value).to_string();
                                     if sys.contains("openscap") {
                                         source.scanner = ScannerType::OpenScap;
                                     }
@@ -291,14 +280,24 @@ pub fn parse_xccdf_results_str(xml: &str) -> ParseResult<ScanResultSet> {
                     "rule-result" => {
                         in_rule_result = true;
                         current_result.clear();
+                        current_evidence.clear();
                         for attr in e.attributes().flatten() {
                             if attr.key.as_ref() == b"idref" {
-                                current_rule_ref =
-                                    String::from_utf8_lossy(&attr.value).to_string();
+                                current_rule_ref = String::from_utf8_lossy(&attr.value).to_string();
                             }
                         }
                     }
+                    "check-content-ref" if in_rule_result => {
+                        capture_check_content_ref(e, &mut current_evidence);
+                    }
                     _ => {}
+                }
+            }
+
+            Ok(Event::Empty(ref e)) => {
+                let local_name = String::from_utf8_lossy(e.local_name().as_ref()).to_string();
+                if local_name == "check-content-ref" && in_rule_result {
+                    capture_check_content_ref(e, &mut current_evidence);
                 }
             }
 
@@ -320,7 +319,8 @@ pub fn parse_xccdf_results_str(xml: &str) -> ParseResult<ScanResultSet> {
                             rule_ref: current_rule_ref.clone(),
                             passed,
                             raw_result: current_result.clone(),
-                            evidence: None,
+                            evidence: (!current_evidence.is_empty())
+                                .then(|| current_evidence.join("\n")),
                             benchmark_ref: None,
                         });
                     }
@@ -334,6 +334,16 @@ pub fn parse_xccdf_results_str(xml: &str) -> ParseResult<ScanResultSet> {
 
                 if in_rule_result && current_tag == "result" {
                     current_result = text;
+                } else if in_rule_result
+                    && matches!(
+                        current_tag.as_str(),
+                        "message" | "instance" | "check-content"
+                    )
+                {
+                    let text = text.trim();
+                    if !text.is_empty() {
+                        current_evidence.push(format!("{}: {}", current_tag, text));
+                    }
                 } else if in_test_result && current_tag == "target" {
                     source.target = Some(text);
                 } else if in_test_result && current_tag == "profile" {
@@ -343,7 +353,10 @@ pub fn parse_xccdf_results_str(xml: &str) -> ParseResult<ScanResultSet> {
 
             Ok(Event::Eof) => break,
             Err(e) => {
-                return Err(ParseError::XmlError(format!("XCCDF result parse error: {}", e)));
+                return Err(ParseError::XmlError(format!(
+                    "XCCDF result parse error: {}",
+                    e
+                )));
             }
             _ => {}
         }
@@ -351,6 +364,25 @@ pub fn parse_xccdf_results_str(xml: &str) -> ParseResult<ScanResultSet> {
     }
 
     Ok(ScanResultSet { source, results })
+}
+
+fn capture_check_content_ref(
+    event: &quick_xml::events::BytesStart<'_>,
+    evidence: &mut Vec<String>,
+) {
+    let mut attrs = Vec::new();
+    for attr in event.attributes().flatten() {
+        if matches!(attr.key.as_ref(), b"href" | b"name") {
+            attrs.push(format!(
+                "{}={}",
+                String::from_utf8_lossy(attr.key.as_ref()),
+                String::from_utf8_lossy(&attr.value)
+            ));
+        }
+    }
+    if !attrs.is_empty() {
+        evidence.push(format!("check-content-ref: {}", attrs.join(" ")));
+    }
 }
 
 fn new_empty_rule() -> StigRule {
@@ -421,9 +453,15 @@ mod tests {
     <target>webserver01</target>
     <rule-result idref="SV-254239r958388_rule">
       <result>fail</result>
+      <message severity="info">SCC evaluated registry key HKLM\Software\Example and found it missing.</message>
+      <instance>HKLM\Software\Example</instance>
+      <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+        <check-content-ref href="scc-results.xml" name="oval:example:def:1" />
+      </check>
     </rule-result>
     <rule-result idref="SV-254240r958392_rule">
       <result>pass</result>
+      <message>Policy value matched the expected setting.</message>
     </rule-result>
   </TestResult>
 </Benchmark>"#
@@ -457,8 +495,18 @@ mod tests {
 
         assert_eq!(results.results[0].rule_ref, "SV-254239r958388_rule");
         assert_eq!(results.results[0].passed, Some(false));
+        let evidence = results.results[0].evidence.as_deref().unwrap_or_default();
+        assert!(evidence.contains("SCC evaluated registry key"));
+        assert!(evidence.contains("instance: HKLM\\Software\\Example"));
+        assert!(
+            evidence.contains("check-content-ref: href=scc-results.xml name=oval:example:def:1")
+        );
 
         assert_eq!(results.results[1].rule_ref, "SV-254240r958392_rule");
         assert_eq!(results.results[1].passed, Some(true));
+        assert_eq!(
+            results.results[1].evidence.as_deref(),
+            Some("message: Policy value matched the expected setting.")
+        );
     }
 }

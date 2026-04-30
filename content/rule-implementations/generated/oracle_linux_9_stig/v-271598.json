@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 audit system is configured to take an appropriate action when the internal event queue is full:\n\n$ sudo grep -i overflow_action /etc/audit/auditd.conf \noverflow_action = syslog\n\nIf the value of the \"overflow_action\" option is not set to \"syslog\", \"single\", \"halt\" or the line is commented out, ask the system administrator (SA) to indicate how the audit logs are offloaded to a different system or media.\n\nIf there is no evidence that the transfer of the audit logs being offloaded to another system or media takes appropriate action if the internal event queue becomes full, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to take appropriate action when the internal event queue is full.\n\nEdit the /etc/audit/auditd.conf file and add or update the \"overflow_action\" option:\n\noverflow_action = syslog\n\nThe audit daemon must be restarted for changes to take effect.\n\nRestart auditd:\n$ sudo service auditd restart",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271598r1092588_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must take appropriate action when the internal event queue is full.",
+  "tracking_issue": "TODO-V-271598",
+  "vuln_id": "V-271598"
+}

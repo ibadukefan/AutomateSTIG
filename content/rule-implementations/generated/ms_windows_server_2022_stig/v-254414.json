@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This applies to domain controllers. It is NA for other systems.\n\nReview user account mappings to PKI certificates.\n\nOpen \"Windows PowerShell\".\n\nEnter \"Get-ADUser -Filter * | FT Name, UserPrincipalName, Enabled\".\n\nExclude disabled accounts (e.g., DefaultAccount, Guest) and the krbtgt account.\n\nIf the User Principal Name (UPN) is not in the format of an individual's identifier for the certificate type and for the appropriate domain suffix, this is a finding.\n\nFor standard NIPRNet certificates, the individual's identifier is in the format of an Electronic Data Interchange - Personnel Identifier (EDI-PI).\n\nAlt Tokens and other certificates may use a different UPN format than the EDI-PI which vary by organization. Verified these with the organization.\n\nNIPRNet Example:\n\nName - User Principal Name\nUser1 - 1234567890@mil\n\nSee PKE documentation for other network domain suffixes.\n\nIf the mappings are to certificates issued by a CA authorized by the Component's CIO, this is a CAT II finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Map user accounts to PKI certificates using the appropriate User Principal Name (UPN) for the network. See PKE documentation for details.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-254414r958448_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2022_stig/u_ms_windows_server_2022_v2r8_stig.json",
+  "source_version": "U_MS_Windows_Server_2022_V2R8_STIG.zip",
+  "stig_id": "MS_Windows_Server_2022_STIG",
+  "title": "Windows Server 2022 PKI certificates associated with user accounts must be issued by a DoD PKI or an approved External Certificate Authority (ECA).",
+  "tracking_issue": "TODO-V-254414",
+  "vuln_id": "V-254414"
+}

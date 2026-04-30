@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Change to the /etc/kubernetes/manifests directory on the Kubernetes Master Node. Run the command:\ngrep -i encryption-provider-config *\n\nIf the setting \"encryption-provider-config\" is not configured, this is a finding.\n\nIf the setting is configured, check the contents of the file specified by its argument. \n\nIf the file does not specify the Secret's resource, this is a finding. \n\nIf the identity provider is specified as the first provider for the resource, this is also a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Master Node. \n\nSet the value of \"--encryption-provider-config\" to the path to the encryption config. \n\nThe encryption config must specify the Secret's resource and provider. Below is an example:\n{\n  \"kind\": \"EncryptionConfiguration\",\n  \"apiVersion\": \"apiserver.config.k8s.io/v1\",\n  \"resources\": [\n    {\n      \"resources\": [\n        \"secrets\"\n      ],\n      \"providers\": [\n        {\n          \"aescbc\": {\n            \"keys\": [\n              {\n                \"name\": \"aescbckey\",\n                \"secret\": \"xxxxxxxxxxxxxxxxxxx\"\n              }\n            ]\n          }\n        },\n        {\n          \"identity\": {}\n        }\n      ]\n    }\n  ]\n}",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-274882r1137640_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/kubernetes_stig/u_kubernetes_v2r6_stig.json",
+  "source_version": "U_Kubernetes_V2R6_STIG.zip",
+  "stig_id": "Kubernetes_STIG",
+  "title": "Kubernetes Secrets must be encrypted at rest.",
+  "tracking_issue": "TODO-V-274882",
+  "vuln_id": "V-274882"
+}

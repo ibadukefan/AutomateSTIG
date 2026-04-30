@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": "0000",
+      "owner": null,
+      "path": "/etc/shadow",
+      "type": "file_permission"
+    },
+    "description": "RHEL 9 /etc/shadow file must have mode 0000 to prevent unauthorized access.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257934"
+  },
+  "check_content_excerpt": "Verify that the \"/etc/shadow\" file has mode \"0000\" with the following command:\n\n$ sudo stat -c \"%a %n\" /etc/shadow\n\n0 /etc/shadow\n\nIf a value of \"0\" is not returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "is_true"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Change the mode of the file \"/etc/shadow\" to \"0000\" by running the following command:\n\n$ sudo chmod 0000 /etc/shadow",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_permission",
+  "remediation": "planned",
+  "rule_id": "SV-257934r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 /etc/shadow file must have mode 0000 to prevent unauthorized access.",
+  "tracking_issue": "TODO-V-257934",
+  "vuln_id": "V-257934"
+}

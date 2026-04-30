@@ -26,10 +26,10 @@ impl Default for WinrmConfig {
     fn default() -> Self {
         Self {
             host: String::new(),
-            port: 5985,
+            port: 5986,
             username: String::new(),
             password: String::new(),
-            use_https: false,
+            use_https: true,
             verify_tls: true,
             timeout_secs: 30,
         }
@@ -51,8 +51,28 @@ pub async fn execute_powershell(
     config: &WinrmConfig,
     command: &str,
 ) -> Result<WinrmCommandResult, String> {
-    let scheme = if config.use_https { "https" } else { "http" };
-    let url = format!("{}://{}:{}/wsman", scheme, config.host, config.port);
+    if !config.use_https {
+        let allow_insecure = std::env::var("AUTOMATESTIG_ALLOW_INSECURE_WINRM")
+            .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
+            .unwrap_or(false);
+        if !allow_insecure {
+            return Err(
+                "Refusing plaintext WinRM Basic authentication; use HTTPS or set AUTOMATESTIG_ALLOW_INSECURE_WINRM=1 for an explicit lab-only override".to_string(),
+            );
+        }
+    }
+    if !config.verify_tls {
+        let allow_invalid_certs = std::env::var("AUTOMATESTIG_ALLOW_INVALID_WINRM_CERTS")
+            .map(|v| matches!(v.as_str(), "1" | "true" | "TRUE" | "yes" | "YES"))
+            .unwrap_or(false);
+        if !allow_invalid_certs {
+            return Err(
+                "Refusing WinRM with TLS verification disabled; set AUTOMATESTIG_ALLOW_INVALID_WINRM_CERTS=1 for an explicit lab-only override".to_string(),
+            );
+        }
+    }
+
+    let url = winrm_endpoint(config);
 
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(config.timeout_secs))
@@ -61,7 +81,7 @@ pub async fn execute_powershell(
         .map_err(|e| format!("HTTP client error: {}", e))?;
 
     // WinRM SOAP envelope for command execution.
-    let soap_body = build_winrm_soap_envelope(command, &config.host);
+    let soap_body = build_winrm_soap_envelope(command, &url);
 
     let response = client
         .post(&url)
@@ -75,7 +95,11 @@ pub async fn execute_powershell(
     if !response.status().is_success() {
         let status = response.status();
         let body = response.text().await.unwrap_or_default();
-        return Err(format!("WinRM returned {}: {}", status, &body[..body.len().min(500)]));
+        return Err(format!(
+            "WinRM returned {}: {}",
+            status,
+            &body[..body.len().min(500)]
+        ));
     }
 
     let body = response
@@ -84,10 +108,8 @@ pub async fn execute_powershell(
         .map_err(|e| format!("Failed to read WinRM response: {}", e))?;
 
     // Parse the SOAP response to extract stdout/stderr.
-    let stdout = extract_soap_element(&body, "Stream", "stdout")
-        .unwrap_or_default();
-    let stderr = extract_soap_element(&body, "Stream", "stderr")
-        .unwrap_or_default();
+    let stdout = extract_soap_element(&body, "Stream", "stdout").unwrap_or_default();
+    let stderr = extract_soap_element(&body, "Stream", "stderr").unwrap_or_default();
     let exit_code = extract_soap_element(&body, "ExitCode", "")
         .and_then(|s| s.parse::<i32>().ok())
         .unwrap_or(-1);
@@ -128,9 +150,7 @@ pub async fn execute_commands(
 }
 
 /// Collect Windows system data via WinRM.
-pub async fn collect_windows_data(
-    config: &WinrmConfig,
-) -> Result<HashMap<String, String>, String> {
+pub async fn collect_windows_data(config: &WinrmConfig) -> Result<HashMap<String, String>, String> {
     let commands: Vec<(&str, &str)> = vec![
         ("security_policy_raw", "secedit /export /cfg C:\\Windows\\Temp\\secpol.cfg /quiet; Get-Content C:\\Windows\\Temp\\secpol.cfg"),
         ("audit_policy_raw", "auditpol /get /category:*"),
@@ -147,8 +167,13 @@ pub async fn collect_windows_data(
     execute_commands(config, &commands).await
 }
 
+fn winrm_endpoint(config: &WinrmConfig) -> String {
+    let scheme = if config.use_https { "https" } else { "http" };
+    format!("{}://{}:{}/wsman", scheme, config.host, config.port)
+}
+
 /// Build a WinRM SOAP envelope for PowerShell command execution.
-fn build_winrm_soap_envelope(command: &str, host: &str) -> String {
+fn build_winrm_soap_envelope(command: &str, endpoint: &str) -> String {
     // Encode the PowerShell command as base64 for the -EncodedCommand parameter.
     let utf16_command: Vec<u8> = command
         .encode_utf16()
@@ -163,7 +188,7 @@ fn build_winrm_soap_envelope(command: &str, host: &str) -> String {
             xmlns:wsman="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"
             xmlns:rsp="http://schemas.microsoft.com/wbem/wsman/1/windows/shell">
   <s:Header>
-    <wsa:To>http://{host}:5985/wsman</wsa:To>
+    <wsa:To>{endpoint}</wsa:To>
     <wsman:ResourceURI>http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd</wsman:ResourceURI>
     <wsa:Action>http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Command</wsa:Action>
     <wsman:OperationTimeout>PT60S</wsman:OperationTimeout>
@@ -174,7 +199,7 @@ fn build_winrm_soap_envelope(command: &str, host: &str) -> String {
     </rsp:CommandLine>
   </s:Body>
 </s:Envelope>"#,
-        host = host,
+        endpoint = endpoint,
         encoded = encoded,
     )
 }
@@ -238,17 +263,29 @@ fn base64_decode(input: &str) -> Result<Vec<u8>, String> {
     const DECODE_TABLE: [i8; 128] = {
         let mut table = [-1i8; 128];
         let mut i = 0u8;
-        while i < 26 { table[(b'A' + i) as usize] = i as i8; i += 1; }
+        while i < 26 {
+            table[(b'A' + i) as usize] = i as i8;
+            i += 1;
+        }
         i = 0;
-        while i < 26 { table[(b'a' + i) as usize] = (26 + i) as i8; i += 1; }
+        while i < 26 {
+            table[(b'a' + i) as usize] = (26 + i) as i8;
+            i += 1;
+        }
         i = 0;
-        while i < 10 { table[(b'0' + i) as usize] = (52 + i) as i8; i += 1; }
+        while i < 10 {
+            table[(b'0' + i) as usize] = (52 + i) as i8;
+            i += 1;
+        }
         table[b'+' as usize] = 62;
         table[b'/' as usize] = 63;
         table
     };
 
-    let input: Vec<u8> = input.bytes().filter(|b| *b != b'\n' && *b != b'\r' && *b != b' ').collect();
+    let input: Vec<u8> = input
+        .bytes()
+        .filter(|b| *b != b'\n' && *b != b'\r' && *b != b' ')
+        .collect();
     if input.len() % 4 != 0 {
         return Err("Invalid base64 length".to_string());
     }
@@ -272,8 +309,12 @@ fn base64_decode(input: &str) -> Result<Vec<u8>, String> {
             | ((vals[2] as u32) << 6)
             | (vals[3] as u32);
         output.push((combined >> 16) as u8);
-        if padding < 2 { output.push((combined >> 8) as u8); }
-        if padding < 1 { output.push(combined as u8); }
+        if padding < 2 {
+            output.push((combined >> 8) as u8);
+        }
+        if padding < 1 {
+            output.push(combined as u8);
+        }
     }
 
     Ok(output)
@@ -328,15 +369,32 @@ mod tests {
 
     #[test]
     fn test_soap_envelope_generation() {
-        let soap = build_winrm_soap_envelope("Get-Service", "10.0.1.50");
+        let config = WinrmConfig {
+            host: "10.0.1.50".to_string(),
+            port: 5986,
+            username: "Administrator".to_string(),
+            password: "[REDACTED]".to_string(),
+            use_https: true,
+            verify_tls: true,
+            timeout_secs: 30,
+        };
+        let endpoint = winrm_endpoint(&config);
+        let soap = build_winrm_soap_envelope("Get-Service", &endpoint);
         assert!(soap.contains("EncodedCommand"));
-        assert!(soap.contains("10.0.1.50"));
+        assert!(soap.contains("https://10.0.1.50:5986/wsman"));
+        assert!(!soap.contains("http://10.0.1.50:5985/wsman"));
     }
 
     #[test]
     fn test_extract_soap_element() {
         let xml = r#"<Response><ExitCode>0</ExitCode><Stream>SGVsbG8=</Stream></Response>"#;
-        assert_eq!(extract_soap_element(xml, "ExitCode", ""), Some("0".to_string()));
-        assert_eq!(extract_soap_element(xml, "Stream", ""), Some("SGVsbG8=".to_string()));
+        assert_eq!(
+            extract_soap_element(xml, "ExitCode", ""),
+            Some("0".to_string())
+        );
+        assert_eq!(
+            extract_soap_element(xml, "Stream", ""),
+            Some("SGVsbG8=".to_string())
+        );
     }
 }

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "From the Tomcat server as a privileged user, run the following commands:\n\nsudo grep -i -A8 JNDIRealm $CATALINA_BASE/conf/server.xml\n\nIf the JNDIRealm connectionURL setting is not configured to use LDAPS, if it does not exist, or is commented out, this is a finding.\n\nEXAMPLE:\nThis is an example. Substitute localhost for the LDAP server IP and configure other LDAP-related settings as well.\n\n<Realm   className=\"org.apache.catalina.realm.JNDIRealm\"\nconnectionURL=\"ldaps://localhost:686\"\n...\n/>",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Identify the server IP that is providing LDAP services and configure the Tomcat user roles schema within LDAP. Refer to the manager and host-manager web.xml files for application specific role information that can be used for setting up the roles for those applications. The default location for these files is: $CATALINA_BASE/webapps/<AppName>/WEB-INF/web.xml\n\nFrom the Tomcat server console as a privileged user, edit the $CATALINA_BASE/conf/server.xml file.\n\nLocate the <Realm> element in the server.xml file, add a nested <Realm> element using the JNDIRealm className and configure the associated LDAP settings as per the LDAP server connection requirements.\n\nEXAMPLE:\nThis is for illustration purposes only. The user must modify the LDAP settings on a case by case basis as per your individual LDAP server and schema.\n\n<Realm   className=\"org.apache.catalina.realm.JNDIRealm\"\n     connectionURL=\"ldaps://localhost:686\"\n       userPattern=\"uid={0},ou=people,dc=myunit,dc=mil\"\n          roleBase=\"ou=groups,dc=myunit,dc=mil\"\n          roleName=\"cn\"\n        roleSearch=\"(uniqueMember={0})\"\n/>",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222965r961029_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "LDAP authentication must be secured.",
+  "tracking_issue": "TODO-V-222965",
+  "vuln_id": "V-222965"
+}

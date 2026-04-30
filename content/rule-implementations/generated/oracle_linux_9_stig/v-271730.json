@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 disables storing core dumps for all users by issuing the following command:\n\n$ grep -i storage /etc/systemd/coredump.conf\nStorage=none\n\nIf the \"Storage\" item is missing, commented out, or the value is anything other than \"none\" and the need for core dumps is not documented with the information system security officer (ISSO) as an operational requirement for all domains that have the \"core\" item assigned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable storing core dumps for all users.\n\nAdd or modify the following line in /etc/systemd/coredump.conf:\n\nStorage=none",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271730r1091902_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must disable storing core dumps.",
+  "tracking_issue": "TODO-V-271730",
+  "vuln_id": "V-271730"
+}

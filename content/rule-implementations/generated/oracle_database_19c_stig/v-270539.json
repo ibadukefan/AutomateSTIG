@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "IP address restriction may be defined for the database listener, by use of the Oracle Connection Manager or by an external network device.\n\nIdentify the method used to enforce address restriction (interview database administrator [DBA]) or review system documentation).\n\nIf enforced by the database listener, then review the SQLNET.ORA file located in the ORACLE_HOME/network/admin directory (this assumes that a single sqlnet.ora file, in the default location, is in use; SQLNET.ORA could also be the directory indicated by the TNS_ADMIN environment variable or registry setting).\n\nIf the following entries do not exist, then restriction by IP address is not configured and is a finding.\n\ntcp.validnode_checking=YES\ntcp.invited_nodes=(IP1, IP2, IP3)\n\nIf enforced by an Oracle Connection Manager, then review the CMAN.ORA file for the Connection Manager (located in the TNS_ADMIN or ORACLE_HOME/network/admin directory for the connection manager).\n\nIf a RULE entry allows all addresses (\"/32\") or does not match the address range specified in the system documentation, this is a finding.\n\n(rule=(src=[IP]/27)(dst=[IP])(srv=*)(act=accept))\n\nNote: An IP address with a \"/\" indicates acceptance by subnet mask where the number after the \"/\" is the left most number of bits in the address that must match for the rule to apply.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the database listener to restrict access by IP address or set up an external device to restrict network access to the DBMS.\n\nMore information can be found at https://docs.oracle.com/en/database/oracle/oracle-database/19/netrf/parameters-for-the-sqlnet.ora.html#GUID-5C3AB641-7541-4CE9-BC9E-BA5DD30616A8.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270539r1064895_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Network access to Oracle Database must be restricted to authorized personnel.",
+  "tracking_issue": "TODO-V-270539",
+  "vuln_id": "V-270539"
+}

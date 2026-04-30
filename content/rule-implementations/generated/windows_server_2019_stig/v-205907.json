@@ -1,0 +1,54 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard",
+      "type": "registry",
+      "value_name": "LsaCfgFlags"
+    },
+    "description": "Windows Server 2019 must be running Credential Guard on domain-joined member servers.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-205907"
+  },
+  "check_content_excerpt": "For domain controllers and standalone or nondomain-joined systems, this is NA.\n\nOpen \"PowerShell\" with elevated privileges (run as administrator).\n\nEnter the following:\n\n\"Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\\Microsoft\\Windows\\DeviceGuard\"\n\nIf \"SecurityServicesRunning\" does not include a value of \"1\" (e.g., \"{1, 2}\"), this is a finding.\n\nAlternately:\n\nRun \"System Information\".\n\nUnder \"System Summary\", verify the following:\n\nIf \"Device Guard Security Services Running\" does not list \"Credential Guard\", this is a finding.\n\nThe policy settings referenced in the Fix section will configure the following registry value. However, due to hardware requirements, the registry value alone does not ensure proper function.\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Policies\\Microsoft\\Windows\\DeviceGuard\\\n\nValue Name: LsaCfgFlags\nValue Type: REG_DWORD\nValue: 0x00000001 (1) (Enabled with UEFI lock)\n\nA Microsoft article on Credential Guard system requirement can be found at the following link:\n\nhttps://docs.microsoft.com/en-us/windows/security/identity-protection/credential-guard/credential-guard-requirements",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> System >> Device Guard >> \"Turn On Virtualization Based Security\" to \"Enabled\" with \"Enabled with UEFI lock\" selected for \"Credential Guard Configuration\".\n\nA Microsoft article on Credential Guard system requirement can be found at the following link:\n\nhttps://docs.microsoft.com/en-us/windows/security/identity-protection/credential-guard/credential-guard-requirements\n\nSeverity Override Guidance: The AO can allow the severity override if they have reviewed the overall protection provided to the affected servers that are not capable of complying with the Credential Guard requirement. Items that should be reviewed/considered for compliance or mitigation for non-Credential Guard compliance are:\n\nThe use of Microsoft Local Administrator Password Solution (LAPS) or similar products to control different local administrative passwords for all affected servers. This is to include a strict password change requirement (60 days or less).\n\u2026.\nStrict separation of roles and duties. Server administrator credentials cannot be used on Windows 10 desktop to administer it. Documentation of all exceptions should be supplied.\n\u2026.\nUse of a Privileged Access Workstation (PAW) and adherence to the Clean Source principle for administering affected servers. \n\u2026.\nBoundary Protection that is currently in place to protect from vulnerabilities in the network/servers.\n\u2026.\nWindows Defender rule block credential stealing from LSASS.exe is applied.  This rule can only be applied if Windows Defender is in use.\n\u2026.\nThe overall number of vulnerabilities that are unmitigated on the network/servers.",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/windows_server_2019_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-205907r991589_rule",
+  "severity": "high",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/windows_server_2019_stig/u_ms_windows_server_2019_v3r4_stig.json",
+  "source_version": "U_MS_Windows_Server_2019_V3R4_STIG.zip",
+  "stig_id": "Windows_Server_2019_STIG",
+  "title": "Windows Server 2019 must be running Credential Guard on domain-joined member servers.",
+  "tracking_issue": "TODO-V-205907",
+  "vuln_id": "V-205907"
+}

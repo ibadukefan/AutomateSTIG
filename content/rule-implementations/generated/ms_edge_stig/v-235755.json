@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This requirement for \"Allow specific extensions to be installed\" is not required; this is optional.\n\nThe policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Extensions/Allow specific extensions to be installed\" must be set to \"Enabled\".\n\nUse the Windows Registry Editor to navigate to the following key:\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\n\n\"ExtensionInstallAllowlist\" must be set as follows:\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallAllowlist\\1 = \"extension_id1\"\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallAllowlist\\2 = \"extension_id2\"\n\nIf configured, the list of extensions for which Microsoft Edge allows to be installed may be allowlisted.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Set the policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Extensions/Allow specific extensions to be installed\" to \"Enabled\".  A list of allowlisted extensions may then be specified.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-235755r961479_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_edge_stig/u_ms_edge_v2r5_stig.json",
+  "source_version": "U_MS_Edge_V2R5_STIG.zip",
+  "stig_id": "MS_Edge_STIG",
+  "title": "Extensions that are approved for use must be allowlisted if used.",
+  "tracking_issue": "TODO-V-235755",
+  "vuln_id": "V-235755"
+}

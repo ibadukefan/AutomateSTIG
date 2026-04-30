@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that unattended or automatic logon via ssh is disabled with the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*permituserenvironment'\n\n/etc/ssh/sshd_config:PermitUserEnvironment no\n\nIf \"PermitUserEnvironment\" is set to \"yes\", is missing completely, or is commented out, this is a finding.\n\nIf conflicting results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to allow the SSH daemon to not allow unattended or automatic logon to the system.\n\nAdd or edit the following line in the \"/etc/ssh/sshd_config\" file:\n\nPermitUserEnvironment no\n\nThe SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command:\n\n$ sudo systemctl restart sshd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230330r1069305_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must not allow users to override SSH environment variables.",
+  "tracking_issue": "TODO-V-230330",
+  "vuln_id": "V-230330"
+}

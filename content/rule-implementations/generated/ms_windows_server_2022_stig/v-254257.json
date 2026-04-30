@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the password required status for enabled user accounts.\n\nOpen \"PowerShell\".\n\nDomain Controllers:\n\nEnter \"Get-Aduser -Filter * -Properties Passwordnotrequired |FT Name, Passwordnotrequired, Enabled\".\n\nExclude disabled accounts (e.g., DefaultAccount, Guest) and Trusted Domain Objects (TDOs).\n\nIf \"Passwordnotrequired\" is \"True\" or blank for any enabled user account, this is a finding.\n\nMember servers and standalone or nondomain-joined systems:\n\nEnter 'Get-CimInstance -Class Win32_Useraccount -Filter \"PasswordRequired=False and LocalAccount=True\" | FT Name, PasswordRequired, Disabled, LocalAccount'.\n\nExclude disabled accounts (e.g., DefaultAccount, Guest).\n\nIf any enabled user accounts are returned with a \"PasswordRequired\" status of \"False\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "windows_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure all enabled accounts to require passwords.\n\nThe password required flag can be set by entering the following on a command line: \"Net user [username] /passwordreq:yes\", substituting [username] with the name of the user account.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-254257r958482_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2022_stig/u_ms_windows_server_2022_v2r8_stig.json",
+  "source_version": "U_MS_Windows_Server_2022_V2R8_STIG.zip",
+  "stig_id": "MS_Windows_Server_2022_STIG",
+  "title": "Windows Server 2022 accounts must require passwords.",
+  "tracking_issue": "TODO-V-254257",
+  "vuln_id": "V-254257"
+}

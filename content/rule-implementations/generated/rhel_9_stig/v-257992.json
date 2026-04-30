@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system does not allow a noncertificate trusted host SSH logon to the system with the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*hostbasedauthentication'\n\nHostbasedAuthentication no\n\nIf the \"HostbasedAuthentication\" keyword is not set to \"no\", is missing, or is commented out, this is a finding.\n\nIf the required value is not set, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "To configure RHEL 9 to not allow a noncertificate trusted host SSH logon to the system, add or modify the following line in \"/etc/ssh/sshd_config\" or in a file in \"/etc/ssh/sshd_config.d\".\n\nHostbasedAuthentication no\n\nRestart the SSH daemon for the settings to take effect:\n\n$ sudo systemctl restart sshd.service",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-257992r1045047_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_9_stig/u_rhel_9_v2r4_stig.json",
+  "source_version": "U_RHEL_9_V2R4_STIG.zip",
+  "stig_id": "RHEL_9_STIG",
+  "title": "RHEL 9 must not allow a noncertificate trusted host SSH logon to the system.",
+  "tracking_issue": "TODO-V-257992",
+  "vuln_id": "V-257992"
+}

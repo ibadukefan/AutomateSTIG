@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the SUSE operating system enforces a delay of at least four seconds between logon prompts following a failed logon attempt.\n\n> grep pam_faildelay /etc/pam.d/common-auth\nauth required pam_faildelay.so delay=4000000\n\nIf the value of \"delay\" is not set to \"4000000\", \"delay\" is commented out, \"delay\" is missing, or the \"pam_faildelay\" line is missing completely, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the SUSE operating system to enforce a delay of at least four seconds between logon prompts following a failed logon attempt.\n\nEdit the file \"/etc/pam.d/common-auth\".\n\nAdd a parameter \"pam_faildelay\" and set it to:\n\n> delay is in micro seconds\nauth required pam_faildelay.so delay=4000000",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-234983r991588_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/sles_15_stig/u_sles_15_v2r7_stig.json",
+  "source_version": "U_SLES_15_V2R7_STIG.zip",
+  "stig_id": "SLES_15_STIG",
+  "title": "The SUSE operating system must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.",
+  "tracking_issue": "TODO-V-234983",
+  "vuln_id": "V-234983"
+}

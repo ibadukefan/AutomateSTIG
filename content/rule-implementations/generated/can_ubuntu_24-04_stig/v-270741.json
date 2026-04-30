@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify Ubuntu 24.04 LTS is configured to use strong authenticators in the establishment of nonlocal maintenance and diagnostic maintenance with the following command:\n\n$ sudo grep -r ^UsePAM /etc/ssh/sshd_config*\n/etc/ssh/sshd_config:UsePAM yes\n\nIf \"UsePAM\" is not set to \"yes\", conflicting results are returned, the line is commented out, or is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to use strong authentication when establishing nonlocal maintenance and diagnostic sessions.  \n \nAdd or modify the following line to /etc/ssh/sshd_config: \n \nUsePAM yes",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270741r1066712_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_24_04_stig/u_can_ubuntu_24_04_lts_v1r1_stig.json",
+  "source_version": "U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip",
+  "stig_id": "CAN_Ubuntu_24-04_STIG",
+  "title": "Ubuntu 24.04 LTS must use strong authenticators in establishing nonlocal maintenance and diagnostic sessions.",
+  "tracking_issue": "TODO-V-270741",
+  "vuln_id": "V-270741"
+}

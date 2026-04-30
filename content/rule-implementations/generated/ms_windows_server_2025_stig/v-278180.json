@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This applies to member servers and stand-alone or nondomain-joined systems, it is not applicable for domain controllers.\n\nIf the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry HiveHKEY_LOCAL_MACHINE\nRegistry Path\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc\\\n\nValue NameRestrictRemoteClients\n\nTypeREG_DWORD\nValue0x00000001 (1)",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> System >> Remote Procedure Call >> Restrict Unauthenticated RPC clients to \"Enabled\" with \"Authenticated\" selected.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-278180r1182286_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_windows_server_2025_stig/u_ms_windows_server_2025_v1r1_stig.json",
+  "source_version": "U_MS_Windows_Server_2025_V1R1_STIG.zip",
+  "stig_id": "MS_Windows_Server_2025_STIG",
+  "title": "Windows Server 2025 must restrict unauthenticated Remote Procedure Call (RPC) clients from connecting to the RPC server on domain-joined member servers and stand-alone or nondomain-joined systems.",
+  "tracking_issue": "TODO-V-278180",
+  "vuln_id": "V-278180"
+}

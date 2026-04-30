@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If the manager application has been deleted from the system, this is not a finding. \n\nFrom the Tomcat server as a privileged user, run the following commands:\n\nsudo grep -i session-timeout $CATALINA_BASE/webapps/manager/META-INF/web.xml \n\nsudo grep -i session-timeout \n$CATALINA_BASE/conf/web.xml\n\nIf the session-timeout setting is not configured to be 10 minutes in at least one of these files, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "From the Tomcat server as a privileged user:\n\nTo affect session timeout for all applications including the management application, edit the $CATALINA_BASE/conf/web.xml file.\n\nTo affect session timeout for the management application only, edit the $CATALINA_BASE/webapps/manager/META-INF/web.xml file. \n\nLocate the session-timeout setting located within the session-config element.\n\nModify the session-timeout setting to be 10 minutes.\n\nSave the file.\n\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-222979r1043182_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/tomcat_application_server_9_stig/u_apache_tomcat_application_server_9_v3r4_stig.json",
+  "source_version": "U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "title": "Idle timeout for the management application must be set to 10 minutes.",
+  "tracking_issue": "TODO-V-222979",
+  "vuln_id": "V-222979"
+}

@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the system does not include other operating system installations.\n\nRun \"Advanced System Settings\".\nSelect the \"Advanced\" tab.\nClick the \"Settings\" button in the \"Startup and Recovery\" section.\n\nIf the drop-down list box \"Default operating system:\" shows any operating system other than Windows 11, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Ensure Windows 11 is the only operating system on a device. Remove alternate operating systems.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-253266r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/microsoft_windows_11_stig/u_ms_windows_11_v2r4_stig.json",
+  "source_version": "U_MS_Windows_11_V2R4_STIG.zip",
+  "stig_id": "Microsoft_Windows_11_STIG",
+  "title": "Alternate operating systems must not be permitted on the same system.",
+  "tracking_issue": "TODO-V-253266",
+  "vuln_id": "V-253266"
+}

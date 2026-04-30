@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that OL 9 Linux Audit logging is enabled for the USBGuard daemon with the following command:\n\n$ sudo grep AuditBackend /etc/usbguard/usbguard-daemon.conf \nAuditBackend=LinuxAudit \n\nIf \"AuditBackend\" is not set to \"LinuxAudit\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 USBGuard AuditBackend to use the audit system.\n\nAdd or edit the following line in /etc/usbguard/usbguard-daemon.conf \n\nAuditBackend=LinuxAudit",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271700r1091812_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must enable Linux audit logging for the USBGuard daemon.",
+  "tracking_issue": "TODO-V-271700",
+  "vuln_id": "V-271700"
+}

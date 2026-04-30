@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Note: If kernel dumps are disabled in accordance with RHEL-08-010671, this requirement is not applicable.\n\nVerify RHEL 8 disables core dumps for all users by issuing the following command:\n\n$ grep -r -s core /etc/security/limits.conf /etc/security/limits.d/*.conf\n\n/etc/security/limits.conf:* hard core 0\n\nThis can be set as a global domain (with the * wildcard) but may be set differently for multiple domains.\n\nIf the \"core\" item is missing or commented out, or the value is anything other than \"0\", and the need for core dumps is not documented with the information system security officer (ISSO) as an operational requirement for all domains that have the \"core\" item assigned, this is a finding.\n\nIf entries exist for users or groups with a value set to anything other than \"0\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to disable core dumps for all users.\n\nAdd the following line to the top of the /etc/security/limits.conf or in a single \".conf\" file defined in /etc/security/limits.d/:\n\n* hard core 0\n\nRemove or comment out any entries for users or groups with a value set to anything other than \"0\".",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230313r1155379_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must disable core dumps for all users.",
+  "tracking_issue": "TODO-V-230313",
+  "vuln_id": "V-230313"
+}

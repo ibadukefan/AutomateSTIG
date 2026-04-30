@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system enables a user's session lock until that user re-establishes access using established identification and authentication procedures with the following command:\n\n$ sudo gsettings get org.gnome.desktop.screensaver lock-enabled\n\ntrue\n\nIf the setting is \"false\", this is a finding.\n\nNote: This requirement assumes the use of the RHEL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to enable a user's session lock until that user re-establishes access using established identification and authentication procedures.\n\nCreate a database to contain the system-wide screensaver settings (if it does not already exist) with the following example:\n\n$ sudo vi /etc/dconf/db/local.d/00-screensaver\n\nEdit the \"[org/gnome/desktop/screensaver]\" section of the database file and add or update the following lines:\n\n# Set this to true to lock the screen when the screensaver activates\nlock-enabled=true\n\nUpdate the system databases:\n\n$ sudo dconf update",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-230347r1017160_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must enable a user session lock until that user re-establishes access using established identification and authentication procedures for graphical user sessions.",
+  "tracking_issue": "TODO-V-230347",
+  "vuln_id": "V-230347"
+}

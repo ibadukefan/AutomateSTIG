@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify that the sudoers security policy is configured to use the invoking user's password for privilege escalation.\n\n     $ sudo grep -Eir '(rootpw|targetpw|runaspw)' /etc/sudoers /etc/sudoers.d* | grep -v '#'\n\n     /etc/sudoers:Defaults !targetpw\n     /etc/sudoers:Defaults !rootpw\n     /etc/sudoers:Defaults !runaspw\n\nIf conflicting results are returned, this is a finding.\nIf \"Defaults !targetpw\" is not defined, this is a finding.\nIf \"Defaults !rootpw\" is not defined, this is a finding.\nIf \"Defaults !runaspw\" is not defined, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Define the following in the Defaults section of the /etc/sudoers file or a configuration file in the /etc/sudoers.d/ directory:\n     Defaults !targetpw\n     Defaults !rootpw\n     Defaults !runaspw\n\nRemove any configurations that conflict with the above from the following locations: \n     /etc/sudoers\n     /etc/sudoers.d/",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-237642r991589_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must use the invoking user's password for privilege escalation when using \"sudo\".",
+  "tracking_issue": "TODO-V-237642",
+  "vuln_id": "V-237642"
+}

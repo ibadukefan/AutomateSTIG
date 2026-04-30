@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "kernel.dmesg_restrict",
+      "type": "sysctl"
+    },
+    "description": "Ubuntu 22.04 LTS must restrict access to the kernel message buffer.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260472"
+  },
+  "check_content_excerpt": "Verify Ubuntu 22.04 LTS is configured to restrict access to the kernel message buffer by using the following command: \n \n     $ sysctl kernel.dmesg_restrict \n     kernel.dmesg_restrict = 1 \n \nIf \"kernel.dmesg_restrict\" is not set to \"1\" or is missing, this is a finding. \n \nVerify that there are no configurations that enable the kernel dmesg function: \n \n     $ sudo grep -ir kernel.dmesg_restrict /run/sysctl.d/* /etc/sysctl.d/* /usr/local/lib/sysctl.d/* /usr/lib/sysctl.d/* /lib/sysctl.d/* /etc/sysctl.conf 2> /dev/null \n     /etc/sysctl.d/10-kernel-hardening.conf:kernel.dmesg_restrict = 1 \n \nIf \"kernel.dmesg_restrict\" is not set to \"1\", is commented out, is missing, or conflicting results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to restrict access to the kernel message buffer. \n \nAdd or modify the following line in the \"/etc/sysctl.conf\" file: \n \nkernel.dmesg_restrict = 1 \n \nRemove any configurations that conflict with the above from the following locations:  \n \n/run/sysctl.d/ \n/etc/sysctl.d/ \n/usr/local/lib/sysctl.d/ \n/usr/lib/sysctl.d/ \n/lib/sysctl.d/ \n/etc/sysctl.conf \n \nReload settings from all system configuration files by using the following command: \n \n     $ sudo sysctl --system",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-260472r1117267_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/can_ubuntu_22_04_lts_stig/u_can_ubuntu_22_04_lts_v2r6_stig.json",
+  "source_version": "U_CAN_Ubuntu_22-04_LTS_V2R6_STIG.zip",
+  "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
+  "title": "Ubuntu 22.04 LTS must restrict access to the kernel message buffer.",
+  "tracking_issue": "TODO-V-260472",
+  "vuln_id": "V-260472"
+}

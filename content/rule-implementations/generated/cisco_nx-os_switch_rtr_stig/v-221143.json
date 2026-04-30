@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the switch configuration to determine if received MSDP packets are authenticated.\n\nip msdp peer x.1.28.2 remote-as nn\nip msdp password peer x.1.28.2 xxxxxxxxxxxx\n\nip msdp peer x.1.28.2 connect-source Ethernet2/3 remote-as 8\nip msdp password x.1.28.2 3 3ec66c90c104ad13\n\nIf the switch does not require MSDP authentication, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the switch to authenticate MSDP messages as shown in the following example:\n\nSW1(config)# ip msdp password x.1.28.2 xxxxxxxxxxxx",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-221143r999752_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/cisco_nx_os_switch_rtr_stig/u_cisco_nx_os_switch_y26m04_stig.json",
+  "source_version": "U_Cisco_NX-OS_Switch_Y26M04_STIG.zip",
+  "stig_id": "Cisco_NX-OS_Switch_RTR_STIG",
+  "title": "The Cisco Multicast Source Discovery Protocol (MSDP) switch must be configured to authenticate all received MSDP packets.",
+  "tracking_issue": "TODO-V-221143",
+  "vuln_id": "V-221143"
+}

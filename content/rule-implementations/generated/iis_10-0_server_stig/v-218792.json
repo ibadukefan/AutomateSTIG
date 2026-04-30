@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Interview the System Administrator about the role of the IIS 10.0 web server.\n\nIf the IIS 10.0 web server is hosting an application, have the SA provide supporting documentation on how the application's user management is accomplished outside of the IIS 10.0 web server.\n\nIf the IIS 10.0 web server is not hosting an application, this is Not Applicable.\n\nIf the IIS web server is performing user management for hosted applications, this is a finding.\n\nIf the IIS 10.0 web server is hosting an application and the SA cannot provide supporting documentation on how the application's user management is accomplished outside of the IIS 10.0 web server, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Reconfigure any hosted applications on the IIS 10.0 web server to perform user management outside the IIS 10.0 web server.\n\nDocument how the hosted application user management is accomplished.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-218792r960963_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/iis_10_0_server_stig/u_ms_iis_10_0_y26m04_stig.json",
+  "source_version": "U_MS_IIS_10-0_Y26M04_STIG.zip",
+  "stig_id": "IIS_10-0_Server_STIG",
+  "title": "The IIS 10.0 web server must not perform user management for hosted applications.",
+  "tracking_issue": "TODO-V-218792",
+  "vuln_id": "V-218792"
+}

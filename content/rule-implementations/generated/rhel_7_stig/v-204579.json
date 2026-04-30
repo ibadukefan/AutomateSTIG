@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Verify the operating system terminates all network connections associated with a communications session at the end of the session or based on inactivity.\n\nCheck the value of the system inactivity timeout with the following command:\n\n$ sudo grep -irw tmout /etc/profile /etc/bashrc /etc/profile.d\n\netc/profile.d/tmout.sh:declare -xr TMOUT=900\n\nIf conflicting results are returned, this is a finding.\nIf \"TMOUT\" is not set to \"900\" or less to enforce session termination after inactivity, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure the operating system to terminate all network connections associated with a communications session at the end of the session or after a period of inactivity.\n\nCreate a script to enforce the inactivity timeout (for example /etc/profile.d/tmout.sh) such as:\n\n#!/bin/bash\n\ndeclare -xr TMOUT=900",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-204579r970703_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_7_stig/u_rhel_7_v3r15_stig.json",
+  "source_version": "U_RHEL_7_V3R15_STIG.zip",
+  "stig_id": "RHEL_7_STIG",
+  "title": "The Red Hat Enterprise Linux operating system must be configured so that all network connections associated with a communication session are terminated at the end of the session or after 15 minutes of inactivity from the user at a command prompt, except to fulfill documented and validated mission requirements.",
+  "tracking_issue": "TODO-V-204579",
+  "vuln_id": "V-204579"
+}

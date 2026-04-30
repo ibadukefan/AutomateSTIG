@@ -1,0 +1,53 @@
+{
+  "candidate_check": {
+    "check": {
+      "key": "net.ipv4.icmp_echo_ignore_broadcasts",
+      "type": "sysctl"
+    },
+    "description": "RHEL 8 must not respond to Internet Control Message Protocol (ICMP) echoes sent to a broadcast address.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230537"
+  },
+  "check_content_excerpt": "Verify RHEL 8 does not respond to ICMP echoes sent to a broadcast address.\n\nCheck the value of the \"icmp_echo_ignore_broadcasts\" variable with the following command:\n\n$ sudo sysctl net.ipv4.icmp_echo_ignore_broadcasts\n\nnet.ipv4.icmp_echo_ignore_broadcasts = 1\n\nIf the returned line does not have a value of \"1\", a line is not returned, or the retuned line is commented out, this is a finding.\n\nCheck that the configuration files are present to enable this network parameter.\n\n$ sudo grep -r net.ipv4.icmp_echo_ignore_broadcasts /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf /usr/lib/sysctl.d/*.conf /lib/sysctl.d/*.conf /etc/sysctl.conf /etc/sysctl.d/*.conf\n\n/etc/sysctl.d/99-sysctl.conf: net.ipv4.icmp_echo_ignore_broadcasts = 1\n\nIf \"net.ipv4.icmp_echo_ignore_broadcasts\" is not set to \"1\", is missing or commented out, this is a finding.\n\nIf conflicting results are returned, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "linux_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "candidate_check",
+    "deterministic_fixture_evidence",
+    "evidence",
+    "fail_fixture",
+    "pass_fixture",
+    "rule_id",
+    "source_artifact",
+    "status",
+    "vuln_id"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure RHEL 8 to not respond to IPv4 ICMP echoes sent to a broadcast address.\n\nAdd or edit the following line in a system configuration file, in the \"/etc/sysctl.d/\" directory:\n\nnet.ipv4.icmp_echo_ignore_broadcasts=1\n\nRemove any configurations that conflict with the above from the following locations: \n/run/sysctl.d/*.conf\n/usr/local/lib/sysctl.d/*.conf\n/usr/lib/sysctl.d/*.conf\n/lib/sysctl.d/*.conf\n/etc/sysctl.conf\n/etc/sysctl.d/*.conf\n\nLoad settings from all system configuration files with the following command:\n\n$ sudo sysctl --system",
+  "fixtures": [
+    "fixtures/generated-candidate-evidence/rhel_8_stig.candidates.evidence.json"
+  ],
+  "implementation_status": "implemented",
+  "na_conditions": [],
+  "normalizer": "sysctl",
+  "remediation": "planned",
+  "rule_id": "SV-230537r1017299_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/rhel_8_stig/u_rhel_8_v2r7_stig.json",
+  "source_version": "U_RHEL_8_V2R7_STIG.zip",
+  "stig_id": "RHEL_8_STIG",
+  "title": "RHEL 8 must not respond to Internet Control Message Protocol (ICMP) echoes sent to a broadcast address.",
+  "tracking_issue": "TODO-V-230537",
+  "vuln_id": "V-230537"
+}

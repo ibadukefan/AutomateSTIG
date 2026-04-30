@@ -1,0 +1,48 @@
+{
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+      "type": "registry",
+      "value_name": "EnableMediaRouter"
+    },
+    "description": "Google Cast must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-221594"
+  },
+  "check_content_excerpt": "Universal method: \n 1. In the omnibox (address bar) type chrome://policy\n 2. If \"EnableMediaRouter\" is not displayed under the \"Policy Name\" column or it is not set to \"False\", this is a finding.\nWindows method:\n 1. Start regedit\n 2. Navigate to HKLM\\Software\\Policies\\Google\\Chrome\\\n 3. If the \"EnableMediaRouter\" value name does not exist or its value data is not set to \"0\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Windows group policy:\n1. Open the \u201cgroup policy editor\u201d tool with gpedit.msc\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Google\\Google Chrome\\Google Cast\nPolicy Name: Enable Google Cast\nPolicy State: Disabled\nPolicy Value: N/A",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "registry",
+  "remediation": "planned",
+  "rule_id": "SV-221594r960963_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/google_chrome_current_windows/u_google_chrome_v2r11_stig.json",
+  "source_version": "U_Google_Chrome_V2R11_STIG.zip",
+  "stig_id": "Google_Chrome_Current_Windows",
+  "title": "Google Cast must be disabled.",
+  "tracking_issue": "TODO-V-221594",
+  "vuln_id": "V-221594"
+}

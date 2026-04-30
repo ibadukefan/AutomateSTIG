@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the values for CustomerFeedback and EnableErrorReporting.\n\nOption 1:\nLaunch \"Registry Editor\" \n \nNavigate to:\nHKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SQL Server\\[InstanceId]\\CPE \nReview the following values: CustomerFeedback, EnableErrorReporting \n \nNavigate to HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SQL Server\\160 \nReview the following values: CustomerFeedback, EnableErrorReporting \n \nOption 2:\nRun the PowerShell commands:\n\nGet-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\Microsoft SQL Server\\<SqlInstanceId>\\CPE\"\nGet-ItemProperty -Path \"HKLM:\\ Software\\Microsoft\\Microsoft SQL Server\\160\"\n\nReview the following values: CustomerFeedback, EnableErrorReporting\n\nIf this is a classified system, and any of the above values are not \"0\", this is a finding. \n \nIf this is an unclassified system, review the server documentation to determine whether CEIP participation is authorized. \n \nIf CEIP participation is not authorized, and any of the above values are \"1\", this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "To disable participation in the CEIP program, change the value of the following registry keys to \"0\". \n \nTo enable participation in the CEIP program, change the value of the following registry keys to \"1\". \n \nHKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SQL Server\\[InstanceId]\\CPE\\CustomerFeedback \nHKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SQL Server\\[InstanceId]\\CPE\\EnableErrorReporting \nHKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SQL Server\\160\\CustomerFeedback \nHKEY_LOCAL_MACHINE\\Software\\Microsoft\\Microsoft SQL Server\\160\\EnableErrorReporting\n\nOr in PowerShell, run:\n\nSet-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\Microsoft SQL Server\\[InstanceId]\\CPE\" -Name CustomerFeedback -Value 0\nSet-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\Microsoft SQL Server\\[InstanceId]\\CPE\" -Name EnableErrorReporting -Value 0\nSet-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\Microsoft SQL Server\\160\" -Name CustomerFeedback -Value 0\nSet-ItemProperty -Path \"HKLM:\\Software\\Microsoft\\Microsoft SQL Server\\160\" -Name EnableErrorReporting -Value 0",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271389r1109133_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_sql_server_2022_instance_stig/u_ms_sql_server_2022_y26m04_stig.json",
+  "source_version": "U_MS_SQL_Server_2022_Y26M04_STIG.zip",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "title": "SQL Server must configure Customer Feedback and Error Reporting.",
+  "tracking_issue": "TODO-V-271389",
+  "vuln_id": "V-271389"
+}

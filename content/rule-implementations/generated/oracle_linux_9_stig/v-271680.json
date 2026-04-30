@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "This requirement assumes the use of the OL 9 default graphical user interface\u2014the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nVerify that OL 9 prevents a user from overriding settings for graphical user interfaces. \n\nDetermine which profile the system database is using with the following command:\n\n$ grep system-db /etc/dconf/profile/user\nsystem-db:local\n\nCheck that graphical settings are locked from nonprivileged user modification with the following command:\n\nNote: The example below is using the database \"local\" for the system, so the path is \"/etc/dconf/db/local.d\". This path must be modified if a database other than \"local\" is being used.\n\n$ grep banner-message-enable /etc/dconf/db/local.d/locks/* \n/org/gnome/login-screen/banner-message-enable\n\nIf the output is not \"/org/gnome/login-screen/banner-message-enable\", the line is commented out, or the line is missing, this is a finding.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "network_config_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 9 to prevent a user from overriding the banner setting for graphical user interfaces. \n\nCreate a database to contain the system-wide graphical user logon settings (if it does not already exist) with the following command:\n\n$ sudo touch /etc/dconf/db/local.d/locks/session\n\nAdd the following setting to prevent nonprivileged users from modifying it:\n\n/org/gnome/login-screen/banner-message-enable\n\nRun the following command to update the database:\n\n$ sudo dconf update",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-271680r1091752_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_9_stig/u_oracle_linux_9_v1r3_stig.json",
+  "source_version": "U_Oracle_Linux_9_V1R3_STIG.zip",
+  "stig_id": "Oracle_Linux_9_STIG",
+  "title": "OL 9 must prevent a user from overriding the banner-message-enable setting for the graphical user interface.",
+  "tracking_issue": "TODO-V-271680",
+  "vuln_id": "V-271680"
+}

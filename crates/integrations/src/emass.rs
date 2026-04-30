@@ -68,9 +68,7 @@ pub fn export_to_emass(checklist: &Checklist) -> Vec<EmassTestResult> {
                 result_comment: finding.finding_details.clone(),
                 stig_reference: format!(
                     "{} {} {}",
-                    checklist.stig_info.title,
-                    finding.vuln_id,
-                    finding.rule_id,
+                    checklist.stig_info.title, finding.vuln_id, finding.rule_id,
                 ),
                 severity: severity.to_string(),
                 system_name: checklist.asset.hostname.clone(),
@@ -114,6 +112,30 @@ mod tests {
     use automatestig_core::models::checklist::{Checklist, ChecklistStigInfo};
     use automatestig_core::models::finding::{Finding, FindingStatus};
     use automatestig_core::models::stig::Severity;
+    use chrono::TimeZone;
+
+    fn golden_checklist() -> Checklist {
+        let stig_info = ChecklistStigInfo {
+            stig_id: "Golden_STIG".to_string(),
+            title: "Golden STIG".to_string(),
+            version: "1".to_string(),
+            release: "1".to_string(),
+            release_date: None,
+            uuid: None,
+            description: None,
+            filename: None,
+        };
+
+        let mut cl = Checklist::new(Asset::new("golden-host"), stig_info);
+        let mut f =
+            Finding::new_not_reviewed("V-1", "SV-1r1_rule", "V-1", "Golden Rule", Severity::High);
+        f.status = FindingStatus::Open;
+        f.cci_refs = vec!["CCI-000068".to_string()];
+        f.finding_details = "Scanner evidence: registry value missing".to_string();
+        f.evaluated_at = chrono::Utc.with_ymd_and_hms(2026, 4, 27, 0, 0, 0).unwrap();
+        cl.findings.push(f);
+        cl
+    }
 
     #[test]
     fn test_emass_export() {
@@ -145,5 +167,15 @@ mod tests {
         let csv = export_emass_csv(&results);
         assert!(csv.contains("CCI-000068"));
         assert!(csv.contains("Fail"));
+    }
+
+    #[test]
+    fn test_emass_golden_payload() {
+        let results = export_to_emass(&golden_checklist());
+        let csv = export_emass_csv(&results);
+
+        let expected =
+            include_str!("../../../fixtures/exports/emass_golden.csv").replace("\r\n", "\n");
+        assert_eq!(csv, expected);
     }
 }

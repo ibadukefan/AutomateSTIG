@@ -1,0 +1,47 @@
+{
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/aliases",
+      "pattern": "postmaster:\\s*root$",
+      "type": "file_content"
+    },
+    "description": "The OL 8 Information System Security Officer (ISSO) and System Administrator (SA) (at a minimum) must have mail aliases to be notified of an audit processing failure.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248725"
+  },
+  "check_content_excerpt": "Verify the administrators are notified in the event of an audit processing failure. \n \nCheck that the \"/etc/aliases\" file has a defined value for \"root\". \n \n$ sudo grep \"postmaster:\\s*root$\" /etc/aliases \n\npostmaster:  root\n\nIf the command does not return a line or the line is commented out, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "candidate_template",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {
+    "type": "contains"
+  },
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Configure OL 8 to notify administrators in the event of an audit processing failure. \n \nAdd/update the following line in \"/etc/aliases\": \n \npostmaster: root",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "file_content",
+  "remediation": "planned",
+  "rule_id": "SV-248725r958424_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_linux_8_stig/u_oracle_linux_8_v2r5_stig.json",
+  "source_version": "U_Oracle_Linux_8_V2R5_STIG.zip",
+  "stig_id": "Oracle_Linux_8_STIG",
+  "title": "The OL 8 Information System Security Officer (ISSO) and System Administrator (SA) (at a minimum) must have mail aliases to be notified of an audit processing failure.",
+  "tracking_issue": "TODO-V-248725",
+  "vuln_id": "V-248725"
+}

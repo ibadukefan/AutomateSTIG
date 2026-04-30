@@ -1,0 +1,1705 @@
+{
+  "generated_from": "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip",
+  "rules": [
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233511r960966_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must be configured to prohibit or restrict the use of organization-defined functions, ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability assessments.",
+      "tracking_issue": "TODO-V-233511",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233511"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233512r960903_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must produce audit records containing sufficient information to establish the outcome (success or failure) of the events.",
+      "tracking_issue": "TODO-V-233512",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233512"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233513r961683_rule",
+      "severity": "medium",
+      "title": "Security-relevant software updates to PostgreSQL must be installed within the time period directed by an authoritative source (e.g., IAVM, CTOs, DTMs, and STIGs).",
+      "tracking_issue": "TODO-V-233513",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233513"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233514r960933_rule",
+      "severity": "medium",
+      "title": "The audit information produced by PostgreSQL must be protected from unauthorized modification.",
+      "tracking_issue": "TODO-V-233514",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233514"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233515r960768_rule",
+      "severity": "high",
+      "title": "PostgreSQL must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals.",
+      "tracking_issue": "TODO-V-233515",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233515"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233516r961167_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must provide non-privileged users with error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries.",
+      "tracking_issue": "TODO-V-233516",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233516"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233517r960960_rule",
+      "severity": "medium",
+      "title": "Privileges to change PostgreSQL software modules must be limited.",
+      "tracking_issue": "TODO-V-233517",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233517"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233518r960960_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must limit privileges to change functions and triggers, and links to software external to PostgreSQL.",
+      "tracking_issue": "TODO-V-233518",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233518"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233519r961029_rule",
+      "severity": "high",
+      "title": "If passwords are used for authentication, PostgreSQL must transmit only encrypted representations of passwords.",
+      "tracking_issue": "TODO-V-233519",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233519"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233520r960792_rule",
+      "severity": "high",
+      "title": "PostgreSQL must enforce approved authorizations for logical access to information and system resources in accordance with applicable access control policies.",
+      "tracking_issue": "TODO-V-233520",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233520"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233521r961275_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must associate organization-defined types of security labels having organization-defined security label values with information in transmission.",
+      "tracking_issue": "TODO-V-233521",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233521"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233522r960735_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must limit the number of concurrent sessions to an organization-defined number per user for all accounts and/or account types.",
+      "tracking_issue": "TODO-V-233522",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233522"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233523r960960_rule",
+      "severity": "medium",
+      "title": "The role(s)/group(s) used to modify database structure (including but not necessarily limited to tables, indexes, storage, etc.) and logic modules (functions, trigger procedures, links to software external to PostgreSQL, etc.) must be restricted to authorized users.",
+      "tracking_issue": "TODO-V-233523",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233523"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233524r961053_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must uniquely identify and authenticate non-organizational users (or processes acting on behalf of non-organizational users).",
+      "tracking_issue": "TODO-V-233524",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233524"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233525r961269_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must associate organization-defined types of security labels having organization-defined security label values with information in storage.",
+      "tracking_issue": "TODO-V-233525",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233525"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233526r961158_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must check the validity of all data inputs except those specifically identified by the organization.",
+      "tracking_issue": "TODO-V-233526",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233526"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233527r961158_rule",
+      "severity": "medium",
+      "title": "PostgreSQL and associated applications must reserve the use of dynamic code execution for situations that require it.",
+      "tracking_issue": "TODO-V-233527",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233527"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233528r961158_rule",
+      "severity": "medium",
+      "title": "PostgreSQL and associated applications, when making use of dynamic code execution, must scan input data for invalid values that may indicate a code injection attack.",
+      "tracking_issue": "TODO-V-233528",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233528"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233529r961392_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must allocate audit record storage capacity in accordance with organization-defined audit record storage requirements.",
+      "tracking_issue": "TODO-V-233529",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233529"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233530r961317_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must enforce discretionary access control policies, as defined by the data owner, over defined subjects and objects.",
+      "tracking_issue": "TODO-V-233530",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233530"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233531r960936_rule",
+      "severity": "medium",
+      "title": "The audit information produced by PostgreSQL must be protected from unauthorized deletion.",
+      "tracking_issue": "TODO-V-233531",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233531"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233532r961443_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must record time stamps, in audit records and application data that can be mapped to Coordinated Universal Time (UTC, formerly GMT).",
+      "tracking_issue": "TODO-V-233532",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233532"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233533r961170_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must reveal detailed error messages only to the ISSO, ISSM, SA, and DBA.",
+      "tracking_issue": "TODO-V-233533",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233533"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233534r960882_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must allow only the Information System Security Manager (ISSM), or individuals or roles appointed by the ISSM, to select which auditable events are to be audited.",
+      "tracking_issue": "TODO-V-233534",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233534"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233535r961401_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must provide an immediate alert to appropriate support staff of all audit log failures.",
+      "tracking_issue": "TODO-V-233535",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233535"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233536r960915_rule",
+      "severity": "low",
+      "title": "PostgreSQL must be configurable to overwrite audit log records, oldest first (First-In-First-Out [FIFO]), in the event of unavailability of space for more audit log records.",
+      "tracking_issue": "TODO-V-233536",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233536"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233537r960915_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must by default shut down upon audit failure, to include the unavailability of space for more audit log records; or must be configurable to shut down upon audit failure.",
+      "tracking_issue": "TODO-V-233537",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233537"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233538r961641_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must maintain the confidentiality and integrity of information during reception.",
+      "tracking_issue": "TODO-V-233538",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233538"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233539r960960_rule",
+      "severity": "medium",
+      "title": "Database objects (including but not limited to tables, indexes, storage, trigger procedures, functions, links to software external to PostgreSQL, etc.) must be owned by database/DBMS principals authorized for ownership.",
+      "tracking_issue": "TODO-V-233539",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233539"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233540r960960_rule",
+      "severity": "high",
+      "title": "The PostgreSQL software installation account must be restricted to authorized users.",
+      "tracking_issue": "TODO-V-233540",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233540"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233541r960960_rule",
+      "severity": "medium",
+      "title": "Database software, including PostgreSQL configuration files, must be stored in dedicated directories separate from the host OS and other applications.",
+      "tracking_issue": "TODO-V-233541",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233541"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233542r960909_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must include additional, more detailed, organization-defined information in the audit records for audit events identified by type, location, or subject.",
+      "tracking_issue": "TODO-V-233542",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233542"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233543r961359_rule",
+      "severity": "medium",
+      "title": "Execution of software modules (to include functions and trigger procedures) with elevated privileges must be restricted to necessary cases only.",
+      "tracking_issue": "TODO-V-233543",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233543"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233544r961656_rule",
+      "severity": "medium",
+      "title": "When invalid inputs are received, PostgreSQL must behave in a predictable and documented manner that reflects organizational and system objectives.",
+      "tracking_issue": "TODO-V-233544",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233544"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233546r961131_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must isolate security functions from non-security functions.",
+      "tracking_issue": "TODO-V-233546",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233546"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233547r998196_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must produce audit records of its enforcement of access restrictions associated with changes to the configuration of PostgreSQL or database(s).",
+      "tracking_issue": "TODO-V-233547",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233547"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233548r961470_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must disable network functions, ports, protocols, and services deemed by the organization to be nonsecure, in accord with the Ports, Protocols, and Services Management (PPSM) guidance.",
+      "tracking_issue": "TODO-V-233548",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233548"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233549r960930_rule",
+      "severity": "medium",
+      "title": "The audit information produced by PostgreSQL must be protected from unauthorized read access.",
+      "tracking_issue": "TODO-V-233549",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233549"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233550r961677_rule",
+      "severity": "medium",
+      "title": "When updates are applied to PostgreSQL software, any software components that have been replaced or made unnecessary must be removed.",
+      "tracking_issue": "TODO-V-233550",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233550"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233551r961797_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when categorized information (e.g., classification levels/security levels) is accessed.",
+      "tracking_issue": "TODO-V-233551",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233551"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233552r961791_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when unsuccessful attempts to access security objects occur.",
+      "tracking_issue": "TODO-V-233552",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233552"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233553r961824_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when unsuccessful logons or connection attempts occur.",
+      "tracking_issue": "TODO-V-233553",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233553"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233554r961830_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records showing starting and ending time for user access to the database(s).",
+      "tracking_issue": "TODO-V-233554",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233554"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233555r961803_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when unsuccessful attempts to modify security objects occur.",
+      "tracking_issue": "TODO-V-233555",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233555"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233556r961800_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when privileges/permissions are added.",
+      "tracking_issue": "TODO-V-233556",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233556"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233557r961821_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when unsuccessful attempts to delete categorized information (e.g., classification levels/security levels) occur.",
+      "tracking_issue": "TODO-V-233557",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233557"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233558r961824_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when successful logons or connections occur.",
+      "tracking_issue": "TODO-V-233558",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233558"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233559r961818_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when security objects are deleted.",
+      "tracking_issue": "TODO-V-233559",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233559"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233560r960885_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when unsuccessful attempts to retrieve privileges/permissions occur.",
+      "tracking_issue": "TODO-V-233560",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233560"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233561r961812_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when unsuccessful attempts to delete privileges/permissions occur.",
+      "tracking_issue": "TODO-V-233561",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233561"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233562r960885_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must be able to generate audit records when privileges/permissions are retrieved.",
+      "tracking_issue": "TODO-V-233562",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233562"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233563r961809_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when unsuccessful attempts to modify categorized information (e.g., classification levels/security levels) occur.",
+      "tracking_issue": "TODO-V-233563",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233563"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233564r961836_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when unsuccessful accesses to objects occur.",
+      "tracking_issue": "TODO-V-233564",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233564"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233565r961827_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records for all privileged activities or other system-level access.",
+      "tracking_issue": "TODO-V-233565",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233565"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233566r961797_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when unsuccessful attempts to access categorized information (e.g., classification levels/security levels) occur.",
+      "tracking_issue": "TODO-V-233566",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233566"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233567r961791_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must be able to generate audit records when security objects are accessed.",
+      "tracking_issue": "TODO-V-233567",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233567"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233568r961812_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when privileges/permissions are deleted.",
+      "tracking_issue": "TODO-V-233568",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233568"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233569r961833_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when concurrent logons/connections by the same user from different workstations occur.",
+      "tracking_issue": "TODO-V-233569",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233569"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233570r961818_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when unsuccessful attempts to delete security objects occur.",
+      "tracking_issue": "TODO-V-233570",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233570"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233571r961800_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when privileges/permissions are modified.",
+      "tracking_issue": "TODO-V-233571",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233571"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233572r961827_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when unsuccessful attempts to execute privileged activities or other system-level access occur.",
+      "tracking_issue": "TODO-V-233572",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233572"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233573r961803_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when security objects are modified.",
+      "tracking_issue": "TODO-V-233573",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233573"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233574r961809_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when categories of information (e.g., classification levels/security levels) is modified.",
+      "tracking_issue": "TODO-V-233574",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233574"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233575r961800_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when unsuccessful attempts to modify privileges/permissions occur.",
+      "tracking_issue": "TODO-V-233575",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233575"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233576r961800_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when unsuccessful attempts to add privileges/permissions occur.",
+      "tracking_issue": "TODO-V-233576",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233576"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233577r961038_rule",
+      "severity": "medium",
+      "title": "PostgreSQL, when utilizing PKI-based authentication, must validate certificates by performing RFC 5280-compliant certification path validation.",
+      "tracking_issue": "TODO-V-233577",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233577"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233578r960897_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must produce audit records containing sufficient information to establish where the events occurred.",
+      "tracking_issue": "TODO-V-233578",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233578"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233579r961638_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must maintain the confidentiality and integrity of information during preparation for transmission.",
+      "tracking_issue": "TODO-V-233579",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233579"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233580r960879_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must be configured to provide audit record generation for DoD-defined auditable events within all DBMS/database components.",
+      "tracking_issue": "TODO-V-233580",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233580"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233581r961446_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate time stamps, for audit records and application data, with a minimum granularity of one second.",
+      "tracking_issue": "TODO-V-233581",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233581"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233582r960906_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must produce audit records containing sufficient information to establish the identity of any user/subject or process associated with the event.",
+      "tracking_issue": "TODO-V-233582",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233582"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233583r961857_rule",
+      "severity": "high",
+      "title": "PostgreSQL must implement NIST FIPS 140-2 or 140-3 validated cryptographic modules to generate and validate cryptographic hashes.",
+      "tracking_issue": "TODO-V-233583",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233583"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233584r962034_rule",
+      "severity": "high",
+      "title": "PostgreSQL must use NSA-approved cryptography to protect classified information in accordance with the data owner\u2019s requirements.",
+      "tracking_issue": "TODO-V-233584",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233584"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233585r961857_rule",
+      "severity": "high",
+      "title": "PostgreSQL must implement NIST FIPS 140-2 or 140-3 validated cryptographic modules to protect unclassified information requiring confidentiality and cryptographic protection, in accordance with the data owner\u2019s requirements.",
+      "tracking_issue": "TODO-V-233585",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233585"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233586r961128_rule",
+      "severity": "high",
+      "title": "PostgreSQL must protect the confidentiality and integrity of all information at rest.",
+      "tracking_issue": "TODO-V-233586",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233586"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233587r998199_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must prohibit user installation of logic modules (functions, trigger procedures, views, etc.) without explicit privileged status.",
+      "tracking_issue": "TODO-V-233587",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233587"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233588r961095_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must separate user functionality (including user interface services) from database management functionality.",
+      "tracking_issue": "TODO-V-233588",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233588"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233589r960888_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must initiate session auditing upon startup.",
+      "tracking_issue": "TODO-V-233589",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233589"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233590r961599_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must implement cryptographic mechanisms to prevent unauthorized modification of organization-defined information at rest (to include, at a minimum, PII and classified information) on organization-defined information system components.",
+      "tracking_issue": "TODO-V-233590",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233590"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233591r960900_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must produce audit records containing sufficient information to establish the sources (origins) of the events.",
+      "tracking_issue": "TODO-V-233591",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233591"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233592r960963_rule",
+      "severity": "medium",
+      "title": "Unused database components, PostgreSQL software, and database objects must be removed.",
+      "tracking_issue": "TODO-V-233592",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233592"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233593r960963_rule",
+      "severity": "medium",
+      "title": "Access to external executables must be disabled or restricted.",
+      "tracking_issue": "TODO-V-233593",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233593"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233594r960963_rule",
+      "severity": "medium",
+      "title": "Unused database components that are integrated in PostgreSQL and cannot be uninstalled must be disabled.",
+      "tracking_issue": "TODO-V-233594",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233594"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233595r961272_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must associate organization-defined types of security labels having organization-defined security label values with information in process.",
+      "tracking_issue": "TODO-V-233595",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233595"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233596r998202_rule",
+      "severity": "high",
+      "title": "If passwords are used for authentication, PostgreSQL must store only hashed, salted representations of passwords.",
+      "tracking_issue": "TODO-V-233596",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233596"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233597r961461_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must enforce access restrictions associated with changes to the configuration of PostgreSQL or database(s).",
+      "tracking_issue": "TODO-V-233597",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233597"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233598r960864_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must protect against a user falsely repudiating having performed organization-defined actions.",
+      "tracking_issue": "TODO-V-233598",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233598"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233599r961398_rule",
+      "severity": "medium",
+      "title": "The system must provide a warning to appropriate support staff when allocated audit record storage volume reaches 75 percent of maximum audit record storage capacity.",
+      "tracking_issue": "TODO-V-233599",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233599"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233600r961863_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must provide the means for individuals in authorized roles to change the auditing to be performed on all application components, based on all selectable event criteria within organization-defined time thresholds.",
+      "tracking_issue": "TODO-V-233600",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233600"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233601r998206_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must require users to reauthenticate when organization-defined circumstances or situations require reauthentication.",
+      "tracking_issue": "TODO-V-233601",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233601"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233602r961041_rule",
+      "severity": "high",
+      "title": "PostgreSQL must enforce authorized access to all PKI private keys stored/utilized by PostgreSQL.",
+      "tracking_issue": "TODO-V-233602",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233602"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233603r961596_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must only accept end entity certificates issued by DoD PKI or DoD-approved PKI Certification Authorities (CAs) for the establishment of all encrypted sessions.",
+      "tracking_issue": "TODO-V-233603",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233603"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233604r960891_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must produce audit records containing sufficient information to establish what type of events occurred.",
+      "tracking_issue": "TODO-V-233604",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233604"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233605r961602_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must implement cryptographic mechanisms preventing the unauthorized disclosure of organization-defined information at rest on organization-defined information system components.",
+      "tracking_issue": "TODO-V-233605",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233605"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233606r961113_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must invalidate session identifiers upon user logout or other session termination.",
+      "tracking_issue": "TODO-V-233606",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233606"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233607r960939_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must protect its audit features from unauthorized access.",
+      "tracking_issue": "TODO-V-233607",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233607"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233608r960894_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must produce audit records containing time stamps to establish when the events occurred.",
+      "tracking_issue": "TODO-V-233608",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233608"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233609r960945_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must protect its audit features from unauthorized removal.",
+      "tracking_issue": "TODO-V-233609",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233609"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233610r961860_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must off-load audit data to a separate log management facility; this must be continuous and in near real time for systems with a network connection to the storage facility and weekly or more often for stand-alone systems.",
+      "tracking_issue": "TODO-V-233610",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233610"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233611r961119_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must maintain the authenticity of communications sessions by guarding against man-in-the-middle attacks that guess at Session ID values.",
+      "tracking_issue": "TODO-V-233611",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233611"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233612r960969_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must uniquely identify and authenticate organizational users (or processes acting on behalf of organizational users).",
+      "tracking_issue": "TODO-V-233612",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233612"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233613r961221_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must automatically terminate a user session after organization-defined conditions or trigger events requiring session disconnect.",
+      "tracking_issue": "TODO-V-233613",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233613"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233614r961353_rule",
+      "severity": "high",
+      "title": "PostgreSQL must prevent non-privileged users from executing privileged functions, to include disabling, circumventing, or altering implemented security safeguards/countermeasures.",
+      "tracking_issue": "TODO-V-233614",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233614"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233615r961044_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must map the PKI-authenticated identity to an associated user account.",
+      "tracking_issue": "TODO-V-233615",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233615"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233616r961149_rule",
+      "severity": "medium",
+      "title": "Database contents must be protected from unauthorized and unintended information transfer by enforcement of a data-transfer policy.",
+      "tracking_issue": "TODO-V-233616",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233616"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233617r961149_rule",
+      "severity": "medium",
+      "title": "Access to database files must be limited to relevant processes and to authorized, administrative users.",
+      "tracking_issue": "TODO-V-233617",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233617"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233618r960942_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must protect its audit configuration from unauthorized modification.",
+      "tracking_issue": "TODO-V-233618",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233618"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233619r961050_rule",
+      "severity": "high",
+      "title": "PostgreSQL must use NIST FIPS 140-2 or 140-3 validated cryptographic modules for cryptographic operations.",
+      "tracking_issue": "TODO-V-233619",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233619"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233620r961821_rule",
+      "severity": "medium",
+      "title": "Audit records must be generated when categorized information (e.g., classification levels/security levels) is deleted.",
+      "tracking_issue": "TODO-V-233620",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233620"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233621r961836_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records when successful accesses to objects occur.",
+      "tracking_issue": "TODO-V-233621",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233621"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233622r961839_rule",
+      "severity": "medium",
+      "title": "PostgreSQL must generate audit records for all direct access to the database(s).",
+      "tracking_issue": "TODO-V-233622",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233622"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-233623r961050_rule",
+      "severity": "high",
+      "title": "The DBMS must be configured on a platform that has a NIST certified FIPS 140-2 or 140-3 installation of OpenSSL.",
+      "tracking_issue": "TODO-V-233623",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-233623"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-265871r999519_rule",
+      "severity": "high",
+      "title": "PostgreSQL products must be a version supported by the vendor.",
+      "tracking_issue": "TODO-V-265871",
+      "validated_by": [
+        "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
+      ],
+      "vuln_id": "V-265871"
+    }
+  ],
+  "source": "DISA XCCDF benchmark",
+  "status": "experimental",
+  "stig_id": "Crunchy_Data_PostgreSQL_STIG",
+  "total_rules": 113,
+  "version": "U_CD_PGSQL_V3R1_STIG.zip"
+}

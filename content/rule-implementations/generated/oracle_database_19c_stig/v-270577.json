@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "Review the procedures for the refreshing of development/test data from production.\n\nReview any scripts or code that exists for the movement of production data to development/test systems, or to any other location or for any other purpose.\n\nVerify that copies of production data are not left in unprotected locations. \n\nIf the code that exists for data movement does not comply with the organization-defined data transfer policy and/or fails to remove any copies of production data from unprotected locations, this is a finding.\n\nIf sensitive data is included in the exports and no procedures are in place to remove or modify the data to render it not sensitive prior to import into a development database or policy and procedures are not in place to ensure authorization of development personnel to access sensitive information contained in production data, this is a finding.",
+  "classification": "manual",
+  "collector_commands": [],
+  "collector_type": "manual_evidence_workflow",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "Restrict accessibility of Oracle system tables and other configuration information or metadata to database administrators (DBAs) or other authorized users.  \n\nModify any code used for moving data from production to development/test systems to comply with the organization-defined data transfer policy, and to ensure copies of production data are not left in unsecured locations.\n\nImplement policy and procedures to modify or remove sensitive information in production exports prior to import into development databases.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-270577r1137656_rule",
+  "severity": "medium",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/oracle_database_19c_stig/u_oracle_database_19c_v1r5_stig.json",
+  "source_version": "U_Oracle_Database_19c_V1R5_STIG.zip",
+  "stig_id": "Oracle_Database_19c_STIG",
+  "title": "Oracle Database contents must be protected from unauthorized and unintended information transfer by enforcement of a data-transfer policy.",
+  "tracking_issue": "TODO-V-270577",
+  "vuln_id": "V-270577"
+}

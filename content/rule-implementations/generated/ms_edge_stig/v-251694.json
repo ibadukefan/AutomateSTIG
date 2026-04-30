@@ -1,0 +1,31 @@
+{
+  "check_content_excerpt": "If this machine is on SIPRNet, this is Not Applicable.\n\nThis requirement for \"AutoplayAllowlist\" is not required; this is optional.\n\nThe policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Allow media autoplay on specific sites\" may be set to \"allow\" for allowlisted domains.\n\nUse the Windows Registry Editor to navigate to the following key:\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\n\nAutoplayAllowlist may be set as follows:\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\AutoplayAllowlist\\1 = mydomain.com\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\AutoplayAllowlist\\2 = myagency.mil\n\nIf configured, the list of domains for which autoplay is allowed may be allowlisted.",
+  "classification": "automated",
+  "collector_commands": [],
+  "collector_type": "platform_collector",
+  "evaluator": "planned",
+  "evidence_fields": [
+    "rule_id",
+    "vuln_id",
+    "status",
+    "evidence",
+    "source_artifact"
+  ],
+  "expected_values": {},
+  "external_acceptance_refs": [],
+  "fix_text_excerpt": "The policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Allow media autoplay on specific sites\" may be set to \"allow\" for allowlisted domains.",
+  "fixtures": [],
+  "implementation_status": "planned",
+  "na_conditions": [],
+  "normalizer": "planned",
+  "remediation": "planned",
+  "rule_id": "SV-251694r960963_rule",
+  "severity": "low",
+  "source_benchmark": "",
+  "source_coverage_manifest": "content/coverage/disa-authoritative/ms_edge_stig/u_ms_edge_v2r5_stig.json",
+  "source_version": "U_MS_Edge_V2R5_STIG.zip",
+  "stig_id": "MS_Edge_STIG",
+  "title": "The list of domains media autoplay allows must be allowlisted if used.",
+  "tracking_issue": "TODO-V-251694",
+  "vuln_id": "V-251694"
+}
