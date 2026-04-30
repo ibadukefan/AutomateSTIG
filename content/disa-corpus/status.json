@@ -1,17 +1,17 @@
 {
-  "authoritative_manifests": 54,
-  "authoritative_rules_tracked": 8644,
-  "automated_or_mapped_rules": 2885,
-  "coverage_percent_tracked_corpus": 33.4,
+  "authoritative_manifests": 55,
+  "authoritative_rules_tracked": 8800,
+  "automated_or_mapped_rules": 2909,
+  "coverage_percent_tracked_corpus": 33.1,
   "current_check_definitions": 3189,
   "generated_candidate_checks_with_fixture_evidence": 974,
   "notes": [
     "Regression ratchet prevents silent drops in tracked artifacts, authoritative manifests, authoritative rules, automated/mapped rules, or unsupported-rule ceilings.",
     "Generated candidate checks are fixture-backed scaffolding, not live production asset validation.",
-    "Latest pass expands host firewall coverage with Microsoft Windows Defender Firewall V2R2. Automated/mapped rule count rose where existing Windows firewall checks matched; unsupported-rule ceiling rose only for newly added authoritative rules pending automation."
+    "Latest pass expands Apple endpoint coverage with Apple macOS 14 V2R4. Existing macOS checks mapped some rules, while the unsupported-rule ceiling intentionally rises for newly added authoritative macOS 14 rules pending automation."
   ],
-  "public_disa_artifacts_indexed": 54,
+  "public_disa_artifacts_indexed": 55,
   "status": "expanded_public_corpus_with_fixture_gated_candidate_mapping",
   "target": "unsupported_authoritative_rules == 0 across every authorized DISA STIG artifact",
-  "unsupported_authoritative_rules": 5759
+  "unsupported_authoritative_rules": 5891
 }

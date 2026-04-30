@@ -50,6 +50,7 @@ SEED_DOWNLOADS=[
  {'title':'Apache Server 2.4 Windows STIG Y26M04','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Windows_Y26M04_STIG.zip'},
  {'title':'Apache Tomcat Application Server 9 STIG V3R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip'},
  {'title':'Apple macOS 15 STIG V1R7','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_15_V1R7_STIG.zip'},
+ {'title':'Apple macOS 14 STIG V2R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_14_V2R4_STIG.zip'},
  {'title':'Microsoft Windows Server 2025 STIG V1R1','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_Server_2025_V1R1_STIG.zip'},
  {'title':'Microsoft SQL Server 2022 STIG Y26M04','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_SQL_Server_2022_Y26M04_STIG.zip'},
  {'title':'Microsoft IIS 10.0 STIG Y26M04','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y26M04_STIG.zip'},
