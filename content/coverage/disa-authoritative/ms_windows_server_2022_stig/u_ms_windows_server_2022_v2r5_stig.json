@@ -2856,16 +2856,17 @@
       "vuln_id": "V-254420"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254421",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254421r958472_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Deny access to this computer from the network user right on domain controllers must be configured to prevent unauthenticated access.",
-      "tracking_issue": "TODO-V-254421",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/005f1c728455ec0925e3a1720409429d0291d15e312744fe666a5d2ce3308a12/U_MS_Windows_Server_2022_V2R5_STIG.zip"
       ],
       "vuln_id": "V-254421"
@@ -3071,31 +3072,33 @@
       "vuln_id": "V-254434"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254435",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254435r958472_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Deny access to this computer from the network user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and local accounts and from unauthenticated access on all systems.",
-      "tracking_issue": "TODO-V-254435",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/005f1c728455ec0925e3a1720409429d0291d15e312744fe666a5d2ce3308a12/U_MS_Windows_Server_2022_V2R5_STIG.zip"
       ],
       "vuln_id": "V-254435"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254436",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254436r958472_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems.",
-      "tracking_issue": "TODO-V-254436",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/005f1c728455ec0925e3a1720409429d0291d15e312744fe666a5d2ce3308a12/U_MS_Windows_Server_2022_V2R5_STIG.zip"
       ],
       "vuln_id": "V-254436"
@@ -3116,31 +3119,33 @@
       "vuln_id": "V-254437"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254438",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254438r958472_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Deny log on locally user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems.",
-      "tracking_issue": "TODO-V-254438",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/005f1c728455ec0925e3a1720409429d0291d15e312744fe666a5d2ce3308a12/U_MS_Windows_Server_2022_V2R5_STIG.zip"
       ],
       "vuln_id": "V-254438"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254439",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254439r958672_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Deny log on through Remote Desktop Services user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and all local accounts and from unauthenticated access on all systems.",
-      "tracking_issue": "TODO-V-254439",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/005f1c728455ec0925e3a1720409429d0291d15e312744fe666a5d2ce3308a12/U_MS_Windows_Server_2022_V2R5_STIG.zip"
       ],
       "vuln_id": "V-254439"

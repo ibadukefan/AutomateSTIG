@@ -212,6 +212,31 @@ If any SIDs are granted the "SeLockMemoryPrivilege" user right, this is a findin
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeLockMemoryPrivilege'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_windows_user_right_required_sid_list_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254438',
+            'title': 'Windows Server 2022 Deny log on locally user right must include required groups.',
+            'check_content': '''Verify the effective setting in Local Group Policy Editor.
+
+For server core installations, run the following command:
+
+Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt
+
+Review the text file.
+
+If the following SIDs are not defined for the "SeDenyInteractiveLogonRight" user right, this is a finding:
+
+Domain Systems Only:
+S-1-5-root domain-519 (Enterprise Admins)
+S-1-5-domain-512 (Domain Admins)
+
+All Systems:
+S-1-5-32-546 (Guests)'''
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeDenyInteractiveLogonRight'})
+        self.assertEqual(candidate['expected'], {'type': 'matches', 'pattern': '(?=.*S-1-5-32-546)'})
+
 
 if __name__ == '__main__':
     unittest.main()

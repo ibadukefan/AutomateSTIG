@@ -142,6 +142,34 @@
     },
     {
       "check": {
+        "key": "SeDenyNetworkLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Deny access to this computer from the network user right on domain controllers must be configured to prevent unauthenticated access.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205667"
+    },
+    {
+      "check": {
+        "key": "SeDenyInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 \"Deny log on locally\" user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205675"
+    },
+    {
+      "check": {
         "name": "Fax",
         "should_be_installed": false,
         "type": "windows_feature"
@@ -456,6 +484,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-205724"
+    },
+    {
+      "check": {
+        "key": "SeDenyRemoteInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 \"Deny log on through Remote Desktop Services\" user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and all local accounts and from unauthenticated access on all systems.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-113)(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205733"
     },
     {
       "check": {

@@ -1106,6 +1106,20 @@
     },
     {
       "check": {
+        "key": "SeDenyNetworkLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 Deny access to this computer from the network user right on domain controllers must be configured to prevent unauthenticated access.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254421"
+    },
+    {
+      "check": {
         "key": "SeEnableDelegationPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -1173,6 +1187,62 @@
       },
       "platform": "windows",
       "vuln_id": "V-254432"
+    },
+    {
+      "check": {
+        "key": "SeDenyNetworkLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 Deny access to this computer from the network user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and local accounts and from unauthenticated access on all systems.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-113)(?=.*S-1-5-114)(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254435"
+    },
+    {
+      "check": {
+        "key": "SeDenyBatchLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254436"
+    },
+    {
+      "check": {
+        "key": "SeDenyInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 Deny log on locally user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254438"
+    },
+    {
+      "check": {
+        "key": "SeDenyRemoteInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 Deny log on through Remote Desktop Services user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and all local accounts and from unauthenticated access on all systems.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-113)(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254439"
     },
     {
       "check": {

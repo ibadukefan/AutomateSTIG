@@ -525,16 +525,17 @@
       "vuln_id": "V-205666"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205667",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205667 from source identifier xccdf_mil.disa.stig_group_V-205667.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205667r958472_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Deny access to this computer from the network user right on domain controllers must be configured to prevent unauthenticated access.",
-      "tracking_issue": "TODO-V-205667",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205667"
@@ -650,16 +651,17 @@
       "vuln_id": "V-205674"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205675",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205675 from source identifier xccdf_mil.disa.stig_group_V-205675.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205675r958472_rule",
       "severity": "medium",
       "title": "Windows Server 2019 \"Deny log on locally\" user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems.",
-      "tracking_issue": "TODO-V-205675",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205675"
@@ -1361,16 +1363,17 @@
       "vuln_id": "V-205732"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205733",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205733 from source identifier xccdf_mil.disa.stig_group_V-205733.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205733r958672_rule",
       "severity": "medium",
       "title": "Windows Server 2019 \"Deny log on through Remote Desktop Services\" user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and all local accounts and from unauthenticated access on all systems.",
-      "tracking_issue": "TODO-V-205733",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205733"

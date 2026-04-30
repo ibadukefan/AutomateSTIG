@@ -162,6 +162,25 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
     if not re.search(r'\bsecedit\b', content, re.IGNORECASE):
         return None
 
+    required_sids_match = re.search(
+        r'following\s+SIDs\s+are\s+not\s+defined\s+for\s+the\s+"(Se[A-Za-z0-9]+)"\s+user\s+right(?P<body>.*?)(?:\n\s*\n\s*If\b|\Z)',
+        content,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if required_sids_match:
+        key = required_sids_match.group(1)
+        body = required_sids_match.group('body')
+        sids = sorted(set(re.findall(r'\bS-\d+(?:-\d+)+(?!-)', body)))
+        if sids:
+            pattern = ''.join(f'(?=.*{sid})' for sid in sids)
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'windows',
+                'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': key},
+                'expected': {'type': 'matches', 'pattern': pattern},
+                'description': rule.get('title', ''),
+            }
+
     privilege_match = re.search(r'"(Se[A-Za-z0-9]+Privilege)"\s+user\s+right', content)
     if privilege_match:
         key = privilege_match.group(1)

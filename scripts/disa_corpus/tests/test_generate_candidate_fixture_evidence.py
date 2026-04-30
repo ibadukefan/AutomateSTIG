@@ -77,6 +77,12 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
                         'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeLockMemoryPrivilege'},
                         'expected': {'type': 'equals', 'value': ''},
                     },
+                    {
+                        'vuln_id': 'V-10',
+                        'platform': 'windows',
+                        'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeDenyInteractiveLogonRight'},
+                        'expected': {'type': 'matches', 'pattern': '(?=.*S-1-5-32-546)'},
+                    },
                 ],
             }))
 
@@ -84,8 +90,8 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
 
             self.assertEqual(written, 1)
             evidence = json.loads((out / 'mixed.candidates.evidence.json').read_text())
-            self.assertEqual(evidence['candidate_checks'], 9)
-            self.assertEqual(evidence['validated_candidates'], 9)
+            self.assertEqual(evidence['candidate_checks'], 10)
+            self.assertEqual(evidence['validated_candidates'], 10)
             cases = {case['vuln_id']: case for case in evidence['cases']}
             self.assertEqual(cases['V-1']['pass_fixture']['registry']['HKLM\\Software\\Example\\Enabled'], 1)
             self.assertNotEqual(cases['V-1']['fail_fixture']['registry']['HKLM\\Software\\Example\\Enabled'], 1)
@@ -107,6 +113,9 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
             self.assertEqual(cases['V-9']['evidence_type'], 'windows_security_policy_equals')
             self.assertEqual(cases['V-9']['pass_fixture']['security_policy']['Privilege Rights\\SeLockMemoryPrivilege'], '')
             self.assertNotEqual(cases['V-9']['fail_fixture']['security_policy']['Privilege Rights\\SeLockMemoryPrivilege'], '')
+            self.assertEqual(cases['V-10']['evidence_type'], 'windows_security_policy_matches')
+            self.assertIn('S-1-5-32-546', cases['V-10']['pass_fixture']['security_policy']['Privilege Rights\\SeDenyInteractiveLogonRight'])
+            self.assertNotIn('S-1-5-32-546', cases['V-10']['fail_fixture']['security_policy']['Privilege Rights\\SeDenyInteractiveLogonRight'])
 
 
 if __name__ == '__main__':

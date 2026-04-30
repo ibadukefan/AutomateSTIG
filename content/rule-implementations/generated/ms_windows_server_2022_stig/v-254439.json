@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "SeDenyRemoteInteractiveLogonRight",
+      "section": "Privilege Rights",
+      "type": "security_policy"
+    },
+    "description": "Windows Server 2022 Deny log on through Remote Desktop Services user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and all local accounts and from unauthenticated access on all systems.",
+    "expected": {
+      "pattern": "(?=.*S-1-5-113)(?=.*S-1-5-32-546)",
+      "type": "matches"
+    },
+    "platform": "windows",
+    "vuln_id": "V-254439"
+  },
   "check_content_excerpt": "This applies to member servers and standalone or nondomain-joined systems. A separate version applies to domain controllers.\n\nVerify the effective setting in Local Group Policy Editor.\n\nRun \"gpedit.msc\".\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.\n\nIf the following accounts or groups are not defined for the \"Deny log on through Remote Desktop Services\" user right, this is a finding:\n\nDomain Systems Only:\n- Enterprise Admins group\n- Domain Admins group\n- Local account (see Note below)\n\nAll Systems:\n- Guests group\n\nFor server core installations, run the following command:\n\nSecedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt\n\nReview the text file.\n\nIf the following SIDs are not defined for the \"SeDenyRemoteInteractiveLogonRight\" user right, this is a finding.\n\nDomain Systems Only:\nS-1-5-root domain-519 (Enterprise Admins)\nS-1-5-domain-512 (Domain Admins)\nS-1-5-113 (\"Local account\")\n\nAll Systems:\nS-1-5-32-546 (Guests)\n\nNote: \"Local account\" is referring to the Windows built-in security group.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "pattern": "(?=.*S-1-5-113)(?=.*S-1-5-32-546)",
+    "type": "matches"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Deny log on through Remote Desktop Services to include the following:\n\nDomain Systems Only:\n- Enterprise Admins group\n- Domain Admins group\n- Local account (see Note below)\n\nAll Systems:\n- Guests group\n\nNote: \"Local account\" is referring to the Windows built-in security group.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "SV-254439r958672_rule",
   "severity": "medium",

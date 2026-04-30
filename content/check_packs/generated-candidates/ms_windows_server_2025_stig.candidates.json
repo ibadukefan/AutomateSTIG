@@ -1465,6 +1465,20 @@
     },
     {
       "check": {
+        "key": "SeDenyNetworkLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Deny access to this computer from the network\" user right on domain controllers must be configured to prevent unauthenticated access.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278168"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Kdc",
         "type": "registry",
         "value_name": "StrongCertificateBindingEnforcement"
@@ -1504,6 +1518,62 @@
       },
       "platform": "windows",
       "vuln_id": "V-278179"
+    },
+    {
+      "check": {
+        "key": "SeDenyNetworkLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Deny access to this computer from the network\" user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and local accounts and from unauthenticated access on all systems.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-113)(?=.*S-1-5-114)(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278184"
+    },
+    {
+      "check": {
+        "key": "SeDenyBatchLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 Deny log on as a batch job user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278185"
+    },
+    {
+      "check": {
+        "key": "SeDenyInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Deny log on locally\" user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and from unauthenticated access on all systems.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278187"
+    },
+    {
+      "check": {
+        "key": "SeDenyRemoteInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Deny log on through Remote Desktop Services\" user right on domain-joined member servers must be configured to prevent access from highly privileged domain accounts and all local accounts and from unauthenticated access on all systems.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-113)(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278188"
     },
     {
       "check": {
