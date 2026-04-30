@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 137,
+  "candidate_checks": 169,
   "cases": [
     {
       "check": {
@@ -236,6 +236,222 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-278026"
+    },
+    {
+      "check": {
+        "key": "LockoutDuration",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 account lockout duration must be configured to 15 minutes or greater.",
+      "evidence_type": "windows_security_policy_greater_or_equal",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 15
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\LockoutDuration": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\LockoutDuration": 15
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278033"
+    },
+    {
+      "check": {
+        "key": "LockoutBadCount",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 must have the number of allowed bad logon attempts configured to three or less.",
+      "evidence_type": "windows_security_policy_less_or_equal",
+      "expected": {
+        "type": "less_or_equal",
+        "value": 3
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\LockoutBadCount": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\LockoutBadCount": 3
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278034"
+    },
+    {
+      "check": {
+        "key": "ResetLockoutCount",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater.",
+      "evidence_type": "windows_security_policy_greater_or_equal",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 15
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\ResetLockoutCount": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\ResetLockoutCount": 15
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278035"
+    },
+    {
+      "check": {
+        "key": "PasswordHistorySize",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 password history must be configured to 24 passwords remembered.",
+      "evidence_type": "windows_security_policy_greater_or_equal",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 24
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\PasswordHistorySize": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\PasswordHistorySize": 24
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278036"
+    },
+    {
+      "check": {
+        "key": "MaximumPasswordAge",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 maximum password age must be configured to 60 days or less.",
+      "evidence_type": "windows_security_policy_less_or_equal",
+      "expected": {
+        "type": "less_or_equal",
+        "value": 60
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MaximumPasswordAge": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MaximumPasswordAge": 60
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278037"
+    },
+    {
+      "check": {
+        "key": "MinimumPasswordAge",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 minimum password age must be configured to at least one day.",
+      "evidence_type": "windows_security_policy_greater_or_equal",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MinimumPasswordAge": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MinimumPasswordAge": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278038"
+    },
+    {
+      "check": {
+        "key": "PasswordComplexity",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 must have the built-in Windows password complexity policy enabled.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\PasswordComplexity": "unexpected-1"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\PasswordComplexity": "1"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278039"
+    },
+    {
+      "check": {
+        "key": "ClearTextPassword",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 reversible password encryption must be disabled.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\ClearTextPassword": "unexpected-0"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\ClearTextPassword": "0"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278040"
     },
     {
       "check": {
@@ -2588,6 +2804,33 @@
     },
     {
       "check": {
+        "key": "SeMachineAccountPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Add workstations to domain\" user right must only be assigned to the Administrators group on domain controllers.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeMachineAccountPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeMachineAccountPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278166"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Kdc",
         "type": "registry",
         "value_name": "StrongCertificateBindingEnforcement"
@@ -2615,6 +2858,33 @@
     },
     {
       "check": {
+        "key": "SeEnableDelegationPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Enable computer and user accounts to be trusted for delegation\" user right must only be assigned to the Administrators group on domain controllers.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeEnableDelegationPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeEnableDelegationPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278175"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System",
         "type": "registry",
         "value_name": "EnumerateLocalUsers"
@@ -2639,6 +2909,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-278179"
+    },
+    {
+      "check": {
+        "key": "SeEnableDelegationPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Enable computer and user accounts to be trusted for delegation\" user right must not be assigned to any groups or accounts on domain-joined member servers and stand-alone or nondomain-joined systems.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeEnableDelegationPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeEnableDelegationPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278189"
     },
     {
       "check": {
@@ -3692,6 +3989,573 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-278240"
+    },
+    {
+      "check": {
+        "key": "SeTrustedCredManAccessPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Access Credential Manager as a trusted caller\" user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTrustedCredManAccessPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTrustedCredManAccessPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278241"
+    },
+    {
+      "check": {
+        "key": "SeTcbPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Act as part of the operating system\" user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTcbPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTcbPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278242"
+    },
+    {
+      "check": {
+        "key": "SeBackupPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Back up files and directories\" user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeBackupPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeBackupPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278244"
+    },
+    {
+      "check": {
+        "key": "SeCreatePagefilePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Create a pagefile\" user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreatePagefilePrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreatePagefilePrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278245"
+    },
+    {
+      "check": {
+        "key": "SeCreateTokenPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Create a token object\" user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateTokenPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateTokenPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278246"
+    },
+    {
+      "check": {
+        "key": "SeCreateGlobalPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Create global objects\" user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateGlobalPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateGlobalPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278247"
+    },
+    {
+      "check": {
+        "key": "SeCreatePermanentPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Create permanent shared objects\" user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreatePermanentPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreatePermanentPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278248"
+    },
+    {
+      "check": {
+        "key": "SeCreateSymbolicLinkPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Create symbolic links\" user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateSymbolicLinkPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateSymbolicLinkPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278249"
+    },
+    {
+      "check": {
+        "key": "SeDebugPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Debug programs\" user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDebugPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDebugPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278250"
+    },
+    {
+      "check": {
+        "key": "SeRemoteShutdownPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Force shutdown from a remote system\" user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRemoteShutdownPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRemoteShutdownPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278251"
+    },
+    {
+      "check": {
+        "key": "SeAuditPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Generate security audits\" user right must only be assigned to Local Service and Network Service.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeAuditPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeAuditPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278252"
+    },
+    {
+      "check": {
+        "key": "SeImpersonatePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Impersonate a client after authentication\" user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeImpersonatePrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeImpersonatePrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278253"
+    },
+    {
+      "check": {
+        "key": "SeIncreaseBasePriorityPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Increase scheduling priority\" user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeIncreaseBasePriorityPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeIncreaseBasePriorityPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278254"
+    },
+    {
+      "check": {
+        "key": "SeLoadDriverPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Load and unload device drivers\" user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeLoadDriverPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeLoadDriverPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278255"
+    },
+    {
+      "check": {
+        "key": "SeLockMemoryPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Lock pages in memory\" user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeLockMemoryPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeLockMemoryPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278256"
+    },
+    {
+      "check": {
+        "key": "SeSecurityPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Manage auditing and security log\" user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSecurityPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSecurityPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278257"
+    },
+    {
+      "check": {
+        "key": "SeSystemEnvironmentPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Modify firmware environment values\" user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSystemEnvironmentPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSystemEnvironmentPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278258"
+    },
+    {
+      "check": {
+        "key": "SeManageVolumePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Perform volume maintenance tasks\" user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeManageVolumePrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeManageVolumePrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278259"
+    },
+    {
+      "check": {
+        "key": "SeProfileSingleProcessPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Profile single process\" user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeProfileSingleProcessPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeProfileSingleProcessPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278260"
+    },
+    {
+      "check": {
+        "key": "SeRestorePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Restore files and directories\" user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRestorePrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRestorePrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278261"
+    },
+    {
+      "check": {
+        "key": "SeTakeOwnershipPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Take ownership of files or other objects\" user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTakeOwnershipPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTakeOwnershipPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278262"
     }
   ],
   "production_claim": false,
@@ -3699,5 +4563,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 137
+  "validated_candidates": 169
 }

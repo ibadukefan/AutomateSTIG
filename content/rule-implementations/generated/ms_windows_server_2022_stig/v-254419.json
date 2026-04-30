@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "SeMachineAccountPrivilege",
+      "section": "Privilege Rights",
+      "type": "security_policy"
+    },
+    "description": "Windows Server 2022 Add workstations to domain user right must only be assigned to the Administrators group on domain controllers.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "windows",
+    "vuln_id": "V-254419"
+  },
   "check_content_excerpt": "This applies to domain controllers. It is NA for other systems.\n\nVerify the effective setting in Local Group Policy Editor.\n\nRun \"gpedit.msc\".\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.\n\nIf any accounts or groups other than the following are granted the \"Add workstations to domain\" right, this is a finding.\n\n- Administrators\n\nFor server core installations, run the following command:\n\nSecedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt\n\nReview the text file.\n\nIf any SIDs other than the following are granted the \"SeMachineAccountPrivilege\" user right, this is a finding.\n\nS-1-5-32-544 (Administrators)",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Add workstations to domain to include only the following accounts or groups:\n\n- Administrators",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "SV-254419r958726_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "ClearTextPassword",
+      "section": "System Access",
+      "type": "security_policy"
+    },
+    "description": "Windows Server 2022 reversible password encryption must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "windows",
+    "vuln_id": "V-254293"
+  },
   "check_content_excerpt": "Verify the effective setting in Local Group Policy Editor.\n\nRun \"gpedit.msc\".\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Password Policy.\n\nIf the value for \"Store passwords using reversible encryption\" is not set to \"Disabled\", this is a finding.\n\nFor server core installations, run the following command:\n\nSecedit /Export /Areas SecurityPolicy /CFG C:\\Path\\FileName.Txt\n\nIf \"ClearTextPassword\" equals \"1\" in the file, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Password Policy >> Store passwords using reversible encryption to \"Disabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "SV-254293r1051095_rule",
   "severity": "high",

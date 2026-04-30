@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "SeImpersonatePrivilege",
+      "section": "Privilege Rights",
+      "type": "security_policy"
+    },
+    "description": "Windows Server 2022 impersonate a client after authentication user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "windows",
+    "vuln_id": "V-254503"
+  },
   "check_content_excerpt": "Verify the effective setting in Local Group Policy Editor.\n\nRun \"gpedit.msc\".\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.\n\nIf any accounts or groups other than the following are granted the \"Impersonate a client after authentication\" user right, this is a finding:\n\n- Administrators\n- Service\n- Local Service\n- Network Service\n\nFor server core installations, run the following command:\n\nSecedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt\n\nReview the text file.\n\nIf any SIDs other than the following are granted the \"SeImpersonatePrivilege\" user right, this is a finding:\n\nS-1-5-32-544 (Administrators)\nS-1-5-6 (Service)\nS-1-5-19 (Local Service)\nS-1-5-20 (Network Service)\n\nIf an application requires this user right, this would not be a finding.\n\nVendor documentation must support the requirement for having the user right.\n\nThe requirement must be documented with the Information System Security Officer (ISSO).\n\nThe application account must meet requirements for application account passwords, such as length (WN22-00-000050) and required frequency of changes (WN22-00-000060).",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Impersonate a client after authentication to include only the following accounts or groups:\n\n- Administrators\n- Service\n- Local Service\n- Network Service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "SV-254503r958726_rule",
   "severity": "medium",

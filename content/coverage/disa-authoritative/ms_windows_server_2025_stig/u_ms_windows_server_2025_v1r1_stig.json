@@ -746,121 +746,129 @@
       "vuln_id": "V-278032"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278033",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278033r1180805_rule",
       "severity": "medium",
       "title": "Windows Server 2025 account lockout duration must be configured to 15 minutes or greater.",
-      "tracking_issue": "TODO-V-278033",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278033"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278034",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278034r1180808_rule",
       "severity": "medium",
       "title": "Windows Server 2025 must have the number of allowed bad logon attempts configured to three or less.",
-      "tracking_issue": "TODO-V-278034",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278034"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278035",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278035r1180811_rule",
       "severity": "medium",
       "title": "Windows Server 2025 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater.",
-      "tracking_issue": "TODO-V-278035",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278035"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278036",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278036r1180814_rule",
       "severity": "medium",
       "title": "Windows Server 2025 password history must be configured to 24 passwords remembered.",
-      "tracking_issue": "TODO-V-278036",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278036"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278037",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278037r1180817_rule",
       "severity": "medium",
       "title": "Windows Server 2025 maximum password age must be configured to 60 days or less.",
-      "tracking_issue": "TODO-V-278037",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278037"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278038",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278038r1180820_rule",
       "severity": "medium",
       "title": "Windows Server 2025 minimum password age must be configured to at least one day.",
-      "tracking_issue": "TODO-V-278038",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278038"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278039",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278039r1180823_rule",
       "severity": "medium",
       "title": "Windows Server 2025 must have the built-in Windows password complexity policy enabled.",
-      "tracking_issue": "TODO-V-278039",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278039"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278040",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278040r1180826_rule",
       "severity": "high",
       "title": "Windows Server 2025 reversible password encryption must be disabled.",
-      "tracking_issue": "TODO-V-278040",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278040"
@@ -2813,16 +2821,17 @@
       "vuln_id": "V-278165"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278166",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278166r1182138_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Add workstations to domain\" user right must only be assigned to the Administrators group on domain controllers.",
-      "tracking_issue": "TODO-V-278166",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278166"
@@ -2949,16 +2958,17 @@
       "vuln_id": "V-278174"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278175",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278175r1182148_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Enable computer and user accounts to be trusted for delegation\" user right must only be assigned to the Administrators group on domain controllers.",
-      "tracking_issue": "TODO-V-278175",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278175"
@@ -3160,16 +3170,17 @@
       "vuln_id": "V-278188"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278189",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278189r1182305_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Enable computer and user accounts to be trusted for delegation\" user right must not be assigned to any groups or accounts on domain-joined member servers and stand-alone or nondomain-joined systems.",
-      "tracking_issue": "TODO-V-278189",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278189"
@@ -3949,31 +3960,33 @@
       "vuln_id": "V-278240"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278241",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278241r1182208_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Access Credential Manager as a trusted caller\" user right must not be assigned to any groups or accounts.",
-      "tracking_issue": "TODO-V-278241",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278241"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278242",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278242r1182209_rule",
       "severity": "high",
       "title": "The Windows Server 2025 \"Act as part of the operating system\" user right must not be assigned to any groups or accounts.",
-      "tracking_issue": "TODO-V-278242",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278242"
@@ -3994,286 +4007,305 @@
       "vuln_id": "V-278243"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278244",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278244r1182211_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Back up files and directories\" user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-278244",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278244"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278245",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278245r1182212_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Create a pagefile\" user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-278245",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278245"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278246",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278246r1182213_rule",
       "severity": "high",
       "title": "The Windows Server 2025 \"Create a token object\" user right must not be assigned to any groups or accounts.",
-      "tracking_issue": "TODO-V-278246",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278246"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278247",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278247r1182214_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Create global objects\" user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
-      "tracking_issue": "TODO-V-278247",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278247"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278248",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278248r1182215_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Create permanent shared objects\" user right must not be assigned to any groups or accounts.",
-      "tracking_issue": "TODO-V-278248",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278248"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278249",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278249r1182217_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Create symbolic links\" user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-278249",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278249"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278250",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278250r1182218_rule",
       "severity": "high",
       "title": "The Windows Server 2025 \"Debug programs\" user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-278250",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278250"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278251",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278251r1182219_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Force shutdown from a remote system\" user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-278251",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278251"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278252",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278252r1182220_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Generate security audits\" user right must only be assigned to Local Service and Network Service.",
-      "tracking_issue": "TODO-V-278252",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278252"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278253",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278253r1182221_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Impersonate a client after authentication\" user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
-      "tracking_issue": "TODO-V-278253",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278253"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278254",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278254r1182222_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Increase scheduling priority\" user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-278254",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278254"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278255",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278255r1182223_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Load and unload device drivers\" user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-278255",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278255"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278256",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278256r1182224_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Lock pages in memory\" user right must not be assigned to any groups or accounts.",
-      "tracking_issue": "TODO-V-278256",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278256"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278257",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278257r1182225_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Manage auditing and security log\" user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-278257",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278257"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278258",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278258r1182226_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Modify firmware environment values\" user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-278258",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278258"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278259",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278259r1182227_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Perform volume maintenance tasks\" user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-278259",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278259"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278260",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278260r1182228_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Profile single process\" user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-278260",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278260"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278261",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278261r1182229_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Restore files and directories\" user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-278261",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278261"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278262",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278262r1182230_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Take ownership of files or other objects\" user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-278262",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278262"

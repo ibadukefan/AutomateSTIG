@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "MaximumPasswordAge",
+      "section": "System Access",
+      "type": "security_policy"
+    },
+    "description": "Windows Server 2022 maximum password age must be configured to 60 days or less.",
+    "expected": {
+      "type": "less_or_equal",
+      "value": 60
+    },
+    "platform": "windows",
+    "vuln_id": "V-254289"
+  },
   "check_content_excerpt": "Verify the effective setting in Local Group Policy Editor.\n\nRun \"gpedit.msc\".\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Password Policy.\n\nIf the value for the \"Maximum password age\" is greater than \"60\" days, this is a finding.\n\nIf the value is set to \"0\" (never expires), this is a finding.\n\nFor server core installations, run the following command:\n\nSecedit /Export /Areas SecurityPolicy /CFG C:\\Path\\FileName.Txt\n\nIf \"MaximumPasswordAge\" is greater than \"60\" or equal to \"0\" in the file, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "less_or_equal",
+    "value": 60
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Password Policy >> Maximum password age to \"60\" days or less (excluding \"0\", which is unacceptable).",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "SV-254289r1051091_rule",
   "severity": "medium",

@@ -100,6 +100,14 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
         pass_fixture['audit_policy'] = {subcategory: check.get('setting') or substring}
         fail_fixture['audit_policy'] = {subcategory: 'No Auditing'}
         evidence_type = 'windows_audit_policy_contains'
+    elif check_type == 'security_policy':
+        if expected.get('type') not in ('equals', 'greater_or_equal', 'less_or_equal'):
+            raise ValueError(f"{candidate['vuln_id']}: security_policy candidate only supports scalar comparison evidence")
+        key = f"{check['section']}\\{check['key']}"
+        expected_value = expected['value']
+        pass_fixture['security_policy'] = {key: expected_value}
+        fail_fixture['security_policy'] = {key: _alternate_value(expected_value)}
+        evidence_type = f"windows_security_policy_{expected['type']}"
     else:
         raise ValueError(f"{candidate['vuln_id']}: unsupported candidate check type {check_type}")
 

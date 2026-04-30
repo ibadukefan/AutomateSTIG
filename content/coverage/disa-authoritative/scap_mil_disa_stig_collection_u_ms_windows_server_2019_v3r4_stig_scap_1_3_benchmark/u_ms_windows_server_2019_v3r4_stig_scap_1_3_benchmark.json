@@ -255,16 +255,17 @@
       "vuln_id": "V-205642"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205643",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205643 from source identifier xccdf_mil.disa.stig_group_V-205643.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205643r958434_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Manage auditing and security log user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-205643",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205643"
@@ -430,16 +431,17 @@
       "vuln_id": "V-205656"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205659",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205659 from source identifier xccdf_mil.disa.stig_group_V-205659.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205659r1051067_rule",
       "severity": "medium",
       "title": "Windows Server 2019 maximum password age must be configured to 60 days or less.",
-      "tracking_issue": "TODO-V-205659",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205659"
@@ -1389,31 +1391,33 @@
       "vuln_id": "V-205739"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205744",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205744 from source identifier xccdf_mil.disa.stig_group_V-205744.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205744r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Add workstations to domain user right must only be assigned to the Administrators group on domain controllers.",
-      "tracking_issue": "TODO-V-205744",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205744"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205745",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205745 from source identifier xccdf_mil.disa.stig_group_V-205745.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205745r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Enable computer and user accounts to be trusted for delegation user right must only be assigned to the Administrators group on domain controllers.",
-      "tracking_issue": "TODO-V-205745",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205745"
@@ -1434,316 +1438,337 @@
       "vuln_id": "V-205747"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205748",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205748 from source identifier xccdf_mil.disa.stig_group_V-205748.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205748r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 \"Enable computer and user accounts to be trusted for delegation\" user right must not be assigned to any groups or accounts on domain-joined member servers and standalone or nondomain-joined systems.",
-      "tracking_issue": "TODO-V-205748",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205748"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205749",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205749 from source identifier xccdf_mil.disa.stig_group_V-205749.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205749r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Access Credential Manager as a trusted caller user right must not be assigned to any groups or accounts.",
-      "tracking_issue": "TODO-V-205749",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205749"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205750",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205750 from source identifier xccdf_mil.disa.stig_group_V-205750.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205750r958726_rule",
       "severity": "high",
       "title": "Windows Server 2019 Act as part of the operating system user right must not be assigned to any groups or accounts.",
-      "tracking_issue": "TODO-V-205750",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205750"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205751",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205751 from source identifier xccdf_mil.disa.stig_group_V-205751.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205751r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Back up files and directories user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-205751",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205751"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205752",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205752 from source identifier xccdf_mil.disa.stig_group_V-205752.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205752r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Create a pagefile user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-205752",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205752"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205753",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205753 from source identifier xccdf_mil.disa.stig_group_V-205753.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205753r958726_rule",
       "severity": "high",
       "title": "Windows Server 2019 Create a token object user right must not be assigned to any groups or accounts.",
-      "tracking_issue": "TODO-V-205753",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205753"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205754",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205754 from source identifier xccdf_mil.disa.stig_group_V-205754.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205754r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Create global objects user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
-      "tracking_issue": "TODO-V-205754",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205754"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205755",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205755 from source identifier xccdf_mil.disa.stig_group_V-205755.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205755r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Create permanent shared objects user right must not be assigned to any groups or accounts.",
-      "tracking_issue": "TODO-V-205755",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205755"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205756",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205756 from source identifier xccdf_mil.disa.stig_group_V-205756.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205756r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Create symbolic links user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-205756",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205756"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205757",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205757 from source identifier xccdf_mil.disa.stig_group_V-205757.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205757r958726_rule",
       "severity": "high",
       "title": "Windows Server 2019 Debug programs: user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-205757",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205757"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205758",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205758 from source identifier xccdf_mil.disa.stig_group_V-205758.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205758r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Force shutdown from a remote system user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-205758",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205758"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205759",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205759 from source identifier xccdf_mil.disa.stig_group_V-205759.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205759r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Generate security audits user right must only be assigned to Local Service and Network Service.",
-      "tracking_issue": "TODO-V-205759",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205759"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205760",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205760 from source identifier xccdf_mil.disa.stig_group_V-205760.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205760r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Impersonate a client after authentication user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
-      "tracking_issue": "TODO-V-205760",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205760"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205761",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205761 from source identifier xccdf_mil.disa.stig_group_V-205761.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205761r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Increase scheduling priority: user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-205761",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205761"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205762",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205762 from source identifier xccdf_mil.disa.stig_group_V-205762.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205762r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Load and unload device drivers user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-205762",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205762"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205763",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205763 from source identifier xccdf_mil.disa.stig_group_V-205763.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205763r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Lock pages in memory user right must not be assigned to any groups or accounts.",
-      "tracking_issue": "TODO-V-205763",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205763"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205764",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205764 from source identifier xccdf_mil.disa.stig_group_V-205764.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205764r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Modify firmware environment values user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-205764",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205764"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205765",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205765 from source identifier xccdf_mil.disa.stig_group_V-205765.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205765r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Perform volume maintenance tasks user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-205765",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205765"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205766",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205766 from source identifier xccdf_mil.disa.stig_group_V-205766.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205766r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Profile single process user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-205766",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205766"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205767",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205767 from source identifier xccdf_mil.disa.stig_group_V-205767.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205767r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Restore files and directories user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-205767",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205767"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205768",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205768 from source identifier xccdf_mil.disa.stig_group_V-205768.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205768r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Take ownership of files or other objects user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-205768",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205768"
@@ -2053,16 +2078,17 @@
       "vuln_id": "V-205793"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205795",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205795 from source identifier xccdf_mil.disa.stig_group_V-205795.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205795r958736_rule",
       "severity": "medium",
       "title": "Windows Server 2019 account lockout duration must be configured to 15 minutes or greater.",
-      "tracking_issue": "TODO-V-205795",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205795"

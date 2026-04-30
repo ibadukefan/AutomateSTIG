@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "PasswordComplexity",
+      "section": "System Access",
+      "type": "security_policy"
+    },
+    "description": "Windows Server 2025 must have the built-in Windows password complexity policy enabled.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "windows",
+    "vuln_id": "V-278039"
+  },
   "check_content_excerpt": "Verify the effective setting in Local Group Policy Editor.\n\nRun gpedit.msc.\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Password Policy.\n\nIf the value for \"Password must meet complexity requirements\" is not set to \"Enabled\", this is a finding.\n\nFor server core installations, run the following command:\n\nSecedit /Export /Areas SecurityPolicy /CFG C:\\Path\\FileName.Txt\n\nIf \"PasswordComplexity\" equals \"0\" in the file, this is a finding.\n\nNote: If an external password filter is in use that enforces all four character types and requires this setting to be set to \"Disabled\", this would not be considered a finding. If this setting does not affect the use of an external password filter, it must be enabled for fallback purposes.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Password Policy. Set the value for \"Password must meet complexity requirements\" to \"Enabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "SV-278039r1180823_rule",
   "severity": "medium",

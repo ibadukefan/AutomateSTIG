@@ -190,6 +190,28 @@ If the system is not configured to audit successes, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'audit_policy', 'subcategory': 'User Account Management', 'setting': 'Success'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Success'})
 
+    def test_infers_windows_user_right_security_policy_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254506',
+            'title': 'Windows Server 2022 lock pages in memory user right must not be assigned to any groups or accounts.',
+            'check_content': '''Verify the effective setting in Local Group Policy Editor.
+
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If any accounts or groups are granted the "Lock pages in memory" user right, this is a finding.
+
+For server core installations, run the following command:
+
+Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt
+
+Review the text file.
+
+If any SIDs are granted the "SeLockMemoryPrivilege" user right, this is a finding.'''
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeLockMemoryPrivilege'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
 
 if __name__ == '__main__':
     unittest.main()

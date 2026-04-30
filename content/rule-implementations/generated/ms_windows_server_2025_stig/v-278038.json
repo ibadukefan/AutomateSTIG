@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "MinimumPasswordAge",
+      "section": "System Access",
+      "type": "security_policy"
+    },
+    "description": "Windows Server 2025 minimum password age must be configured to at least one day.",
+    "expected": {
+      "type": "greater_or_equal",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-278038"
+  },
   "check_content_excerpt": "Verify the effective setting in Local Group Policy Editor.\n\nRun gpedit.msc.\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Password Policy.\n\nIf the value for the \"Minimum password age\" is set to \"0\" days (\"Password can be changed immediately\"), this is a finding.\n\nFor server core installations, run the following command:\n\nSecedit /Export /Areas SecurityPolicy /CFG C:\\Path\\FileName.Txt\n\nIf \"MinimumPasswordAge\" equals \"0\" in the file, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "greater_or_equal",
+    "value": 1
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Password Policy. Set \"Minimum password age\" to at least \"1\" day.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "SV-278038r1180820_rule",
   "severity": "medium",

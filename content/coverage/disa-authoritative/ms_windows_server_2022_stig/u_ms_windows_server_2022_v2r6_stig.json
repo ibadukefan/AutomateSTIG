@@ -743,76 +743,81 @@
       "vuln_id": "V-254284"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254285",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254285r958736_rule",
       "severity": "medium",
       "title": "Windows Server 2022 account lockout duration must be configured to 15 minutes or greater.",
-      "tracking_issue": "TODO-V-254285",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254285"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254286",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254286r958388_rule",
       "severity": "medium",
       "title": "Windows Server 2022 must have the number of allowed bad logon attempts configured to three or less.",
-      "tracking_issue": "TODO-V-254286",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254286"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254287",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254287r958388_rule",
       "severity": "medium",
       "title": "Windows Server 2022 must have the period of time before the bad logon counter is reset configured to 15 minutes or greater.",
-      "tracking_issue": "TODO-V-254287",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254287"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254288",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254288r1000156_rule",
       "severity": "medium",
       "title": "Windows Server 2022 password history must be configured to 24 passwords remembered.",
-      "tracking_issue": "TODO-V-254288",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254288"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254289",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254289r1051091_rule",
       "severity": "medium",
       "title": "Windows Server 2022 maximum password age must be configured to 60 days or less.",
-      "tracking_issue": "TODO-V-254289",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254289"
@@ -866,16 +871,17 @@
       "vuln_id": "V-254292"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254293",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254293r1051095_rule",
       "severity": "high",
       "title": "Windows Server 2022 reversible password encryption must be disabled.",
-      "tracking_issue": "TODO-V-254293",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254293"
@@ -2819,16 +2825,17 @@
       "vuln_id": "V-254418"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254419",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254419r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Add workstations to domain user right must only be assigned to the Administrators group on domain controllers.",
-      "tracking_issue": "TODO-V-254419",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254419"
@@ -2924,16 +2931,17 @@
       "vuln_id": "V-254425"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254426",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254426r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Enable computer and user accounts to be trusted for delegation user right must only be assigned to the Administrators group on domain controllers.",
-      "tracking_issue": "TODO-V-254426",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254426"
@@ -3138,16 +3146,17 @@
       "vuln_id": "V-254439"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254440",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254440r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Enable computer and user accounts to be trusted for delegation user right must not be assigned to any groups or accounts on domain-joined member servers and standalone or nondomain-joined systems.",
-      "tracking_issue": "TODO-V-254440",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254440"
@@ -3944,31 +3953,33 @@
       "vuln_id": "V-254490"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254491",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254491r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Access Credential Manager as a trusted caller user right must not be assigned to any groups or accounts.",
-      "tracking_issue": "TODO-V-254491",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254491"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254492",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254492r958726_rule",
       "severity": "high",
       "title": "Windows Server 2022 Act as part of the operating system user right must not be assigned to any groups or accounts.",
-      "tracking_issue": "TODO-V-254492",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254492"
@@ -3989,286 +4000,305 @@
       "vuln_id": "V-254493"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254494",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254494r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 back up files and directories user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-254494",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254494"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254495",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254495r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 create a pagefile user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-254495",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254495"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254496",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254496r958726_rule",
       "severity": "high",
       "title": "Windows Server 2022 create a token object user right must not be assigned to any groups or accounts.",
-      "tracking_issue": "TODO-V-254496",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254496"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254497",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254497r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 create global objects user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
-      "tracking_issue": "TODO-V-254497",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254497"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254498",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254498r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 create permanent shared objects user right must not be assigned to any groups or accounts.",
-      "tracking_issue": "TODO-V-254498",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254498"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254499",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254499r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 create symbolic links user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-254499",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254499"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254500",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254500r958726_rule",
       "severity": "high",
       "title": "Windows Server 2022 debug programs user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-254500",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254500"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254501",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254501r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 force shutdown from a remote system user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-254501",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254501"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254502",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254502r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 generate security audits user right must only be assigned to Local Service and Network Service.",
-      "tracking_issue": "TODO-V-254502",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254502"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254503",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254503r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 impersonate a client after authentication user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
-      "tracking_issue": "TODO-V-254503",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254503"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254504",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254504r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 increase scheduling priority: user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-254504",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254504"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254505",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254505r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 load and unload device drivers user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-254505",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254505"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254506",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254506r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 lock pages in memory user right must not be assigned to any groups or accounts.",
-      "tracking_issue": "TODO-V-254506",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254506"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254507",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254507r958434_rule",
       "severity": "medium",
       "title": "Windows Server 2022 manage auditing and security log user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-254507",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254507"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254508",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254508r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 modify firmware environment values user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-254508",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254508"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254509",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254509r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 perform volume maintenance tasks user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-254509",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254509"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254510",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254510r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 profile single process user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-254510",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254510"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254511",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254511r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 restore files and directories user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-254511",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254511"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254512",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254512r958726_rule",
       "severity": "medium",
       "title": "Windows Server 2022 take ownership of files or other objects user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-254512",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/59148985d613b265d8789884aeb6dc928d72a53a331b3a439c10d20d26a7669c/U_MS_Windows_Server_2022_V2R6_STIG.zip"
       ],
       "vuln_id": "V-254512"

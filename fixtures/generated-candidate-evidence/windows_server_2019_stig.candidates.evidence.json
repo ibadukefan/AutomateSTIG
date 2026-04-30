@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 125,
+  "candidate_checks": 151,
   "cases": [
     {
       "check": {
@@ -192,6 +192,33 @@
     },
     {
       "check": {
+        "key": "SeSecurityPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Manage auditing and security log user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSecurityPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSecurityPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205643"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "SCENoApplyLegacyAuditPolicy"
@@ -216,6 +243,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205644"
+    },
+    {
+      "check": {
+        "key": "MaximumPasswordAge",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 maximum password age must be configured to 60 days or less.",
+      "evidence_type": "windows_security_policy_less_or_equal",
+      "expected": {
+        "type": "less_or_equal",
+        "value": 60
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MaximumPasswordAge": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\MaximumPasswordAge": 60
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205659"
     },
     {
       "check": {
@@ -835,6 +889,627 @@
     },
     {
       "check": {
+        "key": "SeMachineAccountPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Add workstations to domain user right must only be assigned to the Administrators group on domain controllers.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeMachineAccountPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeMachineAccountPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205744"
+    },
+    {
+      "check": {
+        "key": "SeEnableDelegationPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Enable computer and user accounts to be trusted for delegation user right must only be assigned to the Administrators group on domain controllers.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeEnableDelegationPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeEnableDelegationPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205745"
+    },
+    {
+      "check": {
+        "key": "SeEnableDelegationPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 \"Enable computer and user accounts to be trusted for delegation\" user right must not be assigned to any groups or accounts on domain-joined member servers and standalone or nondomain-joined systems.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeEnableDelegationPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeEnableDelegationPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205748"
+    },
+    {
+      "check": {
+        "key": "SeTrustedCredManAccessPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Access Credential Manager as a trusted caller user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTrustedCredManAccessPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTrustedCredManAccessPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205749"
+    },
+    {
+      "check": {
+        "key": "SeTcbPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Act as part of the operating system user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTcbPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTcbPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205750"
+    },
+    {
+      "check": {
+        "key": "SeBackupPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Back up files and directories user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeBackupPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeBackupPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205751"
+    },
+    {
+      "check": {
+        "key": "SeCreatePagefilePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Create a pagefile user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreatePagefilePrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreatePagefilePrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205752"
+    },
+    {
+      "check": {
+        "key": "SeCreateTokenPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Create a token object user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateTokenPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateTokenPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205753"
+    },
+    {
+      "check": {
+        "key": "SeCreateGlobalPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Create global objects user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateGlobalPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateGlobalPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205754"
+    },
+    {
+      "check": {
+        "key": "SeCreatePermanentPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Create permanent shared objects user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreatePermanentPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreatePermanentPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205755"
+    },
+    {
+      "check": {
+        "key": "SeCreateSymbolicLinkPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Create symbolic links user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateSymbolicLinkPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateSymbolicLinkPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205756"
+    },
+    {
+      "check": {
+        "key": "SeDebugPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Debug programs: user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDebugPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDebugPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205757"
+    },
+    {
+      "check": {
+        "key": "SeRemoteShutdownPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Force shutdown from a remote system user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRemoteShutdownPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRemoteShutdownPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205758"
+    },
+    {
+      "check": {
+        "key": "SeAuditPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Generate security audits user right must only be assigned to Local Service and Network Service.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeAuditPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeAuditPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205759"
+    },
+    {
+      "check": {
+        "key": "SeImpersonatePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Impersonate a client after authentication user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeImpersonatePrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeImpersonatePrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205760"
+    },
+    {
+      "check": {
+        "key": "SeIncreaseBasePriorityPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Increase scheduling priority: user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeIncreaseBasePriorityPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeIncreaseBasePriorityPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205761"
+    },
+    {
+      "check": {
+        "key": "SeLoadDriverPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Load and unload device drivers user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeLoadDriverPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeLoadDriverPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205762"
+    },
+    {
+      "check": {
+        "key": "SeLockMemoryPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Lock pages in memory user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeLockMemoryPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeLockMemoryPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205763"
+    },
+    {
+      "check": {
+        "key": "SeSystemEnvironmentPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Modify firmware environment values user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSystemEnvironmentPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSystemEnvironmentPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205764"
+    },
+    {
+      "check": {
+        "key": "SeManageVolumePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Perform volume maintenance tasks user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeManageVolumePrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeManageVolumePrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205765"
+    },
+    {
+      "check": {
+        "key": "SeProfileSingleProcessPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Profile single process user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeProfileSingleProcessPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeProfileSingleProcessPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205766"
+    },
+    {
+      "check": {
+        "key": "SeRestorePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Restore files and directories user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRestorePrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRestorePrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205767"
+    },
+    {
+      "check": {
+        "key": "SeTakeOwnershipPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Take ownership of files or other objects user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTakeOwnershipPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTakeOwnershipPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205768"
+    },
+    {
+      "check": {
         "setting": "Success",
         "subcategory": "Other Account Management Events",
         "type": "audit_policy"
@@ -1345,6 +2020,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205793"
+    },
+    {
+      "check": {
+        "key": "LockoutDuration",
+        "section": "System Access",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 account lockout duration must be configured to 15 minutes or greater.",
+      "evidence_type": "windows_security_policy_greater_or_equal",
+      "expected": {
+        "type": "greater_or_equal",
+        "value": 15
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\LockoutDuration": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "System Access\\LockoutDuration": 15
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205795"
     },
     {
       "check": {
@@ -3377,5 +4079,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 125
+  "validated_candidates": 151
 }

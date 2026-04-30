@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "LockoutBadCount",
+      "section": "System Access",
+      "type": "security_policy"
+    },
+    "description": "Windows Server 2025 must have the number of allowed bad logon attempts configured to three or less.",
+    "expected": {
+      "type": "less_or_equal",
+      "value": 3
+    },
+    "platform": "windows",
+    "vuln_id": "V-278034"
+  },
   "check_content_excerpt": "Verify the effective setting in Local Group Policy Editor.\n\nRun gpedit.msc.\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Account Lockout Policy.\n\nIf the \"Account lockout threshold\" is \"0\" or more than \"3\" attempts, this is a finding.\n\nFor server core installations, run the following command:\n\nSecedit /Export /Areas SecurityPolicy /CFG C:\\Path\\FileName.Txt\n\nIf \"LockoutBadCount\" equals \"0\" or is greater than \"3\" in the file, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "less_or_equal",
+    "value": 3
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Account Policies >> Account Lockout Policy. Set \"Account lockout threshold\" to \"3\" or fewer invalid logon attempts (excluding \"0\", which is unacceptable).",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "SV-278034r1180808_rule",
   "severity": "medium",
