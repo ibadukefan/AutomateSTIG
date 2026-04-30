@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/bin/echo $ret",
+      "type": "command_output"
+    },
+    "description": "The macOS system must configure the SSH ServerAliveInterval to 900.",
+    "expected": {
+      "type": "equals",
+      "value": "pass"
+    },
+    "platform": "generic",
+    "vuln_id": "V-268444"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to set the SSH ServerAliveInterval to 900 with the following command:\n\nret=\"pass\"\nfor u in $(/usr/bin/dscl . -list /Users UniqueID | /usr/bin/awk '$2 > 500 {print $1}'); do\nsshCheck=$(/usr/bin/sudo -u $u /usr/bin/ssh -G . | /usr/bin/grep -c \"^serveraliveinterval 900\")\nif [[ \"$sshCheck\" == \"0\" ]]; then\nret=\"fail\"\nbreak\nfi\ndone\n/bin/echo $ret\n\nIf the result is not \"pass\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "pass"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to set the SSH ServerAliveInterval to 900 with the following command:\n\ninclude_dir=$(/usr/bin/awk '/^Include/ {print $2}' /etc/ssh/ssh_config | /usr/bin/tr -d '*')\n  \nssh_config_string=(\"ServerAliveInterval 900\")\nfor ssh_config in $ssh_config_string; do\nssh_setting=$(echo $ssh_config | /usr/bin/cut -d \" \" -f1)\n/usr/bin/grep -qEi \"^$ssh_setting\" \"${include_dir}01-mscp-ssh.conf\" && /usr/bin/sed -i \"\" \"s/^$ssh_setting.*/${ssh_config}/\" \"${include_dir}01-mscp-ssh.conf\" || echo \"$ssh_config\" >> \"${include_dir}01-mscp-ssh.conf\"\nfor u in $(/usr/bin/dscl . list /users shell | /usr/bin/egrep -v '(^_)|(root)|(/usr/bin/false)' | /usr/bin/awk '{print $1}'); do\nconfig=$(/usr/bin/sudo -u $u /usr/bin/ssh -Gv . 2>&1)\nconfigfiles=$(echo \"$config\" | /usr/bin/awk '/Reading configuration data/ {print $NF}'| /usr/bin/tr -d '\\r')\nconfigarray=( ${(f)configfiles} )\nif ! echo $config | /usr/bin/grep -q -i \"$ssh_config\" ; then\nfor c in $configarray; do\nif [[ \"$c\" == \"/etc/ssh/crypto.conf\" ]]; then\ncontinue\nfi\n          \n/usr/bin/sudo -u $u /usr/bin/grep -qEi \"^$ssh_setting\" \"$c\" && /usr/bin/sed -i \"\" \"s/^$ssh_setting.*/${ssh_config}/I\" \"$c\"\nif [[ \"$c\" =~ \".ssh/config\" ]]; then\nif /usr/bin/grep -qEi \"$ssh_setting\" \"$c\" 2> /dev/null; then\nold_file=$(cat ~$u/.ssh/config)\necho \"$ssh_config\" > ~$u/.ssh/config\necho \"$old_file\" >> ~$u/.ssh/config\nfi\nfi\ndone\nfi\ndone\ndone",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-268444r1131203_rule",
   "severity": "medium",

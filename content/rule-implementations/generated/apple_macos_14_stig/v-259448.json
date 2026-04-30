@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/bin/echo $ret",
+      "type": "command_output"
+    },
+    "description": "The macOS system must set SSH Active Server Alive Maximum to 0.",
+    "expected": {
+      "type": "equals",
+      "value": "pass"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259448"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to set SSH Active Server Alive Maximum to 0 with the following command:\n\nret=\"pass\"\nfor u in $(/usr/bin/dscl . -list /Users UniqueID | /usr/bin/awk '$2 > 500 {print $1}'); do\n  sshCheck=$(/usr/bin/sudo -u $u /usr/bin/ssh -G . | /usr/bin/grep -c \"^serveralivecountmax 0\")\n  if [[ \"$sshCheck\" == \"0\" ]]; then\n    ret=\"fail\"\n    break\n  fi\ndone\n/bin/echo $ret\n\nIf the result is not \"pass\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "pass"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to set SSH Active Server Alive Maximum to 0 with the following command:\n\nfor u in $(/usr/bin/dscl . -list /Users UniqueID | /usr/bin/awk '$2 > 500 {print $1}'); do\n  config=$(/usr/bin/sudo -u $u /usr/bin/ssh -Gv . 2>&1 | /usr/bin/awk '/Reading configuration data/ {print $NF}'| /usr/bin/tr -d '\\r')\n  configarray=( ${(f)config} )\n  for c in $configarray; do\n    /usr/bin/sudo -u $u /usr/bin/grep -q '^ServerAliveCountMax' \"$c\" && /usr/bin/sed -i '' 's/.*ServerAliveCountMax.*/ServerAliveCountMax 0/' \"$c\" || /bin/echo 'ServerAliveCountMax 0' >> \"$c\"\n  done\ndone",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259448r970703_rule",
   "severity": "medium",

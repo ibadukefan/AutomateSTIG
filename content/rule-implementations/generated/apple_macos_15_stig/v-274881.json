@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/bin/sudo /usr/bin/sudo -V | /usr/bin/grep -c \"Authentication timestamp timeout: 0.0 minutes\"",
+      "type": "command_output"
+    },
+    "description": "The macOS system must require users to reauthenticate for privilege escalation when using the \"sudo\" command.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "generic",
+    "vuln_id": "V-274881"
+  },
   "check_content_excerpt": "Verify the macOS system requires reauthentication when using the \"sudo\" command to elevate privileges with the following command:\n\n/usr/bin/sudo /usr/bin/sudo -V | /usr/bin/grep -c \"Authentication timestamp timeout: 0.0 minutes\"\n\nIf the result is not \"1\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to require reauthentication when using \"sudo\" with the following command:\n\n/usr/bin/find /etc/sudoers* -type f -exec sed -i '' '/timestamp_timeout/d' '{}' \\;\n/bin/echo \"Defaults timestamp_timeout=0\" >> /etc/sudoers.d/mscp",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-274881r1099904_rule",
   "severity": "medium",

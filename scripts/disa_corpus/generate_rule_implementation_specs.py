@@ -454,10 +454,14 @@ def _normalize_command(command: str) -> str:
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     command_matches = list(re.finditer(r'^\s*[$#>]\s*(?P<command>(?:sudo\s+)?(?:/[A-Za-z0-9_./:+-]+|[A-Za-z0-9_.:+-]+)\b[^\n\r]*)$', content, re.MULTILINE))
-    if not command_matches:
-        return None
-    command = _normalize_command(command_matches[0].group('command'))
-    if not command or any(token in command for token in ('`', '$(', '&&', ';')):
+    command = None
+    if command_matches:
+        command = _normalize_command(command_matches[0].group('command'))
+    else:
+        absolute_command = re.search(r'^\s*(?P<command>/[A-Za-z0-9_./:+-]+\b[^\n\r]*)$', content, re.MULTILINE)
+        if absolute_command and re.search(r'If\s+the\s+result\s+is\s+not\s+["“][^"”\n]+["”]', content, re.IGNORECASE):
+            command = _normalize_command(absolute_command.group('command'))
+    if not command or any(token in command for token in ('`', '$(', '&&', ';', '<<')):
         return None
 
     expected_match = re.search(r'Expected\s+result:\s*(?P<body>.*?)(?:\n\s*If\b|\Z)', content, re.IGNORECASE | re.DOTALL)
@@ -479,6 +483,16 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'platform': 'linux' if _linux_platform(stig_id) else 'generic',
             'check': {'type': 'command_output', 'command': command},
             'expected': {'type': 'contains', 'substring': 'FIPS mode is enabled.'},
+            'description': rule.get('title', ''),
+        }
+
+    result_match = re.search(r'If\s+the\s+result\s+is\s+not\s+["“]([^"”\n]+)["”]', content, re.IGNORECASE)
+    if result_match:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': result_match.group(1).strip()},
             'description': rule.get('title', ''),
         }
 

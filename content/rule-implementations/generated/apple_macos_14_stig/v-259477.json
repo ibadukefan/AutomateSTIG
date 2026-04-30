@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/sbin/sshd -G | /usr/bin/grep -Ec '^(passwordauthentication\\s+no|kbdinteractiveauthentication\\s+no)'",
+      "type": "command_output"
+    },
+    "description": "The macOS system must disable password authentication for SSH.",
+    "expected": {
+      "type": "equals",
+      "value": "2"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259477"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to disable password authentication for SSH with the following command:\n\n/usr/sbin/sshd -G | /usr/bin/grep -Ec '^(passwordauthentication\\s+no|kbdinteractiveauthentication\\s+no)'\n\nIf the result is not \"2\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "2"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to disable password authentication for SSH with the following command:\n\ninclude_dir=$(/usr/bin/awk '/^Include/ {print $2}' /etc/ssh/sshd_config | /usr/bin/tr -d '*')\nif [[ -z $include_dir ]]; then\n  /usr/bin/sed -i.bk \"1s/.*/Include \\/etc\\/ssh\\/sshd_config.d\\/\\*/\" /etc/ssh/sshd_config\nfi\necho \"passwordauthentication no\" >> \"${include_dir}01-mscp-sshd.conf\"\necho \"kbdinteractiveauthentication no\" >> \"${include_dir}01-mscp-sshd.conf\"\n\nfor file in $(ls ${include_dir}); do\n  if [[ \"$file\" == \"100-macos.conf\" ]]; then\n      continue\n  fi\n  if [[ \"$file\" == \"01-mscp-sshd.conf\" ]]; then\n      break\n  fi\n  /bin/mv ${include_dir}${file} ${include_dir}20-${file}\ndone",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259477r1009591_rule",
   "severity": "high",

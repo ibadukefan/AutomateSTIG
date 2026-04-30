@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/bin/dscl . -read /Users/root UserShell 2>&1 | /usr/bin/grep -c \"/usr/bin/false\"",
+      "type": "command_output"
+    },
+    "description": "The macOS system must disable root login.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "generic",
+    "vuln_id": "V-268443"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to disable root login with the following command:\n\n/usr/bin/dscl . -read /Users/root UserShell 2>&1 | /usr/bin/grep -c \"/usr/bin/false\"\n\nIf the result is not \"1\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to disable root login with the following command:\n\n/usr/bin/dscl . -create /Users/root UserShell /usr/bin/false",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-268443r1034269_rule",
   "severity": "medium",

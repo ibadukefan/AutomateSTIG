@@ -2,31 +2,33 @@
   "generated_from": "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip",
   "rules": [
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259418",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259418r958400_rule",
       "severity": "medium",
       "title": "The macOS system must prevent Apple Watch from terminating a session lock.",
-      "tracking_issue": "TODO-V-259418",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259418"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259419",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259419r958400_rule",
       "severity": "medium",
       "title": "The macOS system must enforce screen saver password.",
-      "tracking_issue": "TODO-V-259419",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259419"
@@ -47,46 +49,49 @@
       "vuln_id": "V-259420"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259421",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259421r1009577_rule",
       "severity": "medium",
       "title": "The macOS system must configure user session lock when a smart token is removed.",
-      "tracking_issue": "TODO-V-259421",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259421"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259422",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259422r958404_rule",
       "severity": "medium",
       "title": "The macOS system must disable hot corners.",
-      "tracking_issue": "TODO-V-259422",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259422"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259423",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259423r958402_rule",
       "severity": "medium",
       "title": "The macOS system must prevent AdminHostInfo from being available at LoginWindow.",
-      "tracking_issue": "TODO-V-259423",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259423"
@@ -107,31 +112,33 @@
       "vuln_id": "V-259424"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259425",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259425r1038944_rule",
       "severity": "medium",
       "title": "The macOS system must enforce time synchronization.",
-      "tracking_issue": "TODO-V-259425",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259425"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259428",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259428r958388_rule",
       "severity": "medium",
       "title": "The macOS system must limit consecutive failed log on attempts to three.",
-      "tracking_issue": "TODO-V-259428",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259428"
@@ -197,76 +204,81 @@
       "vuln_id": "V-259432"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259433",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259433r958434_rule",
       "severity": "medium",
       "title": "The macOS system must configure audit log folders to not contain access control lists.",
-      "tracking_issue": "TODO-V-259433",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259433"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259434",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259434r1117265_rule",
       "severity": "medium",
       "title": "The macOS system must disable FileVault automatic log on.",
-      "tracking_issue": "TODO-V-259434",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259434"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259435",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259435r970703_rule",
       "severity": "medium",
       "title": "The macOS system must configure SSHD ClientAliveInterval to 900.",
-      "tracking_issue": "TODO-V-259435",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259435"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259436",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259436r970703_rule",
       "severity": "medium",
       "title": "The macOS system must configure SSHD ClientAliveCountMax to 1.",
-      "tracking_issue": "TODO-V-259436",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259436"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259437",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259437r970703_rule",
       "severity": "medium",
       "title": "The macOS system must set Login Grace Time to 30.",
-      "tracking_issue": "TODO-V-259437",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259437"
@@ -287,31 +299,33 @@
       "vuln_id": "V-259438"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259439",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259439r958408_rule",
       "severity": "high",
       "title": "The macOS system must limit SSH to FIPS-compliant connections.",
-      "tracking_issue": "TODO-V-259439",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259439"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259440",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259440r958388_rule",
       "severity": "medium",
       "title": "The macOS system must set account lockout time to 15 minutes.",
-      "tracking_issue": "TODO-V-259440",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259440"
@@ -332,106 +346,113 @@
       "vuln_id": "V-259441"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259443",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259443r1009579_rule",
       "severity": "medium",
       "title": "The macOS system must disable logon to other user's active and locked sessions.",
-      "tracking_issue": "TODO-V-259443",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259443"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259444",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259444r1009580_rule",
       "severity": "medium",
       "title": "The macOS system must disable root logon.",
-      "tracking_issue": "TODO-V-259444",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259444"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259445",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259445r970703_rule",
       "severity": "medium",
       "title": "The macOS system must configure SSH ServerAliveInterval option set to 900.",
-      "tracking_issue": "TODO-V-259445",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259445"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259446",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259446r970703_rule",
       "severity": "medium",
       "title": "The macOS system must configure SSHD Channel Timeout to 900.",
-      "tracking_issue": "TODO-V-259446",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259446"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259447",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259447r1009527_rule",
       "severity": "medium",
       "title": "The macOS system must configure SSHD unused connection timeout to 900.",
-      "tracking_issue": "TODO-V-259447",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259447"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259448",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259448r970703_rule",
       "severity": "medium",
       "title": "The macOS system must set SSH Active Server Alive Maximum to 0.",
-      "tracking_issue": "TODO-V-259448",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259448"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259449",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259449r958636_rule",
       "severity": "medium",
       "title": "The macOS system must enforce auto logout after 86400 seconds of inactivity.",
-      "tracking_issue": "TODO-V-259449",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259449"
@@ -452,16 +473,17 @@
       "vuln_id": "V-259450"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259451",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259451r1038944_rule",
       "severity": "medium",
       "title": "The macOS system must enable time synchronization daemon.",
-      "tracking_issue": "TODO-V-259451",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259451"
@@ -482,16 +504,17 @@
       "vuln_id": "V-259452"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259453",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259453r958406_rule",
       "severity": "medium",
       "title": "The macOS system must be configured to audit all log on and log out events.",
-      "tracking_issue": "TODO-V-259453",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259453"
@@ -512,16 +535,17 @@
       "vuln_id": "V-259454"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259455",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259455r1038966_rule",
       "severity": "medium",
       "title": "The macOS system must configure system to shut down upon audit failure.",
-      "tracking_issue": "TODO-V-259455",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259455"
@@ -617,196 +641,209 @@
       "vuln_id": "V-259461"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259462",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259462r1009585_rule",
       "severity": "medium",
       "title": "The macOS system must be configured to audit all deletions of object attributes.",
-      "tracking_issue": "TODO-V-259462",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259462"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259463",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259463r1009586_rule",
       "severity": "medium",
       "title": "The macOS system must be configured to audit all changes of object attributes.",
-      "tracking_issue": "TODO-V-259463",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259463"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259464",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259464r991573_rule",
       "severity": "medium",
       "title": "The macOS system must be configured to audit all failed read actions on the system.",
-      "tracking_issue": "TODO-V-259464",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259464"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259465",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259465r991573_rule",
       "severity": "medium",
       "title": "The macOS system must be configured to audit all failed write actions on the system.",
-      "tracking_issue": "TODO-V-259465",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259465"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259466",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259466r1009587_rule",
       "severity": "medium",
       "title": "The macOS system must be configured to audit all failed program execution on the system.",
-      "tracking_issue": "TODO-V-259466",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259466"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259467",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259467r958752_rule",
       "severity": "low",
       "title": "The macOS system must configure audit retention to seven days.",
-      "tracking_issue": "TODO-V-259467",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259467"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259468",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259468r958424_rule",
       "severity": "medium",
       "title": "The macOS system must configure audit capacity warning.",
-      "tracking_issue": "TODO-V-259468",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259468"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259469",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259469r1038966_rule",
       "severity": "medium",
       "title": "The macOS system must configure audit failure notification.",
-      "tracking_issue": "TODO-V-259469",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259469"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259470",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259470r1009588_rule",
       "severity": "medium",
       "title": "The macOS system must configure the system to audit all authorization and authentication events.",
-      "tracking_issue": "TODO-V-259470",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259470"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259471",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259471r1009589_rule",
       "severity": "medium",
       "title": "The macOS system must set smart card certificate trust to moderate.",
-      "tracking_issue": "TODO-V-259471",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259471"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259472",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259472r1009590_rule",
       "severity": "medium",
       "title": "The macOS system must disable root logon for SSH.",
-      "tracking_issue": "TODO-V-259472",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259472"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259473",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259473r958434_rule",
       "severity": "medium",
       "title": "The macOS system must configure audit_control group to wheel.",
-      "tracking_issue": "TODO-V-259473",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259473"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259474",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259474r958434_rule",
       "severity": "medium",
       "title": "The macOS system must configure audit_control owner to root.",
-      "tracking_issue": "TODO-V-259474",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259474"
@@ -827,151 +864,161 @@
       "vuln_id": "V-259475"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259476",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259476r958434_rule",
       "severity": "medium",
       "title": "The macOS system must configure audit_control to not contain access control lists.",
-      "tracking_issue": "TODO-V-259476",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259476"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259477",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259477r1009591_rule",
       "severity": "high",
       "title": "The macOS system must disable password authentication for SSH.",
-      "tracking_issue": "TODO-V-259477",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259477"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259478",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259478r1117265_rule",
       "severity": "medium",
       "title": "The macOS system must disable Server Message Block sharing.",
-      "tracking_issue": "TODO-V-259478",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259478"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259479",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259479r1117265_rule",
       "severity": "medium",
       "title": "The macOS system must disable Network File System service.",
-      "tracking_issue": "TODO-V-259479",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259479"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259480",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259480r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable Location Services.",
-      "tracking_issue": "TODO-V-259480",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259480"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259481",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259481r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable Bonjour multicast.",
-      "tracking_issue": "TODO-V-259481",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259481"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259482",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259482r1117265_rule",
       "severity": "medium",
       "title": "The macOS system must disable Unix-to-Unix Copy Protocol service.",
-      "tracking_issue": "TODO-V-259482",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259482"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259483",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259483r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable Internet Sharing.",
-      "tracking_issue": "TODO-V-259483",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259483"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259484",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259484r1117265_rule",
       "severity": "medium",
       "title": "The macOS system must disable the built-in web server.",
-      "tracking_issue": "TODO-V-259484",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259484"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259485",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259485r1117265_rule",
       "severity": "medium",
       "title": "The macOS system must disable AirDrop.",
-      "tracking_issue": "TODO-V-259485",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259485"
@@ -992,106 +1039,113 @@
       "vuln_id": "V-259486"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259487",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259487r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable the iCloud Calendar services.",
-      "tracking_issue": "TODO-V-259487",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259487"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259488",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259488r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable iCloud Reminders.",
-      "tracking_issue": "TODO-V-259488",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259488"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259489",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259489r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable iCloud Address Book.",
-      "tracking_issue": "TODO-V-259489",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259489"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259490",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259490r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable iCloud Mail.",
-      "tracking_issue": "TODO-V-259490",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259490"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259491",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259491r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable iCloud Notes.",
-      "tracking_issue": "TODO-V-259491",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259491"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259492",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259492r1009529_rule",
       "severity": "medium",
       "title": "The macOS system must disable the camera.",
-      "tracking_issue": "TODO-V-259492",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259492"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259493",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259493r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable Siri.",
-      "tracking_issue": "TODO-V-259493",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259493"
@@ -1112,241 +1166,257 @@
       "vuln_id": "V-259494"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259495",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259495r1117265_rule",
       "severity": "medium",
       "title": "The macOS system must disable Remote Apple Events.",
-      "tracking_issue": "TODO-V-259495",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259495"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259496",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259496r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable Apple ID setup during Setup Assistant.",
-      "tracking_issue": "TODO-V-259496",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259496"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259497",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259497r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable Privacy Setup services during Setup Assistant.",
-      "tracking_issue": "TODO-V-259497",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259497"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259498",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259498r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable iCloud Storage Setup during Setup Assistant.",
-      "tracking_issue": "TODO-V-259498",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259498"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259499",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259499r987796_rule",
       "severity": "high",
       "title": "The macOS system must disable Trivial File Transfer Protocol service.",
-      "tracking_issue": "TODO-V-259499",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259499"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259500",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259500r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable Siri Setup during Setup Assistant.",
-      "tracking_issue": "TODO-V-259500",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259500"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259501",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259501r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable iCloud Keychain synchronization.",
-      "tracking_issue": "TODO-V-259501",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259501"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259502",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259502r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable iCloud Document synchronization.",
-      "tracking_issue": "TODO-V-259502",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259502"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259503",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259503r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable iCloud Bookmarks.",
-      "tracking_issue": "TODO-V-259503",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259503"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259504",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259504r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable iCloud Photo Library.",
-      "tracking_issue": "TODO-V-259504",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259504"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259505",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259505r1117265_rule",
       "severity": "medium",
       "title": "The macOS system must disable Screen Sharing and Apple Remote Desktop.",
-      "tracking_issue": "TODO-V-259505",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259505"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259506",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259506r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable the TouchID System Settings pane.",
-      "tracking_issue": "TODO-V-259506",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259506"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259507",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259507r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable the System Settings pane for Wallet and Apple Pay.",
-      "tracking_issue": "TODO-V-259507",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259507"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259508",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259508r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable the system settings pane for Siri.",
-      "tracking_issue": "TODO-V-259508",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259508"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259509",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259509r1009592_rule",
       "severity": "high",
       "title": "The macOS system must apply gatekeeper settings to block applications from unidentified developers.",
-      "tracking_issue": "TODO-V-259509",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259509"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259510",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259510r958908_rule",
       "severity": "high",
       "title": "The macOS system must disable Bluetooth when no approved device is connected.",
-      "tracking_issue": "TODO-V-259510",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259510"
@@ -1367,46 +1437,49 @@
       "vuln_id": "V-259511"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259512",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259512r1009593_rule",
       "severity": "high",
       "title": "The macOS system must enable Gatekeeper.",
-      "tracking_issue": "TODO-V-259512",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259512"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259513",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259513r991591_rule",
       "severity": "medium",
       "title": "The macOS system must disable unattended or automatic log on to the system.",
-      "tracking_issue": "TODO-V-259513",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259513"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259514",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259514r991592_rule",
       "severity": "medium",
       "title": "The macOS system must secure user's home folders.",
-      "tracking_issue": "TODO-V-259514",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259514"
@@ -1427,31 +1500,33 @@
       "vuln_id": "V-259515"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259516",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259516r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable Airplay Receiver.",
-      "tracking_issue": "TODO-V-259516",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259516"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259517",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259517r958400_rule",
       "severity": "medium",
       "title": "The macOS system must disable TouchID for unlocking the device.",
-      "tracking_issue": "TODO-V-259517",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259517"
@@ -1472,16 +1547,17 @@
       "vuln_id": "V-259518"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259519",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259519r1117265_rule",
       "severity": "medium",
       "title": "The macOS system must disable Bluetooth sharing.",
-      "tracking_issue": "TODO-V-259519",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259519"
@@ -1871,121 +1947,129 @@
       "vuln_id": "V-259544"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259545",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259545r1009598_rule",
       "severity": "medium",
       "title": "The macOS system must enforce smart card authentication.",
-      "tracking_issue": "TODO-V-259545",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259545"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259546",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259546r1009599_rule",
       "severity": "medium",
       "title": "The macOS system must allow smart card authentication.",
-      "tracking_issue": "TODO-V-259546",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259546"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259547",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259547r1009600_rule",
       "severity": "medium",
       "title": "The macOS system must enforce multifactor authentication for logon.",
-      "tracking_issue": "TODO-V-259547",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259547"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259548",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259548r1009601_rule",
       "severity": "medium",
       "title": "The macOS system must enforce multifactor authentication for the su command.",
-      "tracking_issue": "TODO-V-259548",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259548"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259549",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259549r1009602_rule",
       "severity": "medium",
       "title": "The macOS system must enforce multifactor authentication for privilege escalation through the sudo command.",
-      "tracking_issue": "TODO-V-259549",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259549"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259550",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259550r1038909_rule",
       "severity": "medium",
       "title": "The macOS system must require passwords contain a minimum of one lowercase character and one uppercase character.",
-      "tracking_issue": "TODO-V-259550",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259550"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259551",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259551r1038913_rule",
       "severity": "medium",
       "title": "The macOS system must set minimum password lifetime to 24 hours.",
-      "tracking_issue": "TODO-V-259551",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259551"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259552",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259552r1038915_rule",
       "severity": "medium",
       "title": "The macOS system must disable accounts after 35 days of inactivity.",
-      "tracking_issue": "TODO-V-259552",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259552"
@@ -2021,16 +2105,17 @@
       "vuln_id": "V-259554"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259555",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259555r1050789_rule",
       "severity": "medium",
       "title": "The macOS system must require users to reauthenticate for privilege escalation when using the \"sudo\" command.",
-      "tracking_issue": "TODO-V-259555",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259555"
@@ -2081,181 +2166,193 @@
       "vuln_id": "V-259558"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259559",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259559r1050789_rule",
       "severity": "medium",
       "title": "The macOS system must configure sudoers timestamp type.",
-      "tracking_issue": "TODO-V-259559",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259559"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259560",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259560r1038911_rule",
       "severity": "high",
       "title": "The macOS system must ensure System Integrity Protection is enabled.",
-      "tracking_issue": "TODO-V-259560",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259560"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259561",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259561r958552_rule",
       "severity": "high",
       "title": "The macOS system must enforce FileVault.",
-      "tracking_issue": "TODO-V-259561",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259561"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259562",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259562r991593_rule",
       "severity": "medium",
       "title": "The macOS system must enable the application firewall.",
-      "tracking_issue": "TODO-V-259562",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259562"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259563",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259563r958482_rule",
       "severity": "medium",
       "title": "The macOS system must configure login window to prompt for username and password.",
-      "tracking_issue": "TODO-V-259563",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259563"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259564",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259564r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable TouchID prompt during Setup Assistant.",
-      "tracking_issue": "TODO-V-259564",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259564"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259565",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259565r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable Screen Time prompt during Setup Assistant.",
-      "tracking_issue": "TODO-V-259565",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259565"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259566",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259566r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable Unlock with Apple Watch during Setup Assistant.",
-      "tracking_issue": "TODO-V-259566",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259566"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259567",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259567r1117265_rule",
       "severity": "medium",
       "title": "The macOS system must disable Handoff.",
-      "tracking_issue": "TODO-V-259567",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259567"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259568",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259568r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable proximity-based password sharing requests.",
-      "tracking_issue": "TODO-V-259568",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259568"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259569",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259569r958478_rule",
       "severity": "medium",
       "title": "The macOS system must disable Erase Content and Settings.",
-      "tracking_issue": "TODO-V-259569",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259569"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259570",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259570r1117265_rule",
       "severity": "medium",
       "title": "The macOS system must enable Authenticated Root.",
-      "tracking_issue": "TODO-V-259570",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259570"
@@ -2291,61 +2388,65 @@
       "vuln_id": "V-259572"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259573",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259573r958944_rule",
       "severity": "medium",
       "title": "The macOS system must ensure secure boot level set to full.",
-      "tracking_issue": "TODO-V-259573",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259573"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259574",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259574r991589_rule",
       "severity": "medium",
       "title": "The macOS system must enforce enrollment in mobile device management.",
-      "tracking_issue": "TODO-V-259574",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259574"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259575",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259575r991589_rule",
       "severity": "medium",
       "title": "The macOS system must enable recovery lock.",
-      "tracking_issue": "TODO-V-259575",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259575"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259576",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259576r991589_rule",
       "severity": "medium",
       "title": "The macOS system must enforce installation of XProtect Remediator and Gatekeeper updates automatically.",
-      "tracking_issue": "TODO-V-259576",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259576"

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/bin/grep -c \"$fips_ssh_config\" /etc/ssh/ssh_config.d/fips_ssh_config",
+      "type": "command_output"
+    },
+    "description": "The macOS system must limit SSH to FIPS-compliant connections.",
+    "expected": {
+      "type": "equals",
+      "value": "8"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259439"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to limit SSH to FIPS-compliant connections with the following command:\n\nfips_ssh_config=\"Host *\nCiphers aes128-gcm@openssh.com\nHostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\nHostKeyAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\nKexAlgorithms ecdh-sha2-nistp256\nMACs hmac-sha2-256\nPubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\nCASignatureAlgorithms ecdsa-sha2-nistp256\"\n/usr/bin/grep -c \"$fips_ssh_config\" /etc/ssh/ssh_config.d/fips_ssh_config\n\nIf the result is not \"8\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "8"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to limit SSH to FIPS-compliant connections with the following command:\n\nfips_ssh_config=\"Host *\nCiphers aes128-gcm@openssh.com\nHostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\nHostKeyAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\nKexAlgorithms ecdh-sha2-nistp256\nMACs hmac-sha2-256\nPubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\nCASignatureAlgorithms ecdsa-sha2-nistp256\"\n/bin/echo \"${fips_ssh_config}\" > /etc/ssh/ssh_config.d/fips_ssh_config",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259439r958408_rule",
   "severity": "high",

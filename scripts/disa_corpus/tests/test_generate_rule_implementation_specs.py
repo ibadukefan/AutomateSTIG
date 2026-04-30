@@ -354,6 +354,20 @@ If FIPS mode is not enabled, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'fips-mode-setup --check'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'FIPS mode is enabled.'})
 
+    def test_infers_absolute_command_result_equals_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259512',
+            'title': 'The macOS system must enable Gatekeeper.',
+            'check_content': '''Verify the macOS system is configured to enable Gatekeeper with the following command:
+
+/usr/sbin/spctl --status | /usr/bin/grep -c "assessments enabled"
+
+If the result is not "1", this is a finding.'''
+        }, 'Apple_macOS_14_STIG')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': '/usr/sbin/spctl --status | /usr/bin/grep -c "assessments enabled"'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
+
     def test_infers_no_output_command_candidate_from_find_file_absence_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230283',

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": ".NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\",
+      "type": "command_output"
+    },
+    "description": "The macOS system must disable iCloud Private Relay.",
+    "expected": {
+      "type": "equals",
+      "value": "false"
+    },
+    "platform": "generic",
+    "vuln_id": "V-268524"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to disable the iCloud Private Relay with the following command:\n\n/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('allowCloudPrivateRelay').js\nEOS\n\nIf the result is not \"false\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to disable the iCloud Private Relay by installing the \"com.apple.applicationaccess\" configuration profile.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-268524r1034512_rule",
   "severity": "medium",

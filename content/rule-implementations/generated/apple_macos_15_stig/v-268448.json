@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": ".NSUserDefaults.alloc.initWithSuiteName('.GlobalPreferences')\\",
+      "type": "command_output"
+    },
+    "description": "The macOS system must enforce auto logout after 86400 seconds of inactivity.",
+    "expected": {
+      "type": "equals",
+      "value": "86400"
+    },
+    "platform": "generic",
+    "vuln_id": "V-268448"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to enforce auto logout after 86400 seconds of inactivity with the following command:\n\n/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('.GlobalPreferences')\\\n.objectForKey('com.apple.autologout.AutoLogOutDelay').js\nEOS\n\nIf the result is not \"86400\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "86400"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to enforce auto logout after 86400 seconds of inactivity by installing the \"com.apple.GlobalPreferences\" configuration profile.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-268448r1034284_rule",
   "severity": "medium",

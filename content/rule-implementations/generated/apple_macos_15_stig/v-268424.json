@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/bin/profiles -P -o stdout | /usr/bin/grep -Ec '\"wvous-bl-corner\" = 0|\"wvous-br-corner\" = 0|\"wvous-tl-corner\" = 0|\"wvous-tr-corner\" = 0'",
+      "type": "command_output"
+    },
+    "description": "The macOS system must disable hot corners.",
+    "expected": {
+      "type": "equals",
+      "value": "4"
+    },
+    "platform": "generic",
+    "vuln_id": "V-268424"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to disable hot corners with the following command:\n\n/usr/bin/profiles -P -o stdout | /usr/bin/grep -Ec '\"wvous-bl-corner\" = 0|\"wvous-br-corner\" = 0|\"wvous-tl-corner\" = 0|\"wvous-tr-corner\" = 0'\n\nIf the result is not \"4\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "4"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to disable hot corners by installing the \"com.apple.ManagedClient.preferences\" configuration profile.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-268424r1034212_rule",
   "severity": "medium",

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyIdentifier\"]/following-sibling::*[1]/text()' - | /usr/bin/grep \"requireAlphanumeric\" -c",
+      "type": "command_output"
+    },
+    "description": "The macOS system must require that passwords contain a minimum of one numeric character.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "generic",
+    "vuln_id": "V-268535"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to require that passwords contain a minimum of one numeric character with the following command:\n\n/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyIdentifier\"]/following-sibling::*[1]/text()' - | /usr/bin/grep \"requireAlphanumeric\" -c\n\nIf the result is not \"1\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to require that passwords contain a minimum of one numeric character by installing the \"com.apple.mobiledevice.passwordpolicy\" configuration profile.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-268535r1034545_rule",
   "severity": "medium",

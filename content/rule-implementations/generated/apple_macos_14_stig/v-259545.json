@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": ".NSUserDefaults.alloc.initWithSuiteName('com.apple.security.smartcard')\\",
+      "type": "command_output"
+    },
+    "description": "The macOS system must enforce smart card authentication.",
+    "expected": {
+      "type": "equals",
+      "value": "true"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259545"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to enforce multifactor authentication with the following command:\n\n/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.smartcard')\\\n.objectForKey('enforceSmartCard').js\nEOS\n\nIf the result is not \"true\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to enforce multifactor authentication by installing the \"com.apple.security.smartcard\" configuration profile.\n\nNote: To ensure continued access to the operating system, consult the supplemental guidance provided with the STIG before applying the configuration profile.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259545r1009598_rule",
   "severity": "medium",

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": ".NSUserDefaults.alloc.initWithSuiteName('com.apple.security.firewall')\\",
+      "type": "command_output"
+    },
+    "description": "The macOS system must enable macOS Application Firewall.",
+    "expected": {
+      "type": "equals",
+      "value": "true"
+    },
+    "platform": "generic",
+    "vuln_id": "V-268557"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to enable the Application Firewall with the following command:\n\n/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.firewall')\\\n.objectForKey('EnableFirewall').js\nEOS\n\nIf the result is not \"true\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to enable the Application Firewall by installing the \"com.apple.security.firewall\" configuration profile.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-268557r1034611_rule",
   "severity": "medium",

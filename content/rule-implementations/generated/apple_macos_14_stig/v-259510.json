@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": ".NSUserDefaults.alloc.initWithSuiteName('com.apple.MCXBluetooth')\\",
+      "type": "command_output"
+    },
+    "description": "The macOS system must disable Bluetooth when no approved device is connected.",
+    "expected": {
+      "type": "equals",
+      "value": "true"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259510"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to disable Bluetooth with the following command:\n\n/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCXBluetooth')\\\n.objectForKey('DisableBluetooth').js\nEOS\n\nIf the result is not \"true\", this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to disable Bluetooth by installing the \"com.apple.MCXBluetooth\" configuration profiles.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259510r958908_rule",
   "severity": "high",

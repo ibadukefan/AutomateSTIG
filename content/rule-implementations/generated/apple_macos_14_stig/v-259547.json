@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_deny.so)' /etc/pam.d/login",
+      "type": "command_output"
+    },
+    "description": "The macOS system must enforce multifactor authentication for logon.",
+    "expected": {
+      "type": "equals",
+      "value": "2"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259547"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to enforce multifactor authentication for login with the following command:\n\n/usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_deny.so)' /etc/pam.d/login\n\nIf the result is not \"2\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "2"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to enforce multifactor authentication for login with the following commands:\n\n/bin/cat > /etc/pam.d/login << LOGIN_END\n# login: auth account password session\nauth        sufficient    pam_smartcard.so\nauth        optional      pam_krb5.so use_kcminit\nauth        optional      pam_ntlm.so try_first_pass\nauth        optional      pam_mount.so try_first_pass\nauth        required      pam_opendirectory.so try_first_pass\nauth        required      pam_deny.so\naccount     required      pam_nologin.so\naccount     required      pam_opendirectory.so\npassword    required      pam_opendirectory.so\nsession     required      pam_launchd.so\nsession     required      pam_uwtmp.so\nsession     optional      pam_mount.so\nLOGIN_END\n\n/bin/chmod 644 /etc/pam.d/login\n/usr/sbin/chown root:wheel /etc/pam.d/login",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259547r1009600_rule",
   "severity": "medium",

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/bin/sudo /usr/bin/sudo -V | /usr/bin/awk -F\": \" '/Type of authentication timestamp record/{print $2}'",
+      "type": "command_output"
+    },
+    "description": "The macOS system must configure sudoers timestamp type.",
+    "expected": {
+      "type": "equals",
+      "value": "tty"
+    },
+    "platform": "generic",
+    "vuln_id": "V-274880"
+  },
   "check_content_excerpt": "Verify the macOS system is configured with sudoers timestamp type with the following command:\n\n/usr/bin/sudo /usr/bin/sudo -V | /usr/bin/awk -F\": \" '/Type of authentication timestamp record/{print $2}'\n\nIf the result is not \"tty\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "tty"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system with sudoers timestamp type with the following command:\n\n/usr/bin/find /etc/sudoers* -type f -exec sed -i '' '/timestamp_type/d; /!tty_tickets/d' '{}' \\;",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-274880r1099901_rule",
   "severity": "medium",

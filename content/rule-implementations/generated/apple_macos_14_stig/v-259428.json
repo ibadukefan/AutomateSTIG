@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyAttributeMaximumFailedAuthentications\"]/following-sibling::integer[1]/text()' - | /usr/bin/awk '{ if ($1 <= 3) {print \"yes\"} else {print \"no\"}}'",
+      "type": "command_output"
+    },
+    "description": "The macOS system must limit consecutive failed log on attempts to three.",
+    "expected": {
+      "type": "equals",
+      "value": "yes"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259428"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to limit consecutive failed log on attempts to three with the following command:\n\n/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyAttributeMaximumFailedAuthentications\"]/following-sibling::integer[1]/text()' - | /usr/bin/awk '{ if ($1 <= 3) {print \"yes\"} else {print \"no\"}}'\n\nIf the result is not \"yes\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "yes"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to limit consecutive failed log on attempts to three by installing the \"com.apple.mobiledevice.passwordpolicy\" configuration profile or by a directory service.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259428r958388_rule",
   "severity": "medium",
