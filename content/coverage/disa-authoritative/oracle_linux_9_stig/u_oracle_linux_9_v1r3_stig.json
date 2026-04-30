@@ -5101,31 +5101,33 @@
       "vuln_id": "V-271756"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271757",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271757r1092604_rule",
       "severity": "high",
       "title": "OL 9 file systems must not contain shosts.equiv files.",
-      "tracking_issue": "TODO-V-271757",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/be452ffdb41ff20a00afe381cd12afb20e7998432a01d86e3600dba0140b87b1/U_Oracle_Linux_9_V1R3_STIG.zip"
       ],
       "vuln_id": "V-271757"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271758",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271758r1091986_rule",
       "severity": "high",
       "title": "OL 9 file systems must not contain .shosts files.",
-      "tracking_issue": "TODO-V-271758",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/be452ffdb41ff20a00afe381cd12afb20e7998432a01d86e3600dba0140b87b1/U_Oracle_Linux_9_V1R3_STIG.zip"
       ],
       "vuln_id": "V-271758"
@@ -5573,46 +5575,49 @@
       "vuln_id": "V-271788"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271789",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271789r1134863_rule",
       "severity": "medium",
       "title": "OL 9 library files must be group owned by root or a system account.",
-      "tracking_issue": "TODO-V-271789",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/be452ffdb41ff20a00afe381cd12afb20e7998432a01d86e3600dba0140b87b1/U_Oracle_Linux_9_V1R3_STIG.zip"
       ],
       "vuln_id": "V-271789"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271790",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271790r1134866_rule",
       "severity": "medium",
       "title": "OL 9 library files must be owned by root.",
-      "tracking_issue": "TODO-V-271790",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/be452ffdb41ff20a00afe381cd12afb20e7998432a01d86e3600dba0140b87b1/U_Oracle_Linux_9_V1R3_STIG.zip"
       ],
       "vuln_id": "V-271790"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271791",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271791r1134971_rule",
       "severity": "medium",
       "title": "OL 9 library files must have mode 0755 or less permissive.",
-      "tracking_issue": "TODO-V-271791",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/be452ffdb41ff20a00afe381cd12afb20e7998432a01d86e3600dba0140b87b1/U_Oracle_Linux_9_V1R3_STIG.zip"
       ],
       "vuln_id": "V-271791"

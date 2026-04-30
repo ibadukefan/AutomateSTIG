@@ -2,11 +2,11 @@
   "authoritative_manifests": 87,
   "authoritative_rules": 17250,
   "authoritative_rules_tracked": 17250,
-  "automated_or_mapped_rules": 11106,
-  "coverage_percent_tracked_corpus": 64.4,
+  "automated_or_mapped_rules": 11213,
+  "coverage_percent_tracked_corpus": 65.0,
   "current_check_definitions": 3189,
-  "generated_candidate_checks_with_fixture_evidence": 2303,
-  "last_updated_utc": "2026-04-30T20:07:34Z",
+  "generated_candidate_checks_with_fixture_evidence": 2332,
+  "last_updated_utc": "2026-04-30T20:32:19Z",
   "notes": [
     "Regression ratchet prevents silent drops in tracked artifacts, authoritative manifests, authoritative rules, automated/mapped rules, or unsupported-rule ceilings.",
     "Generated candidate checks are fixture-backed scaffolding, not live production asset validation.",
@@ -26,12 +26,13 @@
     "Added conservative Windows Advanced Audit Policy candidate inference from explicit GPO paths and Success/Failure findings; tracked coverage is 61.1% (10532/17250) with 6718 unsupported rules remaining.",
     "Added conservative command-output candidate inference for explicit single-line Expected result checks and FIPS mode output; tracked coverage is 61.2% (10558/17250) with 6692 unsupported rules remaining.",
     "Added conservative Linux grep absence candidate inference for explicit file greps where any returned occurrence is a finding; tracked coverage is 61.3% (10582/17250) with 6668 unsupported rules remaining.",
-    "Added conservative Linux auditctl expected-rule candidate inference for explicit single-rule auditctl -l grep examples; tracked coverage is 64.4% (11106/17250) with 6144 unsupported rules remaining."
+    "Added conservative Linux auditctl expected-rule candidate inference for explicit single-rule auditctl -l grep examples; tracked coverage is 64.4% (11106/17250) with 6144 unsupported rules remaining.",
+    "Added conservative no-output command candidate inference for explicit find-file absence checks and explicit \"output is produced\" findings; qualified returned-item findings remain unsupported; tracked coverage is 65.0% (11213/17250) with 6037 unsupported rules remaining."
   ],
   "public_disa_artifacts": 87,
   "public_disa_artifacts_indexed": 87,
   "status": "expanded_public_corpus_with_fixture_gated_candidate_mapping",
   "target": "unsupported_authoritative_rules == 0 across every authorized DISA STIG artifact",
-  "unsupported_authoritative_rules": 6144,
-  "unsupported_rules": 6144
+  "unsupported_authoritative_rules": 6037,
+  "unsupported_rules": 6037
 }

@@ -82,6 +82,19 @@
     },
     {
       "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm /022 -exec stat -c \"%n %a\" {} +",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 22.04 LTS library files must have mode \"755\" or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-260487"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "755",
         "owner": null,
@@ -94,6 +107,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-260488"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -group root -exec stat -c \"%n %G\" {} +",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 22.04 LTS library files must be group-owned by \"root\".",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-260500"
     },
     {
       "check": {

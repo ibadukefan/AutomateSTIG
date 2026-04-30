@@ -1512,16 +1512,17 @@
       "vuln_id": "V-257883"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257884",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257884 from source identifier xccdf_mil.disa.stig_group_V-257884.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257884r991560_rule",
       "severity": "medium",
       "title": "RHEL 9 library files must have mode 755 or less permissive.",
-      "tracking_issue": "TODO-V-257884",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257884"
@@ -2047,31 +2048,33 @@
       "vuln_id": "V-257919"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257920",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257920 from source identifier xccdf_mil.disa.stig_group_V-257920.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257920r1069385_rule",
       "severity": "medium",
       "title": "RHEL 9 library files must be owned by root.",
-      "tracking_issue": "TODO-V-257920",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257920"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257921",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257921 from source identifier xccdf_mil.disa.stig_group_V-257921.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257921r1069387_rule",
       "severity": "medium",
       "title": "RHEL 9 library files must be group-owned by root or a system account.",
-      "tracking_issue": "TODO-V-257921",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257921"
@@ -2403,31 +2406,33 @@
       "vuln_id": "V-257954"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257955",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257955 from source identifier xccdf_mil.disa.stig_group_V-257955.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257955r991589_rule",
       "severity": "high",
       "title": "There must be no shosts.equiv files on RHEL 9.",
-      "tracking_issue": "TODO-V-257955",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257955"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257956",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257956 from source identifier xccdf_mil.disa.stig_group_V-257956.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257956r991589_rule",
       "severity": "high",
       "title": "There must be no .shosts files on RHEL 9.",
-      "tracking_issue": "TODO-V-257956",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257956"

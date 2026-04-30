@@ -675,6 +675,19 @@
     },
     {
       "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm /022 -exec stat -c \"%n %a\" {} +",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 library files must have mode 755 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257884"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0755",
         "owner": null,
@@ -822,6 +835,32 @@
       },
       "platform": "linux",
       "vuln_id": "V-257897"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -user root -exec stat -c \"%n %U\" {} +",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 library files must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257920"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -group root -exec stat -c \"%n %G\" {} +",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 library files must be group-owned by root or a system account.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257921"
     },
     {
       "check": {
@@ -1001,6 +1040,32 @@
       },
       "platform": "linux",
       "vuln_id": "V-257954"
+    },
+    {
+      "check": {
+        "command": "find / -name shosts.equiv",
+        "type": "command_output"
+      },
+      "description": "There must be no shosts.equiv files on RHEL 9.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257955"
+    },
+    {
+      "check": {
+        "command": "find / -name .shosts",
+        "type": "command_output"
+      },
+      "description": "There must be no .shosts files on RHEL 9.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257956"
     },
     {
       "check": {

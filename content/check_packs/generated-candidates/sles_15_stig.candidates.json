@@ -1,0 +1,59 @@
+{
+  "checks": [
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm /022 -exec stat -c \"%n %a\" {} +",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system library files must have mode 0755 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-234834"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -user root -exec stat -c \"%n %U\" {} +",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system library files must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-234836"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -group root -exec stat -c \"%n %G\" {} +",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system library files must be group-owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-234838"
+    },
+    {
+      "check": {
+        "command": "find /etc/pam.d/ -type l -iname \"common-*\"",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must be configured to not overwrite Pluggable Authentication Modules (PAM) configuration on package changes.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-235006"
+    }
+  ],
+  "platform": "generic",
+  "stig_id": "SLES_15_STIG",
+  "version": "candidate-planned"
+}

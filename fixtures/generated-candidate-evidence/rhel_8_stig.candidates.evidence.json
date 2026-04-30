@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 220,
+  "candidate_checks": 222,
   "cases": [
     {
       "check": {
@@ -373,6 +373,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230279"
+    },
+    {
+      "check": {
+        "command": "find / -name shosts.equiv",
+        "type": "command_output"
+      },
+      "description": "There must be no shosts.equiv files on the RHEL 8 operating system.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / -name shosts.equiv": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / -name shosts.equiv": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230283"
     },
     {
       "check": {
@@ -5292,6 +5318,32 @@
     },
     {
       "check": {
+        "command": "grep -i nullok /etc/pam.d/password-auth",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must not allow blank or null passwords in the password-auth file.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i nullok /etc/pam.d/password-auth": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i nullok /etc/pam.d/password-auth": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244541"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/auditd.conf",
         "pattern": "space_left_action = email",
@@ -5935,5 +5987,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 220
+  "validated_candidates": 222
 }

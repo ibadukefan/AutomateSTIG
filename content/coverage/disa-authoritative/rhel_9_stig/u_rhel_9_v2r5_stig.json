@@ -1666,16 +1666,17 @@
       "vuln_id": "V-257883"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257884",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257884r1106306_rule",
       "severity": "medium",
       "title": "RHEL 9 library files must have mode 755 or less permissive.",
-      "tracking_issue": "TODO-V-257884",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/172096bcd53edbdc11d66c915b6b0d3230c6ce43979567e46fe3cc7ee79aca29/U_RHEL_9_V2R5_STIG.zip"
       ],
       "vuln_id": "V-257884"
@@ -2216,31 +2217,33 @@
       "vuln_id": "V-257919"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257920",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257920r1101926_rule",
       "severity": "medium",
       "title": "RHEL 9 library files must be owned by root.",
-      "tracking_issue": "TODO-V-257920",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/172096bcd53edbdc11d66c915b6b0d3230c6ce43979567e46fe3cc7ee79aca29/U_RHEL_9_V2R5_STIG.zip"
       ],
       "vuln_id": "V-257920"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257921",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257921r1106308_rule",
       "severity": "medium",
       "title": "RHEL 9 library files must be group-owned by root or a system account.",
-      "tracking_issue": "TODO-V-257921",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/172096bcd53edbdc11d66c915b6b0d3230c6ce43979567e46fe3cc7ee79aca29/U_RHEL_9_V2R5_STIG.zip"
       ],
       "vuln_id": "V-257921"
@@ -2709,31 +2712,33 @@
       "vuln_id": "V-257954"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257955",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257955r991589_rule",
       "severity": "high",
       "title": "There must be no shosts.equiv files on RHEL 9.",
-      "tracking_issue": "TODO-V-257955",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/172096bcd53edbdc11d66c915b6b0d3230c6ce43979567e46fe3cc7ee79aca29/U_RHEL_9_V2R5_STIG.zip"
       ],
       "vuln_id": "V-257955"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257956",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257956r991589_rule",
       "severity": "high",
       "title": "There must be no .shosts files on RHEL 9.",
-      "tracking_issue": "TODO-V-257956",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/172096bcd53edbdc11d66c915b6b0d3230c6ce43979567e46fe3cc7ee79aca29/U_RHEL_9_V2R5_STIG.zip"
       ],
       "vuln_id": "V-257956"

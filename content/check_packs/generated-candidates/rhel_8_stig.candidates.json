@@ -193,6 +193,19 @@
     },
     {
       "check": {
+        "command": "find / -name shosts.equiv",
+        "type": "command_output"
+      },
+      "description": "There must be no shosts.equiv files on the RHEL 8 operating system.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-230283"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config:StrictModes",
         "pattern": "yes",
@@ -2720,6 +2733,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-244539"
+    },
+    {
+      "check": {
+        "command": "grep -i nullok /etc/pam.d/password-auth",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must not allow blank or null passwords in the password-auth file.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-244541"
     },
     {
       "check": {

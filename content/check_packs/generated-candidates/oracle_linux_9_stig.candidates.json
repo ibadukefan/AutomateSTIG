@@ -3294,6 +3294,32 @@
     },
     {
       "check": {
+        "command": "find / -name shosts.equiv",
+        "type": "command_output"
+      },
+      "description": "OL 9 file systems must not contain shosts.equiv files.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271757"
+    },
+    {
+      "check": {
+        "command": "find / -name .shosts",
+        "type": "command_output"
+      },
+      "description": "OL 9 file systems must not contain .shosts files.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271758"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/named.conf",
         "pattern": "include \"/etc/crypto-policies/back-ends/bind.config\";'",
@@ -3386,6 +3412,45 @@
       },
       "platform": "linux",
       "vuln_id": "V-271783"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -group root -exec stat -c \"%n %G\" {} +",
+        "type": "command_output"
+      },
+      "description": "OL 9 library files must be group owned by root or a system account.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271789"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -user root -exec stat -c \"%n %U\" {} +",
+        "type": "command_output"
+      },
+      "description": "OL 9 library files must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271790"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm /022 -exec stat -c \"%n %a\" {} +",
+        "type": "command_output"
+      },
+      "description": "OL 9 library files must have mode 0755 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271791"
     },
     {
       "check": {

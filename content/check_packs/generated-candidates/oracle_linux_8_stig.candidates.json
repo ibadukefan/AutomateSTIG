@@ -253,6 +253,45 @@
     },
     {
       "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm /022 -exec stat -c \"%n %a\" {} +",
+        "type": "command_output"
+      },
+      "description": "OL 8 library files must have mode 755 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248570"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -user root -exec stat -c \"%n %U\" {} +",
+        "type": "command_output"
+      },
+      "description": "OL 8 library files must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248571"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -group root -exec stat -c \"%n %G\" {} +",
+        "type": "command_output"
+      },
+      "description": "OL 8 library files must be group-owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248572"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/dnf/dnf.conf",
         "pattern": "localpkg_gpgcheck =True",
@@ -1308,6 +1347,32 @@
       },
       "platform": "linux",
       "vuln_id": "V-248714"
+    },
+    {
+      "check": {
+        "command": "grep -i nullok /etc/pam.d/system-auth",
+        "type": "command_output"
+      },
+      "description": "OL 8 must not allow blank or null passwords in the system-auth file.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248715"
+    },
+    {
+      "check": {
+        "command": "grep -i nullok /etc/pam.d/password-auth",
+        "type": "command_output"
+      },
+      "description": "OL 8 must not allow blank or null passwords in the password-auth file.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248716"
     },
     {
       "check": {

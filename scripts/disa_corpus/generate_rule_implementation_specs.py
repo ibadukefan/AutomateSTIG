@@ -481,6 +481,21 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'contains', 'substring': 'FIPS mode is enabled.'},
             'description': rule.get('title', ''),
         }
+
+    no_output_for_find = command.startswith('find ') and re.search(
+        r'if\s+(?:a|any)\s+(?:["“][^"”]+["”]|[^\n.]+?)\s+(?:file\s+)?(?:is|are)\s+(?:found|returned),?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    no_output_for_explicit_output = re.search(r'if\s+output\s+is\s+produced,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    if no_output_for_find or no_output_for_explicit_output:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     return None
 
 

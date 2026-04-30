@@ -326,6 +326,49 @@ If FIPS mode is not enabled, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'fips-mode-setup --check'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'FIPS mode is enabled.'})
 
+    def test_infers_no_output_command_candidate_from_find_file_absence_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230283',
+            'title': 'There must be no shosts.equiv files on the RHEL 8 operating system.',
+            'check_content': '''Verify there are no "shosts.equiv" files on RHEL 8 with the following command:
+
+$ sudo find / -name shosts.equiv
+
+If a "shosts.equiv" file is found, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'find / -name shosts.equiv'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_no_output_command_candidate_from_output_produced_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-244541',
+            'title': 'RHEL 8 must not allow blank or null passwords in the password-auth file.',
+            'check_content': '''To verify that null passwords cannot be used, run the following command:
+
+$ sudo grep -i nullok /etc/pam.d/password-auth
+
+If output is produced, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep -i nullok /etc/pam.d/password-auth'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_skips_no_output_candidate_when_returned_items_are_qualified(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271901',
+            'title': 'OL 9 must only allow DOD PKI-established certificate authorities.',
+            'check_content': '''Verify OL 9 only allows the use of DOD PKI-established certificate authorities using the following command:
+
+$ trust list
+
+pkcs11:id=%7C%42;type=cert
+    label: Example Root
+
+If any nonapproved CAs are returned, this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertIsNone(candidate)
+
     def test_preserves_balanced_quotes_in_command_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-256447',
