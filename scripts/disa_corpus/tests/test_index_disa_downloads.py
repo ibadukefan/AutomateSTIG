@@ -47,6 +47,7 @@ class IndexDisaDownloadsTests(unittest.TestCase):
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_11_V2R4_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_11_V2R5_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_10_V3R4_STIG.zip', urls)
+        self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_10_V3R5_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_RHEL_7_V3R15_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Linux_8_V2R5_STIG.zip', urls)
@@ -81,7 +82,7 @@ class IndexDisaDownloadsTests(unittest.TestCase):
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Database_19c_V1R5_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y25M07_STIG.zip', urls)
         self.assertIn('https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip', urls)
-        self.assertEqual(len(rows), 56)
+        self.assertEqual(len(rows), 57)
 
 if __name__ == '__main__':
     unittest.main()

@@ -26,6 +26,7 @@ SEED_DOWNLOADS=[
  {'title':'Microsoft Windows 11 STIG V2R5','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_11_V2R5_STIG.zip'},
  {'title':'Microsoft Windows 11 STIG SCAP 1.3 Benchmark V2R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_11_V2R4_STIG_SCAP_1-3_Benchmark.zip'},
  {'title':'Microsoft Windows 10 STIG V3R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_10_V3R4_STIG.zip'},
+ {'title':'Microsoft Windows 10 STIG V3R5','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_10_V3R5_STIG.zip'},
  {'title':'Microsoft Windows 10 STIG SCAP 1.3 Benchmark V3R4','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark.zip'},
  {'title':'Red Hat Enterprise Linux 7 STIG V3R15','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_RHEL_7_V3R15_STIG.zip'},
  {'title':'Red Hat Enterprise Linux 7 STIG SCAP 1.3 Benchmark V3R15','url':'https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip'},
