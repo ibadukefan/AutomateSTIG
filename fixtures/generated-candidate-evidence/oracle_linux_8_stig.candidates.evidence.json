@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 230,
+  "candidate_checks": 233,
   "cases": [
     {
       "check": {
@@ -4909,6 +4909,33 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "autofs",
+        "type": "service"
+      },
+      "description": "The OL 8 file system automounter must be disabled unless required.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "autofs": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "autofs": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248836"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/modprobe.d/",
         "pattern": "usb-storage",
@@ -5368,6 +5395,33 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "fapolicyd",
+        "type": "service"
+      },
+      "description": "The OL 8 \"fapolicy\" module must be enabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "fapolicyd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "fapolicyd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248860"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/fapolicyd/fapolicyd.conf",
         "pattern": "permissive = 0",
@@ -5419,6 +5473,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248865"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del.target",
+        "type": "service"
+      },
+      "description": "The x86 Ctrl-Alt-Delete key sequence must be disabled on OL 8.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del.target": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del.target": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248869"
     },
     {
       "check": {
@@ -6240,5 +6321,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 230
+  "validated_candidates": 233
 }

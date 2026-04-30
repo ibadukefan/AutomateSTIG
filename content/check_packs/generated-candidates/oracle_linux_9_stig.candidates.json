@@ -851,6 +851,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "auditd",
+        "type": "service"
+      },
+      "description": "OL 9 audit service must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271520"
+    },
+    {
+      "check": {
         "name": "audispd-plugins",
         "should_be_installed": true,
         "type": "package"
@@ -1772,6 +1786,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-271637"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "autofs",
+        "type": "service"
+      },
+      "description": "OL 9 file system automount function must be disabled unless required.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271639"
     },
     {
       "check": {
@@ -2804,6 +2832,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-271741"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "debug-shell",
+        "type": "service"
+      },
+      "description": "OL 9 debug-shell systemd service must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271742"
     },
     {
       "check": {

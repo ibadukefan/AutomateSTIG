@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 218,
+  "candidate_checks": 222,
   "cases": [
     {
       "check": {
@@ -3772,6 +3772,33 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "autofs",
+        "type": "service"
+      },
+      "description": "The RHEL 8 file system automounter must be disabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "autofs": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "autofs": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230502"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/modprobe.d/",
         "pattern": "usb-storage",
@@ -4255,6 +4282,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230525"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del.target",
+        "type": "service"
+      },
+      "description": "The x86 Ctrl-Alt-Delete key sequence must be disabled on RHEL 8.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del.target": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del.target": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230529"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "debug-shell",
+        "type": "service"
+      },
+      "description": "The debug-shell systemd service must be disabled on RHEL 8.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "debug-shell": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "debug-shell": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230532"
     },
     {
       "check": {
@@ -5292,6 +5373,33 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "fapolicyd",
+        "type": "service"
+      },
+      "description": "The RHEL 8 fapolicy module must be enabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "fapolicyd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "fapolicyd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244545"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/fapolicyd/fapolicyd.conf",
         "pattern": "permissive = 0",
@@ -5881,5 +5989,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 218
+  "validated_candidates": 222
 }

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "fapolicyd",
+      "type": "service"
+    },
+    "description": "The OL 8 \"fapolicy\" module must be enabled.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248860"
+  },
   "check_content_excerpt": "Verify the OL 8 \"fapolicyd\" is enabled and running with the following command:\n\n$ sudo systemctl status fapolicyd.service\n\nfapolicyd.service - File Access Policy Daemon\nLoaded: loaded (/usr/lib/systemd/system/fapolicyd.service; enabled; vendor preset: disabled)\nActive: active (running)\n\nIf fapolicyd is not enabled and running, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Enable \"fapolicyd\" using the following command:\n\n$ sudo systemctl enable --now fapolicyd",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-248860r958804_rule",
   "severity": "medium",

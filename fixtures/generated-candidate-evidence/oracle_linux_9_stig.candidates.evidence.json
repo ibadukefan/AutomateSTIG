@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 275,
+  "candidate_checks": 278,
   "cases": [
     {
       "check": {
@@ -1668,6 +1668,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271519"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "auditd",
+        "type": "service"
+      },
+      "description": "OL 9 audit service must be enabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271520"
     },
     {
       "check": {
@@ -3470,6 +3497,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271637"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "autofs",
+        "type": "service"
+      },
+      "description": "OL 9 file system automount function must be disabled unless required.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "autofs": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "autofs": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271639"
     },
     {
       "check": {
@@ -5464,6 +5518,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271741"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "debug-shell",
+        "type": "service"
+      },
+      "description": "OL 9 debug-shell systemd service must be disabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "debug-shell": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "debug-shell": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271742"
     },
     {
       "check": {
@@ -7495,5 +7576,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 275
+  "validated_candidates": 278
 }

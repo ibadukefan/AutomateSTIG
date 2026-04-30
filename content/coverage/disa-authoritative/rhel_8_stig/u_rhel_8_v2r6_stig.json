@@ -3848,16 +3848,17 @@
       "vuln_id": "V-230500"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230502",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230502r1155393_rule",
       "severity": "medium",
       "title": "The RHEL 8 file system automounter must be disabled.",
-      "tracking_issue": "TODO-V-230502",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/45a4c12d5134d75e43ab4508ac92d2c43b2f6228716cd9fbb96cc4fd42c139cb/U_RHEL_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-230502"
@@ -4256,16 +4257,17 @@
       "vuln_id": "V-230527"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230529",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230529r1017289_rule",
       "severity": "high",
       "title": "The x86 Ctrl-Alt-Delete key sequence must be disabled on RHEL 8.",
-      "tracking_issue": "TODO-V-230529",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/45a4c12d5134d75e43ab4508ac92d2c43b2f6228716cd9fbb96cc4fd42c139cb/U_RHEL_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-230529"
@@ -4301,16 +4303,17 @@
       "vuln_id": "V-230531"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230532",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230532r1017294_rule",
       "severity": "medium",
       "title": "The debug-shell systemd service must be disabled on RHEL 8.",
-      "tracking_issue": "TODO-V-230532",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/45a4c12d5134d75e43ab4508ac92d2c43b2f6228716cd9fbb96cc4fd42c139cb/U_RHEL_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-230532"
@@ -5180,16 +5183,17 @@
       "vuln_id": "V-244544"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-244545",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-244545r958804_rule",
       "severity": "medium",
       "title": "The RHEL 8 fapolicy module must be enabled.",
-      "tracking_issue": "TODO-V-244545",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/45a4c12d5134d75e43ab4508ac92d2c43b2f6228716cd9fbb96cc4fd42c139cb/U_RHEL_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-244545"

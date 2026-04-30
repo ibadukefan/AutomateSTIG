@@ -1,6 +1,60 @@
 {
-  "candidate_checks": 243,
+  "candidate_checks": 248,
   "cases": [
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del.target",
+        "type": "service"
+      },
+      "description": "The x86 Ctrl-Alt-Delete key sequence must be disabled on RHEL 9.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del.target": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del.target": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257785"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "debug-shell",
+        "type": "service"
+      },
+      "description": "RHEL 9 debug-shell systemd service must be disabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "debug-shell": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "debug-shell": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257786"
+    },
     {
       "check": {
         "is_regex": false,
@@ -188,6 +242,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257814"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "kdump",
+        "type": "service"
+      },
+      "description": "The kdump service on RHEL 9 must be disabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "kdump": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "kdump": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257818"
     },
     {
       "check": {
@@ -662,6 +743,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257848"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "autofs",
+        "type": "service"
+      },
+      "description": "RHEL 9 file system automount function must be disabled unless required.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "autofs": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "autofs": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257849"
     },
     {
       "check": {
@@ -5550,6 +5658,33 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "auditd",
+        "type": "service"
+      },
+      "description": "RHEL 9 audit service must be enabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258152"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/auditd.conf",
         "pattern": "disk_error_action = HALT",
@@ -6669,5 +6804,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 243
+  "validated_candidates": 248
 }

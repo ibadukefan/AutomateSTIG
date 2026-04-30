@@ -364,12 +364,12 @@ def _sshd_config_candidate(rule: dict) -> dict | None:
 def _service_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
-    match = re.search(r'\bsystemctl\s+is-(?:enabled|active)\s+([A-Za-z0-9_.@+-]+)(?:\.service)?\b', content)
+    match = re.search(r'\bsystemctl\s+(?:is-(?:enabled|active)|status)\s+([A-Za-z0-9_.@+-]+)(?:\.service)?\b', content)
     if not match:
         return None
     name = match.group(1).removesuffix('.service')
     lower = f"{title}\n{content}".lower()
-    if re.search(r'must\s+not\s+.*(?:enabled|running)|if\s+the\s+service\s+is\s+(?:enabled|active|running),?\s+this\s+is\s+a\s+finding', lower):
+    if re.search(r'must\s+not\s+.*(?:enabled|running)|must\s+be\s+disabled|if\s+(?:the\s+)?(?:"[^"]+"\s+)?(?:service\s+)?(?:status\s+)?(?:is\s+)?(?:set\s+to\s+)?(?:"?)?(?:enabled|active|running)(?:"?)?,?\s+this\s+is\s+a\s+finding', lower):
         expected_status = 'disabled'
     elif 'must be enabled' in lower or 'must be running' in lower:
         expected_status = 'running'

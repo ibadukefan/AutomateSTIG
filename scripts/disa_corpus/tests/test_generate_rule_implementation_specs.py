@@ -159,6 +159,23 @@ $ sudo sysctl --system'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
 
+    def test_infers_linux_service_disabled_candidate_from_systemctl_status_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230502',
+            'title': 'The RHEL 8 file system automounter must be disabled.',
+            'check_content': '''Check to see if automounter service is active with the following command:
+
+$ sudo systemctl status autofs
+
+o autofs.service - Automounts filesystems on demand
+   Loaded: loaded (/usr/lib/systemd/system/autofs.service; disabled)
+   Active: inactive (dead)
+
+If the "autofs" status is set to "active", this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'autofs', 'expected_status': 'disabled'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
+
     def test_infers_linux_file_permission_candidate_from_stat_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-251235',
