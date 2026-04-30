@@ -2153,6 +2153,118 @@
       },
       "platform": "windows",
       "vuln_id": "V-271426"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "File System",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit file system failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278942"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "File System",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit file system successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278943"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Handle Manipulation",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit handle manipulation failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278944"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Handle Manipulation",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit handle manipulation successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278945"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Registry",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit registry failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278946"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Registry",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit registry successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278947"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Sensitive Privilege Use",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit sensitive privilege use successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278948"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Sensitive Privilege Use",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit sensitive privilege use failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278949"
     }
   ],
   "platform": "windows",

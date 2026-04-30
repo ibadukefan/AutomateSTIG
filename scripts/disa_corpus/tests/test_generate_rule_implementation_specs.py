@@ -286,6 +286,20 @@ If the system is not configured to audit successes, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'audit_policy', 'subcategory': 'User Account Management', 'setting': 'Success'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Success'})
 
+    def test_infers_windows_advanced_audit_policy_candidate_from_gpo_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278947',
+            'title': 'Windows Server 2022 must be configured to audit registry successes.',
+            'check_content': '''Verify that Audit Registry auditing has been enabled:
+
+Computer Configuration >> Windows Settings >> Security Settings >> Advanced Audit Policy Configuration >> System Audit Policies >> Object Access >> Audit Registry.
+
+If "Audit Registry" is not set to "Success", this is a finding.'''
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'audit_policy', 'subcategory': 'Registry', 'setting': 'Success'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Success'})
+
     def test_infers_windows_user_right_security_policy_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254506',

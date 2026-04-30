@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 146,
+  "candidate_checks": 154,
   "cases": [
     {
       "check": {
@@ -3918,6 +3918,222 @@
     },
     {
       "check": {
+        "setting": "Failure",
+        "subcategory": "File System",
+        "type": "audit_policy"
+      },
+      "description": "Windows 11 must be configured to audit file system failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "File System": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "File System": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278926"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "File System",
+        "type": "audit_policy"
+      },
+      "description": "Windows 11 must be configured to audit file system successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "File System": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "File System": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278927"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Handle Manipulation",
+        "type": "audit_policy"
+      },
+      "description": "Windows 11 must be configured to audit handle manipulation failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Handle Manipulation": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Handle Manipulation": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278928"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Handle Manipulation",
+        "type": "audit_policy"
+      },
+      "description": "Windows 11 must be configured to audit handle manipulation successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Handle Manipulation": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Handle Manipulation": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278929"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Registry",
+        "type": "audit_policy"
+      },
+      "description": "Windows 11 must be configured to audit registry failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Registry": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Registry": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278930"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Registry",
+        "type": "audit_policy"
+      },
+      "description": "Windows 11 must be configured to audit registry successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Registry": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Registry": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278931"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Sensitive Privilege Use",
+        "type": "audit_policy"
+      },
+      "description": "Windows 11 must be configured to audit sensitive privilege use successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Sensitive Privilege Use": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Sensitive Privilege Use": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278932"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Sensitive Privilege Use",
+        "type": "audit_policy"
+      },
+      "description": "Windows 11 must be configured to audit sensitive privilege use failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Sensitive Privilege Use": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Sensitive Privilege Use": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278933"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftAccount",
         "type": "registry",
         "value_name": "DisableUserAuth"
@@ -3949,5 +4165,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 146
+  "validated_candidates": 154
 }

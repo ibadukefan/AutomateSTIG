@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "setting": "Failure",
+      "subcategory": "Registry",
+      "type": "audit_policy"
+    },
+    "description": "Windows Server 2025 must be configured to audit registry failures.",
+    "expected": {
+      "substring": "Failure",
+      "type": "contains"
+    },
+    "platform": "windows",
+    "vuln_id": "V-279920"
+  },
   "check_content_excerpt": "Verify Audit Registry auditing is enabled: \n\nComputer Configuration >> Windows Settings >> Security Settings >> Advanced Audit Policy Configuration >> System Audit Policies >> Object Access >> Audit Registry. \n\nIf \"Audit Registry\" is not set to \"Failure\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "Failure",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Advanced Audit Policy Configuration >> System Audit Policies >> Object Access >> \"Audit Registry\" with \"Failure\" selected.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "audit_policy",
   "remediation": "planned",
   "rule_id": "SV-279920r1181966_rule",
   "severity": "medium",

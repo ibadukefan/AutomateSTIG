@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "setting": "Success",
+      "subcategory": "Registry",
+      "type": "audit_policy"
+    },
+    "description": "Windows Server 2022 must be configured to audit registry successes.",
+    "expected": {
+      "substring": "Success",
+      "type": "contains"
+    },
+    "platform": "windows",
+    "vuln_id": "V-278947"
+  },
   "check_content_excerpt": "Verify that Audit Registry auditing has been enabled: \n\nComputer Configuration >> Windows Settings >> Security Settings >> Advanced Audit Policy Configuration >> System Audit Policies >> Object Access >> Audit Registry. \n\nIf \"Audit Registry\" is not set to \"Success\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "Success",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Advanced Audit Policy Configuration >> System Audit Policies >> Object Access >> \"Audit Registry\" with \"Success\" selected.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "audit_policy",
   "remediation": "planned",
   "rule_id": "SV-278947r1135370_rule",
   "severity": "medium",

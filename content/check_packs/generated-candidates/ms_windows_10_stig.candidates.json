@@ -2200,6 +2200,132 @@
     },
     {
       "check": {
+        "setting": "Failure",
+        "subcategory": "Process Creation",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must have command line process auditing events enabled for failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-257589"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "File System",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit file system failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278918"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "File System",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit file system successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278919"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Handle Manipulation",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit handle manipulation failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278920"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Handle Manipulation",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit handle manipulation successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278921"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Registry",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit registry successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278922"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Registry",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit registry failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278923"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Sensitive Privilege Use",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit sensitive privilege use successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278924"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Sensitive Privilege Use",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit sensitive privilege use failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278925"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\MicrosoftAccount",
         "type": "registry",
         "value_name": "DisableUserAuth"
