@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "esxcli system syslog config get|grep 509",
+      "type": "command_output"
+    },
+    "description": "The ESXi host must enable strict x509 verification for SSL syslog endpoints.",
+    "expected": {
+      "type": "equals",
+      "value": "Strict X509Compliance: true"
+    },
+    "platform": "generic",
+    "vuln_id": "V-256437"
+  },
   "check_content_excerpt": "If SSL is not used for the syslog target, this is not applicable.\n\nFrom an ESXi shell, run the following command:\n\n# esxcli system syslog config get|grep 509\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\n$esxcli = Get-EsxCli -v2\n$esxcli.system.syslog.config.get.invoke()|Select StrictX509Compliance\n\nExpected result:\n\nStrict X509Compliance: true\n\nIf the output does not match the expected result, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Strict X509Compliance: true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From an ESXi shell, run the following commands:\n\n# esxcli system syslog config set --x509-strict=\"true\"\n# esxcli system syslog reload\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\n$esxcli = Get-EsxCli -v2\n$arguments = $esxcli.system.syslog.config.set.CreateArgs()\n$arguments.x509strict = $true\n$esxcli.system.syslog.config.set.Invoke($arguments)\n$esxcli.system.syslog.reload.Invoke()",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-256437r959010_rule",
   "severity": "medium",

@@ -240,6 +240,19 @@
     },
     {
       "check": {
+        "command": "fips-mode-setup --check",
+        "type": "command_output"
+      },
+      "description": "OL 9 must enable FIPS mode.",
+      "expected": {
+        "substring": "FIPS mode is enabled.",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271454"
+    },
+    {
+      "check": {
         "name": "nfs-utils",
         "should_be_installed": true,
         "type": "package"

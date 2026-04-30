@@ -1,0 +1,33 @@
+{
+  "checks": [
+    {
+      "check": {
+        "command": "xmllint --xpath '/Server/Service/Executor[@name=\"tomcatThreadPool\"]/@maxThreads' /usr/lib/vmware-lookupsvc/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must limit the number of maximum concurrent connections permitted.",
+      "expected": {
+        "type": "equals",
+        "value": "maxThreads=\"300\""
+      },
+      "platform": "generic",
+      "vuln_id": "V-259037"
+    },
+    {
+      "check": {
+        "command": "xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\".*\"//g' | xmllint --xpath '/web-app/session-config/cookie-config/http-only' -",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service cookies must have \"http-only\" flag set.",
+      "expected": {
+        "type": "equals",
+        "value": "<http-only>true</http-only>"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259055"
+    }
+  ],
+  "platform": "generic",
+  "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
+  "version": "candidate-planned"
+}

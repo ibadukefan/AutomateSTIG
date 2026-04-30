@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 243,
+  "candidate_checks": 244,
   "cases": [
     {
       "check": {
@@ -6370,6 +6370,32 @@
     },
     {
       "check": {
+        "command": "fips-mode-setup --check",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must enable FIPS mode.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "FIPS mode is enabled.",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "fips-mode-setup --check": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "fips-mode-setup --check": "before\nFIPS mode is enabled.\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258230"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ipsec.conf",
         "pattern": "/etc/ipsec.d/*.conf",
@@ -6669,5 +6695,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 243
+  "validated_candidates": 244
 }

@@ -117,6 +117,30 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
             self.assertIn('S-1-5-32-546', cases['V-10']['pass_fixture']['security_policy']['Privilege Rights\\SeDenyInteractiveLogonRight'])
             self.assertNotIn('S-1-5-32-546', cases['V-10']['fail_fixture']['security_policy']['Privilege Rights\\SeDenyInteractiveLogonRight'])
 
+    def test_builds_command_output_fixture_case(self):
+        case = mod.build_case({
+            'vuln_id': 'V-256393',
+            'platform': 'generic',
+            'description': 'SSH tunnel setting',
+            'check': {'type': 'command_output', 'command': '/usr/lib/vmware/openssh/bin/sshd -T|grep permittunnel'},
+            'expected': {'type': 'equals', 'value': 'permittunnel no'},
+        })
+        self.assertEqual(case['evidence_type'], 'command_output_equals')
+        self.assertEqual(case['pass_fixture']['command_outputs'], {'/usr/lib/vmware/openssh/bin/sshd -T|grep permittunnel': 'permittunnel no'})
+        self.assertNotEqual(case['fail_fixture']['command_outputs']['/usr/lib/vmware/openssh/bin/sshd -T|grep permittunnel'], 'permittunnel no')
+
+    def test_builds_command_output_contains_fixture_case(self):
+        case = mod.build_case({
+            'vuln_id': 'V-258230',
+            'platform': 'linux',
+            'description': 'FIPS mode',
+            'check': {'type': 'command_output', 'command': 'fips-mode-setup --check'},
+            'expected': {'type': 'contains', 'substring': 'FIPS mode is enabled.'},
+        })
+        self.assertEqual(case['evidence_type'], 'command_output_contains')
+        self.assertEqual(case['pass_fixture']['command_outputs'], {'fips-mode-setup --check': 'before\nFIPS mode is enabled.\nafter\n'})
+        self.assertEqual(case['fail_fixture']['command_outputs'], {'fips-mode-setup --check': 'before\nafter\n'})
+
 
 if __name__ == '__main__':
     unittest.main()

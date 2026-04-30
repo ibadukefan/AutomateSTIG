@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "esxcli system security fips140 ssh get",
+      "type": "command_output"
+    },
+    "description": "The ESXi host Secure Shell (SSH) daemon must use FIPS 140-2 validated cryptographic modules to protect the confidentiality of remote access sessions.",
+    "expected": {
+      "type": "equals",
+      "value": "Enabled: true"
+    },
+    "platform": "generic",
+    "vuln_id": "V-256384"
+  },
   "check_content_excerpt": "From an ESXi shell, run the following command:\n\n# esxcli system security fips140 ssh get\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\n$esxcli = Get-EsxCli -v2\n$esxcli.system.security.fips140.ssh.get.invoke()\n\nExpected result:\n\nEnabled: true\n\nIf the output does not match the expected result, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Enabled: true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From an ESXi shell, run the following command:\n\n# esxcli system security fips140 ssh set -e true\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\n$esxcli = Get-EsxCli -v2\n$arguments = $esxcli.system.security.fips140.ssh.set.CreateArgs()\n$arguments.enable = $true\n$esxcli.system.security.fips140.ssh.set.Invoke($arguments)",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-256384r958408_rule",
   "severity": "medium",

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "fips-mode-setup --check",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 must enable FIPS mode.",
+    "expected": {
+      "substring": "FIPS mode is enabled.",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258230"
+  },
   "check_content_excerpt": "Verify that RHEL 9 is in FIPS mode with the following command:\n\n$ sudo fips-mode-setup --check\n\nFIPS mode is enabled.\n\nIf FIPS mode is not enabled, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "FIPS mode is enabled.",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to implement FIPS mode with the following command\n\n$ sudo fips-mode-setup --enable\n\nReboot the system for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258230r958408_rule",
   "severity": "high",

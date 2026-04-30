@@ -1,0 +1,349 @@
+{
+  "candidate_checks": 13,
+  "cases": [
+    {
+      "check": {
+        "command": "/usr/lib/vmware/openssh/bin/sshd -T|grep banner",
+        "type": "command_output"
+      },
+      "description": "The ESXi host SSH daemon must be configured with the DOD logon banner.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "banner /etc/issue"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/openssh/bin/sshd -T|grep banner": "unexpected-banner /etc/issue"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/openssh/bin/sshd -T|grep banner": "banner /etc/issue"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256383"
+    },
+    {
+      "check": {
+        "command": "esxcli system security fips140 ssh get",
+        "type": "command_output"
+      },
+      "description": "The ESXi host Secure Shell (SSH) daemon must use FIPS 140-2 validated cryptographic modules to protect the confidentiality of remote access sessions.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Enabled: true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "esxcli system security fips140 ssh get": "unexpected-Enabled: true"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "esxcli system security fips140 ssh get": "Enabled: true"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256384"
+    },
+    {
+      "check": {
+        "command": "/usr/lib/vmware/openssh/bin/sshd -T|grep permituserenvironment",
+        "type": "command_output"
+      },
+      "description": "The ESXi host Secure Shell (SSH) daemon must not permit user environment settings.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "permituserenvironment no"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/openssh/bin/sshd -T|grep permituserenvironment": "unexpected-permituserenvironment no"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/openssh/bin/sshd -T|grep permituserenvironment": "permituserenvironment no"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256388"
+    },
+    {
+      "check": {
+        "command": "/usr/lib/vmware/openssh/bin/sshd -T|grep strictmodes",
+        "type": "command_output"
+      },
+      "description": "The ESXi host Secure Shell (SSH) daemon must perform strict mode checking of home directory configuration files.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "strictmodes yes"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/openssh/bin/sshd -T|grep strictmodes": "unexpected-strictmodes yes"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/openssh/bin/sshd -T|grep strictmodes": "strictmodes yes"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256389"
+    },
+    {
+      "check": {
+        "command": "/usr/lib/vmware/openssh/bin/sshd -T|grep permittunnel",
+        "type": "command_output"
+      },
+      "description": "The ESXi host Secure Shell (SSH) daemon must not permit tunnels.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "permittunnel no"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/openssh/bin/sshd -T|grep permittunnel": "unexpected-permittunnel no"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/openssh/bin/sshd -T|grep permittunnel": "permittunnel no"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256393"
+    },
+    {
+      "check": {
+        "command": "/usr/lib/vmware/openssh/bin/sshd -T|grep clientalivecountmax",
+        "type": "command_output"
+      },
+      "description": "The ESXi host Secure Shell (SSH) daemon must set a timeout count on idle sessions.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "clientalivecountmax 3"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/openssh/bin/sshd -T|grep clientalivecountmax": "unexpected-clientalivecountmax 3"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/openssh/bin/sshd -T|grep clientalivecountmax": "clientalivecountmax 3"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256394"
+    },
+    {
+      "check": {
+        "command": "/usr/lib/vmware/openssh/bin/sshd -T|grep allowtcpforwarding",
+        "type": "command_output"
+      },
+      "description": "The ESXi host Secure Shell (SSH) daemon must disable port forwarding.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "allowtcpforwarding no"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/openssh/bin/sshd -T|grep allowtcpforwarding": "unexpected-allowtcpforwarding no"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/openssh/bin/sshd -T|grep allowtcpforwarding": "allowtcpforwarding no"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256434"
+    },
+    {
+      "check": {
+        "command": "esxcli system syslog config get|grep 509",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must enable strict x509 verification for SSL syslog endpoints.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Strict X509Compliance: true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "esxcli system syslog config get|grep 509": "unexpected-Strict X509Compliance: true"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "esxcli system syslog config get|grep 509": "Strict X509Compliance: true"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256437"
+    },
+    {
+      "check": {
+        "command": "esxcli system security fips140 rhttpproxy get",
+        "type": "command_output"
+      },
+      "description": "The ESXi host rhttpproxy daemon must use FIPS 140-2 validated cryptographic modules to protect the confidentiality of remote access sessions.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Enabled: true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "esxcli system security fips140 rhttpproxy get": "unexpected-Enabled: true"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "esxcli system security fips140 rhttpproxy get": "Enabled: true"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256442"
+    },
+    {
+      "check": {
+        "command": "stat -c \"%s\" /etc/vmware/settings",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must not be configured to override virtual machine (VM) configurations.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "stat -c \"%s\" /etc/vmware/settings": "unexpected-0"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "stat -c \"%s\" /etc/vmware/settings": "0"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256444"
+    },
+    {
+      "check": {
+        "command": "esxcli system settings encryption get|grep Mode",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must require TPM-based configuration encryption.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Mode: TPM"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "esxcli system settings encryption get|grep Mode": "unexpected-Mode: TPM"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "esxcli system settings encryption get|grep Mode": "Mode: TPM"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256446"
+    },
+    {
+      "check": {
+        "command": "esxcli system settings encryption get|grep \"Secure Boot",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must implement Secure Boot enforcement.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Require Secure Boot: true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "esxcli system settings encryption get|grep \"Secure Boot": "unexpected-Require Secure Boot: true"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "esxcli system settings encryption get|grep \"Secure Boot": "Require Secure Boot: true"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256447"
+    },
+    {
+      "check": {
+        "command": "/usr/lib/vmware/openssh/bin/sshd -T|grep ciphers",
+        "type": "command_output"
+      },
+      "description": "The ESXi host SSH daemon must be configured to only use FIPS 140-2 validated ciphers.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/openssh/bin/sshd -T|grep ciphers": "unexpected-ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/openssh/bin/sshd -T|grep ciphers": "ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256449"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_7-0_esxi_stig.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "VMW_vSphere_7-0_ESXi_STIG",
+  "validated_candidates": 13
+}

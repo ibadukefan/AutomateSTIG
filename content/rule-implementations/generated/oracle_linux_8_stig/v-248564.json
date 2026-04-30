@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "fips-mode-setup --check",
+      "type": "command_output"
+    },
+    "description": "The OL 8 operating system must implement DOD-approved encryption in the OpenSSL package.",
+    "expected": {
+      "substring": "FIPS mode is enabled.",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248564"
+  },
   "check_content_excerpt": "Verify that OL 8 is in FIPS mode with the following command:\n\n$ sudo fips-mode-setup --check\nFIPS mode is enabled.\n\nIf FIPS mode is not enabled, this is a finding.\n\nIf any other lines are returned by the above command, run the following command to view the currently applied crypto-policy:\n\n$ update-crypto-policies --show\nFIPS\n\nIf the policy is not \"FIPS\" or a FIPS policy authorized by and documented with the ISSO, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "FIPS mode is enabled.",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the OL 8 OpenSSL library to use only ciphers employing FIPS 140-2/140-3 approved algorithms with the following command:\n\n$ sudo fips-mode-setup --enable\n\nA reboot is required for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-248564r1134844_rule",
   "severity": "medium",

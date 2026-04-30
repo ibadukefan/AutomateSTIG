@@ -3213,6 +3213,19 @@
     },
     {
       "check": {
+        "command": "fips-mode-setup --check",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must enable FIPS mode.",
+      "expected": {
+        "substring": "FIPS mode is enabled.",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258230"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ipsec.conf",
         "pattern": "/etc/ipsec.d/*.conf",

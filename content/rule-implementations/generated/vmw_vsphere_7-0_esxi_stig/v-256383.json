@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/lib/vmware/openssh/bin/sshd -T|grep banner",
+      "type": "command_output"
+    },
+    "description": "The ESXi host SSH daemon must be configured with the DOD logon banner.",
+    "expected": {
+      "type": "equals",
+      "value": "banner /etc/issue"
+    },
+    "platform": "generic",
+    "vuln_id": "V-256383"
+  },
   "check_content_excerpt": "From an ESXi shell, run the following command:\n\n# /usr/lib/vmware/openssh/bin/sshd -T|grep banner\n\nExpected result:\n\nbanner /etc/issue\n\nIf the output does not match the expected result, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "banner /etc/issue"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From an ESXi shell, add or correct the following line in \"/etc/ssh/sshd_config\":\n\nBanner /etc/issue",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-256383r958390_rule",
   "severity": "medium",

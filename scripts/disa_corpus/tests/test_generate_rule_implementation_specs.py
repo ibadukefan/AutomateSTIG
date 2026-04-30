@@ -269,6 +269,57 @@ If the value of the "disk_error_action" option is not "SYSLOG", "SINGLE", or "HA
         self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/audit/auditd.conf', 'pattern': 'disk_error_action = HALT', 'is_regex': False})
         self.assertEqual(candidate['expected'], {'type': 'contains'})
 
+    def test_infers_explicit_expected_command_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-256393',
+            'title': 'The ESXi host SSH daemon must not permit tunnels.',
+            'check_content': '''From an ESXi shell, run the following command:
+
+# /usr/lib/vmware/openssh/bin/sshd -T|grep permittunnel
+
+Expected result:
+
+permittunnel no
+
+If the output does not match the expected result, this is a finding.'''
+        }, 'VMW_vSphere_7-0_ESXi_STIG')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': '/usr/lib/vmware/openssh/bin/sshd -T|grep permittunnel'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'permittunnel no'})
+
+    def test_infers_fips_mode_command_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258230',
+            'title': 'RHEL 9 must enable FIPS mode.',
+            'check_content': '''Verify that RHEL 9 is in FIPS mode with the following command:
+
+$ sudo fips-mode-setup --check
+
+FIPS mode is enabled.
+
+If FIPS mode is not enabled, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'fips-mode-setup --check'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'FIPS mode is enabled.'})
+
+    def test_preserves_balanced_quotes_in_command_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-256447',
+            'title': 'The ESXi host must implement Secure Boot enforcement.',
+            'check_content': '''From an ESXi shell, run the following command:
+
+# esxcli system settings encryption get|grep "Secure Boot"
+
+Expected result:
+
+Require Secure Boot: true
+
+If the output does not match the expected result, this is a finding.'''
+        }, 'VMW_vSphere_7-0_ESXi_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'esxcli system settings encryption get|grep "Secure Boot"'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Require Secure Boot: true'})
+
     def test_infers_windows_audit_policy_candidate_from_auditpol_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254304',

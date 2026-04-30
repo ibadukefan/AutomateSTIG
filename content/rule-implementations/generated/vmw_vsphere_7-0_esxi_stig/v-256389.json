@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/lib/vmware/openssh/bin/sshd -T|grep strictmodes",
+      "type": "command_output"
+    },
+    "description": "The ESXi host Secure Shell (SSH) daemon must perform strict mode checking of home directory configuration files.",
+    "expected": {
+      "type": "equals",
+      "value": "strictmodes yes"
+    },
+    "platform": "generic",
+    "vuln_id": "V-256389"
+  },
   "check_content_excerpt": "From an ESXi shell, run the following command:\n\n# /usr/lib/vmware/openssh/bin/sshd -T|grep strictmodes\n\nExpected result:\n\nstrictmodes yes\n\nIf the output does not match the expected result, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "strictmodes yes"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From an ESXi shell, add or correct the following line in \"/etc/ssh/sshd_config\":\n\nStrictModes yes",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-256389r959010_rule",
   "severity": "medium",

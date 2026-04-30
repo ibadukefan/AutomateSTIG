@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/lib/vmware/openssh/bin/sshd -T|grep ciphers",
+      "type": "command_output"
+    },
+    "description": "The ESXi host SSH daemon must be configured to only use FIPS 140-2 validated ciphers.",
+    "expected": {
+      "type": "equals",
+      "value": "ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
+    },
+    "platform": "generic",
+    "vuln_id": "V-256449"
+  },
   "check_content_excerpt": "From an ESXi shell, run the following command:\n\n# /usr/lib/vmware/openssh/bin/sshd -T|grep ciphers\n\nExpected result:\n\nciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr\n\nIf the output does not match the expected result, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From an ESXi shell, add or correct the following line in \"/etc/ssh/sshd_config\":\n\nCiphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-256449r959006_rule",
   "severity": "medium",

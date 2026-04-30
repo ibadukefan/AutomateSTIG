@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "esxcli system settings encryption get|grep Mode",
+      "type": "command_output"
+    },
+    "description": "The ESXi host must require TPM-based configuration encryption.",
+    "expected": {
+      "type": "equals",
+      "value": "Mode: TPM"
+    },
+    "platform": "generic",
+    "vuln_id": "V-256446"
+  },
   "check_content_excerpt": "If the ESXi host does not have a compatible TPM, this finding is downgraded to a CAT III.\n\nFrom an ESXi shell, run the following command:\n\n# esxcli system settings encryption get|grep Mode\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\n$esxcli = Get-EsxCli -v2\n$esxcli.system.settings.encryption.get.invoke() | Select Mode\n\nExpected result:\n\nMode: TPM\n\nIf the output does not match the expected result, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Mode: TPM"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Ensure the TPM 2.0 chip is enabled in the BIOS and the ESX UI does not show any errors about a present but unavailable TPM.\n\nThis setting cannot be configured until the TPM is properly enabled in the BIOS.\n\nFrom an ESXi shell, run the following command:\n\n# esxcli system settings encryption set --mode=TPM\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\n$esxcli = Get-EsxCli -v2\n$arguments = $esxcli.system.settings.encryption.set.CreateArgs()\n$arguments.mode = \"TPM\"\n$esxcli.system.settings.encryption.set.Invoke($arguments)\n\nEvacuate the host and gracefully reboot for changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-256446r959010_rule",
   "severity": "medium",

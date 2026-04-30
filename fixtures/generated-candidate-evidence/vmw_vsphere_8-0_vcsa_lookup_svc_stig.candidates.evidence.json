@@ -1,0 +1,63 @@
+{
+  "candidate_checks": 2,
+  "cases": [
+    {
+      "check": {
+        "command": "xmllint --xpath '/Server/Service/Executor[@name=\"tomcatThreadPool\"]/@maxThreads' /usr/lib/vmware-lookupsvc/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must limit the number of maximum concurrent connections permitted.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "maxThreads=\"300\""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --xpath '/Server/Service/Executor[@name=\"tomcatThreadPool\"]/@maxThreads' /usr/lib/vmware-lookupsvc/conf/server.xml": "unexpected-maxThreads=\"300\""
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --xpath '/Server/Service/Executor[@name=\"tomcatThreadPool\"]/@maxThreads' /usr/lib/vmware-lookupsvc/conf/server.xml": "maxThreads=\"300\""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259037"
+    },
+    {
+      "check": {
+        "command": "xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\".*\"//g' | xmllint --xpath '/web-app/session-config/cookie-config/http-only' -",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service cookies must have \"http-only\" flag set.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "<http-only>true</http-only>"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\".*\"//g' | xmllint --xpath '/web-app/session-config/cookie-config/http-only' -": "unexpected-<http-only>true</http-only>"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\".*\"//g' | xmllint --xpath '/web-app/session-config/cookie-config/http-only' -": "<http-only>true</http-only>"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259055"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
+  "validated_candidates": 2
+}

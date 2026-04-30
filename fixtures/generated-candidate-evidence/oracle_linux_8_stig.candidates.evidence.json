@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 230,
+  "candidate_checks": 231,
   "cases": [
     {
       "check": {
@@ -425,6 +425,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248563"
+    },
+    {
+      "check": {
+        "command": "fips-mode-setup --check",
+        "type": "command_output"
+      },
+      "description": "The OL 8 operating system must implement DOD-approved encryption in the OpenSSL package.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "FIPS mode is enabled.",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "fips-mode-setup --check": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "fips-mode-setup --check": "before\nFIPS mode is enabled.\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248564"
     },
     {
       "check": {
@@ -6240,5 +6266,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 230
+  "validated_candidates": 231
 }

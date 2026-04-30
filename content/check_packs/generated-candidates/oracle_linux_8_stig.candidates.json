@@ -212,6 +212,19 @@
     },
     {
       "check": {
+        "command": "fips-mode-setup --check",
+        "type": "command_output"
+      },
+      "description": "The OL 8 operating system must implement DOD-approved encryption in the OpenSSL package.",
+      "expected": {
+        "substring": "FIPS mode is enabled.",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248564"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/crypto-policies/back-ends/opensslcnf.config",
         "pattern": "MinProtocol = TLSv1.2",

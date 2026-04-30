@@ -411,6 +411,45 @@ def _service_candidate(rule: dict) -> dict | None:
     }
 
 
+def _normalize_command(command: str) -> str:
+    command = command.strip().strip('“”')
+    command = re.sub(r'^sudo\s+', '', command)
+    return command.strip()
+
+
+def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    command_matches = list(re.finditer(r'^\s*[$#>]\s*(?P<command>(?:sudo\s+)?(?:/[A-Za-z0-9_./:+-]+|[A-Za-z0-9_.:+-]+)\b[^\n\r]*)$', content, re.MULTILINE))
+    if not command_matches:
+        return None
+    command = _normalize_command(command_matches[0].group('command'))
+    if not command or any(token in command for token in ('`', '$(', '&&', ';')):
+        return None
+
+    expected_match = re.search(r'Expected\s+result:\s*(?P<body>.*?)(?:\n\s*If\b|\Z)', content, re.IGNORECASE | re.DOTALL)
+    if expected_match:
+        expected_lines = [line.strip() for line in expected_match.group('body').splitlines() if line.strip()]
+        expected_lines = [line for line in expected_lines if not line.startswith(('$', '#', '>'))]
+        if len(expected_lines) == 1 and re.search(r'output\s+does\s+not\s+match\s+the\s+expected\s+result', content, re.IGNORECASE):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',
+                'check': {'type': 'command_output', 'command': command},
+                'expected': {'type': 'equals', 'value': expected_lines[0]},
+                'description': rule.get('title', ''),
+            }
+
+    if 'fips-mode-setup --check' in command and re.search(r'^\s*FIPS mode is enabled\.\s*$', content, re.MULTILINE):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'contains', 'substring': 'FIPS mode is enabled.'},
+            'description': rule.get('title', ''),
+        }
+    return None
+
+
 def _file_permission_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     path_match = re.search(r'\bstat\s+(?:-[A-Za-z]+\s+)*(?:["\'][^"\']+["\']\s+)?(/[A-Za-z0-9_./:+-]+)', content)
@@ -482,6 +521,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
                 'expected': {'type': 'is_false'},
                 'description': rule.get('title', ''),
             }
+
+    command_candidate = _command_output_candidate(rule, stig_id)
+    if command_candidate:
+        return command_candidate
 
     if _linux_platform(stig_id):
         for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _service_candidate, _file_permission_candidate):

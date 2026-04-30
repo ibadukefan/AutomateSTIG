@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "stat -c \"%s\" /etc/vmware/settings",
+      "type": "command_output"
+    },
+    "description": "The ESXi host must not be configured to override virtual machine (VM) configurations.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "generic",
+    "vuln_id": "V-256444"
+  },
   "check_content_excerpt": "From an ESXi shell, run the following command:\n\n# stat -c \"%s\" /etc/vmware/settings\n\nExpected result:\n\n0\n\nIf the output does not match the expected result, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From an ESXi shell, run the following command:\n\n# echo -n >/etc/vmware/settings",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-256444r959010_rule",
   "severity": "medium",
