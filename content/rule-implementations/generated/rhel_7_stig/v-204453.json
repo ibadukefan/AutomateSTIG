@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "getenforce",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must enable SELinux.",
+    "expected": {
+      "type": "equals",
+      "value": "Enforcing"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204453"
+  },
   "check_content_excerpt": "Verify the operating system verifies correct operation of all security functions.\n\nCheck if \"SELinux\" is active and in \"Enforcing\" mode with the following command:\n\n     # getenforce\n     Enforcing\n\nIf \"SELinux\" is not active and not in \"Enforcing\" mode, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Enforcing"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to verify correct operation of all security functions.\n\nSet the \"SELinux\" status and the \"Enforcing\" mode by modifying the \"/etc/selinux/config\" file to have the following line:\n\n     SELINUX=enforcing\n\nA reboot is required for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-204453r958944_rule",
   "severity": "medium",

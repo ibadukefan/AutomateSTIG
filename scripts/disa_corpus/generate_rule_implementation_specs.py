@@ -551,8 +551,30 @@ def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _selinux_getenforce_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    if not re.search(r'^\s*[$#>]\s*(?:sudo\s+)?getenforce\s*$', content, re.MULTILINE):
+        return None
+    if not re.search(r'^\s*Enforcing\s*$', content, re.MULTILINE):
+        return None
+    if not re.search(r'If\s+["“]?SELinux["”]?\s+is\s+not\s+(?:active\s+and\s+not\s+)?in\s+["“]?Enforcing["”]?\s+mode,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': 'getenforce'},
+        'expected': {'type': 'equals', 'value': 'Enforcing'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
+    selinux_candidate = _selinux_getenforce_candidate(rule, stig_id)
+    if selinux_candidate:
+        return selinux_candidate
     command_matches = list(re.finditer(r'^\s*[$#>]\s*(?P<command>(?:sudo\s+)?(?:/[A-Za-z0-9_./:+-]+|[A-Za-z0-9_.:+-]+)\b[^\n\r]*)$', content, re.MULTILINE))
     command = None
     if command_matches:

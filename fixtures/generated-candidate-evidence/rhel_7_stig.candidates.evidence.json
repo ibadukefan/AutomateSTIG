@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 114,
+  "candidate_checks": 115,
   "cases": [
     {
       "check": {
@@ -351,6 +351,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204452"
+    },
+    {
+      "check": {
+        "command": "getenforce",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must enable SELinux.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Enforcing"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "getenforce": "unexpected-Enforcing"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "getenforce": "Enforcing"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204453"
     },
     {
       "check": {
@@ -3068,5 +3094,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 114
+  "validated_candidates": 115
 }

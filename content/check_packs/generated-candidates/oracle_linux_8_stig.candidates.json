@@ -112,6 +112,19 @@
     },
     {
       "check": {
+        "command": "getenforce",
+        "type": "command_output"
+      },
+      "description": "OL 8 must use a Linux Security Module configured to enforce limits on system services.",
+      "expected": {
+        "type": "equals",
+        "value": "Enforcing"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248548"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "ClientAliveCountMax 1",

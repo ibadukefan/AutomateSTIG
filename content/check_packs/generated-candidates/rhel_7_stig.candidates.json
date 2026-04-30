@@ -184,6 +184,19 @@
     },
     {
       "check": {
+        "command": "getenforce",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must enable SELinux.",
+      "expected": {
+        "type": "equals",
+        "value": "Enforcing"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204453"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/selinux/config",
         "pattern": "| grep -v '^#'",

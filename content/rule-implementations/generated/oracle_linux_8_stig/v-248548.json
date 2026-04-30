@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "getenforce",
+      "type": "command_output"
+    },
+    "description": "OL 8 must use a Linux Security Module configured to enforce limits on system services.",
+    "expected": {
+      "type": "equals",
+      "value": "Enforcing"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248548"
+  },
   "check_content_excerpt": "Verify the operating system verifies correct operation of all security functions.\n\nCheck if \"SELinux\" is in \"Enforcing\" mode with the following command:\n\n$ getenforce\nEnforcing\n\nIf \"SELinux\" is not in \"Enforcing\" mode, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Enforcing"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 8 to verify correct operation of all security functions.\n\nSet \"SELinux\" to \"Enforcing\" mode by modifying the \"/etc/selinux/config\" file with the following line:\n\nSELINUX=enforcing\n\nA reboot is required for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-248548r958518_rule",
   "severity": "medium",

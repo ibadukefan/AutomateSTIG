@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 243,
+  "candidate_checks": 244,
   "cases": [
     {
       "check": {
@@ -214,6 +214,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248547"
+    },
+    {
+      "check": {
+        "command": "getenforce",
+        "type": "command_output"
+      },
+      "description": "OL 8 must use a Linux Security Module configured to enforce limits on system services.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Enforcing"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "getenforce": "unexpected-Enforcing"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "getenforce": "Enforcing"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248548"
     },
     {
       "check": {
@@ -6603,5 +6629,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 243
+  "validated_candidates": 244
 }

@@ -558,6 +558,21 @@ If the output does not match the expected result, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'esxcli system settings encryption get|grep "Secure Boot"'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Require Secure Boot: true'})
 
+    def test_infers_selinux_getenforce_enforcing_candidate_from_authoritative_sample(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248548',
+            'title': 'OL 8 must use a Linux Security Module configured to enforce limits on system services.',
+            'check_content': '''Check if "SELinux" is in "Enforcing" mode with the following command:
+
+$ getenforce
+Enforcing
+
+If "SELinux" is not in "Enforcing" mode, this is a finding.'''
+        }, 'Oracle_Linux_8_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'getenforce'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Enforcing'})
+
     def test_infers_windows_audit_policy_candidate_from_auditpol_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254304',

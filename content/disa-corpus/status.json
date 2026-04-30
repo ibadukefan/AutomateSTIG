@@ -2,11 +2,11 @@
   "authoritative_manifests": 87,
   "authoritative_rules": 17250,
   "authoritative_rules_tracked": 17250,
-  "automated_or_mapped_rules": 12025,
+  "automated_or_mapped_rules": 12030,
   "coverage_percent_tracked_corpus": 69.7,
   "current_check_definitions": 3210,
   "generated_candidate_checks_with_fixture_evidence": 2756,
-  "last_updated_utc": "2026-04-30T23:38:33Z",
+  "last_updated_utc": "2026-04-30T23:51:43Z",
   "notes": [
     "Regression ratchet prevents silent drops in tracked artifacts, authoritative manifests, authoritative rules, automated/mapped rules, or unsupported-rule ceilings.",
     "Generated candidate checks are fixture-backed scaffolding, not live production asset validation.",
@@ -35,12 +35,13 @@
     "Added SUSE/SLES platform gating for existing conservative Linux candidate inference, including sysctl, package, service, grep, command-output, and file-permission patterns; tracked coverage is 68.0% (11731/17250) with 5519 unsupported rules remaining.",
     "Added conservative Linux auditctl multiline expected-rule candidate inference for authoritative multi-line auditctl -l grep examples while skipping arbitrary audit key examples; tracked coverage is 68.3% (11779/17250) with 5471 unsupported rules remaining.",
     "Added conservative Linux GNOME gsettings boolean command-output candidate inference for single-command get/writable checks with fixture-matched true/false findings; tracked coverage is 68.7% (11855/17250) with 5395 unsupported rules remaining.",
-    "Added conservative Microsoft Edge Windows Registry Editor policy candidate inference for explicit single REG_DWORD/REG_SZ equality findings while skipping multi-value alternatives; tracked coverage is 69.7% (12025/17250) with 5225 unsupported rules remaining."
+    "Added conservative Microsoft Edge Windows Registry Editor policy candidate inference for explicit single REG_DWORD/REG_SZ equality findings while skipping multi-value alternatives; tracked coverage is 69.7% (12025/17250) with 5225 unsupported rules remaining.",
+    "Added conservative SELinux getenforce command-output candidate inference for explicit authoritative Enforcing mode samples; tracked coverage is 69.7% (12030/17250) with 5220 unsupported rules remaining."
   ],
   "public_disa_artifacts": 87,
   "public_disa_artifacts_indexed": 87,
   "status": "expanded_public_corpus_with_fixture_gated_candidate_mapping",
   "target": "unsupported_authoritative_rules == 0 across every authorized DISA STIG artifact",
-  "unsupported_authoritative_rules": 5225,
-  "unsupported_rules": 5225
+  "unsupported_authoritative_rules": 5220,
+  "unsupported_rules": 5220
 }
