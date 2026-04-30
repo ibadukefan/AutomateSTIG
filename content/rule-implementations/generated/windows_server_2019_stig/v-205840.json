@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "setting": "Success",
+      "subcategory": "Removable Storage",
+      "type": "audit_policy"
+    },
+    "description": "Windows Server 2019 must be configured to audit Object Access - Removable Storage successes.",
+    "expected": {
+      "substring": "Success",
+      "type": "contains"
+    },
+    "platform": "windows",
+    "vuln_id": "V-205840"
+  },
   "check_content_excerpt": "Security Option \"Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings\" must be set to \"Enabled\" (WN19-SO-000050) for the detailed auditing subcategories to be effective. \n\nUse the \"AuditPol\" tool to review the current Audit Policy configuration:\n\nOpen \"PowerShell\" or a \"Command Prompt\" with elevated privileges (\"Run as administrator\").\n\nEnter \"AuditPol /get /category:*\"\n\nCompare the \"AuditPol\" settings with the following:\n\nIf the system does not audit the following, this is a finding.\n\nObject Access >> Removable Storage - Success\n\nVirtual machines or systems that use network attached storage may generate excessive audit events for secondary virtual drives or the network attached storage when this setting is enabled. This may be set to Not Configured in such cases and would not be a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "Success",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Advanced Audit Policy Configuration >> System Audit Policies >> Object Access >> \"Audit Removable Storage\" with \"Success\" selected.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "audit_policy",
   "remediation": "planned",
   "rule_id": "SV-205840r991583_rule",
   "severity": "medium",

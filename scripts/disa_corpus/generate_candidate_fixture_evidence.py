@@ -92,6 +92,14 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
         pass_fixture['file_permissions'] = {path: expected_perm}
         fail_fixture['file_permissions'] = {path: unexpected_perm}
         evidence_type = 'linux_file_permission'
+    elif check_type == 'audit_policy':
+        if expected.get('type') != 'contains':
+            raise ValueError(f"{candidate['vuln_id']}: audit_policy candidate only supports contains evidence")
+        subcategory = check['subcategory']
+        substring = expected['substring']
+        pass_fixture['audit_policy'] = {subcategory: check.get('setting') or substring}
+        fail_fixture['audit_policy'] = {subcategory: 'No Auditing'}
+        evidence_type = 'windows_audit_policy_contains'
     else:
         raise ValueError(f"{candidate['vuln_id']}: unsupported candidate check type {check_type}")
 

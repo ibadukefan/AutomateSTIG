@@ -44,6 +44,342 @@
     },
     {
       "check": {
+        "setting": "Failure",
+        "subcategory": "Credential Validation",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Account Logon - Credential Validation failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220748"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Credential Validation",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Account Logon - Credential Validation successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220749"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "User Account Management",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Account Management - User Account Management failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220751"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "User Account Management",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Account Management - User Account Management successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220752"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "PNP Activity",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Detailed Tracking - PNP Activity successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220753"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Process Creation",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Detailed Tracking - Process Creation successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220754"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Logoff",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Logon/Logoff - Logoff successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220757"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Logon",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Logon/Logoff - Logon failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220758"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Logon",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Logon/Logoff - Logon successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220759"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "File Share",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit Object Access - File Share successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220762"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Other Object Access Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit Object Access - Other Object Access Events successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220763"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Other Object Access Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit Object Access - Other Object Access Events failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220764"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Removable Storage",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Object Access - Removable Storage failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220765"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Removable Storage",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Object Access - Removable Storage successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220766"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Audit Policy Change",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Policy Change - Audit Policy Change successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220767"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Authentication Policy Change",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Policy Change - Authentication Policy Change successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220768"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Authorization Policy Change",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Policy Change - Authorization Policy Change successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220769"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Sensitive Privilege Use",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Privilege Use - Sensitive Privilege Use successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220771"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "IPSec Driver",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit System - IPSec Driver failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220772"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Other System Events",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit System - Other System Events successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220773"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Other System Events",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit System - Other System Events failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220774"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Security System Extension",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit System - Security System Extension successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220776"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "System Integrity",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit System - System Integrity failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220777"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "System Integrity",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit System - System Integrity successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220778"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application",
         "type": "registry",
         "value_name": "MaxSize"
@@ -69,6 +405,90 @@
       },
       "platform": "windows",
       "vuln_id": "V-220781"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Other Policy Change Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit Other Policy Change Events Failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220786"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "other Logon/Logoff Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit other Logon/Logoff Events Successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220787"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "other Logon/Logoff Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit other Logon/Logoff Events Failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220788"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Detailed File Share",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit Detailed File Share Failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220789"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "MPSSVC Rule-Level Policy Change",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit MPSSVC Rule-Level Policy Change Successes.",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220790"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "MPSSVC Rule-Level Policy Change",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit MPSSVC Rule-Level Policy Change Failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220791"
     },
     {
       "check": {

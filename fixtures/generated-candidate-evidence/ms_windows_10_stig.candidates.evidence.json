@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 118,
+  "candidate_checks": 148,
   "cases": [
     {
       "check": {
@@ -84,6 +84,654 @@
     },
     {
       "check": {
+        "setting": "Failure",
+        "subcategory": "Credential Validation",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Account Logon - Credential Validation failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Credential Validation": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Credential Validation": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220748"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Credential Validation",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Account Logon - Credential Validation successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Credential Validation": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Credential Validation": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220749"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "User Account Management",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Account Management - User Account Management failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "User Account Management": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "User Account Management": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220751"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "User Account Management",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Account Management - User Account Management successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "User Account Management": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "User Account Management": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220752"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "PNP Activity",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Detailed Tracking - PNP Activity successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "PNP Activity": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "PNP Activity": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220753"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Process Creation",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Detailed Tracking - Process Creation successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Process Creation": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Process Creation": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220754"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Logoff",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Logon/Logoff - Logoff successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Logoff": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Logoff": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220757"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Logon",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Logon/Logoff - Logon failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Logon": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Logon": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220758"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Logon",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Logon/Logoff - Logon successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Logon": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Logon": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220759"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "File Share",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit Object Access - File Share successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "File Share": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "File Share": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220762"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Other Object Access Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit Object Access - Other Object Access Events successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Other Object Access Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Other Object Access Events": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220763"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Other Object Access Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit Object Access - Other Object Access Events failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Other Object Access Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Other Object Access Events": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220764"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Removable Storage",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Object Access - Removable Storage failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Removable Storage": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Removable Storage": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220765"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Removable Storage",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Object Access - Removable Storage successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Removable Storage": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Removable Storage": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220766"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Audit Policy Change",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Policy Change - Audit Policy Change successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Audit Policy Change": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Audit Policy Change": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220767"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Authentication Policy Change",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Policy Change - Authentication Policy Change successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Authentication Policy Change": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Authentication Policy Change": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220768"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Authorization Policy Change",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Policy Change - Authorization Policy Change successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Authorization Policy Change": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Authorization Policy Change": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220769"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Sensitive Privilege Use",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit Privilege Use - Sensitive Privilege Use successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Sensitive Privilege Use": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Sensitive Privilege Use": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220771"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "IPSec Driver",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit System - IPSec Driver failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "IPSec Driver": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "IPSec Driver": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220772"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Other System Events",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit System - Other System Events successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Other System Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Other System Events": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220773"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Other System Events",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit System - Other System Events failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Other System Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Other System Events": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220774"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Security System Extension",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit System - Security System Extension successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Security System Extension": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Security System Extension": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220776"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "System Integrity",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit System - System Integrity failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "System Integrity": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "System Integrity": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220777"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "System Integrity",
+        "type": "audit_policy"
+      },
+      "description": "The system must be configured to audit System - System Integrity successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "System Integrity": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "System Integrity": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220778"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Application",
         "type": "registry",
         "value_name": "MaxSize"
@@ -135,6 +783,168 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-220781"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Other Policy Change Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit Other Policy Change Events Failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Other Policy Change Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Other Policy Change Events": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220786"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "other Logon/Logoff Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit other Logon/Logoff Events Successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "other Logon/Logoff Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "other Logon/Logoff Events": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220787"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "other Logon/Logoff Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit other Logon/Logoff Events Failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "other Logon/Logoff Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "other Logon/Logoff Events": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220788"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Detailed File Share",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit Detailed File Share Failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Detailed File Share": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Detailed File Share": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220789"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "MPSSVC Rule-Level Policy Change",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit MPSSVC Rule-Level Policy Change Successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "MPSSVC Rule-Level Policy Change": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "MPSSVC Rule-Level Policy Change": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220790"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "MPSSVC Rule-Level Policy Change",
+        "type": "audit_policy"
+      },
+      "description": "Windows 10 must be configured to audit MPSSVC Rule-Level Policy Change Failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "MPSSVC Rule-Level Policy Change": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "MPSSVC Rule-Level Policy Change": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220791"
     },
     {
       "check": {
@@ -3193,5 +4003,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 118
+  "validated_candidates": 148
 }

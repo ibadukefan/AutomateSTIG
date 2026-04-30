@@ -159,31 +159,33 @@
       "vuln_id": "V-205633"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205634",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205634r958406_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit logon successes.",
-      "tracking_issue": "TODO-V-205634",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205634"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205635",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205635r958406_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit logon failures.",
-      "tracking_issue": "TODO-V-205635",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205635"
@@ -2241,241 +2243,257 @@
       "vuln_id": "V-205768"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205769",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205769r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Account Management - Other Account Management Events successes.",
-      "tracking_issue": "TODO-V-205769",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205769"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205770",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205770r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Detailed Tracking - Process Creation successes.",
-      "tracking_issue": "TODO-V-205770",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205770"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205771",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205771r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Policy Change - Audit Policy Change successes.",
-      "tracking_issue": "TODO-V-205771",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205771"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205772",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205772r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Policy Change - Audit Policy Change failures.",
-      "tracking_issue": "TODO-V-205772",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205772"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205773",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205773r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Policy Change - Authentication Policy Change successes.",
-      "tracking_issue": "TODO-V-205773",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205773"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205774",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205774r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Policy Change - Authorization Policy Change successes.",
-      "tracking_issue": "TODO-V-205774",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205774"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205775",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205775r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Privilege Use - Sensitive Privilege Use successes.",
-      "tracking_issue": "TODO-V-205775",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205775"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205776",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205776r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Privilege Use - Sensitive Privilege Use failures.",
-      "tracking_issue": "TODO-V-205776",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205776"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205777",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205777r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit System - IPsec Driver successes.",
-      "tracking_issue": "TODO-V-205777",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205777"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205778",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205778r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit System - IPsec Driver failures.",
-      "tracking_issue": "TODO-V-205778",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205778"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205779",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205779r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit System - Other System Events successes.",
-      "tracking_issue": "TODO-V-205779",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205779"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205780",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205780r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit System - Other System Events failures.",
-      "tracking_issue": "TODO-V-205780",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205780"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205781",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205781r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit System - Security State Change successes.",
-      "tracking_issue": "TODO-V-205781",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205781"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205782",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205782r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit System - Security System Extension successes.",
-      "tracking_issue": "TODO-V-205782",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205782"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205783",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205783r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit System - System Integrity successes.",
-      "tracking_issue": "TODO-V-205783",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205783"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205784",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205784r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit System - System Integrity failures.",
-      "tracking_issue": "TODO-V-205784",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205784"
@@ -2571,46 +2589,49 @@
       "vuln_id": "V-205790"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205791",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205791r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit DS Access - Directory Service Access successes.",
-      "tracking_issue": "TODO-V-205791",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205791"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205792",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205792r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit DS Access - Directory Service Access failures.",
-      "tracking_issue": "TODO-V-205792",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205792"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205793",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205793r958732_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit DS Access - Directory Service Changes successes.",
-      "tracking_issue": "TODO-V-205793",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205793"
@@ -3185,151 +3206,161 @@
       "vuln_id": "V-205830"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205832",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205832r991578_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Account Logon - Credential Validation successes.",
-      "tracking_issue": "TODO-V-205832",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205832"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205833",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205833r991578_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Account Logon - Credential Validation failures.",
-      "tracking_issue": "TODO-V-205833",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205833"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205834",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205834r991578_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Logon/Logoff - Group Membership successes.",
-      "tracking_issue": "TODO-V-205834",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205834"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205835",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205835r991578_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Logon/Logoff - Special Logon successes.",
-      "tracking_issue": "TODO-V-205835",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205835"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205836",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205836r991578_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Object Access - Other Object Access Events successes.",
-      "tracking_issue": "TODO-V-205836",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205836"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205837",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205837r991578_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Object Access - Other Object Access Events failures.",
-      "tracking_issue": "TODO-V-205837",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205837"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205838",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205838r991581_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit logoff successes.",
-      "tracking_issue": "TODO-V-205838",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205838"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205839",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205839r991583_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Detailed Tracking - Plug and Play Events successes.",
-      "tracking_issue": "TODO-V-205839",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205839"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205840",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205840r991583_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Object Access - Removable Storage successes.",
-      "tracking_issue": "TODO-V-205840",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205840"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205841",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205841r991583_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must be configured to audit Object Access - Removable Storage failures.",
-      "tracking_issue": "TODO-V-205841",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/527eca26abd49565fb103d35c314c3dd1ec074a0be9d6d43617910a6262460de/U_MS_Windows_Server_2019_V3R5_STIG.zip"
       ],
       "vuln_id": "V-205841"

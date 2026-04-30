@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "setting": "Failure",
+      "subcategory": "Other Object Access Events",
+      "type": "audit_policy"
+    },
+    "description": "Windows 10 must be configured to audit Object Access - Other Object Access Events failures.",
+    "expected": {
+      "substring": "Failure",
+      "type": "contains"
+    },
+    "platform": "windows",
+    "vuln_id": "V-220764"
+  },
   "check_content_excerpt": "Security Option \"Audit: Force audit policy subcategory settings (Windows Vista or later) to override audit policy category settings\" must be set to \"Enabled\" (WN10-SO-000030) for the detailed auditing subcategories to be effective.\n\nUse the AuditPol tool to review the current Audit Policy configuration:\n\nOpen PowerShell or a Command Prompt with elevated privileges (\"Run as Administrator\").\n\nEnter \"AuditPol /get /category:*\"\n\nCompare the AuditPol settings with the following:\n\nObject Access >> Other Object Access Events - Failure\n\nIf the system does not audit the above, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "Failure",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Advanced Audit Policy Configuration >> System Audit Policies >> Object Access >> \"Audit Other Object Access Events\" with \"Failure\" selected.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "audit_policy",
   "remediation": "planned",
   "rule_id": "SV-220764r991583_rule",
   "severity": "medium",

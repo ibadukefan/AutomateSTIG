@@ -173,6 +173,23 @@ If the "port" option is not set to "0", is commented out or missing, this is a f
         self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/chrony.conf', 'pattern': 'port 0', 'is_regex': False})
         self.assertEqual(candidate['expected'], {'type': 'contains'})
 
+    def test_infers_windows_audit_policy_candidate_from_auditpol_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254304',
+            'title': 'Windows Server 2022 must be configured to audit Account Management - User Account Management successes.',
+            'check_content': '''Use the "AuditPol" tool to review the current Audit Policy configuration:
+
+Enter "AuditPol /get /category:*"
+
+Compare the "Account Management - User Account Management" audit policy setting with the following:
+User Account Management  Success
+
+If the system is not configured to audit successes, this is a finding.'''
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'audit_policy', 'subcategory': 'User Account Management', 'setting': 'Success'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Success'})
+
 
 if __name__ == '__main__':
     unittest.main()

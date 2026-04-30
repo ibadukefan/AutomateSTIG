@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 94,
+  "candidate_checks": 125,
   "cases": [
     {
       "check": {
@@ -27,6 +27,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205633"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "logon",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit logon successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "logon": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "logon": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205634"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "logon",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit logon failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "logon": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "logon": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205635"
     },
     {
       "check": {
@@ -778,6 +832,519 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205724"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Other Account Management Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Account Management - Other Account Management Events successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Other Account Management Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Other Account Management Events": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205769"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Process Creation",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Detailed Tracking - Process Creation successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Process Creation": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Process Creation": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205770"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Audit Policy Change",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Policy Change - Audit Policy Change successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Audit Policy Change": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Audit Policy Change": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205771"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Audit Policy Change",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Policy Change - Audit Policy Change failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Audit Policy Change": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Audit Policy Change": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205772"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Authentication Policy Change",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Policy Change - Authentication Policy Change successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Authentication Policy Change": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Authentication Policy Change": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205773"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Authorization Policy Change",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Policy Change - Authorization Policy Change successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Authorization Policy Change": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Authorization Policy Change": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205774"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Sensitive Privilege Use",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Privilege Use - Sensitive Privilege Use successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Sensitive Privilege Use": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Sensitive Privilege Use": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205775"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Sensitive Privilege Use",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Privilege Use - Sensitive Privilege Use failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Sensitive Privilege Use": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Sensitive Privilege Use": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205776"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "IPsec Driver",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit System - IPsec Driver successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "IPsec Driver": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "IPsec Driver": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205777"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "IPsec Driver",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit System - IPsec Driver failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "IPsec Driver": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "IPsec Driver": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205778"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Other System Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit System - Other System Events successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Other System Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Other System Events": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205779"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Other System Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit System - Other System Events failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Other System Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Other System Events": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205780"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Security State Change",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit System - Security State Change successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Security State Change": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Security State Change": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205781"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Security System Extension",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit System - Security System Extension successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Security System Extension": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Security System Extension": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205782"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "System Integrity",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit System - System Integrity successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "System Integrity": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "System Integrity": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205783"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "System Integrity",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit System - System Integrity failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "System Integrity": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "System Integrity": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205784"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Directory Service Access",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit DS Access - Directory Service Access successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Directory Service Access": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Directory Service Access": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205791"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Directory Service Access",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit DS Access - Directory Service Access failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Directory Service Access": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Directory Service Access": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205792"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Directory Service Changes",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit DS Access - Directory Service Changes successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Directory Service Changes": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Directory Service Changes": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205793"
     },
     {
       "check": {
@@ -1561,6 +2128,276 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205830"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Credential Validation",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Account Logon - Credential Validation successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Credential Validation": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Credential Validation": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205832"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Credential Validation",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Account Logon - Credential Validation failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Credential Validation": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Credential Validation": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205833"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Group Membership",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Logon/Logoff - Group Membership successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Group Membership": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Group Membership": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205834"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Special Logon",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Logon/Logoff - Special Logon successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Special Logon": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Special Logon": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205835"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Other Object Access Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Object Access - Other Object Access Events successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Other Object Access Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Other Object Access Events": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205836"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Other Object Access Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Object Access - Other Object Access Events failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Other Object Access Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Other Object Access Events": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205837"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "logoff",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit logoff successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "logoff": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "logoff": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205838"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Plug and Play Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Detailed Tracking - Plug and Play Events successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Plug and Play Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Plug and Play Events": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205839"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Removable Storage",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Object Access - Removable Storage successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Removable Storage": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Removable Storage": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205840"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Removable Storage",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2019 must be configured to audit Object Access - Removable Storage failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Removable Storage": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Removable Storage": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205841"
     },
     {
       "check": {
@@ -2540,5 +3377,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 94
+  "validated_candidates": 125
 }

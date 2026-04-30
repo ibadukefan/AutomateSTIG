@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "setting": "Failure",
+      "subcategory": "User Account Management",
+      "type": "audit_policy"
+    },
+    "description": "The system must be configured to audit Account Management - User Account Management failures.",
+    "expected": {
+      "substring": "Failure",
+      "type": "contains"
+    },
+    "platform": "windows",
+    "vuln_id": "V-253309"
+  },
   "check_content_excerpt": "Security Option \"Audit: Force audit policy subcategory settings to override audit policy category settings\" must be set to \"Enabled\" (WN11-SO-000030) for the detailed auditing subcategories to be effective.\n\nUse the AuditPol tool to review the current Audit Policy configuration:\nOpen a Command Prompt with elevated privileges (\"Run as Administrator\").\nEnter \"AuditPol /get /category:*\".\n\nCompare the AuditPol settings with the following. If the system does not audit the following, this is a finding:\n\nAccount Management >> User Account Management - Failure",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "Failure",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Advanced Audit Policy Configuration >> System Audit Policies >> Account Management >> \"Audit User Account Management\" with \"Failure\" selected.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "audit_policy",
   "remediation": "planned",
   "rule_id": "SV-253309r958566_rule",
   "severity": "medium",

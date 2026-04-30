@@ -65,6 +65,12 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
                         'check': {'type': 'file_permission', 'path': '/var/log/audit/audit.log', 'owner': None, 'group': None, 'mode': '600'},
                         'expected': {'type': 'is_true'},
                     },
+                    {
+                        'vuln_id': 'V-8',
+                        'platform': 'windows',
+                        'check': {'type': 'audit_policy', 'subcategory': 'User Account Management', 'setting': 'Success'},
+                        'expected': {'type': 'contains', 'substring': 'Success'},
+                    },
                 ],
             }))
 
@@ -72,8 +78,8 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
 
             self.assertEqual(written, 1)
             evidence = json.loads((out / 'mixed.candidates.evidence.json').read_text())
-            self.assertEqual(evidence['candidate_checks'], 7)
-            self.assertEqual(evidence['validated_candidates'], 7)
+            self.assertEqual(evidence['candidate_checks'], 8)
+            self.assertEqual(evidence['validated_candidates'], 8)
             cases = {case['vuln_id']: case for case in evidence['cases']}
             self.assertEqual(cases['V-1']['pass_fixture']['registry']['HKLM\\Software\\Example\\Enabled'], 1)
             self.assertNotEqual(cases['V-1']['fail_fixture']['registry']['HKLM\\Software\\Example\\Enabled'], 1)
@@ -89,6 +95,9 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
             self.assertNotEqual(cases['V-6']['fail_fixture']['services']['telnet'], 'disabled')
             self.assertEqual(cases['V-7']['pass_fixture']['file_permissions']['/var/log/audit/audit.log']['mode'], '600')
             self.assertNotEqual(cases['V-7']['fail_fixture']['file_permissions']['/var/log/audit/audit.log']['mode'], '600')
+            self.assertEqual(cases['V-8']['evidence_type'], 'windows_audit_policy_contains')
+            self.assertEqual(cases['V-8']['pass_fixture']['audit_policy']['User Account Management'], 'Success')
+            self.assertEqual(cases['V-8']['fail_fixture']['audit_policy']['User Account Management'], 'No Auditing')
 
 
 if __name__ == '__main__':

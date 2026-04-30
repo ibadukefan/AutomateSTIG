@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 96,
+  "candidate_checks": 118,
   "cases": [
     {
       "check": {
@@ -106,6 +106,492 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-254278"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "User Account Management",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit Account Management - User Account Management successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "User Account Management": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "User Account Management": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254304"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "User Account Management",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit Account Management - User Account Management failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "User Account Management": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "User Account Management": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254305"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Plug and Play Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit Detailed Tracking - Plug and Play Events successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Plug and Play Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Plug and Play Events": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254306"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Process Creation",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit Detailed Tracking - Process Creation successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Process Creation": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Process Creation": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254307"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Account Lockout",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit Logon/Logoff - Account Lockout failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Account Lockout": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Account Lockout": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254309"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "logon",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit logon successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "logon": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "logon": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254312"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "logon",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit logon failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "logon": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "logon": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254313"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Special Logon",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit Logon/Logoff - Special Logon successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Special Logon": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Special Logon": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254314"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Other Object Access Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit Object Access - Other Object Access Events failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Other Object Access Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Other Object Access Events": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254316"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Removable Storage",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit Object Access - Removable Storage successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Removable Storage": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Removable Storage": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254317"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Removable Storage",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit Object Access - Removable Storage failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Removable Storage": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Removable Storage": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254318"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Audit Policy Change",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit Policy Change - Audit Policy Change successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Audit Policy Change": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Audit Policy Change": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254319"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Sensitive Privilege Use",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit Privilege Use - Sensitive Privilege Use successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Sensitive Privilege Use": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Sensitive Privilege Use": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254323"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Sensitive Privilege Use",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit Privilege Use - Sensitive Privilege Use failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Sensitive Privilege Use": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Sensitive Privilege Use": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254324"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Other System Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit System - Other System Events successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Other System Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Other System Events": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254327"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Other System Events",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit System - Other System Events failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Other System Events": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Other System Events": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254328"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Security State Change",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit System - Security State Change successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Security State Change": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Security State Change": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254329"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "System Integrity",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit System - System Integrity failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "System Integrity": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "System Integrity": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254332"
     },
     {
       "check": {
@@ -1294,6 +1780,114 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-254384"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Computer Account Management",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit Account Management - Computer Account Management successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Computer Account Management": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Computer Account Management": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254407"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Directory Service Access",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit DS Access - Directory Service Access successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Directory Service Access": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Directory Service Access": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254408"
+    },
+    {
+      "check": {
+        "setting": "Failure",
+        "subcategory": "Directory Service Access",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit DS Access - Directory Service Access failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Directory Service Access": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Directory Service Access": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254409"
+    },
+    {
+      "check": {
+        "setting": "Success",
+        "subcategory": "Directory Service Changes",
+        "type": "audit_policy"
+      },
+      "description": "Windows Server 2022 must be configured to audit DS Access - Directory Service Changes successes.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Success",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Directory Service Changes": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Directory Service Changes": "Success"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254410"
     },
     {
       "check": {
@@ -2597,5 +3191,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2022_STIG",
-  "validated_candidates": 96
+  "validated_candidates": 118
 }

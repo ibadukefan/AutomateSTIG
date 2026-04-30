@@ -2,11 +2,11 @@
   "authoritative_manifests": 87,
   "authoritative_rules": 17250,
   "authoritative_rules_tracked": 17250,
-  "automated_or_mapped_rules": 7469,
-  "coverage_percent_tracked_corpus": 43.3,
+  "automated_or_mapped_rules": 8026,
+  "coverage_percent_tracked_corpus": 46.5,
   "current_check_definitions": 3189,
-  "generated_candidate_checks_with_fixture_evidence": 974,
-  "last_updated_utc": "2026-04-30T14:31:08Z",
+  "generated_candidate_checks_with_fixture_evidence": 1461,
+  "last_updated_utc": "2026-04-30T15:24:06Z",
   "notes": [
     "Regression ratchet prevents silent drops in tracked artifacts, authoritative manifests, authoritative rules, automated/mapped rules, or unsupported-rule ceilings.",
     "Generated candidate checks are fixture-backed scaffolding, not live production asset validation.",
@@ -14,12 +14,13 @@
     "Added fixture-validated candidate title matching across DISA revisions; tracked coverage is 35.6% (6148/17250) with 11102 unsupported rules remaining.",
     "Added a fixture-validated candidate mapping batch from unsupported rule specs; tracked coverage is 35.4% (6108/17250) with 11142 unsupported rules remaining.",
     "Added SSH daemon configuration candidate inference and fixture evidence; tracked coverage is 36.7% (6330/17250) with 10920 unsupported rules remaining.",
-    "Added generic Linux grep expected-line candidate inference and fixture evidence; tracked coverage is 43.3% (7469/17250) with 9781 unsupported rules remaining."
+    "Added generic Linux grep expected-line candidate inference and fixture evidence; tracked coverage is 43.3% (7469/17250) with 9781 unsupported rules remaining.",
+    "Added Windows audit policy candidate inference and fixture evidence; tracked coverage is 46.5% (8026/17250) with 9224 unsupported rules remaining."
   ],
   "public_disa_artifacts": 87,
   "public_disa_artifacts_indexed": 87,
   "status": "expanded_public_corpus_with_fixture_gated_candidate_mapping",
   "target": "unsupported_authoritative_rules == 0 across every authorized DISA STIG artifact",
   "unsupported_authoritative_rules": 11154,
-  "unsupported_rules": 9781
+  "unsupported_rules": 9224
 }

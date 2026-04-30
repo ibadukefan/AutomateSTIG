@@ -126,6 +126,37 @@ def _linux_platform(stig_id: str) -> bool:
     return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'ubuntu'))
 
 
+def _windows_audit_policy_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    title = rule.get('title', '') or ''
+    if not re.search(r'\bauditpol\b', content, re.IGNORECASE):
+        return None
+    outcome_match = re.search(r'\b(successes|failures|success|failure)\b', title, re.IGNORECASE) or re.search(r'audit\s+(successes|failures|success|failure)', content, re.IGNORECASE)
+    if not outcome_match:
+        return None
+    raw_outcome = outcome_match.group(1).lower()
+    outcome = 'Success' if raw_outcome.startswith('success') else 'Failure'
+
+    candidates = []
+    quoted = re.search(r'"([A-Za-z][A-Za-z /-]+?)"\s+audit policy setting', content, re.IGNORECASE)
+    if quoted:
+        candidates.append(quoted.group(1))
+    title_policy = re.search(r'\baudit\s+(.+?)\s+(?:successes|failures|success|failure)\.?$', title, re.IGNORECASE)
+    if title_policy:
+        candidates.append(title_policy.group(1))
+    for candidate in candidates:
+        subcategory = candidate.split(' - ')[-1].strip(' ."')
+        if subcategory:
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'windows',
+                'check': {'type': 'audit_policy', 'subcategory': subcategory, 'setting': outcome},
+                'expected': {'type': 'contains', 'substring': outcome},
+                'description': rule.get('title', ''),
+            }
+    return None
+
+
 def _sysctl_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     match = re.search(r'\bsysctl\s+([a-zA-Z0-9_.-]+)', content)
@@ -314,6 +345,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     policy_candidate = _windows_registry_policy_candidate(rule, stig_id)
     if policy_candidate:
         return policy_candidate
+
+    audit_policy_candidate = _windows_audit_policy_candidate(rule)
+    if audit_policy_candidate:
+        return audit_policy_candidate
 
     feature = re.search(r'Get-WindowsFeature\s*\|\s*Where\s+Name\s+-eq\s+([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
     if feature and re.search(r'Installed[^\n.]+is[^\n.]+finding|If[^\n.]+Installed[^\n.]+finding', content, re.IGNORECASE):
