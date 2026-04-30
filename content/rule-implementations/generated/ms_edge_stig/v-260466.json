@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+      "type": "registry",
+      "value_name": "HubsSidebarEnabled"
+    },
+    "description": "Copilot must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-260466"
+  },
   "check_content_excerpt": "Verify the policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Show Hubs Sidebar\" is set to \"Disabled\".\n\nUse the Windows Registry Editor to navigate to the following key:\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\n\nIf the value for \"HubsSidebarEnabled\" is not set to \"REG_DWORD = 0\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Show Hubs Sidebar\" to \"Disabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-260466r960963_rule",
   "severity": "medium",

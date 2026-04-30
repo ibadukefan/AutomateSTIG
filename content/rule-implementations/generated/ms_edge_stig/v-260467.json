@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+      "type": "registry",
+      "value_name": "DefaultCookiesSetting"
+    },
+    "description": "Session only-based cookies must be enabled.",
+    "expected": {
+      "type": "equals",
+      "value": 4
+    },
+    "platform": "windows",
+    "vuln_id": "V-260467"
+  },
   "check_content_excerpt": "Verify the policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Content settings/Configure cookies\" is set to \"Enabled\" with the option value set to \"Keep cookies for the duration of the session, except ones listed in 'SaveCookiesOnExit'\".\n\nUse the Windows Registry Editor to navigate to the following key:\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\n\nIf the value for \u201cDefaultCookiesSetting\u201d is not set to \"REG_DWORD = 4\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 4
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Content settings/Configure cookies\" to \"Enabled\" with the option value set to \"Keep cookies for the duration of the session, except ones listed in 'SaveCookiesOnExit'\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-260467r960864_rule",
   "severity": "medium",

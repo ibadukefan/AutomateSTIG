@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallBlocklist\\1",
+      "type": "registry",
+      "value_name": "1"
+    },
+    "description": "Extensions installation must be blocklisted by default.",
+    "expected": {
+      "type": "equals",
+      "value": "*"
+    },
+    "platform": "windows",
+    "vuln_id": "V-235754"
+  },
   "check_content_excerpt": "The policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Extensions/Control which extensions cannot be installed\" must be set to \"Enabled\".\n\nUse the Windows Registry Editor to navigate to the following key:\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallBlocklist\\1\n\nIf the value for \"1\" is not set to \"REG_SZ = *\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "*"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Extensions/Control which extensions cannot be installed\" to \"Enabled\". A list of blocklisted extensions may then be specified.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-235754r960963_rule",
   "severity": "medium",

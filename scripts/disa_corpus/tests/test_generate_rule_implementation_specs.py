@@ -115,6 +115,20 @@ Windows method:
         self.assertEqual(candidate['check'], {'type': 'registry', 'path': 'HKLM\\Software\\Policies\\Google\\Chrome', 'value_name': 'QuicAllowed'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
 
+    def test_infers_windows_browser_registry_policy_candidate_from_registry_editor_key(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-235756',
+            'title': 'The Password Manager must be disabled.',
+            'check_content': '''The policy value for "Computer Configuration/Administrative Templates/Microsoft Edge/Password manager and protection/Enable saving passwords to the password manager" must be set to "disabled".
+
+Use the Windows Registry Editor to navigate to the following key:
+HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge
+
+If the value for "PasswordManagerEnabled" is not set to "REG_DWORD = 0", this is a finding.'''
+        }, 'MS_Edge_STIG')
+        self.assertEqual(candidate['check'], {'type': 'registry', 'path': 'HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge', 'value_name': 'PasswordManagerEnabled'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
+
     def test_infers_linux_sysctl_candidate_check_from_rhel_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230266',

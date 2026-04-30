@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+      "type": "registry",
+      "value_name": "AuthSchemes"
+    },
+    "description": "Supported authentication schemes must be configured.",
+    "expected": {
+      "type": "equals",
+      "value": "ntlm,negotiate"
+    },
+    "platform": "windows",
+    "vuln_id": "V-235761"
+  },
   "check_content_excerpt": "The policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/HTTP authentication/Supported authentication schemes\" must be set to  \"ntlm,negotiate\".\n\nUse the Windows Registry Editor to navigate to the following key:\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\n\nIf the value for \"AuthSchemes\" is not set to \"REG_SZ = ntlm,negotiate\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "ntlm,negotiate"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/HTTP authentication/Supported authentication schemes\" to \"ntlm,negotiate\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-235761r1043177_rule",
   "severity": "medium",

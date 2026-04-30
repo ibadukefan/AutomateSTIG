@@ -1,0 +1,956 @@
+{
+  "candidate_checks": 35,
+  "cases": [
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "ImportSearchEngine"
+      },
+      "description": "Importing of search engine settings must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ImportSearchEngine": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ImportSearchEngine": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235739"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "ImportShortcuts"
+      },
+      "description": "Importing of shortcuts must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ImportShortcuts": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ImportShortcuts": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235740"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "AutoplayAllowed"
+      },
+      "description": "AutoplayAllowed must be set to disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\AutoplayAllowed": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\AutoplayAllowed": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235741"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "DefaultWebUsbGuardSetting"
+      },
+      "description": "WebUSB must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\DefaultWebUsbGuardSetting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\DefaultWebUsbGuardSetting": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235742"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "EnableMediaRouter"
+      },
+      "description": "Google Cast must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\EnableMediaRouter": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\EnableMediaRouter": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235743"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "DefaultWebBluetoothGuardSetting"
+      },
+      "description": "Web Bluetooth API must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\DefaultWebBluetoothGuardSetting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\DefaultWebBluetoothGuardSetting": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235744"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "AutofillCreditCardEnabled"
+      },
+      "description": "Autofill for Credit Cards must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\AutofillCreditCardEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\AutofillCreditCardEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235745"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "AutofillAddressEnabled"
+      },
+      "description": "Autofill for addresses must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\AutofillAddressEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\AutofillAddressEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235746"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "EnableOnlineRevocationChecks"
+      },
+      "description": "Online revocation checks must be performed.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\EnableOnlineRevocationChecks": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\EnableOnlineRevocationChecks": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235747"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "PersonalizationReportingEnabled"
+      },
+      "description": "Personalization of ads, search, and news by sending browsing history to Microsoft must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\PersonalizationReportingEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\PersonalizationReportingEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235748"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "DefaultGeolocationSetting"
+      },
+      "description": "Site tracking of a user\u2019s location must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\DefaultGeolocationSetting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\DefaultGeolocationSetting": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235749"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "AllowDeletingBrowserHistory"
+      },
+      "description": "Browser history must be saved.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\AllowDeletingBrowserHistory": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\AllowDeletingBrowserHistory": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235750"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "DeveloperToolsAvailability"
+      },
+      "description": "Edge development tools must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\DeveloperToolsAvailability": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\DeveloperToolsAvailability": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235751"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallBlocklist\\1",
+        "type": "registry",
+        "value_name": "1"
+      },
+      "description": "Extensions installation must be blocklisted by default.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallBlocklist\\1\\1": "unexpected-*"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ExtensionInstallBlocklist\\1\\1": "*"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235754"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "PasswordManagerEnabled"
+      },
+      "description": "The Password Manager must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\PasswordManagerEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\PasswordManagerEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235756"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "SitePerProcess"
+      },
+      "description": "Site isolation for every site must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\SitePerProcess": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\SitePerProcess": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235760"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "AuthSchemes"
+      },
+      "description": "Supported authentication schemes must be configured.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "ntlm,negotiate"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\AuthSchemes": "unexpected-ntlm,negotiate"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\AuthSchemes": "ntlm,negotiate"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235761"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "SmartScreenEnabled"
+      },
+      "description": "Microsoft Defender SmartScreen must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\SmartScreenEnabled": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\SmartScreenEnabled": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235763"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "SmartScreenPuaEnabled"
+      },
+      "description": "Microsoft Defender SmartScreen must be configured to block potentially unwanted apps.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\SmartScreenPuaEnabled": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\SmartScreenPuaEnabled": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235764"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "PromptForDownloadLocation"
+      },
+      "description": "The download location prompt must be configured.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\PromptForDownloadLocation": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\PromptForDownloadLocation": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235765"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "PaymentMethodQueryEnabled"
+      },
+      "description": "A website's ability to query for payment methods must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\PaymentMethodQueryEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\PaymentMethodQueryEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235767"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "AlternateErrorPagesEnabled"
+      },
+      "description": "Suggestions of similar web pages in the event of a navigation error must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\AlternateErrorPagesEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\AlternateErrorPagesEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235768"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "UserFeedbackAllowed"
+      },
+      "description": "User feedback must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\UserFeedbackAllowed": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\UserFeedbackAllowed": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235769"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "EdgeCollectionsEnabled"
+      },
+      "description": "The collections feature must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\EdgeCollectionsEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\EdgeCollectionsEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235770"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "ConfigureShare"
+      },
+      "description": "The Share Experience feature must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ConfigureShare": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ConfigureShare": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235771"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "BrowserGuestModeEnabled"
+      },
+      "description": "Guest mode must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\BrowserGuestModeEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\BrowserGuestModeEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235772"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "RelaunchNotification"
+      },
+      "description": "Relaunch notification must be required.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\RelaunchNotification": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\RelaunchNotification": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235773"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "BuiltInDnsClientEnabled"
+      },
+      "description": "The built-in DNS client must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\BuiltInDnsClientEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\BuiltInDnsClientEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235774"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "QuicAllowed"
+      },
+      "description": "Use of the QUIC protocol must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\QuicAllowed": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\QuicAllowed": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-246736"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "VisualSearchEnabled"
+      },
+      "description": "Visual Search must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\VisualSearchEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\VisualSearchEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260465"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "HubsSidebarEnabled"
+      },
+      "description": "Copilot must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\HubsSidebarEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\HubsSidebarEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260466"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "DefaultCookiesSetting"
+      },
+      "description": "Session only-based cookies must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 4
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\DefaultCookiesSetting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\DefaultCookiesSetting": 4
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260467"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "ConfigureFriendlyURLFormat"
+      },
+      "description": "FriendlyURLs must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ConfigureFriendlyURLFormat": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ConfigureFriendlyURLFormat": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-266981"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "ComposeInlineEnabled"
+      },
+      "description": "Access to Microsoft 365 Copilot writing assistance must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ComposeInlineEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\ComposeInlineEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-279940"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
+        "value_name": "MicrosoftEditorProofingEnabled"
+      },
+      "description": "Spell checking provided by Microsoft Editor must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\MicrosoftEditorProofingEnabled": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\MicrosoftEditorProofingEnabled": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-283439"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/ms_edge_stig.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "MS_Edge_STIG",
+  "validated_candidates": 35
+}

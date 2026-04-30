@@ -106,19 +106,37 @@ def _parse_expected_registry_data(text: str):
 def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     path_match = re.search(r'Navigate\s+to\s+["“]?((?:HKLM|HKCU|HKCR|HKU|HKCC|HKEY_[A-Z_]+)\\[^\n\r"”]+)', content, re.IGNORECASE)
-    if not path_match:
-        return None
-    value_match = re.search(r'If\s+the\s+["“]([^"”]+)["”]\s+(?:value\s+name|key)\s+does\s+not\s+exist[^\n\r.]*?(?:value\s+data\s+)?is\s+not\s+set\s+to', content, re.IGNORECASE)
-    if not value_match:
-        value_match = re.search(r'If\s+([A-Za-z0-9_.-]+)\s+is\s+not\s+displayed[^\n\r.]*?or\s+it\s+is\s+not\s+set\s+to', content, re.IGNORECASE)
-    if not value_match:
-        return None
-    expected_value = _parse_expected_registry_data(content)
-    if expected_value is None:
+    value_match = None
+    expected_value = None
+    if path_match:
+        value_match = re.search(r'If\s+the\s+["“]([^"”]+)["”]\s+(?:value\s+name|key)\s+does\s+not\s+exist[^\n\r.]*?(?:value\s+data\s+)?is\s+not\s+set\s+to', content, re.IGNORECASE)
+        if not value_match:
+            value_match = re.search(r'If\s+([A-Za-z0-9_.-]+)\s+is\s+not\s+displayed[^\n\r.]*?or\s+it\s+is\s+not\s+set\s+to', content, re.IGNORECASE)
+        expected_value = _parse_expected_registry_data(content)
+    else:
+        path_match = re.search(
+            r'Windows\s+Registry\s+Editor\s+to\s+navigate\s+to\s+the\s+following\s+key:\s*\n\s*((?:HKLM|HKCU|HKCR|HKU|HKCC|HKEY_[A-Z_]+)\\[^\n\r]+)',
+            content,
+            re.IGNORECASE,
+        )
+        value_match = re.search(
+            r'If\s+the\s+value\s+for\s+["“]?([A-Za-z0-9_.-]+)["”]?\s+is\s+not\s+set\s+to\s+["“]?REG_(DWORD|SZ)\s*=\s*([^"”\n\r.]+)["”]?\s*,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+        if value_match:
+            raw_value = value_match.group(3).strip()
+            if value_match.group(2).upper() == 'DWORD':
+                if not re.fullmatch(r'0x[0-9a-fA-F]+|[-+]?\d+', raw_value):
+                    return None
+                expected_value = int(raw_value, 16) if raw_value.lower().startswith('0x') else int(raw_value)
+            else:
+                expected_value = raw_value
+    if not path_match or not value_match or expected_value is None:
         return None
     return {
         'vuln_id': rule.get('vuln_id', ''),
-        'platform': 'windows' if 'windows' in stig_id.lower() or 'chrome' in stig_id.lower() else 'generic',
+        'platform': 'windows' if any(token in stig_id.lower() for token in ('windows', 'chrome', 'edge')) else 'generic',
         'check': {
             'type': 'registry',
             'path': _normalize_registry_path(path_match.group(1)),
@@ -678,7 +696,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
                 'description': rule.get('title', ''),
             }
 
-    if _windows_platform(stig_id):
+    if _windows_platform(stig_id) or any(token in stig_id.lower() for token in ('chrome', 'edge')):
         policy_candidate = _windows_registry_policy_candidate(rule, stig_id)
         if policy_candidate:
             return policy_candidate
