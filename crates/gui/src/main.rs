@@ -68,23 +68,14 @@ async fn main() {
     let url = format!("http://{}", local_addr);
 
     // Generate auth token. Server/non-loopback mode requires an explicit token;
-    // desktop localhost mode gets a random per-session token.
+    // desktop localhost and explicit demo mode get a random per-session token.
     let is_loopback = bind_ip.is_loopback();
-    let auth_token: String = if let Ok(token) = std::env::var("AUTOMATESTIG_AUTH_TOKEN") {
-        if token.len() < 16 && !is_loopback {
-            panic!(
-                "AUTOMATESTIG_AUTH_TOKEN must be at least 16 characters for non-localhost binds"
-            );
-        }
-        token
-    } else if is_loopback {
-        let rng = ring::rand::SystemRandom::new();
-        let mut bytes = [0u8; 32];
-        ring::rand::SecureRandom::fill(&rng, &mut bytes).expect("Failed to generate random token");
-        bytes.iter().map(|b| format!("{:02x}", b)).collect()
-    } else {
-        panic!("AUTOMATESTIG_AUTH_TOKEN is required when binding outside localhost");
-    };
+    let auth_token = resolve_auth_token(
+        std::env::var("AUTOMATESTIG_AUTH_TOKEN").ok(),
+        is_loopback,
+        demo_mode,
+    )
+    .expect("Invalid AutomateSTIG auth configuration");
     let auth_token_for_middleware = auth_token.clone();
 
     // Build the router with security layers:
@@ -128,7 +119,7 @@ async fn main() {
             }
         }))
         .fallback({
-            let token = if is_loopback {
+            let token = if is_loopback || demo_mode {
                 Some(auth_token.clone())
             } else {
                 None
@@ -493,6 +484,36 @@ fn sample_checklist(
     checklist
 }
 
+fn generate_session_token() -> Result<String, String> {
+    let rng = ring::rand::SystemRandom::new();
+    let mut bytes = [0u8; 32];
+    ring::rand::SecureRandom::fill(&rng, &mut bytes)
+        .map_err(|_| "Failed to generate random token".to_string())?;
+    Ok(bytes.iter().map(|b| format!("{:02x}", b)).collect())
+}
+
+fn resolve_auth_token(
+    explicit_token: Option<String>,
+    is_loopback: bool,
+    demo_mode: bool,
+) -> Result<String, String> {
+    if let Some(token) = explicit_token {
+        if token.len() < 16 && !is_loopback {
+            return Err(
+                "AUTOMATESTIG_AUTH_TOKEN must be at least 16 characters for non-localhost binds"
+                    .to_string(),
+            );
+        }
+        return Ok(token);
+    }
+
+    if is_loopback || demo_mode {
+        return generate_session_token();
+    }
+
+    Err("AUTOMATESTIG_AUTH_TOKEN is required when binding outside localhost".to_string())
+}
+
 /// Serve embedded frontend files.
 /// For index.html, injects the session auth token so the JS can authenticate API calls.
 fn serve_frontend_with_token(
@@ -544,3 +565,37 @@ use axum::response::IntoResponse;
 #[derive(rust_embed::Embed)]
 #[folder = "frontend/"]
 struct FrontendAssets;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn non_loopback_demo_without_explicit_token_gets_random_session_token() {
+        let token = resolve_auth_token(None, false, true).expect("demo hosted mode should start");
+
+        assert_eq!(token.len(), 64);
+        assert!(token.chars().all(|ch| ch.is_ascii_hexdigit()));
+    }
+
+    #[test]
+    fn non_loopback_server_without_token_is_rejected() {
+        let error = resolve_auth_token(None, false, false).expect_err("server mode needs a token");
+
+        assert_eq!(
+            error,
+            "AUTOMATESTIG_AUTH_TOKEN is required when binding outside localhost"
+        );
+    }
+
+    #[test]
+    fn non_loopback_short_explicit_token_is_rejected() {
+        let error = resolve_auth_token(Some("short".to_string()), false, true)
+            .expect_err("short hosted tokens are unsafe");
+
+        assert_eq!(
+            error,
+            "AUTOMATESTIG_AUTH_TOKEN must be at least 16 characters for non-localhost binds"
+        );
+    }
+}

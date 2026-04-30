@@ -9,5 +9,7 @@ RUN apk add --no-cache ca-certificates
 COPY --from=builder /app/target/release/automatestig-gui /usr/local/bin/
 COPY --from=builder /app/content/check_packs /app/content/check_packs
 EXPOSE 8080
-ENV RUST_LOG=info
+ENV RUST_LOG=info \
+    AUTOMATESTIG_BIND=0.0.0.0 \
+    AUTOMATESTIG_DEMO=1
 CMD ["automatestig-gui"]
