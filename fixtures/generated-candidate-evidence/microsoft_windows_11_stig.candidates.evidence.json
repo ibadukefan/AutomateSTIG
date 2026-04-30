@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 154,
+  "candidate_checks": 155,
   "cases": [
     {
       "check": {
@@ -3270,6 +3270,33 @@
     },
     {
       "check": {
+        "key": "Network access: Allow anonymous SID/Name translation",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Anonymous SID/Name translation must not be allowed.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Network access: Allow anonymous SID/Name translation": "unexpected-Disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Network access: Allow anonymous SID/Name translation": "Disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253452"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "RestrictAnonymousSAM"
@@ -4165,5 +4192,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 154
+  "validated_candidates": 155
 }

@@ -185,6 +185,21 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
     policy_text = '\n'.join(part for part in (content, fix_text, title) if part)
     has_secedit_context = bool(re.search(r'\bsecedit\b', content, re.IGNORECASE))
 
+    if 'Local Policies >> Security Options' in policy_text:
+        security_option = re.search(
+            r'If\s+the\s+value\s+for\s+"([^"]+)"\s+is\s+not\s+set\s+to\s+"(Enabled|Disabled)"',
+            content,
+            re.IGNORECASE,
+        )
+        if security_option:
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'windows',
+                'check': {'type': 'security_policy', 'section': 'Security Options', 'key': security_option.group(1).strip()},
+                'expected': {'type': 'equals', 'value': security_option.group(2).strip()},
+                'description': rule.get('title', ''),
+            }
+
     if has_secedit_context:
         required_sids_match = re.search(
             r'following\s+SIDs\s+are\s+not\s+defined\s+for\s+the\s+"(Se[A-Za-z0-9]+)"\s+user\s+right(?P<body>.*?)(?:\n\s*\n\s*If\b|\Z)',

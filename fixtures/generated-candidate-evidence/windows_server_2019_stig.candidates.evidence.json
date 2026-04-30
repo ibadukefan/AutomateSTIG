@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 163,
+  "candidate_checks": 165,
   "cases": [
     {
       "check": {
@@ -697,6 +697,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205708"
+    },
+    {
+      "check": {
+        "key": "Accounts: Guest account status",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 must have the built-in guest account disabled.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Accounts: Guest account status": "unexpected-Disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Accounts: Guest account status": "Disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205709"
     },
     {
       "check": {
@@ -3832,6 +3859,33 @@
     },
     {
       "check": {
+        "key": "Network access: Allow anonymous SID/Name translation",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 must not allow anonymous SID/Name translation.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Network access: Allow anonymous SID/Name translation": "unexpected-Disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Network access: Allow anonymous SID/Name translation": "Disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205913"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "RestrictAnonymousSAM"
@@ -4403,5 +4457,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 163
+  "validated_candidates": 165
 }

@@ -1339,16 +1339,17 @@
       "vuln_id": "V-205708"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205709",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205709r958504_rule",
       "severity": "medium",
       "title": "Windows Server 2019 must have the built-in guest account disabled.",
-      "tracking_issue": "TODO-V-205709",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/de998bcf180eef5455fa320637cc7434bb0e732905bbc2a145829ca8bf1d1986/U_MS_Windows_Server_2019_V3R6_STIG.zip"
       ],
       "vuln_id": "V-205709"
@@ -4064,16 +4065,17 @@
       "vuln_id": "V-205912"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205913",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-205913r991589_rule",
       "severity": "high",
       "title": "Windows Server 2019 must not allow anonymous SID/Name translation.",
-      "tracking_issue": "TODO-V-205913",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/de998bcf180eef5455fa320637cc7434bb0e732905bbc2a145829ca8bf1d1986/U_MS_Windows_Server_2019_V3R6_STIG.zip"
       ],
       "vuln_id": "V-205913"

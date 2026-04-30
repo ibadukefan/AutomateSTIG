@@ -518,6 +518,24 @@ S-1-5-32-546 (Guests)'''
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'System Access', 'key': 'MinimumPasswordLength'})
         self.assertEqual(candidate['expected'], {'type': 'greater_or_equal', 'value': 14})
 
+    def test_infers_windows_security_option_candidate_from_explicit_disabled_value(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254465',
+            'title': 'Windows Server must not allow anonymous SID/Name translation.',
+            'check_content': '''Verify the effective setting in Local Group Policy Editor.
+
+Run "gpedit.msc".
+
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options.
+
+If the value for "Network access: Allow anonymous SID/Name translation" is not set to "Disabled", this is a finding.''',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> Network access: Allow anonymous SID/Name translation to "Disabled".',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Security Options', 'key': 'Network access: Allow anonymous SID/Name translation'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Disabled'})
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -361,6 +361,20 @@
     },
     {
       "check": {
+        "key": "Accounts: Guest account status",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 must have the built-in guest account disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205709"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service",
         "type": "registry",
         "value_name": "AllowBasic"
@@ -1982,6 +1996,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-205912"
+    },
+    {
+      "check": {
+        "key": "Network access: Allow anonymous SID/Name translation",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 must not allow anonymous SID/Name translation.",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205913"
     },
     {
       "check": {

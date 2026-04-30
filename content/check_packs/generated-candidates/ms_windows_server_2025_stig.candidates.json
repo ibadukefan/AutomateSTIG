@@ -1619,6 +1619,20 @@
     },
     {
       "check": {
+        "key": "Accounts: Guest account status",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 must have the built-in guest account disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278195"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "LimitBlankPasswordUse"
@@ -1812,6 +1826,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-278214"
+    },
+    {
+      "check": {
+        "key": "Network access: Allow anonymous SID/Name translation",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 must not allow anonymous SID/Name translation.",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278215"
     },
     {
       "check": {

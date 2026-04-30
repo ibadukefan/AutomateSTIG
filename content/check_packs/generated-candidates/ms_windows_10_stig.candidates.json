@@ -1626,6 +1626,34 @@
     },
     {
       "check": {
+        "key": "Accounts: Administrator account status",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "The built-in administrator account must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220908"
+    },
+    {
+      "check": {
+        "key": "Accounts: Guest account status",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "The built-in guest account must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220909"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "LimitBlankPasswordUse"
@@ -1833,6 +1861,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-220927"
+    },
+    {
+      "check": {
+        "key": "Network access: Allow anonymous SID/Name translation",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Anonymous SID/Name translation must not be allowed.",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220928"
     },
     {
       "check": {

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "Accounts: Administrator account status",
+      "section": "Security Options",
+      "type": "security_policy"
+    },
+    "description": "The built-in administrator account must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": "Disabled"
+    },
+    "platform": "windows",
+    "vuln_id": "V-220908"
+  },
   "check_content_excerpt": "Verify the effective setting in Local Group Policy Editor.\nRun \"gpedit.msc\".\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options.\n\nIf the value for \"Accounts: Administrator account status\" is not set to \"Disabled\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Disabled"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> \"Accounts: Administrator account status\" to \"Disabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "SV-220908r958482_rule",
   "severity": "medium",

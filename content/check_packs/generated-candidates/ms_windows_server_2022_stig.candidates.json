@@ -1288,6 +1288,20 @@
     },
     {
       "check": {
+        "key": "Accounts: Guest account status",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 must have the built-in guest account disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254445"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "LimitBlankPasswordUse"
@@ -1495,6 +1509,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-254464"
+    },
+    {
+      "check": {
+        "key": "Network access: Allow anonymous SID/Name translation",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 must not allow anonymous SID/Name translation.",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254465"
     },
     {
       "check": {

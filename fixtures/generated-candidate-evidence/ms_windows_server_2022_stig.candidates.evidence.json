@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 162,
+  "candidate_checks": 164,
   "cases": [
     {
       "check": {
@@ -2485,6 +2485,33 @@
     },
     {
       "check": {
+        "key": "Accounts: Guest account status",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 must have the built-in guest account disabled.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Accounts: Guest account status": "unexpected-Disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Accounts: Guest account status": "Disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254445"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "LimitBlankPasswordUse"
@@ -2887,6 +2914,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-254464"
+    },
+    {
+      "check": {
+        "key": "Network access: Allow anonymous SID/Name translation",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 must not allow anonymous SID/Name translation.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Network access: Allow anonymous SID/Name translation": "unexpected-Disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Network access: Allow anonymous SID/Name translation": "Disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254465"
     },
     {
       "check": {
@@ -4379,5 +4433,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2022_STIG",
-  "validated_candidates": 162
+  "validated_candidates": 164
 }

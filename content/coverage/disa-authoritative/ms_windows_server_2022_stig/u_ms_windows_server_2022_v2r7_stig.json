@@ -3229,16 +3229,17 @@
       "vuln_id": "V-254444"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254445",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254445r958504_rule",
       "severity": "medium",
       "title": "Windows Server 2022 must have the built-in guest account disabled.",
-      "tracking_issue": "TODO-V-254445",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/c7b24b9e84f1ba7f8088397bd2db20fabf5743d57179f357ee4cea0000122e23/U_MS_Windows_Server_2022_V2R7_STIG.zip"
       ],
       "vuln_id": "V-254445"
@@ -3544,16 +3545,17 @@
       "vuln_id": "V-254464"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254465",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254465r991589_rule",
       "severity": "high",
       "title": "Windows Server 2022 must not allow anonymous SID/Name translation.",
-      "tracking_issue": "TODO-V-254465",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/c7b24b9e84f1ba7f8088397bd2db20fabf5743d57179f357ee4cea0000122e23/U_MS_Windows_Server_2022_V2R7_STIG.zip"
       ],
       "vuln_id": "V-254465"
