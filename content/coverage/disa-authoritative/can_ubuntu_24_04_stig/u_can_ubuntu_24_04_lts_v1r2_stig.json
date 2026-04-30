@@ -2,76 +2,81 @@
   "generated_from": "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip",
   "rules": [
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270645",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270645r1068357_rule",
       "severity": "low",
       "title": "Ubuntu 24.04 LTS must not have the \"systemd-timesyncd\" package installed.",
-      "tracking_issue": "TODO-V-270645",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270645"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270646",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270646r1068358_rule",
       "severity": "low",
       "title": "Ubuntu 24.04 LTS must not have the \"ntp\" package installed.",
-      "tracking_issue": "TODO-V-270646",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270646"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270647",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270647r1066430_rule",
       "severity": "high",
       "title": "Ubuntu 24.04 LTS must not have the telnet package installed.",
-      "tracking_issue": "TODO-V-270647",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270647"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270648",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270648r1066433_rule",
       "severity": "high",
       "title": "Ubuntu 24.04 LTS must not have the rsh-server package installed.",
-      "tracking_issue": "TODO-V-270648",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270648"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270649",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270649r1067136_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must use a file integrity tool to verify correct operation of all security functions.",
-      "tracking_issue": "TODO-V-270649",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270649"
@@ -122,31 +127,33 @@
       "vuln_id": "V-270652"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270653",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270653r1067141_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must be configured to preserve log records from failure events.",
-      "tracking_issue": "TODO-V-270653",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270653"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270654",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270654r1067143_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must have an application firewall installed in order to control remote access methods.",
-      "tracking_issue": "TODO-V-270654",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270654"
@@ -167,16 +174,17 @@
       "vuln_id": "V-270655"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270656",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270656r1067148_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must have the \"auditd\" package installed.",
-      "tracking_issue": "TODO-V-270656",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270656"
@@ -197,31 +205,33 @@
       "vuln_id": "V-270657"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270658",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270658r1067151_rule",
       "severity": "low",
       "title": "Ubuntu 24.04 LTS audit event multiplexor must be configured to offload audit logs onto a different system or storage media from the system being audited.",
-      "tracking_issue": "TODO-V-270658",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270658"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270659",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270659r1066466_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must have AppArmor installed.",
-      "tracking_issue": "TODO-V-270659",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270659"
@@ -242,31 +252,33 @@
       "vuln_id": "V-270660"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270661",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270661r1067175_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must have the \"libpam-pwquality\" package installed.",
-      "tracking_issue": "TODO-V-270661",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270661"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270662",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270662r1067156_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must have the \"SSSD\" package installed.",
-      "tracking_issue": "TODO-V-270662",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270662"
@@ -287,31 +299,33 @@
       "vuln_id": "V-270663"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270664",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270664r1068359_rule",
       "severity": "low",
       "title": "Ubuntu 24.04 LTS must have the \"chrony\" package installed.",
-      "tracking_issue": "TODO-V-270664",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270664"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270665",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270665r1067133_rule",
       "severity": "high",
       "title": "Ubuntu 24.04 LTS must have SSH installed.",
-      "tracking_issue": "TODO-V-270665",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270665"
@@ -407,46 +421,49 @@
       "vuln_id": "V-270671"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270672",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270672r1067161_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must accept Personal Identity Verification (PIV) credentials.",
-      "tracking_issue": "TODO-V-270672",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270672"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270673",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270673r1067164_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must accept Personal Identity Verification (PIV) credentials managed through the Privileged Access Management (PAM) \u00a0framework.",
-      "tracking_issue": "TODO-V-270673",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270673"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270674",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270674r1067167_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must allow users to directly initiate a session lock for all connection types.",
-      "tracking_issue": "TODO-V-270674",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270674"

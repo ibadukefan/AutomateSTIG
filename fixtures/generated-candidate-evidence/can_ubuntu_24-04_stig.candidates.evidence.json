@@ -1,6 +1,448 @@
 {
-  "candidate_checks": 30,
+  "candidate_checks": 48,
   "cases": [
+    {
+      "check": {
+        "name": "systemd-timesyncd",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must not have the \"systemd-timesyncd\" package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "systemd-timesyncd": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "systemd-timesyncd": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270645"
+    },
+    {
+      "check": {
+        "name": "ntp",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must not have the \"ntp\" package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "ntp": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "ntp": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270646"
+    },
+    {
+      "check": {
+        "name": "telnetd",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must not have the telnet package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "telnetd": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "telnetd": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270647"
+    },
+    {
+      "check": {
+        "name": "rsh-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must not have the rsh-server package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rsh-server": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rsh-server": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270648"
+    },
+    {
+      "check": {
+        "name": "aide",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must use a file integrity tool to verify correct operation of all security functions.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "aide": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "aide": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270649"
+    },
+    {
+      "check": {
+        "name": "rsyslog",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured to preserve log records from failure events.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rsyslog": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rsyslog": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270653"
+    },
+    {
+      "check": {
+        "name": "ufw",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must have an application firewall installed in order to control remote access methods.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "ufw": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "ufw": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270654"
+    },
+    {
+      "check": {
+        "name": "auditd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must have the \"auditd\" package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "auditd": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "auditd": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270656"
+    },
+    {
+      "check": {
+        "name": "audispd-plugins",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS audit event multiplexor must be configured to offload audit logs onto a different system or storage media from the system being audited.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "audispd-plugins": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "audispd-plugins": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270658"
+    },
+    {
+      "check": {
+        "name": "apparmor",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must have AppArmor installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "apparmor": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "apparmor": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270659"
+    },
+    {
+      "check": {
+        "name": "libpam-pwquality",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must have the \"libpam-pwquality\" package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "libpam-pwquality": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "libpam-pwquality": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270661"
+    },
+    {
+      "check": {
+        "name": "sssd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must have the \"SSSD\" package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "sssd": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "sssd": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270662"
+    },
+    {
+      "check": {
+        "name": "chrony",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must have the \"chrony\" package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "chrony": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "chrony": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270664"
+    },
+    {
+      "check": {
+        "name": "openssh",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must have SSH installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "openssh": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "openssh": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270665"
+    },
+    {
+      "check": {
+        "name": "opensc-pkcs11",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must accept Personal Identity Verification (PIV) credentials.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "opensc-pkcs11": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "opensc-pkcs11": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270672"
+    },
+    {
+      "check": {
+        "name": "libpam-pkcs11",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must accept Personal Identity Verification (PIV) credentials managed through the Privileged Access Management (PAM) \u00a0framework.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "libpam-pkcs11": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "libpam-pkcs11": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270673"
+    },
+    {
+      "check": {
+        "name": "vlock",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must allow users to directly initiate a session lock for all connection types.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "vlock": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "vlock": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270674"
+    },
     {
       "check": {
         "is_regex": false,
@@ -862,6 +1304,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-274870"
+    },
+    {
+      "check": {
+        "name": "-E",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must not have the nfs-kernel-server package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "-E": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "-E": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-279938"
     }
   ],
   "production_claim": false,
@@ -869,5 +1337,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 30
+  "validated_candidates": 48
 }

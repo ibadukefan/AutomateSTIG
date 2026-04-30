@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "chrony",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "Ubuntu 24.04 LTS must have the \"chrony\" package installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270664"
+  },
   "check_content_excerpt": "Verify the \"chrony\" package is installed using the following command:\n \n$ dpkg -l | grep chrony\nii  chrony     4.5-1ubuntu4.1     amd64     Versatile implementation of the Network Time Protocol\n\nIf the \"chrony\" package is not installed,\u00a0this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install the \"chrony\" network time protocol package using the following command:\n\n$ sudo apt install -y chrony",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-270664r1068359_rule",
   "severity": "low",

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "openssh",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "Ubuntu 24.04 LTS must have SSH installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270665"
+  },
   "check_content_excerpt": "Verify the SSH package is installed with the following command: \n \n$ dpkg -l | grep openssh \nii  openssh-client     1:9.6p1-3ubuntu13.5     amd64     secure shell (SSH) client, for secure access to remote machines\nii  openssh-server     1:9.6p1-3ubuntu13.5     amd64     secure shell (SSH) server, for secure access from remote machines\nii  openssh-sftp-server     1:9.6p1-3ubuntu13.5     amd64     secure shell (SSH) sftp server module, for SFTP access from remote machines\n \nIf the \"openssh\" server package is not installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install the \"ssh\" meta-package on the system with the following command: \n \n$ sudo apt install -y ssh",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-270665r1067133_rule",
   "severity": "high",

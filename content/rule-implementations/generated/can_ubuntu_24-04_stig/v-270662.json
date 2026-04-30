@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "sssd",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "Ubuntu 24.04 LTS must have the \"SSSD\" package installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270662"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS has the packages required for multifactor authentication installed with the following command:\n\n$ dpkg -l | grep sssd\nii  sssd     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- metapackage\nii  sssd-ad     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- Active Directory back end\nii  sssd-ad-common     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- PAC responder\nii  sssd-common     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- common files\nii  sssd-ipa     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- IPA back end\nii  sssd-krb5     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- Kerberos back end\nii  sssd-krb5-common     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- Kerberos helpers\nii  sssd-ldap     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- LDAP back end\nii  sssd-proxy     2.9.4-1.1ubuntu6.1     amd64     System Security Services Daemon -- proxy back end\n\nIf the \"sssd\" package is not installed, this is a finding. The additional sssd components listed by the command may differ from configuration to configuration.  \n\nEnsure that \"libpam-sss\" (the PAM integration module for SSSD) is installed with the following command:\n\n$ dpkg -l | grep libpam-sss\ni  libpam-sss:amd64     2.9.4-1.1ubuntu6.1     amd64     Pam module for the System Security Services Daemon\n\nEnsure that \"libnss-sss\" (the NSS module for retrieving user and group information) is installed with the following command:\n\n$ dpkg -l | grep libnss-sss\nii  libnss-sss:amd64     2.9.4-1.1ubuntu6.1      amd64     Nss library for the System Security Services Daemon",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install the sssd.service and the required pam packages with the following commands: \n \n$ sudo apt install -y sssd\n\n$ sudo apt install -y libpam-sss\n\n$ sudo apt install -y libnss-sss",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-270662r1067156_rule",
   "severity": "medium",

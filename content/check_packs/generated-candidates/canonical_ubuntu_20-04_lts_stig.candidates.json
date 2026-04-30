@@ -158,6 +158,19 @@
     },
     {
       "check": {
+        "name": "auditd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Ubuntu operating system must produce audit records and reports containing information to establish when, where, what type, the source, and the outcome for all DoD-defined auditable events and actions in near real time.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238298"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/boot/grub/grub.cfg",
         "pattern": "linux        /boot/vmlinuz-5.4.0-31-generic root=UUID=74d13bcd-6ebd-4493-b5d2-3ebc37d01702 ro  audit=1",
@@ -184,6 +197,32 @@
       },
       "platform": "linux",
       "vuln_id": "V-238300"
+    },
+    {
+      "check": {
+        "name": "telnetd",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Ubuntu operating system must not have the telnet package installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238326"
+    },
+    {
+      "check": {
+        "name": "rsh-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Ubuntu operating system must not have the rsh-server package installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238327"
     },
     {
       "check": {
@@ -245,6 +284,45 @@
     },
     {
       "check": {
+        "name": "rsyslog",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Ubuntu operating system must be configured to preserve log records from failure events.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238353"
+    },
+    {
+      "check": {
+        "name": "ufw",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Ubuntu operating system must have an application firewall installed in order to control remote access methods.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238354"
+    },
+    {
+      "check": {
+        "name": "apparmor",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Ubuntu operating system must be configured to use AppArmor.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238360"
+    },
+    {
+      "check": {
         "key": "kernel.randomize_va_space",
         "type": "sysctl"
       },
@@ -255,6 +333,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-238369"
+    },
+    {
+      "check": {
+        "name": "aide",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Ubuntu operating system must use a file integrity tool to verify correct operation of all security functions.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238371"
     },
     {
       "check": {
@@ -325,6 +416,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-274852"
+    },
+    {
+      "check": {
+        "name": "sssd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 20.04 LTS must have the \"SSSD\" package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274853"
     },
     {
       "check": {

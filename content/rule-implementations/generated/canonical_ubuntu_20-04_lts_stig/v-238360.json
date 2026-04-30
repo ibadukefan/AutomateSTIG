@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "apparmor",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "The Ubuntu operating system must be configured to use AppArmor.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238360"
+  },
   "check_content_excerpt": "Verify the operating system prevents program execution in accordance with local policies. \n \nCheck that AppArmor is installed and active by running the following command, \n \n$ dpkg -l | grep apparmor \n \nIf the \"apparmor\" package is not installed,\u00a0this is a finding. \n \n$ systemctl is-active apparmor.service \n \nactive \n \nIf \"active\" is not returned, this is a finding. \n \n$ systemctl is-enabled apparmor.service \n \nenabled \n \nIf \"enabled\" is not returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install \"AppArmor\" (if it is not installed) with the following command: \n \n$ sudo apt-get install apparmor \n \n$ sudo systemctl enable apparmor.service \n \nStart \"apparmor\" with the following command: \n \n$ sudo systemctl start apparmor.service \n \nNote: AppArmor must have properly configured profiles for applications and home directories. All configurations will be based on the actual system setup and organization and normally are on a per role basis. See the AppArmor documentation for more information on configuring profiles.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-238360r958804_rule",
   "severity": "medium",

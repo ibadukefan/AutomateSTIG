@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "audispd-plugins",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "Ubuntu 24.04 LTS audit event multiplexor must be configured to offload audit logs onto a different system or storage media from the system being audited.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270658"
+  },
   "check_content_excerpt": "Verify the audit event multiplexor is configured to offload audit records to a different system or storage media from the system being audited. \n \nCheck that audisp-remote plugin is installed:\n\n$ dpkg -l | grep audispd-plugins\nii  audispd-plugins     1:3.1.2-2.1build1.1     amd64     Plugins for the audit event dispatcher \n\nIf the packet is \"not installed\", this is a finding. \n \nCheck that the records are being offloaded to a remote server with the following command: \n \n$ sudo grep -i active /etc/audit/plugins.d/au-remote.conf\nactive = yes \n \nIf \"active\" is not set to \"yes\", or the line is commented out, or is missing, this is a finding. \n \nCheck that audisp-remote plugin is configured to send audit logs to a different system: \n \n$ sudo grep -i ^remote_server /etc/audit/audisp-remote.conf\nremote_server = 192.168.122.126 \n \nIf the \"remote_server\" parameter is not set, is set with a local address, or is set with an invalid address, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit event multiplexor to offload audit records to a different system or storage media from the system being audited. \n \nInstall the audisp-remote plugin: \n \n$ sudo apt install -y audispd-plugins\n \nSet the audisp-remote plugin as active by editing the \"/etc/audit/plugins.d/au-remote.conf\" file: \n \n$ sudo sed -i -E 's/active\\s*=\\s*no/active = yes/' /etc/audit/plugins.d/au-remote.conf \n \nSet the address of the remote machine by editing the \"/etc/audit/audisp-remote.conf\" file: \n \n$ sudo sed -i -E 's/(remote_server\\s*=).*/\\1 <remote addr>/' /etc/audit/audisp-remote.conf \n \nwhere <remote addr> must be substituted by the address of the remote server receiving the audit log. \n \nMake the audit service reload its configuration files: \n \n$ sudo systemctl restart auditd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-270658r1067151_rule",
   "severity": "low",

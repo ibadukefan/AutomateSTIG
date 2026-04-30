@@ -117,6 +117,30 @@ Windows method:
         self.assertEqual(candidate['check'], {'type': 'package', 'name': 'krb5-workstation', 'should_be_installed': False})
         self.assertEqual(candidate['expected'], {'type': 'is_false'})
 
+    def test_infers_linux_package_absent_candidate_from_dpkg_grep_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-238326',
+            'title': 'The Ubuntu operating system must not have the telnet package installed.',
+            'check_content': 'Verify that the telnet package is not installed by running: $ dpkg -l | grep telnetd If the package is installed, this is a finding.'
+        }, 'Canonical_Ubuntu_20-04_LTS_STIG')
+        self.assertEqual(candidate['check'], {'type': 'package', 'name': 'telnetd', 'should_be_installed': False})
+        self.assertEqual(candidate['expected'], {'type': 'is_false'})
+
+    def test_infers_linux_sysctl_candidate_from_fix_text_config_line(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230543',
+            'title': 'RHEL 8 must not allow interfaces to perform ICMP redirects by default.',
+            'check_content': 'Verify settings are applied with sysctl --system.',
+            'fix_text': '''Add or edit the following line in a system configuration file, in the "/etc/sysctl.d/" directory:
+
+net.ipv4.conf.default.send_redirects = 0
+
+Load settings from all system configuration files with the following command:
+$ sudo sysctl --system'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'sysctl', 'key': 'net.ipv4.conf.default.send_redirects'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '0'})
+
     def test_infers_linux_file_content_candidate_check_from_grep_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230236',

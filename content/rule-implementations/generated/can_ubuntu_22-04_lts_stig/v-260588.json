@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "rsyslog",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "Ubuntu 22.04 LTS must be configured to preserve log records from failure events.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260588"
+  },
   "check_content_excerpt": "Verify the log service is installed properly by using the following command:  \n  \n     $ dpkg -l | grep rsyslog \n     ii     rsyslog     8.2112.0-2ubuntu2.2     amd64     reliable system and kernel logging daemon \n  \nIf the \"rsyslog\" package is not installed, this is a finding.  \n  \nCheck that the log service is enabled and active by using the following commands:  \n \n     $ systemctl is-enabled rsyslog.service \n     enabled  \n  \n     $ systemctl is-active rsyslog.service \n     active  \n  \nIf \"rsyslog.service\" is not enabled and active, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install the log service by using the following command:  \n \n     $ sudo apt-get install rsyslog \n  \nEnable and activate the log service by using the following command:  \n  \n     $ sudo systemctl enable rsyslog.service --now",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-260588r991562_rule",
   "severity": "medium",

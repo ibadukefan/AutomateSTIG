@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "ufw",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "The Ubuntu operating system must have an application firewall installed in order to control remote access methods.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238354"
+  },
   "check_content_excerpt": "Verify that the Uncomplicated Firewall is installed with the following command: \n \n$ dpkg -l | grep ufw \n \nii  ufw         0.36-6 \n \nIf the \"ufw\" package is not installed, ask the System Administrator if another application firewall is installed.  \n \nIf no application firewall is installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install the Uncomplicated Firewall by using the following command: \n \n$ sudo apt-get install ufw",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-238354r958672_rule",
   "severity": "medium",

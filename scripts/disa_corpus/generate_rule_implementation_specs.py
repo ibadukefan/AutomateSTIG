@@ -231,20 +231,33 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
 
 def _sysctl_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = '\n'.join(part for part in (content, fix_text) if part)
     match = re.search(r'\bsysctl\s+([a-zA-Z0-9_.-]+)', content)
-    if not match:
-        return None
-    key = match.group(1)
-    value_match = re.search(rf'{re.escape(key)}\s*=\s*([^\s,.;]+)', content)
-    if not value_match:
-        value_match = re.search(r'(?:value of|returned line[^.]*value of)\s+["“]([^"”]+)["”]', content, re.IGNORECASE)
-    if not value_match:
-        return None
+    key = None
+    expected = None
+    if match:
+        key = match.group(1)
+        value_match = re.search(rf'{re.escape(key)}\s*=\s*([^\s,.;]+)', combined)
+        if not value_match:
+            value_match = re.search(r'(?:value of|returned line[^.]*value of)\s+["“]([^"”]+)["”]', content, re.IGNORECASE)
+        if value_match:
+            expected = value_match.group(1).strip().strip('"')
+    if not key or expected is None:
+        config_match = re.search(
+            r'^\s*((?:kernel|net|fs|vm)\.[A-Za-z0-9_.-]+)\s*=\s*([^\s#]+)\s*$',
+            combined,
+            re.MULTILINE,
+        )
+        if not config_match:
+            return None
+        key = config_match.group(1)
+        expected = config_match.group(2).strip().strip('"')
     return {
         'vuln_id': rule.get('vuln_id', ''),
         'platform': 'linux',
         'check': {'type': 'sysctl', 'key': key},
-        'expected': {'type': 'equals', 'value': value_match.group(1).strip().strip('"')},
+        'expected': {'type': 'equals', 'value': expected},
         'description': rule.get('title', ''),
     }
 
@@ -254,12 +267,16 @@ def _package_candidate(rule: dict) -> dict | None:
     title = rule.get('title', '') or ''
     match = re.search(r'\b(?:dnf|yum|rpm)\s+(?:list\s+--installed|-q)\s+([A-Za-z0-9_.:+-]+)', content)
     if not match:
+        match = re.search(r'\bdpkg\s+-l\s*\|\s*grep\s+([A-Za-z0-9_.:+-]+)', content)
+    if not match:
+        match = re.search(r'\bdpkg-query\s+(?:-[A-Za-z]+\s+)*([A-Za-z0-9_.:+-]+)', content)
+    if not match:
         match = re.search(r'\b([A-Za-z0-9_.:+-]+)\s+package\s+(?:has\s+)?(?:not\s+)?(?:been\s+)?installed', content, re.IGNORECASE)
     if not match:
         return None
     package = match.group(1)
     lower = f"{title}\n{content}".lower()
-    should_be_installed = not bool(re.search(r'must\s+not\s+be\s+installed|has\s+not\s+been\s+installed|if\s+the\s+[a-z0-9_.:+-]+\s+package\s+is\s+installed,?\s+this\s+is\s+a\s+finding', lower))
+    should_be_installed = not bool(re.search(r'must\s+not\s+(?:have\s+\S+\s+)?be\s+installed|must\s+not\s+have\s+the\s+\S+\s+package\s+installed|has\s+not\s+been\s+installed|if\s+(?:the\s+)?(?:[a-z0-9_.:+-]+\s+)?package\s+is\s+installed,?\s+this\s+is\s+a\s+finding', lower))
     return {
         'vuln_id': rule.get('vuln_id', ''),
         'platform': 'linux',

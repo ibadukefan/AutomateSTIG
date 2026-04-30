@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "-E",
+      "should_be_installed": false,
+      "type": "package"
+    },
+    "description": "Ubuntu 24.04 LTS must not have the nfs-kernel-server package installed.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-279938"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS does not have nfs packages installed.\n\nCheck if packages are installed:\n$sudo dpkg -l | grep -E 'nfs-common | nfs-kernel-server'\n\nIf the nfs-common or nfs-kernel-server packages are installed, this is a finding",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to disable non-essential capabilities by removing the nfs-common and nfs-kernel-server packages from the system with the following commands:\n\nRemove packages if present:\n$ sudo apt purge --yes nfs-common nfs-kernel-server\n\nRemove any unneeded dependencies\n$ sudo apt autoremove --yes\n\nVerify NFS services are gone:\n$ sudo systemctl list-units --type=service | grep nfs",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-279938r1156367_rule",
   "severity": "high",

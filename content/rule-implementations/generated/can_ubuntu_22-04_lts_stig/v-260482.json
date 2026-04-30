@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "rsh-server",
+      "should_be_installed": false,
+      "type": "package"
+    },
+    "description": "Ubuntu 22.04 LTS must not have the \"rsh-server\" package installed.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260482"
+  },
   "check_content_excerpt": "Verify the \"rsh-server\" package is not installed by using the following command:  \n  \n     $ dpkg -l | grep rsh-server \n  \nIf the \"rsh-server\" package is installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove the \"rsh-server\" package by using the following command:  \n \n     $ sudo apt-get remove rsh-server",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-260482r958478_rule",
   "severity": "high",

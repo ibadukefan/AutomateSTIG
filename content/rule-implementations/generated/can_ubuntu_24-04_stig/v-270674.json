@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "vlock",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "Ubuntu 24.04 LTS must allow users to directly initiate a session lock for all connection types.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270674"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS has the \"vlock\" package installed with the following command: \n \n$ dpkg -l | grep vlock \nii  vlock     2.2.2-10     amd64     Virtual Console locking program\n \nIf \"vlock\" is not installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install the \"vlock\" package (if it is not already installed) by running the following command: \n \n$ sudo apt install -y vlock",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-270674r1067167_rule",
   "severity": "medium",

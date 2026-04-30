@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "opensc-pkcs11",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "Ubuntu 24.04 LTS must accept Personal Identity Verification (PIV) credentials.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270672"
+  },
   "check_content_excerpt": "Verify the \"opensc-pcks11\" package is installed on the system with the following command: \n \n$ dpkg -l | grep opensc-pkcs11 \nii  opensc-pkcs11:amd64        0.25.0~rc1-1build2    amd64        Smart card utilities with support for PKCS#15 compatible cards \n \nIf the \"opensc-pcks11\" package is not installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to accept PIV credentials. \n \nInstall the \"opensc-pkcs11\" package using the following command: \n \n$ sudo apt install -y opensc-pkcs11",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-270672r1067161_rule",
   "severity": "medium",

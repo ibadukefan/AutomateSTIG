@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "ntp",
+      "should_be_installed": false,
+      "type": "package"
+    },
+    "description": "Ubuntu 24.04 LTS must not have the \"ntp\" package installed.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270646"
+  },
   "check_content_excerpt": "Verify the \"ntp\" package is not installed with the following command:\n\n$ dpkg -l | grep ntp\n\nIf the \"ntp\" package is installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Uninstall the \"ntp\" package using the following command:\n\n$ sudo apt remove ntp\n\nIf there are additional configuration files on the system that must be removed, the following command can be used instead:\n\n$ sudo apt-get purge ntp",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-270646r1068358_rule",
   "severity": "low",

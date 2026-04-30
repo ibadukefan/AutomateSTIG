@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "aide",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "The Ubuntu operating system must use a file integrity tool to verify correct operation of all security functions.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238371"
+  },
   "check_content_excerpt": "Verify that Advanced Intrusion Detection Environment (AIDE) is installed and verifies the correct operation of all security functions.\n\nCheck that the AIDE package is installed with the following command:\n     $ sudo dpkg -l | grep aide \n     ii   aide   0.16.1-1build2   amd64   Advanced Intrusion Detection Environment - static binary\n\nIf AIDE is not installed, ask the System Administrator how file integrity checks are performed on the system. \n\nIf there is no application installed to perform integrity checks, this is a finding.\n\nIf AIDE is installed, check if it has been initialized with the following command:\n     $ sudo aide.wrapper --check\n\nIf the output is \"Couldn't open file /var/lib/aide/aide.db for reading\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install AIDE, initialize it, and perform a manual check.\n\nInstall AIDE:\n     $ sudo apt install aide\n\nInitialize it (this may take a few minutes):\n     $ sudo aideinit\n     Running aide --init...\n\nExample output:\n\n     Start timestamp: 2022-11-20 11:53:17 -0700 (AIDE 0.16)\n     AIDE initialized database at /var/lib/aide/aide.db.new\n     Verbose level: 6\n\n     Number of entries:      119543\n\n     ---------------------------------------------------\n     The attributes of the (uncompressed) database(s):\n     ---------------------------------------------------\n\n     /var/lib/aide/aide.db.new\n     RMD160   : PiEP1DX91JMcHnRSPnpFqNfIFr4=\n     TIGER    : /zM5yQBnOIoEH0jplJE5v6S0rUErbTXL\n     SHA256   : BE2iHtBN9lEX53l4R/p7t1al0dIlsgPc\n                       Lg4YI08+/Jk=\n     SHA512   : JIdGeNVRgtBPPSwun9St+9cwUrgIIKUW\n                       KVTksZXJ29Tt+luC/XNDcjIub7fbPVw/\n                       EcTDsvYtt9MBmBxw1wCYng==\n     CRC32    : jB2FVw==\n     HAVAL    : Jhe+fqaDpkswpWSnOTN28TO05QFHsjdq\n                       RcFZwCVUGTQ=\n     GOST     : WFrarVyxpXbKdW9SAaOy1Te8rSodV3/q\n                     nLsXuP7YujA=\n\n\nEnd timestamp: 2022-11-20 11:58:19 -0700 (run time: 5m 2s)\n\nThe new database will need to be renamed to be read by AIDE:\n     $ sudo cp -p /var/lib/aide/aide.db.new /var/lib/aide/aide.db\n\nPerform a manual check:\n     $ sudo aide.wrapper --check\n\nExample output:\n     Start timestamp: 2022-11-20 11:59:16 -0700 (AIDE 0.16)\n     AIDE found differences between database and filesystem!!\n     ...\n\t \nDone.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-238371r958944_rule",
   "severity": "medium",

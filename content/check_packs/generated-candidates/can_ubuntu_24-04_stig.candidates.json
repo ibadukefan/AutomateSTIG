@@ -2,6 +2,227 @@
   "checks": [
     {
       "check": {
+        "name": "systemd-timesyncd",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must not have the \"systemd-timesyncd\" package installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270645"
+    },
+    {
+      "check": {
+        "name": "ntp",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must not have the \"ntp\" package installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270646"
+    },
+    {
+      "check": {
+        "name": "telnetd",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must not have the telnet package installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270647"
+    },
+    {
+      "check": {
+        "name": "rsh-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must not have the rsh-server package installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270648"
+    },
+    {
+      "check": {
+        "name": "aide",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must use a file integrity tool to verify correct operation of all security functions.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270649"
+    },
+    {
+      "check": {
+        "name": "rsyslog",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured to preserve log records from failure events.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270653"
+    },
+    {
+      "check": {
+        "name": "ufw",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must have an application firewall installed in order to control remote access methods.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270654"
+    },
+    {
+      "check": {
+        "name": "auditd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must have the \"auditd\" package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270656"
+    },
+    {
+      "check": {
+        "name": "audispd-plugins",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS audit event multiplexor must be configured to offload audit logs onto a different system or storage media from the system being audited.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270658"
+    },
+    {
+      "check": {
+        "name": "apparmor",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must have AppArmor installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270659"
+    },
+    {
+      "check": {
+        "name": "libpam-pwquality",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must have the \"libpam-pwquality\" package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270661"
+    },
+    {
+      "check": {
+        "name": "sssd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must have the \"SSSD\" package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270662"
+    },
+    {
+      "check": {
+        "name": "chrony",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must have the \"chrony\" package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270664"
+    },
+    {
+      "check": {
+        "name": "openssh",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must have SSH installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270665"
+    },
+    {
+      "check": {
+        "name": "opensc-pkcs11",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must accept Personal Identity Verification (PIV) credentials.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270672"
+    },
+    {
+      "check": {
+        "name": "libpam-pkcs11",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must accept Personal Identity Verification (PIV) credentials managed through the Privileged Access Management (PAM) \u00a0framework.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270673"
+    },
+    {
+      "check": {
+        "name": "vlock",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must allow users to directly initiate a session lock for all connection types.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270674"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/boot/grub/grub.cfg",
         "pattern": "linux   /vmlinuz-6.8.0-31-generic root=UUID=c92a542f-aee4-4af9-94b2-203624ccb8e3 ro audit=1 quiet splash $vt_handoff",
@@ -421,6 +642,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-274870"
+    },
+    {
+      "check": {
+        "name": "-E",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "Ubuntu 24.04 LTS must not have the nfs-kernel-server package installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-279938"
     }
   ],
   "platform": "linux",

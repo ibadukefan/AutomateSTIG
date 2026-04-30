@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "libpam-pkcs11",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "Ubuntu 22.04 LTS must implement multifactor authentication for remote access to privileged accounts in such a way that one of the factors is provided by a device separate from the system gaining access.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260573"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS has the packages required for multifactor authentication installed by using the following command:  \n \n     $ dpkg -l | grep libpam-pkcs11 \n     ii     libpam-pkcs11     0.6.11-4build2     amd64     Fully featured PAM module for using PKCS#11 smart cards \n \nIf the \"libpam-pkcs11\" package is not installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install the \"libpam-pkcs11\" package by using the following command: \n \n     $ sudo apt-get install libpam-pkcs11",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-260573r1015019_rule",
   "severity": "medium",

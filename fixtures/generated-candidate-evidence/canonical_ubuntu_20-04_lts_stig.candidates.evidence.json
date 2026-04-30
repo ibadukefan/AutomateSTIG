@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 24,
+  "candidate_checks": 32,
   "cases": [
     {
       "check": {
@@ -322,6 +322,32 @@
     },
     {
       "check": {
+        "name": "auditd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Ubuntu operating system must produce audit records and reports containing information to establish when, where, what type, the source, and the outcome for all DoD-defined auditable events and actions in near real time.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "auditd": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "auditd": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238298"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/boot/grub/grub.cfg",
         "pattern": "linux        /boot/vmlinuz-5.4.0-31-generic root=UUID=74d13bcd-6ebd-4493-b5d2-3ebc37d01702 ro  audit=1",
@@ -384,6 +410,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-238300"
+    },
+    {
+      "check": {
+        "name": "telnetd",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Ubuntu operating system must not have the telnet package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "telnetd": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "telnetd": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238326"
+    },
+    {
+      "check": {
+        "name": "rsh-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Ubuntu operating system must not have the rsh-server package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rsh-server": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rsh-server": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238327"
     },
     {
       "check": {
@@ -527,6 +605,84 @@
     },
     {
       "check": {
+        "name": "rsyslog",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Ubuntu operating system must be configured to preserve log records from failure events.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rsyslog": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rsyslog": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238353"
+    },
+    {
+      "check": {
+        "name": "ufw",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Ubuntu operating system must have an application firewall installed in order to control remote access methods.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "ufw": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "ufw": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238354"
+    },
+    {
+      "check": {
+        "name": "apparmor",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Ubuntu operating system must be configured to use AppArmor.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "apparmor": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "apparmor": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238360"
+    },
+    {
+      "check": {
         "key": "kernel.randomize_va_space",
         "type": "sysctl"
       },
@@ -550,6 +706,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-238369"
+    },
+    {
+      "check": {
+        "name": "aide",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Ubuntu operating system must use a file integrity tool to verify correct operation of all security functions.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "aide": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "aide": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238371"
     },
     {
       "check": {
@@ -698,6 +880,32 @@
     },
     {
       "check": {
+        "name": "sssd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 20.04 LTS must have the \"SSSD\" package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "sssd": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "sssd": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274853"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sudoers",
         "pattern": "/etc/sudoers.d/ | grep -v '#'",
@@ -729,5 +937,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 24
+  "validated_candidates": 32
 }

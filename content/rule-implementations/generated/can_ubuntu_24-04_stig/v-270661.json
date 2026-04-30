@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "libpam-pwquality",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "Ubuntu 24.04 LTS must have the \"libpam-pwquality\" package installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270661"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS has the \"libpam-pwquality\" package installed with the following command: \n \n$ dpkg -l | grep libpam-pwquality\nii  libpam-pwquality:amd64     1.4.5-3build1     amd64     PAM module to check password strength \n \nIf \"libpam-pwquality\" is not installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install the \"pam_pwquality\" package by using the following command: \n \n$ sudo apt install -y libpam-pwquality",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-270661r1067175_rule",
   "severity": "medium",

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "apparmor",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "Ubuntu 24.04 LTS must have AppArmor installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270659"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS has AppArmor installed with the following command:\n \n$ dpkg -l | grep apparmor\nii  apparmor                                4.0.1really4.0.1-0ubuntu0.24.04.3        amd64        user-space parser utility for AppArmor\nii  libapparmor1:amd64                      4.0.1really4.0.1-0ubuntu0.24.04.3        amd64        changehat AppArmor library\n \nIf the AppArmor package is not installed,\u00a0this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install \"AppArmor\" with the following command: \n \n$ sudo apt install apparmor \n \nNote: AppArmor must have properly configured profiles for applications and home directories. All configurations will be based on the actual system setup and organization and normally are on a per role basis. Refer to the AppArmor documentation for more information on configuring profiles.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-270659r1066466_rule",
   "severity": "medium",

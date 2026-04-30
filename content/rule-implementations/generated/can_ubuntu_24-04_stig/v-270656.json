@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "auditd",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "Ubuntu 24.04 LTS must have the \"auditd\" package installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270656"
+  },
   "check_content_excerpt": "Verify the audit service is configured to produce audit records with the following command: \n \n$ dpkg -l | grep auditd \nii  auditd     1:3.0.7-1build1     amd64     User space tools for security auditing\n\nIf the \"auditd\" package is not installed,\u00a0this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit service to produce audit records containing the information needed to establish when (date and time) an event occurred. \n \nInstall the audit service (if the audit service is not already installed) with the following command: \n \n$ sudo apt install -y auditd",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-270656r1067148_rule",
   "severity": "medium",

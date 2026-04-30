@@ -1083,16 +1083,17 @@
       "vuln_id": "V-238297"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238298",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238298 from source identifier xccdf_mil.disa.stig_group_V-238298.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238298r958506_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must produce audit records and reports containing information to establish when, where, what type, the source, and the outcome for all DoD-defined auditable events and actions in near real time.",
-      "tracking_issue": "TODO-V-238298",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238298"
@@ -1310,31 +1311,33 @@
       "vuln_id": "V-238325"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238326",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238326 from source identifier xccdf_mil.disa.stig_group_V-238326.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238326r987796_rule",
       "severity": "high",
       "title": "The Ubuntu operating system must not have the telnet package installed.",
-      "tracking_issue": "TODO-V-238326",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238326"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238327",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238327 from source identifier xccdf_mil.disa.stig_group_V-238327.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238327r958478_rule",
       "severity": "high",
       "title": "The Ubuntu operating system must not have the rsh-server package installed.",
-      "tracking_issue": "TODO-V-238327",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238327"
@@ -1478,31 +1481,33 @@
       "vuln_id": "V-238343"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238353",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238353 from source identifier xccdf_mil.disa.stig_group_V-238353.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238353r991562_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must be configured to preserve log records from failure events.",
-      "tracking_issue": "TODO-V-238353",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238353"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238354",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238354 from source identifier xccdf_mil.disa.stig_group_V-238354.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238354r958672_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must have an application firewall installed in order to control remote access methods.",
-      "tracking_issue": "TODO-V-238354",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238354"
@@ -1584,16 +1589,17 @@
       "vuln_id": "V-238370"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238371",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-238371 from source identifier xccdf_mil.disa.stig_group_V-238371.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-238371r958944_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must use a file integrity tool to verify correct operation of all security functions.",
-      "tracking_issue": "TODO-V-238371",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/210e62a12d776b12f255bf49a9631612209fd8df368721ee04f1d005eb07b53d/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-238371"

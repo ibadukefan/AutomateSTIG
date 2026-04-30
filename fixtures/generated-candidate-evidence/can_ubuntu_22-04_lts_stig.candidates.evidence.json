@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 24,
+  "candidate_checks": 37,
   "cases": [
     {
       "check": {
@@ -56,6 +56,84 @@
     },
     {
       "check": {
+        "name": "ntp",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "Ubuntu 22.04 LTS must not have the \"ntp\" package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "ntp": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "ntp": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260481"
+    },
+    {
+      "check": {
+        "name": "rsh-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "Ubuntu 22.04 LTS must not have the \"rsh-server\" package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rsh-server": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rsh-server": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260482"
+    },
+    {
+      "check": {
+        "name": "telnetd",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "Ubuntu 22.04 LTS must not have the \"telnet\" package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "telnetd": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "telnetd": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260483"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "755",
         "owner": null,
@@ -91,6 +169,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-260488"
+    },
+    {
+      "check": {
+        "name": "ufw",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 22.04 LTS must have an application firewall installed in order to control remote access methods.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "ufw": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "ufw": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260514"
     },
     {
       "check": {
@@ -283,6 +387,32 @@
     },
     {
       "check": {
+        "name": "vlock",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 22.04 LTS must allow users to directly initiate a session lock for all connection types.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "vlock": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "vlock": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260553"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/bash.bashrc",
         "pattern": "/etc/profile.d/*",
@@ -334,6 +464,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-260572"
+    },
+    {
+      "check": {
+        "name": "libpam-pkcs11",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 22.04 LTS must implement multifactor authentication for remote access to privileged accounts in such a way that one of the factors is provided by a device separate from the system gaining access.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "libpam-pkcs11": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "libpam-pkcs11": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260573"
+    },
+    {
+      "check": {
+        "name": "opensc-pkcs11",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 22.04 LTS must accept personal identity verification (PIV) credentials.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "opensc-pkcs11": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "opensc-pkcs11": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260574"
     },
     {
       "check": {
@@ -391,6 +573,32 @@
     },
     {
       "check": {
+        "name": "aide",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 22.04 LTS must use a file integrity tool to verify correct operation of all security functions.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "aide": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "aide": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260582"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/aide",
         "pattern": "SILENTREPORTS=no",
@@ -442,6 +650,84 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-260586"
+    },
+    {
+      "check": {
+        "name": "rsyslog",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 22.04 LTS must be configured to preserve log records from failure events.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rsyslog": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rsyslog": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260588"
+    },
+    {
+      "check": {
+        "name": "auditd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 22.04 LTS must have the \"auditd\" package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "auditd": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "auditd": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260590"
+    },
+    {
+      "check": {
+        "name": "audispd-plugins",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 22.04 LTS audit event multiplexor must be configured to offload audit logs onto a different system from the system being audited.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "audispd-plugins": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "audispd-plugins": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260592"
     },
     {
       "check": {
@@ -669,6 +955,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-274862"
+    },
+    {
+      "check": {
+        "name": "sssd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "Ubuntu 22.04 LTS must have the \"SSSD\" package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "sssd": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "sssd": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274864"
+    },
+    {
+      "check": {
+        "name": "-E",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "Ubuntu 22.04 LTS must not have the nfs-kernel-server package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "-E": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "-E": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-279937"
     }
   ],
   "production_claim": false,
@@ -676,5 +1014,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
-  "validated_candidates": 24
+  "validated_candidates": 37
 }
