@@ -1,0 +1,4140 @@
+{
+  "generated_from": "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip",
+  "rules": [
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253254r991589_rule",
+      "severity": "medium",
+      "title": "Domain-joined systems must use Windows 11 Enterprise Edition 64-bit version.",
+      "tracking_issue": "TODO-V-253254",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253254"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253255r1117271_rule",
+      "severity": "medium",
+      "title": "Windows 11 domain-joined systems must have a Trusted Platform Module (TPM) enabled.",
+      "tracking_issue": "TODO-V-253255",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253255"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253256r1117271_rule",
+      "severity": "medium",
+      "title": "Windows 11 systems must have Unified Extensible Firmware Interface (UEFI) firmware and be configured to run in UEFI mode, not Legacy BIOS.",
+      "tracking_issue": "TODO-V-253256",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253256"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253257r1117271_rule",
+      "severity": "medium",
+      "title": "Secure Boot must be enabled on Windows 11 systems.",
+      "tracking_issue": "TODO-V-253257",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253257"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253258r1000099_rule",
+      "severity": "medium",
+      "title": "Windows 11 must employ automated mechanisms to determine the state of system components with regard to flaw remediation using the following frequency: Continuously, where ESS is used; 30 days, for any additional internal network scans not covered by ESS; and annually, for external scans by Computer Network Defense Service Provider (CNDSP).",
+      "tracking_issue": "TODO-V-253258",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253258"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253259r958870_rule",
+      "severity": "high",
+      "title": "Windows 11 information systems must use BitLocker to encrypt all disks to protect the confidentiality and integrity of all information at rest.",
+      "tracking_issue": "TODO-V-253259",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253259"
+    },
+    {
+      "check_id": "V-253260",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253260r958872_rule",
+      "severity": "high",
+      "title": "Windows 11 systems must use a BitLocker PIN for pre-boot authentication.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253260"
+    },
+    {
+      "check_id": "V-253261",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253261r958504_rule",
+      "severity": "medium",
+      "title": "Windows 11 systems must use a BitLocker PIN with a minimum length of six digits for pre-boot authentication.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253261"
+    },
+    {
+      "check_id": "V-253262",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253262r958808_rule",
+      "severity": "medium",
+      "title": "The operating system must employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253262"
+    },
+    {
+      "check_id": "V-253263",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253263r1016364_rule",
+      "severity": "high",
+      "title": "Windows 11 systems must be maintained at a supported servicing level.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253263"
+    },
+    {
+      "check_id": "V-253264",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253264r991589_rule",
+      "severity": "high",
+      "title": "The Windows 11 system must use an antivirus program.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253264"
+    },
+    {
+      "check_id": "V-253265",
+      "check_pack": "windows_11",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253265r1137691_rule",
+      "severity": "high",
+      "title": "Local volumes must be formatted using NTFS.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_11.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253265"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253266r991589_rule",
+      "severity": "medium",
+      "title": "Alternate operating systems must not be permitted on the same system.",
+      "tracking_issue": "TODO-V-253266",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253266"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253267r1137695_rule",
+      "severity": "medium",
+      "title": "Non-system-created file shares on a system must limit access to groups that require it.",
+      "tracking_issue": "TODO-V-253267",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253267"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253268r1051039_rule",
+      "severity": "low",
+      "title": "Unused accounts must be disabled or removed from the system after 35 days of inactivity.",
+      "tracking_issue": "TODO-V-253268",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253268"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253269r958702_rule",
+      "severity": "high",
+      "title": "Only accounts responsible for the administration of a system must have Administrator rights on the system.",
+      "tracking_issue": "TODO-V-253269",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253269"
+    },
+    {
+      "check_id": "V-253270",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253270r991589_rule",
+      "severity": "medium",
+      "title": "Only accounts responsible for the backup operations must be members of the Backup Operators group.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253270"
+    },
+    {
+      "check_id": "V-253271",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253271r958702_rule",
+      "severity": "medium",
+      "title": "Only authorized user accounts must be allowed to create or run virtual machines on Windows 11 systems.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253271"
+    },
+    {
+      "check_id": "V-253272",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253272r991589_rule",
+      "severity": "low",
+      "title": "Standard local user accounts must not exist on a system in a domain.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253272"
+    },
+    {
+      "check_id": "V-253273",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253273r1051040_rule",
+      "severity": "medium",
+      "title": "Accounts must be configured to require password expiration.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253273"
+    },
+    {
+      "check_id": "V-253274",
+      "check_pack": "windows_11",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253274r1016661_rule",
+      "severity": "medium",
+      "title": "Permissions for system files and directories must conform to minimum requirements.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_11.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253274"
+    },
+    {
+      "check_id": "V-253275",
+      "check_pack": "windows_11",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253275r958478_rule",
+      "severity": "high",
+      "title": "Internet Information System (IIS) or its subcomponents must not be installed on a workstation.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_11.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253275"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253276r958480_rule",
+      "severity": "medium",
+      "title": "Simple Network Management Protocol (SNMP) must not be installed on the system.",
+      "tracking_issue": "TODO-V-253276",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253276"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253277r958478_rule",
+      "severity": "medium",
+      "title": "Simple TCP/IP Services must not be installed on the system.",
+      "tracking_issue": "TODO-V-253277",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253277"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253278r958480_rule",
+      "severity": "medium",
+      "title": "The Telnet Client must not be installed on the system.",
+      "tracking_issue": "TODO-V-253278",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253278"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253279r958480_rule",
+      "severity": "medium",
+      "title": "The TFTP Client must not be installed on the system.",
+      "tracking_issue": "TODO-V-253279",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253279"
+    },
+    {
+      "check_id": "V-253280",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253280r991589_rule",
+      "severity": "medium",
+      "title": "Software certificate installation files must be removed from Windows 11.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253280"
+    },
+    {
+      "check_id": "V-253281",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253281r991589_rule",
+      "severity": "medium",
+      "title": "A host-based firewall must be installed and enabled on the system.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253281"
+    },
+    {
+      "check_id": "V-253282",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253282r991593_rule",
+      "severity": "medium",
+      "title": "Inbound exceptions to the firewall on Windows 11 domain workstations must only allow authorized remote management hosts.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253282"
+    },
+    {
+      "check_id": "V-253284",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253284r958928_rule",
+      "severity": "high",
+      "title": "Structured Exception Handling Overwrite Protection (SEHOP) must be enabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253284"
+    },
+    {
+      "check_id": "V-253285",
+      "check_pack": "windows_11",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253285r958478_rule",
+      "severity": "medium",
+      "title": "The Windows PowerShell 2.0 feature must be disabled on the system.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_11.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253285"
+    },
+    {
+      "check_id": "V-253286",
+      "check_pack": "windows_11",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253286r958478_rule",
+      "severity": "medium",
+      "title": "The Server Message Block (SMB) v1 protocol must be disabled on the system.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_11.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253286"
+    },
+    {
+      "check_id": "V-253287",
+      "check_pack": "windows_11",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253287r958478_rule",
+      "severity": "medium",
+      "title": "The Server Message Block (SMB) v1 protocol must be disabled on the SMB server.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_11.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253287"
+    },
+    {
+      "check_id": "V-253288",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253288r958478_rule",
+      "severity": "medium",
+      "title": "The Server Message Block (SMB) v1 protocol must be disabled on the SMB client.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253288"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253289r958478_rule",
+      "severity": "medium",
+      "title": "The Secondary Logon service must be disabled on Windows 11.",
+      "tracking_issue": "TODO-V-253289",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253289"
+    },
+    {
+      "check_id": "V-253290",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253290r991589_rule",
+      "severity": "medium",
+      "title": "Orphaned security identifiers (SIDs) must be removed from user rights on Windows 11.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253290"
+    },
+    {
+      "check_id": "V-253291",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253291r958478_rule",
+      "severity": "medium",
+      "title": "Bluetooth must be turned off unless approved by the organization.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253291"
+    },
+    {
+      "check_id": "V-253292",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253292r958478_rule",
+      "severity": "medium",
+      "title": "Bluetooth must be turned off when not in use.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253292"
+    },
+    {
+      "check_id": "V-253293",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253293r991589_rule",
+      "severity": "medium",
+      "title": "The system must notify the user when a Bluetooth device attempts to connect.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253293"
+    },
+    {
+      "check_id": "V-253294",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253294r991589_rule",
+      "severity": "high",
+      "title": "Administrative accounts must not be used with applications that access the internet, such as web browsers, or with potential internet sources, such as email.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253294"
+    },
+    {
+      "check_id": "V-253295",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253295r958552_rule",
+      "severity": "medium",
+      "title": "Windows 11 nonpersistent VM sessions must not exceed 24 hours.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253295"
+    },
+    {
+      "check_id": "V-253296",
+      "check_pack": "windows_11",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253296r1051041_rule",
+      "severity": "low",
+      "title": "The Windows 11 time service must synchronize with an appropriate DOD time source.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_11.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253296"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253297r958736_rule",
+      "severity": "medium",
+      "title": "Windows 11 account lockout duration must be configured to 15 minutes or greater.",
+      "tracking_issue": "TODO-V-253297",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253297"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253298r958388_rule",
+      "severity": "medium",
+      "title": "The number of allowed bad logon attempts must be configured to three or less.",
+      "tracking_issue": "TODO-V-253298",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253298"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253299r958388_rule",
+      "severity": "medium",
+      "title": "The period of time before the bad logon counter is reset must be configured to 15 minutes.",
+      "tracking_issue": "TODO-V-253299",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253299"
+    },
+    {
+      "check_id": "V-253300",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253300r1000103_rule",
+      "severity": "medium",
+      "title": "The password history must be configured to 24 passwords remembered.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253300"
+    },
+    {
+      "check_id": "V-253301",
+      "check_pack": "windows_defender_antivirus",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253301r1051042_rule",
+      "severity": "medium",
+      "title": "The maximum password age must be configured to 60 days or less.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_defender_antivirus.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253301"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253302r1051043_rule",
+      "severity": "medium",
+      "title": "The minimum password age must be configured to at least 1 day.",
+      "tracking_issue": "TODO-V-253302",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253302"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253303r1051044_rule",
+      "severity": "medium",
+      "title": "Passwords must, at a minimum, be 14 characters.",
+      "tracking_issue": "TODO-V-253303",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253303"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253304r1051045_rule",
+      "severity": "medium",
+      "title": "The built-in Microsoft password complexity filter must be enabled.",
+      "tracking_issue": "TODO-V-253304",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253304"
+    },
+    {
+      "check_id": "V-253305",
+      "check_pack": "windows_11",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253305r1051046_rule",
+      "severity": "high",
+      "title": "Reversible password encryption must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_11.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253305"
+    },
+    {
+      "check_id": "V-253306",
+      "check_pack": "windows_11",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253306r991570_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Account Logon - Credential Validation failures.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_11.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253306"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253307r991570_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Account Logon - Credential Validation successes.",
+      "tracking_issue": "TODO-V-253307",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253307"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253308r971541_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Account Management - Security Group Management successes.",
+      "tracking_issue": "TODO-V-253308",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253308"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253309r958566_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Account Management - User Account Management failures.",
+      "tracking_issue": "TODO-V-253309",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253309"
+    },
+    {
+      "check_id": "V-253310",
+      "check_pack": "windows_11",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253310r991551_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Account Management - User Account Management successes.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_11.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253310"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253311r1051047_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Detailed Tracking - PNP Activity successes.",
+      "tracking_issue": "TODO-V-253311",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253311"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253312r1051048_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Detailed Tracking - Process Creation successes.",
+      "tracking_issue": "TODO-V-253312",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253312"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253313r991578_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Logon/Logoff - Account Lockout failures.",
+      "tracking_issue": "TODO-V-253313",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253313"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253314r991570_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Logon/Logoff - Group Membership successes.",
+      "tracking_issue": "TODO-V-253314",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253314"
+    },
+    {
+      "check_id": "V-253315",
+      "check_pack": "windows_11",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253315r958406_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Logon/Logoff - Logoff successes.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_11.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253315"
+    },
+    {
+      "check_id": "V-253316",
+      "check_pack": "windows_11",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253316r991581_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Logon/Logoff - Logon failures.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_11.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253316"
+    },
+    {
+      "check_id": "V-253317",
+      "check_pack": "windows_11",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253317r991581_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Logon/Logoff - Logon successes.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_11.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253317"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253318r991578_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Logon/Logoff - Special Logon successes.",
+      "tracking_issue": "TODO-V-253318",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253318"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253319r991572_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit Object Access - File Share failures.",
+      "tracking_issue": "TODO-V-253319",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253319"
+    },
+    {
+      "check_id": "V-253320",
+      "check_pack": "windows_11",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253320r991572_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit Object Access - File Share successes.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_11.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253320"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253321r991572_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit Object Access - Other Object Access Events successes.",
+      "tracking_issue": "TODO-V-253321",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253321"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253322r991572_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit Object Access - Other Object Access Events failures.",
+      "tracking_issue": "TODO-V-253322",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253322"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253323r991583_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Object Access - Removable Storage failures.",
+      "tracking_issue": "TODO-V-253323",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253323"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253324r991583_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Object Access - Removable Storage successes.",
+      "tracking_issue": "TODO-V-253324",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253324"
+    },
+    {
+      "check_id": "V-253325",
+      "check_pack": "windows_11",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253325r991572_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Policy Change - Audit Policy Change successes.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/windows_11.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253325"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253326r991572_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Policy Change - Authentication Policy Change successes.",
+      "tracking_issue": "TODO-V-253326",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253326"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253327r991572_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Policy Change - Authorization Policy Change successes.",
+      "tracking_issue": "TODO-V-253327",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253327"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253328r958732_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Privilege Use - Sensitive Privilege Use failures.",
+      "tracking_issue": "TODO-V-253328",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253328"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253329r991575_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit Privilege Use - Sensitive Privilege Use successes.",
+      "tracking_issue": "TODO-V-253329",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253329"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253330r991586_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit System - IPsec Driver failures.",
+      "tracking_issue": "TODO-V-253330",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253330"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253331r991579_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit System - Other System Events successes.",
+      "tracking_issue": "TODO-V-253331",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253331"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253332r991579_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit System - Other System Events failures.",
+      "tracking_issue": "TODO-V-253332",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253332"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253333r991575_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit System - Security State Change successes.",
+      "tracking_issue": "TODO-V-253333",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253333"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253334r991575_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit System - Security System Extension successes.",
+      "tracking_issue": "TODO-V-253334",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253334"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253335r991573_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit System - System Integrity failures.",
+      "tracking_issue": "TODO-V-253335",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253335"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253336r991573_rule",
+      "severity": "medium",
+      "title": "The system must be configured to audit System - System Integrity successes.",
+      "tracking_issue": "TODO-V-253336",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253336"
+    },
+    {
+      "check_id": "V-253337",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253337r958752_rule",
+      "severity": "medium",
+      "title": "The Application event log size must be configured to 32768 KB or greater.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253337"
+    },
+    {
+      "check_id": "V-253338",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253338r958752_rule",
+      "severity": "medium",
+      "title": "The Security event log size must be configured to 1024000 KB or greater.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253338"
+    },
+    {
+      "check_id": "V-253339",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253339r958752_rule",
+      "severity": "medium",
+      "title": "The System event log size must be configured to 32768 KB or greater.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253339"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253340r958434_rule",
+      "severity": "medium",
+      "title": "Windows 11 permissions for the Application event log must prevent access by non-privileged accounts.",
+      "tracking_issue": "TODO-V-253340",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253340"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253341r958434_rule",
+      "severity": "medium",
+      "title": "Windows 11 permissions for the Security event log must prevent access by non-privileged accounts.",
+      "tracking_issue": "TODO-V-253341",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253341"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253342r958434_rule",
+      "severity": "medium",
+      "title": "Windows 11 permissions for the System event log must prevent access by non-privileged accounts.",
+      "tracking_issue": "TODO-V-253342",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253342"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253343r958412_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit Other Policy Change Events Successes.",
+      "tracking_issue": "TODO-V-253343",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253343"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253344r958412_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit Other Policy Change Events Failures.",
+      "tracking_issue": "TODO-V-253344",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253344"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253345r958412_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit other Logon/Logoff Events Successes.",
+      "tracking_issue": "TODO-V-253345",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253345"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253346r958412_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit other Logon/Logoff Events Failures.",
+      "tracking_issue": "TODO-V-253346",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253346"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253347r958412_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit Detailed File Share Failures.",
+      "tracking_issue": "TODO-V-253347",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253347"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253348r958412_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit MPSSVC Rule-Level Policy Change Successes.",
+      "tracking_issue": "TODO-V-253348",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253348"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253349r958412_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit MPSSVC Rule-Level Policy Change Failures.",
+      "tracking_issue": "TODO-V-253349",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253349"
+    },
+    {
+      "check_id": "V-253350",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253350r958478_rule",
+      "severity": "medium",
+      "title": "Camera access from the lock screen must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253350"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253351r1106508_rule",
+      "severity": "medium",
+      "title": "Windows 11 must cover or disable the built-in or attached camera when not in use.",
+      "tracking_issue": "TODO-V-253351",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253351"
+    },
+    {
+      "check_id": "V-253352",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253352r958478_rule",
+      "severity": "medium",
+      "title": "The display of slide shows on the lock screen must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253352"
+    },
+    {
+      "check_id": "V-253353",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253353r991589_rule",
+      "severity": "medium",
+      "title": "IPv6 source routing must be configured to highest protection.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253353"
+    },
+    {
+      "check_id": "V-253354",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253354r991589_rule",
+      "severity": "medium",
+      "title": "The system must be configured to prevent IP source routing.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253354"
+    },
+    {
+      "check_id": "V-253355",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253355r991589_rule",
+      "severity": "low",
+      "title": "The system must be configured to prevent Internet Control Message Protocol (ICMP) redirects from overriding Open Shortest Path First (OSPF) generated routes.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253355"
+    },
+    {
+      "check_id": "V-253356",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253356r958902_rule",
+      "severity": "low",
+      "title": "The system must be configured to ignore NetBIOS name release requests except from WINS servers.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253356"
+    },
+    {
+      "check_id": "V-253357",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253357r958518_rule",
+      "severity": "medium",
+      "title": "Local administrator accounts must have their privileged token filtered to prevent elevated privileges from being used over the network on domain systems.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253357"
+    },
+    {
+      "check_id": "V-253358",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253358r958478_rule",
+      "severity": "medium",
+      "title": "WDigest Authentication must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253358"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253359r958478_rule",
+      "severity": "medium",
+      "title": "Run as different user must be removed from context menus.",
+      "tracking_issue": "TODO-V-253359",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253359"
+    },
+    {
+      "check_id": "V-253360",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253360r991589_rule",
+      "severity": "medium",
+      "title": "Insecure logons to an SMB server must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253360"
+    },
+    {
+      "check_id": "V-253361",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253361r958478_rule",
+      "severity": "medium",
+      "title": "Internet connection sharing must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253361"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253362r991589_rule",
+      "severity": "medium",
+      "title": "Hardened UNC Paths must be defined to require mutual authentication and integrity for at least the \\\\*\\SYSVOL and \\\\*\\NETLOGON shares.",
+      "tracking_issue": "TODO-V-253362",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253362"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253363r971535_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to prioritize ECC Curves with longer key lengths first.",
+      "tracking_issue": "TODO-V-253363",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253363"
+    },
+    {
+      "check_id": "V-253364",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253364r958358_rule",
+      "severity": "medium",
+      "title": "Simultaneous connections to the internet or a Windows domain must be limited.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253364"
+    },
+    {
+      "check_id": "V-253365",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253365r991589_rule",
+      "severity": "medium",
+      "title": "Connections to non-domain networks when connected to a domain authenticated network must be blocked.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253365"
+    },
+    {
+      "check_id": "V-253366",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253366r991589_rule",
+      "severity": "medium",
+      "title": "Wi-Fi Sense must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253366"
+    },
+    {
+      "check_id": "V-253367",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253367r958422_rule",
+      "severity": "medium",
+      "title": "Command line data must be included in process creation events.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253367"
+    },
+    {
+      "check_id": "V-253368",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253368r991589_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to enable Remote host allows delegation of non-exportable credentials.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253368"
+    },
+    {
+      "check_id": "V-253369",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253369r991589_rule",
+      "severity": "medium",
+      "title": "Virtualization-based Security must be enabled on Windows 11 with the platform security level configured to Secure Boot or Secure Boot with DMA Protection.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253369"
+    },
+    {
+      "check_id": "V-253370",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253370r991589_rule",
+      "severity": "high",
+      "title": "Credential Guard must be running on Windows 11 domain-joined systems.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253370"
+    },
+    {
+      "check_id": "V-253371",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253371r991589_rule",
+      "severity": "medium",
+      "title": "Virtualization-based protection of code integrity must be enabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253371"
+    },
+    {
+      "check_id": "V-253372",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253372r991589_rule",
+      "severity": "medium",
+      "title": "Early Launch Antimalware, Boot-Start Driver Initialization Policy must prevent boot drivers.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253372"
+    },
+    {
+      "check_id": "V-253373",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253373r991589_rule",
+      "severity": "medium",
+      "title": "Group Policy objects must be reprocessed even if they have not changed.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253373"
+    },
+    {
+      "check_id": "V-253374",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253374r958478_rule",
+      "severity": "medium",
+      "title": "Downloading print driver packages over HTTP must be prevented.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253374"
+    },
+    {
+      "check_id": "V-253375",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253375r958478_rule",
+      "severity": "medium",
+      "title": "Web publishing and online ordering wizards must be prevented from downloading a list of providers.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253375"
+    },
+    {
+      "check_id": "V-253376",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253376r958478_rule",
+      "severity": "medium",
+      "title": "Printing over HTTP must be prevented.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253376"
+    },
+    {
+      "check_id": "V-253377",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253377r991589_rule",
+      "severity": "medium",
+      "title": "Systems must at least attempt device authentication using certificates.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253377"
+    },
+    {
+      "check_id": "V-253378",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253378r958478_rule",
+      "severity": "medium",
+      "title": "The network selection user interface (UI) must not be displayed on the logon screen.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253378"
+    },
+    {
+      "check_id": "V-253379",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253379r958478_rule",
+      "severity": "medium",
+      "title": "Local users on domain-joined computers must not be enumerated.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253379"
+    },
+    {
+      "check_id": "V-253380",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253380r1051049_rule",
+      "severity": "medium",
+      "title": "Users must be prompted for a password on resume from sleep (on battery).",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253380"
+    },
+    {
+      "check_id": "V-253381",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253381r1051050_rule",
+      "severity": "medium",
+      "title": "The user must be prompted for a password on resume from sleep (plugged in).",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253381"
+    },
+    {
+      "check_id": "V-253382",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253382r1137695_rule",
+      "severity": "high",
+      "title": "Solicited Remote Assistance must not be allowed.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253382"
+    },
+    {
+      "check_id": "V-253383",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253383r971545_rule",
+      "severity": "medium",
+      "title": "Unauthenticated RPC clients must be restricted from connecting to the RPC server.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253383"
+    },
+    {
+      "check_id": "V-253384",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253384r991589_rule",
+      "severity": "low",
+      "title": "The setting to allow Microsoft accounts to be optional for modern style apps must be enabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253384"
+    },
+    {
+      "check_id": "V-253385",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253385r958478_rule",
+      "severity": "low",
+      "title": "The Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253385"
+    },
+    {
+      "check_id": "V-253386",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253386r958804_rule",
+      "severity": "high",
+      "title": "Autoplay must be turned off for non-volume devices.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253386"
+    },
+    {
+      "check_id": "V-253387",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253387r958804_rule",
+      "severity": "high",
+      "title": "The default autorun behavior must be configured to prevent autorun commands.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253387"
+    },
+    {
+      "check_id": "V-253388",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253388r958804_rule",
+      "severity": "high",
+      "title": "Autoplay must be disabled for all drives.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253388"
+    },
+    {
+      "check_id": "V-253389",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253389r991589_rule",
+      "severity": "medium",
+      "title": "Enhanced anti-spoofing for facial recognition must be enabled on Windows 11.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253389"
+    },
+    {
+      "check_id": "V-253390",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253390r958478_rule",
+      "severity": "low",
+      "title": "Microsoft consumer experiences must be turned off.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253390"
+    },
+    {
+      "check_id": "V-253391",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253391r958518_rule",
+      "severity": "medium",
+      "title": "Administrator accounts must not be enumerated during elevation.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253391"
+    },
+    {
+      "check_id": "V-253392",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253392r991589_rule",
+      "severity": "medium",
+      "title": "Enhanced diagnostic data must be limited to the minimum required to support Windows Analytics.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253392"
+    },
+    {
+      "check_id": "V-253393",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253393r958564_rule",
+      "severity": "medium",
+      "title": "Windows Telemetry must not be configured to Full.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253393"
+    },
+    {
+      "check_id": "V-253394",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253394r991589_rule",
+      "severity": "low",
+      "title": "Windows Update must not obtain updates from other PCs on the internet.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253394"
+    },
+    {
+      "check_id": "V-253395",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253395r958478_rule",
+      "severity": "medium",
+      "title": "The Microsoft Defender SmartScreen for Explorer must be enabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253395"
+    },
+    {
+      "check_id": "V-253396",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253396r958928_rule",
+      "severity": "medium",
+      "title": "Explorer Data Execution Prevention must be enabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253396"
+    },
+    {
+      "check_id": "V-253397",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253397r958902_rule",
+      "severity": "low",
+      "title": "File Explorer heap termination on corruption must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253397"
+    },
+    {
+      "check_id": "V-253398",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253398r991589_rule",
+      "severity": "medium",
+      "title": "File Explorer shell protocol must run in protected mode.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253398"
+    },
+    {
+      "check_id": "V-253399",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253399r958478_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to disable Windows Game Recording and Broadcasting.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253399"
+    },
+    {
+      "check_id": "V-253400",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253400r991589_rule",
+      "severity": "medium",
+      "title": "The use of a hardware security device with Windows Hello for Business must be enabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253400"
+    },
+    {
+      "check_id": "V-253401",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253401r991589_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to require a minimum pin length of six characters or greater.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253401"
+    },
+    {
+      "check_id": "V-253402",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253402r1051051_rule",
+      "severity": "medium",
+      "title": "Passwords must not be saved in the Remote Desktop Client.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253402"
+    },
+    {
+      "check_id": "V-253403",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253403r1137695_rule",
+      "severity": "medium",
+      "title": "Local drives must be prevented from sharing with Remote Desktop Session Hosts.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253403"
+    },
+    {
+      "check_id": "V-253404",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253404r1051052_rule",
+      "severity": "medium",
+      "title": "Remote Desktop Services must always prompt a client for passwords upon connection.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253404"
+    },
+    {
+      "check_id": "V-253405",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253405r991554_rule",
+      "severity": "medium",
+      "title": "The Remote Desktop Session Host must require secure RPC communications.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253405"
+    },
+    {
+      "check_id": "V-253406",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253406r958408_rule",
+      "severity": "medium",
+      "title": "Remote Desktop Services must be configured with the client connection encryption set to the required level.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253406"
+    },
+    {
+      "check_id": "V-253407",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253407r991589_rule",
+      "severity": "medium",
+      "title": "Attachments must be prevented from being downloaded from RSS feeds.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253407"
+    },
+    {
+      "check_id": "V-253408",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253408r958478_rule",
+      "severity": "medium",
+      "title": "Basic authentication for RSS feeds over HTTP must not be used.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253408"
+    },
+    {
+      "check_id": "V-253409",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253409r958478_rule",
+      "severity": "medium",
+      "title": "Indexing of encrypted files must be turned off.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253409"
+    },
+    {
+      "check_id": "V-253410",
+      "check_pack": "adobe_acrobat",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253410r1051053_rule",
+      "severity": "medium",
+      "title": "Users must be prevented from changing installation options.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253410"
+    },
+    {
+      "check_id": "V-253411",
+      "check_pack": "adobe_acrobat",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253411r1051054_rule",
+      "severity": "high",
+      "title": "The Windows Installer feature \"Always install with elevated privileges\" must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253411"
+    },
+    {
+      "check_id": "V-253412",
+      "check_pack": "adobe_acrobat",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253412r991589_rule",
+      "severity": "medium",
+      "title": "Users must be notified if a web-based program attempts to install software.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253412"
+    },
+    {
+      "check_id": "V-253413",
+      "check_pack": "adobe_acrobat",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253413r991591_rule",
+      "severity": "medium",
+      "title": "Automatically signing in the last interactive user after a system-initiated restart must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253413"
+    },
+    {
+      "check_id": "V-253414",
+      "check_pack": "adobe_acrobat",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253414r958422_rule",
+      "severity": "medium",
+      "title": "PowerShell script block logging must be enabled on Windows 11.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253414"
+    },
+    {
+      "check_id": "V-253415",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253415r958420_rule",
+      "severity": "medium",
+      "title": "PowerShell Transcription must be enabled on Windows 11.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253415"
+    },
+    {
+      "check_id": "V-253416",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253416r958510_rule",
+      "severity": "high",
+      "title": "The Windows Remote Management (WinRM) client must not use Basic authentication.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253416"
+    },
+    {
+      "check_id": "V-253417",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253417r958848_rule",
+      "severity": "medium",
+      "title": "The Windows Remote Management (WinRM) client must not allow unencrypted traffic.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253417"
+    },
+    {
+      "check_id": "V-253418",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253418r958510_rule",
+      "severity": "high",
+      "title": "The Windows Remote Management (WinRM) service must not use Basic authentication.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253418"
+    },
+    {
+      "check_id": "V-253419",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253419r958850_rule",
+      "severity": "medium",
+      "title": "The Windows Remote Management (WinRM) service must not allow unencrypted traffic.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253419"
+    },
+    {
+      "check_id": "V-253420",
+      "check_pack": "adobe_acrobat",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253420r1051055_rule",
+      "severity": "medium",
+      "title": "The Windows Remote Management (WinRM) service must not store RunAs credentials.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253420"
+    },
+    {
+      "check_id": "V-253421",
+      "check_pack": "adobe_acrobat",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253421r958510_rule",
+      "severity": "medium",
+      "title": "The Windows Remote Management (WinRM) client must not use Digest authentication.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253421"
+    },
+    {
+      "check_id": "V-253422",
+      "check_pack": "adobe_acrobat",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253422r958400_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to prevent Windows apps from being activated by voice while the system is locked.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253422"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253423r958478_rule",
+      "severity": "medium",
+      "title": "The convenience PIN for Windows 11 must be disabled.",
+      "tracking_issue": "TODO-V-253423",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253423"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253424r958404_rule",
+      "severity": "medium",
+      "title": "Windows Ink Workspace must be configured to disallow access above the lock.",
+      "tracking_issue": "TODO-V-253424",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253424"
+    },
+    {
+      "check_id": "V-253425",
+      "check_pack": "adobe_acrobat",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253425r958478_rule",
+      "severity": "low",
+      "title": "Windows 11 must be configured to prevent users from receiving suggestions for third-party or additional applications.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253425"
+    },
+    {
+      "check_id": "V-253426",
+      "check_pack": "adobe_acrobat",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253426r991580_rule",
+      "severity": "medium",
+      "title": "Windows 11 Kernel (Direct Memory Access) DMA Protection must be enabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253426"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253427r958448_rule",
+      "severity": "medium",
+      "title": "The DoD Root CA certificates must be installed in the Trusted Root Store.",
+      "tracking_issue": "TODO-V-253427",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253427"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253428r958448_rule",
+      "severity": "medium",
+      "title": "The External Root CA certificates must be installed in the Trusted Root Store on unclassified systems.",
+      "tracking_issue": "TODO-V-253428",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253428"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253429r958448_rule",
+      "severity": "medium",
+      "title": "The DoD Interoperability Root CA cross-certificates must be installed in the Untrusted Certificates Store on unclassified systems.",
+      "tracking_issue": "TODO-V-253429",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253429"
+    },
+    {
+      "check_id": "V-253430",
+      "check_pack": "adobe_acrobat",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253430r1081058_rule",
+      "severity": "medium",
+      "title": "The US DOD CCEB Interoperability Root CA cross-certificates must be installed in the Untrusted Certificates Store on unclassified systems.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253430"
+    },
+    {
+      "check_id": "V-253431",
+      "check_pack": "adobe_acrobat",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253431r958726_rule",
+      "severity": "medium",
+      "title": "Default permissions for the HKEY_LOCAL_MACHINE registry hive must be maintained.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253431"
+    },
+    {
+      "check_id": "V-253432",
+      "check_pack": "adobe_acrobat",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253432r958482_rule",
+      "severity": "medium",
+      "title": "The built-in administrator account must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253432"
+    },
+    {
+      "check_id": "V-253433",
+      "check_pack": "adobe_acrobat",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253433r958504_rule",
+      "severity": "medium",
+      "title": "The built-in guest account must be disabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253433"
+    },
+    {
+      "check_id": "V-253434",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253434r991589_rule",
+      "severity": "medium",
+      "title": "Local accounts with blank passwords must be restricted to prevent access from the network.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253434"
+    },
+    {
+      "check_id": "V-253435",
+      "check_pack": "adobe_acrobat",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-253435r991589_rule",
+      "severity": "medium",
+      "title": "The built-in administrator account must be renamed.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/adobe_acrobat.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253435"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253436r991589_rule",
+      "severity": "medium",
+      "title": "The built-in guest account must be renamed.",
+      "tracking_issue": "TODO-V-253436",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253436"
+    },
+    {
+      "check_id": "V-253437",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253437r958442_rule",
+      "severity": "medium",
+      "title": "Audit policy using subcategories must be enabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253437"
+    },
+    {
+      "check_id": "V-253438",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253438r958908_rule",
+      "severity": "medium",
+      "title": "Outgoing secure channel traffic must be encrypted or signed.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253438"
+    },
+    {
+      "check_id": "V-253439",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253439r958908_rule",
+      "severity": "medium",
+      "title": "Outgoing secure channel traffic must be encrypted.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253439"
+    },
+    {
+      "check_id": "V-253440",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253440r958908_rule",
+      "severity": "medium",
+      "title": "Outgoing secure channel traffic must be signed.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253440"
+    },
+    {
+      "check_id": "V-253441",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253441r991589_rule",
+      "severity": "low",
+      "title": "The computer account password must not be prevented from being reset.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253441"
+    },
+    {
+      "check_id": "V-253442",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253442r991589_rule",
+      "severity": "low",
+      "title": "The maximum age for machine account passwords must be configured to 30 days or less.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253442"
+    },
+    {
+      "check_id": "V-253443",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253443r958908_rule",
+      "severity": "medium",
+      "title": "The system must be configured to require a strong session key.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253443"
+    },
+    {
+      "check_id": "V-253444",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253444r958636_rule",
+      "severity": "medium",
+      "title": "The machine inactivity limit must be set to 15 minutes, locking the system with the screensaver.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253444"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253445r958392_rule",
+      "severity": "medium",
+      "title": "The required legal notice must be configured to display before console logon.",
+      "tracking_issue": "TODO-V-253445",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253445"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253446r958586_rule",
+      "severity": "low",
+      "title": "The Windows message title for the legal notice must be configured.",
+      "tracking_issue": "TODO-V-253446",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253446"
+    },
+    {
+      "check_id": "V-253447",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253447r991589_rule",
+      "severity": "low",
+      "title": "Caching of logon credentials must be limited.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253447"
+    },
+    {
+      "check_id": "V-253448",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253448r991589_rule",
+      "severity": "medium",
+      "title": "The Smart Card removal option must be configured to Force Logoff or Lock Workstation.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253448"
+    },
+    {
+      "check_id": "V-253449",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253449r958908_rule",
+      "severity": "medium",
+      "title": "The Windows SMB client must be configured to always perform SMB packet signing.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253449"
+    },
+    {
+      "check_id": "V-253450",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253450r987796_rule",
+      "severity": "medium",
+      "title": "Unencrypted passwords must not be sent to third-party SMB Servers.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253450"
+    },
+    {
+      "check_id": "V-253451",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253451r958908_rule",
+      "severity": "medium",
+      "title": "The Windows SMB server must be configured to always perform SMB packet signing.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253451"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253452r991589_rule",
+      "severity": "high",
+      "title": "Anonymous SID/Name translation must not be allowed.",
+      "tracking_issue": "TODO-V-253452",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253452"
+    },
+    {
+      "check_id": "V-253453",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253453r991589_rule",
+      "severity": "high",
+      "title": "Anonymous enumeration of SAM accounts must not be allowed.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253453"
+    },
+    {
+      "check_id": "V-253454",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253454r1137695_rule",
+      "severity": "high",
+      "title": "Anonymous enumeration of shares must be restricted.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253454"
+    },
+    {
+      "check_id": "V-253455",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253455r991589_rule",
+      "severity": "medium",
+      "title": "The system must be configured to prevent anonymous users from having the same rights as the Everyone group.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253455"
+    },
+    {
+      "check_id": "V-253456",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253456r1137695_rule",
+      "severity": "high",
+      "title": "Anonymous access to Named Pipes and Shares must be restricted.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253456"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253457r1081060_rule",
+      "severity": "medium",
+      "title": "Remote calls to the Security Account Manager (SAM) must be restricted to Administrators.",
+      "tracking_issue": "TODO-V-253457",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253457"
+    },
+    {
+      "check_id": "V-253458",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253458r991589_rule",
+      "severity": "medium",
+      "title": "NTLM must be prevented from falling back to a Null session.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253458"
+    },
+    {
+      "check_id": "V-253459",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253459r991589_rule",
+      "severity": "medium",
+      "title": "PKU2U authentication using online identities must be prevented.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253459"
+    },
+    {
+      "check_id": "V-253460",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253460r971535_rule",
+      "severity": "medium",
+      "title": "Kerberos encryption types must be configured to prevent the use of DES and RC4 encryption suites.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253460"
+    },
+    {
+      "check_id": "V-253461",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253461r1051056_rule",
+      "severity": "high",
+      "title": "The system must be configured to prevent the storage of the LAN Manager hash of passwords.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253461"
+    },
+    {
+      "check_id": "V-253462",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253462r991589_rule",
+      "severity": "high",
+      "title": "The LanMan authentication level must be set to send NTLMv2 response only, and to refuse LM and NTLM.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253462"
+    },
+    {
+      "check_id": "V-253463",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253463r991589_rule",
+      "severity": "medium",
+      "title": "The system must be configured to the required LDAP client signing level.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253463"
+    },
+    {
+      "check_id": "V-253464",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253464r991589_rule",
+      "severity": "medium",
+      "title": "The system must be configured to meet the minimum session security requirement for NTLM SSP based clients.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253464"
+    },
+    {
+      "check_id": "V-253465",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253465r991589_rule",
+      "severity": "medium",
+      "title": "The system must be configured to meet the minimum session security requirement for NTLM SSP based servers.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253465"
+    },
+    {
+      "check_id": "V-253466",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253466r1137699_rule",
+      "severity": "medium",
+      "title": "The system must be configured to use FIPS-compliant algorithms for encryption, hashing, and signing.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253466"
+    },
+    {
+      "check_id": "V-253467",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253467r991589_rule",
+      "severity": "low",
+      "title": "The default permissions of global system objects must be increased.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253467"
+    },
+    {
+      "check_id": "V-253468",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253468r1051057_rule",
+      "severity": "medium",
+      "title": "User Account Control approval mode for the built-in Administrator must be enabled.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253468"
+    },
+    {
+      "check_id": "V-253469",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253469r958518_rule",
+      "severity": "medium",
+      "title": "User Account Control must prompt administrators for consent on the secure desktop.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253469"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253470r1106510_rule",
+      "severity": "medium",
+      "title": "Windows 11 must use multifactor authentication for local and network access to privileged and nonprivileged accounts.",
+      "tracking_issue": "TODO-V-253470",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253470"
+    },
+    {
+      "check_id": "V-253471",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253471r1051058_rule",
+      "severity": "medium",
+      "title": "User Account Control must automatically deny elevation requests for standard users.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253471"
+    },
+    {
+      "check_id": "V-253472",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253472r958518_rule",
+      "severity": "medium",
+      "title": "User Account Control must be configured to detect application installations and prompt for elevation.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253472"
+    },
+    {
+      "check_id": "V-253473",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253473r958518_rule",
+      "severity": "medium",
+      "title": "User Account Control must only elevate UIAccess applications that are installed in secure locations.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253473"
+    },
+    {
+      "check_id": "V-253474",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253474r1051059_rule",
+      "severity": "medium",
+      "title": "User Account Control must run all administrators in Admin Approval Mode, enabling UAC.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253474"
+    },
+    {
+      "check_id": "V-253475",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253475r958518_rule",
+      "severity": "medium",
+      "title": "User Account Control must virtualize file and registry write failures to per-user locations.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253475"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253476r1051060_rule",
+      "severity": "medium",
+      "title": "Passwords for enabled local Administrator accounts must be changed at least every 60 days.",
+      "tracking_issue": "TODO-V-253476",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253476"
+    },
+    {
+      "check_id": "V-253477",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253477r958478_rule",
+      "severity": "low",
+      "title": "Toast notifications to the lock screen must be turned off.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253477"
+    },
+    {
+      "check_id": "V-253478",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "rule_id": "SV-253478r991589_rule",
+      "severity": "medium",
+      "title": "Zone information must be preserved when saving attachments.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253478"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253479r958726_rule",
+      "severity": "medium",
+      "title": "The \"Access Credential Manager as a trusted caller\" user right must not be assigned to any groups or accounts.",
+      "tracking_issue": "TODO-V-253479",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253479"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253480r1137691_rule",
+      "severity": "medium",
+      "title": "The \"Access this computer from the network\" user right must only be assigned to the Administrators and Remote Desktop Users groups.",
+      "tracking_issue": "TODO-V-253480",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253480"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253481r958726_rule",
+      "severity": "high",
+      "title": "The \"Act as part of the operating system\" user right must not be assigned to any groups or accounts.",
+      "tracking_issue": "TODO-V-253481",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253481"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253482r1137691_rule",
+      "severity": "medium",
+      "title": "The \"Allow log on locally\" user right must only be assigned to the Administrators and Users groups.",
+      "tracking_issue": "TODO-V-253482",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253482"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253483r958726_rule",
+      "severity": "medium",
+      "title": "The \"Back up files and directories\" user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-V-253483",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253483"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253484r958726_rule",
+      "severity": "medium",
+      "title": "The \"Change the system time\" user right must only be assigned to Administrators and Local Service.",
+      "tracking_issue": "TODO-V-253484",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253484"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253485r958726_rule",
+      "severity": "medium",
+      "title": "The \"Create a pagefile\" user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-V-253485",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253485"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253486r958726_rule",
+      "severity": "high",
+      "title": "The \"Create a token object\" user right must not be assigned to any groups or accounts.",
+      "tracking_issue": "TODO-V-253486",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253486"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253487r958726_rule",
+      "severity": "medium",
+      "title": "The \"Create global objects\" user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+      "tracking_issue": "TODO-V-253487",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253487"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253488r958726_rule",
+      "severity": "medium",
+      "title": "The \"Create permanent shared objects\" user right must not be assigned to any groups or accounts.",
+      "tracking_issue": "TODO-V-253488",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253488"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253489r958726_rule",
+      "severity": "medium",
+      "title": "The \"Create symbolic links\" user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-V-253489",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253489"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253490r958726_rule",
+      "severity": "high",
+      "title": "The \"Debug programs\" user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-V-253490",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253490"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253491r1137691_rule",
+      "severity": "medium",
+      "title": "The \"Deny access to this computer from the network\" user right on workstations must be configured to prevent access from highly privileged domain accounts and local accounts on domain systems and unauthenticated access on all systems.",
+      "tracking_issue": "TODO-V-253491",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253491"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253492r1137691_rule",
+      "severity": "medium",
+      "title": "The \"Deny log on as a batch job\" user right on domain-joined workstations must be configured to prevent access from highly privileged domain accounts.",
+      "tracking_issue": "TODO-V-253492",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253492"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253493r1137691_rule",
+      "severity": "medium",
+      "title": "The \"Deny log on as a service\" user right on Windows 11 domain-joined workstations must be configured to prevent access from highly privileged domain accounts.",
+      "tracking_issue": "TODO-V-253493",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253493"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253494r1137691_rule",
+      "severity": "medium",
+      "title": "The \"Deny log on locally\" user right on workstations must be configured to prevent access from highly privileged domain accounts on domain systems and unauthenticated access on all systems.",
+      "tracking_issue": "TODO-V-253494",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253494"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253495r1137691_rule",
+      "severity": "medium",
+      "title": "The \"Deny log on through Remote Desktop Services\" user right on Windows 11 workstations must be configured to prevent access from highly privileged domain accounts and local accounts on domain systems and unauthenticated access on all systems.",
+      "tracking_issue": "TODO-V-253495",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253495"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253496r958726_rule",
+      "severity": "medium",
+      "title": "The \"Enable computer and user accounts to be trusted for delegation\" user right must not be assigned to any groups or accounts.",
+      "tracking_issue": "TODO-V-253496",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253496"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253497r958726_rule",
+      "severity": "medium",
+      "title": "The \"Force shutdown from a remote system\" user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-V-253497",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253497"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253498r1138526_rule",
+      "severity": "medium",
+      "title": "The \"Impersonate a client after authentication\" user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+      "tracking_issue": "TODO-V-253498",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253498"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253499r958726_rule",
+      "severity": "medium",
+      "title": "The \"Load and unload device drivers\" user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-V-253499",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253499"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253500r958726_rule",
+      "severity": "medium",
+      "title": "The \"Lock pages in memory\" user right must not be assigned to any groups or accounts.",
+      "tracking_issue": "TODO-V-253500",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253500"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253501r958434_rule",
+      "severity": "medium",
+      "title": "The \"Manage auditing and security log\" user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-V-253501",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253501"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253502r958726_rule",
+      "severity": "medium",
+      "title": "The \"Modify firmware environment values\" user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-V-253502",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253502"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253503r958726_rule",
+      "severity": "medium",
+      "title": "The \"Perform volume maintenance tasks\" user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-V-253503",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253503"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253504r958726_rule",
+      "severity": "medium",
+      "title": "The \"Profile single process\" user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-V-253504",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253504"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253505r958726_rule",
+      "severity": "medium",
+      "title": "The \"Restore files and directories\" user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-V-253505",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253505"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-253506r958726_rule",
+      "severity": "medium",
+      "title": "The \"Take ownership of files or other objects\" user right must only be assigned to the Administrators group.",
+      "tracking_issue": "TODO-V-253506",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-253506"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-256893r958552_rule",
+      "severity": "medium",
+      "title": "Internet Explorer must be disabled for Windows 11.",
+      "tracking_issue": "TODO-V-256893",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-256893"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-257592r991589_rule",
+      "severity": "medium",
+      "title": "Windows 11 must not have portproxy enabled or in use.",
+      "tracking_issue": "TODO-V-257592",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-257592"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-257770r958412_rule",
+      "severity": "medium",
+      "title": "Windows 11 must have command line process auditing events enabled for failures.",
+      "tracking_issue": "TODO-V-257770",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-257770"
+    },
+    {
+      "check_id": "V-268317",
+      "check_pack": "arista_eos",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-268317r1135320_rule",
+      "severity": "medium",
+      "title": "Copilot must be disabled for Windows 11.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-268317"
+    },
+    {
+      "check_id": "V-268318",
+      "check_pack": "arista_eos",
+      "classification": "automated",
+      "evidence_required": true,
+      "reason": "Mapped to existing AutomateSTIG check definition.",
+      "rule_id": "SV-268318r1135322_rule",
+      "severity": "medium",
+      "title": "Windows 11 systems must use either Group Policy or an approved Mobile Device Management (MDM) product to enforce STIG compliance.",
+      "tracking_issue": "",
+      "validated_by": [
+        "content/check_packs/arista_eos.json",
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-268318"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-278926r1135296_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit file system failures.",
+      "tracking_issue": "TODO-V-278926",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-278926"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-278927r1135299_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit file system successes.",
+      "tracking_issue": "TODO-V-278927",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-278927"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-278928r1135302_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit handle manipulation failures.",
+      "tracking_issue": "TODO-V-278928",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-278928"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-278929r1135305_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit handle manipulation successes.",
+      "tracking_issue": "TODO-V-278929",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-278929"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-278930r1135308_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit registry failures.",
+      "tracking_issue": "TODO-V-278930",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-278930"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-278931r1135311_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit registry successes.",
+      "tracking_issue": "TODO-V-278931",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-278931"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-278932r1141916_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit sensitive privilege use successes.",
+      "tracking_issue": "TODO-V-278932",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-278932"
+    },
+    {
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
+      "evidence_required": true,
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "rule_id": "SV-278933r1141919_rule",
+      "severity": "medium",
+      "title": "Windows 11 must be configured to audit sensitive privilege use failures.",
+      "tracking_issue": "TODO-V-278933",
+      "validated_by": [
+        "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
+      ],
+      "vuln_id": "V-278933"
+    }
+  ],
+  "source": "DISA XCCDF benchmark",
+  "status": "experimental",
+  "stig_id": "Microsoft_Windows_11_STIG",
+  "total_rules": 265,
+  "version": "U_MS_Windows_11_V2R5_STIG.zip"
+}
