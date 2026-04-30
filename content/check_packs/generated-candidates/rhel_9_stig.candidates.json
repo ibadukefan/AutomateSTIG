@@ -757,6 +757,132 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "LogLevel VERBOSE",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must log SSH connection attempts and failures to the server.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257982"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PubkeyAuthentication yes",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 SSHD must accept public key authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257983"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PermitEmptyPasswords no",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 SSHD must not allow blank passwords.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257984"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PermitRootLogin no",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must not permit direct logons to the root account using remote access via SSH.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257985"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "UsePAM yes",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must enable the Pluggable Authentication Module (PAM) interface for SSHD.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257986"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "HostbasedAuthentication no",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must not allow a noncertificate trusted host SSH logon to the system.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257992"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PermitUserEnvironment no",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must not allow users to override SSH environment variables.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257993"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "ClientAliveCountMax 1",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must be configured so that all network connections associated with SSH traffic terminate after becoming unresponsive.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257995"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "ClientAliveInterval 600",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must be configured so that all network connections associated with SSH traffic are terminated after 10 minutes of becoming unresponsive.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257996"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0640",
         "owner": null,
@@ -784,6 +910,132 @@
       },
       "platform": "linux",
       "vuln_id": "V-258001"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "Compression delayed",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 SSH daemon must not allow compression or must only allow compression after successful authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258002"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "GSSAPIAuthentication no",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 SSH daemon must not allow GSSAPI authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258003"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "KerberosAuthentication no",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 SSH daemon must not allow Kerberos authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258004"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "IgnoreRhosts yes",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 SSH daemon must not allow rhosts authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258005"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "IgnoreUserKnownHosts yes",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 SSH daemon must not allow known hosts authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258006"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "X11forwarding no",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 SSH daemon must disable remote X connections for interactive users.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258007"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "StrictModes yes",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 SSH daemon must perform strict mode checking of home directory configuration files.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258008"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PrintLastLog yes",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 SSH daemon must display the date and time of the last successful account logon upon an SSH logon.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258009"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "X11UseLocalhost yes",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 SSH daemon must prevent remote hosts from connecting to the proxy display.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258011"
     },
     {
       "check": {

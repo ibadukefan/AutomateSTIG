@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "PermitRootLogin no",
+      "type": "file_content"
+    },
+    "description": "OL 8 must not permit direct logons to the root account using remote access via SSH.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248613"
+  },
   "check_content_excerpt": "Verify remote access using SSH prevents users from logging on directly as \"root\" with the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*permitrootlogin'\n\nPermitRootLogin no\n\nIf the \"PermitRootLogin\" keyword is set to \"yes\", is missing, or is commented out, this is a finding.\n\nIf conflicting results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 8 to stop users from logging on remotely as the \"root\" user via SSH. \n \nEdit the appropriate \"/etc/ssh/sshd_config\" file to uncomment or add the line for the \"PermitRootLogin\" keyword and set its value to \"no\": \n \nPermitRootLogin no \n \nThe SSH daemon must be restarted for the changes to take effect. To restart the SSH daemon, run the following command: \n \n$ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248613r1015039_rule",
   "severity": "medium",

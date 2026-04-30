@@ -144,6 +144,21 @@ Windows method:
         self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/var/log/audit/audit.log', 'owner': None, 'group': None, 'mode': '600'})
         self.assertEqual(candidate['expected'], {'type': 'is_true'})
 
+    def test_infers_linux_sshd_config_keyword_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230555',
+            'title': 'RHEL 8 remote X connections for interactive users must be disabled.',
+            'check_content': '''Verify X11Forwarding is disabled with the following command:
+
+$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\r' | tr '\n' ' ' | xargs sudo grep -iH '^\s*x11forwarding'
+
+X11Forwarding no
+
+If the "X11Forwarding" keyword is set to "yes" and is not documented with the information system security officer (ISSO) as an operational requirement or is missing, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/ssh/sshd_config', 'pattern': 'X11Forwarding no', 'is_regex': False})
+        self.assertEqual(candidate['expected'], {'type': 'contains'})
+
 
 if __name__ == '__main__':
     unittest.main()

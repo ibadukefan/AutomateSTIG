@@ -184,6 +184,28 @@ def _file_content_candidate(rule: dict) -> dict | None:
     }
 
 
+def _sshd_config_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    if '/usr/sbin/sshd' not in content or 'grep' not in content:
+        return None
+    keyword_match = re.search(r"grep\s+-iH\s+['\"]\^\\s\*([A-Za-z][A-Za-z0-9]+)['\"]", content, re.IGNORECASE)
+    if not keyword_match:
+        keyword_match = re.search(r"grep\s+-iH\s+['\"]\^\\\\s\*([A-Za-z][A-Za-z0-9]+)['\"]", content, re.IGNORECASE)
+    if not keyword_match:
+        return None
+    keyword = keyword_match.group(1)
+    expected_match = re.search(rf'^\s*({re.escape(keyword)}\s+[^\s\n\r]+)\s*$', content, re.IGNORECASE | re.MULTILINE)
+    if not expected_match:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'file_content', 'path': '/etc/ssh/sshd_config', 'pattern': expected_match.group(1).strip(), 'is_regex': False},
+        'expected': {'type': 'contains'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _service_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
@@ -269,7 +291,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         }
 
     if _linux_platform(stig_id):
-        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _service_candidate, _file_permission_candidate):
+        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _sshd_config_candidate, _service_candidate, _file_permission_candidate):
             candidate = infer(rule)
             if candidate:
                 return candidate

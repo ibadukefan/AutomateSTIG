@@ -363,16 +363,17 @@
       "vuln_id": "V-238218"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238219",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-238219r991589_rule",
       "severity": "high",
       "title": "The Ubuntu operating system must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements.",
-      "tracking_issue": "TODO-V-238219",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238219"
@@ -2473,16 +2474,17 @@
       "vuln_id": "V-252704"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-255912",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-255912r991554_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system SSH server must be configured to use only FIPS-validated key exchange algorithms.",
-      "tracking_issue": "TODO-V-255912",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-255912"

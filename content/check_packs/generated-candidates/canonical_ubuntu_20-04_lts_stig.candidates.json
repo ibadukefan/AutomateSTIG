@@ -3,6 +3,20 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "X11Forwarding no",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238219"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/security/pwquality.conf",
         "pattern": "enforcing",
         "type": "file_content"
@@ -158,6 +172,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-251505"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "KexAlgorithms ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system SSH server must be configured to use only FIPS-validated key exchange algorithms.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-255912"
     },
     {
       "check": {

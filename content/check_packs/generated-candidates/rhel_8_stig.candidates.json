@@ -1047,6 +1047,34 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "X11Forwarding no",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 remote X connections for interactive users must be disabled unless to fulfill documented and validated mission requirements.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230555"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "X11UseLocalhost yes",
+        "type": "file_content"
+      },
+      "description": "The RHEL 8 SSH daemon must prevent remote hosts from connecting to the proxy display.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230556"
+    },
+    {
+      "check": {
         "name": "gssproxy",
         "should_be_installed": false,
         "type": "package"
@@ -1096,6 +1124,34 @@
       },
       "platform": "linux",
       "vuln_id": "V-237640"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "ClientAliveInterval 600",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must be configured so that all network connections associated with SSH traffic are terminated after 10 minutes of becoming unresponsive.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-244525"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "GSSAPIAuthentication no",
+        "type": "file_content"
+      },
+      "description": "The RHEL 8 SSH daemon must not allow GSSAPI authentication, except to fulfill documented and validated mission requirements.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-244528"
     },
     {
       "check": {

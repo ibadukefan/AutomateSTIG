@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "KerberosAuthentication no",
+      "type": "file_content"
+    },
+    "description": "OL 9 SSH daemon must not allow Kerberos authentication.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271718"
+  },
   "check_content_excerpt": "Verify that OL 9 SSH daemon does not allow Kerberos authentication with the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*kerberosauthentication'\nKerberosAuthentication no\n\nIf the value is returned as \"yes\", the returned line is commented out, no output is returned, and the use of Kerberos authentication has not been documented with the information system security officer (ISSO), this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SSH daemon to not allow Kerberos authentication.\n\nAdd the following line in \"/etc/ssh/sshd_config\" or to a file in \"/etc/ssh/sshd_config.d\" or uncomment the line and set the value to \"no\":\n\nKerberosAuthentication no\n\nThe SSH service must be restarted for changes to take effect:\n\n$ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271718r1091866_rule",
   "severity": "medium",

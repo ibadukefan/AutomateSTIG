@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "PermitEmptyPasswords no",
+      "type": "file_content"
+    },
+    "description": "OL 9 SSHD must not allow blank passwords.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271706"
+  },
   "check_content_excerpt": "Verify that OL 9 remote access using SSH prevents logging on with a blank password with the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*permitemptypasswords'\nPermitEmptyPasswords no\n\nIf the \"PermitEmptyPasswords\" keyword is set to \"yes\", is missing, or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to prevent SSH users from logging on with blank passwords by editing the following line in \"/etc/ssh/sshd_config\" or in a file in \"/etc/ssh/sshd_config.d\":\n\nPermitEmptyPasswords no\n\nRestart the SSH daemon for the settings to take effect:\n\n$ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271706r1091830_rule",
   "severity": "high",

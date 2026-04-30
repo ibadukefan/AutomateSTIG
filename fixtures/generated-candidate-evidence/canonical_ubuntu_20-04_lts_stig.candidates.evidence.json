@@ -1,6 +1,33 @@
 {
-  "candidate_checks": 12,
+  "candidate_checks": 14,
   "cases": [
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "X11Forwarding no",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nX11Forwarding no\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238219"
+    },
     {
       "check": {
         "is_regex": false,
@@ -375,6 +402,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "KexAlgorithms ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system SSH server must be configured to use only FIPS-validated key exchange algorithms.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nKexAlgorithms ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-255912"
+    },
+    {
+      "check": {
         "key": "kernel.dmesg_restrict",
         "type": "sysctl"
       },
@@ -405,5 +459,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 12
+  "validated_candidates": 14
 }

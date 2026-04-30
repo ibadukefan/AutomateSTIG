@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "PermitRootLogin no",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must not permit direct logons to the root account using remote access via SSH.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257985"
+  },
   "check_content_excerpt": "Verify RHEL 9 remote access using SSH prevents users from logging on directly as \"root\" with the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*permitrootlogin'\n\nPermitRootLogin no\n\nIf the \"PermitRootLogin\" keyword is set to any value other than \"no\", is missing, or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "To configure the system to prevent SSH users from logging on directly as root add or modify the following line in \"/etc/ssh/sshd_config\" or in a file in \"/etc/ssh/sshd_config.d\".\n\nPermitRootLogin no\n\nRestart the SSH daemon for the settings to take effect:\n\n$ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-257985r1069364_rule",
   "severity": "medium",

@@ -2794,76 +2794,81 @@
       "vuln_id": "V-257981"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257982",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257982 from source identifier xccdf_mil.disa.stig_group_V-257982.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257982r1045021_rule",
       "severity": "medium",
       "title": "RHEL 9 must log SSH connection attempts and failures to the server.",
-      "tracking_issue": "TODO-V-257982",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257982"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257983",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257983 from source identifier xccdf_mil.disa.stig_group_V-257983.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257983r1045024_rule",
       "severity": "medium",
       "title": "RHEL 9 SSHD must accept public key authentication.",
-      "tracking_issue": "TODO-V-257983",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257983"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257984",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257984 from source identifier xccdf_mil.disa.stig_group_V-257984.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257984r1045026_rule",
       "severity": "high",
       "title": "RHEL 9 SSHD must not allow blank passwords.",
-      "tracking_issue": "TODO-V-257984",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257984"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257985",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257985 from source identifier xccdf_mil.disa.stig_group_V-257985.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257985r1069364_rule",
       "severity": "medium",
       "title": "RHEL 9 must not permit direct logons to the root account using remote access via SSH.",
-      "tracking_issue": "TODO-V-257985",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257985"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257986",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257986 from source identifier xccdf_mil.disa.stig_group_V-257986.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257986r1045030_rule",
       "severity": "high",
       "title": "RHEL 9 must enable the Pluggable Authentication Module (PAM) interface for SSHD.",
-      "tracking_issue": "TODO-V-257986",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257986"
@@ -2929,31 +2934,33 @@
       "vuln_id": "V-257991"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257992",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257992 from source identifier xccdf_mil.disa.stig_group_V-257992.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257992r1045047_rule",
       "severity": "medium",
       "title": "RHEL 9 must not allow a noncertificate trusted host SSH logon to the system.",
-      "tracking_issue": "TODO-V-257992",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257992"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257993",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257993 from source identifier xccdf_mil.disa.stig_group_V-257993.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257993r1045049_rule",
       "severity": "medium",
       "title": "RHEL 9 must not allow users to override SSH environment variables.",
-      "tracking_issue": "TODO-V-257993",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257993"
@@ -2974,31 +2981,33 @@
       "vuln_id": "V-257994"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257995",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257995 from source identifier xccdf_mil.disa.stig_group_V-257995.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257995r1045053_rule",
       "severity": "medium",
       "title": "RHEL 9 must be configured so that all network connections associated with SSH traffic terminate after becoming unresponsive.",
-      "tracking_issue": "TODO-V-257995",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257995"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257996",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257996 from source identifier xccdf_mil.disa.stig_group_V-257996.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257996r1045055_rule",
       "severity": "medium",
       "title": "RHEL 9 must be configured so that all network connections associated with SSH traffic are terminated after 10 minutes of becoming unresponsive.",
-      "tracking_issue": "TODO-V-257996",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257996"
@@ -3066,136 +3075,145 @@
       "vuln_id": "V-258001"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258002",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-258002 from source identifier xccdf_mil.disa.stig_group_V-258002.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-258002r991589_rule",
       "severity": "medium",
       "title": "RHEL 9 SSH daemon must not allow compression or must only allow compression after successful authentication.",
-      "tracking_issue": "TODO-V-258002",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-258002"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258003",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-258003 from source identifier xccdf_mil.disa.stig_group_V-258003.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-258003r1045065_rule",
       "severity": "medium",
       "title": "RHEL 9 SSH daemon must not allow GSSAPI authentication.",
-      "tracking_issue": "TODO-V-258003",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-258003"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258004",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-258004 from source identifier xccdf_mil.disa.stig_group_V-258004.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-258004r1045067_rule",
       "severity": "medium",
       "title": "RHEL 9 SSH daemon must not allow Kerberos authentication.",
-      "tracking_issue": "TODO-V-258004",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-258004"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258005",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-258005 from source identifier xccdf_mil.disa.stig_group_V-258005.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-258005r1045069_rule",
       "severity": "medium",
       "title": "RHEL 9 SSH daemon must not allow rhosts authentication.",
-      "tracking_issue": "TODO-V-258005",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-258005"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258006",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-258006 from source identifier xccdf_mil.disa.stig_group_V-258006.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-258006r1045071_rule",
       "severity": "medium",
       "title": "RHEL 9 SSH daemon must not allow known hosts authentication.",
-      "tracking_issue": "TODO-V-258006",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-258006"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258007",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-258007 from source identifier xccdf_mil.disa.stig_group_V-258007.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-258007r1045073_rule",
       "severity": "medium",
       "title": "RHEL 9 SSH daemon must disable remote X connections for interactive users.",
-      "tracking_issue": "TODO-V-258007",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-258007"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258008",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-258008 from source identifier xccdf_mil.disa.stig_group_V-258008.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-258008r1045075_rule",
       "severity": "medium",
       "title": "RHEL 9 SSH daemon must perform strict mode checking of home directory configuration files.",
-      "tracking_issue": "TODO-V-258008",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-258008"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258009",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-258009 from source identifier xccdf_mil.disa.stig_group_V-258009.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-258009r1045077_rule",
       "severity": "medium",
       "title": "RHEL 9 SSH daemon must display the date and time of the last successful account logon upon an SSH logon.",
-      "tracking_issue": "TODO-V-258009",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-258009"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258011",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-258011 from source identifier xccdf_mil.disa.stig_group_V-258011.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-258011r1045079_rule",
       "severity": "medium",
       "title": "RHEL 9 SSH daemon must prevent remote hosts from connecting to the proxy display.",
-      "tracking_issue": "TODO-V-258011",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-258011"

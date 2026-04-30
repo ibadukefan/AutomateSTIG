@@ -312,31 +312,33 @@
       "vuln_id": "V-248549"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248552",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248552 from source identifier xccdf_mil.disa.stig_group_V-248552.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248552r986329_rule",
       "severity": "medium",
       "title": "OL 8 must be configured so that all network connections associated with SSH traffic terminate after becoming unresponsive.",
-      "tracking_issue": "TODO-V-248552",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248552"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248553",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248553 from source identifier xccdf_mil.disa.stig_group_V-248553.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248553r986330_rule",
       "severity": "medium",
       "title": "OL 8 must be configured so that all network connections associated with SSH traffic are terminated after 10 minutes of becoming unresponsive.",
-      "tracking_issue": "TODO-V-248553",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248553"
@@ -859,61 +861,65 @@
       "vuln_id": "V-248602"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248603",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248603 from source identifier xccdf_mil.disa.stig_group_V-248603.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248603r991589_rule",
       "severity": "medium",
       "title": "The OL 8 SSH daemon must perform strict mode checking of home directory configuration files.",
-      "tracking_issue": "TODO-V-248603",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248603"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248605",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248605 from source identifier xccdf_mil.disa.stig_group_V-248605.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248605r991589_rule",
       "severity": "medium",
       "title": "The OL 8 SSH daemon must not allow authentication using known host's authentication.",
-      "tracking_issue": "TODO-V-248605",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248605"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248606",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248606 from source identifier xccdf_mil.disa.stig_group_V-248606.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248606r991589_rule",
       "severity": "medium",
       "title": "The OL 8 SSH daemon must not allow Kerberos authentication, except to fulfill documented and validated mission requirements.",
-      "tracking_issue": "TODO-V-248606",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248606"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248607",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248607 from source identifier xccdf_mil.disa.stig_group_V-248607.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248607r991589_rule",
       "severity": "medium",
       "title": "The OL 8 SSH daemon must not allow GSSAPI authentication, except to fulfill documented and validated mission requirements.",
-      "tracking_issue": "TODO-V-248607",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248607"
@@ -994,16 +1000,17 @@
       "vuln_id": "V-248612"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248613",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248613 from source identifier xccdf_mil.disa.stig_group_V-248613.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248613r1015039_rule",
       "severity": "medium",
       "title": "OL 8 must not permit direct logons to the root account using remote access via SSH.",
-      "tracking_issue": "TODO-V-248613",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248613"
@@ -1310,16 +1317,17 @@
       "vuln_id": "V-248649"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248650",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248650 from source identifier xccdf_mil.disa.stig_group_V-248650.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248650r991591_rule",
       "severity": "high",
       "title": "OL 8 must not allow users to override SSH environment variables.",
-      "tracking_issue": "TODO-V-248650",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248650"
@@ -1914,16 +1922,17 @@
       "vuln_id": "V-248712"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248714",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248714 from source identifier xccdf_mil.disa.stig_group_V-248714.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248714r991589_rule",
       "severity": "high",
       "title": "OL 8 must not allow accounts configured with blank or null passwords.",
-      "tracking_issue": "TODO-V-248714",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248714"
@@ -1974,16 +1983,17 @@
       "vuln_id": "V-248717"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248718",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248718 from source identifier xccdf_mil.disa.stig_group_V-248718.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248718r991589_rule",
       "severity": "medium",
       "title": "OL 8 must display the date and time of the last successful account logon upon an SSH logon.",
-      "tracking_issue": "TODO-V-248718",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248718"
@@ -4130,31 +4140,33 @@
       "vuln_id": "V-248899"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248900",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248900 from source identifier xccdf_mil.disa.stig_group_V-248900.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248900r991589_rule",
       "severity": "medium",
       "title": "OL 8 remote X connections for interactive users must be disabled unless to fulfill documented and validated mission requirements.",
-      "tracking_issue": "TODO-V-248900",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248900"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248901",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248901 from source identifier xccdf_mil.disa.stig_group_V-248901.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248901r991589_rule",
       "severity": "medium",
       "title": "The OL 8 SSH daemon must prevent remote hosts from connecting to the proxy display.",
-      "tracking_issue": "TODO-V-248901",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248901"

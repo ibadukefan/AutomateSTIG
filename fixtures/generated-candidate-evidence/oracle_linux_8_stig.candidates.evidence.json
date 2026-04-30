@@ -1,6 +1,33 @@
 {
-  "candidate_checks": 93,
+  "candidate_checks": 106,
   "cases": [
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "banner /etc/issue",
+        "type": "file_content"
+      },
+      "description": "OL 8 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via an SSH logon.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nbanner /etc/issue\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248526"
+    },
     {
       "check": {
         "name": "krb5-workstation",
@@ -52,6 +79,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248547"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "ClientAliveCountMax 1",
+        "type": "file_content"
+      },
+      "description": "OL 8 must be configured so that all network connections associated with SSH traffic terminate after becoming unresponsive.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nClientAliveCountMax 1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248552"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "ClientAliveInterval 600",
+        "type": "file_content"
+      },
+      "description": "OL 8 must be configured so that all network connections associated with SSH traffic are terminated after 10 minutes of becoming unresponsive.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nClientAliveInterval 600\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248553"
     },
     {
       "check": {
@@ -287,6 +368,141 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "StrictModes yes",
+        "type": "file_content"
+      },
+      "description": "The OL 8 SSH daemon must perform strict mode checking of home directory configuration files.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nStrictModes yes\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248603"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "IgnoreUserKnownHosts yes",
+        "type": "file_content"
+      },
+      "description": "The OL 8 SSH daemon must not allow authentication using known host's authentication.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nIgnoreUserKnownHosts yes\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248605"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "KerberosAuthentication no",
+        "type": "file_content"
+      },
+      "description": "The OL 8 SSH daemon must not allow Kerberos authentication, except to fulfill documented and validated mission requirements.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nKerberosAuthentication no\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248606"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "GSSAPIAuthentication no",
+        "type": "file_content"
+      },
+      "description": "The OL 8 SSH daemon must not allow GSSAPI authentication, except to fulfill documented and validated mission requirements.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nGSSAPIAuthentication no\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248607"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PermitRootLogin no",
+        "type": "file_content"
+      },
+      "description": "OL 8 must not permit direct logons to the root account using remote access via SSH.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nPermitRootLogin no\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248613"
+    },
+    {
+      "check": {
         "key": "kernel.core_pattern",
         "type": "sysctl"
       },
@@ -310,6 +526,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248629"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PermitUserEnvironment no",
+        "type": "file_content"
+      },
+      "description": "OL 8 must not allow users to override SSH environment variables.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nPermitUserEnvironment no\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248650"
     },
     {
       "check": {
@@ -456,6 +699,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248705"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PermitEmptyPasswords no",
+        "type": "file_content"
+      },
+      "description": "OL 8 must not allow accounts configured with blank or null passwords.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nPermitEmptyPasswords no\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248714"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PrintLastLog yes",
+        "type": "file_content"
+      },
+      "description": "OL 8 must display the date and time of the last successful account logon upon an SSH logon.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nPrintLastLog yes\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248718"
     },
     {
       "check": {
@@ -2459,6 +2756,60 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "X11Forwarding no",
+        "type": "file_content"
+      },
+      "description": "OL 8 remote X connections for interactive users must be disabled unless to fulfill documented and validated mission requirements.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nX11Forwarding no\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248900"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "X11UseLocalhost yes",
+        "type": "file_content"
+      },
+      "description": "The OL 8 SSH daemon must prevent remote hosts from connecting to the proxy display.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nX11UseLocalhost yes\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248901"
+    },
+    {
+      "check": {
         "name": "aide",
         "should_be_installed": true,
         "type": "package"
@@ -2541,5 +2892,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 93
+  "validated_candidates": 106
 }

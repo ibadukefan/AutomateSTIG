@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "ClientAliveCountMax 1",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must be configured so that all network connections associated with SSH traffic terminate after becoming unresponsive.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257995"
+  },
   "check_content_excerpt": "Verify the \"ClientAliveCountMax\" is set to \"1\" by performing the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*clientalivecountmax'\n\nClientAliveCountMax 1\n\nIf \"ClientAliveCountMax\" does not exist, is not set to a value of \"1\" in \"/etc/ssh/sshd_config\", or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Note: This setting must be applied in conjunction with RHEL-09-255100 to function correctly.\n\nConfigure the SSH server to terminate a user session automatically after the SSH client has become unresponsive.\n\nModify or append the following lines in the \"/etc/ssh/sshd_config\" or in a file in \"/etc/ssh/sshd_config.d\":\n\nClientAliveCountMax 1\n\nFor the changes to take effect, the SSH daemon must be restarted.\n\n$ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-257995r1045053_rule",
   "severity": "medium",

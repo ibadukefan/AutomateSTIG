@@ -867,16 +867,17 @@
       "vuln_id": "V-271486"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271487",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271487r1091173_rule",
       "severity": "medium",
       "title": "OL 9 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a SSH logon.",
-      "tracking_issue": "TODO-V-271487",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271487"
@@ -4098,31 +4099,33 @@
       "vuln_id": "V-271701"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271703",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271703r1091821_rule",
       "severity": "medium",
       "title": "OL 9 must log SSH connection attempts and failures to the server.",
-      "tracking_issue": "TODO-V-271703",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271703"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271704",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271704r1091824_rule",
       "severity": "medium",
       "title": "OL 9 SSH daemon must not allow Generic Security Service Application Program Interface (GSSAPI) authentication.",
-      "tracking_issue": "TODO-V-271704",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271704"
@@ -4143,226 +4146,241 @@
       "vuln_id": "V-271705"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271706",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271706r1091830_rule",
       "severity": "high",
       "title": "OL 9 SSHD must not allow blank passwords.",
-      "tracking_issue": "TODO-V-271706",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271706"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271707",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271707r1091833_rule",
       "severity": "high",
       "title": "OL 9 must enable the Pluggable Authentication Module (PAM) interface for SSHD.",
-      "tracking_issue": "TODO-V-271707",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271707"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271708",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271708r1092594_rule",
       "severity": "medium",
       "title": "OL 9 must not permit direct logons to the root account using remote access via SSH.",
-      "tracking_issue": "TODO-V-271708",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271708"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271709",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271709r1091839_rule",
       "severity": "medium",
       "title": "OL 9 must be configured so that all network connections associated with SSH traffic terminate after becoming unresponsive.",
-      "tracking_issue": "TODO-V-271709",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271709"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271710",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271710r1092596_rule",
       "severity": "medium",
       "title": "OL 9 must be configured so that all network connections associated with SSH traffic are terminated after 10 minutes of becoming unresponsive.",
-      "tracking_issue": "TODO-V-271710",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271710"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271711",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271711r1091845_rule",
       "severity": "medium",
       "title": "OL 9 SSH daemon must not allow rhosts authentication.",
-      "tracking_issue": "TODO-V-271711",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271711"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271712",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271712r1091848_rule",
       "severity": "medium",
       "title": "OL 9 SSH daemon must not allow known hosts authentication.",
-      "tracking_issue": "TODO-V-271712",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271712"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271713",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271713r1091851_rule",
       "severity": "medium",
       "title": "OL 9 SSH daemon must disable remote X connections for interactive users.",
-      "tracking_issue": "TODO-V-271713",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271713"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271714",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271714r1091854_rule",
       "severity": "medium",
       "title": "OL 9 SSH daemon must perform strict mode checking of home directory configuration files.",
-      "tracking_issue": "TODO-V-271714",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271714"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271715",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271715r1091857_rule",
       "severity": "medium",
       "title": "OL 9 SSH daemon must display the date and time of the last successful account logon upon an SSH logon.",
-      "tracking_issue": "TODO-V-271715",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271715"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271716",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271716r1091860_rule",
       "severity": "medium",
       "title": "OL 9 SSH daemon must prevent remote hosts from connecting to the proxy display.",
-      "tracking_issue": "TODO-V-271716",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271716"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271717",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271717r1091863_rule",
       "severity": "medium",
       "title": "OL 9 SSH daemon must not allow compression or must only allow compression after successful authentication.",
-      "tracking_issue": "TODO-V-271717",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271717"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271718",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271718r1091866_rule",
       "severity": "medium",
       "title": "OL 9 SSH daemon must not allow Kerberos authentication.",
-      "tracking_issue": "TODO-V-271718",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271718"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271719",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271719r1091869_rule",
       "severity": "medium",
       "title": "OL 9 must not allow a noncertificate trusted host SSH logon to the system.",
-      "tracking_issue": "TODO-V-271719",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271719"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271720",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271720r1091872_rule",
       "severity": "medium",
       "title": "OL 9 must not allow users to override SSH environment variables.",
-      "tracking_issue": "TODO-V-271720",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/fb747d9249cbd844dd42bab36d345ea9fa92005d3714dcab84aa837792c14183/U_Oracle_Linux_9_V1R4_STIG.zip"
       ],
       "vuln_id": "V-271720"

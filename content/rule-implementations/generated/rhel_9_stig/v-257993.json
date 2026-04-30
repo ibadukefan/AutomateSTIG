@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "PermitUserEnvironment no",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must not allow users to override SSH environment variables.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257993"
+  },
   "check_content_excerpt": "Verify that unattended or automatic logon via SSH is disabled with the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*permituserenvironment'\n\nPermitUserEnvironment no\n\nIf \"PermitUserEnvironment\" is set to \"yes\", is missing completely, or is commented out, this is a finding.\n\nIf the required value is not set, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the RHEL 9 SSH daemon to not allow unattended or automatic logon to the system by editing the following line in the \"/etc/ssh/sshd_config\" or in a file in \"/etc/ssh/sshd_config.d\":\n\nPermitUserEnvironment no\n\nRestart the SSH daemon  for the setting to take effect:\n\n$ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-257993r1045049_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "X11Forwarding no",
+      "type": "file_content"
+    },
+    "description": "OL 8 remote X connections for interactive users must be disabled unless to fulfill documented and validated mission requirements.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248900"
+  },
   "check_content_excerpt": "Verify \"X11Forwarding\" is disabled with the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*x11forwarding'\n\nX11Forwarding no\n\nIf the \"X11Forwarding\" keyword is set to \"yes\" and is not documented with the information system security officer (ISSO) as an operational requirement or is missing, this is a finding.\n\nIf conflicting results are returned, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the \"/etc/ssh/sshd_config\" file to uncomment or add the line for the \"X11Forwarding\" keyword and set its value to \"no\" (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor): \n \nX11Forwarding no \n \nThe SSH service must be restarted for changes to take effect: \n \n$ sudo systemctl restart sshd",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248900r991589_rule",
   "severity": "medium",

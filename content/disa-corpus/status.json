@@ -2,22 +2,23 @@
   "authoritative_manifests": 87,
   "authoritative_rules": 17250,
   "authoritative_rules_tracked": 17250,
-  "automated_or_mapped_rules": 6108,
-  "coverage_percent_tracked_corpus": 35.4,
+  "automated_or_mapped_rules": 6330,
+  "coverage_percent_tracked_corpus": 36.7,
   "current_check_definitions": 3189,
   "generated_candidate_checks_with_fixture_evidence": 974,
-  "last_updated_utc": "2026-04-30T14:03:02Z",
+  "last_updated_utc": "2026-04-30T14:16:16Z",
   "notes": [
     "Regression ratchet prevents silent drops in tracked artifacts, authoritative manifests, authoritative rules, automated/mapped rules, or unsupported-rule ceilings.",
     "Generated candidate checks are fixture-backed scaffolding, not live production asset validation.",
     "Latest pass expands the public DISA corpus in an 11-artifact high-yield platform history batch: Ubuntu 22.04 V2R4-V2R5, Ubuntu 24.04 V1R3-V1R4, Defender Antivirus V2R4, Edge V2R2-V2R3, Windows Server 2019 V3R6, Oracle Linux 8 V2R4, and Oracle Linux 9 V1R1-V1R2. The unsupported-rule ceiling intentionally rises for the added authoritative rules pending automation.",
     "Added fixture-validated candidate title matching across DISA revisions; tracked coverage is 35.6% (6148/17250) with 11102 unsupported rules remaining.",
-    "Added a fixture-validated candidate mapping batch from unsupported rule specs; tracked coverage is 35.4% (6108/17250) with 11142 unsupported rules remaining."
+    "Added a fixture-validated candidate mapping batch from unsupported rule specs; tracked coverage is 35.4% (6108/17250) with 11142 unsupported rules remaining.",
+    "Added SSH daemon configuration candidate inference and fixture evidence; tracked coverage is 36.7% (6330/17250) with 10920 unsupported rules remaining."
   ],
   "public_disa_artifacts": 87,
   "public_disa_artifacts_indexed": 87,
   "status": "expanded_public_corpus_with_fixture_gated_candidate_mapping",
   "target": "unsupported_authoritative_rules == 0 across every authorized DISA STIG artifact",
   "unsupported_authoritative_rules": 11154,
-  "unsupported_rules": 11142
+  "unsupported_rules": 10920
 }

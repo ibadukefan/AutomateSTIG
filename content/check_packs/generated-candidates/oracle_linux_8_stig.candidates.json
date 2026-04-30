@@ -2,6 +2,20 @@
   "checks": [
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "banner /etc/issue",
+        "type": "file_content"
+      },
+      "description": "OL 8 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via an SSH logon.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248526"
+    },
+    {
+      "check": {
         "name": "krb5-workstation",
         "should_be_installed": false,
         "type": "package"
@@ -25,6 +39,34 @@
       },
       "platform": "linux",
       "vuln_id": "V-248547"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "ClientAliveCountMax 1",
+        "type": "file_content"
+      },
+      "description": "OL 8 must be configured so that all network connections associated with SSH traffic terminate after becoming unresponsive.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248552"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "ClientAliveInterval 600",
+        "type": "file_content"
+      },
+      "description": "OL 8 must be configured so that all network connections associated with SSH traffic are terminated after 10 minutes of becoming unresponsive.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248553"
     },
     {
       "check": {
@@ -136,6 +178,76 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "StrictModes yes",
+        "type": "file_content"
+      },
+      "description": "The OL 8 SSH daemon must perform strict mode checking of home directory configuration files.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248603"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "IgnoreUserKnownHosts yes",
+        "type": "file_content"
+      },
+      "description": "The OL 8 SSH daemon must not allow authentication using known host's authentication.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248605"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "KerberosAuthentication no",
+        "type": "file_content"
+      },
+      "description": "The OL 8 SSH daemon must not allow Kerberos authentication, except to fulfill documented and validated mission requirements.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248606"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "GSSAPIAuthentication no",
+        "type": "file_content"
+      },
+      "description": "The OL 8 SSH daemon must not allow GSSAPI authentication, except to fulfill documented and validated mission requirements.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248607"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PermitRootLogin no",
+        "type": "file_content"
+      },
+      "description": "OL 8 must not permit direct logons to the root account using remote access via SSH.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248613"
+    },
+    {
+      "check": {
         "key": "kernel.core_pattern",
         "type": "sysctl"
       },
@@ -146,6 +258,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-248629"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PermitUserEnvironment no",
+        "type": "file_content"
+      },
+      "description": "OL 8 must not allow users to override SSH environment variables.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248650"
     },
     {
       "check": {
@@ -217,6 +343,34 @@
       },
       "platform": "linux",
       "vuln_id": "V-248705"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PermitEmptyPasswords no",
+        "type": "file_content"
+      },
+      "description": "OL 8 must not allow accounts configured with blank or null passwords.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248714"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "PrintLastLog yes",
+        "type": "file_content"
+      },
+      "description": "OL 8 must display the date and time of the last successful account logon upon an SSH logon.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248718"
     },
     {
       "check": {
@@ -1235,6 +1389,34 @@
       },
       "platform": "linux",
       "vuln_id": "V-248894"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "X11Forwarding no",
+        "type": "file_content"
+      },
+      "description": "OL 8 remote X connections for interactive users must be disabled unless to fulfill documented and validated mission requirements.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248900"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "X11UseLocalhost yes",
+        "type": "file_content"
+      },
+      "description": "The OL 8 SSH daemon must prevent remote hosts from connecting to the proxy display.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248901"
     },
     {
       "check": {

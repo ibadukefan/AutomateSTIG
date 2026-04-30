@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "ClientAliveInterval 600",
+      "type": "file_content"
+    },
+    "description": "RHEL 9 must be configured so that all network connections associated with SSH traffic are terminated after 10 minutes of becoming unresponsive.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257996"
+  },
   "check_content_excerpt": "Verify the \"ClientAliveInterval\" variable is set to a value of \"600\" or less by performing the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*clientaliveinterval'\n\nClientAliveInterval 600\n\nIf \"ClientAliveInterval\" does not exist, does not have a value of \"600\" or less in \"/etc/ssh/sshd_config\", or is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Note: This setting must be applied in conjunction with RHEL-09-255095 to function correctly.\n\nConfigure the SSH server to terminate a user session automatically after the SSH client has been unresponsive for 10 minutes.\n\nModify or append the following lines in the \"/etc/ssh/sshd_config\" or in a file in \"/etc/ssh/sshd_config.d\":\n\nClientAliveInterval 600\n\nFor the changes to take effect, the SSH daemon must be restarted.\n\n$ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-257996r1045055_rule",
   "severity": "medium",
