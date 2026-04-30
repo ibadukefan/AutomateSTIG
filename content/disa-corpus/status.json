@@ -2,11 +2,11 @@
   "authoritative_manifests": 87,
   "authoritative_rules": 17250,
   "authoritative_rules_tracked": 17250,
-  "automated_or_mapped_rules": 11558,
-  "coverage_percent_tracked_corpus": 67.0,
+  "automated_or_mapped_rules": 11604,
+  "coverage_percent_tracked_corpus": 67.3,
   "current_check_definitions": 3210,
-  "generated_candidate_checks_with_fixture_evidence": 2589,
-  "last_updated_utc": "2026-04-30T21:32:23Z",
+  "generated_candidate_checks_with_fixture_evidence": 2604,
+  "last_updated_utc": "2026-04-30T21:46:33Z",
   "notes": [
     "Regression ratchet prevents silent drops in tracked artifacts, authoritative manifests, authoritative rules, automated/mapped rules, or unsupported-rule ceilings.",
     "Generated candidate checks are fixture-backed scaffolding, not live production asset validation.",
@@ -30,12 +30,13 @@
     "Added conservative no-output command candidate inference for explicit find-file absence checks and explicit \"output is produced\" findings; qualified returned-item findings remain unsupported; tracked coverage is 65.0% (11213/17250) with 6037 unsupported rules remaining.",
     "Added conservative Linux stat owner/group file-permission candidate inference from explicit stat -c output lines; tracked coverage is 65.5% (11298/17250) with 5952 unsupported rules remaining.",
     "Added conservative absolute command result candidate inference for explicit single-line DISA commands with exact 'If the result is not \"...\"' findings while skipping heredocs, command substitution, and compound shell operators; tracked coverage is 66.8% (11524/17250) with 5726 unsupported rules remaining.",
-    "Added conservative Windows Local Policies >> Security Options candidate inference for explicit Enabled/Disabled value findings; tracked coverage is 67.0% (11558/17250) with 5692 unsupported rules remaining."
+    "Added conservative Windows Local Policies >> Security Options candidate inference for explicit Enabled/Disabled value findings; tracked coverage is 67.0% (11558/17250) with 5692 unsupported rules remaining.",
+    "Added conservative Linux find -exec no-output candidate inference for explicit returned-item findings with escaped find terminators; tracked coverage is 67.3% (11604/17250) with 5646 unsupported rules remaining."
   ],
   "public_disa_artifacts": 87,
   "public_disa_artifacts_indexed": 87,
   "status": "expanded_public_corpus_with_fixture_gated_candidate_mapping",
   "target": "unsupported_authoritative_rules == 0 across every authorized DISA STIG artifact",
-  "unsupported_authoritative_rules": 5692,
-  "unsupported_rules": 5692
+  "unsupported_authoritative_rules": 5646,
+  "unsupported_rules": 5646
 }

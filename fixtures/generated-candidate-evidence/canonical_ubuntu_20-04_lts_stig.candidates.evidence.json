@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 101,
+  "candidate_checks": 104,
   "cases": [
     {
       "check": {
@@ -2071,6 +2071,32 @@
     },
     {
       "check": {
+        "command": "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type d -exec stat -c \"%n %U\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must have directories that contain system commands owned by root.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type d -exec stat -c \"%n %U\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type d -exec stat -c \"%n %U\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238345"
+    },
+    {
+      "check": {
         "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm /022 -exec stat -c \"%n %a\" {} +",
         "type": "command_output"
       },
@@ -2123,6 +2149,32 @@
     },
     {
       "check": {
+        "command": "find /lib /usr/lib /lib64 ! -user root -type d -exec stat -c \"%n %U\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system library directories must be owned by root.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /lib /usr/lib /lib64 ! -user root -type d -exec stat -c \"%n %U\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /lib /usr/lib /lib64 ! -user root -type d -exec stat -c \"%n %U\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238350"
+    },
+    {
+      "check": {
         "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -group root -exec stat -c \"%n %G\" {} +",
         "type": "command_output"
       },
@@ -2146,6 +2198,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-238351"
+    },
+    {
+      "check": {
+        "command": "find /lib /usr/lib /lib64 ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system library directories must be group-owned by root.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /lib /usr/lib /lib64 ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /lib /usr/lib /lib64 ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238352"
     },
     {
       "check": {
@@ -2832,5 +2910,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 101
+  "validated_candidates": 104
 }

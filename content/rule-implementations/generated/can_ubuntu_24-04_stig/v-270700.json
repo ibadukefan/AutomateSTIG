@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /lib /usr/lib /lib64 ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS library directories must be group-owned by root.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-270700"
+  },
   "check_content_excerpt": "Verify the systemwide library directories \"/lib\", \"/lib64\", and \"/usr/lib\" are group-owned by root with the following command: \n \n$ sudo find /lib /usr/lib /lib64 ! -group root -type d -exec stat -c \"%n %G\" '{}' \\; \n \nIf any systemwide shared library directory is returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the system library directories to be protected from unauthorized access. Run the following command: \n \n$ sudo find /lib /usr/lib /lib64 ! -group root -type d -exec chgrp root '{}' \\;",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270700r1066589_rule",
   "severity": "medium",

@@ -235,16 +235,17 @@
       "vuln_id": "V-234836"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234837",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234837 from source identifier xccdf_mil.disa.stig_group_V-234837.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234837r991560_rule",
       "severity": "medium",
       "title": "The SUSE operating system library directories must be owned by root.",
-      "tracking_issue": "TODO-V-234837",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234837"
@@ -266,16 +267,17 @@
       "vuln_id": "V-234838"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234839",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234839 from source identifier xccdf_mil.disa.stig_group_V-234839.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234839r991560_rule",
       "severity": "medium",
       "title": "The SUSE operating system library directories must be group-owned by root.",
-      "tracking_issue": "TODO-V-234839",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234839"
@@ -329,16 +331,17 @@
       "vuln_id": "V-234842"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234843",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234843 from source identifier xccdf_mil.disa.stig_group_V-234843.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234843r991560_rule",
       "severity": "medium",
       "title": "The SUSE operating system must have directories that contain system commands owned by root.",
-      "tracking_issue": "TODO-V-234843",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234843"

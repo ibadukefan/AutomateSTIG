@@ -476,7 +476,9 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         absolute_command = re.search(r'^\s*(?P<command>/[A-Za-z0-9_./:+-]+\b[^\n\r]*)$', content, re.MULTILINE)
         if absolute_command and re.search(r'If\s+the\s+result\s+is\s+not\s+["“][^"”\n]+["”]', content, re.IGNORECASE):
             command = _normalize_command(absolute_command.group('command'))
-    if not command or any(token in command for token in ('`', '$(', '&&', ';', '<<')):
+    if not command or any(token in command for token in ('`', '$(', '&&', '<<')):
+        return None
+    if ';' in command and not re.fullmatch(r'[^;]*(?:\\;[^;]*)*', command):
         return None
 
     expected_match = re.search(r'Expected\s+result:\s*(?P<body>.*?)(?:\n\s*If\b|\Z)', content, re.IGNORECASE | re.DOTALL)

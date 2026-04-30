@@ -694,16 +694,17 @@
       "vuln_id": "V-270697"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270698",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270698 from source identifier xccdf_mil.disa.stig_group_V-270698.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270698r1101751_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS library directories must be owned by root.",
-      "tracking_issue": "TODO-V-270698",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270698"
@@ -725,16 +726,17 @@
       "vuln_id": "V-270699"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270700",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270700 from source identifier xccdf_mil.disa.stig_group_V-270700.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270700r1066589_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS library directories must be group-owned by root.",
-      "tracking_issue": "TODO-V-270700",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270700"
@@ -2430,16 +2432,17 @@
       "vuln_id": "V-270824"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270825",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270825 from source identifier xccdf_mil.disa.stig_group_V-270825.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270825r1066964_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must have directories that contain system commands owned by root.",
-      "tracking_issue": "TODO-V-270825",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270825"

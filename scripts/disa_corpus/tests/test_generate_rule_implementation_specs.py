@@ -382,6 +382,20 @@ If a "shosts.equiv" file is found, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'find / -name shosts.equiv'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_no_output_command_candidate_from_find_exec_returned_item_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-251708',
+            'title': 'RHEL 8 library directories must be owned by root.',
+            'check_content': '''Verify the system-wide shared library directories are owned by "root" with the following command:
+
+$ sudo find /lib /lib64 /usr/lib /usr/lib64 ! -user root -type d -exec stat -c "%n %U" '{}' \\;
+
+If any system-wide shared library directory is returned, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'find /lib /lib64 /usr/lib /usr/lib64 ! -user root -type d -exec stat -c "%n %U" \'{}\' \\;'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_no_output_command_candidate_from_output_produced_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-244541',
