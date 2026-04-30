@@ -2478,6 +2478,20 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/pam.d/sudo",
+        "pattern": "pam_succeed_if",
+        "type": "file_content"
+      },
+      "description": "RHEL 9 must not be configured to bypass password requirements for privilege escalation.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258118"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/sssd/sssd.conf",
         "pattern": "/etc/sssd/conf.d/",
         "type": "file_content"

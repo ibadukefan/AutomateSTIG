@@ -302,20 +302,29 @@ def _package_candidate(rule: dict) -> dict | None:
     }
 
 
+def _grep_file_match(content: str):
+    return re.search(r'\bgrep\s+(?:-[A-Za-z]+\s+)*(?:["\']?)([^"\'\s|;]+)(?:["\']?)\s+(/[A-Za-z0-9_./:+-]+)', content)
+
+
 def _file_content_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
-    grep = re.search(r'\bgrep\s+(?:-[A-Za-z]+\s+)*(?:["\']?)([^"\'\s|;]+)(?:["\']?)\s+(/[A-Za-z0-9_./:+-]+)', content)
+    grep = _grep_file_match(content)
     if not grep:
         return None
     pattern, path = grep.group(1), grep.group(2)
     lower = content.lower()
-    if 'line is not returned' not in lower and 'no output is returned' not in lower and 'does not return' not in lower:
+    expected = None
+    if re.search(r'if\s+any\s+(?:occurrences?\s+of\s+)?["“]?[^"”\n.]+["”]?\s+(?:is|are)\s+returned[^.]*this\s+is\s+a\s+finding', lower):
+        expected = {'type': 'is_false'}
+    elif 'line is not returned' in lower or 'no output is returned' in lower or 'does not return' in lower:
+        expected = {'type': 'contains'}
+    if expected is None:
         return None
     return {
         'vuln_id': rule.get('vuln_id', ''),
         'platform': 'linux',
         'check': {'type': 'file_content', 'path': path, 'pattern': pattern, 'is_regex': False},
-        'expected': {'type': 'contains'},
+        'expected': expected,
         'description': rule.get('title', ''),
     }
 

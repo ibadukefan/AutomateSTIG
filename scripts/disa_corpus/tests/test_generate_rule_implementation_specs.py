@@ -166,6 +166,15 @@ $ sudo sysctl --system'''
         self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/usr/lib/systemd/system/rescue.service', 'pattern': 'sulogin-shell', 'is_regex': False})
         self.assertEqual(candidate['expected'], {'type': 'contains'})
 
+    def test_infers_linux_file_content_absent_candidate_from_grep_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-251712',
+            'title': 'The RHEL 8 operating system must not be configured to bypass password requirements for privilege escalation.',
+            'check_content': 'Verify the operating system is not configured to bypass password requirements for privilege escalation. Check the configuration of the "/etc/pam.d/sudo" file with the following command: $ sudo grep pam_succeed_if /etc/pam.d/sudo If any occurrences of "pam_succeed_if" is returned from the command, this is a finding.'
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/pam.d/sudo', 'pattern': 'pam_succeed_if', 'is_regex': False})
+        self.assertEqual(candidate['expected'], {'type': 'is_false'})
+
     def test_infers_linux_service_disabled_candidate_from_systemctl_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-251234',

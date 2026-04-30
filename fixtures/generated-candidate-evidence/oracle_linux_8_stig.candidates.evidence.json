@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 231,
+  "candidate_checks": 232,
   "cases": [
     {
       "check": {
@@ -6129,6 +6129,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/sudo",
+        "pattern": "pam_succeed_if",
+        "type": "file_content"
+      },
+      "description": "The OL 8 operating system must not be configured to bypass password requirements for privilege escalation.",
+      "evidence_type": "linux_file_content_absent",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/sudo": "before\npam_succeed_if\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/sudo": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-252656"
+    },
+    {
+      "check": {
         "key": "net.ipv4.conf.all.forwarding",
         "type": "sysctl"
       },
@@ -6266,5 +6293,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 231
+  "validated_candidates": 232
 }

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 276,
+  "candidate_checks": 277,
   "cases": [
     {
       "check": {
@@ -5173,6 +5173,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/sudo",
+        "pattern": "pam_succeed_if",
+        "type": "file_content"
+      },
+      "description": "OL 9 must not be configured to bypass password requirements for privilege escalation.",
+      "evidence_type": "linux_file_content_absent",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/sudo": "before\npam_succeed_if\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/sudo": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271726"
+    },
+    {
+      "check": {
         "key": "user.max_user_namespaces",
         "type": "sysctl"
       },
@@ -7521,5 +7548,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 276
+  "validated_candidates": 277
 }

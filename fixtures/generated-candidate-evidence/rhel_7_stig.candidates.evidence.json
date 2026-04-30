@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 113,
+  "candidate_checks": 114,
   "cases": [
     {
       "check": {
@@ -2906,6 +2906,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/sudo",
+        "pattern": "pam_succeed_if",
+        "type": "file_content"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not be configured to bypass password requirements for privilege escalation.",
+      "evidence_type": "linux_file_content_absent",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/sudo": "before\npam_succeed_if\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/sudo": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251704"
+    },
+    {
+      "check": {
         "name": "aide",
         "should_be_installed": true,
         "type": "package"
@@ -3041,5 +3068,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 113
+  "validated_candidates": 114
 }

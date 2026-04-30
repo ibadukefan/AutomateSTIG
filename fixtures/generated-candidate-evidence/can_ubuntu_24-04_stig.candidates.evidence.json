@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 83,
+  "candidate_checks": 84,
   "cases": [
     {
       "check": {
@@ -712,6 +712,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270693"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/apt/apt.conf.d/",
+        "pattern": "AllowUnauthenticated",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS Advance Package Tool (APT) must be configured to prevent the installation of patches, service packs, device drivers, or Ubuntu 24.04 LTS components without verification they have been digitally signed using a certificate that is recognized and approved by the organization.",
+      "evidence_type": "linux_file_content_absent",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/apt/apt.conf.d/": "before\nAllowUnauthenticated\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/apt/apt.conf.d/": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270695"
     },
     {
       "check": {
@@ -2282,5 +2309,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 83
+  "validated_candidates": 84
 }

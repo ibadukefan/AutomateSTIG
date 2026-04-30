@@ -2871,6 +2871,20 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/pam.d/sudo",
+        "pattern": "pam_succeed_if",
+        "type": "file_content"
+      },
+      "description": "The RHEL 8 operating system must not be configured to bypass password requirements for privilege escalation.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-251712"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/security/pwquality.conf",
         "pattern": "/etc/security/pwquality.conf.d/*.conf",
         "type": "file_content"

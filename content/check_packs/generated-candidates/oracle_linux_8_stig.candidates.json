@@ -3140,6 +3140,20 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/sudo",
+        "pattern": "pam_succeed_if",
+        "type": "file_content"
+      },
+      "description": "The OL 8 operating system must not be configured to bypass password requirements for privilege escalation.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-252656"
+    },
+    {
+      "check": {
         "key": "net.ipv4.conf.all.forwarding",
         "type": "sysctl"
       },

@@ -4545,16 +4545,17 @@
       "vuln_id": "V-258117"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258118",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-258118 from source identifier xccdf_mil.disa.stig_group_V-258118.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-258118r1050789_rule",
       "severity": "medium",
       "title": "RHEL 9 must not be configured to bypass password requirements for privilege escalation.",
-      "tracking_issue": "TODO-V-258118",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-258118"

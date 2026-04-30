@@ -70,9 +70,14 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
     elif check_type == 'file_content':
         path = check['path']
         pattern = check['pattern']
-        pass_fixture['files'] = {path: f"before\n{pattern}\nafter\n"}
-        fail_fixture['files'] = {path: "before\nafter\n"}
-        evidence_type = 'linux_file_content_contains'
+        if expected.get('type') == 'is_false':
+            pass_fixture['files'] = {path: "before\nafter\n"}
+            fail_fixture['files'] = {path: f"before\n{pattern}\nafter\n"}
+            evidence_type = 'linux_file_content_absent'
+        else:
+            pass_fixture['files'] = {path: f"before\n{pattern}\nafter\n"}
+            fail_fixture['files'] = {path: "before\nafter\n"}
+            evidence_type = 'linux_file_content_contains'
     elif check_type == 'service':
         name = check['name']
         expected_status = check['expected_status']

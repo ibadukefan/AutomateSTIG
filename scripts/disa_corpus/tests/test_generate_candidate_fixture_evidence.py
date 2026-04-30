@@ -129,6 +129,18 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
         self.assertEqual(case['pass_fixture']['command_outputs'], {'/usr/lib/vmware/openssh/bin/sshd -T|grep permittunnel': 'permittunnel no'})
         self.assertNotEqual(case['fail_fixture']['command_outputs']['/usr/lib/vmware/openssh/bin/sshd -T|grep permittunnel'], 'permittunnel no')
 
+    def test_builds_file_content_absent_fixture_case(self):
+        case = mod.build_case({
+            'vuln_id': 'V-251712',
+            'platform': 'linux',
+            'description': 'sudo password bypass',
+            'check': {'type': 'file_content', 'path': '/etc/pam.d/sudo', 'pattern': 'pam_succeed_if', 'is_regex': False},
+            'expected': {'type': 'is_false'},
+        })
+        self.assertEqual(case['evidence_type'], 'linux_file_content_absent')
+        self.assertNotIn('pam_succeed_if', case['pass_fixture']['files']['/etc/pam.d/sudo'])
+        self.assertIn('pam_succeed_if', case['fail_fixture']['files']['/etc/pam.d/sudo'])
+
     def test_builds_command_output_contains_fixture_case(self):
         case = mod.build_case({
             'vuln_id': 'V-258230',

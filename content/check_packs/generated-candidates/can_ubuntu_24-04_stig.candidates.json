@@ -364,6 +364,20 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/apt/apt.conf.d/",
+        "pattern": "AllowUnauthenticated",
+        "type": "file_content"
+      },
+      "description": "Ubuntu 24.04 LTS Advance Package Tool (APT) must be configured to prevent the installation of patches, service packs, device drivers, or Ubuntu 24.04 LTS components without verification they have been digitally signed using a certificate that is recognized and approved by the organization.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270695"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/security/pwquality.conf",
         "pattern": "dictcheck=1",
         "type": "file_content"
