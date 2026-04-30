@@ -1,23 +1,9 @@
 {
-  "candidate_check": {
-    "check": {
-      "expected_status": "running",
-      "name": "auditd",
-      "type": "service"
-    },
-    "description": "RHEL 9 audit service must be enabled.",
-    "expected": {
-      "type": "equals",
-      "value": "running"
-    },
-    "platform": "linux",
-    "vuln_id": "V-258152"
-  },
   "check_content_excerpt": "Verify the audit service is configured to produce audit records with the following command:\n\n$ systemctl status auditd.service\n\nauditd.service - Security Auditing Service\nLoaded:loaded (/usr/lib/systemd/system/auditd.service; enabled; vendor preset: enabled)\nActive: active (running) since Tues 2022-05-24 12:56:56 EST; 4 weeks 0 days ago\n\nIf the audit service is not \"active\" and \"running\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "candidate_template",
+  "evaluator": "planned",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -25,16 +11,13 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {
-    "type": "equals",
-    "value": "running"
-  },
+  "expected_values": {},
   "external_acceptance_refs": [],
   "fix_text_excerpt": "To enable the auditd service run the following command:\n\n$ sudo systemctl enable --now auditd",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "service",
+  "normalizer": "planned",
   "remediation": "planned",
   "rule_id": "SV-258152r1015127_rule",
   "severity": "medium",

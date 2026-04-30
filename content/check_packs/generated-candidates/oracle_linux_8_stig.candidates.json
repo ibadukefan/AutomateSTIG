@@ -2518,20 +2518,6 @@
     },
     {
       "check": {
-        "expected_status": "disabled",
-        "name": "autofs",
-        "type": "service"
-      },
-      "description": "The OL 8 file system automounter must be disabled unless required.",
-      "expected": {
-        "type": "equals",
-        "value": "disabled"
-      },
-      "platform": "linux",
-      "vuln_id": "V-248836"
-    },
-    {
-      "check": {
         "is_regex": false,
         "path": "/etc/modprobe.d/",
         "pattern": "usb-storage",
@@ -2770,20 +2756,6 @@
     },
     {
       "check": {
-        "expected_status": "running",
-        "name": "fapolicyd",
-        "type": "service"
-      },
-      "description": "The OL 8 \"fapolicy\" module must be enabled.",
-      "expected": {
-        "type": "equals",
-        "value": "running"
-      },
-      "platform": "linux",
-      "vuln_id": "V-248860"
-    },
-    {
-      "check": {
         "is_regex": false,
         "path": "/etc/fapolicyd/fapolicyd.conf",
         "pattern": "permissive = 0",
@@ -2809,20 +2781,6 @@
       },
       "platform": "linux",
       "vuln_id": "V-248865"
-    },
-    {
-      "check": {
-        "expected_status": "disabled",
-        "name": "ctrl-alt-del.target",
-        "type": "service"
-      },
-      "description": "The x86 Ctrl-Alt-Delete key sequence must be disabled on OL 8.",
-      "expected": {
-        "type": "equals",
-        "value": "disabled"
-      },
-      "platform": "linux",
-      "vuln_id": "V-248869"
     },
     {
       "check": {

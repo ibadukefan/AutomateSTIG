@@ -1944,14 +1944,14 @@
     },
     {
       "check": {
-        "expected_status": "disabled",
+        "expected_status": "stopped",
         "name": "autofs",
         "type": "service"
       },
       "description": "The RHEL 8 file system automounter must be disabled.",
       "expected": {
         "type": "equals",
-        "value": "disabled"
+        "value": "stopped"
       },
       "platform": "linux",
       "vuln_id": "V-230502"
@@ -2207,34 +2207,6 @@
       },
       "platform": "linux",
       "vuln_id": "V-230525"
-    },
-    {
-      "check": {
-        "expected_status": "disabled",
-        "name": "ctrl-alt-del.target",
-        "type": "service"
-      },
-      "description": "The x86 Ctrl-Alt-Delete key sequence must be disabled on RHEL 8.",
-      "expected": {
-        "type": "equals",
-        "value": "disabled"
-      },
-      "platform": "linux",
-      "vuln_id": "V-230529"
-    },
-    {
-      "check": {
-        "expected_status": "disabled",
-        "name": "debug-shell",
-        "type": "service"
-      },
-      "description": "The debug-shell systemd service must be disabled on RHEL 8.",
-      "expected": {
-        "type": "equals",
-        "value": "disabled"
-      },
-      "platform": "linux",
-      "vuln_id": "V-230532"
     },
     {
       "check": {
@@ -2762,20 +2734,6 @@
       },
       "platform": "linux",
       "vuln_id": "V-244543"
-    },
-    {
-      "check": {
-        "expected_status": "running",
-        "name": "fapolicyd",
-        "type": "service"
-      },
-      "description": "The RHEL 8 fapolicy module must be enabled.",
-      "expected": {
-        "type": "equals",
-        "value": "running"
-      },
-      "platform": "linux",
-      "vuln_id": "V-244545"
     },
     {
       "check": {

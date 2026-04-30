@@ -1400,17 +1400,16 @@
       "vuln_id": "V-271519"
     },
     {
-      "check_id": "V-271520",
-      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
-      "classification": "automated",
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
       "evidence_required": true,
-      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
       "rule_id": "SV-271520r1091272_rule",
       "severity": "medium",
       "title": "OL 9 audit service must be enabled.",
-      "tracking_issue": "",
+      "tracking_issue": "TODO-V-271520",
       "validated_by": [
-        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271520"
@@ -3252,17 +3251,16 @@
       "vuln_id": "V-271638"
     },
     {
-      "check_id": "V-271639",
-      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
-      "classification": "automated",
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
       "evidence_required": true,
-      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
       "rule_id": "SV-271639r1091629_rule",
       "severity": "medium",
       "title": "OL 9 file system automount function must be disabled unless required.",
-      "tracking_issue": "",
+      "tracking_issue": "TODO-V-271639",
       "validated_by": [
-        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271639"
@@ -4857,17 +4855,16 @@
       "vuln_id": "V-271741"
     },
     {
-      "check_id": "V-271742",
-      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
-      "classification": "automated",
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
       "evidence_required": true,
-      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
       "rule_id": "SV-271742r1091938_rule",
       "severity": "medium",
       "title": "OL 9 debug-shell systemd service must be disabled.",
-      "tracking_issue": "",
+      "tracking_issue": "TODO-V-271742",
       "validated_by": [
-        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271742"

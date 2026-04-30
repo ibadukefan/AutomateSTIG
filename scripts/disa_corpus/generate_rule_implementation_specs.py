@@ -364,13 +364,24 @@ def _sshd_config_candidate(rule: dict) -> dict | None:
 def _service_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
-    match = re.search(r'\bsystemctl\s+(?:is-(?:enabled|active)|status)\s+([A-Za-z0-9_.@+-]+)(?:\.service)?\b', content)
+    match = re.search(r'\bsystemctl\s+(is-enabled|is-active|status)\s+([^\s;|&]+)', content)
     if not match:
         return None
-    name = match.group(1).removesuffix('.service')
+    command = match.group(1)
+    raw_name = match.group(2).strip('"\'')
+    if raw_name.endswith('.target') or ('masked' in content.lower()):
+        return None
+    if '.' in raw_name and not raw_name.endswith('.service'):
+        return None
+    name = raw_name.removesuffix('.service')
     lower = f"{title}\n{content}".lower()
-    if re.search(r'must\s+not\s+.*(?:enabled|running)|must\s+be\s+disabled|if\s+(?:the\s+)?(?:"[^"]+"\s+)?(?:service\s+)?(?:status\s+)?(?:is\s+)?(?:set\s+to\s+)?(?:"?)?(?:enabled|active|running)(?:"?)?,?\s+this\s+is\s+a\s+finding', lower):
-        expected_status = 'disabled'
+    if command == 'status':
+        if re.search(r'if\s+(?:the\s+)?(?:"[^"]+"\s+)?(?:service\s+)?(?:status\s+)?(?:is\s+)?(?:set\s+to\s+)?(?:"?)?(?:active|running)(?:"?)?,?\s+this\s+is\s+a\s+finding', lower):
+            expected_status = 'stopped'
+        else:
+            return None
+    elif re.search(r'must\s+not\s+.*(?:enabled|running)|must\s+be\s+disabled|if\s+(?:the\s+)?(?:"[^"]+"\s+)?(?:service\s+)?(?:status\s+)?(?:is\s+)?(?:set\s+to\s+)?(?:"?)?(?:enabled|active|running)(?:"?)?,?\s+this\s+is\s+a\s+finding', lower):
+        expected_status = 'disabled' if command == 'is-enabled' else 'stopped'
     elif 'must be enabled' in lower or 'must be running' in lower:
         expected_status = 'running'
     else:

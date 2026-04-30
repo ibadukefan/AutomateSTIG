@@ -159,7 +159,7 @@ $ sudo sysctl --system'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
 
-    def test_infers_linux_service_disabled_candidate_from_systemctl_status_content(self):
+    def test_infers_linux_service_stopped_candidate_from_systemctl_status_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230502',
             'title': 'The RHEL 8 file system automounter must be disabled.',
@@ -173,8 +173,32 @@ o autofs.service - Automounts filesystems on demand
 
 If the "autofs" status is set to "active", this is a finding.'''
         }, 'RHEL_8_STIG')
-        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'autofs', 'expected_status': 'disabled'})
-        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'autofs', 'expected_status': 'stopped'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'stopped'})
+
+    def test_skips_linux_systemctl_status_target_units(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230529',
+            'title': 'The Ctrl-Alt-Delete burst action must be disabled.',
+            'check_content': '''Verify the ctrl-alt-del.target is not active with the following command:
+
+$ sudo systemctl status ctrl-alt-del.target
+
+If the ctrl-alt-del.target status is active, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertIsNone(candidate)
+
+    def test_skips_linux_service_masked_candidate_until_masked_status_is_supported(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230532',
+            'title': 'The debug-shell systemd service must be disabled.',
+            'check_content': '''Verify debug-shell.service is masked with the following command:
+
+$ sudo systemctl status debug-shell.service
+
+If the debug-shell.service is loaded and not masked, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertIsNone(candidate)
 
     def test_infers_linux_file_permission_candidate_from_stat_content(self):
         candidate = mod.infer_candidate_check({

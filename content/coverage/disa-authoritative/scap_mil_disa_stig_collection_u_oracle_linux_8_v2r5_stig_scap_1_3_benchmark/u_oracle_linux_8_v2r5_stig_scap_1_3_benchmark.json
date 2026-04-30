@@ -3333,17 +3333,16 @@
       "vuln_id": "V-248834"
     },
     {
-      "check_id": "V-248836",
-      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
-      "classification": "automated",
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
       "evidence_required": true,
-      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248836 from source identifier xccdf_mil.disa.stig_group_V-248836.",
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248836r958498_rule",
       "severity": "medium",
       "title": "The OL 8 file system automounter must be disabled unless required.",
-      "tracking_issue": "",
+      "tracking_issue": "TODO-V-248836",
       "validated_by": [
-        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248836"
@@ -3666,17 +3665,16 @@
       "vuln_id": "V-248859"
     },
     {
-      "check_id": "V-248860",
-      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
-      "classification": "automated",
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
       "evidence_required": true,
-      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248860 from source identifier xccdf_mil.disa.stig_group_V-248860.",
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248860r958804_rule",
       "severity": "medium",
       "title": "The OL 8 \"fapolicy\" module must be enabled.",
-      "tracking_issue": "",
+      "tracking_issue": "TODO-V-248860",
       "validated_by": [
-        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248860"
@@ -3773,17 +3771,16 @@
       "vuln_id": "V-248868"
     },
     {
-      "check_id": "V-248869",
-      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
-      "classification": "automated",
+      "check_id": "",
+      "check_pack": "",
+      "classification": "unsupported",
       "evidence_required": true,
-      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248869 from source identifier xccdf_mil.disa.stig_group_V-248869.",
+      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248869r991589_rule",
       "severity": "high",
       "title": "The x86 Ctrl-Alt-Delete key sequence must be disabled on OL 8.",
-      "tracking_issue": "",
+      "tracking_issue": "TODO-V-248869",
       "validated_by": [
-        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248869"
