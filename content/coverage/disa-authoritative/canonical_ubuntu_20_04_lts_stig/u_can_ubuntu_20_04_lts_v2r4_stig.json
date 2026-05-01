@@ -1823,16 +1823,17 @@
       "vuln_id": "V-238331"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238332",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-238332r1117267_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must set a sticky bit  on all public directories to prevent unauthorized and unintended information transferred via shared system resources.",
-      "tracking_issue": "TODO-V-238332",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238332"
@@ -2027,16 +2028,17 @@
       "vuln_id": "V-238345"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238346",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-238346r991559_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must have directories that contain system commands group-owned by root.",
-      "tracking_issue": "TODO-V-238346",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238346"
@@ -2058,16 +2060,17 @@
       "vuln_id": "V-238347"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238348",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-238348r991560_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system library directories must have mode 0755 or less permissive.",
-      "tracking_issue": "TODO-V-238348",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238348"
@@ -2436,31 +2439,33 @@
       "vuln_id": "V-238376"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238377",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-238377r991560_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must have system commands owned by root or a system account.",
-      "tracking_issue": "TODO-V-238377",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238377"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238378",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-238378r991560_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must have system commands group-owned by root or a system account.",
-      "tracking_issue": "TODO-V-238378",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238378"

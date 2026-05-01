@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 265,
+  "candidate_checks": 270,
   "cases": [
     {
       "check": {
@@ -191,6 +191,32 @@
     },
     {
       "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -exec ls -l {} \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 system commands must have mode 755 or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -exec ls -l {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -exec ls -l {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230257"
+    },
+    {
+      "check": {
         "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -exec ls -l {} \\;",
         "type": "command_output"
       },
@@ -214,6 +240,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230258"
+    },
+    {
+      "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -exec ls -l {} \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 system commands must be group-owned by root or a system account.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -exec ls -l {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -exec ls -l {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230259"
     },
     {
       "check": {
@@ -425,6 +477,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230283"
+    },
+    {
+      "check": {
+        "command": "find / -name '*.shosts'",
+        "type": "command_output"
+      },
+      "description": "There must be no .shosts files on the RHEL 8 operating system.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / -name '*.shosts'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / -name '*.shosts'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230284"
     },
     {
       "check": {
@@ -6691,6 +6769,32 @@
     },
     {
       "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 library directories must have mode 755 or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251707"
+    },
+    {
+      "check": {
         "command": "find /lib /lib64 /usr/lib /usr/lib64 ! -user root -type d -exec stat -c \"%n %U\" '{}' \\;",
         "type": "command_output"
       },
@@ -6714,6 +6818,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-251708"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 library directories must be group-owned by root or a system account.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /lib /lib64 /usr/lib /usr/lib64 ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /lib /lib64 /usr/lib /usr/lib64 ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251709"
     },
     {
       "check": {
@@ -7149,5 +7279,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 265
+  "validated_candidates": 270
 }

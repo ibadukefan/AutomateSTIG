@@ -511,16 +511,17 @@
       "vuln_id": "V-230253"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230257",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230257r1017077_rule",
       "severity": "medium",
       "title": "RHEL 8 system commands must have mode 755 or less permissive.",
-      "tracking_issue": "TODO-V-230257",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/45a4c12d5134d75e43ab4508ac92d2c43b2f6228716cd9fbb96cc4fd42c139cb/U_RHEL_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-230257"
@@ -542,16 +543,17 @@
       "vuln_id": "V-230258"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230259",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230259r1017079_rule",
       "severity": "medium",
       "title": "RHEL 8 system commands must be group-owned by root or a system account.",
-      "tracking_issue": "TODO-V-230259",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/45a4c12d5134d75e43ab4508ac92d2c43b2f6228716cd9fbb96cc4fd42c139cb/U_RHEL_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-230259"
@@ -941,16 +943,17 @@
       "vuln_id": "V-230283"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230284",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230284r1017095_rule",
       "severity": "high",
       "title": "There must be no .shosts files on the RHEL 8 operating system.",
-      "tracking_issue": "TODO-V-230284",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/45a4c12d5134d75e43ab4508ac92d2c43b2f6228716cd9fbb96cc4fd42c139cb/U_RHEL_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-230284"
@@ -5441,16 +5444,17 @@
       "vuln_id": "V-251706"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-251707",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-251707r1017360_rule",
       "severity": "medium",
       "title": "RHEL 8 library directories must have mode 755 or less permissive.",
-      "tracking_issue": "TODO-V-251707",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/45a4c12d5134d75e43ab4508ac92d2c43b2f6228716cd9fbb96cc4fd42c139cb/U_RHEL_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-251707"
@@ -5472,16 +5476,17 @@
       "vuln_id": "V-251708"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-251709",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-251709r1017364_rule",
       "severity": "medium",
       "title": "RHEL 8 library directories must be group-owned by root or a system account.",
-      "tracking_issue": "TODO-V-251709",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/45a4c12d5134d75e43ab4508ac92d2c43b2f6228716cd9fbb96cc4fd42c139cb/U_RHEL_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-251709"

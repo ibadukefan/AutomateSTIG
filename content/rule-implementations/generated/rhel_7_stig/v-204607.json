@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find / -name shosts.equiv",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must not contain shosts.equiv files.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-204607"
+  },
   "check_content_excerpt": "Verify there are no \"shosts.equiv\" files on the system.\n\nCheck the system for the existence of these files with the following command:\n\n# find / -name shosts.equiv\n\nIf any \"shosts.equiv\" files are found on the system, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove any found \"shosts.equiv\" files from the system.\n\n# rm /[path]/[to]/[file]/shosts.equiv",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-204607r991589_rule",
   "severity": "high",

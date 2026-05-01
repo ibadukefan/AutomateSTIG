@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/libexec /usr/local/bin /usr/local/sbin ! -group root -exec ls -l {} \\;",
+      "type": "command_output"
+    },
+    "description": "OL 9 system commands must be group-owned by root or a system account.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-271773"
+  },
   "check_content_excerpt": "Verify OL 9 system commands contained in the following directories are group-owned by \"root\", or a required system account, with the following command:\n\n$ sudo find -L /bin /sbin /usr/bin /usr/sbin /usr/libexec /usr/local/bin /usr/local/sbin ! -group root -exec ls -l {} \\;\n\nIf any system commands are returned and is not group-owned by a required system account, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the system commands to be protected from unauthorized access.\n\nRun the following command, replacing \"[FILE]\" with any system command file not group-owned by \"root\" or a required system account.\n\n$ sudo chgrp root [FILE]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271773r1155299_rule",
   "severity": "medium",

@@ -209,16 +209,17 @@
       "vuln_id": "V-234834"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234835",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234835 from source identifier xccdf_mil.disa.stig_group_V-234835.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234835r991560_rule",
       "severity": "medium",
       "title": "The SUSE operating system library directories must have mode 0755 or less permissive.",
-      "tracking_issue": "TODO-V-234835",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234835"
@@ -352,31 +353,33 @@
       "vuln_id": "V-234843"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234844",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234844 from source identifier xccdf_mil.disa.stig_group_V-234844.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234844r991560_rule",
       "severity": "medium",
       "title": "The SUSE operating system must have system commands group-owned by root or a system account.",
-      "tracking_issue": "TODO-V-234844",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234844"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234845",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234845 from source identifier xccdf_mil.disa.stig_group_V-234845.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234845r991560_rule",
       "severity": "medium",
       "title": "The SUSE operating system must have directories that contain system commands group-owned by root.",
-      "tracking_issue": "TODO-V-234845",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234845"
@@ -1465,31 +1468,33 @@
       "vuln_id": "V-234981"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234984",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234984 from source identifier xccdf_mil.disa.stig_group_V-234984.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234984r991589_rule",
       "severity": "high",
       "title": "There must be no .shosts files on the SUSE operating system.",
-      "tracking_issue": "TODO-V-234984",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234984"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234985",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-234985 from source identifier xccdf_mil.disa.stig_group_V-234985.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-234985r991589_rule",
       "severity": "high",
       "title": "There must be no shosts.equiv files on the SUSE operating system.",
-      "tracking_issue": "TODO-V-234985",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-234985"

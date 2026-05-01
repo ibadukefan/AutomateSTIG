@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find / -type d -perm -002 ! -perm -1000",
+      "type": "command_output"
+    },
+    "description": "The Ubuntu operating system must set a sticky bit  on all public directories to prevent unauthorized and unintended information transferred via shared system resources.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-238332"
+  },
   "check_content_excerpt": "Verify that all public (world-writeable) directories have the public sticky bit set. \n \nFind world-writable directories that lack the sticky bit by running the following command:  \n \n$ sudo find / -type d -perm -002 ! -perm -1000 \n \nIf any world-writable directories are found missing the sticky bit, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure all public directories to have the sticky bit set to prevent unauthorized and unintended information transferred via shared system resources. \n \nSet the sticky bit on all public directories using the following command, replacing \"[Public Directory]\" with any directory path missing the sticky bit: \n \n$ sudo chmod +t  [Public Directory]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-238332r1117267_rule",
   "severity": "medium",

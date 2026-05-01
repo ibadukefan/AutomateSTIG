@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 107,
+  "candidate_checks": 112,
   "cases": [
     {
       "check": {
@@ -1805,6 +1805,32 @@
     },
     {
       "check": {
+        "command": "find / -type d -perm -002 ! -perm -1000",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must set a sticky bit  on all public directories to prevent unauthorized and unintended information transferred via shared system resources.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / -type d -perm -002 ! -perm -1000": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / -type d -perm -002 ! -perm -1000": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238332"
+    },
+    {
+      "check": {
         "key": "net.ipv4.tcp_syncookies",
         "type": "sysctl"
       },
@@ -2123,6 +2149,32 @@
     },
     {
       "check": {
+        "command": "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must have directories that contain system commands group-owned by root.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238346"
+    },
+    {
+      "check": {
         "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm /022 -exec stat -c \"%n %a\" {} +",
         "type": "command_output"
       },
@@ -2146,6 +2198,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-238347"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system library directories must have mode 0755 or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /lib /lib64 /usr/lib -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /lib /lib64 /usr/lib -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238348"
     },
     {
       "check": {
@@ -2637,6 +2715,58 @@
     },
     {
       "check": {
+        "command": "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c \"%n %U\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must have system commands owned by root or a system account.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c \"%n %U\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c \"%n %U\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238377"
+    },
+    {
+      "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type f ! -perm /2000 -exec stat -c \"%n %G\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must have system commands group-owned by root or a system account.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type f ! -perm /2000 -exec stat -c \"%n %G\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type f ! -perm /2000 -exec stat -c \"%n %G\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238378"
+    },
+    {
+      "check": {
         "command": "grep logout /etc/dconf/db/local.d/*",
         "type": "command_output"
       },
@@ -2989,5 +3119,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 107
+  "validated_candidates": 112
 }

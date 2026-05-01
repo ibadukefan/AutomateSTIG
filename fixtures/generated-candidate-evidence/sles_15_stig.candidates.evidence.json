@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 107,
+  "candidate_checks": 113,
   "cases": [
     {
       "check": {
@@ -190,6 +190,32 @@
     },
     {
       "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system library directories must have mode 0755 or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234835"
+    },
+    {
+      "check": {
         "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -user root -exec stat -c \"%n %U\" {} +",
         "type": "command_output"
       },
@@ -317,6 +343,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234843"
+    },
+    {
+      "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type f -exec stat -c \"%n %G\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must have system commands group-owned by root or a system account.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type f -exec stat -c \"%n %G\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type f -exec stat -c \"%n %G\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234844"
+    },
+    {
+      "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must have directories that contain system commands group-owned by root.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234845"
     },
     {
       "check": {
@@ -2081,6 +2159,58 @@
     },
     {
       "check": {
+        "command": "find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -name '.shosts' -print",
+        "type": "command_output"
+      },
+      "description": "There must be no .shosts files on the SUSE operating system.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -name '.shosts' -print": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -name '.shosts' -print": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234984"
+    },
+    {
+      "check": {
+        "command": "find /etc -name shosts.equiv",
+        "type": "command_output"
+      },
+      "description": "There must be no shosts.equiv files on the SUSE operating system.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /etc -name shosts.equiv": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /etc -name shosts.equiv": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234985"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/group",
         "pattern": "users:x:250:doduser,doduser,nsauser",
@@ -2105,6 +2235,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234994"
+    },
+    {
+      "check": {
+        "command": "find / -xdev -perm -002 -type f -exec ls -ld {} \\;",
+        "type": "command_output"
+      },
+      "description": "All SUSE operating system local initialization files must not execute world-writable programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / -xdev -perm -002 -type f -exec ls -ld {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / -xdev -perm -002 -type f -exec ls -ld {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234997"
     },
     {
       "check": {
@@ -2853,5 +3009,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 107
+  "validated_candidates": 113
 }

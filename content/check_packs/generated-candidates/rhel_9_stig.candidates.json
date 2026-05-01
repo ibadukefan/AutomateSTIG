@@ -701,6 +701,32 @@
     },
     {
       "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/libexec /usr/local/bin /usr/local/sbin -perm /022 -exec ls -l {} \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 system commands must have mode 755 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257882"
+    },
+    {
+      "check": {
+        "command": "find -L /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec ls -l {} \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 library directories must have mode 755 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257883"
+    },
+    {
+      "check": {
         "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm /022 -exec stat -c \"%n %a\" {} +",
         "type": "command_output"
       },
@@ -756,6 +782,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-257887"
+    },
+    {
+      "check": {
+        "command": "find /home/bingwa/.[^.]* -maxdepth 0 -perm -740 -exec stat -c \"%a %n\" {} \\; | more",
+        "type": "command_output"
+      },
+      "description": "All RHEL 9 local initialization files must have mode 0740 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257889"
     },
     {
       "check": {
@@ -1164,6 +1203,32 @@
     },
     {
       "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/libexec /usr/local/bin /usr/local/sbin ! -user root -exec stat -L -c \"%U %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 system commands must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257918"
+    },
+    {
+      "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/libexec /usr/local/bin /usr/local/sbin ! -group root -exec stat -L -c \"%G %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 system commands must be group-owned by root or a system account.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257919"
+    },
+    {
+      "check": {
         "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -user root -exec stat -c \"%n %U\" {} +",
         "type": "command_output"
       },
@@ -1187,6 +1252,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-257921"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 ! -group root -type d -exec stat -c \"%G %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 library directories must be group-owned by root or a system account.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257923"
     },
     {
       "check": {
@@ -2522,6 +2600,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-258060"
+    },
+    {
+      "check": {
+        "command": "find /home -perm -002 -type f -name \".[^.]*\" -exec ls -ld {} \\;",
+        "type": "command_output"
+      },
+      "description": "Local RHEL 9 initialization files must not execute world-writable programs.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-258062"
     },
     {
       "check": {

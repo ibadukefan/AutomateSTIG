@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /home -perm -002 -type f -name \".[^.]*\" -exec ls -ld {} \\;",
+      "type": "command_output"
+    },
+    "description": "Local RHEL 9 initialization files must not execute world-writable programs.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-258062"
+  },
   "check_content_excerpt": "Verify that local initialization files do not execute world-writable programs with the following command:\n\nNote: The example will be for a system that is configured to create user home directories in the \"/home\" directory.\n\n$ sudo find /home -perm -002 -type f -name \".[^.]*\" -exec ls -ld {} \\; \n\nIf any local initialization files are found to reference world-writable files, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the mode on files being executed by the local initialization files with the following command:\n\n$ sudo chmod 0755 <file>",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258062r991589_rule",
   "severity": "medium",

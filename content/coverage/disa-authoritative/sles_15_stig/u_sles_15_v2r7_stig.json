@@ -524,16 +524,17 @@
       "vuln_id": "V-234834"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234835",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234835r991560_rule",
       "severity": "medium",
       "title": "The SUSE operating system library directories must have mode 0755 or less permissive.",
-      "tracking_issue": "TODO-V-234835",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234835"
@@ -667,31 +668,33 @@
       "vuln_id": "V-234843"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234844",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234844r991560_rule",
       "severity": "medium",
       "title": "The SUSE operating system must have system commands group-owned by root or a system account.",
-      "tracking_issue": "TODO-V-234844",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234844"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234845",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234845r991560_rule",
       "severity": "medium",
       "title": "The SUSE operating system must have directories that contain system commands group-owned by root.",
-      "tracking_issue": "TODO-V-234845",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234845"
@@ -2489,31 +2492,33 @@
       "vuln_id": "V-234983"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234984",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234984r991589_rule",
       "severity": "high",
       "title": "There must be no .shosts files on the SUSE operating system.",
-      "tracking_issue": "TODO-V-234984",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234984"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234985",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234985r991589_rule",
       "severity": "high",
       "title": "There must be no shosts.equiv files on the SUSE operating system.",
-      "tracking_issue": "TODO-V-234985",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234985"
@@ -2685,16 +2690,17 @@
       "vuln_id": "V-234996"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234997",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234997r991589_rule",
       "severity": "medium",
       "title": "All SUSE operating system local initialization files must not execute world-writable programs.",
-      "tracking_issue": "TODO-V-234997",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234997"

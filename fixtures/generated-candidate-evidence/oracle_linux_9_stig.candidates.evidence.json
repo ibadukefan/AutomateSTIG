@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 359,
+  "candidate_checks": 365,
   "cases": [
     {
       "check": {
@@ -7383,6 +7383,32 @@
     },
     {
       "check": {
+        "command": "find /home -perm -002 -type f -name \".[^.]*\" -exec ls -ld {} \\;",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured so that local initialization files do not execute world-writable programs.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /home -perm -002 -type f -name \".[^.]*\" -exec ls -ld {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /home -perm -002 -type f -name \".[^.]*\" -exec ls -ld {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271765"
+    },
+    {
+      "check": {
         "key": "kernel.kexec_load_disabled",
         "type": "sysctl"
       },
@@ -7473,6 +7499,84 @@
     },
     {
       "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/libexec /usr/local/bin /usr/local/sbin ! -group root -exec ls -l {} \\;",
+        "type": "command_output"
+      },
+      "description": "OL 9 system commands must be group-owned by root or a system account.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/libexec /usr/local/bin /usr/local/sbin ! -group root -exec ls -l {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/libexec /usr/local/bin /usr/local/sbin ! -group root -exec ls -l {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271773"
+    },
+    {
+      "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/libexec /usr/local/bin /usr/local/sbin ! -user root -exec ls -l {} \\;",
+        "type": "command_output"
+      },
+      "description": "OL 9 system commands must be owned by root.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/libexec /usr/local/bin /usr/local/sbin ! -user root -exec ls -l {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/libexec /usr/local/bin /usr/local/sbin ! -user root -exec ls -l {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271774"
+    },
+    {
+      "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/libexec /usr/local/bin /usr/local/sbin -perm /022 -exec ls -l {} \\;",
+        "type": "command_output"
+      },
+      "description": "OL 9 system commands must have mode 755 or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/libexec /usr/local/bin /usr/local/sbin -perm /022 -exec ls -l {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find -L /bin /sbin /usr/bin /usr/sbin /usr/libexec /usr/local/bin /usr/local/sbin -perm /022 -exec ls -l {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271775"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/passwd",
         "pattern": "| awk -F: '{print $4}') /etc/group",
@@ -7497,6 +7601,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271783"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "OL 9 library directories must be group-owned by root or a system account.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /lib /lib64 /usr/lib /usr/lib64 ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /lib /lib64 /usr/lib /usr/lib64 ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271786"
+    },
+    {
+      "check": {
+        "command": "find -L /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec ls -l {} \\;",
+        "type": "command_output"
+      },
+      "description": "OL 9 library directories must have mode 755 or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find -L /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec ls -l {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find -L /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec ls -l {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271788"
     },
     {
       "check": {
@@ -9943,5 +10099,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 359
+  "validated_candidates": 365
 }

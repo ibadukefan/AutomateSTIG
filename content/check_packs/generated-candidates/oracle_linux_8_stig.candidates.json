@@ -318,6 +318,19 @@
     },
     {
       "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -exec ls -l {} \\;",
+        "type": "command_output"
+      },
+      "description": "OL 8 system commands must have mode 755 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248567"
+    },
+    {
+      "check": {
         "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -exec ls -l {} \\;",
         "type": "command_output"
       },
@@ -328,6 +341,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-248568"
+    },
+    {
+      "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -exec ls -l {} \\;",
+        "type": "command_output"
+      },
+      "description": "OL 8 system commands must be group-owned by root or a system account.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248569"
     },
     {
       "check": {
@@ -638,6 +664,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-248596"
+    },
+    {
+      "check": {
+        "command": "find / -name '*.shosts'",
+        "type": "command_output"
+      },
+      "description": "There must be no \".shosts\" files on the OL 8 operating system.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248598"
     },
     {
       "check": {
@@ -3816,6 +3855,19 @@
     },
     {
       "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "OL 8 library directories must have mode 755 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-252651"
+    },
+    {
+      "check": {
         "command": "find /lib /lib64 /usr/lib /usr/lib64 ! -user root -type d -exec stat -c \"%n %U\" '{}' \\;",
         "type": "command_output"
       },
@@ -3826,6 +3878,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-252652"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "OL 8 library directories must be group-owned by root or a system account.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-252653"
     },
     {
       "check": {

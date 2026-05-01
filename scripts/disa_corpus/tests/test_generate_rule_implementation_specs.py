@@ -1000,6 +1000,20 @@ If any system-wide shared library directory is returned, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'find /lib /lib64 /usr/lib /usr/lib64 ! -user root -type d -exec stat -c "%n %U" \'{}\' \\;'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_no_output_command_candidate_from_find_found_directory_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270824',
+            'title': 'Ubuntu 24.04 LTS must have directories that contain system commands set to a mode of "0755" or less permissive.',
+            'check_content': '''Verify the system commands directories have mode "0755" or less permissive with the following command:
+
+$ find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type d -exec stat -c "%n %a" '{}' \\;
+
+If any directories are found to be group-writable or world-writable, this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type d -exec stat -c "%n %a" \'{}\' \\;'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_no_output_command_candidate_from_output_produced_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-244541',

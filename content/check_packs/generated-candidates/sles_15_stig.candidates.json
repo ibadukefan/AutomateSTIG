@@ -98,6 +98,19 @@
     },
     {
       "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system library directories must have mode 0755 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-234835"
+    },
+    {
+      "check": {
         "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -user root -exec stat -c \"%n %U\" {} +",
         "type": "command_output"
       },
@@ -160,6 +173,32 @@
       },
       "platform": "generic",
       "vuln_id": "V-234843"
+    },
+    {
+      "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type f -exec stat -c \"%n %G\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must have system commands group-owned by root or a system account.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-234844"
+    },
+    {
+      "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must have directories that contain system commands group-owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-234845"
     },
     {
       "check": {
@@ -1066,6 +1105,32 @@
     },
     {
       "check": {
+        "command": "find / \\( -path /.snapshots -o -path /sys -o -path /proc \\) -prune -o -name '.shosts' -print",
+        "type": "command_output"
+      },
+      "description": "There must be no .shosts files on the SUSE operating system.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-234984"
+    },
+    {
+      "check": {
+        "command": "find /etc -name shosts.equiv",
+        "type": "command_output"
+      },
+      "description": "There must be no shosts.equiv files on the SUSE operating system.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-234985"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/group",
         "pattern": "users:x:250:doduser,doduser,nsauser",
@@ -1077,6 +1142,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-234994"
+    },
+    {
+      "check": {
+        "command": "find / -xdev -perm -002 -type f -exec ls -ld {} \\;",
+        "type": "command_output"
+      },
+      "description": "All SUSE operating system local initialization files must not execute world-writable programs.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-234997"
     },
     {
       "check": {

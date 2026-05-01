@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 143,
+  "candidate_checks": 149,
   "cases": [
     {
       "check": {
@@ -1213,6 +1213,84 @@
     },
     {
       "check": {
+        "command": "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type f -exec stat -c \"%n %a\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must have system commands set to a mode of 0755 or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type f -exec stat -c \"%n %a\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type f -exec stat -c \"%n %a\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270701"
+    },
+    {
+      "check": {
+        "command": "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c \"%n %U\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must have system commands owned by root or a system account.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c \"%n %U\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c \"%n %U\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270702"
+    },
+    {
+      "check": {
+        "command": "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin \\-type f -perm -u=x -exec stat --format=\"%n %G\" {} + |  \\awk '$2 != \"root\" && $2 != \"daemon\" && $2 != \"adm\" && $2 != \"shadow\" && $2 != \"mail\" && $2 != \"crontab\" && $2 != \"_ssh\"'",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must have system commands group-owned by root or a system account.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin \\-type f -perm -u=x -exec stat --format=\"%n %G\" {} + |  \\awk '$2 != \"root\" && $2 != \"daemon\" && $2 != \"adm\" && $2 != \"shadow\" && $2 != \"mail\" && $2 != \"crontab\" && $2 != \"_ssh\"'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin \\-type f -perm -u=x -exec stat --format=\"%n %G\" {} + |  \\awk '$2 != \"root\" && $2 != \"daemon\" && $2 != \"adm\" && $2 != \"shadow\" && $2 != \"mail\" && $2 != \"crontab\" && $2 != \"_ssh\"'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270703"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/security/pwquality.conf",
         "pattern": "dictcheck=1",
@@ -2173,6 +2251,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270749"
+    },
+    {
+      "check": {
+        "command": "find / -type d -perm -002 ! -perm -1000",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must set a sticky bit on all public directories to prevent unauthorized and unintended information transferred via shared system resources.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / -type d -perm -002 ! -perm -1000": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / -type d -perm -002 ! -perm -1000": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270750"
     },
     {
       "check": {
@@ -3546,6 +3650,32 @@
     },
     {
       "check": {
+        "command": "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must have directories that contain system commands set to a mode of \"0755\" or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270824"
+    },
+    {
+      "check": {
         "command": "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type d -exec stat -c \"%n %U\" '{}' \\;",
         "type": "command_output"
       },
@@ -3569,6 +3699,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270825"
+    },
+    {
+      "check": {
+        "command": "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must have directories that contain system commands group-owned by root.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270826"
     },
     {
       "check": {
@@ -3918,5 +4074,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 143
+  "validated_candidates": 149
 }

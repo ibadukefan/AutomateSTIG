@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c \"%n %U\" '{}' \\;",
+      "type": "command_output"
+    },
+    "description": "The Ubuntu operating system must have system commands owned by root or a system account.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-238377"
+  },
   "check_content_excerpt": "Verify the system commands contained in the following directories are owned by root, or a required system account: \n \n/bin \n/sbin \n/usr/bin \n/usr/sbin \n/usr/local/bin \n/usr/local/sbin \n \nUse the following command for the check: \n \n$ sudo find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c \"%n %U\" '{}' \\; \n \nIf any system commands are returned and are not owned by a required system account, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the system commands and their respective parent directories to be protected from unauthorized access. Run the following command, replacing \"[FILE]\" with any system command file not owned by \"root\" or a required system account: \n \n$ sudo chown root [FILE]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-238377r991560_rule",
   "severity": "medium",

@@ -896,6 +896,19 @@
     },
     {
       "check": {
+        "command": "find / -type d -perm -002 ! -perm -1000",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must set a sticky bit  on all public directories to prevent unauthorized and unintended information transferred via shared system resources.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-238332"
+    },
+    {
+      "check": {
         "key": "net.ipv4.tcp_syncookies",
         "type": "sysctl"
       },
@@ -1027,6 +1040,19 @@
     },
     {
       "check": {
+        "command": "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must have directories that contain system commands group-owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-238346"
+    },
+    {
+      "check": {
         "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' -perm /022 -exec stat -c \"%n %a\" {} +",
         "type": "command_output"
       },
@@ -1037,6 +1063,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-238347"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system library directories must have mode 0755 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-238348"
     },
     {
       "check": {
@@ -1281,6 +1320,32 @@
       },
       "platform": "linux",
       "vuln_id": "V-238376"
+    },
+    {
+      "check": {
+        "command": "find /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -type f -exec stat -c \"%n %U\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must have system commands owned by root or a system account.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-238377"
+    },
+    {
+      "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -type f ! -perm /2000 -exec stat -c \"%n %G\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must have system commands group-owned by root or a system account.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-238378"
     },
     {
       "check": {

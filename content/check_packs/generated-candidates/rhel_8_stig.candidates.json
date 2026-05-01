@@ -99,6 +99,19 @@
     },
     {
       "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin -perm /022 -exec ls -l {} \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 system commands must have mode 755 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-230257"
+    },
+    {
+      "check": {
         "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -user root -exec ls -l {} \\;",
         "type": "command_output"
       },
@@ -109,6 +122,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-230258"
+    },
+    {
+      "check": {
+        "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin ! -group root -exec ls -l {} \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 system commands must be group-owned by root or a system account.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-230259"
     },
     {
       "check": {
@@ -216,6 +242,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-230283"
+    },
+    {
+      "check": {
+        "command": "find / -name '*.shosts'",
+        "type": "command_output"
+      },
+      "description": "There must be no .shosts files on the RHEL 8 operating system.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-230284"
     },
     {
       "check": {
@@ -3416,6 +3455,19 @@
     },
     {
       "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 library directories must have mode 755 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-251707"
+    },
+    {
+      "check": {
         "command": "find /lib /lib64 /usr/lib /usr/lib64 ! -user root -type d -exec stat -c \"%n %U\" '{}' \\;",
         "type": "command_output"
       },
@@ -3426,6 +3478,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-251708"
+    },
+    {
+      "check": {
+        "command": "find /lib /lib64 /usr/lib /usr/lib64 ! -group root -type d -exec stat -c \"%n %G\" '{}' \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 library directories must be group-owned by root or a system account.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-251709"
     },
     {
       "check": {

@@ -320,6 +320,19 @@
     },
     {
       "check": {
+        "command": "find / -xdev -perm -002 -type f -exec ls -ld {} \\; | more",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that local initialization files do not execute world-writable programs.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-204478"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/dev/shm",
         "pattern": "tmpfs /dev/shm tmpfs defaults,nodev,nosuid,noexec 0 0",
@@ -1225,6 +1238,32 @@
       },
       "platform": "linux",
       "vuln_id": "V-204605"
+    },
+    {
+      "check": {
+        "command": "find / -name '*.shosts'",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not contain .shosts files.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-204606"
+    },
+    {
+      "check": {
+        "command": "find / -name shosts.equiv",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not contain shosts.equiv files.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-204607"
     },
     {
       "check": {

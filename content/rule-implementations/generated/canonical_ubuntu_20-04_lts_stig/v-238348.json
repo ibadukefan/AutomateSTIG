@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /lib /lib64 /usr/lib -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;",
+      "type": "command_output"
+    },
+    "description": "The Ubuntu operating system library directories must have mode 0755 or less permissive.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-238348"
+  },
   "check_content_excerpt": "Verify the system-wide shared library directories \"/lib\", \"/lib64\", and \"/usr/lib have mode 0755 or less permissive with the following command: \n \n$ sudo find /lib /lib64 /usr/lib -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\; \n \nIf any of the aforementioned directories are found to be group-writable or world-writable, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the shared library directories to be protected from unauthorized access. Run the following command: \n \n$ sudo find /lib /lib64 /usr/lib -perm /022 -type d -exec chmod 755 '{}' \\;",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-238348r991560_rule",
   "severity": "medium",

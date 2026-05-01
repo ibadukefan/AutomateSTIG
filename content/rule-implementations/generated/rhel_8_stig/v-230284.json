@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find / -name '*.shosts'",
+      "type": "command_output"
+    },
+    "description": "There must be no .shosts files on the RHEL 8 operating system.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-230284"
+  },
   "check_content_excerpt": "Verify there are no \".shosts\" files on RHEL 8 with the following command:\n\n$ sudo find / -name '*.shosts'\n\nIf any \".shosts\" files are found, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove any found \".shosts\" files from the system.\n\n$ sudo rm /[path]/[to]/[file]/.shosts",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-230284r1017095_rule",
   "severity": "high",
