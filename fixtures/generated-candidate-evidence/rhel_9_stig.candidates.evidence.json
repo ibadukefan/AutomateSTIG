@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 347,
+  "candidate_checks": 349,
   "cases": [
     {
       "check": {
@@ -1660,6 +1660,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257887"
+    },
+    {
+      "check": {
+        "command": "rpm --verify cronie crontabs | awk '! ($2 == \"c\" && $1 ~ /^.\\..\\.\\.\\.\\..\\./) {print $0}'",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 permissions of cron configuration files and directories must not be modified from the operating system defaults.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "rpm --verify cronie crontabs | awk '! ($2 == \"c\" && $1 ~ /^.\\..\\.\\.\\.\\..\\./) {print $0}'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "rpm --verify cronie crontabs | awk '! ($2 == \"c\" && $1 ~ /^.\\..\\.\\.\\.\\..\\./) {print $0}'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257888"
     },
     {
       "check": {
@@ -4422,6 +4448,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257996"
+    },
+    {
+      "check": {
+        "command": "rpm --verify openssh-server",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 SSH server configuration files' permissions must not be modified.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "rpm --verify openssh-server": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "rpm --verify openssh-server": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257999"
     },
     {
       "check": {
@@ -9681,5 +9733,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 347
+  "validated_candidates": 349
 }

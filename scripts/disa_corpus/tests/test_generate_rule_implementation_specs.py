@@ -1440,6 +1440,36 @@ If the value for "Network access: Allow anonymous SID/Name translation" is not s
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Security Options', 'key': 'Network security: Do not store LAN Manager hash value on next password change'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Enabled'})
 
+    def test_infers_linux_rpm_verify_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257999',
+            'title': "RHEL 9 SSH server configuration files' permissions must not be modified.",
+            'check_content': '''Verify the permissions of the "/etc/ssh/sshd_config" file with the following command:
+
+$ sudo rpm --verify openssh-server
+
+If the command returns any output, this is a finding.''',
+        }, 'RHEL_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'rpm --verify openssh-server'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_linux_rpm_verify_filtered_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257888',
+            'title': 'RHEL 9 permissions of cron configuration files and directories must not be modified from the operating system defaults.',
+            'check_content': '''Run the following command to verify that the owner, group, and mode of cron configuration files and directories match the operating system defaults:
+
+$ rpm --verify cronie crontabs | awk '! ($2 == "c" && $1 ~ /^.\\..\\.\\.\\.\\..\\./) {print $0}'
+
+If the command returns any output, this is a finding.''',
+        }, 'RHEL_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'rpm --verify cronie crontabs | awk \'! ($2 == "c" && $1 ~ /^.\\..\\.\\.\\.\\..\\./) {print $0}\''})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
 
 if __name__ == '__main__':
     unittest.main()

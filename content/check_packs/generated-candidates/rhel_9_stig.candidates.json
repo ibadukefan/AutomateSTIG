@@ -839,6 +839,19 @@
     },
     {
       "check": {
+        "command": "rpm --verify cronie crontabs | awk '! ($2 == \"c\" && $1 ~ /^.\\..\\.\\.\\.\\..\\./) {print $0}'",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 permissions of cron configuration files and directories must not be modified from the operating system defaults.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257888"
+    },
+    {
+      "check": {
         "command": "find /home/bingwa/.[^.]* -maxdepth 0 -perm -740 -exec stat -c \"%a %n\" {} \\; | more",
         "type": "command_output"
       },
@@ -2105,6 +2118,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-257996"
+    },
+    {
+      "check": {
+        "command": "rpm --verify openssh-server",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 SSH server configuration files' permissions must not be modified.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257999"
     },
     {
       "check": {
