@@ -2195,6 +2195,20 @@
     },
     {
       "check": {
+        "path": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\KDC\\Parameters",
+        "type": "registry",
+        "value_name": "UseStrongNameMatches"
+      },
+      "description": "Windows Server 2019 must be configured for named-based strong mappings for certificates.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-271429"
+    },
+    {
+      "check": {
         "setting": "Failure",
         "subcategory": "File System",
         "type": "audit_policy"

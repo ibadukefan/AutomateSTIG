@@ -210,6 +210,25 @@ If the value for "PasswordManagerEnabled" is not set to "REG_DWORD = 0", this is
         self.assertEqual(candidate['check'], {'type': 'registry', 'path': 'HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge', 'value_name': 'PasswordManagerEnabled'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
 
+    def test_infers_windows_admin_template_registry_key_candidate_from_gpedit_alternative(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271429',
+            'title': 'Windows Server 2019 must be configured for named-based strong mappings for certificates.',
+            'check_content': '''Verify the effective setting in Local Group Policy Editor.
+
+Run "gpedit.msc".
+Or
+Using the registry, check HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\KDC\\Parameters, Key: UseStrongNameMatches.
+Or
+Using GPRESULT, check the applicable GPO for "Allow name-based strong mappings for certificates".
+
+Navigate to Local Computer Policy >> Computer Configuration >> Administrative Template >> System >> KDC >> Allow name-based strong mappings for certificates.
+
+If "Allow name-based strong mappings for certificates" is not "Enabled", this is a finding.'''
+        }, 'Windows_Server_2019_STIG')
+        self.assertEqual(candidate['check'], {'type': 'registry', 'path': 'HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\KDC\\Parameters', 'value_name': 'UseStrongNameMatches'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 1})
+
     def test_infers_linux_sysctl_candidate_check_from_rhel_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230266',

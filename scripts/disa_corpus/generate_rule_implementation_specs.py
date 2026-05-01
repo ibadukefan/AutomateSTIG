@@ -124,6 +124,21 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
             content,
             re.IGNORECASE,
         )
+        if not path_match and not value_match and 'Administrative Template' in content:
+            admin_registry = re.search(
+                r'Using\s+the\s+registry,\s+check\s+((?:HKLM|HKCU|HKCR|HKU|HKCC|HKEY_[A-Z_]+)\\[^,\n\r]+),\s*Key:\s*([A-Za-z0-9_.-]+)',
+                content,
+                re.IGNORECASE,
+            )
+            admin_expected = re.search(
+                r'If\s+["“][^"”]+["”]\s+is\s+not\s+["“](Enabled|Disabled)["”],\s+this\s+is\s+a\s+finding',
+                content,
+                re.IGNORECASE,
+            )
+            if admin_registry and admin_expected:
+                path_match = admin_registry
+                value_match = admin_registry
+                expected_value = 1 if admin_expected.group(1).lower() == 'enabled' else 0
         if not value_match and not re.search(
             r'does\s+not\s+exist[^.]*not\s+a\s+finding|or\s+["“]?Not\s+Configured["”]?|more\s+restrictive|also\s+(?:an\s+)?acceptable|\(or\s+\d+\)',
             content,
@@ -134,7 +149,7 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
                 content,
                 re.IGNORECASE,
             )
-        if value_match:
+        if value_match and expected_value is None:
             raw_value = value_match.group(3).strip()
             if value_match.group(2).upper() == 'DWORD':
                 if not re.fullmatch(r'0x[0-9a-fA-F]+|[-+]?\d+', raw_value):
@@ -144,13 +159,16 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
                 expected_value = raw_value
     if not path_match or not value_match or expected_value is None:
         return None
+    value_name = value_match.group(1).strip()
+    if path_match is value_match and getattr(value_match, 'lastindex', 0) and value_match.lastindex >= 2:
+        value_name = value_match.group(2).strip().rstrip('.')
     return {
         'vuln_id': rule.get('vuln_id', ''),
         'platform': 'windows' if any(token in stig_id.lower() for token in ('windows', 'chrome', 'edge', 'defender', 'office')) else 'generic',
         'check': {
             'type': 'registry',
             'path': _normalize_registry_path(path_match.group(1)),
-            'value_name': value_match.group(1).strip(),
+            'value_name': value_name,
         },
         'expected': {'type': 'equals', 'value': expected_value},
         'description': rule.get('title', ''),
