@@ -146,6 +146,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "apparmor",
+        "type": "service"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured to use AppArmor.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270660"
+    },
+    {
+      "check": {
         "name": "libpam-pwquality",
         "should_be_installed": true,
         "type": "package"

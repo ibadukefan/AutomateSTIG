@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 142,
+  "candidate_checks": 143,
   "cases": [
     {
       "check": {
@@ -287,6 +287,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270659"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "apparmor",
+        "type": "service"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured to use AppArmor.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "apparmor": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "apparmor": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270660"
     },
     {
       "check": {
@@ -3891,5 +3918,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 142
+  "validated_candidates": 143
 }

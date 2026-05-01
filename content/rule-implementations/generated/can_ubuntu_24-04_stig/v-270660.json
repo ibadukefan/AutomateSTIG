@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "apparmor",
+      "type": "service"
+    },
+    "description": "Ubuntu 24.04 LTS must be configured to use AppArmor.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270660"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS AppArmor active with the following commands: \n \n$ systemctl is-active apparmor.service\nactive \n \nIf \"active\" is not returned, this is a finding. \n \n$ systemctl is-enabled apparmor.service \nenabled \n \nIf \"enabled\" is not returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Enable \"apparmor\" with the following command:\n \n$ sudo systemctl enable apparmor.service \n \nStart \"apparmor\" with the following command: \n \n$ sudo systemctl start apparmor.service \n \nNote: AppArmor must have properly configured profiles for applications and home directories. All configurations will be based on the actual system setup and organization and normally are on a per role basis. Refer to the AppArmor documentation for more information on configuring profiles.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-270660r1066469_rule",
   "severity": "medium",

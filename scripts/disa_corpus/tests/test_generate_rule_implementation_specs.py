@@ -637,6 +637,21 @@ If the service is not "enabled" and "active", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'rngd', 'expected_status': 'running'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
 
+    def test_infers_linux_service_running_candidate_when_active_output_must_be_returned(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257936',
+            'title': 'The firewalld service on RHEL 9 must be active.',
+            'check_content': '''Verify that "firewalld" is active with the following command:
+
+$ systemctl is-active firewalld
+
+active
+
+If "active" is not returned, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'firewalld', 'expected_status': 'running'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
+
     def test_skips_linux_systemctl_status_target_units(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230529',
