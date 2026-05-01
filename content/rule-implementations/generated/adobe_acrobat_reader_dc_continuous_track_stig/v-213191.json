@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\Software\\Adobe\\Acrobat Reader\\DC\\Security\\cDigSig\\cAdobeDownload",
+      "type": "registry",
+      "value_name": "bLoadSettingsFromURL"
+    },
+    "description": "Adobe Reader DC must disable periodical uploading of Adobe certificates.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "generic",
+    "vuln_id": "V-213191"
+  },
   "check_content_excerpt": "Verify the following registry configuration:\n\nNote: The Key Names \"cDigSig\" and \"cAdobeDownload\" are not created by default in the Adobe Reader DC install and must be created.\n\nUtilizing the Registry Editor, navigate to the following: HKEY_CURRENT_USER\\Software\\Adobe\\Acrobat Reader\\DC\\Security\\cDigSig\\cAdobeDownload\n\nValue Name: bLoadSettingsFromURL \nType: REG_DWORD\nValue: 0\n\nIf the value for bLoadSettingsFromURL is not set to \u201c0\u201d and Type configured to REG_DWORD or does not exist, then this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the following registry value:\n\nNote: The Key Names \"cDigSig\" and \"cAdobeDownload\" are not created by default in the Adobe Reader DC install and must be created.\n\nRegistry Hive: HKEY_CURRENT_USER\nRegistry Path: \\Software\\Adobe\\Acrobat Reader\\DC\\Security\\cDigSig\\cAdobeDownload\n\nValue Name: bLoadSettingsFromURL \nType: REG_DWORD\nValue: 0",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-213191r400378_rule",
   "severity": "low",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\Software\\Adobe\\Adobe Acrobat\\DC\\AVGeneral",
+      "type": "registry",
+      "value_name": "bFIPSMode"
+    },
+    "description": "Adobe Acrobat Pro DC Continuous FIPS mode must be enabled.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "generic",
+    "vuln_id": "V-245874"
+  },
   "check_content_excerpt": "Verify the following registry configuration:\n\nUsing the Registry Editor, navigate to the following: HKEY_CURRENT_USER\\Software\\Adobe\\Adobe Acrobat\\DC\\AVGeneral\n\nValue Name: bFIPSMode\nType: REG_DWORD\nValue: 1\n\nIf the value for bFIPSMode is not set to \u201c1\u201d and Type is not configured to REG_DWORD or does not exist, this is a finding.\n\nAdmin Template path: User Configuration > Administrative Templates > Adobe Acrobat Pro DC Continuous > Preferences > 'Enable FIPS' must be set to 'Enabled'.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the following registry value:\n\nRegistry Hive:\nHKEY_CURRENT_USER\nRegistry Path:\n\\Software\\Adobe\\Adobe Acrobat\\DC\\AVGeneral\n\nValue Name: bFIPSMode\nType: REG_DWORD\nValue: 1\nConfigure the policy value for User Configuration > Administrative Templates > Adobe Acrobat Pro DC Continuous > Preferences > 'Enable FIPS' to 'Enabled'.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-245874r766580_rule",
   "severity": "medium",

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown",
+      "type": "registry",
+      "value_name": "bEnableFlash"
+    },
+    "description": "Adobe Acrobat Pro DC Continuous must be configured to block Flash Content.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "generic",
+    "vuln_id": "V-213122"
+  },
   "check_content_excerpt": "Verify the following registry configuration:\n\nUsing the Registry Editor, navigate to the following: HKEY_LOCAL_MACHINE\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\n\nValue Name: bEnableFlash\nType: REG_DWORD\nValue: 0\n\nIf the value for bEnableFlash is not set to \u201c0\u201d and Type is not configured to REG_DWORD or does not exist, this is a finding.\n\nAdmin Template path: Computer Configuration > Administrative Templates > Adobe Acrobat Pro DC Continuous > Preferences > 'Enable Flash' must be set to 'Disabled'.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the following registry value:\n\nRegistry Hive:\nHKEY_LOCAL_MACHINE\nRegistry Path:\n\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\n\nValue Name: bEnableFlash\nType: REG_DWORD\nValue: 0\n\nConfigure the policy value for Computer Configuration > Administrative Templates > Adobe Acrobat Pro DC Continuous > Preferences > 'Enable Flash' to 'Disabled'.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-213122r766526_rule",
   "severity": "medium",

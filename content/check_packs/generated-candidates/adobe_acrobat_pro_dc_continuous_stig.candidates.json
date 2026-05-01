@@ -1,0 +1,301 @@
+{
+  "checks": [
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "bEnhancedSecurityStandalone"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous Enhanced Security for standalone mode must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213117"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "bEnhancedSecurityInBrowser"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous Enhanced Security for browser mode must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213118"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "iFileAttachmentPerms"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous PDF file attachments must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213119"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\cDefaultLaunchURLPerms",
+        "type": "registry",
+        "value_name": "iUnknownURLPerms"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous access to unknown websites must be restricted.",
+      "expected": {
+        "type": "equals",
+        "value": 3
+      },
+      "platform": "generic",
+      "vuln_id": "V-213120"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\cDefaultLaunchURLPerms",
+        "type": "registry",
+        "value_name": "iURLPerms"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous access to websites must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213121"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "bEnableFlash"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous must be configured to block Flash Content.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "generic",
+      "vuln_id": "V-213122"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\cCloud",
+        "type": "registry",
+        "value_name": "bAdobeSendPluginToggle"
+      },
+      "description": "The Adobe Acrobat Pro DC Continuous Send and Track plugin for Outlook must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213123"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "bDisableTrustedFolders"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous privileged file and folder locations must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213124"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Adobe\\Adobe Acrobat\\DC\\Security\\cDigSig\\cEUTLDownload",
+        "type": "registry",
+        "value_name": "bLoadSettingsFromURL"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous periodic downloading of Adobe European certificates must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "generic",
+      "vuln_id": "V-213126"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "bProtectedMode"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous Protected Mode must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213127"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "iProtectedView"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous Protected View must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "generic",
+      "vuln_id": "V-213128"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "bDisablePDFHandlerSwitching"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous Default Handler changes must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213130"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\cCloud",
+        "type": "registry",
+        "value_name": "bDisableADCFileStore"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous must disable the ability to store files on Acrobat.com.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213131"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\cServices",
+        "type": "registry",
+        "value_name": "bTogglePrefsSync"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous Cloud Synchronization must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213132"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\cServices",
+        "type": "registry",
+        "value_name": "bToggleWebConnectors"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous third-party web connectors must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213134"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\cWebmailProfiles",
+        "type": "registry",
+        "value_name": "bDisableWebmail"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous Webmail must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213135"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\cWelcomeScreen",
+        "type": "registry",
+        "value_name": "bShowWelcomeScreen"
+      },
+      "description": "The Adobe Acrobat Pro DC Continuous Welcome Screen must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "generic",
+      "vuln_id": "V-213136"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\cSharePoint",
+        "type": "registry",
+        "value_name": "bDisableSharePointFeatures"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous SharePoint and Office365 access must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213137"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Adobe\\Adobe Acrobat\\DC\\Security\\cDigSig\\cAdobeDownload",
+        "type": "registry",
+        "value_name": "bLoadSettingsFromURL"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous Periodic downloading of Adobe certificates must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "generic",
+      "vuln_id": "V-213138"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "bDisableTrustedSites"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous privileged host locations must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213139"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Adobe\\Adobe Acrobat\\DC\\AVGeneral",
+        "type": "registry",
+        "value_name": "bFIPSMode"
+      },
+      "description": "Adobe Acrobat Pro DC Continuous FIPS mode must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-245874"
+    }
+  ],
+  "platform": "generic",
+  "stig_id": "Adobe_Acrobat_Pro_DC_Continuous_STIG",
+  "version": "candidate-planned"
+}

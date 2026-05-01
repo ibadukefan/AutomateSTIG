@@ -73,6 +73,50 @@ Value: O:BAG:BAD:(A;;RC;;;BA)'''
         self.assertEqual(candidate['check']['value_name'], 'RestrictRemoteSAM')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'O:BAG:BAD:(A;;RC;;;BA)'})
 
+    def test_infers_registry_candidate_when_check_and_fix_repeat_same_authoritative_fields(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-213117',
+            'title': 'Adobe Acrobat enhanced security must be enabled.',
+            'check_content': '''Utilizing the Registry Editor, navigate to the following:
+
+Registry Hive: HKEY_LOCAL_MACHINE
+Registry Path: \\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\
+Value Name: bEnhancedSecurityStandalone
+Type: REG_DWORD
+Value: 1
+
+If the value is not set to 1, this is a finding.
+
+Configure the following registry value:
+
+Registry Hive: HKEY_LOCAL_MACHINE
+Registry Path: \\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\
+Value Name: bEnhancedSecurityStandalone
+Type: REG_DWORD
+Value: 1'''
+        }, 'Adobe_Acrobat_Pro_DC_Continuous_STIG')
+        self.assertEqual(candidate['check']['type'], 'registry')
+        self.assertEqual(candidate['check']['path'], 'HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown')
+        self.assertEqual(candidate['check']['value_name'], 'bEnhancedSecurityStandalone')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 1})
+
+    def test_skips_registry_candidate_when_repeated_authoritative_fields_disagree(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-213117',
+            'title': 'Adobe Acrobat enhanced security must be enabled.',
+            'check_content': '''Registry Hive: HKEY_LOCAL_MACHINE
+Registry Path: \\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\
+Value Name: bEnhancedSecurityStandalone
+Type: REG_DWORD
+Value: 1''',
+            'fix_text': '''Registry Hive: HKEY_LOCAL_MACHINE
+Registry Path: \\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\\
+Value Name: bEnhancedSecurityInBrowser
+Type: REG_DWORD
+Value: 1'''
+        }, 'Adobe_Acrobat_Pro_DC_Continuous_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_defender_registry_candidate_from_explicit_criteria_not_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278668',

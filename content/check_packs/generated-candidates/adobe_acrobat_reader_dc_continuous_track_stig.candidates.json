@@ -1,0 +1,329 @@
+{
+  "checks": [
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "bEnhancedSecurityStandalone"
+      },
+      "description": "Adobe Reader DC must enable Enhanced Security in a Standalone Application.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213168"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "bEnhancedSecurityInBrowser"
+      },
+      "description": "Adobe Reader DC must enable Enhanced Security in a Browser.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213169"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "bProtectedMode"
+      },
+      "description": "Adobe Reader DC must enable Protected Mode.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213170"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "iProtectedView"
+      },
+      "description": "Adobe Reader DC must enable Protected View.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "generic",
+      "vuln_id": "V-213171"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cDefaultLaunchURLPerms",
+        "type": "registry",
+        "value_name": "iUnknownURLPerms"
+      },
+      "description": "Adobe Reader DC must block access to Unknown Websites.",
+      "expected": {
+        "type": "equals",
+        "value": 3
+      },
+      "platform": "generic",
+      "vuln_id": "V-213173"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "iFileAttachmentPerms"
+      },
+      "description": "Adobe Reader DC must prevent opening files other than PDF or FDF.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213174"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "bEnableFlash"
+      },
+      "description": "Adobe Reader DC must block Flash Content.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "generic",
+      "vuln_id": "V-213175"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "bDisablePDFHandlerSwitching"
+      },
+      "description": "Adobe Reader DC must disable the ability to change the Default Handler.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213176"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cCloud",
+        "type": "registry",
+        "value_name": "bAdobeSendPluginToggle"
+      },
+      "description": "Adobe Reader DC must disable the Adobe Send and Track plugin for Outlook.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213177"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cServices",
+        "type": "registry",
+        "value_name": "bToggleAdobeDocumentServices"
+      },
+      "description": "Adobe Reader DC must disable all service access to Document Cloud Services.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213178"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cServices",
+        "type": "registry",
+        "value_name": "bTogglePrefsSync"
+      },
+      "description": "Adobe Reader DC must disable Cloud Synchronization.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213179"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cServices",
+        "type": "registry",
+        "value_name": "bToggleWebConnectors"
+      },
+      "description": "Adobe Reader DC must disable 3rd Party Web Connectors.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213181"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "bAcroSuppressUpsell"
+      },
+      "description": "Adobe Reader DC must disable Acrobat Upsell.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213182"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cServices",
+        "type": "registry",
+        "value_name": "bToggleAdobeSign"
+      },
+      "description": "Adobe Reader DC must disable Adobe Send for Signature.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213183"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cWebmailProfiles",
+        "type": "registry",
+        "value_name": "bDisableWebmail"
+      },
+      "description": "Adobe Reader DC must disable access to Webmail.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213184"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cSharePoint",
+        "type": "registry",
+        "value_name": "bDisableSharePointFeatures"
+      },
+      "description": "Adobe Reader DC must disable Online SharePoint Access.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213185"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cWelcomeScreen",
+        "type": "registry",
+        "value_name": "bShowWelcomeScreen"
+      },
+      "description": "Adobe Reader DC must disable the Adobe Welcome Screen.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "generic",
+      "vuln_id": "V-213186"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown\\cServices",
+        "type": "registry",
+        "value_name": "bUpdater"
+      },
+      "description": "Adobe Reader DC must disable Service Upgrades.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "generic",
+      "vuln_id": "V-213187"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "bDisableTrustedFolders"
+      },
+      "description": "Adobe Reader DC must disable the ability to add Trusted Files and Folders.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213188"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Adobe\\Acrobat Reader\\DC\\FeatureLockDown",
+        "type": "registry",
+        "value_name": "bDisableTrustedSites"
+      },
+      "description": "Adobe Reader DC must disable the ability to elevate IE Trusts to Privileged Locations.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213189"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Adobe\\Acrobat Reader\\DC\\Security\\cDigSig\\cEUTLDownload",
+        "type": "registry",
+        "value_name": "bLoadSettingsFromURL"
+      },
+      "description": "Adobe Reader DC must disable periodical uploading of European certificates.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "generic",
+      "vuln_id": "V-213190"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Adobe\\Acrobat Reader\\DC\\Security\\cDigSig\\cAdobeDownload",
+        "type": "registry",
+        "value_name": "bLoadSettingsFromURL"
+      },
+      "description": "Adobe Reader DC must disable periodical uploading of Adobe certificates.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "generic",
+      "vuln_id": "V-213191"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Adobe\\Acrobat Reader\\DC\\AVGeneral",
+        "type": "registry",
+        "value_name": "bFIPSMode"
+      },
+      "description": "Adobe Reader DC must enable FIPS mode.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "generic",
+      "vuln_id": "V-213193"
+    }
+  ],
+  "platform": "generic",
+  "stig_id": "Adobe_Acrobat_Reader_DC_Continuous_Track_STIG",
+  "version": "candidate-planned"
+}

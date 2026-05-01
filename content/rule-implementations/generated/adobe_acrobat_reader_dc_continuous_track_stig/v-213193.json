@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\Software\\Adobe\\Acrobat Reader\\DC\\AVGeneral",
+      "type": "registry",
+      "value_name": "bFIPSMode"
+    },
+    "description": "Adobe Reader DC must enable FIPS mode.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "generic",
+    "vuln_id": "V-213193"
+  },
   "check_content_excerpt": "Verify the following registry configuration:\n\nNote: The Key Names \"bFIPSMode\" is not created by default in the Adobe Reader DC install and must be created.\n\nUtilizing the Registry Editor, navigate to the following: HKEY_CURRENT_USER\\Software\\Adobe\\Acrobat Reader\\DC\\AVGeneral\n\nValue Name: bFIPSMode \nType: REG_DWORD\nValue: 1\n\nIf the value for bFIPSMode is not set to \u201c1\u201d and Type configured to REG_DWORD does not exist, then this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the following registry value:\n\nNote: The Key Names \"bFIPSMode\" is not created by default in the Adobe Reader DC install and must be created.\n\nRegistry Hive: HKEY_CURRENT_USER\nRegistry Path: \\Software\\Adobe\\Acrobat Reader\\DC\\AVGeneral\n\nValue Name: bFIPSMode \nType: REG_DWORD\nValue: 1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-213193r400876_rule",
   "severity": "medium",

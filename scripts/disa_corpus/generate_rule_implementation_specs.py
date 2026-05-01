@@ -980,22 +980,41 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     before a rule can be promoted from planned to implemented/validated.
     """
     content = rule.get('check_content', '') or ''
-    hive = re.search(r'Registry\s+Hive:\s*([^\n\r]+)', content, re.IGNORECASE)
-    path = re.search(r'Registry\s+Path:\s*([^\n\r]+)', content, re.IGNORECASE)
-    value_name = re.search(r'Value\s+Name:\s*([^\n\r]+)', content, re.IGNORECASE)
-    if hive and path and value_name:
-        if len(re.findall(r'Value\s+Name\s*:', content, re.IGNORECASE)) > 1:
-            return None
-        reg_path = path.group(1).strip().strip('\\/')
-        expected_value = _registry_value(content)
-        if expected_value is not None:
+    combined_registry_content = '\n'.join(part for part in (content, rule.get('fix_text', '') or '') if part)
+    hives = [match.strip() for match in re.findall(r'Registry\s+Hive:\s*([^\n\r]+)', combined_registry_content, re.IGNORECASE)]
+    paths = [match.strip().strip('\\/') for match in re.findall(r'Registry\s+Path:\s*([^\n\r]+)', combined_registry_content, re.IGNORECASE)]
+    value_names = [match.strip() for match in re.findall(r'Value\s+Name:\s*([^\n\r]+)', combined_registry_content, re.IGNORECASE)]
+    if hives and paths and value_names:
+        normalized_hives = {_registry_hive_abbrev(hive) for hive in hives}
+        normalized_paths = {re.sub(r'\\+', r'\\', path).rstrip('\\/.') for path in paths}
+        normalized_value_names = set(value_names)
+        expected_value = _registry_value(combined_registry_content)
+        value_matches = re.findall(
+            r'^\s*Value(?:\s+data)?\s*:\s*(0x[0-9a-fA-F]+|[-+]?\d+|\S[^\n\r]*)\s*(?:\(([-+]?\d+)\))?',
+            combined_registry_content,
+            re.IGNORECASE | re.MULTILINE,
+        )
+        parsed_values = []
+        for raw_value, parenthesized_value in value_matches:
+            raw = (parenthesized_value or raw_value).strip()
+            try:
+                parsed_values.append(int(raw, 16) if raw.lower().startswith('0x') else int(raw))
+            except ValueError:
+                parsed_values.append(raw)
+        if (
+            len(normalized_hives) == 1
+            and len(normalized_paths) == 1
+            and len(normalized_value_names) == 1
+            and expected_value is not None
+            and (not parsed_values or len(set(parsed_values)) == 1)
+        ):
             return {
                 'vuln_id': rule.get('vuln_id', ''),
                 'platform': 'windows' if 'windows' in stig_id.lower() or 'win' in stig_id.lower() else 'generic',
                 'check': {
                     'type': 'registry',
-                    'path': f"{_registry_hive_abbrev(hive.group(1))}\\{reg_path}",
-                    'value_name': value_name.group(1).strip(),
+                    'path': f"{next(iter(normalized_hives))}\\{next(iter(normalized_paths))}",
+                    'value_name': next(iter(normalized_value_names)),
                 },
                 'expected': {'type': 'equals', 'value': expected_value},
                 'description': rule.get('title', ''),

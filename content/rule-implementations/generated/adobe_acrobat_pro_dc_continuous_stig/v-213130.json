@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown",
+      "type": "registry",
+      "value_name": "bDisablePDFHandlerSwitching"
+    },
+    "description": "Adobe Acrobat Pro DC Continuous Default Handler changes must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "generic",
+    "vuln_id": "V-213130"
+  },
   "check_content_excerpt": "Verify the following registry configuration:\n\nUsing the Registry Editor, navigate to the following: HKEY_LOCAL_MACHINE\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\n\nValue Name: bDisablePDFHandlerSwitching\nType: REG_DWORD\nValue: 1\n\nIf the value for bDisablePDFHandlerSwitching is not set to \u201c1\u201d and Type is not configured to REG_DWORD or does not exist, this is a finding.\n\nGUI path: Edit > Preferences > General > Verify the 'Select As Default PDF Handler' option is greyed out (locked).  If the option is not greyed out, this is a finding.\n\nAdmin Template path: Computer Configuration > Administrative Template > Adobe Acrobat Pro DC Continuous > Preferences > General > 'Disable PDF handler switching' must be set to 'Enabled'.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the following registry value:\n\nRegistry Hive:\nHKEY_LOCAL_MACHINE\nRegistry Path:\n\\Software\\Policies\\Adobe\\Adobe Acrobat\\DC\\FeatureLockDown\n\nValue Name: bDisablePDFHandlerSwitching\nType: REG_DWORD\nValue: 1\n\nConfigure the policy value for Computer Configuration > Administrative Template > Adobe Acrobat Pro DC Continuous > Preferences > General > 'Disable PDF handler switching' to 'Enabled'.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-213130r766544_rule",
   "severity": "low",
