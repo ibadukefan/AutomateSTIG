@@ -653,8 +653,62 @@ def _findmnt_option_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _dconf_grep_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    command_matches = list(re.finditer(
+        r'^\s*[$#>]\s*(?:sudo\s+)?(?P<command>grep\s+-R\s+(?P<key>[A-Za-z0-9_.-]+)\s+/etc/dconf/db/\*)\s*$',
+        content,
+        re.MULTILINE,
+    ))
+    if len(command_matches) != 1:
+        return None
+    command_match = command_matches[0]
+    command = _normalize_command(command_match.group('command'))
+    key = command_match.group('key')
+    sample_line = None
+    for line in content[command_match.end():].splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.lower().startswith(('if ', 'note:', '$', '#', '>')):
+            break
+        if stripped.startswith('/etc/dconf/db/') and ':' in stripped:
+            sample_line = stripped.split(':', 1)[1].strip()
+            break
+    if not sample_line or not sample_line.startswith(f'{key}='):
+        return None
+    value_match = re.match(rf'{re.escape(key)}=(["\']?)(?P<value>[^"\'\n]+)\1$', sample_line)
+    if not value_match:
+        return None
+    expected_value = value_match.group('value')
+    explicit_value_required = re.search(
+        rf'If\s+the\s+["“]{re.escape(key)}["”]\s+setting\s+is\s+not\s+set\s+to\s+["“]{re.escape(expected_value)}["”]',
+        content,
+        re.IGNORECASE,
+    )
+    exact_sample_required = re.search(
+        rf'If\s+the\s+["“]{re.escape(sample_line)}["”]\s+setting\s+is\s+missing\s+or\s+commented\s+out',
+        content,
+        re.IGNORECASE,
+    )
+    if not explicit_value_required and not exact_sample_required:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'contains', 'substring': sample_line},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
+    dconf_candidate = _dconf_grep_candidate(rule, stig_id)
+    if dconf_candidate:
+        return dconf_candidate
     findmnt_candidate = _findmnt_option_candidate(rule, stig_id)
     if findmnt_candidate:
         return findmnt_candidate

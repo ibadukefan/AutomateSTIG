@@ -2790,6 +2790,19 @@
     },
     {
       "check": {
+        "command": "grep -R removal-action /etc/dconf/db/*",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be able to directly initiate a session lock for all connection types using smart card when the smart card is removed.",
+      "expected": {
+        "substring": "removal-action='lock-screen'",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271690"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/gdm/custom.conf",
         "pattern": "[daemon]",

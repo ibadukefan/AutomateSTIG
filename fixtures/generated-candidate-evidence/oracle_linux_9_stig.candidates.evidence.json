@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 347,
+  "candidate_checks": 348,
   "cases": [
     {
       "check": {
@@ -5463,6 +5463,32 @@
     },
     {
       "check": {
+        "command": "grep -R removal-action /etc/dconf/db/*",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be able to directly initiate a session lock for all connection types using smart card when the smart card is removed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "removal-action='lock-screen'",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -R removal-action /etc/dconf/db/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -R removal-action /etc/dconf/db/*": "before\nremoval-action='lock-screen'\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271690"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/gdm/custom.conf",
         "pattern": "[daemon]",
@@ -9630,5 +9656,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 347
+  "validated_candidates": 348
 }

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 250,
+  "candidate_checks": 251,
   "cases": [
     {
       "check": {
@@ -1233,6 +1233,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230347"
+    },
+    {
+      "check": {
+        "command": "grep -R removal-action /etc/dconf/db/*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must be able to initiate directly a session lock for all connection types using smartcard when the smartcard is removed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "removal-action='lock-screen'",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -R removal-action /etc/dconf/db/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -R removal-action /etc/dconf/db/*": "before\nremoval-action='lock-screen'\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230351"
     },
     {
       "check": {
@@ -6758,5 +6784,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 250
+  "validated_candidates": 251
 }

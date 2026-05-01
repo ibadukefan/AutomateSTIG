@@ -210,6 +210,34 @@ $ sudo sysctl --system'''
         self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/usr/lib/systemd/system/rescue.service', 'pattern': 'sulogin-shell', 'is_regex': False})
         self.assertEqual(candidate['expected'], {'type': 'contains'})
 
+    def test_infers_dconf_grep_candidate_from_exact_authoritative_sample(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271690',
+            'title': 'OL 9 must lock the session when the smart card is removed.',
+            'check_content': '''Verify that OL 9 enables a user's session lock with the following command:
+
+$ grep -R removal-action /etc/dconf/db/*
+/etc/dconf/db/distro.d/20-authselect:removal-action='lock-screen'
+
+If the "removal-action" setting is not set to "lock-screen", is missing or commented out, this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep -R removal-action /etc/dconf/db/*'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': "removal-action='lock-screen'"})
+
+    def test_infers_dconf_grep_candidate_when_exact_setting_sample_is_required(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271690',
+            'title': 'OL 9 must lock the session when the smart card is removed.',
+            'check_content': '''Verify that OL 9 enables a user's session lock with the following command:
+
+$ grep -R removal-action /etc/dconf/db/*
+/etc/dconf/db/distro.d/20-authselect:removal-action='lock-screen'
+
+If the "removal-action='lock-screen'" setting is missing or commented out from the dconf database files, this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep -R removal-action /etc/dconf/db/*'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': "removal-action='lock-screen'"})
+
     def test_infers_linux_findmnt_option_candidate_from_authoritative_sample(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257864',
