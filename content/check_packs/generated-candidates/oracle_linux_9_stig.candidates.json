@@ -3573,6 +3573,20 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "debug-shell",
+        "type": "service"
+      },
+      "description": "OL 9 debug-shell systemd service must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271742"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ipsec.conf",
         "pattern": "/etc/ipsec.d/*.conf",
@@ -3676,6 +3690,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-271751"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "OL 9 must be configured so that the x86 Ctrl-Alt-Delete key sequence is disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271752"
     },
     {
       "check": {

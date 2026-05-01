@@ -555,14 +555,19 @@ def _service_candidate(rule: dict) -> dict | None:
     match = next((m for m in matches if m.group(1) == 'is-active'), matches[0])
     command = match.group(1)
     raw_name = match.group(2).strip('"\'')
-    if raw_name.endswith('.target') or ('masked' in content.lower()):
-        return None
-    if '.' in raw_name and not raw_name.endswith('.service'):
-        return None
-    name = raw_name.removesuffix('.service')
     lower = f"{title}\n{content}".lower()
+    masked_status = command == 'status' and re.search(r'loaded:\s+masked\b', lower) and re.search(r'loaded\s+and\s+not\s+masked', lower)
+    if raw_name.endswith('.target') and not masked_status:
+        return None
+    if 'masked' in lower and not masked_status:
+        return None
+    if '.' in raw_name and not raw_name.endswith(('.service', '.target')):
+        return None
+    name = raw_name.removesuffix('.service').removesuffix('.target')
     if command == 'status':
-        if re.search(r'if\s+(?:the\s+)?(?:"[^"]+"\s+)?(?:service\s+)?(?:status\s+)?(?:is\s+)?(?:set\s+to\s+)?(?:"?)?(?:active|running)(?:"?)?,?\s+this\s+is\s+a\s+finding', lower):
+        if masked_status:
+            expected_status = 'disabled'
+        elif re.search(r'if\s+(?:the\s+)?(?:"[^"]+"\s+)?(?:service\s+)?(?:status\s+)?(?:is\s+)?(?:set\s+to\s+)?(?:"?)?(?:active|running)(?:"?)?,?\s+this\s+is\s+a\s+finding', lower):
             expected_status = 'stopped'
         elif re.search(r'(?:does\s+not\s+show\s+a\s+status\s+of|is\s+not)\s+["“]?(?:active|enabled)["”]?\s+and\s+["“]?running["”]?', lower) or re.search(r'is\s+not\s+enabled\s+and\s+(?:active|running)', lower):
             expected_status = 'running'

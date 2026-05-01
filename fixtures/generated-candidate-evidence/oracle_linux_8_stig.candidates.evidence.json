@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 293,
+  "candidate_checks": 294,
   "cases": [
     {
       "check": {
@@ -6818,6 +6818,33 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "debug-shell",
+        "type": "service"
+      },
+      "description": "OL 8 must disable the debug-shell systemd service.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "debug-shell": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "debug-shell": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248872"
+    },
+    {
+      "check": {
         "name": "tftp-server",
         "should_be_installed": false,
         "type": "package"
@@ -7923,5 +7950,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 293
+  "validated_candidates": 294
 }

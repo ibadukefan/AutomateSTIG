@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 366,
+  "candidate_checks": 368,
   "cases": [
     {
       "check": {
@@ -6987,6 +6987,33 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "debug-shell",
+        "type": "service"
+      },
+      "description": "OL 9 debug-shell systemd service must be disabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "debug-shell": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "debug-shell": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271742"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ipsec.conf",
         "pattern": "/etc/ipsec.d/*.conf",
@@ -7194,6 +7221,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271751"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "OL 9 must be configured so that the x86 Ctrl-Alt-Delete key sequence is disabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271752"
     },
     {
       "check": {
@@ -10125,5 +10179,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 366
+  "validated_candidates": 368
 }

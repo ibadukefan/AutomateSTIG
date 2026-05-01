@@ -742,6 +742,23 @@ If the "autofs" status is set to "active", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'autofs', 'expected_status': 'stopped'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'stopped'})
 
+    def test_infers_linux_masked_systemctl_status_candidate_as_disabled(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230532',
+            'title': 'The debug-shell systemd service must be disabled on RHEL 8.',
+            'check_content': '''Verify RHEL 8 is configured to mask the debug-shell systemd service with the following command:
+
+$ sudo systemctl status debug-shell.service
+
+debug-shell.service
+Loaded: masked (Reason: Unit debug-shell.service is masked.)
+Active: inactive (dead)
+
+If the "debug-shell.service" is loaded and not masked, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'debug-shell', 'expected_status': 'disabled'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
+
     def test_infers_linux_service_running_candidate_from_systemctl_status_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-244545',

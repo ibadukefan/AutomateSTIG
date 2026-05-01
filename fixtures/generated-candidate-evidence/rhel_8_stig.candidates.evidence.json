@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 270,
+  "candidate_checks": 272,
   "cases": [
     {
       "check": {
@@ -5104,6 +5104,33 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "The x86 Ctrl-Alt-Delete key sequence must be disabled on RHEL 8.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230529"
+    },
+    {
+      "check": {
         "command": "grep -r logout /etc/dconf/db/local.d/*",
         "type": "command_output"
       },
@@ -5153,6 +5180,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230531"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "debug-shell",
+        "type": "service"
+      },
+      "description": "The debug-shell systemd service must be disabled on RHEL 8.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "debug-shell": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "debug-shell": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230532"
     },
     {
       "check": {
@@ -7279,5 +7333,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 270
+  "validated_candidates": 272
 }

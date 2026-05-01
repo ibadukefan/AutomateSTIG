@@ -2,6 +2,34 @@
   "checks": [
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "The x86 Ctrl-Alt-Delete key sequence must be disabled on RHEL 9.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257785"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "debug-shell",
+        "type": "service"
+      },
+      "description": "RHEL 9 debug-shell systemd service must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257786"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/grub2.cfg",
         "pattern": "password_pbkdf2  <superusers-accountname>   ${GRUB2_PASSWORD}",

@@ -2609,6 +2609,20 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "The x86 Ctrl-Alt-Delete key sequence must be disabled on RHEL 8.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230529"
+    },
+    {
+      "check": {
         "command": "grep -r logout /etc/dconf/db/local.d/*",
         "type": "command_output"
       },
@@ -2632,6 +2646,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-230531"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "debug-shell",
+        "type": "service"
+      },
+      "description": "The debug-shell systemd service must be disabled on RHEL 8.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230532"
     },
     {
       "check": {

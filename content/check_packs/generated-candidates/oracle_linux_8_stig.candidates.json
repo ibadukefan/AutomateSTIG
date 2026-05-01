@@ -3474,6 +3474,20 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "debug-shell",
+        "type": "service"
+      },
+      "description": "OL 8 must disable the debug-shell systemd service.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248872"
+    },
+    {
+      "check": {
         "name": "tftp-server",
         "should_be_installed": false,
         "type": "package"
