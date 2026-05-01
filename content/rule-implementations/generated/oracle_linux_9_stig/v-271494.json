@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "sssd",
+      "type": "service"
+    },
+    "description": "OL 9 must use the SSSD package for multifactor authentication services.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271494"
+  },
   "check_content_excerpt": "Verify that OL 9 is configured so that the sssd.service is enabled and active with the following commands: \n \n$ sudo systemctl is-enabled sssd\nenabled\n\n$ sudo systemctl is-active sssd\nactive\n\nIf sssd.service is not active or enabled, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the sssd.service to start automatically on reboot with the following command: \n \n$ sudo systemctl enable sssd.service \n \nEnsure the sssd service is running: \n \n$ sudo systemctl start sssd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-271494r1091194_rule",
   "severity": "medium",

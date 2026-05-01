@@ -239,16 +239,17 @@
       "vuln_id": "V-270662"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270663",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270663 from source identifier xccdf_mil.disa.stig_group_V-270663.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270663r1066478_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must use the \"SSSD\" package for multifactor authentication services.",
-      "tracking_issue": "TODO-V-270663",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270663"
@@ -286,16 +287,17 @@
       "vuln_id": "V-270665"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270666",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-270666 from source identifier xccdf_mil.disa.stig_group_V-270666.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-270666r1066487_rule",
       "severity": "high",
       "title": "Ubuntu 24.04 LTS must use SSH to protect the confidentiality and integrity of transmitted information.",
-      "tracking_issue": "TODO-V-270666",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1ebe6cfa3f9e6f9d4291edba0ae0bf4ff8f430054cc87d74d4973b422a2fa876/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-270666"

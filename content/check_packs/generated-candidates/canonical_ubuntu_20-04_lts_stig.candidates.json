@@ -1366,6 +1366,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "sssd",
+        "type": "service"
+      },
+      "description": "Ubuntu 20.04 LTS must use the \"SSSD\" package for multifactor authentication services.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274854"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sssd/sssd.conf",
         "pattern": "certificate_verification = ca_cert,ocsp",

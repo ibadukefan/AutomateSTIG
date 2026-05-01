@@ -654,6 +654,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "sssd",
+        "type": "service"
+      },
+      "description": "OL 9 must use the SSSD package for multifactor authentication services.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271494"
+    },
+    {
+      "check": {
         "name": "s-nail",
         "should_be_installed": true,
         "type": "package"

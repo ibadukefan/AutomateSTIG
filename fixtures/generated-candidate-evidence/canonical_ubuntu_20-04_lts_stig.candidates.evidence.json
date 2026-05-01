@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 105,
+  "candidate_checks": 106,
   "cases": [
     {
       "check": {
@@ -2797,6 +2797,33 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "sssd",
+        "type": "service"
+      },
+      "description": "Ubuntu 20.04 LTS must use the \"SSSD\" package for multifactor authentication services.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "sssd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "sssd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274854"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sssd/sssd.conf",
         "pattern": "certificate_verification = ca_cert,ocsp",
@@ -2936,5 +2963,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 105
+  "validated_candidates": 106
 }

@@ -758,16 +758,17 @@
       "vuln_id": "V-260523"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260524",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260524 from source identifier xccdf_mil.disa.stig_group_V-260524.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260524r958908_rule",
       "severity": "high",
       "title": "Ubuntu 22.04 LTS must use SSH to protect the confidentiality and integrity of transmitted information.",
-      "tracking_issue": "TODO-V-260524",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260524"
@@ -1571,16 +1572,17 @@
       "vuln_id": "V-260590"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260591",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-260591 from source identifier xccdf_mil.disa.stig_group_V-260591.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-260591r1015023_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must produce audit records and reports containing information to establish when, where, what type, the source, and the outcome for all DOD-defined auditable events and actions in near real time.",
-      "tracking_issue": "TODO-V-260591",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/f2f13f255212c3ca0428ca63d2ca459e3d33f615137e925b78b7abab86e24058/U_CAN_Ubuntu_22-04_LTS_V2R6_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-260591"

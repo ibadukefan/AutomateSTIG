@@ -172,6 +172,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "sssd",
+        "type": "service"
+      },
+      "description": "Ubuntu 24.04 LTS must use the \"SSSD\" package for multifactor authentication services.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270663"
+    },
+    {
+      "check": {
         "name": "chrony",
         "should_be_installed": true,
         "type": "package"
@@ -195,6 +209,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-270665"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "ssh",
+        "type": "service"
+      },
+      "description": "Ubuntu 24.04 LTS must use SSH to protect the confidentiality and integrity of transmitted information.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270666"
     },
     {
       "check": {

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "auditd",
+      "type": "service"
+    },
+    "description": "Ubuntu 22.04 LTS must produce audit records and reports containing information to establish when, where, what type, the source, and the outcome for all DOD-defined auditable events and actions in near real time.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260591"
+  },
   "check_content_excerpt": "Verify the \"auditd.service\" is enabled and active by using the following commands:  \n  \n     $ systemctl is-enabled auditd.service \n     enabled \n  \n     $ systemctl is-active auditd.service \n     active  \n  \nIf the \"auditd.service\" is not enabled and active, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Enable and start the \"auditd.service\" by using the following command:  \n  \n     $ sudo systemctl enable auditd.service --now",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-260591r1015023_rule",
   "severity": "medium",

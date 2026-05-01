@@ -511,9 +511,10 @@ def _auditctl_expected_rule_candidate(rule: dict) -> dict | None:
 def _service_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
-    match = re.search(r'\bsystemctl\s+(is-enabled|is-active|status)\s+([^\s;|&]+)', content)
-    if not match:
+    matches = list(re.finditer(r'\bsystemctl\s+(is-enabled|is-active|status)\s+([^\s;|&]+)', content))
+    if not matches:
         return None
+    match = next((m for m in matches if m.group(1) == 'is-active'), matches[0])
     command = match.group(1)
     raw_name = match.group(2).strip('"\'')
     if raw_name.endswith('.target') or ('masked' in content.lower()):
@@ -529,7 +530,7 @@ def _service_candidate(rule: dict) -> dict | None:
             expected_status = 'running'
         else:
             return None
-    elif command == 'is-active' and re.search(rf'systemctl\s+is-active\s+{re.escape(raw_name)}\s*\n\s*active\b', content, re.IGNORECASE) and re.search(r'(?:is|service\s+is)\s+not\s+["“]?active["”]?', lower):
+    elif command == 'is-active' and re.search(rf'systemctl\s+is-active\s+{re.escape(raw_name)}\s*\n\s*active\b', content, re.IGNORECASE) and (re.search(r'(?:is|service\s+is)\s+not\s+["“]?active["”]?', lower) or re.search(r'is\s+not\s+["“]?enabled["”]?\s+and\s+["“]?active["”]?', lower)):
         expected_status = 'running'
     elif re.search(r'must\s+not\s+.*(?:enabled|running)|must\s+be\s+disabled|if\s+(?:the\s+)?(?:"[^"]+"\s+)?(?:service\s+)?(?:status\s+)?(?:is\s+)?(?:set\s+to\s+)?(?:"?)?(?:enabled|active|running)(?:"?)?,?\s+this\s+is\s+a\s+finding', lower):
         expected_status = 'disabled' if command == 'is-enabled' else 'stopped'

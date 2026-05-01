@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 93,
+  "candidate_checks": 96,
   "cases": [
     {
       "check": {
@@ -388,6 +388,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-260514"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "ssh",
+        "type": "service"
+      },
+      "description": "Ubuntu 22.04 LTS must use SSH to protect the confidentiality and integrity of transmitted information.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "ssh": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "ssh": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260524"
     },
     {
       "check": {
@@ -1353,6 +1380,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-260590"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "auditd",
+        "type": "service"
+      },
+      "description": "Ubuntu 22.04 LTS must produce audit records and reports containing information to establish when, where, what type, the source, and the outcome for all DOD-defined auditable events and actions in near real time.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260591"
     },
     {
       "check": {
@@ -2450,6 +2504,33 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "sssd",
+        "type": "service"
+      },
+      "description": "Ubuntu 22.04 LTS must use the \"SSSD\" package for multifactor authentication services.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "sssd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "sssd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274866"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sssd/sssd.conf",
         "pattern": "certificate_verification = ca_cert,ocsp",
@@ -2534,5 +2615,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
-  "validated_candidates": 93
+  "validated_candidates": 96
 }

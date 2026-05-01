@@ -1212,16 +1212,17 @@
       "vuln_id": "V-248598"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248599",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248599r991589_rule",
       "severity": "low",
       "title": "OL 8 must enable the hardware random number generator entropy gatherer service.",
-      "tracking_issue": "TODO-V-248599",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/0a9de69038ea7154ebc704b548c1e6d79b971c1e37ef81f72b38bd23448482b3/U_Oracle_Linux_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-248599"
@@ -1433,16 +1434,17 @@
       "vuln_id": "V-248613"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248615",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248615r991589_rule",
       "severity": "medium",
       "title": "OL 8 must have the rsyslog service enabled and active.",
-      "tracking_issue": "TODO-V-248615",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/0a9de69038ea7154ebc704b548c1e6d79b971c1e37ef81f72b38bd23448482b3/U_Oracle_Linux_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-248615"

@@ -219,6 +219,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "rngd",
+        "type": "service"
+      },
+      "description": "RHEL 8 must enable the hardware random number generator entropy gatherer service.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230285"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config:StrictModes",
         "pattern": "yes",

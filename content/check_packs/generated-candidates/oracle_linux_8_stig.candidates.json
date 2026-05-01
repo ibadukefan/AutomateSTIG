@@ -602,6 +602,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "rngd",
+        "type": "service"
+      },
+      "description": "OL 8 must enable the hardware random number generator entropy gatherer service.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248599"
+    },
+    {
+      "check": {
         "name": "rng-tools",
         "should_be_installed": true,
         "type": "package"
@@ -752,6 +766,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-248613"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "rsyslog",
+        "type": "service"
+      },
+      "description": "OL 8 must have the rsyslog service enabled and active.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248615"
     },
     {
       "check": {

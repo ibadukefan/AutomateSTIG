@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 251,
+  "candidate_checks": 252,
   "cases": [
     {
       "check": {
@@ -425,6 +425,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230283"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "rngd",
+        "type": "service"
+      },
+      "description": "RHEL 8 must enable the hardware random number generator entropy gatherer service.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "rngd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "rngd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230285"
     },
     {
       "check": {
@@ -6784,5 +6811,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 251
+  "validated_candidates": 252
 }

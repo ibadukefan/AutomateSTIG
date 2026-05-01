@@ -181,6 +181,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "ssh",
+        "type": "service"
+      },
+      "description": "Ubuntu 22.04 LTS must use SSH to protect the confidentiality and integrity of transmitted information.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260524"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config:Banner",
         "pattern": "/etc/issue.net",
@@ -675,6 +689,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-260590"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "auditd",
+        "type": "service"
+      },
+      "description": "Ubuntu 22.04 LTS must produce audit records and reports containing information to establish when, where, what type, the source, and the outcome for all DOD-defined auditable events and actions in near real time.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260591"
     },
     {
       "check": {
@@ -1226,6 +1254,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-274865"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "sssd",
+        "type": "service"
+      },
+      "description": "Ubuntu 22.04 LTS must use the \"SSSD\" package for multifactor authentication services.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-274866"
     },
     {
       "check": {

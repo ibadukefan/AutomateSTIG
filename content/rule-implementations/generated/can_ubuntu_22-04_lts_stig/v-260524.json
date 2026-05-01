@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "ssh",
+      "type": "service"
+    },
+    "description": "Ubuntu 22.04 LTS must use SSH to protect the confidentiality and integrity of transmitted information.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260524"
+  },
   "check_content_excerpt": "Verify the \"ssh.service\" is enabled and active by using the following commands:  \n  \n     $ sudo systemctl is-enabled ssh \n     enabled \n \n     $ sudo systemctl is-active ssh \n     active \n \nIf \"ssh.service\" is not enabled and active, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Enable and start the \"ssh.service\" by using the following command:  \n  \n     $ sudo systemctl enable ssh.service --now",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-260524r958908_rule",
   "severity": "high",

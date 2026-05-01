@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 348,
+  "candidate_checks": 349,
   "cases": [
     {
       "check": {
@@ -1276,6 +1276,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271493"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "sssd",
+        "type": "service"
+      },
+      "description": "OL 9 must use the SSSD package for multifactor authentication services.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "sssd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "sssd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271494"
     },
     {
       "check": {
@@ -9656,5 +9683,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 348
+  "validated_candidates": 349
 }

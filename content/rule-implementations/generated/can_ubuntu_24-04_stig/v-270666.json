@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "ssh",
+      "type": "service"
+    },
+    "description": "Ubuntu 24.04 LTS must use SSH to protect the confidentiality and integrity of transmitted information.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270666"
+  },
   "check_content_excerpt": "Verify the \"sshd.service\" is enabled and active with the following commands: \n \n$ sudo systemctl is-enabled ssh\nenabled\n\n$ sudo systemctl is-active ssh\nactive\n\nIf \"ssh.service\" is not active or loaded, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Enable the \"ssh\" service to start automatically on reboot with the following command: \n \n$ sudo systemctl enable ssh.service \n \nensure the \"ssh\" service is running \n \n$ sudo systemctl start ssh.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-270666r1066487_rule",
   "severity": "high",

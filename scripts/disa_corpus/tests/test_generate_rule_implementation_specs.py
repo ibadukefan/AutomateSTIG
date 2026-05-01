@@ -449,6 +449,23 @@ If the chronyd service is not active, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'chronyd', 'expected_status': 'running'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
 
+    def test_infers_linux_service_running_candidate_from_enabled_and_active_commands(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230285',
+            'title': 'RHEL 8 must enable the hardware random number generator entropy gatherer service.',
+            'check_content': '''Verify the rngd service is enabled and active with the following commands:
+
+$ sudo systemctl is-enabled rngd
+enabled
+
+$ sudo systemctl is-active rngd
+active
+
+If the service is not "enabled" and "active", this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'rngd', 'expected_status': 'running'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
+
     def test_skips_linux_systemctl_status_target_units(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230529',
