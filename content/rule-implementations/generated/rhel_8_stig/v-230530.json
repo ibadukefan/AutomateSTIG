@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -r logout /etc/dconf/db/local.d/*",
+      "type": "command_output"
+    },
+    "description": "The x86 Ctrl-Alt-Delete key sequence in RHEL 8 must be disabled if a graphical user interface is installed.",
+    "expected": {
+      "substring": "logout=''",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230530"
+  },
   "check_content_excerpt": "Verify RHEL 8 is not configured to reboot the system when Ctrl-Alt-Delete is pressed when using a graphical user interface with the following command:\n\nThis requirement assumes the use of the RHEL 8 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\n$ sudo grep -r logout /etc/dconf/db/local.d/*\n\n/etc/dconf/db/local.d/00-disable-CAD:logout=''\n\nIf the \"logout\" key is bound to an action, is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "logout=''",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the system to disable the Ctrl-Alt-Delete sequence when using a graphical user interface by creating or editing the /etc/dconf/db/local.d/00-disable-CAD file.\n\nAdd the setting to disable the Ctrl-Alt-Delete sequence for a graphical user interface:\n\n[org/gnome/settings-daemon/plugins/media-keys]\nlogout=''\n\nNote: The value above is set to two single quotations.\n\nThen update the dconf settings:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-230530r1069317_rule",
   "severity": "high",

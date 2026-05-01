@@ -255,6 +255,102 @@ If there is output, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'rpm -Va --noconfig | awk \'$1 ~ /..5/ && $2 != "c"\''})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_grep_command_output_candidate_from_authoritative_sample_line(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230358',
+            'title': 'RHEL 8 must enforce password complexity by requiring a lowercase character.',
+            'check_content': '''Verify the value for "lcredit" with the following command:
+
+$ sudo grep -r lcredit /etc/security/pwquality.conf*
+
+/etc/security/pwquality.conf:lcredit = -1
+
+If the value of "lcredit" is a positive number or is commented out, this is a finding.
+If conflicting results are returned, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep -r lcredit /etc/security/pwquality.conf*'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'lcredit = -1'})
+
+    def test_infers_commented_grep_sample_when_uncommented_line_is_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-244526',
+            'title': 'The RHEL 8 SSH daemon must be configured to use system-wide crypto policies.',
+            'check_content': '''Verify that system-wide crypto policies are in effect:
+
+$ sudo grep CRYPTO_POLICY /etc/sysconfig/sshd
+# CRYPTO_POLICY=
+
+If the "CRYPTO_POLICY" is uncommented, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep CRYPTO_POLICY /etc/sysconfig/sshd'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': '# CRYPTO_POLICY='})
+
+    def test_skips_grep_sample_candidate_when_authoritative_output_has_multiple_lines(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270784',
+            'title': 'Ubuntu must generate audit records for xattr syscalls.',
+            'check_content': '''Verify audit records with the following command:
+
+$ sudo grep -r xattr audit-rules/*
+-a always,exit -F arch=b32 -S setxattr -k perm_mod
+-a always,exit -F arch=b64 -S setxattr -k perm_mod
+
+If the command does not return audit rules for the xattr syscalls, or the lines are commented out, this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertIsNone(candidate)
+
+    def test_skips_grep_sample_candidate_when_finding_text_does_not_reference_sample_key(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-999999',
+            'title': 'RHEL must verify a derived example.',
+            'check_content': '''Verify the setting with the following command:
+
+$ sudo grep -r example /etc/example.conf*
+example = enabled
+
+If a different unrelated setting is missing, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertIsNone(candidate)
+
+    def test_skips_grep_sample_candidate_when_command_is_piped(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271525',
+            'title': 'OL 9 repositories must enable gpgcheck.',
+            'check_content': '''Verify repositories enable gpgcheck with the following command:
+
+$ grep gpgcheck /etc/yum.repos.d/*.repo | more
+gpgcheck=1
+
+If "gpgcheck" is not set to "1", this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertIsNone(candidate)
+
+    def test_skips_grep_sample_candidate_when_command_is_find_exec_grep(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258050',
+            'title': 'RHEL 9 SSH daemon must use approved algorithms.',
+            'check_content': '''Verify SSH configuration with the following command:
+
+$ sudo find /etc/ssh -type f -exec grep -i ciphers {} \\\;
+Ciphers aes256-ctr
+
+If "Ciphers" is not set to the approved value, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertIsNone(candidate)
+
+    def test_skips_grep_sample_candidate_when_sample_contains_placeholder(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270751',
+            'title': 'Ubuntu must compare clocks to an authoritative time source.',
+            'check_content': '''Verify Ubuntu is configured to compare the system clock with the following command:
+
+$ sudo grep -ir maxpoll /etc/chrony*
+server [source] iburst maxpoll 16
+
+If the parameter "server" is not set, is not set to an authoritative DOD time source, or is commented out, this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertIsNone(candidate)
+
     def test_skips_command_output_candidate_with_unresolved_partition_placeholder(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257928',

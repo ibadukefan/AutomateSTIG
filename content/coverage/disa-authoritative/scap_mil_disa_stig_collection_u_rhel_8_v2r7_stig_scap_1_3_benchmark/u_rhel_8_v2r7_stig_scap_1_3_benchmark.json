@@ -1398,106 +1398,113 @@
       "vuln_id": "V-230356"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230357",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230357 from source identifier xccdf_mil.disa.stig_group_V-230357.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230357r1017169_rule",
       "severity": "medium",
       "title": "RHEL 8 must enforce password complexity by requiring that at least one uppercase character be used.",
-      "tracking_issue": "TODO-V-230357",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230357"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230358",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230358 from source identifier xccdf_mil.disa.stig_group_V-230358.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230358r1017170_rule",
       "severity": "medium",
       "title": "RHEL 8 must enforce password complexity by requiring that at least one lower-case character be used.",
-      "tracking_issue": "TODO-V-230358",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230358"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230359",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230359 from source identifier xccdf_mil.disa.stig_group_V-230359.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230359r1017171_rule",
       "severity": "medium",
       "title": "RHEL 8 must enforce password complexity by requiring that at least one numeric character be used.",
-      "tracking_issue": "TODO-V-230359",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230359"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230360",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230360 from source identifier xccdf_mil.disa.stig_group_V-230360.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230360r1017172_rule",
       "severity": "medium",
       "title": "RHEL 8 must require the maximum number of repeating characters of the same character class be limited to four when passwords are changed.",
-      "tracking_issue": "TODO-V-230360",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230360"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230361",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230361 from source identifier xccdf_mil.disa.stig_group_V-230361.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230361r1017173_rule",
       "severity": "medium",
       "title": "RHEL 8 must require the maximum number of repeating characters be limited to three when passwords are changed.",
-      "tracking_issue": "TODO-V-230361",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230361"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230362",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230362 from source identifier xccdf_mil.disa.stig_group_V-230362.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230362r1017174_rule",
       "severity": "medium",
       "title": "RHEL 8 must require the change of at least four character classes when passwords are changed.",
-      "tracking_issue": "TODO-V-230362",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230362"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230363",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230363 from source identifier xccdf_mil.disa.stig_group_V-230363.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230363r1017175_rule",
       "severity": "medium",
       "title": "RHEL 8 must require the change of at least 8 characters when passwords are changed.",
-      "tracking_issue": "TODO-V-230363",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230363"
@@ -1628,16 +1635,17 @@
       "vuln_id": "V-230373"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230375",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230375 from source identifier xccdf_mil.disa.stig_group_V-230375.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230375r1017187_rule",
       "severity": "medium",
       "title": "All RHEL 8 passwords must contain at least one special character.",
-      "tracking_issue": "TODO-V-230375",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230375"
@@ -1659,16 +1667,17 @@
       "vuln_id": "V-230376"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230377",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230377 from source identifier xccdf_mil.disa.stig_group_V-230377.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230377r1017188_rule",
       "severity": "medium",
       "title": "RHEL 8 must prevent the use of dictionary words for passwords.",
-      "tracking_issue": "TODO-V-230377",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230377"
@@ -3383,31 +3392,33 @@
       "vuln_id": "V-230529"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230530",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230530 from source identifier xccdf_mil.disa.stig_group_V-230530.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230530r1069317_rule",
       "severity": "high",
       "title": "The x86 Ctrl-Alt-Delete key sequence in RHEL 8 must be disabled if a graphical user interface is installed.",
-      "tracking_issue": "TODO-V-230530",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230530"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230531",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230531 from source identifier xccdf_mil.disa.stig_group_V-230531.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230531r1155396_rule",
       "severity": "high",
       "title": "The systemd Ctrl-Alt-Delete burst key sequence in RHEL 8 must be disabled.",
-      "tracking_issue": "TODO-V-230531",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230531"
@@ -3920,16 +3931,17 @@
       "vuln_id": "V-237643"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-244519",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-244519 from source identifier xccdf_mil.disa.stig_group_V-244519.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-244519r1017326_rule",
       "severity": "medium",
       "title": "RHEL 8 must display a banner before granting local or remote access to the system via a graphical user logon.",
-      "tracking_issue": "TODO-V-244519",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-244519"

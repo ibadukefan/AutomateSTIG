@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -r retry /etc/security/pwquality.conf*",
+      "type": "command_output"
+    },
+    "description": "OL 8 systems, version 8.4 and above, must ensure the password complexity module is configured for three retries or less.",
+    "expected": {
+      "substring": "retry = 3",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-252660"
+  },
   "check_content_excerpt": "Note: This requirement applies to OL versions 8.4 or newer. If the system is OL below version 8.4, this requirement is not applicable.\n\nVerify the operating system is configured to limit the \"pwquality\" retry option to 3. \n\nCheck for the use of the \"pwquality\" retry option with the following command:\n\n$ sudo grep -r retry /etc/security/pwquality.conf*\n\n/etc/security/pwquality.conf:retry = 3\n\nIf the value of \"retry\" is set to \"0\" or greater than \"3\", is commented out or missing, this is a finding.\n\nIf conflicting results are returned, this is a finding.\n\nCheck for the use of the \"pwquality\" retry option in the system-auth and password-auth files with the following command:\n\n$ sudo grep pwquality /etc/pam.d/system-auth /etc/pam.d/password-auth | grep retry\n\nIf the command returns any results, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "retry = 3",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to limit the \"pwquality\" retry option to 3.\n\nAdd the following line to the \"/etc/security/pwquality.conf\" file(or modify the line to have the required value):\n\nretry = 3\n\nRemove any configurations that conflict with the above value.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-252660r991589_rule",
   "severity": "medium",

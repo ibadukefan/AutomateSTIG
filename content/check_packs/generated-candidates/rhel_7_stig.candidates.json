@@ -237,6 +237,19 @@
     },
     {
       "check": {
+        "command": "grep logout /etc/dconf/db/local.d/*",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the x86 Ctrl-Alt-Delete key sequence is disabled in the Graphical User Interface.",
+      "expected": {
+        "substring": "logout=''",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204456"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "UMASK  077",
@@ -1696,6 +1709,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-256968"
+    },
+    {
+      "check": {
+        "command": "grep -is disable-user-list /etc/dconf/db/gdm.d/*",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must disable the login screen user list for graphical user interfaces.",
+      "expected": {
+        "substring": "disable-user-list=true",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-256969"
     },
     {
       "check": {

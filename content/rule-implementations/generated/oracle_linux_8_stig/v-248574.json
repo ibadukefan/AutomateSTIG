@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep gpgcheck /etc/yum.repos.d/*.repo",
+      "type": "command_output"
+    },
+    "description": "YUM must be configured to prevent the installation of patches, service packs, device drivers, or OL 8 system components that have not been digitally signed using a certificate that is recognized and approved by the organization.",
+    "expected": {
+      "substring": "gpgcheck=1",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248574"
+  },
   "check_content_excerpt": "Check that YUM verifies the signature of packages from a repository prior to install with the following command:\n\n$ sudo grep gpgcheck /etc/yum.repos.d/*.repo\n\ngpgcheck=1\n\nIf \"gpgcheck\" is not set to \"1\", or if options are missing or commented out, ask the system administrator (SA) how the certificates for patches and other operating system components are verified.\n\nIf there is no process to validate certificates that is approved by the organization, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "gpgcheck=1",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 8 to verify the signature of packages from a repository prior to install by setting the following option in the \"/etc/yum.repos.d/[your_repo_name].repo\" file:\n\ngpgcheck=1",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-248574r1015031_rule",
   "severity": "high",

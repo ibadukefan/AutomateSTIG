@@ -692,6 +692,97 @@
     },
     {
       "check": {
+        "command": "grep -r ucredit /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must enforce password complexity by requiring that at least one uppercase character be used.",
+      "expected": {
+        "substring": "ucredit = -1",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230357"
+    },
+    {
+      "check": {
+        "command": "grep -r lcredit /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must enforce password complexity by requiring that at least one lower-case character be used.",
+      "expected": {
+        "substring": "lcredit = -1",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230358"
+    },
+    {
+      "check": {
+        "command": "grep -r dcredit /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must enforce password complexity by requiring that at least one numeric character be used.",
+      "expected": {
+        "substring": "dcredit = -1",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230359"
+    },
+    {
+      "check": {
+        "command": "grep -r maxclassrepeat /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must require the maximum number of repeating characters of the same character class be limited to four when passwords are changed.",
+      "expected": {
+        "substring": "maxclassrepeat = 4",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230360"
+    },
+    {
+      "check": {
+        "command": "grep -r maxrepeat /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must require the maximum number of repeating characters be limited to three when passwords are changed.",
+      "expected": {
+        "substring": "maxrepeat = 3",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230361"
+    },
+    {
+      "check": {
+        "command": "grep -r minclass /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must require the change of at least four character classes when passwords are changed.",
+      "expected": {
+        "substring": "minclass = 4",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230362"
+    },
+    {
+      "check": {
+        "command": "grep -r difok /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must require the change of at least 8 characters when passwords are changed.",
+      "expected": {
+        "substring": "difok = 8",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230363"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "PASS_MIN_DAYS 1",
@@ -776,6 +867,19 @@
     },
     {
       "check": {
+        "command": "grep -r ocredit /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "All RHEL 8 passwords must contain at least one special character.",
+      "expected": {
+        "substring": "ocredit = -1",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230375"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sssd/sssd.conf",
         "pattern": "cache_credentials = true",
@@ -787,6 +891,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-230376"
+    },
+    {
+      "check": {
+        "command": "grep -r dictcheck /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must prevent the use of dictionary words for passwords.",
+      "expected": {
+        "substring": "dictcheck=1",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230377"
     },
     {
       "check": {
@@ -2453,6 +2570,32 @@
     },
     {
       "check": {
+        "command": "grep -r logout /etc/dconf/db/local.d/*",
+        "type": "command_output"
+      },
+      "description": "The x86 Ctrl-Alt-Delete key sequence in RHEL 8 must be disabled if a graphical user interface is installed.",
+      "expected": {
+        "substring": "logout=''",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230530"
+    },
+    {
+      "check": {
+        "command": "grep -iR CtrlAltDelBurstAction /etc/systemd/system*",
+        "type": "command_output"
+      },
+      "description": "The systemd Ctrl-Alt-Delete burst key sequence in RHEL 8 must be disabled.",
+      "expected": {
+        "substring": "CtrlAltDelBurstAction=none",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230531"
+    },
+    {
+      "check": {
         "name": "tftp-server",
         "should_be_installed": false,
         "type": "package"
@@ -2810,6 +2953,19 @@
     },
     {
       "check": {
+        "command": "grep banner-message-enable /etc/dconf/db/local.d/*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must display a banner before granting local or remote access to the system via a graphical user logon.",
+      "expected": {
+        "substring": "banner-message-enable=true",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-244519"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/boot/efi/EFI/redhat/grub.cfg",
         "pattern": "set superusers=\"[someuniquestringhere]\"",
@@ -2877,6 +3033,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-244525"
+    },
+    {
+      "check": {
+        "command": "grep CRYPTO_POLICY /etc/sysconfig/sshd",
+        "type": "command_output"
+      },
+      "description": "The RHEL 8 SSH daemon must be configured to use system-wide crypto policies.",
+      "expected": {
+        "substring": "# CRYPTO_POLICY=",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-244526"
     },
     {
       "check": {

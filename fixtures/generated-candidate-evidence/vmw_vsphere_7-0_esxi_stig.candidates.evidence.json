@@ -289,7 +289,7 @@
     },
     {
       "check": {
-        "command": "esxcli system settings encryption get|grep \"Secure Boot",
+        "command": "esxcli system settings encryption get|grep \"Secure Boot\"",
         "type": "command_output"
       },
       "description": "The ESXi host must implement Secure Boot enforcement.",
@@ -300,13 +300,13 @@
       },
       "fail_fixture": {
         "command_outputs": {
-          "esxcli system settings encryption get|grep \"Secure Boot": "unexpected-Require Secure Boot: true"
+          "esxcli system settings encryption get|grep \"Secure Boot\"": "unexpected-Require Secure Boot: true"
         },
         "platform": "generic"
       },
       "pass_fixture": {
         "command_outputs": {
-          "esxcli system settings encryption get|grep \"Secure Boot": "Require Secure Boot: true"
+          "esxcli system settings encryption get|grep \"Secure Boot\"": "Require Secure Boot: true"
         },
         "platform": "generic"
       },

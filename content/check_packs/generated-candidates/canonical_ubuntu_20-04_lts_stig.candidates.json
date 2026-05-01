@@ -1284,6 +1284,19 @@
     },
     {
       "check": {
+        "command": "grep logout /etc/dconf/db/local.d/*",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must disable the x86 Ctrl-Alt-Delete key sequence if a graphical user interface is installed.",
+      "expected": {
+        "substring": "logout=''",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238379"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/common-auth",
         "pattern": "/etc/pam.d/common-password",

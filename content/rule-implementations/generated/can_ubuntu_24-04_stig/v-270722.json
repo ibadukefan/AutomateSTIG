@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -r ^PubkeyAuthentication /etc/ssh/sshd_config*",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must implement smart card logins for multifactor authentication for local and network access to privileged and nonprivileged accounts over SSH.",
+    "expected": {
+      "substring": "PubkeyAuthentication yes",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270722"
+  },
   "check_content_excerpt": "Verify the sshd daemon allows public key authentication with the following command:\n \n$ sudo grep -r ^PubkeyAuthentication /etc/ssh/sshd_config*\n/etc/ssh/sshd_config:PubkeyAuthentication yes\n\nIf \"PubkeyAuthentication\" is not set to \"yes\", is commented out, is missing, or conflicting results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "PubkeyAuthentication yes",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to use multifactor authentication for access to accounts. \n \nSet the sshd option \"PubkeyAuthentication\" to \"yes\" in the \"/etc/ssh/sshd_config\" file.\n\nPubkeyAuthentication yes",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270722r1067130_rule",
   "severity": "medium",

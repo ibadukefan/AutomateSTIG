@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -r 'Ciphers' /etc/ssh/ssh_config*",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must configure the SSH client to use FIPS 140-3 approved ciphers to prevent the unauthorized disclosure of information and/or detect changes to information during transmission.",
+    "expected": {
+      "substring": "Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270670"
+  },
   "check_content_excerpt": "Verify the SSH client is configured to use only ciphers employing FIPS 140-3 approved algorithms with the following command:\n\n$ sudo grep -r 'Ciphers' /etc/ssh/ssh_config*\nCiphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr\n \nIf any ciphers other than \"Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr\" are listed, the \"Ciphers\" keyword is missing, or the returned line is commented out, or if multiple conflicting ciphers are returned, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the Ubuntu 24.04 LTS SSH client to use only ciphers employing FIPS 140-3 approved algorithms by updating the \"/etc/ssh/ssh_config\" file with the following line:\n\nCiphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr\n\nRestart the \"ssh\" service for changes to take effect:\n\n$ sudo systemctl restart ssh",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270670r1067115_rule",
   "severity": "medium",

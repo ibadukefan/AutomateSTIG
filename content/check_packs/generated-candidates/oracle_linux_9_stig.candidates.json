@@ -3562,6 +3562,19 @@
     },
     {
       "check": {
+        "command": "grep -iR CtrlAltDelBurstAction /etc/systemd/system*",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured so that the systemd Ctrl-Alt-Delete burst key sequence is disabled.",
+      "expected": {
+        "substring": "CtrlAltDelBurstAction=none",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271751"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/security/limits.conf",
         "pattern": "/etc/security/limits.d/*.conf",

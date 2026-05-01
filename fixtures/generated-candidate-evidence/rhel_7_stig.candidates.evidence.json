@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 124,
+  "candidate_checks": 126,
   "cases": [
     {
       "check": {
@@ -456,6 +456,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204454"
+    },
+    {
+      "check": {
+        "command": "grep logout /etc/dconf/db/local.d/*",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the x86 Ctrl-Alt-Delete key sequence is disabled in the Graphical User Interface.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "logout=''",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep logout /etc/dconf/db/local.d/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep logout /etc/dconf/db/local.d/*": "before\nlogout=''\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204456"
     },
     {
       "check": {
@@ -3299,6 +3325,32 @@
     },
     {
       "check": {
+        "command": "grep -is disable-user-list /etc/dconf/db/gdm.d/*",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must disable the login screen user list for graphical user interfaces.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "disable-user-list=true",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -is disable-user-list /etc/dconf/db/gdm.d/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -is disable-user-list /etc/dconf/db/gdm.d/*": "before\ndisable-user-list=true\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256969"
+    },
+    {
+      "check": {
         "name": "mailx",
         "should_be_installed": true,
         "type": "package"
@@ -3329,5 +3381,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 124
+  "validated_candidates": 126
 }

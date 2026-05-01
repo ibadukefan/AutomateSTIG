@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 351,
+  "candidate_checks": 352,
   "cases": [
     {
       "check": {
@@ -6963,6 +6963,32 @@
     },
     {
       "check": {
+        "command": "grep -iR CtrlAltDelBurstAction /etc/systemd/system*",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured so that the systemd Ctrl-Alt-Delete burst key sequence is disabled.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "CtrlAltDelBurstAction=none",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -iR CtrlAltDelBurstAction /etc/systemd/system*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -iR CtrlAltDelBurstAction /etc/systemd/system*": "before\nCtrlAltDelBurstAction=none\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271751"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/security/limits.conf",
         "pattern": "/etc/security/limits.d/*.conf",
@@ -9735,5 +9761,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 351
+  "validated_candidates": 352
 }

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -ir ClientAliveCountMax /etc/ssh/sshd_config*",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must immediately terminate all network connections associated with SSH traffic after a period of inactivity.",
+    "expected": {
+      "substring": "ClientAliveCountMax  1",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270742"
+  },
   "check_content_excerpt": "Verify that all network connections associated with SSH traffic automatically terminate after a period of inactivity with the following command: \n\n$ sudo grep -ir ClientAliveCountMax /etc/ssh/sshd_config*\n/etc/ssh/sshd_config:ClientAliveCountMax  1\n\nIf \"ClientAliveCountMax\" is not to \"1\", if conflicting results are returned, is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "ClientAliveCountMax  1",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to automatically terminate inactive SSH sessions after a period of inactivity. \n \nModify or append the following line in the \"/etc/ssh/sshd_config\" file, replacing \"[Count]\" with a value of 1: \n \nClientAliveCountMax 1 \n \nRestart the SSH daemon for the changes to take effect: \n \n$ sudo systemctl restart ssh.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270742r1066715_rule",
   "severity": "medium",

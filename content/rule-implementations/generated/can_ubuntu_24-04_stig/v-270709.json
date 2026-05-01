@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -ir x11uselocalhost /etc/ssh/sshd_config*",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS SSH daemon must prevent remote hosts from connecting to the proxy display.",
+    "expected": {
+      "substring": "X11UseLocalhost yes",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270709"
+  },
   "check_content_excerpt": "Verify the SSH daemon prevents remote hosts from connecting to the proxy display with the following command:\n\n$ sudo grep -ir x11uselocalhost /etc/ssh/sshd_config*\nX11UseLocalhost yes\n\nIf the \"X11UseLocalhost\" keyword is set to \"no\", is commented out, is missing, or multiple conflicting results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "X11UseLocalhost yes",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SSH daemon to prevent remote hosts from connecting to the proxy display. \n \nEdit the \"/etc/ssh/sshd_config\" file to uncomment or add the line for the \"X11UseLocalhost\" keyword and set its value to \"yes\" (this file may be named differently or be in a different location if using a version of SSH that is provided by a third-party vendor): \n \nX11UseLocalhost yes \n \nRestart the SSH daemon for the changes to take effect: \n \n$ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270709r1066616_rule",
   "severity": "medium",

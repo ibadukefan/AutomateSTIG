@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -i CRYPTO_POLICY /etc/sysconfig/sshd",
+      "type": "command_output"
+    },
+    "description": "The OL 8 SSH daemon must be configured to use system-wide crypto policies.",
+    "expected": {
+      "substring": "# CRYPTO_POLICY=",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248560"
+  },
   "check_content_excerpt": "Verify that system-wide crypto policies are in effect:\n\n$ sudo grep -i CRYPTO_POLICY /etc/sysconfig/sshd\n\n# CRYPTO_POLICY=\n\nIf the \"CRYPTO_POLICY\" is uncommented, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "# CRYPTO_POLICY=",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the OL 8 SSH daemon to use system-wide crypto policies by adding the following line to /etc/sysconfig/sshd:\n\n# CRYPTO_POLICY=\n\nA reboot is required for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-248560r991554_rule",
   "severity": "medium",

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 273,
+  "candidate_checks": 288,
   "cases": [
     {
       "check": {
@@ -53,6 +53,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248526"
+    },
+    {
+      "check": {
+        "command": "grep banner-message-enable /etc/dconf/db/local.d/*",
+        "type": "command_output"
+      },
+      "description": "OL 8 must display a banner before granting local or remote access to the system via a graphical user logon.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "banner-message-enable=true",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep banner-message-enable /etc/dconf/db/local.d/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep banner-message-enable /etc/dconf/db/local.d/*": "before\nbanner-message-enable=true\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248527"
     },
     {
       "check": {
@@ -425,6 +451,32 @@
     },
     {
       "check": {
+        "command": "grep -i CRYPTO_POLICY /etc/sysconfig/sshd",
+        "type": "command_output"
+      },
+      "description": "The OL 8 SSH daemon must be configured to use system-wide crypto policies.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "# CRYPTO_POLICY=",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i CRYPTO_POLICY /etc/sysconfig/sshd": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i CRYPTO_POLICY /etc/sysconfig/sshd": "before\n# CRYPTO_POLICY=\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248560"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/crypto-policies/back-ends/opensshserver.config",
         "pattern": "-oMACS=hmac-sha2-512,hmac-sha2-256,hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com",
@@ -687,6 +739,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248572"
+    },
+    {
+      "check": {
+        "command": "grep gpgcheck /etc/yum.repos.d/*.repo",
+        "type": "command_output"
+      },
+      "description": "YUM must be configured to prevent the installation of patches, service packs, device drivers, or OL 8 system components that have not been digitally signed using a certificate that is recognized and approved by the organization.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "gpgcheck=1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep gpgcheck /etc/yum.repos.d/*.repo": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep gpgcheck /etc/yum.repos.d/*.repo": "before\ngpgcheck=1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248574"
     },
     {
       "check": {
@@ -2541,6 +2619,32 @@
     },
     {
       "check": {
+        "command": "grep -r removal-action /etc/dconf/db/*",
+        "type": "command_output"
+      },
+      "description": "OL 8 must be able to initiate directly a session lock for all connection types using smartcard when the smartcard is removed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "removal-action='lock-screen'",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r removal-action /etc/dconf/db/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r removal-action /etc/dconf/db/*": "before\nremoval-action='lock-screen'\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248679"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/dconf/profile/user",
         "pattern": "system-db",
@@ -2646,6 +2750,188 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248686"
+    },
+    {
+      "check": {
+        "command": "grep -r ucredit /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "OL 8 must enforce password complexity by requiring that at least one uppercase character be used.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "ucredit = -1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r ucredit /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r ucredit /etc/security/pwquality.conf*": "before\nucredit = -1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248687"
+    },
+    {
+      "check": {
+        "command": "grep -r lcredit /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "OL 8 must enforce password complexity by requiring that at least one lowercase character be used.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "lcredit = -1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r lcredit /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r lcredit /etc/security/pwquality.conf*": "before\nlcredit = -1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248688"
+    },
+    {
+      "check": {
+        "command": "grep -r dcredit /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "OL 8 must enforce password complexity by requiring that at least one numeric character be used.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "dcredit = -1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r dcredit /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r dcredit /etc/security/pwquality.conf*": "before\ndcredit = -1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248689"
+    },
+    {
+      "check": {
+        "command": "grep -r maxclassrepeat /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "OL 8 must require the maximum number of repeating characters of the same character class be limited to four when passwords are changed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "maxclassrepeat = 4",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r maxclassrepeat /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r maxclassrepeat /etc/security/pwquality.conf*": "before\nmaxclassrepeat = 4\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248690"
+    },
+    {
+      "check": {
+        "command": "grep -r maxrepeat /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "OL 8 must require the maximum number of repeating characters be limited to three when passwords are changed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "maxrepeat = 3",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r maxrepeat /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r maxrepeat /etc/security/pwquality.conf*": "before\nmaxrepeat = 3\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248691"
+    },
+    {
+      "check": {
+        "command": "grep -r minclass /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "OL 8 must require the change of at least four character classes when passwords are changed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "minclass = 4",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r minclass /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r minclass /etc/security/pwquality.conf*": "before\nminclass = 4\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248692"
+    },
+    {
+      "check": {
+        "command": "grep -r difok /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "OL 8 must require the change of at least eight characters when passwords are changed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "difok = 8",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r difok /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r difok /etc/security/pwquality.conf*": "before\ndifok = 8\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248693"
     },
     {
       "check": {
@@ -2876,6 +3162,32 @@
     },
     {
       "check": {
+        "command": "grep -r ocredit /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "All OL 8 passwords must contain at least one special character.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "ocredit = -1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r ocredit /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r ocredit /etc/security/pwquality.conf*": "before\nocredit = -1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248709"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sssd/sssd.conf",
         "pattern": "/etc/sssd/conf.d/*.conf",
@@ -2900,6 +3212,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248710"
+    },
+    {
+      "check": {
+        "command": "grep -r dictcheck /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "OL 8 must prevent the use of dictionary words for passwords.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "dictcheck=1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r dictcheck /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r dictcheck /etc/security/pwquality.conf*": "before\ndictcheck=1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248711"
     },
     {
       "check": {
@@ -6349,6 +6687,32 @@
     },
     {
       "check": {
+        "command": "grep logout /etc/dconf/db/local.d/*",
+        "type": "command_output"
+      },
+      "description": "The x86 Ctrl-Alt-Delete key sequence in OL 8 must be disabled if a graphical user interface is installed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "logout=''",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep logout /etc/dconf/db/local.d/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep logout /etc/dconf/db/local.d/*": "before\nlogout=''\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248870"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/systemd/system.conf",
         "pattern": "CtrlAltDelBurstAction=none",
@@ -7240,6 +7604,32 @@
     },
     {
       "check": {
+        "command": "grep -r retry /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "OL 8 systems, version 8.4 and above, must ensure the password complexity module is configured for three retries or less.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "retry = 3",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r retry /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r retry /etc/security/pwquality.conf*": "before\nretry = 3\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-252660"
+    },
+    {
+      "check": {
         "key": "net.ipv4.conf.all.forwarding",
         "type": "sysctl"
       },
@@ -7403,5 +7793,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 273
+  "validated_candidates": 288
 }

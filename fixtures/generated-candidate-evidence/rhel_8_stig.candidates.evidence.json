@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 252,
+  "candidate_checks": 265,
   "cases": [
     {
       "check": {
@@ -1343,6 +1343,188 @@
     },
     {
       "check": {
+        "command": "grep -r ucredit /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must enforce password complexity by requiring that at least one uppercase character be used.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "ucredit = -1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r ucredit /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r ucredit /etc/security/pwquality.conf*": "before\nucredit = -1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230357"
+    },
+    {
+      "check": {
+        "command": "grep -r lcredit /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must enforce password complexity by requiring that at least one lower-case character be used.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "lcredit = -1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r lcredit /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r lcredit /etc/security/pwquality.conf*": "before\nlcredit = -1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230358"
+    },
+    {
+      "check": {
+        "command": "grep -r dcredit /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must enforce password complexity by requiring that at least one numeric character be used.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "dcredit = -1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r dcredit /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r dcredit /etc/security/pwquality.conf*": "before\ndcredit = -1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230359"
+    },
+    {
+      "check": {
+        "command": "grep -r maxclassrepeat /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must require the maximum number of repeating characters of the same character class be limited to four when passwords are changed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "maxclassrepeat = 4",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r maxclassrepeat /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r maxclassrepeat /etc/security/pwquality.conf*": "before\nmaxclassrepeat = 4\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230360"
+    },
+    {
+      "check": {
+        "command": "grep -r maxrepeat /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must require the maximum number of repeating characters be limited to three when passwords are changed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "maxrepeat = 3",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r maxrepeat /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r maxrepeat /etc/security/pwquality.conf*": "before\nmaxrepeat = 3\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230361"
+    },
+    {
+      "check": {
+        "command": "grep -r minclass /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must require the change of at least four character classes when passwords are changed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "minclass = 4",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r minclass /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r minclass /etc/security/pwquality.conf*": "before\nminclass = 4\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230362"
+    },
+    {
+      "check": {
+        "command": "grep -r difok /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must require the change of at least 8 characters when passwords are changed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "difok = 8",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r difok /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r difok /etc/security/pwquality.conf*": "before\ndifok = 8\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230363"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "PASS_MIN_DAYS 1",
@@ -1505,6 +1687,32 @@
     },
     {
       "check": {
+        "command": "grep -r ocredit /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "All RHEL 8 passwords must contain at least one special character.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "ocredit = -1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r ocredit /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r ocredit /etc/security/pwquality.conf*": "before\nocredit = -1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230375"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sssd/sssd.conf",
         "pattern": "cache_credentials = true",
@@ -1529,6 +1737,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230376"
+    },
+    {
+      "check": {
+        "command": "grep -r dictcheck /etc/security/pwquality.conf*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must prevent the use of dictionary words for passwords.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "dictcheck=1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r dictcheck /etc/security/pwquality.conf*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r dictcheck /etc/security/pwquality.conf*": "before\ndictcheck=1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230377"
     },
     {
       "check": {
@@ -4792,6 +5026,58 @@
     },
     {
       "check": {
+        "command": "grep -r logout /etc/dconf/db/local.d/*",
+        "type": "command_output"
+      },
+      "description": "The x86 Ctrl-Alt-Delete key sequence in RHEL 8 must be disabled if a graphical user interface is installed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "logout=''",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r logout /etc/dconf/db/local.d/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r logout /etc/dconf/db/local.d/*": "before\nlogout=''\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230530"
+    },
+    {
+      "check": {
+        "command": "grep -iR CtrlAltDelBurstAction /etc/systemd/system*",
+        "type": "command_output"
+      },
+      "description": "The systemd Ctrl-Alt-Delete burst key sequence in RHEL 8 must be disabled.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "CtrlAltDelBurstAction=none",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -iR CtrlAltDelBurstAction /etc/systemd/system*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -iR CtrlAltDelBurstAction /etc/systemd/system*": "before\nCtrlAltDelBurstAction=none\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230531"
+    },
+    {
+      "check": {
         "name": "tftp-server",
         "should_be_installed": false,
         "type": "package"
@@ -5500,6 +5786,32 @@
     },
     {
       "check": {
+        "command": "grep banner-message-enable /etc/dconf/db/local.d/*",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must display a banner before granting local or remote access to the system via a graphical user logon.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "banner-message-enable=true",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep banner-message-enable /etc/dconf/db/local.d/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep banner-message-enable /etc/dconf/db/local.d/*": "before\nbanner-message-enable=true\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244519"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/boot/efi/EFI/redhat/grub.cfg",
         "pattern": "set superusers=\"[someuniquestringhere]\"",
@@ -5632,6 +5944,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-244525"
+    },
+    {
+      "check": {
+        "command": "grep CRYPTO_POLICY /etc/sysconfig/sshd",
+        "type": "command_output"
+      },
+      "description": "The RHEL 8 SSH daemon must be configured to use system-wide crypto policies.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "# CRYPTO_POLICY=",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep CRYPTO_POLICY /etc/sysconfig/sshd": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep CRYPTO_POLICY /etc/sysconfig/sshd": "before\n# CRYPTO_POLICY=\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244526"
     },
     {
       "check": {
@@ -6811,5 +7149,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 252
+  "validated_candidates": 265
 }

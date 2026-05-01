@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 132,
+  "candidate_checks": 142,
   "cases": [
     {
       "check": {
@@ -448,6 +448,110 @@
     },
     {
       "check": {
+        "command": "grep -r 'Ciphers' /etc/ssh/sshd_config*",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must configure the SSH daemon to use FIPS 140-3 approved ciphers to prevent the unauthorized disclosure of information and/or detect changes to information during transmission.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r 'Ciphers' /etc/ssh/sshd_config*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r 'Ciphers' /etc/ssh/sshd_config*": "before\nCiphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270667"
+    },
+    {
+      "check": {
+        "command": "grep -ir kexalgorithms /etc/ssh/sshd_config*",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS SSH server must be configured to use only FIPS 140-3 validated key exchange algorithms.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "KexAlgorithms ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group14-sha256",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -ir kexalgorithms /etc/ssh/sshd_config*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -ir kexalgorithms /etc/ssh/sshd_config*": "before\nKexAlgorithms ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group14-sha256\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270669"
+    },
+    {
+      "check": {
+        "command": "grep -r 'Ciphers' /etc/ssh/ssh_config*",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must configure the SSH client to use FIPS 140-3 approved ciphers to prevent the unauthorized disclosure of information and/or detect changes to information during transmission.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r 'Ciphers' /etc/ssh/ssh_config*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r 'Ciphers' /etc/ssh/ssh_config*": "before\nCiphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270670"
+    },
+    {
+      "check": {
+        "command": "grep -ir macs /etc/ssh/ssh_config*",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS SSH client must be configured to use only Message Authentication Codes (MACs) employing FIPS 140-3 validated cryptographic hash algorithms.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -ir macs /etc/ssh/ssh_config*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -ir macs /etc/ssh/ssh_config*": "before\nMACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270671"
+    },
+    {
+      "check": {
         "name": "opensc-pkcs11",
         "should_be_installed": true,
         "type": "package"
@@ -845,6 +949,32 @@
     },
     {
       "check": {
+        "command": "grep -ir banner /etc/ssh/sshd_config*",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must display the Standard Mandatory DOD Notice and Consent Banner before granting access to via an SSH logon.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "Banner /etc/issue.net",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -ir banner /etc/ssh/sshd_config*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -ir banner /etc/ssh/sshd_config*": "before\nBanner /etc/issue.net\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270691"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/gdm3/greeter.dconf-defaults",
         "pattern": "banner-message-enable=true",
@@ -1137,6 +1267,32 @@
     },
     {
       "check": {
+        "command": "grep -ir x11uselocalhost /etc/ssh/sshd_config*",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS SSH daemon must prevent remote hosts from connecting to the proxy display.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "X11UseLocalhost yes",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -ir x11uselocalhost /etc/ssh/sshd_config*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -ir x11uselocalhost /etc/ssh/sshd_config*": "before\nX11UseLocalhost yes\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270709"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/login",
         "pattern": "session     required      pam_lastlog.so showfailed",
@@ -1295,6 +1451,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270721"
+    },
+    {
+      "check": {
+        "command": "grep -r ^PubkeyAuthentication /etc/ssh/sshd_config*",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must implement smart card logins for multifactor authentication for local and network access to privileged and nonprivileged accounts over SSH.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "PubkeyAuthentication yes",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r ^PubkeyAuthentication /etc/ssh/sshd_config*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r ^PubkeyAuthentication /etc/ssh/sshd_config*": "before\nPubkeyAuthentication yes\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270722"
     },
     {
       "check": {
@@ -1779,6 +1961,84 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270740"
+    },
+    {
+      "check": {
+        "command": "grep -r ^UsePAM /etc/ssh/sshd_config*",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must use strong authenticators in establishing nonlocal maintenance and diagnostic sessions.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "UsePAM yes",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -r ^UsePAM /etc/ssh/sshd_config*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -r ^UsePAM /etc/ssh/sshd_config*": "before\nUsePAM yes\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270741"
+    },
+    {
+      "check": {
+        "command": "grep -ir ClientAliveCountMax /etc/ssh/sshd_config*",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must immediately terminate all network connections associated with SSH traffic after a period of inactivity.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "ClientAliveCountMax  1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -ir ClientAliveCountMax /etc/ssh/sshd_config*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -ir ClientAliveCountMax /etc/ssh/sshd_config*": "before\nClientAliveCountMax  1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270742"
+    },
+    {
+      "check": {
+        "command": "grep -ir ClientAliveInterval /etc/ssh/sshd_config*",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must immediately terminate all network connections associated with SSH traffic at the end of the session or after 10 minutes of inactivity.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "ClientAliveInterval 600",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -ir ClientAliveInterval /etc/ssh/sshd_config*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -ir ClientAliveInterval /etc/ssh/sshd_config*": "before\nClientAliveInterval 600\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270743"
     },
     {
       "check": {
@@ -3631,5 +3891,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 132
+  "validated_candidates": 142
 }

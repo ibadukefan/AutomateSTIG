@@ -113,16 +113,17 @@
       "vuln_id": "V-248526"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248527",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248527r958390_rule",
       "severity": "medium",
       "title": "OL 8 must display a banner before granting local or remote access to the system via a graphical user logon.",
-      "tracking_issue": "TODO-V-248527",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248527"
@@ -598,16 +599,17 @@
       "vuln_id": "V-248559"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248560",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248560r991554_rule",
       "severity": "medium",
       "title": "The OL 8 SSH daemon must be configured to use system-wide crypto policies.",
-      "tracking_issue": "TODO-V-248560",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248560"
@@ -818,16 +820,17 @@
       "vuln_id": "V-248573"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248574",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248574r1015031_rule",
       "severity": "high",
       "title": "YUM must be configured to prevent the installation of patches, service packs, device drivers, or OL 8 system components that have not been digitally signed using a certificate that is recognized and approved by the organization.",
-      "tracking_issue": "TODO-V-248574",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248574"
@@ -2372,16 +2375,17 @@
       "vuln_id": "V-248678"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248679",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248679r1015046_rule",
       "severity": "medium",
       "title": "OL 8 must be able to initiate directly a session lock for all connection types using smartcard when the smartcard is removed.",
-      "tracking_issue": "TODO-V-248679",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248679"
@@ -2481,106 +2485,113 @@
       "vuln_id": "V-248686"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248687",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248687r1015047_rule",
       "severity": "low",
       "title": "OL 8 must enforce password complexity by requiring that at least one uppercase character be used.",
-      "tracking_issue": "TODO-V-248687",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248687"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248688",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248688r1015048_rule",
       "severity": "low",
       "title": "OL 8 must enforce password complexity by requiring that at least one lowercase character be used.",
-      "tracking_issue": "TODO-V-248688",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248688"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248689",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248689r1015049_rule",
       "severity": "low",
       "title": "OL 8 must enforce password complexity by requiring that at least one numeric character be used.",
-      "tracking_issue": "TODO-V-248689",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248689"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248690",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248690r1015050_rule",
       "severity": "medium",
       "title": "OL 8 must require the maximum number of repeating characters of the same character class be limited to four when passwords are changed.",
-      "tracking_issue": "TODO-V-248690",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248690"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248691",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248691r1015051_rule",
       "severity": "medium",
       "title": "OL 8 must require the maximum number of repeating characters be limited to three when passwords are changed.",
-      "tracking_issue": "TODO-V-248691",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248691"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248692",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248692r1015052_rule",
       "severity": "medium",
       "title": "OL 8 must require the change of at least four character classes when passwords are changed.",
-      "tracking_issue": "TODO-V-248692",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248692"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248693",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248693r1015053_rule",
       "severity": "low",
       "title": "OL 8 must require the change of at least eight characters when passwords are changed.",
-      "tracking_issue": "TODO-V-248693",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248693"
@@ -2804,16 +2815,17 @@
       "vuln_id": "V-248708"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248709",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248709r1015063_rule",
       "severity": "low",
       "title": "All OL 8 passwords must contain at least one special character.",
-      "tracking_issue": "TODO-V-248709",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248709"
@@ -2835,16 +2847,17 @@
       "vuln_id": "V-248710"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248711",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248711r991587_rule",
       "severity": "medium",
       "title": "OL 8 must prevent the use of dictionary words for passwords.",
-      "tracking_issue": "TODO-V-248711",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248711"
@@ -5016,16 +5029,17 @@
       "vuln_id": "V-248869"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248870",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248870r991589_rule",
       "severity": "high",
       "title": "The x86 Ctrl-Alt-Delete key sequence in OL 8 must be disabled if a graphical user interface is installed.",
-      "tracking_issue": "TODO-V-248870",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248870"
@@ -5770,16 +5784,17 @@
       "vuln_id": "V-252659"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-252660",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-252660r991589_rule",
       "severity": "medium",
       "title": "OL 8 systems, version 8.4 and above, must ensure the password complexity module is configured for three retries or less.",
-      "tracking_issue": "TODO-V-252660",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-252660"

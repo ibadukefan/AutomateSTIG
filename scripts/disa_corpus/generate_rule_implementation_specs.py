@@ -726,6 +726,70 @@ def _dconf_grep_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _authoritative_sample_block_after_command(content: str, command_end: int) -> tuple[list[str], str]:
+    sample_lines = []
+    tail_lines = []
+    in_tail = False
+    for line in content[command_end:].splitlines():
+        stripped = line.strip()
+        if not stripped:
+            if sample_lines:
+                in_tail = True
+            continue
+        if stripped.startswith(('$', '>')) or stripped.lower().startswith(('note:', 'notes:', 'ask ', 'verify ', 'check ')):
+            break
+        if stripped.lower().startswith('if '):
+            in_tail = True
+        if in_tail:
+            tail_lines.append(stripped)
+            continue
+        sample_lines.append(stripped)
+    return sample_lines, ' '.join(tail_lines)
+
+
+def _sample_key_referenced_by_finding_text(sample_line: str, finding_text: str) -> bool:
+    if sample_line.startswith('#') and re.search(r'\buncommented\b', finding_text, re.IGNORECASE):
+        key = sample_line.lstrip('#').split('=', 1)[0].strip()
+        return bool(key and key.lower() in finding_text.lower())
+    key_match = re.match(r'([A-Za-z0-9_.:-]+)\s*(?:=|\s)', sample_line)
+    if not key_match:
+        return bool(re.search(r'does\s+not\s+return', finding_text, re.IGNORECASE))
+    key = key_match.group(1)
+    return key.lower() in finding_text.lower()
+
+
+def _grep_sample_line_candidate(rule: dict, stig_id: str, command: str, command_end: int) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    if not re.match(r'^grep\b', command) or '|' in command or any(token in command for token in ('egrep', 'awk', ' xargs ')):
+        return None
+    sample_lines, finding_text = _authoritative_sample_block_after_command(content, command_end)
+    if len(sample_lines) != 1:
+        return None
+    sample_line = sample_lines[0]
+    if re.search(r'\[[A-Za-z0-9_ -]+\]|<[A-Za-z0-9_ -]+>', sample_line):
+        return None
+    if '*' not in command and not sample_line.startswith('#'):
+        return None
+    finding_text_is_explicit = re.search(
+        r'commented\s+out|missing|does\s+not\s+return|not\s+set\s+to|uncommented|other\s+than',
+        finding_text,
+        re.IGNORECASE,
+    )
+    if sample_line.startswith('/') and ':' in sample_line:
+        sample_line = sample_line.split(':', 1)[1].strip()
+    if not finding_text_is_explicit or not _sample_key_referenced_by_finding_text(sample_line, finding_text):
+        return None
+    if not sample_line:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'contains', 'substring': sample_line},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     dconf_candidate = _dconf_grep_candidate(rule, stig_id)
@@ -751,6 +815,11 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         return None
     if ';' in command and not re.fullmatch(r'[^;]*(?:\\;[^;]*)*', command):
         return None
+
+    command_end = command_matches[0].end() if command_matches else absolute_command.end()
+    grep_sample_candidate = _grep_sample_line_candidate(rule, stig_id, command, command_end)
+    if grep_sample_candidate:
+        return grep_sample_candidate
 
     expected_match = re.search(r'Expected\s+result:\s*(?P<body>.*?)(?:\n\s*If\b|\Z)', content, re.IGNORECASE | re.DOTALL)
     if expected_match:

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -ir ClientAliveInterval /etc/ssh/sshd_config*",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must immediately terminate all network connections associated with SSH traffic at the end of the session or after 10 minutes of inactivity.",
+    "expected": {
+      "substring": "ClientAliveInterval 600",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270743"
+  },
   "check_content_excerpt": "Verify that all network connections associated with SSH traffic are automatically terminated at the end of the session or after 10 minutes of inactivity with the following command:\n\n$ grep -ir ClientAliveInterval /etc/ssh/sshd_config*\n/etc/ssh/sshd_config:ClientAliveInterval 600\n\nIf \"ClientAliveInterval\" does not exist, is not set to a value of \"600\" or less in \"/etc/ssh/sshd_config\", if conflicting results are returned, is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "ClientAliveInterval 600",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to automatically terminate all network connections associated with SSH traffic at the end of a session or after a 10-minute period of inactivity.\n\nIn the file /etc/ssh/sshd_config set ClientAliveInterval to a value of \"600\" or less: \n\nClientAliveInterval 600\n\nRestart the SSH daemon for the changes to take effect:\n\n$ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270743r1066718_rule",
   "severity": "medium",

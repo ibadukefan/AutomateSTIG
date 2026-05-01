@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -is disable-user-list /etc/dconf/db/gdm.d/*",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must disable the login screen user list for graphical user interfaces.",
+    "expected": {
+      "substring": "disable-user-list=true",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-256969"
+  },
   "check_content_excerpt": "Verify that the operating system is configured to disable the login screen user list for graphical user interfaces.\n\nNote: If the system does not have the GNOME Desktop installed, this requirement is Not Applicable.\n\nVerify that the login screen user list for the GNOME Desktop is disabled with the following command:\n\n     $ sudo grep -is disable-user-list /etc/dconf/db/gdm.d/*\n     \n     /etc/dconf/db/gdm.d/00-login-screen:disable-user-list=true\n\t \nIf the variable \"disable-user-list\" is not defined in a file under \"/etc/dconf/db/gdm.d/\", is not set to \"true\", is missing or commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "disable-user-list=true",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to disable the login screen user list for graphical user interfaces.\n\nCreate or edit the gdm profile in \"/etc/dconf/profile/\" to contain the following lines:\n\n     $ sudo vi /etc/dconf/profile/gdm\n\t \n     user-db:user\n     system-db:gdm\n     file-db:/usr/share/gdm/greeter-dconf-defaults\n\t \nCreate or edit the gdm database for machine-wide settings in \"/etc/dconf/db/gdm.d/\" with the following lines:\n\n     $ sudo vi /etc/dconf/db/gdm.d/00-login-screen\n\t \n     [org/gnome/login-screen]\n     disable-user-list=true\n\t \nUpdate the system databases by updating the dconf utility:\n\n     $ sudo dconf update\n\t \nIf the login screen user list persists after updating the system databases, you can restart the GNOME Desktop without rebooting the system:\n\n     $ sudo systemctl restart gdm",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-256969r991589_rule",
   "severity": "medium",

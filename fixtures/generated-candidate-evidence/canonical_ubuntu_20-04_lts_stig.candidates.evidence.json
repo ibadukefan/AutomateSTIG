@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 106,
+  "candidate_checks": 107,
   "cases": [
     {
       "check": {
@@ -2637,6 +2637,32 @@
     },
     {
       "check": {
+        "command": "grep logout /etc/dconf/db/local.d/*",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must disable the x86 Ctrl-Alt-Delete key sequence if a graphical user interface is installed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "logout=''",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep logout /etc/dconf/db/local.d/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep logout /etc/dconf/db/local.d/*": "before\nlogout=''\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238379"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/common-auth",
         "pattern": "/etc/pam.d/common-password",
@@ -2963,5 +2989,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 106
+  "validated_candidates": 107
 }

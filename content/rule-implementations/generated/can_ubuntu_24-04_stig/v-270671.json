@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -ir macs /etc/ssh/ssh_config*",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS SSH client must be configured to use only Message Authentication Codes (MACs) employing FIPS 140-3 validated cryptographic hash algorithms.",
+    "expected": {
+      "substring": "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270671"
+  },
   "check_content_excerpt": "Verify the SSH client is configured to only use MACs employing FIPS 140-3 approved algorithms with the following command:\n\n$ sudo grep -ir macs /etc/ssh/ssh_config*\nMACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256\n\nIf any MACs other than \"hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256\" are listed, or the returned line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the Ubuntu 24.04 LTS SSH client to use only MACs employing FIPS 140-3 approved algorithms by updating the \"/etc/ssh/ssh_config\" file with the following line:\n\nMACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256\n\nRestart the \"ssh\" service for changes to take effect:\n\n$ sudo systemctl restart ssh",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270671r1155244_rule",
   "severity": "medium",

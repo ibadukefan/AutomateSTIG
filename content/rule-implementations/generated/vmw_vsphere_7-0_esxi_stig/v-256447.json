@@ -1,7 +1,7 @@
 {
   "candidate_check": {
     "check": {
-      "command": "esxcli system settings encryption get|grep \"Secure Boot",
+      "command": "esxcli system settings encryption get|grep \"Secure Boot\"",
       "type": "command_output"
     },
     "description": "The ESXi host must implement Secure Boot enforcement.",
