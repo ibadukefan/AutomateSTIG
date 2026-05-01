@@ -1524,6 +1524,22 @@ If the command returns any output, this is a finding.''',
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'rpm --verify cronie crontabs | awk \'! ($2 == "c" && $1 ~ /^.\\..\\.\\.\\.\\..\\./) {print $0}\''})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_linux_ufw_status_active_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270655',
+            'title': 'Ubuntu 24.04 LTS must enable and run the Uncomplicated Firewall (ufw).',
+            'check_content': '''Verify the ufw is enabled on the system with the following command:
+
+$ sudo ufw status
+Status: active
+
+If the above command returns the status as "inactive" or any type of error, this is a finding.''',
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'ufw status'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Status: active'})
+
 
 if __name__ == '__main__':
     unittest.main()

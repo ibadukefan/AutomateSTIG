@@ -220,6 +220,19 @@
     },
     {
       "check": {
+        "command": "ufw status",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 22.04 LTS must enable and run the Uncomplicated Firewall (ufw).",
+      "expected": {
+        "substring": "Status: active",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260515"
+    },
+    {
+      "check": {
         "expected_status": "running",
         "name": "ssh",
         "type": "service"

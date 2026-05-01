@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 107,
+  "candidate_checks": 108,
   "cases": [
     {
       "check": {
@@ -466,6 +466,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-260514"
+    },
+    {
+      "check": {
+        "command": "ufw status",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 22.04 LTS must enable and run the Uncomplicated Firewall (ufw).",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "Status: active",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "ufw status": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "ufw status": "before\nStatus: active\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260515"
     },
     {
       "check": {
@@ -2901,5 +2927,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
-  "validated_candidates": 107
+  "validated_candidates": 108
 }

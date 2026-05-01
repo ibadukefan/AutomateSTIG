@@ -916,6 +916,19 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'description': rule.get('title', ''),
         }
 
+    if command == 'ufw status' and re.search(r'^\s*Status:\s+active\s*$', content, re.IGNORECASE | re.MULTILINE) and re.search(
+        r'If\s+[^.\n]*status\s+as\s+["“]inactive["”]\s+or\s+any\s+type\s+of\s+error,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'contains', 'substring': 'Status: active'},
+            'description': rule.get('title', ''),
+        }
+
     result_match = re.search(r'If\s+the\s+result\s+is\s+not\s+["“]([^"”\n]+)["”]', content, re.IGNORECASE)
     if result_match:
         return {

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "ufw status",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 22.04 LTS must enable and run the Uncomplicated Firewall (ufw).",
+    "expected": {
+      "substring": "Status: active",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260515"
+  },
   "check_content_excerpt": "Verify the ufw is enabled on the system with the following command:  \n  \n     $ sudo ufw status \n     Status: active \n  \nIf the above command returns the status as \"inactive\" or any type of error, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "Status: active",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Enable the ufw by using the following command:  \n  \n     $ sudo ufw enable",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-260515r958672_rule",
   "severity": "medium",

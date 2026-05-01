@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "ufw status",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must enable and run the Uncomplicated Firewall (ufw).",
+    "expected": {
+      "substring": "Status: active",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270655"
+  },
   "check_content_excerpt": "Verify the ufw is enabled on the system with the following command: \n \n$ sudo ufw status\nStatus: active\n \nIf the above command returns the status as \"inactive\" or any type of error, this is a finding. \n\nIf the ufw is not installed, ask the system administrator if another application firewall is installed. If a different firewall is active on the system, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "Status: active",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Enable the ufw by using the following command: \n \n$ sudo ufw enable\n\nNote: Enabling the firewall will potentially disrupt ssh sessions.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270655r1067145_rule",
   "severity": "medium",

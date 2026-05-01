@@ -107,6 +107,19 @@
     },
     {
       "check": {
+        "command": "ufw status",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must enable and run the Uncomplicated Firewall (ufw).",
+      "expected": {
+        "substring": "Status: active",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270655"
+    },
+    {
+      "check": {
         "name": "auditd",
         "should_be_installed": true,
         "type": "package"
