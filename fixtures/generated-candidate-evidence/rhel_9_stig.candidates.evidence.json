@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 326,
+  "candidate_checks": 327,
   "cases": [
     {
       "check": {
@@ -214,6 +214,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257819"
+    },
+    {
+      "check": {
+        "command": "rpm -Va --noconfig | awk '$1 ~ /..5/ && $2 != \"c\"'",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must be configured so that the cryptographic hashes of system files match vendor values.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "rpm -Va --noconfig | awk '$1 ~ /..5/ && $2 != \"c\"'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "rpm -Va --noconfig | awk '$1 ~ /..5/ && $2 != \"c\"'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257823"
     },
     {
       "check": {
@@ -9133,5 +9159,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 326
+  "validated_candidates": 327
 }

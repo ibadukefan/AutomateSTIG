@@ -491,6 +491,32 @@
     },
     {
       "check": {
+        "command": "rpm -Va --noconfig | awk '$1 ~ /..5/ && $2 != \"c\"'",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured so that the cryptographic hashes of system files match vendor values.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271480"
+    },
+    {
+      "check": {
+        "command": "rpm -V crypto-policies",
+        "type": "command_output"
+      },
+      "description": "OL 9 cryptographic policy files must match files shipped with the operating system.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271481"
+    },
+    {
+      "check": {
         "name": "openssh-server",
         "should_be_installed": true,
         "type": "package"

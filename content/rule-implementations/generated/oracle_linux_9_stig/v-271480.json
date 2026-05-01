@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "rpm -Va --noconfig | awk '$1 ~ /..5/ && $2 != \"c\"'",
+      "type": "command_output"
+    },
+    "description": "OL 9 must be configured so that the cryptographic hashes of system files match vendor values.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-271480"
+  },
   "check_content_excerpt": "Verify that OL 9 is configured so that the cryptographic hashes of system files match vendor values.\n \nList files on the system that have file hashes different from what is expected by the RPM database with the following command:\n\n$ sudo rpm -Va --noconfig | awk '$1 ~ /..5/ && $2 != \"c\"' \n\nIf there is output, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 so that the cryptographic hashes of system files match vendor values.\n\nGiven output from the check command, identify the package that provides the output and reinstall it. The following trimmed example output shows a package that has failed verification, been identified, and been reinstalled:\n\n$ sudo rpm -Va --noconfig | awk '$1 ~ /..5/ && $2 != \"c\"'\nS.5....T.    /usr/bin/znew\n\n$ sudo dnf provides /usr/bin/znew\n[...]\ngzip-1.10-8.el9.x86_64 : The GNU data compression program\n[...]\n\n$ sudo dnf -y reinstall gzip\n[...]\n\n$ sudo rpm -Va --noconfig | awk '$1 ~ /..5/ && $2 != \"c\"'\n[no output]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271480r1091152_rule",
   "severity": "medium",

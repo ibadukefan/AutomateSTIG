@@ -559,6 +559,11 @@ def _normalize_command(command: str) -> str:
     return command.strip()
 
 
+def _has_unsafe_shell_token(command: str) -> bool:
+    unquoted = re.sub(r"'[^']*'|\"[^\"]*\"", '', command)
+    return any(token in unquoted for token in ('`', '$(', '&&', '<<'))
+
+
 def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -730,7 +735,9 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         absolute_command = re.search(r'^\s*(?P<command>/[A-Za-z0-9_./:+-]+\b[^\n\r]*)$', content, re.MULTILINE)
         if absolute_command and re.search(r'If\s+the\s+result\s+is\s+not\s+["“][^"”\n]+["”]', content, re.IGNORECASE):
             command = _normalize_command(absolute_command.group('command'))
-    if not command or any(token in command for token in ('`', '$(', '&&', '<<')):
+    if not command or _has_unsafe_shell_token(command):
+        return None
+    if re.search(r'\bPART\b', command) and '[PART]' in content:
         return None
     if ';' in command and not re.fullmatch(r'[^;]*(?:\\;[^;]*)*', command):
         return None
@@ -787,7 +794,9 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         re.IGNORECASE,
     )
     no_output_for_explicit_output = re.search(r'if\s+output\s+is\s+produced,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
-    if no_output_for_find or no_output_for_explicit_output:
+    no_output_for_command_output = re.search(r'if\s+the\s+command\s+has\s+any\s+output,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    no_output_for_any_output = re.search(r'if\s+there\s+is\s+output,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    if no_output_for_find or no_output_for_explicit_output or no_output_for_command_output or no_output_for_any_output:
         return {
             'vuln_id': rule.get('vuln_id', ''),
             'platform': 'linux' if _linux_platform(stig_id) else 'generic',

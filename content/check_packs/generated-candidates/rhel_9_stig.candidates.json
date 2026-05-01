@@ -112,6 +112,19 @@
     },
     {
       "check": {
+        "command": "rpm -Va --noconfig | awk '$1 ~ /..5/ && $2 != \"c\"'",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must be configured so that the cryptographic hashes of system files match vendor values.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257823"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/dnf/dnf.conf",
         "pattern": "clean_requirements_on_remove=True",

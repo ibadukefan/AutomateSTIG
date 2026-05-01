@@ -210,6 +210,44 @@ $ sudo sysctl --system'''
         self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/usr/lib/systemd/system/rescue.service', 'pattern': 'sulogin-shell', 'is_regex': False})
         self.assertEqual(candidate['expected'], {'type': 'contains'})
 
+    def test_infers_rpm_verify_command_as_empty_output_requirement(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271481',
+            'title': 'OL 9 cryptographic policy files must match files shipped with the operating system.',
+            'check_content': '''Verify that OL 9 crypto-policies package has not been modified with the following command:
+
+$ rpm -V crypto-policies
+
+If the command has any output, this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'rpm -V crypto-policies'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_rpm_va_command_when_any_output_is_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257823',
+            'title': 'RHEL 9 must be configured so that cryptographic hashes of system files match vendor values.',
+            'check_content': '''List files on the system that have file hashes different from what is expected by the RPM database with the following command:
+
+$ sudo rpm -Va --noconfig | awk '$1 ~ /..5/ && $2 != "c"'
+
+If there is output, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'rpm -Va --noconfig | awk \'$1 ~ /..5/ && $2 != "c"\''})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_skips_command_output_candidate_with_unresolved_partition_placeholder(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257928',
+            'title': 'All RHEL 9 world-writable directories must be owned by root, sys, bin, or an application user.',
+            'check_content': '''Run it once for each local partition [PART]:
+
+$ sudo find  PART  -xdev -type d -perm -0002 -uid +0 -print
+
+If there is output, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_dconf_grep_candidate_from_exact_authoritative_sample(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271690',

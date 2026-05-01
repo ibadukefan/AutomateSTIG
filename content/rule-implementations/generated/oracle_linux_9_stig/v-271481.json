@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "rpm -V crypto-policies",
+      "type": "command_output"
+    },
+    "description": "OL 9 cryptographic policy files must match files shipped with the operating system.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-271481"
+  },
   "check_content_excerpt": "Verify that OL 9 crypto-policies package has not been modified with the following command:\n\n$ rpm -V crypto-policies\n\nIf the command has any output, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Reinstall the crypto-policies package to remove any modifications.\n\n$ sudo dnf reinstall -y crypto-policies",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271481r1137699_rule",
   "severity": "high",
