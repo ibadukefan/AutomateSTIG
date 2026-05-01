@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 185,
+  "candidate_checks": 186,
   "cases": [
     {
       "check": {
@@ -3479,6 +3479,33 @@
     },
     {
       "check": {
+        "key": "Microsoft Network Client: Send unencrypted password to third-party SMB servers",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 unencrypted passwords must not be sent to third-party Server Message Block (SMB) servers.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Microsoft Network Client: Send unencrypted password to third-party SMB servers": "unexpected-Disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Microsoft Network Client: Send unencrypted password to third-party SMB servers": "Disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278212"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters",
         "type": "registry",
         "value_name": "RequireSecuritySignature"
@@ -4995,5 +5022,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 185
+  "validated_candidates": 186
 }

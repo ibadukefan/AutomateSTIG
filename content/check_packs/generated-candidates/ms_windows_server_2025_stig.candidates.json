@@ -1801,6 +1801,20 @@
     },
     {
       "check": {
+        "key": "Microsoft Network Client: Send unencrypted password to third-party SMB servers",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 unencrypted passwords must not be sent to third-party Server Message Block (SMB) servers.",
+      "expected": {
+        "type": "equals",
+        "value": "Disabled"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278212"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanManServer\\Parameters",
         "type": "registry",
         "value_name": "RequireSecuritySignature"

@@ -877,6 +877,18 @@ If the value for "Network access: Allow anonymous SID/Name translation" is not s
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Security Options', 'key': 'Network access: Allow anonymous SID/Name translation'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Disabled'})
 
+    def test_infers_windows_security_option_candidate_from_scap_fix_text_only(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254474',
+            'title': 'Windows Server 2022 must be configured to prevent the storage of the LAN Manager hash of passwords.',
+            'check_content': '',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> Network security: Do not store LAN Manager hash value on next password change to "Enabled".',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Security Options', 'key': 'Network security: Do not store LAN Manager hash value on next password change'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Enabled'})
+
 
 if __name__ == '__main__':
     unittest.main()

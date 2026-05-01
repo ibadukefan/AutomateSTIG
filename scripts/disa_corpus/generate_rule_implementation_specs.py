@@ -209,6 +209,12 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
             content,
             re.IGNORECASE,
         )
+        if not security_option:
+            security_option = re.search(
+                r'Configure\s+the\s+policy\s+value\s+for\s+Computer\s+Configuration\s*>>\s*Windows\s+Settings\s*>>\s*Security\s+Settings\s*>>\s*Local\s+Policies\s*>>\s*Security\s+Options\s*>>\s*"?([^"\n]+?)"?\s+to\s+"(Enabled|Disabled)"\s*\.\s*(?:\n|$)',
+                policy_text,
+                re.IGNORECASE,
+            )
         if security_option:
             return {
                 'vuln_id': rule.get('vuln_id', ''),
