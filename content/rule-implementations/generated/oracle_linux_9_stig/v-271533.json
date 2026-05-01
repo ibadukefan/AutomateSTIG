@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "OL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/shadow.",
+    "expected": {
+      "substring": "-w /etc/shadow -p wa -k identity",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271533"
+  },
   "check_content_excerpt": "Verify that OL 9 generates audit records for all account creations, modifications, disabling, and termination events that affect \"/etc/shadow\" with the following command:\n\n$ sudo auditctl -l | egrep '(/etc/shadow)' \n-w /etc/shadow -p wa -k identity\n\nIf the command does not return a line or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-w /etc/shadow -p wa -k identity",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to generate audit records for all account creations, modifications, disabling, and termination events that affect \"/etc/shadow\".\n\nAdd or update the following file system rule to \"/etc/audit/rules.d/audit.rules\":\n\n-w /etc/shadow -p wa -k identity\n\nThe audit daemon must be restarted for the changes to take effect.\n\nRestart auditd:\n$ sudo service auditd restart",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271533r1092486_rule",
   "severity": "medium",

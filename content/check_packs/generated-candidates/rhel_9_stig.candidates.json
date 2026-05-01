@@ -4025,6 +4025,19 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "RHEL 9 must audit all uses of the passwd command.",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/passwd -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-passwd",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258198"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "RHEL 9 must audit all uses of the postdrop command.",
       "expected": {
         "substring": "-a always,exit -S all -F path=/usr/sbin/postdrop -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-unix-update",
@@ -4244,6 +4257,71 @@
       },
       "platform": "linux",
       "vuln_id": "V-258218"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group.",
+      "expected": {
+        "substring": "-w /etc/group -p wa -k identity",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258219"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/gshadow.",
+      "expected": {
+        "substring": "-w /etc/gshadow -p wa -k identity",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258220"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/opasswd.",
+      "expected": {
+        "substring": "-w /etc/security/opasswd -p wa -k identity",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258221"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/passwd.",
+      "expected": {
+        "substring": "-w /etc/passwd -p wa -k identity",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258222"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/shadow.",
+      "expected": {
+        "substring": "-w /etc/shadow -p wa -k identity",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258223"
     },
     {
       "check": {

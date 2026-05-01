@@ -518,6 +518,21 @@ If the command does not return a line that matches the example or the line is co
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': '-w /etc/shadow -p wa -k usergroup_modification'})
 
+    def test_infers_linux_auditctl_expected_rule_candidate_from_egrep_command(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258222',
+            'title': 'RHEL 9 must generate audit records for account modifications that affect /etc/passwd.',
+            'check_content': '''Verify RHEL 9 generates audit records for all account creations, modifications, disabling, and termination events that affect "/etc/passwd" with the following command:
+
+$ sudo auditctl -l | egrep '(/etc/passwd)'
+
+-w /etc/passwd -p wa -k identity
+
+If the command does not return a line, or the line is commented out, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': '-w /etc/passwd -p wa -k identity'})
+
     def test_infers_linux_auditctl_multiline_expected_rules_when_keys_are_authoritative(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258177',

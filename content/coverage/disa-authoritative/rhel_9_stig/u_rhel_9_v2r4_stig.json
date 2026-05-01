@@ -6378,16 +6378,17 @@
       "vuln_id": "V-258197"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258198",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258198r1045379_rule",
       "severity": "medium",
       "title": "RHEL 9 must audit all uses of the passwd command.",
-      "tracking_issue": "TODO-V-258198",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258198"
@@ -6710,76 +6711,81 @@
       "vuln_id": "V-258218"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258219",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258219r1015130_rule",
       "severity": "medium",
       "title": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group.",
-      "tracking_issue": "TODO-V-258219",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258219"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258220",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258220r1015131_rule",
       "severity": "medium",
       "title": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/gshadow.",
-      "tracking_issue": "TODO-V-258220",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258220"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258221",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258221r1015132_rule",
       "severity": "medium",
       "title": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/opasswd.",
-      "tracking_issue": "TODO-V-258221",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258221"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258222",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258222r1015133_rule",
       "severity": "medium",
       "title": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/passwd.",
-      "tracking_issue": "TODO-V-258222",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258222"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258223",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-258223r1015134_rule",
       "severity": "medium",
       "title": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/shadow.",
-      "tracking_issue": "TODO-V-258223",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/0434fd47261f992b8aa4e48aa221b7862ada57b8504d82087bc8afb8748169de/U_RHEL_9_V2R4_STIG.zip"
       ],
       "vuln_id": "V-258223"

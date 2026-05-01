@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 353,
+  "candidate_checks": 359,
   "cases": [
     {
       "check": {
@@ -2235,6 +2235,136 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "OL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-w /etc/group -p wa -k identity",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-w /etc/group -p wa -k identity\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271529"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/gshadow.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-w /etc/gshadow -p wa -k identity",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-w /etc/gshadow -p wa -k identity\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271530"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/opasswd.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-w /etc/security/opasswd -p wa -k identity",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-w /etc/security/opasswd -p wa -k identity\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271531"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/passwd.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-w /etc/passwd -p wa -k identity",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-w /etc/passwd -p wa -k identity\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271532"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/shadow.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-w /etc/shadow -p wa -k identity",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-w /etc/shadow -p wa -k identity\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271533"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "OL 9 must audit all uses of the unix_update command.",
       "evidence_type": "command_output_contains",
       "expected": {
@@ -2516,6 +2646,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271544"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of the passwd command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/passwd -F perm=x -F auid>=1000 -F auid!=unset -k privileged-passwd",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F path=/usr/bin/passwd -F perm=x -F auid>=1000 -F auid!=unset -k privileged-passwd\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271545"
     },
     {
       "check": {
@@ -9787,5 +9943,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 353
+  "validated_candidates": 359
 }
