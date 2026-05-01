@@ -409,6 +409,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "firewalld",
+        "type": "service"
+      },
+      "description": "OL 9 must be configured so that the firewalld service is active.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271470"
+    },
+    {
+      "check": {
         "name": "sudo",
         "should_be_installed": true,
         "type": "package"
@@ -487,6 +501,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-271482"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "sshd",
+        "type": "service"
+      },
+      "description": "OL 9 networked systems must have and implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271483"
     },
     {
       "check": {
@@ -721,6 +749,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "chronyd",
+        "type": "service"
+      },
+      "description": "OL 9 must enable the chronyd service.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271502"
+    },
+    {
+      "check": {
         "name": "usbguard",
         "should_be_installed": true,
         "type": "package"
@@ -731,6 +773,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-271503"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "usbguard",
+        "type": "service"
+      },
+      "description": "OL 9 must enable the USBGuard package.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271504"
     },
     {
       "check": {
@@ -760,6 +816,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "fapolicyd",
+        "type": "service"
+      },
+      "description": "OL 9 must enable the fapolicy module.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271507"
+    },
+    {
+      "check": {
         "name": "rsyslog",
         "should_be_installed": true,
         "type": "package"
@@ -773,6 +843,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "rsyslog",
+        "type": "service"
+      },
+      "description": "OL 9 must be configured so that the rsyslog service is active.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271509"
+    },
+    {
+      "check": {
         "name": "rsyslog-gnutls",
         "should_be_installed": true,
         "type": "package"
@@ -783,6 +867,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-271510"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "rngd",
+        "type": "service"
+      },
+      "description": "OL 9 must enable the hardware random number generator entropy gatherer service.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271511"
     },
     {
       "check": {
@@ -835,6 +933,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-271515"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "pcscd",
+        "type": "service"
+      },
+      "description": "OL 9 must be configured so that the pcscd service is active.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271516"
     },
     {
       "check": {

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 322,
+  "candidate_checks": 326,
   "cases": [
     {
       "check": {
@@ -2735,6 +2735,33 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "firewalld",
+        "type": "service"
+      },
+      "description": "The firewalld service on RHEL 9 must be active.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "firewalld": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "firewalld": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257936"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/firewalld/firewalld.conf",
         "pattern": "FirewallBackend=nftables",
@@ -3650,6 +3677,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257978"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "sshd",
+        "type": "service"
+      },
+      "description": "All RHEL 9 networked systems must have and implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "sshd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "sshd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257979"
     },
     {
       "check": {
@@ -4792,6 +4846,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-258035"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "usbguard",
+        "type": "service"
+      },
+      "description": "RHEL 9 must have the USBGuard package enabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "usbguard": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "usbguard": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258036"
     },
     {
       "check": {
@@ -6727,6 +6808,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-258141"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "rsyslog",
+        "type": "service"
+      },
+      "description": "The rsyslog service on RHEL 9 must be active.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "rsyslog": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "rsyslog": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258142"
     },
     {
       "check": {
@@ -9025,5 +9133,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 322
+  "validated_candidates": 326
 }

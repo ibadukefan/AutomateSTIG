@@ -2226,16 +2226,17 @@
       "vuln_id": "V-257935"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257936",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257936 from source identifier xccdf_mil.disa.stig_group_V-257936.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257936r1044995_rule",
       "severity": "medium",
       "title": "The firewalld service on RHEL 9 must be active.",
-      "tracking_issue": "TODO-V-257936",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257936"
@@ -2814,16 +2815,17 @@
       "vuln_id": "V-257978"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257979",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-257979 from source identifier xccdf_mil.disa.stig_group_V-257979.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-257979r958908_rule",
       "severity": "medium",
       "title": "All RHEL 9 networked systems must have and implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.",
-      "tracking_issue": "TODO-V-257979",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-257979"
@@ -3606,16 +3608,17 @@
       "vuln_id": "V-258035"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258036",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-258036 from source identifier xccdf_mil.disa.stig_group_V-258036.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-258036r1014861_rule",
       "severity": "medium",
       "title": "RHEL 9 must have the USBGuard package enabled.",
-      "tracking_issue": "TODO-V-258036",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-258036"
@@ -4824,16 +4827,17 @@
       "vuln_id": "V-258141"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-258142",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-258142 from source identifier xccdf_mil.disa.stig_group_V-258142.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-258142r991589_rule",
       "severity": "medium",
       "title": "The rsyslog service on RHEL 9 must be active.",
-      "tracking_issue": "TODO-V-258142",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/903b6d23ea9ac283e3caddfb98b73ca1137705a96847dfd09d0ce6428f33a810/U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-258142"

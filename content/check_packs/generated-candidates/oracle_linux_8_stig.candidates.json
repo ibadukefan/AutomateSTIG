@@ -2864,6 +2864,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "firewalld",
+        "type": "service"
+      },
+      "description": "A firewall must be active on OL 8.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248841"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/modprobe.d",
         "pattern": "bluetooth",

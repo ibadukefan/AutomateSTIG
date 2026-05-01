@@ -388,6 +388,20 @@ If fapolicyd is not enabled and running, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'fapolicyd', 'expected_status': 'running'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
 
+    def test_infers_linux_service_running_candidate_from_systemctl_is_active_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271502',
+            'title': 'OL 9 must enable the chronyd service.',
+            'check_content': '''Verify that OL 9 chronyd service is set to active with the following command:
+
+$ systemctl is-active chronyd
+active
+
+If the chronyd service is not active, this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'chronyd', 'expected_status': 'running'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
+
     def test_skips_linux_systemctl_status_target_units(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230529',

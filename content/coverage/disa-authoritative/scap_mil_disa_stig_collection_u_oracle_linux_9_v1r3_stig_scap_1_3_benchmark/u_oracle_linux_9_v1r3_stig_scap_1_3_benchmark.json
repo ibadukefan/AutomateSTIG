@@ -526,16 +526,17 @@
       "vuln_id": "V-271469"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271470",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271470 from source identifier xccdf_mil.disa.stig_group_V-271470.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271470r1092618_rule",
       "severity": "medium",
       "title": "OL 9 must be configured so that the firewalld service is active.",
-      "tracking_issue": "TODO-V-271470",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271470"
@@ -621,16 +622,17 @@
       "vuln_id": "V-271482"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271483",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271483 from source identifier xccdf_mil.disa.stig_group_V-271483.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271483r1091161_rule",
       "severity": "medium",
       "title": "OL 9 networked systems must have and implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.",
-      "tracking_issue": "TODO-V-271483",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271483"
@@ -827,16 +829,17 @@
       "vuln_id": "V-271501"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271502",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271502 from source identifier xccdf_mil.disa.stig_group_V-271502.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271502r1091218_rule",
       "severity": "medium",
       "title": "OL 9 must enable the chronyd service.",
-      "tracking_issue": "TODO-V-271502",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271502"
@@ -858,16 +861,17 @@
       "vuln_id": "V-271503"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271504",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271504 from source identifier xccdf_mil.disa.stig_group_V-271504.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271504r1091224_rule",
       "severity": "medium",
       "title": "OL 9 must enable the USBGuard package.",
-      "tracking_issue": "TODO-V-271504",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271504"
@@ -889,16 +893,17 @@
       "vuln_id": "V-271506"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271507",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271507 from source identifier xccdf_mil.disa.stig_group_V-271507.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271507r1091233_rule",
       "severity": "medium",
       "title": "OL 9 must enable the fapolicy module.",
-      "tracking_issue": "TODO-V-271507",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271507"
@@ -920,16 +925,17 @@
       "vuln_id": "V-271508"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271509",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271509 from source identifier xccdf_mil.disa.stig_group_V-271509.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271509r1091239_rule",
       "severity": "medium",
       "title": "OL 9 must be configured so that the rsyslog service is active.",
-      "tracking_issue": "TODO-V-271509",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271509"
@@ -951,16 +957,17 @@
       "vuln_id": "V-271510"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271511",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271511 from source identifier xccdf_mil.disa.stig_group_V-271511.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271511r1091245_rule",
       "severity": "low",
       "title": "OL 9 must enable the hardware random number generator entropy gatherer service.",
-      "tracking_issue": "TODO-V-271511",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271511"
@@ -1030,16 +1037,17 @@
       "vuln_id": "V-271515"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271516",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271516 from source identifier xccdf_mil.disa.stig_group_V-271516.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271516r1091260_rule",
       "severity": "medium",
       "title": "OL 9 must be configured so that the pcscd service is active.",
-      "tracking_issue": "TODO-V-271516",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271516"

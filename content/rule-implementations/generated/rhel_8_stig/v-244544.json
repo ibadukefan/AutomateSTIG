@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "firewalld",
+      "type": "service"
+    },
+    "description": "A firewall must be active on RHEL 8.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-244544"
+  },
   "check_content_excerpt": "Verify that \"firewalld\" is active with the following commands:\n\n$ sudo systemctl is-active firewalld\n\nactive\n\nIf the \"firewalld\" package is not \"active\", ask the System Administrator if another firewall is installed. If no firewall is installed and active this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure \"firewalld\" to protect the operating system with the following command:\n\n$ sudo systemctl enable firewalld",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-244544r958672_rule",
   "severity": "medium",

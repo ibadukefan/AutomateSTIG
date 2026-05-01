@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 270,
+  "candidate_checks": 271,
   "cases": [
     {
       "check": {
@@ -5623,6 +5623,33 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "firewalld",
+        "type": "service"
+      },
+      "description": "A firewall must be active on OL 8.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "firewalld": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "firewalld": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248841"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/modprobe.d",
         "pattern": "bluetooth",
@@ -7322,5 +7349,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 270
+  "validated_candidates": 271
 }

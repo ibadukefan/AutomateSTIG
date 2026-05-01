@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "auditd",
+      "type": "service"
+    },
+    "description": "SUSE operating system audit records must contain information to establish what type of events occurred, the source of events, where events occurred, and the outcome of events.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234904"
+  },
   "check_content_excerpt": "Verify the SUSE operating system produces audit records.\n\nCheck that the SUSE operating system produces audit records by running the following command to determine the current status of the auditd service:\n\n> systemctl is-active auditd.service\nactive\n\n> systemctl is-enabled auditd.service\nenabled\n\nIf the service is not active or not enabled, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Enable the SUSE operating system auditd service by performing the following commands:\n\n> sudo systemctl enable auditd.service\n> sudo systemctl start auditd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-234904r958412_rule",
   "severity": "medium",

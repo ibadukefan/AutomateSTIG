@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 90,
+  "candidate_checks": 91,
   "cases": [
     {
       "check": {
@@ -1125,6 +1125,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234897"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "auditd",
+        "type": "service"
+      },
+      "description": "SUSE operating system audit records must contain information to establish what type of events occurred, the source of events, where events occurred, and the outcome of events.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234904"
     },
     {
       "check": {
@@ -2410,5 +2437,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 90
+  "validated_candidates": 91
 }

@@ -1250,6 +1250,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "firewalld",
+        "type": "service"
+      },
+      "description": "The firewalld service on RHEL 9 must be active.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257936"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/firewalld/firewalld.conf",
         "pattern": "FirewallBackend=nftables",
@@ -1710,6 +1724,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-257978"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "sshd",
+        "type": "service"
+      },
+      "description": "All RHEL 9 networked systems must have and implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257979"
     },
     {
       "check": {
@@ -2286,6 +2314,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-258035"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "usbguard",
+        "type": "service"
+      },
+      "description": "RHEL 9 must have the USBGuard package enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258036"
     },
     {
       "check": {
@@ -3285,6 +3327,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-258141"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "rsyslog",
+        "type": "service"
+      },
+      "description": "The rsyslog service on RHEL 9 must be active.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258142"
     },
     {
       "check": {
