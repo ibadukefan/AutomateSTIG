@@ -637,6 +637,19 @@
     },
     {
       "check": {
+        "command": "ls /etc/ssl/certs | grep -i DOD",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 22.04 LTS must use DOD PKI-established certificate authorities for verification of the establishment of protected sessions.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-260580"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sssd/sssd.conf",
         "pattern": "/etc/sssd/conf.d/*.conf",

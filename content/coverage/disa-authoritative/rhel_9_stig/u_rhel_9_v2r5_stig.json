@@ -1626,16 +1626,17 @@
       "vuln_id": "V-257880"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257881",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257881r991589_rule",
       "severity": "medium",
       "title": "RHEL 9 must prevent special devices on non-root local partitions.",
-      "tracking_issue": "TODO-V-257881",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/172096bcd53edbdc11d66c915b6b0d3230c6ce43979567e46fe3cc7ee79aca29/U_RHEL_9_V2R5_STIG.zip"
       ],
       "vuln_id": "V-257881"
@@ -2542,16 +2543,17 @@
       "vuln_id": "V-257940"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-257941",
+      "check_pack": "generated-candidates/rhel_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-257941r991589_rule",
       "severity": "medium",
       "title": "RHEL 9 network interfaces must not be in promiscuous mode.",
-      "tracking_issue": "TODO-V-257941",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
         "content/disa-corpus/artifacts/172096bcd53edbdc11d66c915b6b0d3230c6ce43979567e46fe3cc7ee79aca29/U_RHEL_9_V2R5_STIG.zip"
       ],
       "vuln_id": "V-257941"

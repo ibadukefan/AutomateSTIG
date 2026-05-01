@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "ip link | grep -i promisc",
+      "type": "command_output"
+    },
+    "description": "RHEL 8 network interfaces must not be in promiscuous mode.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-230554"
+  },
   "check_content_excerpt": "Verify network interfaces are not in promiscuous mode unless approved by the ISSO and documented.\n\nCheck for the status with the following command:\n\n$ sudo ip link | grep -i promisc\n\nIf network interfaces are found on the system in promiscuous mode and their use has not been approved by the ISSO and documented, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure network interfaces to turn off promiscuous mode unless approved by the ISSO and documented.\n\nSet the promiscuous mode of an interface to off with the following command:\n\n$ sudo ip link set dev <devicename> multicast off promisc off",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-230554r1017316_rule",
   "severity": "medium",

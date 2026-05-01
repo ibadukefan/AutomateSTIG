@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 369,
+  "candidate_checks": 371,
   "cases": [
     {
       "check": {
@@ -5430,6 +5430,32 @@
     },
     {
       "check": {
+        "command": "mount | grep '^/dev\\S* on /\\S' | grep --invert-match 'nodev'",
+        "type": "command_output"
+      },
+      "description": "OL 9 must prevent special devices on nonroot local partitions.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "mount | grep '^/dev\\S* on /\\S' | grep --invert-match 'nodev'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "mount | grep '^/dev\\S* on /\\S' | grep --invert-match 'nodev'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271669"
+    },
+    {
+      "check": {
         "command": "gsettings get org.gnome.desktop.media-handling automount-open",
         "type": "command_output"
       },
@@ -9520,6 +9546,32 @@
     },
     {
       "check": {
+        "command": "ip link | grep -i promisc",
+        "type": "command_output"
+      },
+      "description": "OL 9 network interfaces must not be in promiscuous mode.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "ip link | grep -i promisc": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "ip link | grep -i promisc": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271862"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ipsec.conf",
         "pattern": "/etc/ipsec.d/",
@@ -10205,5 +10257,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 369
+  "validated_candidates": 371
 }

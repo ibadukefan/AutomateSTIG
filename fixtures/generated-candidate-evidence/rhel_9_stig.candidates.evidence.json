@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 345,
+  "candidate_checks": 347,
   "cases": [
     {
       "check": {
@@ -1442,6 +1442,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257880"
+    },
+    {
+      "check": {
+        "command": "mount | grep '^/dev\\S* on /\\S' | grep --invert-match 'nodev'",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must prevent special devices on non-root local partitions.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "mount | grep '^/dev\\S* on /\\S' | grep --invert-match 'nodev'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "mount | grep '^/dev\\S* on /\\S' | grep --invert-match 'nodev'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257881"
     },
     {
       "check": {
@@ -3048,6 +3074,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257939"
+    },
+    {
+      "check": {
+        "command": "ip link | grep -i promisc",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 network interfaces must not be in promiscuous mode.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "ip link | grep -i promisc": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "ip link | grep -i promisc": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257941"
     },
     {
       "check": {
@@ -9629,5 +9681,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 345
+  "validated_candidates": 347
 }

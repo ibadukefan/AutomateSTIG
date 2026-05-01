@@ -889,6 +889,19 @@
     },
     {
       "check": {
+        "command": "mount | grep '^/dev\\S* on /\\S' | grep --invert-match 'nodev'",
+        "type": "command_output"
+      },
+      "description": "OL 8 must prevent special devices on non-root local partitions.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248619"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/fstab",
         "pattern": "| grep noexec",
@@ -3785,6 +3798,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-248897"
+    },
+    {
+      "check": {
+        "command": "ip link | grep -i promisc",
+        "type": "command_output"
+      },
+      "description": "OL 8 network interfaces must not be in promiscuous mode.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248899"
     },
     {
       "check": {

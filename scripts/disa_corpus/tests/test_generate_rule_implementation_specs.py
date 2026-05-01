@@ -772,6 +772,21 @@ If both the "b32" and "b64" audit rules are not defined for the setxattr system 
             'substring': '-a always,exit -F arch=b32 -S setxattr,fsetxattr -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S setxattr,fsetxattr -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b32 -S setxattr,fsetxattr -F auid=0 -k perm_mod\n-a always,exit -F arch=b64 -S setxattr,fsetxattr -F auid=0 -k perm_mod',
         })
 
+    def test_infers_linux_grep_pipeline_no_output_candidate_when_found_is_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230554',
+            'title': 'RHEL 8 network interfaces must not be in promiscuous mode.',
+            'check_content': '''Verify network interfaces are not in promiscuous mode unless approved by the ISSO and documented.
+
+Check for the status with the following command:
+
+$ sudo ip link | grep -i promisc
+
+If network interfaces are found on the system in promiscuous mode and their use has not been approved by the ISSO and documented, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'ip link | grep -i promisc'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_linux_service_disabled_candidate_from_systemctl_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-251234',

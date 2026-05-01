@@ -742,6 +742,19 @@
     },
     {
       "check": {
+        "command": "mount | grep '^/dev\\S* on /\\S' | grep --invert-match 'nodev'",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must prevent special devices on non-root local partitions.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257881"
+    },
+    {
+      "check": {
         "command": "find -L /bin /sbin /usr/bin /usr/sbin /usr/libexec /usr/local/bin /usr/local/sbin -perm /022 -exec ls -l {} \\;",
         "type": "command_output"
       },
@@ -1407,6 +1420,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-257939"
+    },
+    {
+      "check": {
+        "command": "ip link | grep -i promisc",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 network interfaces must not be in promiscuous mode.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257941"
     },
     {
       "check": {

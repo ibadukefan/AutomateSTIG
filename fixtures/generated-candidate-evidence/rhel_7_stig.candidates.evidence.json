@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 129,
+  "candidate_checks": 130,
   "cases": [
     {
       "check": {
@@ -2712,6 +2712,32 @@
     },
     {
       "check": {
+        "command": "ip link | grep -i promisc",
+        "type": "command_output"
+      },
+      "description": "Network interfaces configured on the Red Hat Enterprise Linux operating system must not be in promiscuous mode.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "ip link | grep -i promisc": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "ip link | grep -i promisc": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204618"
+    },
+    {
+      "check": {
         "name": "postfix",
         "should_be_installed": true,
         "type": "package"
@@ -3459,5 +3485,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 129
+  "validated_candidates": 130
 }

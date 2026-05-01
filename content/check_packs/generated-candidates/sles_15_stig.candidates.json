@@ -1672,6 +1672,19 @@
     },
     {
       "check": {
+        "command": "ip link | grep -i promisc",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must not have network interfaces in promiscuous mode unless approved and documented.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-235027"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "UMASK 077",

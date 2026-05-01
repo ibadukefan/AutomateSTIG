@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 272,
+  "candidate_checks": 273,
   "cases": [
     {
       "check": {
@@ -5652,6 +5652,32 @@
     },
     {
       "check": {
+        "command": "ip link | grep -i promisc",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 network interfaces must not be in promiscuous mode.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "ip link | grep -i promisc": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "ip link | grep -i promisc": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230554"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "X11Forwarding no",
@@ -7333,5 +7359,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 272
+  "validated_candidates": 273
 }

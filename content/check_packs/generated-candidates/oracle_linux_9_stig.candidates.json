@@ -2770,6 +2770,19 @@
     },
     {
       "check": {
+        "command": "mount | grep '^/dev\\S* on /\\S' | grep --invert-match 'nodev'",
+        "type": "command_output"
+      },
+      "description": "OL 9 must prevent special devices on nonroot local partitions.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271669"
+    },
+    {
+      "check": {
         "command": "gsettings get org.gnome.desktop.media-handling automount-open",
         "type": "command_output"
       },
@@ -4727,6 +4740,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-271861"
+    },
+    {
+      "check": {
+        "command": "ip link | grep -i promisc",
+        "type": "command_output"
+      },
+      "description": "OL 9 network interfaces must not be in promiscuous mode.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271862"
     },
     {
       "check": {
