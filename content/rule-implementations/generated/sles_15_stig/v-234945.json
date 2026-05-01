@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "The SUSE operating system must generate audit records for all uses of the rm command.",
+    "expected": {
+      "substring": "-a always,exit -S all -F path=/usr/bin/rm -F perm=x -F auid>=1000 -F auid!=-1",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234945"
+  },
   "check_content_excerpt": "Verify the SUSE operating system generates an audit record for all uses of the \"rm\" command.\n\nCheck that the command is being audited by performing the following command:\n\n> sudo auditctl -l | grep -w '/usr/bin/rm'\n\n-a always,exit -S all -F path=/usr/bin/rm -F perm=x -F auid>=1000 -F auid!=-1 -k prim_mod\n\nIf the command does not return any output, this is a finding.\n\nNote:\nThe \"-k\" allows for specifying an arbitrary identifier. The string following \"-k\" does not need to match the example output above.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-a always,exit -S all -F path=/usr/bin/rm -F perm=x -F auid>=1000 -F auid!=-1",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to generate an audit record for all uses of the \"rm\" command. \n\nAdd or update the following rules in the \"/etc/audit/rules.d/audit.rules\" file:\n\n-a always,exit -F path=/usr/bin/rm -F perm=x -F auid>=1000 -F auid!=4294967295 -k prim_mod\n\nTo reload the rules file, restart the audit daemon\n\n> sudo systemctl restart auditd.service\n\nor issue the following command:\n\n> sudo augenrules --load",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-234945r958412_rule",
   "severity": "medium",

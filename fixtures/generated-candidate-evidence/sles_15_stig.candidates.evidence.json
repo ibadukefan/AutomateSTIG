@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 113,
+  "candidate_checks": 128,
   "cases": [
     {
       "check": {
@@ -1366,6 +1366,188 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "The SUSE operating system must generate audit records for all uses of the ssh-keysign command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/lib/ssh/ssh-keysign -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/usr/lib/ssh/ssh-keysign -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234905"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the passwd command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/passwd -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/usr/bin/passwd -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234906"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the gpasswd command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/gpasswd -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/usr/bin/gpasswd -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234907"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the newgrp command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/newgrp -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/usr/bin/newgrp -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234908"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for a uses of the chsh command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/chsh -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/usr/bin/chsh -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234909"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the chage command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/usr/bin/chage -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234911"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the crontab command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/crontab -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/usr/bin/crontab -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234912"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "The SUSE operating system must generate audit records for all uses of the sudoedit command.",
       "evidence_type": "command_output_contains",
       "expected": {
@@ -1548,6 +1730,136 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "The SUSE operating system must generate audit records for all uses of the chmod command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/chmod -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/usr/bin/chmod -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234941"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the setfacl command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234942"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the chacl command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234943"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the chcon command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234944"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the rm command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/rm -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/usr/bin/rm -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234945"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "The SUSE operating system must generate audit records for all modifications to the tallylog file must generate an audit record.",
       "evidence_type": "command_output_contains",
       "expected": {
@@ -1594,6 +1906,84 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234947"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the passmass command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/bin/passmass -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/usr/bin/passmass -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234948"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the usermod command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/usermod -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/usr/sbin/usermod -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234949"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the pam_timestamp_check command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/sbin/pam_timestamp_check -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/sbin/pam_timestamp_check -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234950"
     },
     {
       "check": {
@@ -3009,5 +3399,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 113
+  "validated_candidates": 128
 }

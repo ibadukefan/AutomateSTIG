@@ -758,6 +758,29 @@ If the service is not "enabled" and "active", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'rngd', 'expected_status': 'running'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
 
+    def test_infers_linux_auditctl_arbitrary_key_candidate_when_no_output_is_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234941',
+            'title': 'The SUSE operating system must generate audit records for all uses of the chmod command.',
+            'check_content': '''Verify the SUSE operating system generates an audit record for all uses of the "chmod" command.
+
+Check that the command is being audited by performing the following command:
+
+> sudo auditctl -l | grep -w '/usr/bin/chmod'
+
+-a always,exit -S all -F path=/usr/bin/chmod -F perm=x -F auid>=1000 -F auid!=-1 -k prim_mod
+
+If the command does not return any output, this is a finding.
+
+Note:
+The "-k" allows for specifying an arbitrary identifier. The string following "-k" does not need to match the example output above.'''
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
+        self.assertEqual(candidate['expected'], {
+            'type': 'contains',
+            'substring': '-a always,exit -S all -F path=/usr/bin/chmod -F perm=x -F auid>=1000 -F auid!=-1',
+        })
+
     def test_infers_linux_service_running_candidate_when_active_output_must_be_returned(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257936',
