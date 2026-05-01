@@ -1,9 +1,24 @@
 {
+  "candidate_check": {
+    "check": {
+      "group": "root",
+      "mode": null,
+      "owner": null,
+      "path": "/var/log/messages",
+      "type": "file_permission"
+    },
+    "description": "The OL 8 \"/var/log/messages\" file must be group-owned by root.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248556"
+  },
   "check_content_excerpt": "Verify the \"/var/log/messages\" file is group-owned by root with the following command:\n\n$ sudo stat -c \"%G\" /var/log/messages\n\nroot\n\nIf \"root\" is not returned as a result, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +26,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the group of the file \"/var/log/messages\" to \"root\" by running the following command:\n\n$ sudo chgrp root /var/log/messages",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_permission",
   "remediation": "planned",
   "rule_id": "SV-248556r958566_rule",
   "severity": "medium",

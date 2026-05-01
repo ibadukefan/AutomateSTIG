@@ -1048,6 +1048,47 @@ If the "/var/log/syslog" file is not group-owned by adm, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/var/log/syslog', 'owner': None, 'group': 'adm', 'mode': None})
         self.assertEqual(candidate['expected'], {'type': 'is_true'})
 
+    def test_infers_linux_file_permission_owner_candidate_from_single_field_stat_output(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248555',
+            'title': 'The OL 8 "/var/log/messages" file must be owned by root.',
+            'check_content': '''Verify that the /var/log/messages file is owned by root with the following command:
+
+$ sudo stat -c "%U" /var/log/messages
+root
+
+If "root" is not returned as a result, this is a finding.'''
+        }, 'Oracle_Linux_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/var/log/messages', 'owner': 'root', 'group': None, 'mode': None})
+        self.assertEqual(candidate['expected'], {'type': 'is_true'})
+
+    def test_infers_linux_file_permission_group_candidate_from_single_field_stat_output(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248556',
+            'title': 'The OL 8 "/var/log/messages" file must be group-owned by root.',
+            'check_content': '''Verify the "/var/log/messages" file is group-owned by root with the following command:
+
+$ sudo stat -c "%G" /var/log/messages
+root
+
+If "root" is not returned as a result, this is a finding.'''
+        }, 'Oracle_Linux_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/var/log/messages', 'owner': None, 'group': 'root', 'mode': None})
+        self.assertEqual(candidate['expected'], {'type': 'is_true'})
+
+    def test_skips_linux_file_permission_single_field_stat_when_sample_does_not_match_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248556',
+            'title': 'The OL 8 "/var/log/messages" file must be group-owned by root.',
+            'check_content': '''Verify the "/var/log/messages" file is group-owned by root with the following command:
+
+$ sudo stat -c "%G" /var/log/messages
+wheel
+
+If "root" is not returned as a result, this is a finding.'''
+        }, 'Oracle_Linux_8_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_linux_file_permission_owner_candidate_from_stat_output_with_path_after_owner(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257900',

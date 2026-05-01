@@ -996,6 +996,29 @@ def _file_permission_candidate(rule: dict) -> dict | None:
                 elif field == '%G':
                     group = value
             break
+        if fields in (['%U'], ['%G'], ['%a'], ['%A']):
+            sample_line = None
+            for raw_line in content[stat_match.end():].splitlines():
+                stripped = raw_line.strip()
+                if not stripped:
+                    continue
+                if stripped.lower().startswith(('if ', 'note:', '$', '#', '>')):
+                    break
+                sample_line = stripped
+                break
+            explicit_finding = re.search(
+                rf'If\s+["“]?{re.escape(sample_line or "")}["”]?\s+is\s+not\s+returned\s+as\s+a\s+result,?\s+this\s+is\s+a\s+finding',
+                content,
+                re.IGNORECASE,
+            )
+            if sample_line and explicit_finding:
+                field = fields[0]
+                if field in ('%a', '%A') and re.fullmatch(r'[0-7]{3,4}', sample_line):
+                    mode = mode or sample_line
+                elif field == '%U' and re.fullmatch(r'[A-Za-z0-9_.-]+', sample_line):
+                    owner = sample_line
+                elif field == '%G' and re.fullmatch(r'[A-Za-z0-9_.-]+', sample_line):
+                    group = sample_line
 
     if owner is None:
         owner_match = re.search(r'not\s+owned\s+by\s+["“]?([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
