@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "passwd -S root",
+      "type": "command_output"
+    },
+    "description": "The Ubuntu operating system must prevent direct login into the root account.",
+    "expected": {
+      "substring": "root L",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238329"
+  },
   "check_content_excerpt": "Verify the Ubuntu operating system prevents direct logins to the root account with the following command: \n \n$ sudo passwd -S root \n \nroot L 04/23/2020 0 99999 7 -1 \n \nIf the output does not contain \"L\" in the second field to indicate the account is locked, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "root L",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the Ubuntu operating system to prevent direct logins to the root account by performing the following operations: \n \n$ sudo passwd -l root",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-238329r1015153_rule",
   "severity": "medium",

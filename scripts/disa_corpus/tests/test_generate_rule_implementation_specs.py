@@ -586,6 +586,21 @@ If the output does not match the expected result, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'esxcli system settings encryption get|grep "Secure Boot"'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Require Secure Boot: true'})
 
+    def test_infers_passwd_status_locked_root_candidate_from_second_field_text(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270724',
+            'title': 'Ubuntu 24.04 LTS must prevent direct login to the root account.',
+            'check_content': '''Verify Ubuntu 24.04 LTS prevents direct logins to the root account with the following command:
+
+$ sudo passwd -S root
+root L 04/08/2024 0 99999 7 -1
+
+If the output does not contain "L" in the second field to indicate the account is locked, this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'passwd -S root'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'root L'})
+
     def test_infers_selinux_getenforce_enforcing_candidate_from_authoritative_sample(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-248548',

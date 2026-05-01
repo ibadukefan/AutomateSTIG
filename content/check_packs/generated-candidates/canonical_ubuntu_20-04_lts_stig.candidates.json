@@ -869,6 +869,19 @@
     },
     {
       "check": {
+        "command": "passwd -S root",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must prevent direct login into the root account.",
+      "expected": {
+        "substring": "root L",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238329"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/useradd",
         "pattern": "INACTIVE=35",

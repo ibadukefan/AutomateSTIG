@@ -646,6 +646,19 @@
     },
     {
       "check": {
+        "command": "passwd -S root",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must prevent direct login to the root account.",
+      "expected": {
+        "substring": "root L",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270724"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/common-password",
         "pattern": "password [success=1 default=ignore] pam_unix.so obscure sha512 shadow rounds=100000",

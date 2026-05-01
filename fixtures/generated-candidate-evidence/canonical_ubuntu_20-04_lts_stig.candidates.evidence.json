@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 104,
+  "candidate_checks": 105,
   "cases": [
     {
       "check": {
@@ -1752,6 +1752,32 @@
     },
     {
       "check": {
+        "command": "passwd -S root",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must prevent direct login into the root account.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "root L",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "passwd -S root": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "passwd -S root": "before\nroot L\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238329"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/useradd",
         "pattern": "INACTIVE=35",
@@ -2910,5 +2936,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 104
+  "validated_candidates": 105
 }

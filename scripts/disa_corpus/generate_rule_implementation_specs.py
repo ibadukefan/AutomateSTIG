@@ -635,6 +635,20 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'description': rule.get('title', ''),
         }
 
+    passwd_status_match = re.search(
+        r'If\s+the\s+output\s+does\s+not\s+contain\s+["“](?P<status>[A-Z])["”]\s+in\s+the\s+second\s+field',
+        content,
+        re.IGNORECASE,
+    )
+    if command == 'passwd -S root' and passwd_status_match:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'contains', 'substring': f"root {passwd_status_match.group('status')}"},
+            'description': rule.get('title', ''),
+        }
+
     no_output_for_find = command.startswith('find ') and re.search(
         r'if\s+(?:a|any)\s+(?:["“][^"”]+["”]|[^\n.]+?)\s+(?:file\s+)?(?:is|are)\s+(?:found|returned),?\s+this\s+is\s+a\s+finding',
         content,

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 129,
+  "candidate_checks": 130,
   "cases": [
     {
       "check": {
@@ -1268,6 +1268,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270723"
+    },
+    {
+      "check": {
+        "command": "passwd -S root",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must prevent direct login to the root account.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "root L",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "passwd -S root": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "passwd -S root": "before\nroot L\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270724"
     },
     {
       "check": {
@@ -3551,5 +3577,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 129
+  "validated_candidates": 130
 }
