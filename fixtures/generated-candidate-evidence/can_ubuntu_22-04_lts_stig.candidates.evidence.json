@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 101,
+  "candidate_checks": 103,
   "cases": [
     {
       "check": {
@@ -2190,6 +2190,32 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the delete_module system call.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=-1 -F key=module_chng\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=-1 -F key=module_chng",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=-1 -F key=module_chng\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=-1 -F key=module_chng\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260636"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the init_module and finit_module system calls.",
       "evidence_type": "command_output_contains",
       "expected": {
@@ -2444,6 +2470,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-260647"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 22.04 LTS must prevent all software from executing at higher privilege levels than users executing the software and the audit system must be configured to audit the execution of privileged functions.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=execpriv\n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -F key=execpriv\n-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=execpriv\n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -F key=execpriv",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=execpriv\n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -F key=execpriv\n-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=execpriv\n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -F key=execpriv\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260648"
     },
     {
       "check": {
@@ -2745,5 +2797,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
-  "validated_candidates": 101
+  "validated_candidates": 103
 }

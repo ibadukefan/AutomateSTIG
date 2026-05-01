@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 22.04 LTS must prevent all software from executing at higher privilege levels than users executing the software and the audit system must be configured to audit the execution of privileged functions.",
+    "expected": {
+      "substring": "-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=execpriv\n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -F key=execpriv\n-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=execpriv\n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -F key=execpriv",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260648"
+  },
   "check_content_excerpt": "Verify Ubuntu 22.04 LTS audits the execution of privilege functions by auditing the \"execve\" system call by using the following command:  \n  \n     $ sudo auditctl -l | grep execve \n     -a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=execpriv \n     -a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -F key=execpriv \n     -a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=execpriv \n     -a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -F key=execpriv \n  \nIf the command does not return lines that match the example or the lines are commented out, this is a finding.  \n  \nNote: The \"key=\" value is arbitrary and can be different from the example output above.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=execpriv\n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -F key=execpriv\n-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=execpriv\n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -F key=execpriv",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 22.04 LTS to audit the execution of all privileged functions.  \n  \nAdd or modify the following lines in the \"/etc/audit/rules.d/stig.rules\" file:  \n  \n-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k execpriv \n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k execpriv \n-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k execpriv \n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k execpriv \n \nTo reload the rules file, issue the following command:  \n  \n     $ sudo augenrules --load \n \nNote: The \"-k <keyname>\" at the end of the line gives the rule a unique meaning to help during an audit investigation. The <keyname> does not need to match the example above.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-260648r958730_rule",
   "severity": "medium",

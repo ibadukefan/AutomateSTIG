@@ -1099,6 +1099,19 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the delete_module system call.",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=-1 -F key=module_chng\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=-1 -F key=module_chng",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260636"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "Ubuntu 22.04 LTS must generate audit records for successful/unsuccessful uses of the init_module and finit_module system calls.",
       "expected": {
         "substring": "-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=-1 -F key=module_chng\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=-1 -F key=module_chng",
@@ -1223,6 +1236,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-260647"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 22.04 LTS must prevent all software from executing at higher privilege levels than users executing the software and the audit system must be configured to audit the execution of privileged functions.",
+      "expected": {
+        "substring": "-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=execpriv\n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -F key=execpriv\n-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=execpriv\n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -F key=execpriv",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260648"
     },
     {
       "check": {

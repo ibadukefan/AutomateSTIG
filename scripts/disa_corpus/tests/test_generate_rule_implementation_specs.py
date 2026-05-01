@@ -614,6 +614,22 @@ If the command does not return audit rules for the "chmod", "fchmod", and "fchmo
             'substring': '-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -k perm_mod\n-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -k perm_mod',
         })
 
+    def test_infers_linux_auditctl_same_line_multirule_examples(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270805',
+            'title': 'Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the init_module and finit_module syscalls.',
+            'check_content': '''Verify Ubuntu 24.04 LTS generates an audit record for any successful/unsuccessful attempts to use the "init_module" and "finit_module" syscalls with the following command:
+
+$ sudo auditctl -l | grep init_module -a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=-1 -k module_chng -a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=-1 -k module_chng
+
+If the command does not return audit rules for the "init_module" and "finit_module" syscalls, this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
+        self.assertEqual(candidate['expected'], {
+            'type': 'contains',
+            'substring': '-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=-1 -k module_chng\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=-1 -k module_chng',
+        })
+
     def test_skips_linux_auditctl_multiline_rules_when_key_is_arbitrary(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270786',

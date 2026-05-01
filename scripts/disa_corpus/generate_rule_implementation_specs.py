@@ -486,19 +486,23 @@ def _auditctl_expected_rule_candidate(rule: dict) -> dict | None:
         }
 
     match = re.search(
-        r'[$#>]\s*(?:sudo\s+)?auditctl\s+-l\s*\|\s*e?grep\s+(?:-[A-Za-z]+\s+)?(?:"[^"]+"|\'[^\']+\'|\S+)\s+(?P<expected>-(?:w|a)\s+.*?)(?:\s+If\s+the\s+command\s+does\s+not\s+return\s+(?:a\s+line|lines?)\b)',
+        r'[$#>]\s*(?:sudo\s+)?auditctl\s+-l\s*\|\s*e?grep\s+(?:-[A-Za-z]+\s+)?(?:"[^"]+"|\'[^\']+\'|\S+)\s+(?P<expected>-(?:w|a)\s+.*?)(?:\s+If\s+the\s+command\s+does\s+not\s+return\s+(?:a\s+line|lines?|audit\s+rules?\s+for)\b)',
         content,
         re.IGNORECASE | re.DOTALL,
     )
     if match:
         expected_line = ' '.join(match.group('expected').split())
-        if not expected_line or len(re.findall(r'\s-(?:w|a)\s+', ' ' + expected_line)) != 1:
+        if not expected_line:
+            return None
+        expected_lines = re.split(r'\s+(?=-(?:w|a)\s+)', expected_line)
+        expected_lines = [line.strip() for line in expected_lines if line.strip()]
+        if not expected_lines:
             return None
         return {
             'vuln_id': rule.get('vuln_id', ''),
             'platform': 'linux',
             'check': {'type': 'command_output', 'command': 'auditctl -l'},
-            'expected': {'type': 'contains', 'substring': expected_line},
+            'expected': {'type': 'contains', 'substring': '\n'.join(expected_lines)},
             'description': rule.get('title', ''),
         }
 
