@@ -325,6 +325,25 @@ Notes:
         }, 'CAN_Ubuntu_24-04_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_linux_auditctl_single_rule_when_key_identifier_is_arbitrary(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234901',
+            'title': 'The SUSE operating system must audit modifications to /etc/shadow.',
+            'check_content': '''Verify the SUSE operating system generates an audit record when modifications occur to the "/etc/shadow" file.
+
+Check that the file is being audited by performing the following command:
+
+> sudo auditctl -l | grep -w '/etc/shadow'
+
+-w /etc/shadow -p wa -k account_mod
+
+If the command does not return a line, this is a finding.
+
+Note: The "-k" allows for specifying an arbitrary identifier. The string following "-k" does not need to match the example output above.'''
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': '-w /etc/shadow -p wa'})
+
     def test_infers_linux_auditctl_multiline_rules_across_blank_separated_blocks(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271536',

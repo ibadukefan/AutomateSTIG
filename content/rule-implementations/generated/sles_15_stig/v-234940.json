@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "The SUSE operating system must generate audit records for all uses of the kmod command.",
+    "expected": {
+      "substring": "-w /usr/bin/kmod -p x",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234940"
+  },
   "check_content_excerpt": "Verify the SUSE operating system generates an audit record for all uses of the \"kmod\" command.\n\nCheck that the command is being audited by performing the following command:\n\n> sudo auditctl -l | grep -w '/usr/bin/kmod'\n\n-w /usr/bin/kmod -p x -k modules\n\nIf the system is configured to audit the execution of the module management program \"kmod\", the command will return a line. \n\nIf the command does not return a line, this is a finding.\n\nNote:\nThe \"-k\" allows for specifying an arbitrary identifier. The string following \"-k\" does not need to match the example output above.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-w /usr/bin/kmod -p x",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to audit the execution of the module management program \"kmod\" by adding the following line to \"/etc/audit/rules.d/audit.rules\":\n\n-w /usr/bin/kmod -p x -k modules\n\nTo reload the rules file, restart the audit daemon\n\n> sudo systemctl restart auditd.service\n\nor issue the following command:\n\n> sudo augenrules --load",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-234940r958412_rule",
   "severity": "medium",

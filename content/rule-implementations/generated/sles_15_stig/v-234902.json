@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "The SUSE operating system must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/security/opasswd.",
+    "expected": {
+      "substring": "-w /etc/security/opasswd -p wa",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234902"
+  },
   "check_content_excerpt": "Verify the SUSE operating system generates an audit record when modifications occur to the \"/etc/security/opasswd\" file.\n\nCheck that the file is being audited by performing the following command:\n\n> sudo auditctl -l | grep -w '/etc/security/opasswd'\n\n-w /etc/security/opasswd -p wa -k account_mod\n\nIf the command does not return a line, this is a finding.\n\nNote: The \"-k\" allows for specifying an arbitrary identifier. The string following \"-k\" does not need to match the example output above.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-w /etc/security/opasswd -p wa",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to generate an audit record when all modifications to the \"/etc/security/opasswd\" file occur.\n\nAdd or update the following rule to \"/etc/audit/rules.d/audit.rules\":\n\n-w /etc/security/opasswd -p wa -k account_mod\n\nTo reload the rules file, restart the audit daemon:\n\n> sudo systemctl restart auditd.service\n\nor issue the following command:\n\n> sudo augenrules --load",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-234902r1009637_rule",
   "severity": "medium",
