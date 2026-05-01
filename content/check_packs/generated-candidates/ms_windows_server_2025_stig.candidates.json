@@ -751,6 +751,20 @@
     },
     {
       "check": {
+        "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netbt\\Parameters",
+        "type": "registry",
+        "value_name": "NoNameReleaseOnDemand"
+      },
+      "description": "Windows Server 2025 must be configured to ignore NetBIOS name release requests except from WINS servers.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-278085"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation",
         "type": "registry",
         "value_name": "AllowInsecureGuestAuth"
@@ -944,6 +958,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-278100"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\policies\\Explorer",
+        "type": "registry",
+        "value_name": "NoDriveTypeAutoRun"
+      },
+      "description": "Windows Server 2025 AutoPlay must be disabled for all drives.",
+      "expected": {
+        "type": "equals",
+        "value": 255
+      },
+      "platform": "windows",
+      "vuln_id": "V-278101"
     },
     {
       "check": {
@@ -1507,6 +1535,20 @@
     },
     {
       "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "type": "registry",
+        "value_name": "LocalAccountTokenFilterPolicy"
+      },
+      "description": "Windows Server 2025 local administrator accounts must have their privileged token filtered to prevent elevated privileges from being used over the network on domain-joined member servers.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-278178"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System",
         "type": "registry",
         "value_name": "EnumerateLocalUsers"
@@ -1518,6 +1560,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-278179"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Rpc",
+        "type": "registry",
+        "value_name": "RestrictRemoteClients"
+      },
+      "description": "Windows Server 2025 must restrict unauthenticated Remote Procedure Call (RPC) clients from connecting to the RPC server on domain-joined member servers and stand-alone or nondomain-joined systems.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-278180"
     },
     {
       "check": {

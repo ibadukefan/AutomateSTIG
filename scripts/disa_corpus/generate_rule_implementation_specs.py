@@ -58,7 +58,7 @@ def _registry_hive_abbrev(hive: str) -> str:
 
 
 def _registry_value(check_content: str):
-    match = re.search(r'^\s*Value(?:\s+data)?\s*:\s*(0x[0-9a-fA-F]+|[-+]?\d+)\s*(?:\(([-+]?\d+)\))?', check_content, re.IGNORECASE | re.MULTILINE)
+    match = re.search(r'^\s*Value(?!\s*(?:Name|Type))(?:\s+data)?\s*:?[ \t]*(0x[0-9a-fA-F]+|[-+]?\d+)\s*(?:\(([-+]?\d+)\))?', check_content, re.IGNORECASE | re.MULTILINE)
     if match:
         raw = match.group(2) or match.group(1)
         try:
@@ -1025,16 +1025,20 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     """
     content = rule.get('check_content', '') or ''
     combined_registry_content = '\n'.join(part for part in (content, rule.get('fix_text', '') or '') if part)
-    hives = [match.strip() for match in re.findall(r'Registry\s+Hive:\s*([^\n\r]+)', combined_registry_content, re.IGNORECASE)]
-    paths = [match.strip().strip('\\/') for match in re.findall(r'Registry\s+Path:\s*([^\n\r]+)', combined_registry_content, re.IGNORECASE)]
-    value_names = [match.strip() for match in re.findall(r'Value\s+Name:\s*([^\n\r]+)', combined_registry_content, re.IGNORECASE)]
+    hives = [next(group for group in match if group).strip() for match in re.findall(r'Registry[ \t]+Hive(?::[ \t]*([^\n\r]+)|([A-Z][^\n\r]+))', combined_registry_content, re.IGNORECASE)]
+    paths = [next(group for group in match if group).strip().strip('\\/') for match in re.findall(r'Registry[ \t]+Path(?::[ \t]*([^:\n\r][^\n\r]*)|(\\[^\n\r]+))', combined_registry_content, re.IGNORECASE)]
+    value_names = [next(group for group in match if group).strip() for match in re.findall(r'Value[ \t]+Name(?::[ \t]*([^\n\r]+)|([A-Za-z0-9_.-][^\n\r]+))', combined_registry_content, re.IGNORECASE)]
     if hives and paths and value_names:
         normalized_hives = {_registry_hive_abbrev(hive) for hive in hives}
         normalized_paths = {re.sub(r'\\+', r'\\', path).rstrip('\\/.') for path in paths}
         normalized_value_names = set(value_names)
+        if re.search(r'^\s*Value(?!\s*(?:Name|Type))[^\n\r]*\bor\s+less\b', combined_registry_content, re.IGNORECASE | re.MULTILINE):
+            return None
+        if re.search(r'^\s*Value(?!\s*(?:Name|Type))[^\n\r]*,\s*(?:0x[0-9a-fA-F]+|[-+]?\d+)', combined_registry_content, re.IGNORECASE | re.MULTILINE):
+            return None
         expected_value = _registry_value(combined_registry_content)
         value_matches = re.findall(
-            r'^\s*Value(?:\s+data)?\s*:\s*(0x[0-9a-fA-F]+|[-+]?\d+|\S[^\n\r]*)\s*(?:\(([-+]?\d+)\))?',
+            r'^\s*Value(?!\s*(?:Name|Type))(?:\s+data)?\s*:?[ \t]*(0x[0-9a-fA-F]+|[-+]?\d+|\S[^\n\r]*)\s*(?:\(([-+]?\d+)\))?',
             combined_registry_content,
             re.IGNORECASE | re.MULTILINE,
         )

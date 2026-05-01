@@ -163,6 +163,77 @@ If the value "visio2003files" is REG_DWORD = 2, this is not a finding.'''
         self.assertEqual(candidate['check'], {'type': 'windows_feature', 'name': 'Fax', 'should_be_installed': False})
         self.assertEqual(candidate['expected'], {'type': 'is_false'})
 
+    def test_infers_registry_candidate_from_compact_authoritative_fields(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278085',
+            'title': 'Windows Server 2025 must be configured to ignore NetBIOS name release requests except from WINS servers.',
+            'check_content': '''If the following registry value does not exist or is not configured as specified, this is a finding:
+
+Registry HiveHKEY_LOCAL_MACHINE
+Registry Path\\SYSTEM\\CurrentControlSet\\Services\\Netbt\\Parameters\\
+
+Value NameNoNameReleaseOnDemand
+
+Value TypeREG_DWORD
+Value0x00000001 (1)'''
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {
+            'type': 'registry',
+            'path': 'HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netbt\\Parameters',
+            'value_name': 'NoNameReleaseOnDemand',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 1})
+
+    def test_skips_compact_registry_value_with_or_less_semantics(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278181',
+            'title': 'Windows Server 2025 must limit cached logons.',
+            'check_content': '''Registry HiveHKEY_LOCAL_MACHINE
+Registry Path\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\
+Value NameCachedLogonsCount
+Value TypeREG_SZ
+Value4 (or less)'''
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNone(candidate)
+
+    def test_skips_registry_candidate_when_value_line_lists_multiple_allowed_values(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278103',
+            'title': 'Windows Server 2025 Telemetry must be configured to limit diagnostic data sent to Microsoft.',
+            'check_content': '''Registry Hive: HKEY_LOCAL_MACHINE
+Registry Path: \\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\\
+Value Name: AllowTelemetry
+Type: REG_DWORD
+Value0x00000000 (0), 0x00000001 (1)'''
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNone(candidate)
+
+    def test_skips_registry_candidate_when_multiple_authoritative_paths_disagree(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-213133',
+            'title': 'Adobe Acrobat Pro DC Continuous Repair Installation must be disabled.',
+            'check_content': '''Value Name: DisableMaintenance
+Type: REG_DWORD
+Value: 1''',
+            'fix_text': '''For 32 bit:
+Registry Hive:
+HKEY_LOCAL_MACHINE
+Registry Path:
+\\Software\\Adobe\\Adobe Acrobat\\DC\\Installer
+
+For 64 bit:
+Registry Hive:
+HKEY_LOCAL_MACHINE
+Registry Path:
+\\SOFTWARE\\Wow6432Node\\Adobe\\Adobe Acrobat\\DC\\Installer
+
+Value Name: DisableMaintenance
+Type: REG_DWORD
+Value: 1'''
+        }, 'Adobe_Acrobat_Pro_DC_Continuous_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_chrome_registry_policy_candidate_from_windows_method(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221586',
