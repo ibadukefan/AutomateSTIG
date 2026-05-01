@@ -587,8 +587,51 @@ def _selinux_getenforce_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _findmnt_option_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    command_matches = list(re.finditer(r'^\s*[$#>]\s*(?:sudo\s+)?findmnt\s+(?P<path>/[A-Za-z0-9_./:+-]+)\s*$', content, re.MULTILINE))
+    if len(command_matches) != 1:
+        return None
+    command_match = command_matches[0]
+    mount_path = command_match.group('path')
+    required_match = re.search(
+        rf'If\s+the\s+{re.escape(mount_path)}\s+file\s+system\s+is\s+mounted\s+without\s+the\s+["“]([A-Za-z0-9_-]+)["”]\s+option',
+        content,
+        re.IGNORECASE,
+    )
+    if not required_match:
+        return None
+    required_option = required_match.group(1)
+    sample_options = None
+    for line in content[command_match.end():].splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.upper().startswith('TARGET'):
+            continue
+        if stripped.lower().startswith('if '):
+            break
+        fields = stripped.split()
+        if fields and fields[0] == mount_path and len(fields) >= 4:
+            options_field = fields[3]
+            sample_options = options_field if required_option in options_field.split(',') else None
+            break
+    if not sample_options:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': f'findmnt {mount_path}'},
+        'expected': {'type': 'contains', 'substring': required_option},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
+    findmnt_candidate = _findmnt_option_candidate(rule, stig_id)
+    if findmnt_candidate:
+        return findmnt_candidate
     selinux_candidate = _selinux_getenforce_candidate(rule, stig_id)
     if selinux_candidate:
         return selinux_candidate

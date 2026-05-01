@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "findmnt /dev/shm",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 must mount /dev/shm with the noexec option.",
+    "expected": {
+      "substring": "noexec",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-257864"
+  },
   "check_content_excerpt": "Verify \"/dev/shm\" is mounted with the \"noexec\" option with the following command:\n\n$ findmnt /dev/shm\nTARGET   SOURCE FSTYPE OPTIONS\n/dev/shm tmpfs  tmpfs  rw,nodev,nosuid,noexec,seclabel 0 0\n\nIf the /dev/shm file system is mounted without the \"noexec\" option, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "noexec",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure \"/dev/shm\" to mount with the \"noexec\" option.\n\nDetermine how /dev/shm is managed.\n\n$ systemctl status systemd-tmpfiles-setup\nIf \"active\", systemd is managing temporary files (including /dev/shm).\nOtherwise, /etc/fstab is managing temporary files.\n\nIf systemd is managing /dev/shm, use the following commands to add the noexec option to the mount:\n     If /etc/tmpfiles.d does not exist, create it:\n     $ sudo mkdir -p /etc/tmpfiles.d\n\n     Add a configuration file with the appropriate options for /dev/shm as follows:\n     $ echo 'd /dev/shm 1777 root root 10d' | sudo tee /etc/tmpfiles.d/dev-shm.conf\n     $ echo 'x /dev/shm' | sudo tee -a /etc/tmpfiles.d/dev-shm.conf\n\n     Apply new mount options with the following commands:\n     $ sudo systemctl mask tmp.mount\n     Created symlink /etc/systemd/system/tmp.mount ? /dev/null.\n\n     $ echo 'tmpfs /dev/shm tmpfs rw,nodev,nosuid,noexec,seclabel 0 0' | sudo tee -a /etc/fstab\n     $ sudo mount -o remount /dev/shm\n     $ sudo systemctl daemon-reload\n\nIf /dev/shm is managed by /etc/fstab, use the following commands to add the noexec option to the mount:\n     $ sudo vi /etc/fstab\n\n     Add or modify the following line:\n     tmpfs /dev/shm tmpfs rw,nodev,nosuid,noexec,seclabel 0 0\n\n     Remount /dev/shm:\n     $ sudo mount -o remount /dev/shm\n\nNote: Although systemd manages tmpfs mounts by default, administrators can override settings by adding entries to /etc/fstab. Either approach is acceptable.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-257864r1106304_rule",
   "severity": "medium",

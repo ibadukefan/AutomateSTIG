@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 321,
+  "candidate_checks": 322,
   "cases": [
     {
       "check": {
@@ -905,6 +905,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257863"
+    },
+    {
+      "check": {
+        "command": "findmnt /dev/shm",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must mount /dev/shm with the noexec option.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "noexec",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "findmnt /dev/shm": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "findmnt /dev/shm": "before\nnoexec\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257864"
     },
     {
       "check": {
@@ -8999,5 +9025,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 321
+  "validated_candidates": 322
 }

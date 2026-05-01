@@ -465,6 +465,19 @@
     },
     {
       "check": {
+        "command": "findmnt /dev/shm",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must mount /dev/shm with the noexec option.",
+      "expected": {
+        "substring": "noexec",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257864"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/dev/shm",
         "pattern": "tmpfs on /dev/shm type tmpfs (rw,nodev,nosuid,noexec,seclabel)",

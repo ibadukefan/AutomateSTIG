@@ -210,6 +210,49 @@ $ sudo sysctl --system'''
         self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/usr/lib/systemd/system/rescue.service', 'pattern': 'sulogin-shell', 'is_regex': False})
         self.assertEqual(candidate['expected'], {'type': 'contains'})
 
+    def test_infers_linux_findmnt_option_candidate_from_authoritative_sample(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257864',
+            'title': 'RHEL 9 must mount /dev/shm with the noexec option.',
+            'check_content': '''Verify "/dev/shm" is mounted with the "noexec" option with the following command:
+
+$ findmnt /dev/shm
+TARGET   SOURCE FSTYPE OPTIONS
+/dev/shm tmpfs  tmpfs  rw,nodev,nosuid,noexec,seclabel 0 0
+
+If the /dev/shm file system is mounted without the "noexec" option, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'findmnt /dev/shm'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'noexec'})
+
+    def test_skips_linux_findmnt_candidate_when_multiple_findmnt_commands_are_present(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257864',
+            'title': 'RHEL 9 must mount /dev/shm with the noexec option.',
+            'check_content': '''$ findmnt /dev/shm
+TARGET   SOURCE FSTYPE OPTIONS
+/dev/shm tmpfs  tmpfs  rw,nodev,nosuid,noexec,seclabel 0 0
+
+$ findmnt /tmp
+TARGET SOURCE FSTYPE OPTIONS
+/tmp tmpfs tmpfs rw,nodev,nosuid,noexec,seclabel 0 0
+
+If the /dev/shm file system is mounted without the "noexec" option, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertIsNone(candidate)
+
+    def test_skips_linux_findmnt_candidate_when_required_option_is_not_in_options_column(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257864',
+            'title': 'RHEL 9 must mount /dev/shm with the noexec option.',
+            'check_content': '''$ findmnt /dev/shm
+TARGET   SOURCE FSTYPE OPTIONS
+/dev/shm noexec tmpfs rw,nodev,nosuid,seclabel 0 0
+
+If the /dev/shm file system is mounted without the "noexec" option, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_linux_file_content_candidate_from_cat_pipe_grep_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-251713',
