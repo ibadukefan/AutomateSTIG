@@ -500,6 +500,47 @@ If any output is returned, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "grubby --info=ALL | grep args | grep 'systemd.confirm_spawn'"})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_xmllint_xpath_empty_expected_result_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259043',
+            'title': 'The vCenter Lookup service must disable stack tracing.',
+            'check_content': '''At the command prompt, run the following command:
+
+# xmllint --xpath "//Connector[@allowTrace = 'true']" /usr/lib/vmware-lookupsvc/conf/server.xml
+
+Expected result:
+
+XPath set is empty
+
+If any connectors are returned, this is a finding.'''
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259043',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'xmllint --xpath "//Connector[@allowTrace = \'true\']" /usr/lib/vmware-lookupsvc/conf/server.xml',
+            },
+            'expected': {'type': 'equals', 'value': 'XPath set is empty'},
+            'description': 'The vCenter Lookup service must disable stack tracing.',
+        })
+
+    def test_skips_xmllint_xpath_empty_expected_result_with_malformed_xpath(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259047',
+            'title': 'The vCenter Lookup service must set URIEncoding to UTF-8.',
+            'check_content': '''At the command prompt, run the following command:
+
+# xmllint --xpath "//Connector[@URIEncoding != 'UTF-8'] | //Connector[not[@URIEncoding]]" /usr/lib/vmware-lookupsvc/conf/server.xml
+
+Expected result:
+
+XPath set is empty
+
+If any connectors are returned, this is a finding.'''
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_dconf_grep_candidate_from_exact_authoritative_sample(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271690',

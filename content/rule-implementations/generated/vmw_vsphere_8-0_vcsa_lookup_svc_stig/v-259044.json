@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "xmllint --xpath \"//Connector[(@port = '0') or not(@address)]\" /usr/lib/vmware-lookupsvc/conf/server.xml",
+      "type": "command_output"
+    },
+    "description": "The vCenter Lookup service must be configured to use a specified IP address and port.",
+    "expected": {
+      "type": "equals",
+      "value": "XPath set is empty"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259044"
+  },
   "check_content_excerpt": "At the command prompt, run the following command:\n\n# xmllint --xpath \"//Connector[(@port = '0') or not(@address)]\" /usr/lib/vmware-lookupsvc/conf/server.xml\n\nExpected result:\n\nXPath set is empty\n\nIf any connectors are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "XPath set is empty"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/server.xml\n\nNavigate to the <Connector> node and configure the port and address as follows:\n\nport=\"${bio-custom.http.port}\"\naddress=\"localhost\"\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259044r960966_rule",
   "severity": "medium",

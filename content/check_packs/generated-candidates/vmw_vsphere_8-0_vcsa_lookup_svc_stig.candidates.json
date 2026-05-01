@@ -28,6 +28,58 @@
     },
     {
       "check": {
+        "command": "xmllint --xpath \"//Connector[@allowTrace = 'true']\" /usr/lib/vmware-lookupsvc/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must disable stack tracing.",
+      "expected": {
+        "type": "equals",
+        "value": "XPath set is empty"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259043"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"//Connector[(@port = '0') or not(@address)]\" /usr/lib/vmware-lookupsvc/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must be configured to use a specified IP address and port.",
+      "expected": {
+        "type": "equals",
+        "value": "XPath set is empty"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259044"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"//Connector[@connectionTimeout = '-1']\" /usr/lib/vmware-lookupsvc/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must limit the amount of time that each Transmission Control Protocol (TCP) connection is kept alive.",
+      "expected": {
+        "type": "equals",
+        "value": "XPath set is empty"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259052"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"//Connector[@maxKeepAliveRequests = '-1']\" /usr/lib/vmware-lookupsvc/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must limit the number of times that each Transmission Control Protocol (TCP) connection is kept alive.",
+      "expected": {
+        "type": "equals",
+        "value": "XPath set is empty"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259053"
+    },
+    {
+      "check": {
         "command": "xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\".*\"//g' | xmllint --xpath '/web-app/session-config/cookie-config/http-only' -",
         "type": "command_output"
       },

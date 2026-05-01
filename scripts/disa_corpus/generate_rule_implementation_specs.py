@@ -876,6 +876,8 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         return None
     if ';' in command and not re.fullmatch(r'[^;]*(?:\\;[^;]*)*', command):
         return None
+    if command.startswith('xmllint ') and re.search(r'\bnot\s*\[', command):
+        return None
 
     command_end = command_matches[0].end() if command_matches else absolute_command.end()
     grep_sample_candidate = _grep_sample_line_candidate(rule, stig_id, command, command_end)
@@ -890,7 +892,13 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     if expected_match:
         expected_lines = [line.strip() for line in expected_match.group('body').splitlines() if line.strip()]
         expected_lines = [line for line in expected_lines if not line.startswith(('$', '#', '>'))]
-        if len(expected_lines) == 1 and re.search(r'output\s+does\s+not\s+match\s+the\s+expected\s+result', content, re.IGNORECASE):
+        expected_result_is_required = re.search(r'output\s+does\s+not\s+match\s+the\s+expected\s+result', content, re.IGNORECASE)
+        xpath_empty_result_is_required = expected_lines == ['XPath set is empty'] and re.search(
+            r'If\s+any\s+connectors\s+are\s+returned,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+        if len(expected_lines) == 1 and (expected_result_is_required or xpath_empty_result_is_required):
             return {
                 'vuln_id': rule.get('vuln_id', ''),
                 'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',

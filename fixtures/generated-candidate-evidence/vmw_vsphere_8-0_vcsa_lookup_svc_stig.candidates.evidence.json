@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 4,
+  "candidate_checks": 8,
   "cases": [
     {
       "check": {
@@ -52,6 +52,110 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259041"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"//Connector[@allowTrace = 'true']\" /usr/lib/vmware-lookupsvc/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must disable stack tracing.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "XPath set is empty"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"//Connector[@allowTrace = 'true']\" /usr/lib/vmware-lookupsvc/conf/server.xml": "unexpected-XPath set is empty"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"//Connector[@allowTrace = 'true']\" /usr/lib/vmware-lookupsvc/conf/server.xml": "XPath set is empty"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259043"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"//Connector[(@port = '0') or not(@address)]\" /usr/lib/vmware-lookupsvc/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must be configured to use a specified IP address and port.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "XPath set is empty"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"//Connector[(@port = '0') or not(@address)]\" /usr/lib/vmware-lookupsvc/conf/server.xml": "unexpected-XPath set is empty"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"//Connector[(@port = '0') or not(@address)]\" /usr/lib/vmware-lookupsvc/conf/server.xml": "XPath set is empty"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259044"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"//Connector[@connectionTimeout = '-1']\" /usr/lib/vmware-lookupsvc/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must limit the amount of time that each Transmission Control Protocol (TCP) connection is kept alive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "XPath set is empty"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"//Connector[@connectionTimeout = '-1']\" /usr/lib/vmware-lookupsvc/conf/server.xml": "unexpected-XPath set is empty"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"//Connector[@connectionTimeout = '-1']\" /usr/lib/vmware-lookupsvc/conf/server.xml": "XPath set is empty"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259052"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"//Connector[@maxKeepAliveRequests = '-1']\" /usr/lib/vmware-lookupsvc/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must limit the number of times that each Transmission Control Protocol (TCP) connection is kept alive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "XPath set is empty"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"//Connector[@maxKeepAliveRequests = '-1']\" /usr/lib/vmware-lookupsvc/conf/server.xml": "unexpected-XPath set is empty"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"//Connector[@maxKeepAliveRequests = '-1']\" /usr/lib/vmware-lookupsvc/conf/server.xml": "XPath set is empty"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259053"
     },
     {
       "check": {
@@ -111,5 +215,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
-  "validated_candidates": 4
+  "validated_candidates": 8
 }

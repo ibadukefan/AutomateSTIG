@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "xmllint --xpath \"//Connector[@allowTrace = 'true']\" /usr/lib/vmware-lookupsvc/conf/server.xml",
+      "type": "command_output"
+    },
+    "description": "The vCenter Lookup service must disable stack tracing.",
+    "expected": {
+      "type": "equals",
+      "value": "XPath set is empty"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259043"
+  },
   "check_content_excerpt": "At the command prompt, run the following command:\n\n# xmllint --xpath \"//Connector[@allowTrace = 'true']\" /usr/lib/vmware-lookupsvc/conf/server.xml\n\nExpected result:\n\nXPath set is empty\n\nIf any connectors are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "XPath set is empty"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/server.xml\n\nNavigate to and locate:\n\n'allowTrace=\"true\"'\n\nRemove the 'allowTrace=\"true\"' setting.\n\nNote: If \"allowTrace\" is not present, it defaults to \"false\".\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259043r960963_rule",
   "severity": "medium",

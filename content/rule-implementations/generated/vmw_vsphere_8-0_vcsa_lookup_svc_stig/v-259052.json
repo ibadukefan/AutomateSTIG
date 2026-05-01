@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "xmllint --xpath \"//Connector[@connectionTimeout = '-1']\" /usr/lib/vmware-lookupsvc/conf/server.xml",
+      "type": "command_output"
+    },
+    "description": "The vCenter Lookup service must limit the amount of time that each Transmission Control Protocol (TCP) connection is kept alive.",
+    "expected": {
+      "type": "equals",
+      "value": "XPath set is empty"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259052"
+  },
   "check_content_excerpt": "The connection timeout should not be disabled by setting it to \"-1\".\n\nAt the command prompt, run the following command:\n\n# xmllint --xpath \"//Connector[@connectionTimeout = '-1']\" /usr/lib/vmware-lookupsvc/conf/server.xml\n\nExpected result:\n\nXPath set is empty\n\nIf any connectors are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "XPath set is empty"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Navigate to and open:\n\n/usr/lib/vmware-lookupsvc/conf/server.xml\n\nConfigure the <Connector> node with the value:\n\nconnectionTimeout=\"60000\"\n\nRestart the service with the following command:\n\n# vmon-cli --restart lookupsvc",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259052r960735_rule",
   "severity": "medium",
