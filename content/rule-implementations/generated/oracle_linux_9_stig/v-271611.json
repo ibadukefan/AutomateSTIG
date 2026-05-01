@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/system-auth",
+      "pattern": "pam_pwquality.so",
+      "type": "file_content"
+    },
+    "description": "OL 9 must ensure the password complexity module is enabled in the system-auth file.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271611"
+  },
   "check_content_excerpt": "Verify that OL 9 uses \"pwquality\" to enforce the password complexity rules in the system-auth file with the following command:\n\n$ cat /etc/pam.d/system-auth | grep pam_pwquality\npassword required pam_pwquality.so \n\nIf the command does not return a line containing the value \"pam_pwquality.so\", or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to use \"pwquality\" to enforce password complexity rules.\n\nAdd the following line to the \"/etc/pam.d/system-auth\" file(or modify the line to have the required value):\n\npassword required pam_pwquality.so",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-271611r1091545_rule",
   "severity": "medium",

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 264,
+  "candidate_checks": 266,
   "cases": [
     {
       "check": {
@@ -2565,6 +2565,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248684"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/password-auth",
+        "pattern": "pam_pwquality.so",
+        "type": "file_content"
+      },
+      "description": "OL 8 must ensure the password complexity module is enabled in the password-auth file.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/password-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/password-auth": "before\npam_pwquality.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248686"
     },
     {
       "check": {
@@ -6986,6 +7013,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "pam_pwquality.so",
+        "type": "file_content"
+      },
+      "description": "OL 8 must ensure the password complexity module is enabled in the system-auth file.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\npam_pwquality.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-252657"
+    },
+    {
+      "check": {
         "key": "net.ipv4.conf.all.forwarding",
         "type": "sysctl"
       },
@@ -7149,5 +7203,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 264
+  "validated_candidates": 266
 }

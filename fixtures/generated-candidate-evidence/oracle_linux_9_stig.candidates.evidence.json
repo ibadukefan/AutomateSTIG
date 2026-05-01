@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 317,
+  "candidate_checks": 318,
   "cases": [
     {
       "check": {
@@ -3734,6 +3734,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271610"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "pam_pwquality.so",
+        "type": "file_content"
+      },
+      "description": "OL 9 must ensure the password complexity module is enabled in the system-auth file.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\npam_pwquality.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271611"
     },
     {
       "check": {
@@ -8600,5 +8627,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 317
+  "validated_candidates": 318
 }

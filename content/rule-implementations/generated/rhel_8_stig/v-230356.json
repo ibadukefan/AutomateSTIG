@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/pam.d/password-auth",
+      "pattern": "pam_pwquality.so",
+      "type": "file_content"
+    },
+    "description": "RHEL 8 must ensure the password complexity module is enabled in the password-auth file.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230356"
+  },
   "check_content_excerpt": "Verify the operating system uses \"pwquality\" to enforce the password complexity rules. \n\nCheck for the use of \"pwquality\" in the password-auth file with the following command:\n\n     $ sudo cat /etc/pam.d/password-auth | grep pam_pwquality\n\n     password requisite pam_pwquality.so \n\nIf the command does not return a line containing the value \"pam_pwquality.so\" as shown, or the line is commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to use \"pwquality\" to enforce password complexity rules.\n\nAdd the following line to the \"/etc/pam.d/password-auth\" file (or modify the line to have the required value):\n\n     password requisite pam_pwquality.so",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-230356r982195_rule",
   "severity": "medium",

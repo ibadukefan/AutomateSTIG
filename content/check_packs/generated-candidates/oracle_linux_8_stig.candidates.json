@@ -1313,6 +1313,20 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/pam.d/password-auth",
+        "pattern": "pam_pwquality.so",
+        "type": "file_content"
+      },
+      "description": "OL 8 must ensure the password complexity module is enabled in the password-auth file.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248686"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "PASS_MIN_DAYS 1",
         "type": "file_content"
@@ -3558,6 +3572,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-252656"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "pam_pwquality.so",
+        "type": "file_content"
+      },
+      "description": "OL 8 must ensure the password complexity module is enabled in the system-auth file.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-252657"
     },
     {
       "check": {

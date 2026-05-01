@@ -1898,6 +1898,20 @@
       "check": {
         "is_regex": false,
         "path": "/etc/pam.d/system-auth",
+        "pattern": "pam_pwquality.so",
+        "type": "file_content"
+      },
+      "description": "OL 9 must ensure the password complexity module is enabled in the system-auth file.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271611"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
         "pattern": "password required pam_pwquality.so retry=3",
         "type": "file_content"
       },

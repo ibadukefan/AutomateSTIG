@@ -210,6 +210,21 @@ $ sudo sysctl --system'''
         self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/usr/lib/systemd/system/rescue.service', 'pattern': 'sulogin-shell', 'is_regex': False})
         self.assertEqual(candidate['expected'], {'type': 'contains'})
 
+    def test_infers_linux_file_content_candidate_from_cat_pipe_grep_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-251713',
+            'title': 'RHEL 8 must ensure the password complexity module is enabled in the system-auth file.',
+            'check_content': '''Check for the use of "pwquality" in the system-auth file with the following command:
+
+$ sudo cat /etc/pam.d/system-auth | grep pam_pwquality
+
+password requisite pam_pwquality.so
+
+If the command does not return a line containing the value "pam_pwquality.so" as shown, or the line is commented out, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/pam.d/system-auth', 'pattern': 'pam_pwquality.so', 'is_regex': False})
+        self.assertEqual(candidate['expected'], {'type': 'contains'})
+
     def test_infers_linux_file_content_absent_candidate_from_grep_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-251712',

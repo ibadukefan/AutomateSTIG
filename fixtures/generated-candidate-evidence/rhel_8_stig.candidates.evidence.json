@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 242,
+  "candidate_checks": 244,
   "cases": [
     {
       "check": {
@@ -1260,6 +1260,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230354"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/pam.d/password-auth",
+        "pattern": "pam_pwquality.so",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must ensure the password complexity module is enabled in the password-auth file.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/password-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/password-auth": "before\npam_pwquality.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230356"
     },
     {
       "check": {
@@ -6180,6 +6207,33 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/pam.d/system-auth",
+        "pattern": "pam_pwquality.so",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must ensure the password complexity module is enabled in the system-auth file.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/pam.d/system-auth": "before\npam_pwquality.so\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251713"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/security/pwquality.conf",
         "pattern": "/etc/security/pwquality.conf.d/*.conf",
         "type": "file_content"
@@ -6531,5 +6585,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 242
+  "validated_candidates": 244
 }

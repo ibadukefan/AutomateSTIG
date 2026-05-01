@@ -342,15 +342,30 @@ def _grep_file_match(content: str):
 def _file_content_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     grep = _grep_file_match(content)
+    cat_pipe_grep = None
     if not grep:
-        return None
-    pattern, path = grep.group(1), grep.group(2)
+        cat_pipe_grep = re.search(
+            r'\bcat\s+(?P<path>/[A-Za-z0-9_./:+-]+)\s*\|\s*grep\s+(?:-[A-Za-z]+\s+)*(?P<pattern>[A-Za-z0-9_.:+-]+)',
+            content,
+            re.IGNORECASE,
+        )
+        if not cat_pipe_grep:
+            return None
+    if grep:
+        pattern, path = grep.group(1), grep.group(2)
+    else:
+        path = cat_pipe_grep.group('path')
+        pattern = cat_pipe_grep.group('pattern')
     lower = content.lower()
     expected = None
     if re.search(r'if\s+any\s+(?:occurrences?\s+of\s+)?["“]?[^"”\n.]+["”]?\s+(?:is|are)\s+returned[^.]*this\s+is\s+a\s+finding', lower):
         expected = {'type': 'is_false'}
     elif 'line is not returned' in lower or 'no output is returned' in lower or 'does not return' in lower:
         expected = {'type': 'contains'}
+        if cat_pipe_grep:
+            value_match = re.search(r'line\s+containing\s+the\s+value\s+["“]([^"”\n]+)["”]', content, re.IGNORECASE)
+            if value_match:
+                pattern = value_match.group(1).strip()
     if expected is None:
         return None
     return {
