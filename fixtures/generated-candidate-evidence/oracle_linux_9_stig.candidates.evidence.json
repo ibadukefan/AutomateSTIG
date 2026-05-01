@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 368,
+  "candidate_checks": 369,
   "cases": [
     {
       "check": {
@@ -5430,6 +5430,32 @@
     },
     {
       "check": {
+        "command": "gsettings get org.gnome.desktop.media-handling automount-open",
+        "type": "command_output"
+      },
+      "description": "OL 9 must disable the graphical user interface automount function unless required.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.desktop.media-handling automount-open": "unexpected-false"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.desktop.media-handling automount-open": "false"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271670"
+    },
+    {
+      "check": {
         "command": "gsettings get org.gnome.login-screen disable-user-list",
         "type": "command_output"
       },
@@ -10179,5 +10205,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 368
+  "validated_candidates": 369
 }

@@ -630,7 +630,7 @@ def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
         return None
     if re.search(r'if[^.\n]+(?:setting|result)\s+is\s+["“]false["”]', content, re.IGNORECASE):
         expected_value = 'true'
-    elif re.search(r'if[^.\n]+result\s+is\s+["“]true["”]', content, re.IGNORECASE):
+    elif re.search(r'if[^.\n]+(?:setting|result|[A-Za-z0-9_.-]+["”]?)\s+is\s+(?:set\s+to\s+)?["“]true["”]', content, re.IGNORECASE):
         expected_value = 'false'
     elif re.search(r'is\s+not\s+set\s+to\s+["“]?true["”]?', content, re.IGNORECASE):
         expected_value = 'true'

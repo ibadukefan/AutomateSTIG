@@ -1100,6 +1100,22 @@ If "picture-uri" is writable and the result is "true", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'gsettings writable org.gnome.desktop.screensaver picture-uri'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'false'})
 
+    def test_infers_linux_gsettings_get_false_candidate_from_true_setting_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258014',
+            'title': 'RHEL 9 must disable the graphical user interface automount function unless required.',
+            'check_content': '''Verify RHEL 9 disables the graphical user interface automount function with the following command:
+
+$ gsettings get org.gnome.desktop.media-handling automount-open
+
+false
+
+If "automount-open" is set to "true", and is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'gsettings get org.gnome.desktop.media-handling automount-open'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'false'})
+
     def test_infers_no_output_command_candidate_from_find_file_absence_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230283',
