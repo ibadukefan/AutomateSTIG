@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender Security Center\\Family options",
+      "type": "registry",
+      "value_name": "UILockdown"
+    },
+    "description": "Microsoft Defender AV must hide the Family options area.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-278660"
+  },
   "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Windows Security >> Family Options >> Hide the Family options area is set to \"Enabled\"; otherwise, this is a finding.\n\nProcedure: Use the Windows Registry Editor to navigate to the following key: \nHKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender Security Center\\Family options\n\nCriteria: If the value \"UILockdown\" is REG_DWORD = 1, this is not a finding.\n\nIf the value is 0, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Windows Security >> Family Options >> Hide the Family options area to \"Enabled\".\n\nClick \"OK\".\n\nClick \"Apply\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-278660r1144057_rule",
   "severity": "medium",

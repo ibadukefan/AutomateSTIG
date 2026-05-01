@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules",
+      "type": "registry",
+      "value_name": "56a863a9-875e-4185-98a7-b882c64b5ce5"
+    },
+    "description": "Microsoft Defender AV must block abuse of exploited vulnerable signed drivers.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "windows",
+    "vuln_id": "V-278655"
+  },
   "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Microsoft Defender Exploit Guard >> Attack Surface Reduction >> Configure Attack Surface Reduction rules is set to \"Enabled\".\n\nProcedure: Use the Windows Registry Editor to navigate to the following key: \nHKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\n\nCriteria: If the value \"56a863a9-875e-4185-98a7-b882c64b5ce5\" is REG_SZ = 1, this is not a finding.\n\nIf the value is other than 1, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Microsoft Defender Exploit Guard >> Attack Surface Reduction >> Configure Attack Surface Reduction rules to \"Enabled\".\n\nUnder the policy option \"Set the state for each ASR rule:\", then click \"Show\".\n\nEnter GUID \"56a863a9-875e-4185-98a7-b882c64b5ce5\" in the \"Value Name\" column.\n\nEnter \"1\" in the \"Value\" column.\n\nClick \"OK\".\n\nClick \"Apply\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-278655r1144049_rule",
   "severity": "medium",

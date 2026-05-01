@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules",
+      "type": "registry",
+      "value_name": "D3E037E1-3EB8-44C8-A917-57927947596D"
+    },
+    "description": "Microsoft Defender AV must be configured to impede JavaScript and VBScript to launch executables.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "windows",
+    "vuln_id": "V-213460"
+  },
   "check_content_excerpt": "This setting is applicable starting with v1709 of Windows 10. It is NA for prior versions.\n\nVerify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Microsoft Defender Exploit Guard >> Attack Surface Reduction >> \"Configure Attack Surface Reduction rules\" is set to \"Enabled\". Click \"Show...\". Verify the rule ID in the Value name column and the desired state in the Value column is set as follows:\nValue name: D3E037E1-3EB8-44C8-A917-57927947596D \nValue:  1\n\nProcedure: Use the Windows Registry Editor to navigate to the following key: \nHKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\n\nCriteria: If the value \"D3E037E1-3EB8-44C8-A917-57927947596D\" is REG_SZ = 1, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Windows Defender Exploit Guard >> Attack Surface Reduction >> \"Configure Attack Surface Reduction rules\" to \"Enabled\".\n\nClick \"Show...\". Set the Value name to \"D3E037E1-3EB8-44C8-A917-57927947596D\" and the Value to \"1\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-213460r961092_rule",
   "severity": "medium",

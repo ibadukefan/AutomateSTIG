@@ -73,6 +73,25 @@ Value: O:BAG:BAD:(A;;RC;;;BA)'''
         self.assertEqual(candidate['check']['value_name'], 'RestrictRemoteSAM')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'O:BAG:BAD:(A;;RC;;;BA)'})
 
+    def test_infers_defender_registry_candidate_from_explicit_criteria_not_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278668',
+            'title': 'Microsoft Defender AV must enable script scanning.',
+            'check_content': '''Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Real-time Protection >> Turn on script scanning is set to "Enabled"; otherwise, this is a finding.
+
+Procedure: Use the Windows Registry Editor to navigate to the following key:
+
+HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection
+
+Criteria: If the value "DisableScriptScanning" is REG_DWORD = 0, this is not a finding.
+
+If the value is 1, this is a finding.'''
+        }, 'MS_Defender_Antivirus')
+        self.assertEqual(candidate['check']['type'], 'registry')
+        self.assertEqual(candidate['check']['path'], 'HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection')
+        self.assertEqual(candidate['check']['value_name'], 'DisableScriptScanning')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
+
     def test_infers_windows_feature_candidate_check_from_powershell_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254269',

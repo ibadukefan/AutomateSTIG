@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\MpEngine",
+      "type": "registry",
+      "value_name": "MpBafsExtendedTimeout"
+    },
+    "description": "Microsoft Defender AV must enable extended cloud check.",
+    "expected": {
+      "type": "equals",
+      "value": 50
+    },
+    "platform": "windows",
+    "vuln_id": "V-278662"
+  },
   "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> MpEngine >> Configure extended cloud check is set to \"Enabled\" with a Policy Option value of \"50\"; otherwise, this is a finding.\n\nProcedure: Use the Windows Registry Editor to navigate to the following key: \nHKLM\\Software\\Policies\\Microsoft\\Windows Defender\\MpEngine\n\nCriteria: If the value \"MpBafsExtendedTimeout\" is REG_DWORD = 50, this is not a finding.\n\nIf the value is other than 50, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 50
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> MpEngine >> Configure extended cloud check to \"Enabled\" with a Policy Option value of \"50\".\n\nClick \"OK\".\n\nClick \"Apply\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-278662r1144061_rule",
   "severity": "medium",
