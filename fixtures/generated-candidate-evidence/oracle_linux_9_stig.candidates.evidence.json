@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 365,
+  "candidate_checks": 366,
   "cases": [
     {
       "check": {
@@ -6828,6 +6828,32 @@
     },
     {
       "check": {
+        "command": "grubby --info=ALL | grep args | grep 'systemd.confirm_spawn'",
+        "type": "command_output"
+      },
+      "description": "OL 9 must disable the ability of systemd to spawn an interactive boot process.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grubby --info=ALL | grep args | grep 'systemd.confirm_spawn'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grubby --info=ALL | grep args | grep 'systemd.confirm_spawn'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271736"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/grub",
         "pattern": "GRUB_CMDLINE_LINUX=\"vsyscall=none\"",
@@ -10099,5 +10125,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 365
+  "validated_candidates": 366
 }

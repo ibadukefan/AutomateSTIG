@@ -16,6 +16,19 @@
     },
     {
       "check": {
+        "command": "grubby --info=ALL | grep args | grep 'systemd.confirm_spawn'",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must disable the ability of systemd to spawn an interactive boot process.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257788"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/grub",
         "pattern": "GRUB_CMDLINE_LINUX=\"page_poison=1\"",

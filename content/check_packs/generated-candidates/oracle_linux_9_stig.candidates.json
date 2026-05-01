@@ -3492,6 +3492,19 @@
     },
     {
       "check": {
+        "command": "grubby --info=ALL | grep args | grep 'systemd.confirm_spawn'",
+        "type": "command_output"
+      },
+      "description": "OL 9 must disable the ability of systemd to spawn an interactive boot process.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271736"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/grub",
         "pattern": "GRUB_CMDLINE_LINUX=\"vsyscall=none\"",

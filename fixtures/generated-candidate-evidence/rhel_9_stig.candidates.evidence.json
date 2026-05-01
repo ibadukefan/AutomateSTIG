@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 341,
+  "candidate_checks": 342,
   "cases": [
     {
       "check": {
@@ -27,6 +27,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257787"
+    },
+    {
+      "check": {
+        "command": "grubby --info=ALL | grep args | grep 'systemd.confirm_spawn'",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must disable the ability of systemd to spawn an interactive boot process.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grubby --info=ALL | grep args | grep 'systemd.confirm_spawn'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grubby --info=ALL | grep args | grep 'systemd.confirm_spawn'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257788"
     },
     {
       "check": {
@@ -9523,5 +9549,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 341
+  "validated_candidates": 342
 }

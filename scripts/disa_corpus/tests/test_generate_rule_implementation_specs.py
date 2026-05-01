@@ -472,6 +472,19 @@ If the output is not "/org/gnome/settings-daemon/plugins/media-keys/logout", the
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep logout /etc/dconf/db/local.d/locks/*'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '/org/gnome/settings-daemon/plugins/media-keys/logout'})
 
+    def test_infers_empty_output_for_any_output_returned_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257788',
+            'title': 'RHEL 9 must disable the ability of systemd to spawn an interactive boot process.',
+            'check_content': '''Check that the current GRUB 2 configuration disables the ability of systemd to spawn an interactive boot process with the following command:
+
+$ sudo grubby --info=ALL | grep args | grep 'systemd.confirm_spawn'
+
+If any output is returned, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "grubby --info=ALL | grep args | grep 'systemd.confirm_spawn'"})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_dconf_grep_candidate_from_exact_authoritative_sample(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271690',

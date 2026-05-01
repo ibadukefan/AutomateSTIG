@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grubby --info=ALL | grep args | grep 'systemd.confirm_spawn'",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 must disable the ability of systemd to spawn an interactive boot process.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-257788"
+  },
   "check_content_excerpt": "Verify that GRUB 2 is configured to disable interactive boot.\n\nCheck that the current GRUB 2 configuration disables the ability of systemd to spawn an interactive boot process with the following command:\n\n$ sudo grubby --info=ALL | grep args | grep 'systemd.confirm_spawn'\n\nIf any output is returned, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the current GRUB 2 configuration to disable the ability of systemd to spawn an interactive boot process with the following command:\n\n$ sudo grubby --update-kernel=ALL --remove-args=\"systemd.confirm_spawn\"",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-257788r1044838_rule",
   "severity": "medium",
