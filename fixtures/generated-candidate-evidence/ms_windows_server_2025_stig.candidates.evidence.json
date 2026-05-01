@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 190,
+  "candidate_checks": 191,
   "cases": [
     {
       "check": {
@@ -156,6 +156,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-278022"
+    },
+    {
+      "check": {
+        "name": "FS-SMB1",
+        "should_be_installed": false,
+        "type": "windows_feature"
+      },
+      "description": "Windows Server 2025 must not have the Server Message Block (SMB) v1 protocol installed.",
+      "evidence_type": "windows_feature_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "FS-SMB1": true
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "packages": {
+          "FS-SMB1": false
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278023"
     },
     {
       "check": {
@@ -5130,5 +5156,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 190
+  "validated_candidates": 191
 }

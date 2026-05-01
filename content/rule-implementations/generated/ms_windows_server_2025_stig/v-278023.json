@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "FS-SMB1",
+      "should_be_installed": false,
+      "type": "windows_feature"
+    },
+    "description": "Windows Server 2025 must not have the Server Message Block (SMB) v1 protocol installed.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "windows",
+    "vuln_id": "V-278023"
+  },
   "check_content_excerpt": "Different methods are available to disable SMBv1 on Windows Server 2025. This is the preferred method, however if WN25-00-000390 and WN25-00-000400 are configured, this is not applicable.\n\nOpen Windows PowerShell with elevated privileges (run as administrator).\n\nEnter \"Get-WindowsFeature -Name FS-SMB1\".\n\nIf \"Installed State\" is \"Installed\", this is a finding.\n\nAn Installed State of \"Available\" or \"Removed\" is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Uninstall the SMBv1 protocol.\n\nOpen Windows PowerShell with elevated privileges (run as administrator).\n\nEnter \"Uninstall-WindowsFeature -Name FS-SMB1 -Restart\".\n(Omit the Restart parameter if an immediate restart of the system cannot be done.)\n\nAlternately:\n\nStart Server Manager.\n\nSelect the server with the feature.\n\nScroll down to \"ROLES AND FEATURES\" in the right pane.\n\nSelect \"Remove Roles and Features\" from the drop-down \"TASKS\" list.\n\nSelect the appropriate server on the \"Server Selection\" page and click \"Next\".\n\nDeselect \"SMB 1.0/CIFS File Sharing Support\" on the \"Features\" page.\n\nClick \"Next\" and \"Remove\" as prompted.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "windows_feature",
   "remediation": "planned",
   "rule_id": "SV-278023r1182034_rule",
   "severity": "medium",

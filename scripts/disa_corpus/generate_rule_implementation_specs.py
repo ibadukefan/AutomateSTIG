@@ -1185,6 +1185,8 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
             return security_policy_candidate
 
         feature = re.search(r'Get-WindowsFeature\s*\|\s*Where\s+Name\s+-eq\s+([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
+        if not feature:
+            feature = re.search(r'Get-WindowsFeature\s+-Name\s+([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
         if feature and re.search(r'Installed[^\n.]+is[^\n.]+finding|If[^\n.]+Installed[^\n.]+finding', content, re.IGNORECASE):
             return {
                 'vuln_id': rule.get('vuln_id', ''),

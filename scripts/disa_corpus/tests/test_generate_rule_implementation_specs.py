@@ -163,6 +163,23 @@ If the value "visio2003files" is REG_DWORD = 2, this is not a finding.'''
         self.assertEqual(candidate['check'], {'type': 'windows_feature', 'name': 'Fax', 'should_be_installed': False})
         self.assertEqual(candidate['expected'], {'type': 'is_false'})
 
+    def test_infers_windows_feature_candidate_check_from_name_argument(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278023',
+            'title': 'Windows Server 2025 must not have the Server Message Block (SMB) v1 protocol installed.',
+            'check_content': '''Different methods are available to disable SMBv1 on Windows Server 2025.
+
+Open Windows PowerShell with elevated privileges (run as administrator).
+
+Enter "Get-WindowsFeature -Name FS-SMB1".
+
+If "Installed State" is "Installed", this is a finding.
+
+An Installed State of "Available" or "Removed" is not a finding.'''
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertEqual(candidate['check'], {'type': 'windows_feature', 'name': 'FS-SMB1', 'should_be_installed': False})
+        self.assertEqual(candidate['expected'], {'type': 'is_false'})
+
     def test_infers_registry_candidate_from_compact_authoritative_fields(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278085',
