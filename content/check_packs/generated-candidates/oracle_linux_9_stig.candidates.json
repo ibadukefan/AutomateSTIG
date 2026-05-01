@@ -3599,6 +3599,96 @@
     },
     {
       "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/boot/grub2/grub.cfg",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /boot/grub2/grub.cfg file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271792"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/boot/grub2/grub.cfg",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /boot/grub2/grub.cfg file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271793"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/group",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/group file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271794"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/group-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/group- file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271795"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/group",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/group file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271796"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/group-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/group- file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271797"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0644",
         "owner": null,
@@ -3629,6 +3719,66 @@
     },
     {
       "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/gshadow",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/gshadow file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271800"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/gshadow-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/gshadow- file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271801"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/gshadow",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/gshadow file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271802"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/gshadow-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/gshadow- file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271803"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0000",
         "owner": null,
@@ -3641,6 +3791,66 @@
       },
       "platform": "linux",
       "vuln_id": "V-271805"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/passwd",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/passwd file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271806"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/passwd-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/passwd- file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271807"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/passwd",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/passwd file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271808"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/passwd-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/passwd- file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271809"
     },
     {
       "check": {
@@ -3674,6 +3884,66 @@
     },
     {
       "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/shadow",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/shadow file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271812"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/shadow-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/shadow- file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271813"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/shadow",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/shadow file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271814"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/shadow-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/shadow- file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271815"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0000",
         "owner": null,
@@ -3701,6 +3971,36 @@
       },
       "platform": "linux",
       "vuln_id": "V-271817"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "OL 9 audit tools must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271824"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "OL 9 audit tools must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271825"
     },
     {
       "check": {

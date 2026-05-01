@@ -1,9 +1,24 @@
 {
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": null,
+      "owner": "root",
+      "path": "/etc/group",
+      "type": "file_permission"
+    },
+    "description": "OL 9 /etc/group file must be owned by root.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271796"
+  },
   "check_content_excerpt": "Verify that OL 9 configures ownership of the \"/etc/group\" file with the following command:\n\n$ stat -c \"%U %n\" /etc/group \nroot /etc/group \n\nIf \"/etc/group\" file does not have an owner of \"root\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +26,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the owner of the file /etc/group to root by running the following command:\n\n$ sudo chown root /etc/group",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_permission",
   "remediation": "planned",
   "rule_id": "SV-271796r1092100_rule",
   "severity": "medium",

@@ -688,11 +688,10 @@ def _file_permission_candidate(rule: dict) -> dict | None:
     stat_match = re.search(r'\bstat\s+-c\s+["\'](?P<format>[^"\']+)["\']\s+' + re.escape(path), content)
     if stat_match:
         fields = re.findall(r'%[aAUGn]', stat_match.group('format'))
-        sample_match = re.search(r'^\s*' + re.escape(path) + r'\s+(?P<values>\S(?:.*\S)?)\s*$', content, re.MULTILINE)
-        if sample_match:
-            values = sample_match.group('values').split()
-            if fields and fields[0] == '%n':
-                fields = fields[1:]
+        for sample_line in content.splitlines():
+            values = sample_line.strip().split()
+            if len(values) != len(fields) or path not in values:
+                continue
             for field, value in zip(fields, values):
                 if field in ('%a', '%A') and re.fullmatch(r'[0-7]{3,4}', value):
                     mode = mode or value
@@ -700,6 +699,7 @@ def _file_permission_candidate(rule: dict) -> dict | None:
                     owner = value
                 elif field == '%G':
                     group = value
+            break
 
     if owner is None:
         owner_match = re.search(r'not\s+owned\s+by\s+["“]?([A-Za-z0-9_.-]+)', content, re.IGNORECASE)

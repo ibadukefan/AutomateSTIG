@@ -2462,6 +2462,21 @@
     {
       "check": {
         "group": null,
+        "mode": "755",
+        "owner": null,
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "OL 8 audit tools must have a mode of \"0755\" or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248807"
+    },
+    {
+      "check": {
+        "group": null,
         "mode": null,
         "owner": "root",
         "path": "/sbin/auditctl",

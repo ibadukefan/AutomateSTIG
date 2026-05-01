@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 319,
+  "candidate_checks": 339,
   "cases": [
     {
       "check": {
@@ -7049,6 +7049,234 @@
     },
     {
       "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/boot/grub2/grub.cfg",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /boot/grub2/grub.cfg file must be group-owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/boot/grub2/grub.cfg": {
+            "exists": true,
+            "group": "unexpected-root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/boot/grub2/grub.cfg": {
+            "exists": true,
+            "group": "root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271792"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/boot/grub2/grub.cfg",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /boot/grub2/grub.cfg file must be owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/boot/grub2/grub.cfg": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/boot/grub2/grub.cfg": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271793"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/group",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/group file must be group-owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/group": {
+            "exists": true,
+            "group": "unexpected-root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/group": {
+            "exists": true,
+            "group": "root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271794"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/group-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/group- file must be group-owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/group-": {
+            "exists": true,
+            "group": "unexpected-root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/group-": {
+            "exists": true,
+            "group": "root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271795"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/group",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/group file must be owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/group": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/group": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271796"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/group-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/group- file must be owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/group-": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/group-": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271797"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0644",
         "owner": null,
@@ -7125,6 +7353,158 @@
     },
     {
       "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/gshadow",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/gshadow file must be group-owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/gshadow": {
+            "exists": true,
+            "group": "unexpected-root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/gshadow": {
+            "exists": true,
+            "group": "root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271800"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/gshadow-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/gshadow- file must be group-owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/gshadow-": {
+            "exists": true,
+            "group": "unexpected-root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/gshadow-": {
+            "exists": true,
+            "group": "root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271801"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/gshadow",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/gshadow file must be owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/gshadow": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/gshadow": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271802"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/gshadow-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/gshadow- file must be owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/gshadow-": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/gshadow-": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271803"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0000",
         "owner": null,
@@ -7160,6 +7540,158 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271805"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/passwd",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/passwd file must be group-owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/passwd": {
+            "exists": true,
+            "group": "unexpected-root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/passwd": {
+            "exists": true,
+            "group": "root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271806"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/passwd-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/passwd- file must be group-owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/passwd-": {
+            "exists": true,
+            "group": "unexpected-root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/passwd-": {
+            "exists": true,
+            "group": "root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271807"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/passwd",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/passwd file must be owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/passwd": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/passwd": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271808"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/passwd-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/passwd- file must be owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/passwd-": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/passwd-": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271809"
     },
     {
       "check": {
@@ -7239,6 +7771,158 @@
     },
     {
       "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/shadow",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/shadow file must be group-owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/shadow": {
+            "exists": true,
+            "group": "unexpected-root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/shadow": {
+            "exists": true,
+            "group": "root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271812"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/shadow-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/shadow- file must be group-owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/shadow-": {
+            "exists": true,
+            "group": "unexpected-root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/shadow-": {
+            "exists": true,
+            "group": "root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271813"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/shadow",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/shadow file must be owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/shadow": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/shadow": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271814"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/shadow-",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/shadow- file must be owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/shadow-": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/shadow-": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271815"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0000",
         "owner": null,
@@ -7312,6 +7996,82 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271817"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "OL 9 audit tools must be group-owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/sbin/auditctl": {
+            "exists": true,
+            "group": "unexpected-root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/sbin/auditctl": {
+            "exists": true,
+            "group": "root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271824"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "OL 9 audit tools must be owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/sbin/auditctl": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/sbin/auditctl": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271825"
     },
     {
       "check": {
@@ -8654,5 +9414,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 319
+  "validated_candidates": 339
 }

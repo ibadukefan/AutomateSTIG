@@ -838,6 +838,306 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/group",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/group file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257898"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/group",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/group file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257899"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/group-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/group- file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257900"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/group-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/group- file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257901"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/gshadow",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/gshadow file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257902"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/gshadow",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/gshadow file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257903"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/gshadow-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/gshadow- file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257904"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/gshadow-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/gshadow- file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257905"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/passwd",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/passwd file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257906"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/passwd",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/passwd file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257907"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/passwd-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/passwd- file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257908"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/passwd-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/passwd- file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257909"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/shadow",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/shadow file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257910"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/shadow",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/shadow file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257911"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/shadow-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/shadow- file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257912"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/shadow-",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /etc/shadow- file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257913"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /var/log directory must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257914"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /var/log directory must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257915"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/var/log/messages",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /var/log/messages file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257916"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/var/log/messages",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 /var/log/messages file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257917"
+    },
+    {
+      "check": {
         "command": "find /lib /lib64 /usr/lib /usr/lib64 -type f -name '*.so*' ! -user root -exec stat -c \"%n %U\" {} +",
         "type": "command_output"
       },
@@ -861,6 +1161,36 @@
       },
       "platform": "linux",
       "vuln_id": "V-257921"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 audit tools must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257924"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 audit tools must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257925"
     },
     {
       "check": {
@@ -3985,6 +4315,36 @@
       },
       "platform": "linux",
       "vuln_id": "V-258242"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/audit/",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 \"/etc/audit/\" must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270175"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/audit/",
+        "type": "file_permission"
+      },
+      "description": "RHEL 9 \"/etc/audit/\" must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270176"
     },
     {
       "check": {

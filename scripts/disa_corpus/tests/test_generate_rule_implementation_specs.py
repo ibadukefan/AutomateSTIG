@@ -406,6 +406,21 @@ If the "/var/log/syslog" file is not group-owned by adm, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/var/log/syslog', 'owner': None, 'group': 'adm', 'mode': None})
         self.assertEqual(candidate['expected'], {'type': 'is_true'})
 
+    def test_infers_linux_file_permission_owner_candidate_from_stat_output_with_path_after_owner(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257900',
+            'title': 'RHEL 9 /etc/group- file must be owned by root.',
+            'check_content': '''Verify the ownership of the "/etc/group-" file with the following command:
+
+$ sudo stat -c "%U %n" /etc/group-
+
+root /etc/group-
+
+If "/etc/group-" file does not have an owner of "root", this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/etc/group-', 'owner': 'root', 'group': None, 'mode': None})
+        self.assertEqual(candidate['expected'], {'type': 'is_true'})
+
     def test_infers_linux_sshd_config_keyword_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230555',

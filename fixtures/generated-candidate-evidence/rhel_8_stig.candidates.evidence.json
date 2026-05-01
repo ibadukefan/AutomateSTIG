@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 248,
+  "candidate_checks": 249,
   "cases": [
     {
       "check": {
@@ -3418,6 +3418,44 @@
     {
       "check": {
         "group": null,
+        "mode": "755",
+        "owner": null,
+        "path": "/sbin/auditctl",
+        "type": "file_permission"
+      },
+      "description": "RHEL 8 audit tools must have a mode of 0755 or less permissive.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/sbin/auditctl": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-755",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/sbin/auditctl": {
+            "exists": true,
+            "group": null,
+            "mode": "755",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230472"
+    },
+    {
+      "check": {
+        "group": null,
         "mode": null,
         "owner": "root",
         "path": "/sbin/auditctl",
@@ -6693,5 +6731,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 248
+  "validated_candidates": 249
 }
