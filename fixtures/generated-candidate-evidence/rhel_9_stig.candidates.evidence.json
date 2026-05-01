@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 327,
+  "candidate_checks": 328,
   "cases": [
     {
       "check": {
@@ -4588,6 +4588,32 @@
     },
     {
       "check": {
+        "command": "gsettings get org.gnome.settings-daemon.peripherals.smartcard removal-action",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must be able to initiate directly a session lock for all connection types using smart card when the smart card is removed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "'lock-screen'"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.settings-daemon.peripherals.smartcard removal-action": "unexpected-'lock-screen'"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.settings-daemon.peripherals.smartcard removal-action": "'lock-screen'"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258019"
+    },
+    {
+      "check": {
         "command": "gsettings writable org.gnome.settings-daemon.peripherals.smartcard removal-action",
         "type": "command_output"
       },
@@ -9159,5 +9185,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 327
+  "validated_candidates": 328
 }

@@ -381,6 +381,34 @@ If there is output, this is a finding.'''
         }, 'RHEL_9_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_gsettings_literal_output_from_authoritative_single_quoted_result(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258019',
+            'title': 'RHEL 9 must lock the session when the smart card is removed.',
+            'check_content': '''Verify the operating system locks a session when a smart card is removed with the following command:
+
+$ gsettings get org.gnome.settings-daemon.peripherals.smartcard removal-action
+'lock-screen'
+
+If the result is not 'lock-screen', this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'gsettings get org.gnome.settings-daemon.peripherals.smartcard removal-action'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': "'lock-screen'"})
+
+    def test_infers_grep_literal_output_from_authoritative_output_statement(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271687',
+            'title': 'OL 9 must lock the session when the smart card is removed.',
+            'check_content': '''Verify that OL 9 locks the logout setting with the following command:
+
+$ grep logout /etc/dconf/db/local.d/locks/*
+/org/gnome/settings-daemon/plugins/media-keys/logout
+
+If the output is not "/org/gnome/settings-daemon/plugins/media-keys/logout", the line is commented out, or the line is missing, this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep logout /etc/dconf/db/local.d/locks/*'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '/org/gnome/settings-daemon/plugins/media-keys/logout'})
+
     def test_infers_dconf_grep_candidate_from_exact_authoritative_sample(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271690',

@@ -2186,6 +2186,19 @@
     },
     {
       "check": {
+        "command": "gsettings get org.gnome.settings-daemon.peripherals.smartcard removal-action",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must be able to initiate directly a session lock for all connection types using smart card when the smart card is removed.",
+      "expected": {
+        "type": "equals",
+        "value": "'lock-screen'"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258019"
+    },
+    {
+      "check": {
         "command": "gsettings writable org.gnome.settings-daemon.peripherals.smartcard removal-action",
         "type": "command_output"
       },

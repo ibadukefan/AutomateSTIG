@@ -758,6 +758,36 @@ def _sample_key_referenced_by_finding_text(sample_line: str, finding_text: str) 
     return key.lower() in finding_text.lower()
 
 
+def _literal_command_output_candidate(rule: dict, stig_id: str, command: str, command_end: int) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    if re.match(r'^systemctl\b', command):
+        return None
+    sample_lines, finding_text = _authoritative_sample_block_after_command(content, command_end)
+    if len(sample_lines) != 1:
+        return None
+    sample_line = sample_lines[0]
+    if re.search(r'\[[A-Za-z0-9_ -]+\]|<[A-Za-z0-9_ -]+>', sample_line):
+        return None
+    literal_match = re.search(
+        r'If\s+the\s+(?:result|output)\s+is\s+not\s+(?P<quote>["“\'])(?P<value>[^"”\'\n]+)(?:["”\'])',
+        finding_text,
+        re.IGNORECASE,
+    )
+    if not literal_match:
+        return None
+    literal = literal_match.group('value').strip()
+    sample_without_outer_quotes = sample_line.strip().strip('"“”\'')
+    if sample_line != literal and sample_without_outer_quotes != literal:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': sample_line},
+        'description': rule.get('title', ''),
+    }
+
+
 def _grep_sample_line_candidate(rule: dict, stig_id: str, command: str, command_end: int) -> dict | None:
     content = rule.get('check_content', '') or ''
     if not re.match(r'^grep\b', command) or '|' in command or any(token in command for token in ('egrep', 'awk', ' xargs ')):
@@ -820,6 +850,10 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     grep_sample_candidate = _grep_sample_line_candidate(rule, stig_id, command, command_end)
     if grep_sample_candidate:
         return grep_sample_candidate
+
+    literal_sample_candidate = _literal_command_output_candidate(rule, stig_id, command, command_end)
+    if literal_sample_candidate:
+        return literal_sample_candidate
 
     expected_match = re.search(r'Expected\s+result:\s*(?P<body>.*?)(?:\n\s*If\b|\Z)', content, re.IGNORECASE | re.DOTALL)
     if expected_match:

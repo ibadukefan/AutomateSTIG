@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep logout /etc/dconf/db/local.d/locks/*",
+      "type": "command_output"
+    },
+    "description": "OL 9 must prevent a user from overriding the Ctrl-Alt-Del sequence settings for the graphical user interface.",
+    "expected": {
+      "type": "equals",
+      "value": "/org/gnome/settings-daemon/plugins/media-keys/logout"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271687"
+  },
   "check_content_excerpt": "This requirement assumes the use of the OL 9 default graphical user interface\u2014the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nVerify that OL 9 users cannot enable the Ctrl-Alt-Del sequence in the GNOME desktop with the following command:\n\n$ grep logout /etc/dconf/db/local.d/locks/* \n/org/gnome/settings-daemon/plugins/media-keys/logout\n\nIf the output is not \"/org/gnome/settings-daemon/plugins/media-keys/logout\", the line is commented out, or the line is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "/org/gnome/settings-daemon/plugins/media-keys/logout"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to disallow the user changing the Ctrl-Alt-Del sequence in the GNOME desktop.\n\nCreate a database to container system-wide graphical user logon settings (if it does not already exist) with the following command:\n\n$ sudo touch /etc/dconf/db/local.d/locks/session\n\nAdd the following line to the session locks file to prevent nonprivileged users from modifying the Ctrl-Alt-Del setting:\n\n/org/gnome/settings-daemon/plugins/media-keys/logout\n\nRun the following command to update the database:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271687r1091773_rule",
   "severity": "medium",
