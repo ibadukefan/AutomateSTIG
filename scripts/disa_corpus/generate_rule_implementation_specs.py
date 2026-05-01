@@ -702,6 +702,34 @@ def _selinux_getenforce_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _selinux_sestatus_policy_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    command_match = re.search(
+        r'^\s*[$#>]\s*(?P<command>(?:sudo\s+)?sestatus\s*\|\s*grep\s+["“\']policy\s+name["”\'])\s*$',
+        content,
+        re.IGNORECASE | re.MULTILINE,
+    )
+    if not command_match:
+        return None
+    sample_lines, finding_text = _authoritative_sample_block_after_command(content, command_match.end())
+    if len(sample_lines) != 1:
+        return None
+    sample_line = sample_lines[0]
+    if not re.fullmatch(r'Loaded\s+policy\s+name:\s+targeted', sample_line, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+loaded\s+policy\s+name\s+is\s+not\s+["“]targeted["”],?\s+this\s+is\s+a\s+finding', finding_text, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': _normalize_command(command_match.group('command'))},
+        'expected': {'type': 'contains', 'substring': sample_line},
+        'description': rule.get('title', ''),
+    }
+
+
 def _findmnt_option_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -895,6 +923,9 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     findmnt_candidate = _findmnt_option_candidate(rule, stig_id)
     if findmnt_candidate:
         return findmnt_candidate
+    selinux_sestatus_candidate = _selinux_sestatus_policy_candidate(rule, stig_id)
+    if selinux_sestatus_candidate:
+        return selinux_sestatus_candidate
     selinux_candidate = _selinux_getenforce_candidate(rule, stig_id)
     if selinux_candidate:
         return selinux_candidate

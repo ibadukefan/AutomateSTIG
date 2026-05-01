@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 349,
+  "candidate_checks": 350,
   "cases": [
     {
       "check": {
@@ -5941,6 +5941,32 @@
     },
     {
       "check": {
+        "command": "sestatus | grep \"policy name\"",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must enable the SELinux targeted policy.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "Loaded policy name:             targeted",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sestatus | grep \"policy name\"": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sestatus | grep \"policy name\"": "before\nLoaded policy name:             targeted\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258079"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/security/faillock.conf",
         "pattern": "dir = /var/log/faillock",
@@ -9733,5 +9759,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 349
+  "validated_candidates": 350
 }

@@ -2876,6 +2876,19 @@
     },
     {
       "check": {
+        "command": "sestatus | grep \"policy name\"",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must enable the SELinux targeted policy.",
+      "expected": {
+        "substring": "Loaded policy name:             targeted",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258079"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/security/faillock.conf",
         "pattern": "dir = /var/log/faillock",

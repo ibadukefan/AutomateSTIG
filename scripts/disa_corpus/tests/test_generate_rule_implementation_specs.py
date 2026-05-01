@@ -1388,6 +1388,22 @@ If "SELinux" is not in "Enforcing" mode, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'getenforce'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Enforcing'})
 
+    def test_infers_selinux_sestatus_targeted_policy_candidate_from_authoritative_sample(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258079',
+            'title': 'RHEL 9 must enable the SELinux targeted policy.',
+            'check_content': '''Verify the SELINUX on RHEL 9 is using the targeted policy with the following command:
+
+$ sestatus | grep "policy name"
+
+Loaded policy name:             targeted
+
+If the loaded policy name is not "targeted", this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'sestatus | grep "policy name"'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Loaded policy name:             targeted'})
+
     def test_infers_windows_audit_policy_candidate_from_auditpol_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254304',
