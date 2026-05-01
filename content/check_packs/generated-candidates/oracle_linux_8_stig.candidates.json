@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "name": "audit",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The OL 8 audit package must be installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248519"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "banner /etc/issue",
@@ -122,6 +135,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-248548"
+    },
+    {
+      "check": {
+        "name": "policycoreutils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must have the \"policycoreutils\" package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248549"
     },
     {
       "check": {
@@ -453,6 +479,19 @@
     },
     {
       "check": {
+        "name": "openssl-pkcs11",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must have the package required for multifactor authentication installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248586"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sssd/sssd.conf",
         "pattern": "/etc/sssd/conf.d/*.conf | grep -v \"^#\"",
@@ -464,6 +503,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-248587"
+    },
+    {
+      "check": {
+        "name": "opensc",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must accept Personal Identity Verification (PIV) credentials.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248588"
     },
     {
       "check": {
@@ -547,6 +599,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-248596"
+    },
+    {
+      "check": {
+        "name": "rng-tools",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must have the packages required to use the hardware random number generator entropy gatherer service.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248600"
     },
     {
       "check": {
@@ -2440,6 +2505,32 @@
     },
     {
       "check": {
+        "name": "rsyslog",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must have the packages required for offloading audit logs installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248812"
+    },
+    {
+      "check": {
+        "name": "rsyslog-gnutls",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must have the packages required for encrypting offloaded audit logs installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248813"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/rsyslog.conf",
         "pattern": "/etc/rsyslog.d/*.conf",
@@ -2566,6 +2657,45 @@
     },
     {
       "check": {
+        "name": "telnet-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "OL 8 must not have the telnet-server package installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248823"
+    },
+    {
+      "check": {
+        "name": "abrt",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must not have any automated bug reporting tools installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248824"
+    },
+    {
+      "check": {
+        "name": "sendmail",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "OL 8 must not have the sendmail package installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248825"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/grub",
         "pattern": "GRUB_CMDLINE_LINUX=\"pti=on\"",
@@ -2689,6 +2819,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-248837"
+    },
+    {
+      "check": {
+        "name": "firewalld",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "A firewall must be installed on OL 8.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248840"
     },
     {
       "check": {
@@ -2916,6 +3059,19 @@
     },
     {
       "check": {
+        "name": "fapolicyd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The OL 8 \"fapolicy\" module must be installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248859"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/fapolicyd/fapolicyd.conf",
         "pattern": "permissive = 0",
@@ -2927,6 +3083,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-248861"
+    },
+    {
+      "check": {
+        "name": "usbguard",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must have the USBGuard installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248862"
     },
     {
       "check": {
@@ -2944,6 +3113,19 @@
     },
     {
       "check": {
+        "name": "openssh-server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "All OL 8 networked systems must have SSH installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248866"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/systemd/system.conf",
         "pattern": "CtrlAltDelBurstAction=none",
@@ -2955,6 +3137,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-248871"
+    },
+    {
+      "check": {
+        "name": "tftp-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Trivial File Transfer Protocol (TFTP) server package must not be installed if not required for OL 8 operational support.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248873"
     },
     {
       "check": {
@@ -3218,6 +3413,19 @@
     },
     {
       "check": {
+        "name": "postfix",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must be configured to prevent unrestricted mail relaying.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248895"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/aide.conf",
         "pattern": "VarFile = OwnerMode+n+l+X+acl",
@@ -3271,6 +3479,45 @@
       },
       "platform": "linux",
       "vuln_id": "V-248902"
+    },
+    {
+      "check": {
+        "name": "gssproxy",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "OL 8 must not have the \"gssproxy\" package installed if not required for operational support.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248904"
+    },
+    {
+      "check": {
+        "name": "iprutils",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "OL 8 must not have the \"iprutils\" package installed if not required for operational support.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248905"
+    },
+    {
+      "check": {
+        "name": "tuned",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "OL 8 must not have the \"tuned\" package installed if not required for operational support.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248906"
     },
     {
       "check": {
@@ -3351,6 +3598,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-256978"
+    },
+    {
+      "check": {
+        "name": "mailx",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must be configured to allow sending email notifications of unauthorized configuration changes to designated personnel.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-256979"
     },
     {
       "check": {

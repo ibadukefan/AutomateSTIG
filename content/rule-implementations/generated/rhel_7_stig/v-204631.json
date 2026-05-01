@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "pam_pkcs11",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must have the required packages for multifactor authentication installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204631"
+  },
   "check_content_excerpt": "Verify the operating system has the packages required for multifactor authentication installed.\n\nCheck for the presence of the packages required to support multifactor authentication with the following commands:\n\n# yum list installed pam_pkcs11\npam_pkcs11-0.6.2-14.el7.noarch.rpm\n\nIf the \"pam_pkcs11\" package is not installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to implement multifactor authentication by installing the required packages.\n\nInstall the pam_pkcs11 package with the following command:\n\n# yum install pam_pkcs11",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-204631r982216_rule",
   "severity": "medium",

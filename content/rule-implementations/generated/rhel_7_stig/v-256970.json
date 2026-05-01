@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "mailx",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured to allow sending email notifications of configuration changes and adverse events to designated personnel.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-256970"
+  },
   "check_content_excerpt": "Verify that the operating system is configured to allow sending email notifications.\n\nNote: The \"mailx\" package provides the \"mail\" command that is used to send email messages.\n\nVerify that the \"mailx\" package is installed on the system:\n\n     $ sudo yum list installed mailx\n\t \n     mailx.x86_64     12.5-19.el7     @rhel-7-server-rpms\n\t \nIf \"mailx\" package is not installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install the \"mailx\" package on the system:\n\n     $ sudo yum install mailx",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-256970r958794_rule",
   "severity": "medium",

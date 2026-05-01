@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "sendmail",
+      "should_be_installed": false,
+      "type": "package"
+    },
+    "description": "RHEL 8 must not have the sendmail package installed.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230489"
+  },
   "check_content_excerpt": "Check to see if the sendmail package is installed with the following command:\n\n$ sudo yum list installed sendmail\n\nIf the sendmail package is installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to disable non-essential capabilities by removing the sendmail package from the system with the following command:\n\n$ sudo yum remove sendmail",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-230489r1017273_rule",
   "severity": "medium",

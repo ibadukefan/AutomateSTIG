@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "tftp-server",
+      "should_be_installed": false,
+      "type": "package"
+    },
+    "description": "The Trivial File Transfer Protocol (TFTP) server package must not be installed if not required for OL 8 operational support.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248873"
+  },
   "check_content_excerpt": "Verify a TFTP server has not been installed on the system with the following command: \n \n$ sudo yum list installed tftp-server \n \ntftp-server.x86_64 5.2-24.el8 \n \nIf TFTP is installed and the requirement for TFTP is not documented with the ISSO, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove the TFTP package from the system with the following command: \n \n$ sudo yum remove tftp-server",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-248873r991589_rule",
   "severity": "high",

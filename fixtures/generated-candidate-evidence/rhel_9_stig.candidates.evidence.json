@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 295,
+  "candidate_checks": 296,
   "cases": [
     {
       "check": {
@@ -3904,6 +3904,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-258034"
+    },
+    {
+      "check": {
+        "name": "usbguard",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the USBGuard package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "usbguard": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "usbguard": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258035"
     },
     {
       "check": {
@@ -8034,5 +8060,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 295
+  "validated_candidates": 296
 }

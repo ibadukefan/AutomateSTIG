@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "openssh-server",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "All OL 8 networked systems must have SSH installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248866"
+  },
   "check_content_excerpt": "Verify SSH is installed with the following command:\n\n$ sudo yum list installed openssh-server\n\nopenssh-server.x86_64                 8.0p1-5.el8          @anaconda\n\nIf the \"SSH server\" package is not installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install SSH packages onto the host with the following command:\n\n$ sudo yum install openssh-server.x86_64",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-248866r958908_rule",
   "severity": "medium",

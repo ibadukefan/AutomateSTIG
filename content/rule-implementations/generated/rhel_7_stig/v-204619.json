@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "postfix",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured to prevent unrestricted mail relaying.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204619"
+  },
   "check_content_excerpt": "Verify the system is configured to prevent unrestricted mail relaying.\n\nDetermine if \"postfix\" is installed with the following commands:\n\n# yum list installed postfix\npostfix-2.6.6-6.el7.x86_64.rpm \n\nIf postfix is not installed, this is Not Applicable.\n\nIf postfix is installed, determine if it is configured to reject connections from unknown or untrusted networks with the following command:\n\n# postconf -n smtpd_client_restrictions\nsmtpd_client_restrictions = permit_mynetworks, reject\n\nIf the \"smtpd_client_restrictions\" parameter contains any entries other than \"permit_mynetworks\" and \"reject\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "If \"postfix\" is installed, modify the \"/etc/postfix/main.cf\" file to restrict client connections to the local network with the following command:\n\n# postconf -e 'smtpd_client_restrictions = permit_mynetworks,reject'",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-204619r991589_rule",
   "severity": "medium",

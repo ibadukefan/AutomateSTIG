@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "openssl-pkcs11",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "OL 8 must have the package required for multifactor authentication installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248586"
+  },
   "check_content_excerpt": "Verify the operating system has the package required for multifactor authentication installed with the following command: \n \n$ sudo yum list installed openssl-pkcs11 \n \nopenssl-pkcs11.x86_64 0.4.8-2.el8 @anaconda \n \nIf the \"openssl-pkcs11\" package is not installed, ask the administrator to indicate what type of multifactor authentication is being used and what packages are installed to support it.  \n \nIf there is no evidence of multifactor authentication being used, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 8 to implement multifactor authentication by installing the required package with the following command: \n \n$ sudo yum install  openssl-pkcs11",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-248586r1015037_rule",
   "severity": "low",

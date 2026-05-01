@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "usbguard",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "RHEL 8 must have the USBGuard installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-244547"
+  },
   "check_content_excerpt": "Verify USBGuard is installed on the operating system with the following command:\n\n$ sudo yum list installed usbguard\n\nInstalled Packages\nusbguard.x86_64                   0.7.8-7.el8             @ol8_appstream\n\nIf the USBGuard package is not installed, ask the SA to indicate how unauthorized peripherals are being blocked.\nIf there is no evidence that unauthorized peripherals are being blocked before establishing a connection, this is a finding.\n\nIf the system is a virtual machine with no virtual or physical USB peripherals attached, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install the USBGuard package with the following command:\n\n$ sudo yum install usbguard.x86_64",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-244547r1014811_rule",
   "severity": "medium",

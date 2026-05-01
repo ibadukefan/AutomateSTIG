@@ -734,6 +734,19 @@
     },
     {
       "check": {
+        "name": "oracle-linux-manager-client-release-el9",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must have the subscription-manager package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271505"
+    },
+    {
+      "check": {
         "name": "fapolicyd",
         "should_be_installed": true,
         "type": "package"

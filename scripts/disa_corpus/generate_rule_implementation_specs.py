@@ -314,7 +314,7 @@ def _sysctl_candidate(rule: dict) -> dict | None:
 def _package_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
-    match = re.search(r'\b(?:dnf|yum|rpm)\s+(?:list\s+--installed|-q)\s+([A-Za-z0-9_.:+-]+)', content)
+    match = re.search(r'\b(?:dnf|yum|rpm)\s+(?:list\s+(?:--installed|installed)|-q)\s+([A-Za-z0-9_.:+-]+)', content)
     if not match:
         match = re.search(r'\bdpkg\s+-l\s*\|\s*grep\s+([A-Za-z0-9_.:+-]+)', content)
     if not match:

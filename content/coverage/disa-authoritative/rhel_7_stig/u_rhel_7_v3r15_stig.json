@@ -752,31 +752,33 @@
       "vuln_id": "V-204441"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204442",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204442r958478_rule",
       "severity": "high",
       "title": "The Red Hat Enterprise Linux operating system must not have the rsh-server package installed.",
-      "tracking_issue": "TODO-V-204442",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204442"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204443",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204443r958478_rule",
       "severity": "high",
       "title": "The Red Hat Enterprise Linux operating system must not have the ypserv package installed.",
-      "tracking_issue": "TODO-V-204443",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204443"
@@ -2921,16 +2923,17 @@
       "vuln_id": "V-204603"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204604",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204604r991589_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must enable an application firewall, if available.",
-      "tracking_issue": "TODO-V-204604",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204604"
@@ -3157,46 +3160,49 @@
       "vuln_id": "V-204618"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204619",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204619r991589_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured to prevent unrestricted mail relaying.",
-      "tracking_issue": "TODO-V-204619",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204619"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204620",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204620r991589_rule",
       "severity": "high",
       "title": "The Red Hat Enterprise Linux operating system must not have a File Transfer Protocol (FTP) server package installed unless needed.",
-      "tracking_issue": "TODO-V-204620",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204620"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204621",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204621r991589_rule",
       "severity": "high",
       "title": "The Red Hat Enterprise Linux operating system must not have the Trivial File Transfer Protocol (TFTP) server package installed if not required for operational support.",
-      "tracking_issue": "TODO-V-204621",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204621"
@@ -3342,16 +3348,17 @@
       "vuln_id": "V-204630"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204631",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-204631r982216_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must have the required packages for multifactor authentication installed.",
-      "tracking_issue": "TODO-V-204631",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-204631"
@@ -3824,16 +3831,17 @@
       "vuln_id": "V-256969"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-256970",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-256970r958794_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must be configured to allow sending email notifications of configuration changes and adverse events to designated personnel.",
-      "tracking_issue": "TODO-V-256970",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/89cf7d04b1ca6536b51cad2fe7ff5b729c9022a77522156f8a9c7b6967e6c52f/U_RHEL_7_V3R15_STIG.zip"
       ],
       "vuln_id": "V-256970"

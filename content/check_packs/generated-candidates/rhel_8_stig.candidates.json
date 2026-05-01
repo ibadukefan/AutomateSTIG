@@ -1185,6 +1185,19 @@
     },
     {
       "check": {
+        "name": "audit",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The RHEL 8 audit package must be installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230411"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/audit.rules",
         "pattern": "/usr/bin/su",
@@ -1789,6 +1802,32 @@
     },
     {
       "check": {
+        "name": "rsyslog",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must have the packages required for offloading audit logs installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230477"
+    },
+    {
+      "check": {
+        "name": "rsyslog-gnutls",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must have the packages required for encrypting offloaded audit logs installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230478"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/rsyslog.conf",
         "pattern": "/etc/rsyslog.d/*.conf",
@@ -1898,6 +1937,45 @@
       },
       "platform": "linux",
       "vuln_id": "V-230486"
+    },
+    {
+      "check": {
+        "name": "telnet-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "RHEL 8 must not have the telnet-server package installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230487"
+    },
+    {
+      "check": {
+        "name": "abrt",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must not have any automated bug reporting tools installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230488"
+    },
+    {
+      "check": {
+        "name": "sendmail",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "RHEL 8 must not have the sendmail package installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230489"
     },
     {
       "check": {
@@ -2038,6 +2116,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-230503"
+    },
+    {
+      "check": {
+        "name": "firewalld",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "A firewall must be installed on RHEL 8.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230505"
     },
     {
       "check": {
@@ -2265,6 +2356,19 @@
     },
     {
       "check": {
+        "name": "fapolicyd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The RHEL 8 fapolicy module must be installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230523"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/firewalld/firewalld.conf",
         "pattern": "FirewallBackend=nftables",
@@ -2276,6 +2380,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-230525"
+    },
+    {
+      "check": {
+        "name": "tftp-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Trivial File Transfer Protocol (TFTP) server package must not be installed if not required for RHEL 8 operational support.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230533"
     },
     {
       "check": {
@@ -2471,6 +2588,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-230549"
+    },
+    {
+      "check": {
+        "name": "postfix",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must be configured to prevent unrestricted mail relaying.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230550"
     },
     {
       "check": {
@@ -2680,6 +2810,19 @@
     },
     {
       "check": {
+        "name": "rng-tools",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must have the packages required to use the hardware random number generator entropy gatherer service.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-244527"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "GSSAPIAuthentication no",
@@ -2843,6 +2986,32 @@
       },
       "platform": "linux",
       "vuln_id": "V-244546"
+    },
+    {
+      "check": {
+        "name": "usbguard",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must have the USBGuard installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-244547"
+    },
+    {
+      "check": {
+        "name": "openssh-server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "All RHEL 8 networked systems must have SSH installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-244549"
     },
     {
       "check": {
@@ -3030,6 +3199,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-256973"
+    },
+    {
+      "check": {
+        "name": "mailx",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must be configured to allow sending email notifications of unauthorized configuration changes to designated personnel.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-256974"
     },
     {
       "check": {

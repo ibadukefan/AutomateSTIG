@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "tftp-server",
+      "should_be_installed": false,
+      "type": "package"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must not have the Trivial File Transfer Protocol (TFTP) server package installed if not required for operational support.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204621"
+  },
   "check_content_excerpt": "Verify a TFTP server has not been installed on the system.\n\nCheck to see if a TFTP server has been installed with the following command:\n\n# yum list installed tftp-server\ntftp-server-0.49-9.el7.x86_64.rpm\n\nIf TFTP is installed and the requirement for TFTP is not documented with the ISSO, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove the TFTP package from the system with the following command:\n\n# yum remove tftp-server",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-204621r991589_rule",
   "severity": "high",

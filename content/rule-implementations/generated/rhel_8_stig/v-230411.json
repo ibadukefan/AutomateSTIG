@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "audit",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "The RHEL 8 audit package must be installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230411"
+  },
   "check_content_excerpt": "Verify the audit service is configured to produce audit records.\n\nCheck that the audit service is installed with the following command:\n\n$ sudo yum list installed audit\n\nIf the \"audit\" package is not installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit service to produce audit records containing the information needed to establish when (date and time) an event occurred.\n\nInstall the audit service (if the audit service is not already installed) with the following command:\n\n$ sudo yum install audit",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-230411r1017217_rule",
   "severity": "medium",

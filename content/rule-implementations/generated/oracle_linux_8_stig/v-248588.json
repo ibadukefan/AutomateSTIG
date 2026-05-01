@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "opensc",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "OL 8 must accept Personal Identity Verification (PIV) credentials.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248588"
+  },
   "check_content_excerpt": "Verify OL 8 accepts PIV credentials. \n \nCheck that the \"opensc\" package is installed on the system with the following command: \n \n$ sudo yum list installed opensc \n \nopensc.x86_64     0.19.0-5.el8     @anaconda \n \nCheck that \"opensc\" accepts PIV cards with the following command: \n \n$ sudo opensc-tool --list-drivers | grep -i piv \n \n  PIV-II     Personal Identity Verification Card \n \nIf the \"opensc\" package is not installed and the \"opensc-tool\" driver list does not include \"PIV-II\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 8 to accept PIV credentials. \n \nInstall the \"opensc\" package using the following command: \n \n$ sudo yum install opensc",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-248588r958816_rule",
   "severity": "medium",

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "firewalld",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "A firewall must be installed on OL 8.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248840"
+  },
   "check_content_excerpt": "Verify that \"firewalld\" is installed with the following commands:\n\n$ sudo yum list installed firewalld\n\nfirewalld.noarch     0.7.0-5.el8\n\nIf the \"firewalld\" package is not installed, ask the System Administrator if another firewall is installed. If no firewall is installed this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install \"firewalld\" with the following commands:\n\n$ sudo yum install firewalld.noarch",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-248840r958672_rule",
   "severity": "medium",

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "abrt",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "RHEL 8 must not have any automated bug reporting tools installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-230488"
+  },
   "check_content_excerpt": "Check to see if any automated bug reporting packages are installed with the following command:\n\n$ sudo yum list installed abrt*\n\nIf any automated bug reporting package is installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to disable non-essential capabilities by removing automated bug reporting packages from the system with the following command:\n\n$ sudo yum remove abrt*",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-230488r1017272_rule",
   "severity": "medium",

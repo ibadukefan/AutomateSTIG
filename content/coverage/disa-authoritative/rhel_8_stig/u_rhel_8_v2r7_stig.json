@@ -2759,16 +2759,17 @@
       "vuln_id": "V-230410"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230411",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230411r1017217_rule",
       "severity": "medium",
       "title": "The RHEL 8 audit package must be installed.",
-      "tracking_issue": "TODO-V-230411",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-230411"
@@ -3492,31 +3493,33 @@
       "vuln_id": "V-230476"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230477",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230477r1017267_rule",
       "severity": "medium",
       "title": "RHEL 8 must have the packages required for offloading audit logs installed.",
-      "tracking_issue": "TODO-V-230477",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-230477"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230478",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230478r1017268_rule",
       "severity": "medium",
       "title": "RHEL 8 must have the packages required for encrypting offloaded audit logs installed.",
-      "tracking_issue": "TODO-V-230478",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-230478"
@@ -3650,46 +3653,49 @@
       "vuln_id": "V-230486"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230487",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230487r1017271_rule",
       "severity": "high",
       "title": "RHEL 8 must not have the telnet-server package installed.",
-      "tracking_issue": "TODO-V-230487",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-230487"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230488",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230488r1017272_rule",
       "severity": "medium",
       "title": "RHEL 8 must not have any automated bug reporting tools installed.",
-      "tracking_issue": "TODO-V-230488",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-230488"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230489",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230489r1017273_rule",
       "severity": "medium",
       "title": "RHEL 8 must not have the sendmail package installed.",
-      "tracking_issue": "TODO-V-230489",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-230489"
@@ -3900,16 +3906,17 @@
       "vuln_id": "V-230504"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230505",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230505r958672_rule",
       "severity": "medium",
       "title": "A firewall must be installed on RHEL 8.",
-      "tracking_issue": "TODO-V-230505",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-230505"
@@ -4186,16 +4193,17 @@
       "vuln_id": "V-230522"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230523",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230523r958804_rule",
       "severity": "medium",
       "title": "The RHEL 8 fapolicy module must be installed.",
-      "tracking_issue": "TODO-V-230523",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-230523"
@@ -4322,16 +4330,17 @@
       "vuln_id": "V-230532"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230533",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230533r1017295_rule",
       "severity": "high",
       "title": "The Trivial File Transfer Protocol (TFTP) server package must not be installed if not required for RHEL 8 operational support.",
-      "tracking_issue": "TODO-V-230533",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-230533"
@@ -4592,16 +4601,17 @@
       "vuln_id": "V-230549"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230550",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230550r1017312_rule",
       "severity": "medium",
       "title": "RHEL 8 must be configured to prevent unrestricted mail relaying.",
-      "tracking_issue": "TODO-V-230550",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-230550"
@@ -4937,16 +4947,17 @@
       "vuln_id": "V-244525"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-244527",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-244527r1017333_rule",
       "severity": "low",
       "title": "RHEL 8 must have the packages required to use the hardware random number generator entropy gatherer service.",
-      "tracking_issue": "TODO-V-244527",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-244527"
@@ -5219,16 +5230,17 @@
       "vuln_id": "V-244546"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-244547",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-244547r1014811_rule",
       "severity": "medium",
       "title": "RHEL 8 must have the USBGuard installed.",
-      "tracking_issue": "TODO-V-244547",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-244547"
@@ -5249,16 +5261,17 @@
       "vuln_id": "V-244548"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-244549",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-244549r958908_rule",
       "severity": "medium",
       "title": "All RHEL 8 networked systems must have SSH installed.",
-      "tracking_issue": "TODO-V-244549",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-244549"
@@ -5577,16 +5590,17 @@
       "vuln_id": "V-256973"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-256974",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-256974r1069321_rule",
       "severity": "medium",
       "title": "RHEL 8 must be configured to allow sending email notifications of unauthorized configuration changes to designated personnel.",
-      "tracking_issue": "TODO-V-256974",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/613cc6edf3976b9ecd074d0052b4705b1fd8d7e0d6254c18e154d991be0085cd/U_RHEL_8_V2R7_STIG.zip"
       ],
       "vuln_id": "V-256974"

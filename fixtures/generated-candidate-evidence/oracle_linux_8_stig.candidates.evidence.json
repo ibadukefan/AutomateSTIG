@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 244,
+  "candidate_checks": 264,
   "cases": [
+    {
+      "check": {
+        "name": "audit",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The OL 8 audit package must be installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "audit": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "audit": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248519"
+    },
     {
       "check": {
         "is_regex": false,
@@ -240,6 +266,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248548"
+    },
+    {
+      "check": {
+        "name": "policycoreutils",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must have the \"policycoreutils\" package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "policycoreutils": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "policycoreutils": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248549"
     },
     {
       "check": {
@@ -903,6 +955,32 @@
     },
     {
       "check": {
+        "name": "openssl-pkcs11",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must have the package required for multifactor authentication installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "openssl-pkcs11": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "openssl-pkcs11": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248586"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sssd/sssd.conf",
         "pattern": "/etc/sssd/conf.d/*.conf | grep -v \"^#\"",
@@ -927,6 +1005,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248587"
+    },
+    {
+      "check": {
+        "name": "opensc",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must accept Personal Identity Verification (PIV) credentials.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "opensc": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "opensc": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248588"
     },
     {
       "check": {
@@ -1088,6 +1192,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248596"
+    },
+    {
+      "check": {
+        "name": "rng-tools",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must have the packages required to use the hardware random number generator entropy gatherer service.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rng-tools": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rng-tools": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248600"
     },
     {
       "check": {
@@ -4786,6 +4916,58 @@
     },
     {
       "check": {
+        "name": "rsyslog",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must have the packages required for offloading audit logs installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rsyslog": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rsyslog": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248812"
+    },
+    {
+      "check": {
+        "name": "rsyslog-gnutls",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must have the packages required for encrypting offloaded audit logs installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rsyslog-gnutls": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rsyslog-gnutls": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248813"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/rsyslog.conf",
         "pattern": "/etc/rsyslog.d/*.conf",
@@ -5029,6 +5211,84 @@
     },
     {
       "check": {
+        "name": "telnet-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "OL 8 must not have the telnet-server package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "telnet-server": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "telnet-server": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248823"
+    },
+    {
+      "check": {
+        "name": "abrt",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must not have any automated bug reporting tools installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "abrt": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "abrt": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248824"
+    },
+    {
+      "check": {
+        "name": "sendmail",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "OL 8 must not have the sendmail package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "sendmail": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "sendmail": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248825"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/grub",
         "pattern": "GRUB_CMDLINE_LINUX=\"pti=on\"",
@@ -5269,6 +5529,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248837"
+    },
+    {
+      "check": {
+        "name": "firewalld",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "A firewall must be installed on OL 8.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "firewalld": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "firewalld": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248840"
     },
     {
       "check": {
@@ -5704,6 +5990,32 @@
     },
     {
       "check": {
+        "name": "fapolicyd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The OL 8 \"fapolicy\" module must be installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "fapolicyd": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "fapolicyd": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248859"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/fapolicyd/fapolicyd.conf",
         "pattern": "permissive = 0",
@@ -5728,6 +6040,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248861"
+    },
+    {
+      "check": {
+        "name": "usbguard",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must have the USBGuard installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "usbguard": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "usbguard": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248862"
     },
     {
       "check": {
@@ -5758,6 +6096,32 @@
     },
     {
       "check": {
+        "name": "openssh-server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "All OL 8 networked systems must have SSH installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "openssh-server": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "openssh-server": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248866"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/systemd/system.conf",
         "pattern": "CtrlAltDelBurstAction=none",
@@ -5782,6 +6146,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248871"
+    },
+    {
+      "check": {
+        "name": "tftp-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Trivial File Transfer Protocol (TFTP) server package must not be installed if not required for OL 8 operational support.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "tftp-server": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "tftp-server": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248873"
     },
     {
       "check": {
@@ -6305,6 +6695,32 @@
     },
     {
       "check": {
+        "name": "postfix",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must be configured to prevent unrestricted mail relaying.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "postfix": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "postfix": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248895"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/aide.conf",
         "pattern": "VarFile = OwnerMode+n+l+X+acl",
@@ -6410,6 +6826,84 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248902"
+    },
+    {
+      "check": {
+        "name": "gssproxy",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "OL 8 must not have the \"gssproxy\" package installed if not required for operational support.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "gssproxy": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "gssproxy": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248904"
+    },
+    {
+      "check": {
+        "name": "iprutils",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "OL 8 must not have the \"iprutils\" package installed if not required for operational support.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "iprutils": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "iprutils": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248905"
+    },
+    {
+      "check": {
+        "name": "tuned",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "OL 8 must not have the \"tuned\" package installed if not required for operational support.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "tuned": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "tuned": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248906"
     },
     {
       "check": {
@@ -6571,6 +7065,32 @@
     },
     {
       "check": {
+        "name": "mailx",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 8 must be configured to allow sending email notifications of unauthorized configuration changes to designated personnel.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "mailx": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "mailx": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256979"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/systemd/logind.conf",
         "pattern": "StopIdleSessionSec=900",
@@ -6629,5 +7149,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 244
+  "validated_candidates": 264
 }

@@ -1933,6 +1933,19 @@
     },
     {
       "check": {
+        "name": "usbguard",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 9 must have the USBGuard package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258035"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/usbguard/usbguard-daemon.conf",
         "pattern": "AuditBackend=LinuxAudit",

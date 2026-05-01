@@ -86,6 +86,32 @@
     },
     {
       "check": {
+        "name": "rsh-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not have the rsh-server package installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204442"
+    },
+    {
+      "check": {
+        "name": "ypserv",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not have the ypserv package installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204443"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/crontab",
         "pattern": "/var/spool/cron/root",
@@ -1148,6 +1174,19 @@
     },
     {
       "check": {
+        "name": "firewalld",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must enable an application firewall, if available.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204604"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/postlogin",
         "pattern": "session required pam_lastlog.so showfailed",
@@ -1293,6 +1332,45 @@
     },
     {
       "check": {
+        "name": "postfix",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured to prevent unrestricted mail relaying.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204619"
+    },
+    {
+      "check": {
+        "name": "vsftpd",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not have a File Transfer Protocol (FTP) server package installed unless needed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204620"
+    },
+    {
+      "check": {
+        "name": "tftp-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not have the Trivial File Transfer Protocol (TFTP) server package installed if not required for operational support.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204621"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "| grep -v \"^#\"",
@@ -1358,6 +1436,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-204630"
+    },
+    {
+      "check": {
+        "name": "pam_pkcs11",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must have the required packages for multifactor authentication installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204631"
     },
     {
       "check": {
@@ -1591,6 +1682,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-256968"
+    },
+    {
+      "check": {
+        "name": "mailx",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured to allow sending email notifications of configuration changes and adverse events to designated personnel.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-256970"
     }
   ],
   "platform": "linux",

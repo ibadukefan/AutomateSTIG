@@ -641,31 +641,33 @@
       "vuln_id": "V-204440"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204442",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204442 from source identifier xccdf_mil.disa.stig_group_V-204442.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204442r958478_rule",
       "severity": "high",
       "title": "The Red Hat Enterprise Linux operating system must not have the rsh-server package installed.",
-      "tracking_issue": "TODO-V-204442",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204442"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204443",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204443 from source identifier xccdf_mil.disa.stig_group_V-204443.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204443r958478_rule",
       "severity": "high",
       "title": "The Red Hat Enterprise Linux operating system must not have the ypserv package installed.",
-      "tracking_issue": "TODO-V-204443",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204443"
@@ -2336,31 +2338,33 @@
       "vuln_id": "V-204617"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204620",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204620 from source identifier xccdf_mil.disa.stig_group_V-204620.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204620r991589_rule",
       "severity": "high",
       "title": "The Red Hat Enterprise Linux operating system must not have a File Transfer Protocol (FTP) server package installed unless needed.",
-      "tracking_issue": "TODO-V-204620",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204620"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204621",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204621 from source identifier xccdf_mil.disa.stig_group_V-204621.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204621r991589_rule",
       "severity": "high",
       "title": "The Red Hat Enterprise Linux operating system must not have the Trivial File Transfer Protocol (TFTP) server package installed if not required for operational support.",
-      "tracking_issue": "TODO-V-204621",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204621"
@@ -2444,16 +2448,17 @@
       "vuln_id": "V-204630"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-204631",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-204631 from source identifier xccdf_mil.disa.stig_group_V-204631.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-204631r982216_rule",
       "severity": "medium",
       "title": "The Red Hat Enterprise Linux operating system must have the required packages for multifactor authentication installed.",
-      "tracking_issue": "TODO-V-204631",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-204631"

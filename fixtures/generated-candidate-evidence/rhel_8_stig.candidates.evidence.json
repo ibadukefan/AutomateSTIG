@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 228,
+  "candidate_checks": 242,
   "cases": [
     {
       "check": {
@@ -2311,6 +2311,32 @@
     },
     {
       "check": {
+        "name": "audit",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The RHEL 8 audit package must be installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "audit": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "audit": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230411"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/audit.rules",
         "pattern": "/usr/bin/su",
@@ -3494,6 +3520,58 @@
     },
     {
       "check": {
+        "name": "rsyslog",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must have the packages required for offloading audit logs installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rsyslog": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rsyslog": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230477"
+    },
+    {
+      "check": {
+        "name": "rsyslog-gnutls",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must have the packages required for encrypting offloaded audit logs installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rsyslog-gnutls": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rsyslog-gnutls": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230478"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/rsyslog.conf",
         "pattern": "/etc/rsyslog.d/*.conf",
@@ -3707,6 +3785,84 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230486"
+    },
+    {
+      "check": {
+        "name": "telnet-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "RHEL 8 must not have the telnet-server package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "telnet-server": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "telnet-server": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230487"
+    },
+    {
+      "check": {
+        "name": "abrt",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must not have any automated bug reporting tools installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "abrt": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "abrt": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230488"
+    },
+    {
+      "check": {
+        "name": "sendmail",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "RHEL 8 must not have the sendmail package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "sendmail": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "sendmail": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230489"
     },
     {
       "check": {
@@ -3977,6 +4133,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230503"
+    },
+    {
+      "check": {
+        "name": "firewalld",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "A firewall must be installed on RHEL 8.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "firewalld": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "firewalld": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230505"
     },
     {
       "check": {
@@ -4412,6 +4594,32 @@
     },
     {
       "check": {
+        "name": "fapolicyd",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The RHEL 8 fapolicy module must be installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "fapolicyd": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "fapolicyd": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230523"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/firewalld/firewalld.conf",
         "pattern": "FirewallBackend=nftables",
@@ -4436,6 +4644,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230525"
+    },
+    {
+      "check": {
+        "name": "tftp-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Trivial File Transfer Protocol (TFTP) server package must not be installed if not required for RHEL 8 operational support.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "tftp-server": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "tftp-server": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230533"
     },
     {
       "check": {
@@ -4826,6 +5060,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230549"
+    },
+    {
+      "check": {
+        "name": "postfix",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must be configured to prevent unrestricted mail relaying.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "postfix": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "postfix": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230550"
     },
     {
       "check": {
@@ -5230,6 +5490,32 @@
     },
     {
       "check": {
+        "name": "rng-tools",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must have the packages required to use the hardware random number generator entropy gatherer service.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rng-tools": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rng-tools": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244527"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "GSSAPIAuthentication no",
@@ -5549,6 +5835,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-244546"
+    },
+    {
+      "check": {
+        "name": "usbguard",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must have the USBGuard installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "usbguard": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "usbguard": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244547"
+    },
+    {
+      "check": {
+        "name": "openssh-server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "All RHEL 8 networked systems must have SSH installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "openssh-server": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "openssh-server": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244549"
     },
     {
       "check": {
@@ -5921,6 +6259,32 @@
     },
     {
       "check": {
+        "name": "mailx",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "RHEL 8 must be configured to allow sending email notifications of unauthorized configuration changes to designated personnel.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "mailx": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "mailx": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256974"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/systemd/logind.conf",
         "pattern": "StopIdleSessionSec=600",
@@ -6167,5 +6531,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 228
+  "validated_candidates": 242
 }

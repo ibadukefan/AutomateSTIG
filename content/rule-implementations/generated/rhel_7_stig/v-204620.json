@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "vsftpd",
+      "should_be_installed": false,
+      "type": "package"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must not have a File Transfer Protocol (FTP) server package installed unless needed.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204620"
+  },
   "check_content_excerpt": "Verify an FTP server has not been installed on the system.\n\nCheck to see if an FTP server has been installed with the following commands:\n\n# yum list installed vsftpd\n\n vsftpd-3.0.2.el7.x86_64.rpm\n\nIf \"vsftpd\" is installed and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Document the \"vsftpd\" package with the ISSO as an operational requirement or remove it from the system with the following command:\n\n# yum remove vsftpd",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-204620r991589_rule",
   "severity": "high",

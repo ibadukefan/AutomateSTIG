@@ -164,6 +164,19 @@ If the network parameter "ipv6.conf.all.accept_source_route" is not equal to "0"
         self.assertEqual(candidate['check'], {'type': 'package', 'name': 'krb5-workstation', 'should_be_installed': False})
         self.assertEqual(candidate['expected'], {'type': 'is_false'})
 
+    def test_infers_linux_package_candidate_from_yum_list_installed_without_dash_dash(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230489',
+            'title': 'RHEL 8 must not have the sendmail package installed.',
+            'check_content': '''Check to see if the sendmail package is installed with the following command:
+
+$ sudo yum list installed sendmail
+
+If the sendmail package is installed, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'package', 'name': 'sendmail', 'should_be_installed': False})
+        self.assertEqual(candidate['expected'], {'type': 'is_false'})
+
     def test_infers_linux_package_absent_candidate_from_dpkg_grep_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-238326',

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "policycoreutils",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "OL 8 must have the \"policycoreutils\" package installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248549"
+  },
   "check_content_excerpt": "Verify the operating system has the \"policycoreutils\" package installed with the following command: \n \n$ sudo yum list installed policycoreutils \n \npolicycoreutils.x86_64 2.9-3.el8 @anaconda \n \nIf the \"policycoreutils\" package is not installed, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install the \"policycoreutil\" package, if it is not already installed, by running the following command: \n \n$ sudo yum install policycoreutils",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-248549r958518_rule",
   "severity": "low",

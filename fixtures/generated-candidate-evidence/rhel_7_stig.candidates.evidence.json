@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 115,
+  "candidate_checks": 123,
   "cases": [
     {
       "check": {
@@ -162,6 +162,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204440"
+    },
+    {
+      "check": {
+        "name": "rsh-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not have the rsh-server package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "rsh-server": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "rsh-server": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204442"
+    },
+    {
+      "check": {
+        "name": "ypserv",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not have the ypserv package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "ypserv": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "ypserv": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204443"
     },
     {
       "check": {
@@ -2215,6 +2267,32 @@
     },
     {
       "check": {
+        "name": "firewalld",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must enable an application firewall, if available.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "firewalld": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "firewalld": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204604"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/postlogin",
         "pattern": "session required pam_lastlog.so showfailed",
@@ -2503,6 +2581,84 @@
     },
     {
       "check": {
+        "name": "postfix",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured to prevent unrestricted mail relaying.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "postfix": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "postfix": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204619"
+    },
+    {
+      "check": {
+        "name": "vsftpd",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not have a File Transfer Protocol (FTP) server package installed unless needed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "vsftpd": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "vsftpd": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204620"
+    },
+    {
+      "check": {
+        "name": "tftp-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not have the Trivial File Transfer Protocol (TFTP) server package installed if not required for operational support.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "tftp-server": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "tftp-server": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204621"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "| grep -v \"^#\"",
@@ -2633,6 +2789,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204630"
+    },
+    {
+      "check": {
+        "name": "pam_pkcs11",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must have the required packages for multifactor authentication installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "pam_pkcs11": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "pam_pkcs11": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204631"
     },
     {
       "check": {
@@ -3087,6 +3269,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-256968"
+    },
+    {
+      "check": {
+        "name": "mailx",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured to allow sending email notifications of configuration changes and adverse events to designated personnel.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "mailx": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "mailx": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256970"
     }
   ],
   "production_claim": false,
@@ -3094,5 +3302,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 115
+  "validated_candidates": 123
 }

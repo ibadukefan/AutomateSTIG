@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "usbguard",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "RHEL 9 must have the USBGuard package installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258035"
+  },
   "check_content_excerpt": "Verify USBGuard is installed on the operating system with the following command:\n\n$ sudo dnf list installed usbguard\n\nExample output:\n\nInstalled Packages\nusbguard.x86_64          1.0.0-10.el9_1.2          @rhel-9-for-x86_64-appstream-rpms\n\nIf the USBGuard package is not installed, ask the SA to indicate how unauthorized peripherals are being blocked.\n\nIf there is no evidence that unauthorized peripherals are being blocked before establishing a connection, this is a finding.\n\nIf the system is virtual machine with no virtual or physical USB peripherals attached, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install the usbguard package with the following command:\n\n$ sudo dnf install usbguard\n\nEnable the service to start on boot and then start it with the following commands:\n$ sudo systemctl enable usbguard\n$ sudo systemctl start usbguard\n\nVerify the status of the service with the following command:\n$ sudo systemctl status usbguard\n\nNote: usbguard will need to be configured to allow authorized devices once it is enabled on RHEL 9.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-258035r1045125_rule",
   "severity": "medium",

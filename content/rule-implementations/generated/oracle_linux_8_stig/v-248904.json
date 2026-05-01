@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "gssproxy",
+      "should_be_installed": false,
+      "type": "package"
+    },
+    "description": "OL 8 must not have the \"gssproxy\" package installed if not required for operational support.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248904"
+  },
   "check_content_excerpt": "Note: For Oracle Linux systems, if there is an operational need for gssproxy to be installed, this requirement is Not Applicable.\n\nDetermine if the \"gssproxy\" package is installed with the following command: \n \n$ sudo yum list installed gssproxy \n \nIf the \"gssproxy\" package is installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 8 to disable nonessential capabilities by removing the \"gssproxy\" package from the system with the following command: \n \n$ sudo yum remove gssproxy",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-248904r1069143_rule",
   "severity": "medium",
