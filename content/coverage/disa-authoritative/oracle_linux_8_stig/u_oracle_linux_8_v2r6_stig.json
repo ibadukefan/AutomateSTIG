@@ -4855,16 +4855,17 @@
       "vuln_id": "V-248859"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248860",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248860r958804_rule",
       "severity": "medium",
       "title": "The OL 8 \"fapolicy\" module must be enabled.",
-      "tracking_issue": "TODO-V-248860",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/0a9de69038ea7154ebc704b548c1e6d79b971c1e37ef81f72b38bd23448482b3/U_Oracle_Linux_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-248860"
@@ -4917,16 +4918,17 @@
       "vuln_id": "V-248863"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248864",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248864r986388_rule",
       "severity": "medium",
       "title": "OL 8 must enable the USBGuard.",
-      "tracking_issue": "TODO-V-248864",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/0a9de69038ea7154ebc704b548c1e6d79b971c1e37ef81f72b38bd23448482b3/U_Oracle_Linux_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-248864"
@@ -4964,16 +4966,17 @@
       "vuln_id": "V-248866"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248867",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248867r958908_rule",
       "severity": "medium",
       "title": "All OL 8 networked systems must have and implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.",
-      "tracking_issue": "TODO-V-248867",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/0a9de69038ea7154ebc704b548c1e6d79b971c1e37ef81f72b38bd23448482b3/U_Oracle_Linux_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-248867"

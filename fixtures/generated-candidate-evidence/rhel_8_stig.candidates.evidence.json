@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 244,
+  "candidate_checks": 248,
   "cases": [
     {
       "check": {
@@ -4674,6 +4674,33 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "sshd",
+        "type": "service"
+      },
+      "description": "All RHEL 8 networked systems must have and implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "sshd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "sshd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230526"
+    },
+    {
+      "check": {
         "name": "tftp-server",
         "should_be_installed": false,
         "type": "package"
@@ -5811,6 +5838,33 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "auditd",
+        "type": "service"
+      },
+      "description": "RHEL 8 audit records must contain information to establish what type of events occurred, the source of events, where events occurred, and the outcome of events.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244542"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/auditd.conf",
         "pattern": "space_left_action = email",
@@ -5835,6 +5889,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-244543"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "fapolicyd",
+        "type": "service"
+      },
+      "description": "The RHEL 8 fapolicy module must be enabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "fapolicyd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "fapolicyd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244545"
     },
     {
       "check": {
@@ -5888,6 +5969,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-244547"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "usbguard",
+        "type": "service"
+      },
+      "description": "RHEL 8 must enable the USBGuard.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "usbguard": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "usbguard": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244548"
     },
     {
       "check": {
@@ -6585,5 +6693,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 244
+  "validated_candidates": 248
 }

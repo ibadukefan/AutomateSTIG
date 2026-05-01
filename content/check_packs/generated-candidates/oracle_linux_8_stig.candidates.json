@@ -3086,6 +3086,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "fapolicyd",
+        "type": "service"
+      },
+      "description": "The OL 8 \"fapolicy\" module must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248860"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/fapolicyd/fapolicyd.conf",
         "pattern": "permissive = 0",
@@ -3113,6 +3127,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "usbguard",
+        "type": "service"
+      },
+      "description": "OL 8 must enable the USBGuard.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248864"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/firewalld/firewalld.conf",
         "pattern": "FirewallBackend=nftables",
@@ -3137,6 +3165,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-248866"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "sshd",
+        "type": "service"
+      },
+      "description": "All OL 8 networked systems must have and implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248867"
     },
     {
       "check": {

@@ -3056,6 +3056,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "auditd",
+        "type": "service"
+      },
+      "description": "RHEL 9 audit service must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258152"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/auditd.conf",
         "pattern": "disk_error_action = HALT",

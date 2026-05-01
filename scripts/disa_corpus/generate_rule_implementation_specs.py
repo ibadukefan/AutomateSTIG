@@ -501,6 +501,8 @@ def _service_candidate(rule: dict) -> dict | None:
     if command == 'status':
         if re.search(r'if\s+(?:the\s+)?(?:"[^"]+"\s+)?(?:service\s+)?(?:status\s+)?(?:is\s+)?(?:set\s+to\s+)?(?:"?)?(?:active|running)(?:"?)?,?\s+this\s+is\s+a\s+finding', lower):
             expected_status = 'stopped'
+        elif re.search(r'(?:does\s+not\s+show\s+a\s+status\s+of|is\s+not)\s+["“]?(?:active|enabled)["”]?\s+and\s+["“]?running["”]?', lower) or re.search(r'is\s+not\s+enabled\s+and\s+(?:active|running)', lower):
+            expected_status = 'running'
         else:
             return None
     elif re.search(r'must\s+not\s+.*(?:enabled|running)|must\s+be\s+disabled|if\s+(?:the\s+)?(?:"[^"]+"\s+)?(?:service\s+)?(?:status\s+)?(?:is\s+)?(?:set\s+to\s+)?(?:"?)?(?:enabled|active|running)(?:"?)?,?\s+this\s+is\s+a\s+finding', lower):

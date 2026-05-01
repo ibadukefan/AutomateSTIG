@@ -877,6 +877,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "auditd",
+        "type": "service"
+      },
+      "description": "OL 9 audit service must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271520"
+    },
+    {
+      "check": {
         "name": "audispd-plugins",
         "should_be_installed": true,
         "type": "package"

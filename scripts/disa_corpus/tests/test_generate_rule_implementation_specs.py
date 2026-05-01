@@ -328,6 +328,23 @@ If the "autofs" status is set to "active", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'autofs', 'expected_status': 'stopped'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'stopped'})
 
+    def test_infers_linux_service_running_candidate_from_systemctl_status_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-244545',
+            'title': 'The RHEL 8 fapolicy module must be enabled.',
+            'check_content': '''Verify the RHEL 8 "fapolicyd" is enabled and running with the following command:
+
+$ sudo systemctl status fapolicyd.service
+
+fapolicyd.service - File Access Policy Daemon
+Loaded: loaded (/usr/lib/systemd/system/fapolicyd.service; enabled; vendor preset: disabled)
+Active: active (running)
+
+If fapolicyd is not enabled and running, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'fapolicyd', 'expected_status': 'running'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
+
     def test_skips_linux_systemctl_status_target_units(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230529',

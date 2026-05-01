@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 318,
+  "candidate_checks": 319,
   "cases": [
     {
       "check": {
@@ -1720,6 +1720,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271519"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "auditd",
+        "type": "service"
+      },
+      "description": "OL 9 audit service must be enabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271520"
     },
     {
       "check": {
@@ -8627,5 +8654,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 318
+  "validated_candidates": 319
 }

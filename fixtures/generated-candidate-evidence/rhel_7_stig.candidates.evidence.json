@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 123,
+  "candidate_checks": 124,
   "cases": [
     {
       "check": {
@@ -1862,6 +1862,33 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "sshd",
+        "type": "service"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all networked systems use SSH for confidentiality and integrity of transmitted and received information as well as information during preparation for transmission.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "sshd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "sshd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204586"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "ClientAliveInterval 600",
@@ -3302,5 +3329,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 123
+  "validated_candidates": 124
 }

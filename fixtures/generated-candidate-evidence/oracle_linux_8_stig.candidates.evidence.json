@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 266,
+  "candidate_checks": 269,
   "cases": [
     {
       "check": {
@@ -6043,6 +6043,33 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "fapolicyd",
+        "type": "service"
+      },
+      "description": "The OL 8 \"fapolicy\" module must be enabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "fapolicyd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "fapolicyd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248860"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/fapolicyd/fapolicyd.conf",
         "pattern": "permissive = 0",
@@ -6096,6 +6123,33 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "usbguard",
+        "type": "service"
+      },
+      "description": "OL 8 must enable the USBGuard.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "usbguard": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "usbguard": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248864"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/firewalld/firewalld.conf",
         "pattern": "FirewallBackend=nftables",
@@ -6146,6 +6200,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248866"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "sshd",
+        "type": "service"
+      },
+      "description": "All OL 8 networked systems must have and implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "sshd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "sshd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248867"
     },
     {
       "check": {
@@ -7203,5 +7284,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 266
+  "validated_candidates": 269
 }

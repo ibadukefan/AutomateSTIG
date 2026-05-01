@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 296,
+  "candidate_checks": 297,
   "cases": [
     {
       "check": {
@@ -6083,6 +6083,33 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "auditd",
+        "type": "service"
+      },
+      "description": "RHEL 9 audit service must be enabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258152"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/auditd.conf",
         "pattern": "disk_error_action = HALT",
@@ -8060,5 +8087,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 296
+  "validated_candidates": 297
 }

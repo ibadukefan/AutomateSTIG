@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "sshd",
+      "type": "service"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that all networked systems use SSH for confidentiality and integrity of transmitted and received information as well as information during preparation for transmission.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-204586"
+  },
   "check_content_excerpt": "Verify SSH is loaded and active with the following command:\n\n# systemctl status sshd\nsshd.service - OpenSSH server daemon\nLoaded: loaded (/usr/lib/systemd/system/sshd.service; enabled)\nActive: active (running) since Tue 2015-11-17 15:17:22 EST; 4 weeks 0 days ago\nMain PID: 1348 (sshd)\nCGroup: /system.slice/sshd.service\n1053 /usr/sbin/sshd -D\n\nIf \"sshd\" does not show a status of \"active\" and \"running\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SSH service to automatically start after reboot with the following command:\n\n# systemctl enable sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-204586r958908_rule",
   "severity": "medium",

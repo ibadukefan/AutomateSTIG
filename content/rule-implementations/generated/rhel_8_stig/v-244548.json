@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "usbguard",
+      "type": "service"
+    },
+    "description": "RHEL 8 must enable the USBGuard.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-244548"
+  },
   "check_content_excerpt": "Verify the operating system has enabled the use of the USBGuard with the following command:\n\n$ sudo systemctl status usbguard.service\n\nusbguard.service - USBGuard daemon\nLoaded: loaded (/usr/lib/systemd/system/usbguard.service; enabled; vendor preset: disabled)\nActive: active (running)\n\nIf the usbguard.service is not enabled and active, ask the SA to indicate how unauthorized peripherals are being blocked.\nIf there is no evidence that unauthorized peripherals are being blocked before establishing a connection, this is a finding.\n\nIf the USBGuard package is not installed, ask the SA to indicate how unauthorized peripherals are being blocked.\nIf there is no evidence that unauthorized peripherals are being blocked before establishing a connection, this is a finding.\n\nIf the system is a virtual machine with no virtual or physical USB peripherals attached, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to enable the blocking of unauthorized peripherals with the following commands:\n\n$ sudo systemctl enable usbguard.service\n\n$ sudo systemctl start usbguard.service\n\nNote: Enabling and starting usbguard without properly configuring it for an individual system will immediately prevent any access over a usb device such as a keyboard or mouse",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-244548r1014815_rule",
   "severity": "medium",

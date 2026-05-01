@@ -4320,16 +4320,17 @@
       "vuln_id": "V-230525"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230526",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230526r958908_rule",
       "severity": "medium",
       "title": "All RHEL 8 networked systems must have and implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission.",
-      "tracking_issue": "TODO-V-230526",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/2fc75413a96b0979c7b99b120111279cd58f8389a88dec7dfd64d9cc1406ba8a/U_RHEL_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-230526"
@@ -5248,16 +5249,17 @@
       "vuln_id": "V-244541"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-244542",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-244542r1017348_rule",
       "severity": "medium",
       "title": "RHEL 8 audit records must contain information to establish what type of events occurred, the source of events, where events occurred, and the outcome of events.",
-      "tracking_issue": "TODO-V-244542",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/2fc75413a96b0979c7b99b120111279cd58f8389a88dec7dfd64d9cc1406ba8a/U_RHEL_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-244542"
@@ -5294,16 +5296,17 @@
       "vuln_id": "V-244544"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-244545",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-244545r958804_rule",
       "severity": "medium",
       "title": "The RHEL 8 fapolicy module must be enabled.",
-      "tracking_issue": "TODO-V-244545",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/2fc75413a96b0979c7b99b120111279cd58f8389a88dec7dfd64d9cc1406ba8a/U_RHEL_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-244545"
@@ -5341,16 +5344,17 @@
       "vuln_id": "V-244547"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-244548",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-244548r1014815_rule",
       "severity": "medium",
       "title": "RHEL 8 must enable the USBGuard.",
-      "tracking_issue": "TODO-V-244548",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/2fc75413a96b0979c7b99b120111279cd58f8389a88dec7dfd64d9cc1406ba8a/U_RHEL_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-244548"
