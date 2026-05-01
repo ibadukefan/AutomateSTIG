@@ -552,6 +552,24 @@ If both the "b32" and "b64" audit rules are not defined for the "chmod", "fchmod
             'substring': '-a always,exit -S arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -F key=perm_mod\n-a always,exit -S arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -F key=perm_mod',
         })
 
+    def test_infers_linux_auditctl_multiline_rules_from_audit_rules_for_phrase(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-260633',
+            'title': 'Ubuntu 22.04 LTS must generate audit records for chmod syscalls.',
+            'check_content': '''Verify Ubuntu 22.04 LTS generates an audit record upon successful/unsuccessful attempts to use the "chmod", "fchmod", and "fchmodat" syscalls with the following command:
+
+$ sudo auditctl -l | grep chmod
+-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -k perm_mod
+-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -k perm_mod
+
+If the command does not return audit rules for the "chmod", "fchmod", and "fchmodat" syscalls, this is a finding.'''
+        }, 'CAN_Ubuntu_22-04_LTS_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
+        self.assertEqual(candidate['expected'], {
+            'type': 'contains',
+            'substring': '-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -k perm_mod\n-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1 -k perm_mod',
+        })
+
     def test_skips_linux_auditctl_multiline_rules_when_key_is_arbitrary(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270786',

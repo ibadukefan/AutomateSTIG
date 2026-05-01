@@ -454,7 +454,7 @@ def _auditctl_expected_rule_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     if not re.search(r'\bauditctl\s+-l\s*\|\s*e?grep\b', content, re.IGNORECASE):
         return None
-    if not re.search(r'does\s+not\s+return\s+(?:a\s+line|lines?)\b|does\s+not\s+return\s+(?:a\s+line|lines?)\s+that\s+match(?:es)?\s+the\s+example|line\s+is\s+commented\s+out|audit\s+rules?\s+are\s+not\s+defined|both\s+the\s+"b32"\s+and\s+"b64"\s+audit\s+rules\s+are\s+not\s+defined|does\s+not\s+return\s+all\s+lines', content, re.IGNORECASE):
+    if not re.search(r'does\s+not\s+return\s+(?:a\s+line|lines?)\b|does\s+not\s+return\s+(?:a\s+line|lines?)\s+that\s+match(?:es)?\s+the\s+example|does\s+not\s+return\s+audit\s+rules?\s+for|line\s+is\s+commented\s+out|audit\s+rules?\s+are\s+not\s+defined|both\s+the\s+"b32"\s+and\s+"b64"\s+audit\s+rules\s+are\s+not\s+defined|does\s+not\s+return\s+all\s+lines', content, re.IGNORECASE):
         return None
     command_match = re.search(r'[$#>]\s*(?:sudo\s+)?auditctl\s+-l\s*\|\s*e?grep\b[^\n\r]*', content, re.IGNORECASE)
     if not command_match:
