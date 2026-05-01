@@ -86,6 +86,19 @@
     },
     {
       "check": {
+        "command": "systemctl get-default",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured so that the graphical display manager is not the default target unless approved.",
+      "expected": {
+        "type": "equals",
+        "value": "multi-user.target"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271440"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/usr/lib/systemd/system/emergency.service",
         "pattern": "sulogin-shell",

@@ -647,6 +647,42 @@ def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _systemctl_get_default_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    command_matches = list(re.finditer(r'^\s*[$#>]\s*(?:sudo\s+)?systemctl\s+get-default\s*$', content, re.MULTILINE))
+    if len(command_matches) != 1:
+        return None
+    shell_commands = re.findall(r'^\s*[$#>]\s*(?:sudo\s+)?(?:/[A-Za-z0-9_./:+-]+|[A-Za-z0-9_.:+-]+)\b', content, re.MULTILINE)
+    if len(shell_commands) != 1:
+        return None
+    expected_target = None
+    for line in content[command_matches[0].end():].splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.lower().startswith(('if ', 'note:', '$', '#', '>')):
+            break
+        expected_target = stripped
+        break
+    if not expected_target or not re.fullmatch(r'[A-Za-z0-9_.-]+\.target', expected_target):
+        return None
+    if not re.search(
+        rf'If\s+the\s+system\s+default\s+target\s+is\s+not\s+set\s+to\s+["“]{re.escape(expected_target)}["”]',
+        content,
+        re.IGNORECASE,
+    ):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': 'systemctl get-default'},
+        'expected': {'type': 'equals', 'value': expected_target},
+        'description': rule.get('title', ''),
+    }
+
+
 def _selinux_getenforce_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -1130,6 +1166,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     gsettings_candidate = _gsettings_candidate(rule, stig_id)
     if gsettings_candidate:
         return gsettings_candidate
+
+    systemctl_get_default_candidate = _systemctl_get_default_candidate(rule, stig_id)
+    if systemctl_get_default_candidate:
+        return systemctl_get_default_candidate
 
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 300,
+  "candidate_checks": 301,
   "cases": [
     {
       "check": {
@@ -8017,6 +8017,32 @@
     },
     {
       "check": {
+        "command": "systemctl get-default",
+        "type": "command_output"
+      },
+      "description": "The graphical display manager must not be the default target on OL 8 unless approved.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "multi-user.target"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "systemctl get-default": "unexpected-multi-user.target"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "systemctl get-default": "multi-user.target"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-252663"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/crypto-policies/back-ends/opensshserver.config",
         "pattern": "CRYPTO_POLICY='-oKexAlgorithms=ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512'",
@@ -8154,5 +8180,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 300
+  "validated_candidates": 301
 }

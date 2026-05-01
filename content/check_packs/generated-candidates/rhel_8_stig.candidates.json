@@ -3590,6 +3590,19 @@
     },
     {
       "check": {
+        "command": "systemctl get-default",
+        "type": "command_output"
+      },
+      "description": "The graphical display manager must not be the default target on RHEL 8 unless approved.",
+      "expected": {
+        "type": "equals",
+        "value": "multi-user.target"
+      },
+      "platform": "linux",
+      "vuln_id": "V-251718"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/crypto-policies/back-ends/opensshserver.config",
         "pattern": "CRYPTO_POLICY='-oKexAlgorithms=ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512'",

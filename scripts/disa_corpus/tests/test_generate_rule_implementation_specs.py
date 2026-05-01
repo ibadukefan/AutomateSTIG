@@ -945,6 +945,20 @@ If the chronyd service is not active, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'chronyd', 'expected_status': 'running'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
 
+    def test_infers_linux_systemctl_get_default_candidate_from_authoritative_sample(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-251718',
+            'title': 'The graphical display manager must not be the default target on RHEL 8 unless approved.',
+            'check_content': '''Verify that the system is configured to boot to the command line:
+
+$ systemctl get-default
+multi-user.target
+
+If the system default target is not set to "multi-user.target" and the Information System Security Officer (ISSO) lacks a documented requirement for a graphical user interface, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'systemctl get-default'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'multi-user.target'})
+
     def test_infers_linux_service_running_candidate_from_enabled_and_active_commands(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230285',

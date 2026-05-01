@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 371,
+  "candidate_checks": 372,
   "cases": [
     {
       "check": {
@@ -162,6 +162,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271437"
+    },
+    {
+      "check": {
+        "command": "systemctl get-default",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured so that the graphical display manager is not the default target unless approved.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "multi-user.target"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "systemctl get-default": "unexpected-multi-user.target"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "systemctl get-default": "multi-user.target"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271440"
     },
     {
       "check": {
@@ -10257,5 +10283,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 371
+  "validated_candidates": 372
 }
