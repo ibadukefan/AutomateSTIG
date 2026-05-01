@@ -422,6 +422,19 @@ If there is output, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'rpm -Va --noconfig | awk \'$1 ~ /..5/ && $2 != "c"\''})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_find_command_when_displays_any_output_is_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-238337',
+            'title': 'The Ubuntu operating system must generate error messages without revealing exploitable information.',
+            'check_content': '''Verify the Ubuntu operating system has all system log files under the "/var/log" directory with a permission set to "640" or less permissive by using the following command:
+
+$ sudo find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' -type f -exec stat -c "%n %a" {} \\;
+
+If the command displays any output, this is a finding.'''
+        }, 'Canonical_Ubuntu_20-04_LTS_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'find /var/log -perm /137 ! -name \'*[bw]tmp\' ! -name \'*lastlog\' -type f -exec stat -c "%n %a" {} \\;'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_grep_command_output_candidate_from_authoritative_sample_line(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230358',

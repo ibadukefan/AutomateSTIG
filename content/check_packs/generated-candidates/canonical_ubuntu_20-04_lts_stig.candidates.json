@@ -922,6 +922,19 @@
     },
     {
       "check": {
+        "command": "find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' -type f -exec stat -c \"%n %a\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-238337"
+    },
+    {
+      "check": {
         "group": "syslog",
         "mode": null,
         "owner": null,
