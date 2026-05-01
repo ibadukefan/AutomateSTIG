@@ -30,6 +30,19 @@
     },
     {
       "check": {
+        "name": "telnet-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The SUSE operating system must not have the telnet-server package installed.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "linux",
+      "vuln_id": "V-234818"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "ENCRYPT_METHOD SHA512",
@@ -1121,6 +1134,19 @@
     },
     {
       "check": {
+        "name": "audit",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The SUSE operating system must have the auditing package installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-234964"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/auditd.conf",
         "pattern": "log_file = /var/log/audit/audit.log",
@@ -1132,6 +1158,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-234965"
+    },
+    {
+      "check": {
+        "name": "audit-audispd-plugins",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The audit-audispd-plugins must be installed on the SUSE operating system.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-234966"
     },
     {
       "check": {

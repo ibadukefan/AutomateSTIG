@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "audit-audispd-plugins",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "The audit-audispd-plugins must be installed on the SUSE operating system.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234966"
+  },
   "check_content_excerpt": "Verify that the \"audit-audispd-plugins\" package is installed on the SUSE operating system. \n\nCheck that the \"audit-audispd-plugins\" package is installed on the SUSE operating system with the following command:\n\n> zypper info audit-audispd-plugins | grep Installed\n\nIf the \"audit-audispd-plugins\" package is not installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Install the \"audit-audispd-plugins\" package on the SUSE operating system by running the following command:\n\n> sudo zypper install audit-audispd-plugins",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-234966r1009564_rule",
   "severity": "medium",

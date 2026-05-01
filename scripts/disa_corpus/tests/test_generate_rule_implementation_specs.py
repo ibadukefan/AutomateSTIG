@@ -277,6 +277,21 @@ If the sendmail package is installed, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'package', 'name': 'sendmail', 'should_be_installed': False})
         self.assertEqual(candidate['expected'], {'type': 'is_false'})
 
+    def test_infers_sles_package_candidate_from_single_zypper_info_command(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234966',
+            'title': 'The audit-audispd-plugins must be installed on the SUSE operating system.',
+            'check_content': '''Verify that the "audit-audispd-plugins" package is installed on the SUSE operating system.
+
+Check that the "audit-audispd-plugins" package is installed on the SUSE operating system with the following command:
+
+> zypper info audit-audispd-plugins | grep Installed
+
+If the "audit-audispd-plugins" package is not installed, this is a finding.'''
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate['check'], {'type': 'package', 'name': 'audit-audispd-plugins', 'should_be_installed': True})
+        self.assertEqual(candidate['expected'], {'type': 'is_true'})
+
     def test_infers_linux_package_absent_candidate_from_dpkg_grep_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-238326',

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "audit",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "The SUSE operating system must have the auditing package installed.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234964"
+  },
   "check_content_excerpt": "Verify the SUSE operating system auditing package is installed.\n\nCheck that the \"audit\" package is installed by performing the following command:\n\n> zypper info audit | grep Installed \n\ni | audit | User Space Tools for 2.6 Kernel Auditing \n\nIf the package \"audit\" is not installed on the system, then this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "The SUSE operating system auditd package must be installed on the system. If it is not installed, use the following command to install it:\n\n> sudo zypper in audit",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-234964r1009639_rule",
   "severity": "medium",

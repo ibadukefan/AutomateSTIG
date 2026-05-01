@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 128,
+  "candidate_checks": 131,
   "cases": [
     {
       "check": {
@@ -54,6 +54,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234817"
+    },
+    {
+      "check": {
+        "name": "telnet-server",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "The SUSE operating system must not have the telnet-server package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "telnet-server": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "telnet-server": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234818"
     },
     {
       "check": {
@@ -2201,6 +2227,32 @@
     },
     {
       "check": {
+        "name": "audit",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The SUSE operating system must have the auditing package installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "audit": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "audit": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234964"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/auditd.conf",
         "pattern": "log_file = /var/log/audit/audit.log",
@@ -2225,6 +2277,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234965"
+    },
+    {
+      "check": {
+        "name": "audit-audispd-plugins",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The audit-audispd-plugins must be installed on the SUSE operating system.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "audit-audispd-plugins": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "audit-audispd-plugins": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234966"
     },
     {
       "check": {
@@ -3399,5 +3477,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 128
+  "validated_candidates": 131
 }

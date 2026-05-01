@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "telnet-server",
+      "should_be_installed": false,
+      "type": "package"
+    },
+    "description": "The SUSE operating system must not have the telnet-server package installed.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234818"
+  },
   "check_content_excerpt": "Verify the telnet-server package is not installed on the SUSE operating system.\n\nCheck that the telnet-server package is not installed on the SUSE operating system by running the following command:\n\n> zypper info telnet-server | grep Installed\n\nIf the telnet-server package is installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove the telnet-server package from the SUSE operating system by running the following command:\n\n> sudo zypper remove telnet-server",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-234818r987796_rule",
   "severity": "high",
