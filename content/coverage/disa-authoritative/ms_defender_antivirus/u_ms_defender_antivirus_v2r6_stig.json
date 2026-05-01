@@ -2,16 +2,17 @@
   "generated_from": "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip",
   "rules": [
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213426",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213426r961197_rule",
       "severity": "high",
       "title": "Microsoft Defender AV must be configured to block the Potentially Unwanted Application (PUA) feature.",
-      "tracking_issue": "TODO-V-213426",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213426"

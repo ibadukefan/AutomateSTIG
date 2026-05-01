@@ -2,6 +2,20 @@
   "checks": [
     {
       "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender",
+        "type": "registry",
+        "value_name": "PUAProtection"
+      },
+      "description": "Microsoft Defender AV must be configured to block the Potentially Unwanted Application (PUA) feature.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-213426"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Exclusions",
         "type": "registry",
         "value_name": "DisableAutoExclusions"

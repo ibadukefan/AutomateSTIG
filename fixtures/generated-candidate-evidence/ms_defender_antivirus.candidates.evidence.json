@@ -1,6 +1,33 @@
 {
-  "candidate_checks": 42,
+  "candidate_checks": 43,
   "cases": [
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender",
+        "type": "registry",
+        "value_name": "PUAProtection"
+      },
+      "description": "Microsoft Defender AV must be configured to block the Potentially Unwanted Application (PUA) feature.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\PUAProtection": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\PUAProtection": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213426"
+    },
     {
       "check": {
         "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Exclusions",
@@ -1141,5 +1168,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Defender_Antivirus",
-  "validated_candidates": 42
+  "validated_candidates": 43
 }

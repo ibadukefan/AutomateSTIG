@@ -1,0 +1,49 @@
+{
+  "checks": [
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\visio\\security\\fileblock",
+        "type": "registry",
+        "value_name": "visio2000files"
+      },
+      "description": "Visio 2000-2002 Binary Drawings, Templates and Stencils must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223396"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\visio\\security\\fileblock",
+        "type": "registry",
+        "value_name": "visio2003files"
+      },
+      "description": "Visio 2003-2010 Binary Drawings, Templates and Stencils must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223397"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\visio\\security\\fileblock",
+        "type": "registry",
+        "value_name": "visio50andearlierfiles"
+      },
+      "description": "Visio 5.0 or earlier Binary Drawings, Templates and Stencils must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223398"
+    }
+  ],
+  "platform": "windows",
+  "stig_id": "MS_Office_365_ProPlus_STIG",
+  "version": "candidate-planned"
+}

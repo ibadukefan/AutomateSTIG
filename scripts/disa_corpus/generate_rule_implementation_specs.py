@@ -130,7 +130,7 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
             re.IGNORECASE,
         ):
             value_match = re.search(
-                r'Criteria:\s*If\s+the\s+value\s+["“]([^"”]+)["”]\s+is\s+REG_(DWORD|SZ)\s*=\s*([^,\.\n\r()]+)(?:\s*\([^)]*\))?\s*,?\s+this\s+is\s+not\s+a\s+finding\.',
+                r'(?:Criteria:\s*)?If\s+the\s+value\s+["“]([^"”]+)["”]\s+is\s+REG_(DWORD|SZ)\s*=\s*([^,\.\n\r()]+)(?:\s*\([^)]*\))?\s*,?\s+this\s+is\s+not\s+a\s+finding\.',
                 content,
                 re.IGNORECASE,
             )
@@ -146,7 +146,7 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
         return None
     return {
         'vuln_id': rule.get('vuln_id', ''),
-        'platform': 'windows' if any(token in stig_id.lower() for token in ('windows', 'chrome', 'edge', 'defender')) else 'generic',
+        'platform': 'windows' if any(token in stig_id.lower() for token in ('windows', 'chrome', 'edge', 'defender', 'office')) else 'generic',
         'check': {
             'type': 'registry',
             'path': _normalize_registry_path(path_match.group(1)),
@@ -967,7 +967,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
                 'description': rule.get('title', ''),
             }
 
-    if _windows_platform(stig_id) or any(token in stig_id.lower() for token in ('chrome', 'edge', 'defender')):
+    if _windows_platform(stig_id) or any(token in stig_id.lower() for token in ('chrome', 'edge', 'defender', 'office')):
         policy_candidate = _windows_registry_policy_candidate(rule, stig_id)
         if policy_candidate:
             return policy_candidate

@@ -92,6 +92,24 @@ If the value is 1, this is a finding.'''
         self.assertEqual(candidate['check']['value_name'], 'DisableScriptScanning')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
 
+    def test_infers_office_registry_candidate_from_unprefixed_not_finding_statement(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223397',
+            'title': 'Visio 2003-2010 Binary Drawings, Templates and Stencils must be blocked.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Visio 2016 >> Visio Options >> Security >> Trust Center >> File Block Settings "Visio 2003-2010 Binary Drawings, Templates and Stencils" is set to "Enabled" and "Open/Save blocked".
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\visio\\security\\fileblock
+
+If the value "visio2003files" is REG_DWORD = 2, this is not a finding.'''
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'registry')
+        self.assertEqual(candidate['check']['path'], 'HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\visio\\security\\fileblock')
+        self.assertEqual(candidate['check']['value_name'], 'visio2003files')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 2})
+
     def test_infers_windows_feature_candidate_check_from_powershell_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254269',

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\visio\\security\\fileblock",
+      "type": "registry",
+      "value_name": "visio2000files"
+    },
+    "description": "Visio 2000-2002 Binary Drawings, Templates and Stencils must be blocked.",
+    "expected": {
+      "type": "equals",
+      "value": 2
+    },
+    "platform": "windows",
+    "vuln_id": "V-223396"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Visio 2016 >> Visio Options >> Security >> Trust Center >> File Block Settings \"Visio 2000-2002 Binary Drawings, Templates and Stencils\" is set to \"Enabled\" and \"Open/Save blocked\".\n\nUse the Windows Registry Editor to navigate to the following key: \n\nHKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\visio\\security\\fileblock\n\nIf the value \"visio2000files\" is REG_DWORD = 2, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 2
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Visio 2016 >> Visio Options >> Security >> Trust Center >> File Block Settings \"Visio 2000-2002 Binary Drawings, Templates and Stencils\" to \"Enabled\" and \"Open/Save blocked\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223396r961086_rule",
   "severity": "medium",
