@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 301,
+  "candidate_checks": 302,
   "cases": [
     {
       "check": {
@@ -7807,6 +7807,32 @@
     },
     {
       "check": {
+        "command": "awk -F: '!$2 {print $1}' /etc/shadow",
+        "type": "command_output"
+      },
+      "description": "The OL 8 operating system must not have accounts configured with blank or null passwords.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-252650"
+    },
+    {
+      "check": {
         "command": "find /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;",
         "type": "command_output"
       },
@@ -8180,5 +8206,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 301
+  "validated_candidates": 302
 }

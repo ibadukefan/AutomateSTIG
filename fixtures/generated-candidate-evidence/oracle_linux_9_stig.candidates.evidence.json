@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 373,
+  "candidate_checks": 374,
   "cases": [
     {
       "check": {
@@ -4885,6 +4885,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271637"
+    },
+    {
+      "check": {
+        "command": "awk -F: '!$2 {print $1}' /etc/shadow",
+        "type": "command_output"
+      },
+      "description": "OL 9 must not have accounts configured with blank or null passwords.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271638"
     },
     {
       "check": {
@@ -10309,5 +10335,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 373
+  "validated_candidates": 374
 }

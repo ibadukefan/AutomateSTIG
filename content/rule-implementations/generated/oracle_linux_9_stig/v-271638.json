@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "awk -F: '!$2 {print $1}' /etc/shadow",
+      "type": "command_output"
+    },
+    "description": "OL 9 must not have accounts configured with blank or null passwords.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-271638"
+  },
   "check_content_excerpt": "Verify that OL 9 does not have accounts configured with blank or null passwords with the following command:\n\n$ sudo awk -F: '!$2 {print $1}' /etc/shadow\n\nIf the command returns any results, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 so that all accounts have a password or lock the account with the following commands:\n\nPerform a password reset:\n\n$ sudo passwd [username] \n\nTo lock an account:\n\n$ sudo passwd -l [username]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271638r1091626_rule",
   "severity": "medium",

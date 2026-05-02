@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 157,
+  "candidate_checks": 158,
   "cases": [
     {
       "check": {
@@ -1502,6 +1502,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270712"
+    },
+    {
+      "check": {
+        "command": "awk -F: '!$2 {print $1}' /etc/shadow",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must not have accounts configured with blank or null passwords.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270713"
     },
     {
       "check": {
@@ -4321,5 +4347,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 157
+  "validated_candidates": 158
 }

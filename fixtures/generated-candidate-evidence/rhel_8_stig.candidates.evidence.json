@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 274,
+  "candidate_checks": 275,
   "cases": [
     {
       "check": {
@@ -6849,6 +6849,32 @@
     },
     {
       "check": {
+        "command": "awk -F: '!$2 {print $1}' /etc/shadow",
+        "type": "command_output"
+      },
+      "description": "The RHEL 8 operating system must not have accounts configured with blank or null passwords.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251706"
+    },
+    {
+      "check": {
         "command": "find /lib /lib64 /usr/lib /usr/lib64 -perm /022 -type d -exec stat -c \"%n %a\" '{}' \\;",
         "type": "command_output"
       },
@@ -7385,5 +7411,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 274
+  "validated_candidates": 275
 }

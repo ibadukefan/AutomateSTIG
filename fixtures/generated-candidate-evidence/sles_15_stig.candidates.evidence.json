@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 134,
+  "candidate_checks": 135,
   "cases": [
     {
       "check": {
@@ -3446,6 +3446,32 @@
     },
     {
       "check": {
+        "command": "awk -F: '!$2 {print $1}' /etc/shadow",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must not have accounts configured with blank or null passwords.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251725"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "KexAlgorithms ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256",
@@ -3556,5 +3582,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 134
+  "validated_candidates": 135
 }

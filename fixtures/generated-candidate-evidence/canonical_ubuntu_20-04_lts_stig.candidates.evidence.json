@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 114,
+  "candidate_checks": 115,
   "cases": [
     {
       "check": {
@@ -2846,6 +2846,32 @@
     },
     {
       "check": {
+        "command": "awk -F: '!$2 {print $1}' /etc/shadow",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must not have accounts configured with blank or null passwords.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251503"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/common-auth",
         "pattern": "/etc/pam.d/common-password",
@@ -3172,5 +3198,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 114
+  "validated_candidates": 115
 }

@@ -5542,16 +5542,17 @@
       "vuln_id": "V-250317"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-251706",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-251706r1017359_rule",
       "severity": "high",
       "title": "The RHEL 8 operating system must not have accounts configured with blank or null passwords.",
-      "tracking_issue": "TODO-V-251706",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/24c655685e7d3bff479d1d23b412c016b6e5c641729ca7d6e865d4223749fc95/U_RHEL_8_V2R4_STIG.zip"
       ],
       "vuln_id": "V-251706"

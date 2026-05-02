@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 131,
+  "candidate_checks": 132,
   "cases": [
     {
       "check": {
@@ -3298,6 +3298,32 @@
     },
     {
       "check": {
+        "command": "awk -F: '!$2 {print $1}' /etc/shadow",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not have accounts configured with blank or null passwords.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-251702"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/sudo",
         "pattern": "pam_succeed_if",
@@ -3512,5 +3538,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 131
+  "validated_candidates": 132
 }

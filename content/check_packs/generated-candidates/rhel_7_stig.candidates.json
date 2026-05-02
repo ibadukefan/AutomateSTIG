@@ -1698,6 +1698,19 @@
     },
     {
       "check": {
+        "command": "awk -F: '!$2 {print $1}' /etc/shadow",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not have accounts configured with blank or null passwords.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-251702"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/sudo",
         "pattern": "pam_succeed_if",

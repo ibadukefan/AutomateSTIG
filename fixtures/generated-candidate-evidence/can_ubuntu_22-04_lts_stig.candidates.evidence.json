@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 111,
+  "candidate_checks": 112,
   "cases": [
     {
       "check": {
@@ -1214,6 +1214,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-260570"
+    },
+    {
+      "check": {
+        "command": "awk -F: '!$2 {print $1}' /etc/shadow",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 22.04 LTS must not have accounts configured with blank or null passwords.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '!$2 {print $1}' /etc/shadow": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260571"
     },
     {
       "check": {
@@ -3030,5 +3056,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
-  "validated_candidates": 111
+  "validated_candidates": 112
 }

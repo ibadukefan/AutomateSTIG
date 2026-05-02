@@ -1728,6 +1728,21 @@ If the above command returns the status as "inactive" or any type of error, this
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'ufw status'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Status: active'})
 
+    def test_infers_shadow_blank_password_command_returns_any_results_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258120',
+            'title': 'RHEL 9 must not have accounts configured with blank or null passwords.',
+            'check_content': '''Verify that null or blank passwords cannot be used with the following command:
+
+$ sudo awk -F: '!$2 {print $1}' /etc/shadow
+
+If the command returns any results, this is a finding.''',
+        }, 'RHEL_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "awk -F: '!$2 {print $1}' /etc/shadow"})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
 
 if __name__ == '__main__':
     unittest.main()

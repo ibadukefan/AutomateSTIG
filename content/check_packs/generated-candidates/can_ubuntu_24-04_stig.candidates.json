@@ -763,6 +763,19 @@
     },
     {
       "check": {
+        "command": "awk -F: '!$2 {print $1}' /etc/shadow",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must not have accounts configured with blank or null passwords.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-270713"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/common-password",
         "pattern": "/etc/pam.d/common-auth",
