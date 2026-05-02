@@ -1564,6 +1564,20 @@
     },
     {
       "check": {
+        "expected_status": "stopped",
+        "name": "kdump",
+        "type": "service"
+      },
+      "description": "SUSE operating system kernel core dumps must be disabled unless needed.",
+      "expected": {
+        "type": "equals",
+        "value": "stopped"
+      },
+      "platform": "linux",
+      "vuln_id": "V-235003"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/fstab",
         "pattern": "UUID=333ada18 /home ext4 noatime,nobarrier,nodev 1 2",

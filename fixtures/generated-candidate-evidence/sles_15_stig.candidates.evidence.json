@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 145,
+  "candidate_checks": 146,
   "cases": [
     {
       "check": {
@@ -3073,6 +3073,33 @@
     },
     {
       "check": {
+        "expected_status": "stopped",
+        "name": "kdump",
+        "type": "service"
+      },
+      "description": "SUSE operating system kernel core dumps must be disabled unless needed.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "stopped"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "kdump": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "kdump": "stopped"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235003"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/fstab",
         "pattern": "UUID=333ada18 /home ext4 noatime,nobarrier,nodev 1 2",
@@ -3842,5 +3869,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 145
+  "validated_candidates": 146
 }

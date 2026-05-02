@@ -403,6 +403,20 @@
     },
     {
       "check": {
+        "expected_status": "stopped",
+        "name": "kdump",
+        "type": "service"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must disable Kernel core dumps unless needed.",
+      "expected": {
+        "type": "equals",
+        "value": "stopped"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204492"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/home",
         "pattern": "/etc/fstab",

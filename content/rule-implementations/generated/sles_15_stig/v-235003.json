@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "stopped",
+      "name": "kdump",
+      "type": "service"
+    },
+    "description": "SUSE operating system kernel core dumps must be disabled unless needed.",
+    "expected": {
+      "type": "equals",
+      "value": "stopped"
+    },
+    "platform": "linux",
+    "vuln_id": "V-235003"
+  },
   "check_content_excerpt": "Verify that SUSE operating system kernel core dumps are disabled unless needed.\n\nCheck the status of the \"kdump\" service with the following command:\n\n> systemctl status kdump.service\nLoaded: not-found (Reason: No such file or directory)\nActive: inactive (dead)\n\nIf the \"kdump\" service is active, ask the System Administrator if the use of the service is required and documented with the Information System Security Officer (ISSO).\n\nIf the service is active and is not documented, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "stopped"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "If SUSE operating system kernel core dumps are not required, disable the \"kdump\" service with the following command:\n\n> sudo systemctl disable kdump.service\n\nIf kernel core dumps are required, document the need with the ISSO.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-235003r991589_rule",
   "severity": "medium",

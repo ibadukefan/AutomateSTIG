@@ -328,6 +328,20 @@
     },
     {
       "check": {
+        "expected_status": "stopped",
+        "name": "kdump",
+        "type": "service"
+      },
+      "description": "RHEL 8 must disable kernel dumps unless needed.",
+      "expected": {
+        "type": "equals",
+        "value": "stopped"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230310"
+    },
+    {
+      "check": {
         "key": "kernel.core_pattern",
         "type": "sysctl"
       },

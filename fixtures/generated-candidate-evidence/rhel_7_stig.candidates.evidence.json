@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 133,
+  "candidate_checks": 134,
   "cases": [
     {
       "check": {
@@ -778,6 +778,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204489"
+    },
+    {
+      "check": {
+        "expected_status": "stopped",
+        "name": "kdump",
+        "type": "service"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must disable Kernel core dumps unless needed.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "stopped"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "kdump": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "kdump": "stopped"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204492"
     },
     {
       "check": {
@@ -3565,5 +3592,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 133
+  "validated_candidates": 134
 }

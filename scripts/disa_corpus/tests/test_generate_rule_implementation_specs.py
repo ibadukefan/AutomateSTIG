@@ -1208,6 +1208,25 @@ If the "autofs" status is set to "active" and is not documented with the Informa
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'autofs', 'expected_status': 'stopped'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'stopped'})
 
+    def test_infers_linux_service_stopped_candidate_when_active_requires_documentation(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230310',
+            'title': 'RHEL 8 must disable kernel dumps unless needed.',
+            'check_content': '''Verify RHEL 8 kernel core dumps are disabled unless needed with the following command:
+
+$ sudo systemctl status kdump.service
+
+o kdump.service - Crash recovery kernel arming
+   Loaded: loaded (/usr/lib/systemd/system/kdump.service; disabled; vendor preset: enabled)
+   Active: inactive (dead)
+
+If the "kdump" service is active, ask the system administrator if the use of the service is required and documented with the information system security officer (ISSO).
+
+If the service is active and is not documented, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'kdump', 'expected_status': 'stopped'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'stopped'})
+
     def test_skips_linux_service_stopped_candidate_when_active_requires_configuration(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-204628',

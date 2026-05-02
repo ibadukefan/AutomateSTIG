@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 303,
+  "candidate_checks": 304,
   "cases": [
     {
       "check": {
@@ -2011,6 +2011,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248626"
+    },
+    {
+      "check": {
+        "expected_status": "stopped",
+        "name": "kdump",
+        "type": "service"
+      },
+      "description": "OL 8 must disable kernel dumps unless needed.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "stopped"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "kdump": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "kdump": "stopped"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248628"
     },
     {
       "check": {
@@ -8233,5 +8260,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 303
+  "validated_candidates": 304
 }
