@@ -452,6 +452,19 @@ If the command displays any output, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'find /var/log -perm /137 ! -name \'*[bw]tmp\' ! -name \'*lastlog\' -type f -exec stat -c "%n %a" {} \\;'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_grep_command_when_produces_any_output_is_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-256445',
+            'title': 'The ESXi host must not be configured to override virtual machine (VM) logger settings.',
+            'check_content': '''From an ESXi shell, run the following command:
+
+# grep "^vmx\\.log" /etc/vmware/config
+
+If the command produces any output, this is a finding.'''
+        }, 'VMW_vSphere_7-0_ESXi_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep "^vmx\\.log" /etc/vmware/config'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_grep_command_output_candidate_from_authoritative_sample_line(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230358',

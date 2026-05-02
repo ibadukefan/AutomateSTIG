@@ -132,6 +132,19 @@
     },
     {
       "check": {
+        "command": "grep \"^vmx\\.log\" /etc/vmware/config",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must not be configured to override virtual machine (VM) logger settings.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-256445"
+    },
+    {
+      "check": {
         "command": "esxcli system settings encryption get|grep Mode",
         "type": "command_output"
       },

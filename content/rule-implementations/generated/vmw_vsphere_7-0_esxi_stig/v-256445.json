@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep \"^vmx\\.log\" /etc/vmware/config",
+      "type": "command_output"
+    },
+    "description": "The ESXi host must not be configured to override virtual machine (VM) logger settings.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-256445"
+  },
   "check_content_excerpt": "From an ESXi shell, run the following command:\n\n# grep \"^vmx\\.log\" /etc/vmware/config\n\nIf the command produces any output, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From an ESXi shell, run the following commands:\n\n# cp /etc/vmware/config /etc/vmware/config.bak\n# grep -v \"^vmx\\.log\" /etc/vmware/config.bak>/etc/vmware/config",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-256445r959010_rule",
   "severity": "medium",
