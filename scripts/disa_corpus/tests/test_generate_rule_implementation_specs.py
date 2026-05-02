@@ -1693,6 +1693,24 @@ If "disable-restart-buttons" is "false", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'gsettings get org.gnome.login-screen disable-restart-buttons'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'true'})
 
+    def test_infers_linux_gsettings_get_candidate_from_quoted_key_set_to_false_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258016',
+            'title': 'RHEL 9 must disable the graphical user interface autorun function unless required.',
+            'check_content': '''Verify RHEL 9 disables the graphical user interface autorun function with the following command:
+
+Note: This requirement assumes the use of the RHEL 9 default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.
+
+$ gsettings get org.gnome.desktop.media-handling autorun-never 
+
+true
+
+If "autorun-never" is set to "false", and is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'gsettings get org.gnome.desktop.media-handling autorun-never'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'true'})
+
     def test_infers_linux_gsettings_get_false_candidate_from_true_setting_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258014',

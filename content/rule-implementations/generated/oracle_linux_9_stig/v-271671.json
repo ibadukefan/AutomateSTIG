@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "gsettings get org.gnome.desktop.media-handling autorun-never",
+      "type": "command_output"
+    },
+    "description": "OL 9 must disable the graphical user interface autorun function unless required.",
+    "expected": {
+      "type": "equals",
+      "value": "true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271671"
+  },
   "check_content_excerpt": "This requirement assumes the use of the OL 9 default graphical user interface\u2014the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nVerify that OL 9 disables the graphical user interface autorun function with the following command:\n\n$ gsettings get org.gnome.desktop.media-handling autorun-never \ntrue\n\nIf \"autorun-never\" is set to \"false\", and is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the GNOME desktop to disable the autorun function on removable media.\n\nThe dconf settings can be edited in the /etc/dconf/db/* location.\n\nUpdate the [org/gnome/desktop/media-handling] section of the \"/etc/dconf/db/local.d/00-security-settings\" database file and add or update the following lines:\n\n[org/gnome/desktop/media-handling]\nautorun-never=true\n\nUpdate the dconf system databases:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271671r1091725_rule",
   "severity": "medium",

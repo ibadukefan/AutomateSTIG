@@ -2900,6 +2900,19 @@
     },
     {
       "check": {
+        "command": "gsettings get org.gnome.desktop.media-handling autorun-never",
+        "type": "command_output"
+      },
+      "description": "OL 9 must disable the graphical user interface autorun function unless required.",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271671"
+    },
+    {
+      "check": {
         "command": "gsettings get org.gnome.login-screen disable-user-list",
         "type": "command_output"
       },
