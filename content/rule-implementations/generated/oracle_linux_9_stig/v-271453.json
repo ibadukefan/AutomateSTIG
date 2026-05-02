@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sestatus | grep policy",
+      "type": "command_output"
+    },
+    "description": "OL 9 must enable the SELinux targeted policy.",
+    "expected": {
+      "substring": "Loaded policy name:             targeted",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271453"
+  },
   "check_content_excerpt": "Verify that OL 9 enables the SELinux targeted policy with the following command:\n\n$ sestatus | grep policy\nLoaded policy name:             targeted\n\nIf the loaded policy name is not \"targeted\", this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "Loaded policy name:             targeted",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to use the targetd SELINUX policy.\n\nEdit the file \"/etc/selinux/config\" and add or modify the following line:\n\n SELINUXTYPE=targeted \n\nA reboot is required for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271453r1091071_rule",
   "severity": "medium",

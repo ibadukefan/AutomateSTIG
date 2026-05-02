@@ -253,6 +253,19 @@
     },
     {
       "check": {
+        "command": "sestatus | grep policy",
+        "type": "command_output"
+      },
+      "description": "OL 9 must enable the SELinux targeted policy.",
+      "expected": {
+        "substring": "Loaded policy name:             targeted",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271453"
+    },
+    {
+      "check": {
         "command": "fips-mode-setup --check",
         "type": "command_output"
       },

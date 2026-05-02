@@ -707,7 +707,7 @@ def _selinux_sestatus_policy_candidate(rule: dict, stig_id: str) -> dict | None:
         return None
     content = rule.get('check_content', '') or ''
     command_match = re.search(
-        r'^\s*[$#>]\s*(?P<command>(?:sudo\s+)?sestatus\s*\|\s*grep\s+["“\']policy\s+name["”\'])\s*$',
+        r'^\s*[$#>]\s*(?P<command>(?:sudo\s+)?sestatus\s*\|\s*grep\s+(?:["“\']policy\s+name["”\']|policy))\s*$',
         content,
         re.IGNORECASE | re.MULTILINE,
     )

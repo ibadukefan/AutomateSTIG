@@ -1421,6 +1421,21 @@ If the loaded policy name is not "targeted", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'sestatus | grep "policy name"'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Loaded policy name:             targeted'})
 
+    def test_infers_selinux_sestatus_targeted_policy_candidate_from_unquoted_policy_grep(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271453',
+            'title': 'OL 9 must enable the SELinux targeted policy.',
+            'check_content': '''Verify that OL 9 enables the SELinux targeted policy with the following command:
+
+$ sestatus | grep policy
+Loaded policy name:             targeted
+
+If the loaded policy name is not "targeted", this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'sestatus | grep policy'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Loaded policy name:             targeted'})
+
     def test_infers_windows_audit_policy_candidate_from_auditpol_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254304',

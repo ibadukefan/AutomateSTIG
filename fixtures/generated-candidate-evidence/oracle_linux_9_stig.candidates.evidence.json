@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 372,
+  "candidate_checks": 373,
   "cases": [
     {
       "check": {
@@ -485,6 +485,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271452"
+    },
+    {
+      "check": {
+        "command": "sestatus | grep policy",
+        "type": "command_output"
+      },
+      "description": "OL 9 must enable the SELinux targeted policy.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "Loaded policy name:             targeted",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sestatus | grep policy": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sestatus | grep policy": "before\nLoaded policy name:             targeted\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271453"
     },
     {
       "check": {
@@ -10283,5 +10309,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 372
+  "validated_candidates": 373
 }
