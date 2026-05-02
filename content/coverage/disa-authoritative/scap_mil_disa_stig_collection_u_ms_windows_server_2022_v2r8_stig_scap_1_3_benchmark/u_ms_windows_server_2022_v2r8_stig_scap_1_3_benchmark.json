@@ -1976,16 +1976,17 @@
       "vuln_id": "V-254421"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254422",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-254422 from source identifier xccdf_mil.disa.stig_group_V-254422.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-254422r1137691_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Deny log on as a batch job user right on domain controllers must be configured to prevent unauthenticated access.",
-      "tracking_issue": "TODO-V-254422",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/5459c32c9f0d5581bc9f6d28c451a3ab0b63e4db7c444d5b4c83ca878772f33d/U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-254422"
@@ -2006,31 +2007,33 @@
       "vuln_id": "V-254423"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254424",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-254424 from source identifier xccdf_mil.disa.stig_group_V-254424.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-254424r1137691_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Deny log on locally user right on domain controllers must be configured to prevent unauthenticated access.",
-      "tracking_issue": "TODO-V-254424",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/5459c32c9f0d5581bc9f6d28c451a3ab0b63e4db7c444d5b4c83ca878772f33d/U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-254424"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254425",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-254425 from source identifier xccdf_mil.disa.stig_group_V-254425.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-254425r958672_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Deny log on through Remote Desktop Services user right on domain controllers must be configured to prevent unauthenticated access.",
-      "tracking_issue": "TODO-V-254425",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/5459c32c9f0d5581bc9f6d28c451a3ab0b63e4db7c444d5b4c83ca878772f33d/U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-254425"

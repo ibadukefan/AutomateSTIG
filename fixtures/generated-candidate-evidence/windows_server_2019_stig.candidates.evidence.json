@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 166,
+  "candidate_checks": 168,
   "cases": [
     {
       "check": {
@@ -297,6 +297,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205667"
+    },
+    {
+      "check": {
+        "key": "SeDenyBatchLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Deny log on as a batch job user right on domain controllers must be configured to prevent unauthenticated access.",
+      "evidence_type": "windows_security_policy_matches",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDenyBatchLogonRight": ""
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDenyBatchLogonRight": "S-1-5-32-546"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205668"
     },
     {
       "check": {
@@ -967,6 +994,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205724"
+    },
+    {
+      "check": {
+        "key": "SeDenyRemoteInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Deny log on through Remote Desktop Services user right on domain controllers must be configured to prevent unauthenticated access.",
+      "evidence_type": "windows_security_policy_matches",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDenyRemoteInteractiveLogonRight": ""
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDenyRemoteInteractiveLogonRight": "S-1-5-32-546"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205732"
     },
     {
       "check": {
@@ -4484,5 +4538,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 166
+  "validated_candidates": 168
 }

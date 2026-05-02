@@ -276,7 +276,7 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
 
     if has_secedit_context:
         required_sids_match = re.search(
-            r'following\s+SIDs\s+are\s+not\s+defined\s+for\s+the\s+"(Se[A-Za-z0-9]+)"\s+user\s+right(?P<body>.*?)(?:\n\s*\n\s*If\b|\Z)',
+            r'following\s+SID(?:\(s\)|s)\s+are\s+not\s+defined\s+for\s+the\s+"(Se[A-Za-z0-9]+)"\s+user\s+right(?P<body>.*?)(?:\n\s*\n\s*If\b|\Z)',
             content,
             re.IGNORECASE | re.DOTALL,
         )

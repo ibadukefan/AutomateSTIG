@@ -541,16 +541,17 @@
       "vuln_id": "V-205667"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205668",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205668 from source identifier xccdf_mil.disa.stig_group_V-205668.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205668r958472_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Deny log on as a batch job user right on domain controllers must be configured to prevent unauthenticated access.",
-      "tracking_issue": "TODO-V-205668",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205668"
@@ -1349,16 +1350,17 @@
       "vuln_id": "V-205731"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-205732",
+      "check_pack": "generated-candidates/windows_server_2019_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-205732 from source identifier xccdf_mil.disa.stig_group_V-205732.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-205732r958672_rule",
       "severity": "medium",
       "title": "Windows Server 2019 Deny log on through Remote Desktop Services user right on domain controllers must be configured to prevent unauthenticated access.",
-      "tracking_issue": "TODO-V-205732",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
         "content/disa-corpus/artifacts/be6120cf1b3f4201de5e112fcaf20c7f8db99a9b5a55481e67c7e4595939bbe8/U_MS_Windows_Server_2019_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-205732"

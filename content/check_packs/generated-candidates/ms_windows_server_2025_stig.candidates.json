@@ -1520,6 +1520,34 @@
     },
     {
       "check": {
+        "key": "SeDenyBatchLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Deny log on as a batch job\" user right on domain controllers must be configured to prevent unauthenticated access.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278169"
+    },
+    {
+      "check": {
+        "key": "SeDenyInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Deny log on locally\" user right on domain controllers must be configured to prevent unauthenticated access.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278171"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Kdc",
         "type": "registry",
         "value_name": "StrongCertificateBindingEnforcement"
@@ -1531,6 +1559,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-278172"
+    },
+    {
+      "check": {
+        "key": "SeDenyRemoteInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Deny log on through Remote Desktop Services\" user right on domain controllers must be configured to prevent unauthenticated access.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278174"
     },
     {
       "check": {

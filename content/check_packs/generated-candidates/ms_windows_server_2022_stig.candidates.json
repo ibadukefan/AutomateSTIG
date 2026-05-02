@@ -1120,6 +1120,48 @@
     },
     {
       "check": {
+        "key": "SeDenyBatchLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 Deny log on as a batch job user right on domain controllers must be configured to prevent unauthenticated access.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254422"
+    },
+    {
+      "check": {
+        "key": "SeDenyInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 Deny log on locally user right on domain controllers must be configured to prevent unauthenticated access.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254424"
+    },
+    {
+      "check": {
+        "key": "SeDenyRemoteInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 Deny log on through Remote Desktop Services user right on domain controllers must be configured to prevent unauthenticated access.",
+      "expected": {
+        "pattern": "(?=.*S-1-5-32-546)",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-254425"
+    },
+    {
+      "check": {
         "key": "SeEnableDelegationPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"

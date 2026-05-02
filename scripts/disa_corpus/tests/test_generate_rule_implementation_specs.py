@@ -190,6 +190,35 @@ If the value DifandSylkFiles is REG_DWORD = 2, this is not a finding.'''
         self.assertEqual(candidate['check']['value_name'], 'DifandSylkFiles')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 2})
 
+    def test_infers_required_user_right_candidate_from_sid_parenthetical_plural(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254422',
+            'title': 'Windows Server 2022 Deny log on as a batch job user right on domain controllers must be configured to prevent unauthenticated access.',
+            'check_content': '''This applies to domain controllers. A separate version applies to other systems.
+
+Verify the effective setting in Local Group Policy Editor.
+
+Run "gpedit.msc".
+
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If the following accounts or groups are not defined for the "Deny log on as a batch job" user right, this is a finding:
+
+- Guests Group
+
+For server core installations, run the following command:
+
+Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt
+
+Review the text file.
+
+If the following SID(s) are not defined for the "SeDenyBatchLogonRight" user right, this is a finding:
+
+S-1-5-32-546 (Guests)'''
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeDenyBatchLogonRight'})
+        self.assertEqual(candidate['expected'], {'type': 'matches', 'pattern': '(?=.*S-1-5-32-546)'})
+
     def test_infers_windows_feature_candidate_check_from_powershell_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254269',
