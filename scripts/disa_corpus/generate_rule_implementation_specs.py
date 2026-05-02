@@ -145,7 +145,7 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
             re.IGNORECASE,
         ):
             value_match = re.search(
-                r'(?:Criteria:\s*)?If\s+the\s+value\s+(?:["“]([^"”]+)["”]|for\s+([A-Za-z0-9_.-]+)|([A-Za-z0-9_.-]+))\s+is\s+(?:set\s+to\s+)?REG_(DWORD|SZ)\s*=\s*([^,\.\n\r()]+)(?:\s*\([^)]*\))?\s*,?\s+this\s+is\s+not\s+a\s+finding\.',
+                r'(?:Criteria:\s*)?If\s+the\s+value\s+(?:(?:for\s+)?["“]([^"”]+)["”]|for\s+([A-Za-z0-9_.-]+)|([A-Za-z0-9_.-]+))\s+is\s+(?:set\s+to\s+)?REG_(DWORD|SZ)\s*=\s*([^,\.\n\r()]+)(?:\s*\([^)]*\))?\s*,?\s+this\s+is\s+not\s+a\s+finding\.',
                 content,
                 re.IGNORECASE,
             )

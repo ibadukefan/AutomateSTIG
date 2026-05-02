@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 91,
+  "candidate_checks": 93,
   "cases": [
     {
       "check": {
@@ -297,6 +297,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223310"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\external content",
+        "type": "registry",
+        "value_name": "disableddeserverlaunch"
+      },
+      "description": "Dynamic Data Exchange (DDE) server launch in Excel must be blocked.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\external content\\disableddeserverlaunch": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\external content\\disableddeserverlaunch": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223312"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\external content",
+        "type": "registry",
+        "value_name": "disableddeserverlookup"
+      },
+      "description": "Dynamic Data Exchange (DDE) server lookup in Excel must be blocked.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\external content\\disableddeserverlookup": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\external content\\disableddeserverlookup": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223313"
     },
     {
       "check": {
@@ -2464,5 +2518,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Office_365_ProPlus_STIG",
-  "validated_candidates": 91
+  "validated_candidates": 93
 }

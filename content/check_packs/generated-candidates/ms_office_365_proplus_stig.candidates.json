@@ -156,6 +156,34 @@
     },
     {
       "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\external content",
+        "type": "registry",
+        "value_name": "disableddeserverlaunch"
+      },
+      "description": "Dynamic Data Exchange (DDE) server launch in Excel must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223312"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\external content",
+        "type": "registry",
+        "value_name": "disableddeserverlookup"
+      },
+      "description": "Dynamic Data Exchange (DDE) server lookup in Excel must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223313"
+    },
+    {
+      "check": {
         "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\fileblock",
         "type": "registry",
         "value_name": "DBaseFiles"

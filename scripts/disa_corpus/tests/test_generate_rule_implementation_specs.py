@@ -73,6 +73,23 @@ Value: O:BAG:BAD:(A;;RC;;;BA)'''
         self.assertEqual(candidate['check']['value_name'], 'RestrictRemoteSAM')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'O:BAG:BAD:(A;;RC;;;BA)'})
 
+    def test_infers_office_registry_not_finding_when_value_for_quoted_name_is_exact_dword(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223313',
+            'title': 'Dynamic Data Exchange (DDE) server lookup in Excel must be blocked.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Excel 2016 >> Excel Options >> Security >> Trust Center >> External Content >> Don't allow Dynamic Data Exchange (DDE) server lookup in Excel is set to "Enabled".
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\external content
+
+If the value for "disableddeserverlookup" is REG_DWORD = 1, this is not a finding.'''
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertEqual(candidate['check']['type'], 'registry')
+        self.assertEqual(candidate['check']['path'], 'HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\external content')
+        self.assertEqual(candidate['check']['value_name'], 'disableddeserverlookup')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 1})
+
     def test_infers_registry_candidate_when_check_and_fix_repeat_same_authoritative_fields(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-213117',
