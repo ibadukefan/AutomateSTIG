@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 168,
+  "candidate_checks": 169,
   "cases": [
     {
       "check": {
@@ -324,6 +324,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205668"
+    },
+    {
+      "check": {
+        "key": "SeDenyServiceLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Deny log on as a service user right must be configured to include no accounts or groups (blank) on domain controllers.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDenyServiceLogonRight": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDenyServiceLogonRight": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205669"
     },
     {
       "check": {
@@ -4538,5 +4565,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 168
+  "validated_candidates": 169
 }

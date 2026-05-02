@@ -2888,16 +2888,17 @@
       "vuln_id": "V-254422"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254423",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254423r958472_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Deny log on as a service user right must be configured to include no accounts or groups (blank) on domain controllers.",
-      "tracking_issue": "TODO-V-254423",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/8eec09b8bdc9563e642794c94f61f7c28557b3ba75be6e78e71e52e410e04328/U_MS_Windows_Server_2022_V2R4_STIG.zip"
       ],
       "vuln_id": "V-254423"

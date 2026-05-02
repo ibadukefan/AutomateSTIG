@@ -1845,6 +1845,18 @@ Value4 (or less)''',
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Security Options', 'key': 'Interactive Logon: Number of previous logons to cache (in case Domain Controller is not available)'})
         self.assertEqual(candidate['expected'], {'type': 'less_or_equal', 'value': 4})
 
+    def test_infers_windows_blank_user_right_candidate_from_scap_fix_text(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-254506',
+            'title': 'Windows Server 2022 lock pages in memory user right must not be assigned to any groups or accounts.',
+            'check_content': '',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Lock pages in memory to be defined but containing no entries (blank).',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeLockMemoryPrivilege'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_linux_rpm_verify_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257999',

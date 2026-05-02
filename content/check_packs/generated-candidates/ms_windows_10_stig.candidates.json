@@ -2227,6 +2227,90 @@
     },
     {
       "check": {
+        "key": "SeTrustedCredManAccessPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Access Credential Manager as a trusted caller user right must not be assigned to any groups or accounts.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-220956"
+    },
+    {
+      "check": {
+        "key": "SeTcbPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Act as part of the operating system user right must not be assigned to any groups or accounts.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-220958"
+    },
+    {
+      "check": {
+        "key": "SeCreateTokenPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Create a token object user right must not be assigned to any groups or accounts.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-220963"
+    },
+    {
+      "check": {
+        "key": "SeCreatePermanentPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Create permanent shared objects user right must not be assigned to any groups or accounts.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-220965"
+    },
+    {
+      "check": {
+        "key": "SeEnableDelegationPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Enable computer and user accounts to be trusted for delegation user right must not be assigned to any groups or accounts.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-220973"
+    },
+    {
+      "check": {
+        "key": "SeLockMemoryPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Lock pages in memory user right must not be assigned to any groups or accounts.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-220977"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription",
         "type": "registry",
         "value_name": "EnableTranscripting"

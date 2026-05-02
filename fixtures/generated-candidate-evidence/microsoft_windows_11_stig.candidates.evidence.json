@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 155,
+  "candidate_checks": 161,
   "cases": [
     {
       "check": {
@@ -3945,6 +3945,168 @@
     },
     {
       "check": {
+        "key": "SeTrustedCredManAccessPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The \"Access Credential Manager as a trusted caller\" user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTrustedCredManAccessPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTrustedCredManAccessPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253479"
+    },
+    {
+      "check": {
+        "key": "SeTcbPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The \"Act as part of the operating system\" user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTcbPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTcbPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253481"
+    },
+    {
+      "check": {
+        "key": "SeCreateTokenPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The \"Create a token object\" user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateTokenPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateTokenPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253486"
+    },
+    {
+      "check": {
+        "key": "SeCreatePermanentPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The \"Create permanent shared objects\" user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreatePermanentPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreatePermanentPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253488"
+    },
+    {
+      "check": {
+        "key": "SeEnableDelegationPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The \"Enable computer and user accounts to be trusted for delegation\" user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeEnableDelegationPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeEnableDelegationPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253496"
+    },
+    {
+      "check": {
+        "key": "SeLockMemoryPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The \"Lock pages in memory\" user right must not be assigned to any groups or accounts.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeLockMemoryPrivilege": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeLockMemoryPrivilege": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253500"
+    },
+    {
+      "check": {
         "setting": "Failure",
         "subcategory": "File System",
         "type": "audit_policy"
@@ -4192,5 +4354,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 155
+  "validated_candidates": 161
 }

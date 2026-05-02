@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 167,
+  "candidate_checks": 168,
   "cases": [
     {
       "check": {
@@ -2185,6 +2185,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-254422"
+    },
+    {
+      "check": {
+        "key": "SeDenyServiceLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 Deny log on as a service user right must be configured to include no accounts or groups (blank) on domain controllers.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDenyServiceLogonRight": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDenyServiceLogonRight": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254423"
     },
     {
       "check": {
@@ -4514,5 +4541,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2022_STIG",
-  "validated_candidates": 167
+  "validated_candidates": 168
 }

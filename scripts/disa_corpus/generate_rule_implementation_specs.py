@@ -274,6 +274,38 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                 'description': rule.get('title', ''),
             }
 
+    if 'Local Policies >> User Rights Assignment' in policy_text:
+        blank_user_right_match = re.search(
+            r'Configure\s+the\s+policy\s+value\s+for\s+Computer\s+Configuration\s*>>\s*Windows\s+Settings\s*>>\s*Security\s+Settings\s*>>\s*Local\s+Policies\s*>>\s*User\s+Rights\s+Assignment\s*>>\s*"?([^"\n]+?)"?\s+to\s+(?:be\s+defined\s+but\s+containing|include)\s+no\s+entries\s+\(blank\)\s*\.\s*(?:\n|$)',
+            policy_text,
+            re.IGNORECASE,
+        )
+        blank_right_keys = {
+            'access credential manager as a trusted caller': 'SeTrustedCredManAccessPrivilege',
+            'act as part of the operating system': 'SeTcbPrivilege',
+            'create a token object': 'SeCreateTokenPrivilege',
+            'create permanent shared objects': 'SeCreatePermanentPrivilege',
+            'deny log on as a service': 'SeDenyServiceLogonRight',
+            'enable computer and user accounts to be trusted for delegation': 'SeEnableDelegationPrivilege',
+            'lock pages in memory': 'SeLockMemoryPrivilege',
+        }
+        if blank_user_right_match:
+            display_name = blank_user_right_match.group(1).strip().strip('"')
+            key = blank_right_keys.get(display_name.lower())
+            blank_required = re.search(
+                r'(?:no\s+accounts\s+or\s+groups|not\s+be\s+assigned\s+to\s+any\s+groups\s+or\s+accounts|no\s+entries\s+\(blank\))',
+                policy_text,
+                re.IGNORECASE,
+            )
+            if key and blank_required:
+                return {
+                    'vuln_id': rule.get('vuln_id', ''),
+                    'platform': 'windows',
+                    'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': key},
+                    'expected': {'type': 'equals', 'value': ''},
+                    'description': rule.get('title', ''),
+                }
+
     if has_secedit_context:
         required_sids_match = re.search(
             r'following\s+SID(?:\(s\)|s)\s+are\s+not\s+defined\s+for\s+the\s+"(Se[A-Za-z0-9]+)"\s+user\s+right(?P<body>.*?)(?:\n\s*\n\s*If\b|\Z)',

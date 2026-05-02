@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 195,
+  "candidate_checks": 196,
   "cases": [
     {
       "check": {
@@ -2965,6 +2965,33 @@
     },
     {
       "check": {
+        "key": "SeDenyServiceLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Deny log on as a service\" user right must be configured to include no accounts or groups (blank) on domain controllers.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDenyServiceLogonRight": "unexpected"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDenyServiceLogonRight": ""
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278170"
+    },
+    {
+      "check": {
         "key": "SeDenyInteractiveLogonRight",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -5264,5 +5291,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 195
+  "validated_candidates": 196
 }
