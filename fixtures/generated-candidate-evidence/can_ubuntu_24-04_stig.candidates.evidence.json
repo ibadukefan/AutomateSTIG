@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 151,
+  "candidate_checks": 152,
   "cases": [
     {
       "check": {
@@ -261,6 +261,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270656"
+    },
+    {
+      "check": {
+        "expected_status": "running",
+        "name": "auditd",
+        "type": "service"
+      },
+      "description": "Ubuntu 24.04 LTS must produce audit records and reports containing information to establish when, where, what type, the source, and the outcome for all DOD-defined auditable events and actions in near real time.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "auditd": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270657"
     },
     {
       "check": {
@@ -4126,5 +4153,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 151
+  "validated_candidates": 152
 }

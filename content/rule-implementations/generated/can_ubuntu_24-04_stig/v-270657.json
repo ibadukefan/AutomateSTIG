@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "auditd",
+      "type": "service"
+    },
+    "description": "Ubuntu 24.04 LTS must produce audit records and reports containing information to establish when, where, what type, the source, and the outcome for all DOD-defined auditable events and actions in near real time.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270657"
+  },
   "check_content_excerpt": "Verify the audit service is enabled with the following command: \n \n$ systemctl is-enabled auditd.service \nenabled\n\nIf the command above returns \"disabled\", this is a finding. \n \nVerify the audit service is properly running and active on the system with the following command: \n \n$ systemctl is-active auditd.service \nactive \n \nIf the command above returns \"inactive\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit service to produce audit records containing the information needed to establish when (date and time) an event occurred. \n \nEnable the audit service with the following command: \n \n$ sudo systemctl enable auditd.service \n \nTo reload the rules file, issue the following command: \n \n$ sudo augenrules --load",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-270657r1066460_rule",
   "severity": "medium",

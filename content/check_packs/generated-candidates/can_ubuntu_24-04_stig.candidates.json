@@ -133,6 +133,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "auditd",
+        "type": "service"
+      },
+      "description": "Ubuntu 24.04 LTS must produce audit records and reports containing information to establish when, where, what type, the source, and the outcome for all DOD-defined auditable events and actions in near real time.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270657"
+    },
+    {
+      "check": {
         "name": "audispd-plugins",
         "should_be_installed": true,
         "type": "package"

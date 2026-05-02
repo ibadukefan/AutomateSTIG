@@ -910,6 +910,20 @@ If network interfaces are found on the system in promiscuous mode and their use 
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
 
+    def test_infers_linux_service_running_candidate_when_systemctl_is_active_returns_inactive_is_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270657',
+            'title': 'Ubuntu 24.04 LTS must produce audit records in near real time.',
+            'check_content': '''Verify the audit service is properly running and active on the system with the following command:
+
+$ systemctl is-active auditd.service
+active
+
+If the command above returns "inactive", this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'auditd', 'expected_status': 'running'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
+
     def test_infers_linux_service_stopped_candidate_from_systemctl_status_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230502',
