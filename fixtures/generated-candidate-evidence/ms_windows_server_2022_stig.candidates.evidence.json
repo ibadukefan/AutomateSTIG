@@ -122,7 +122,7 @@
       "fail_fixture": {
         "platform": "windows",
         "security_policy": {
-          "System Access\\LockoutDuration": 0
+          "System Access\\LockoutDuration": 14
         }
       },
       "pass_fixture": {
@@ -149,7 +149,7 @@
       "fail_fixture": {
         "platform": "windows",
         "security_policy": {
-          "System Access\\LockoutBadCount": 0
+          "System Access\\LockoutBadCount": 4
         }
       },
       "pass_fixture": {
@@ -176,7 +176,7 @@
       "fail_fixture": {
         "platform": "windows",
         "security_policy": {
-          "System Access\\ResetLockoutCount": 0
+          "System Access\\ResetLockoutCount": 14
         }
       },
       "pass_fixture": {
@@ -203,7 +203,7 @@
       "fail_fixture": {
         "platform": "windows",
         "security_policy": {
-          "System Access\\PasswordHistorySize": 0
+          "System Access\\PasswordHistorySize": 23
         }
       },
       "pass_fixture": {
@@ -230,7 +230,7 @@
       "fail_fixture": {
         "platform": "windows",
         "security_policy": {
-          "System Access\\MaximumPasswordAge": 0
+          "System Access\\MaximumPasswordAge": 61
         }
       },
       "pass_fixture": {

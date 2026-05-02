@@ -251,6 +251,20 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                 policy_text,
                 re.IGNORECASE,
             )
+        if not security_option:
+            less_or_equal_option = re.search(
+                r'Configure\s+the\s+policy\s+value\s+for\s+Computer\s+Configuration\s*>>\s*Windows\s+Settings\s*>>\s*Security\s+Settings\s*>>\s*Local\s+Policies\s*>>\s*Security\s+Options\s*>>\s*"?([^"\n]+?)"?\s+to\s+"(\d+)"\s+[^.\n]*\bor\s+less\s*\.\s*(?:\n|$)',
+                policy_text,
+                re.IGNORECASE,
+            )
+            if less_or_equal_option:
+                return {
+                    'vuln_id': rule.get('vuln_id', ''),
+                    'platform': 'windows',
+                    'check': {'type': 'security_policy', 'section': 'Security Options', 'key': less_or_equal_option.group(1).strip()},
+                    'expected': {'type': 'less_or_equal', 'value': int(less_or_equal_option.group(2))},
+                    'description': rule.get('title', ''),
+                }
         if security_option:
             return {
                 'vuln_id': rule.get('vuln_id', ''),
@@ -1156,6 +1170,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         normalized_paths = {re.sub(r'\\+', r'\\', path).rstrip('\\/.') for path in paths}
         normalized_value_names = set(value_names)
         if re.search(r'^\s*Value(?!\s*(?:Name|Type))[^\n\r]*\bor\s+less\b', combined_registry_content, re.IGNORECASE | re.MULTILINE):
+            if _windows_platform(stig_id):
+                security_policy_candidate = _windows_security_policy_candidate(rule)
+                if security_policy_candidate:
+                    return security_policy_candidate
             return None
         if re.search(r'^\s*Value(?!\s*(?:Name|Type))[^\n\r]*,\s*(?:0x[0-9a-fA-F]+|[-+]?\d+)', combined_registry_content, re.IGNORECASE | re.MULTILINE):
             return None

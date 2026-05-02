@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 191,
+  "candidate_checks": 192,
   "cases": [
     {
       "check": {
@@ -278,7 +278,7 @@
       "fail_fixture": {
         "platform": "windows",
         "security_policy": {
-          "System Access\\LockoutDuration": 0
+          "System Access\\LockoutDuration": 14
         }
       },
       "pass_fixture": {
@@ -305,7 +305,7 @@
       "fail_fixture": {
         "platform": "windows",
         "security_policy": {
-          "System Access\\LockoutBadCount": 0
+          "System Access\\LockoutBadCount": 4
         }
       },
       "pass_fixture": {
@@ -332,7 +332,7 @@
       "fail_fixture": {
         "platform": "windows",
         "security_policy": {
-          "System Access\\ResetLockoutCount": 0
+          "System Access\\ResetLockoutCount": 14
         }
       },
       "pass_fixture": {
@@ -359,7 +359,7 @@
       "fail_fixture": {
         "platform": "windows",
         "security_policy": {
-          "System Access\\PasswordHistorySize": 0
+          "System Access\\PasswordHistorySize": 23
         }
       },
       "pass_fixture": {
@@ -386,7 +386,7 @@
       "fail_fixture": {
         "platform": "windows",
         "security_policy": {
-          "System Access\\MaximumPasswordAge": 0
+          "System Access\\MaximumPasswordAge": 61
         }
       },
       "pass_fixture": {
@@ -3073,6 +3073,33 @@
     },
     {
       "check": {
+        "key": "Interactive Logon: Number of previous logons to cache (in case Domain Controller is not available)",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 must limit the caching of logon credentials to four or less on domain-joined member servers.",
+      "evidence_type": "windows_security_policy_less_or_equal",
+      "expected": {
+        "type": "less_or_equal",
+        "value": 4
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Interactive Logon: Number of previous logons to cache (in case Domain Controller is not available)": 5
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Interactive Logon: Number of previous logons to cache (in case Domain Controller is not available)": 4
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278181"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "RestrictRemoteSAM"
@@ -5156,5 +5183,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 191
+  "validated_candidates": 192
 }

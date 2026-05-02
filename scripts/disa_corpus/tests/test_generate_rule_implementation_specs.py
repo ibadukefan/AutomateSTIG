@@ -1682,6 +1682,26 @@ If the value for "Network access: Allow anonymous SID/Name translation" is not s
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Security Options', 'key': 'Network security: Do not store LAN Manager hash value on next password change'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Enabled'})
 
+    def test_infers_windows_security_option_less_or_equal_candidate_from_fix_text(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278181',
+            'title': 'Windows Server 2025 must limit the caching of logon credentials to four or less on domain-joined member servers.',
+            'check_content': '''If the following registry value does not exist or is not configured as specified, this is a finding:
+
+Registry HiveHKEY_LOCAL_MACHINE
+Registry Path\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\
+
+Value NameCachedLogonsCount
+
+Value TypeREG_SZ
+Value4 (or less)''',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> Interactive Logon: Number of previous logons to cache (in case Domain Controller is not available) to "4" logons or less.',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Security Options', 'key': 'Interactive Logon: Number of previous logons to cache (in case Domain Controller is not available)'})
+        self.assertEqual(candidate['expected'], {'type': 'less_or_equal', 'value': 4})
+
     def test_infers_linux_rpm_verify_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257999',

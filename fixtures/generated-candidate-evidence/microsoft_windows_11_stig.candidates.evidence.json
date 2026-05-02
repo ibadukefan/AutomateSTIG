@@ -70,7 +70,7 @@
       "fail_fixture": {
         "platform": "windows",
         "security_policy": {
-          "System Access\\LockoutDuration": 0
+          "System Access\\LockoutDuration": 14
         }
       },
       "pass_fixture": {
@@ -97,7 +97,7 @@
       "fail_fixture": {
         "platform": "windows",
         "security_policy": {
-          "System Access\\LockoutBadCount": 0
+          "System Access\\LockoutBadCount": 4
         }
       },
       "pass_fixture": {
@@ -124,7 +124,7 @@
       "fail_fixture": {
         "platform": "windows",
         "security_policy": {
-          "System Access\\ResetLockoutCount": 0
+          "System Access\\ResetLockoutCount": 14
         }
       },
       "pass_fixture": {
@@ -178,7 +178,7 @@
       "fail_fixture": {
         "platform": "windows",
         "security_policy": {
-          "System Access\\MinimumPasswordLength": 0
+          "System Access\\MinimumPasswordLength": 13
         }
       },
       "pass_fixture": {

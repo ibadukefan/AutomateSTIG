@@ -89,6 +89,12 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
                         'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeDenyInteractiveLogonRight'},
                         'expected': {'type': 'matches', 'pattern': '(?=.*S-1-5-32-546)'},
                     },
+                    {
+                        'vuln_id': 'V-11',
+                        'platform': 'windows',
+                        'check': {'type': 'security_policy', 'section': 'Security Options', 'key': 'CachedLogonsCount'},
+                        'expected': {'type': 'less_or_equal', 'value': 4},
+                    },
                 ],
             }))
 
@@ -96,8 +102,8 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
 
             self.assertEqual(written, 1)
             evidence = json.loads((out / 'mixed.candidates.evidence.json').read_text())
-            self.assertEqual(evidence['candidate_checks'], 11)
-            self.assertEqual(evidence['validated_candidates'], 11)
+            self.assertEqual(evidence['candidate_checks'], 12)
+            self.assertEqual(evidence['validated_candidates'], 12)
             cases = {case['vuln_id']: case for case in evidence['cases']}
             self.assertEqual(cases['V-1']['pass_fixture']['registry']['HKLM\\Software\\Example\\Enabled'], 1)
             self.assertNotEqual(cases['V-1']['fail_fixture']['registry']['HKLM\\Software\\Example\\Enabled'], 1)
@@ -124,6 +130,9 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
             self.assertEqual(cases['V-10']['evidence_type'], 'windows_security_policy_matches')
             self.assertIn('S-1-5-32-546', cases['V-10']['pass_fixture']['security_policy']['Privilege Rights\\SeDenyInteractiveLogonRight'])
             self.assertNotIn('S-1-5-32-546', cases['V-10']['fail_fixture']['security_policy']['Privilege Rights\\SeDenyInteractiveLogonRight'])
+            self.assertEqual(cases['V-11']['evidence_type'], 'windows_security_policy_less_or_equal')
+            self.assertEqual(cases['V-11']['pass_fixture']['security_policy']['Security Options\\CachedLogonsCount'], 4)
+            self.assertGreater(cases['V-11']['fail_fixture']['security_policy']['Security Options\\CachedLogonsCount'], 4)
 
     def test_builds_command_output_fixture_case(self):
         case = mod.build_case({

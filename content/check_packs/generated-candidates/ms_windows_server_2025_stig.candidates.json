@@ -1590,6 +1590,20 @@
     },
     {
       "check": {
+        "key": "Interactive Logon: Number of previous logons to cache (in case Domain Controller is not available)",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 must limit the caching of logon credentials to four or less on domain-joined member servers.",
+      "expected": {
+        "type": "less_or_equal",
+        "value": 4
+      },
+      "platform": "windows",
+      "vuln_id": "V-278181"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "RestrictRemoteSAM"
