@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 152,
+  "candidate_checks": 154,
   "cases": [
     {
       "check": {
@@ -1478,6 +1478,33 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "Ubuntu 24.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270712"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/common-password",
         "pattern": "/etc/pam.d/common-auth",
@@ -2251,6 +2278,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270745"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "kdump-tools",
+        "type": "service"
+      },
+      "description": "Ubuntu 24.04 LTS must disable kernel core dumps.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "kdump-tools": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "kdump-tools": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270746"
     },
     {
       "check": {
@@ -4153,5 +4207,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 152
+  "validated_candidates": 154
 }

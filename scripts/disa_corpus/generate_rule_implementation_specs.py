@@ -560,7 +560,7 @@ def _service_candidate(rule: dict) -> dict | None:
     command = match.group(1)
     raw_name = match.group(2).strip('"\'')
     lower = f"{title}\n{content}".lower()
-    masked_status = command == 'status' and re.search(r'loaded:\s+masked\b', lower) and re.search(r'loaded\s+and\s+not\s+masked', lower)
+    masked_status = command == 'status' and re.search(r'loaded:\s+masked\b', lower) and re.search(r'(?:loaded\s+and\s+)?not\s+masked', lower)
     if raw_name.endswith('.target') and not masked_status:
         return None
     if 'masked' in lower and not masked_status:

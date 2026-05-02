@@ -2,16 +2,17 @@
   "generated_from": "content/disa-corpus/artifacts/7457af35703ff66d104c894f7aaf50c83649b35dbacd9730bc91f44b9b4ee73e/U_CAN_Ubuntu_22-04_LTS_V2R7_STIG.zip",
   "rules": [
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260469",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-260469r991589_rule",
       "severity": "high",
       "title": "Ubuntu 22.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence.",
-      "tracking_issue": "TODO-V-260469",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/7457af35703ff66d104c894f7aaf50c83649b35dbacd9730bc91f44b9b4ee73e/U_CAN_Ubuntu_22-04_LTS_V2R7_STIG.zip"
       ],
       "vuln_id": "V-260469"

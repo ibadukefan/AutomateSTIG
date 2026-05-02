@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 130,
+  "candidate_checks": 131,
   "cases": [
     {
       "check": {
@@ -456,6 +456,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204454"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the x86 Ctrl-Alt-Delete key sequence is disabled on the command line.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204455"
     },
     {
       "check": {
@@ -3485,5 +3512,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 130
+  "validated_candidates": 131
 }

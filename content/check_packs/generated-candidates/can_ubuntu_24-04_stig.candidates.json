@@ -749,6 +749,20 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "Ubuntu 24.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270712"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/common-password",
         "pattern": "/etc/pam.d/common-auth",
@@ -1145,6 +1159,20 @@
       },
       "platform": "linux",
       "vuln_id": "V-270745"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "kdump-tools",
+        "type": "service"
+      },
+      "description": "Ubuntu 24.04 LTS must disable kernel core dumps.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270746"
     },
     {
       "check": {

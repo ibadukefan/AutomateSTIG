@@ -2,6 +2,20 @@
   "checks": [
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "Ubuntu 22.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260469"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/boot/grub/grub.cfg",
         "pattern": "password_pbkdf2 root grub.pbkdf2.sha512.10000.03255F190F0E2F7B4F0D1C3216012309162F022A7A636771",

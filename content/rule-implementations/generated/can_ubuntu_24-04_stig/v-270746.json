@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "disabled",
+      "name": "kdump-tools",
+      "type": "service"
+    },
+    "description": "Ubuntu 24.04 LTS must disable kernel core dumps.",
+    "expected": {
+      "type": "equals",
+      "value": "disabled"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270746"
+  },
   "check_content_excerpt": "Verify kernel core dumps are disabled unless needed with the following command: \n \n$ systemctl status kdump-tools.service\no kdump-tools.service\n     Loaded: masked (Reason: Unit kdump-tools.service is masked.)\n     Active: inactive (dead)\n\nIf kdump-tools is not installed the output will be:\nUnit kdump-tools.service could not be found.\n\nIf \"kdump-tools.service\" is not masked and inactive, ask the system administrator (SA) if the use of the service is required and documented with the information system security officer (ISSO).\n\nIf the service is active and is not documented, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "disabled"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "If kernel core dumps are not required, disable the \"kdump-tools\" service with the following command: \n \n$ sudo systemctl disable kdump-tools.service\n \nIf kernel core dumps are required, document the need with the ISSO.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-270746r1155242_rule",
   "severity": "medium",

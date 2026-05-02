@@ -1,6 +1,33 @@
 {
-  "candidate_checks": 108,
+  "candidate_checks": 109,
   "cases": [
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "Ubuntu 22.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260469"
+    },
     {
       "check": {
         "is_regex": false,
@@ -2927,5 +2954,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
-  "validated_candidates": 108
+  "validated_candidates": 109
 }

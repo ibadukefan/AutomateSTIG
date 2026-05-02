@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "disabled",
+      "name": "ctrl-alt-del",
+      "type": "service"
+    },
+    "description": "Ubuntu 24.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence.",
+    "expected": {
+      "type": "equals",
+      "value": "disabled"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270712"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS is not configured to reboot the system when Ctrl-Alt-Delete is pressed with the following command:\n\n$ systemctl status ctrl-alt-del.target\no   ctrl-alt-del.target\n     Loaded: masked (Reason: Unit ctrl-alt-del.target is masked.)\n     Active: inactive (dead)\n\nIf the \"ctrl-alt-del.target\" is not masked, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "disabled"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the system to disable the Ctrl-Alt-Delete sequence for the command line with the following commands:\n\n$ sudo systemctl disable ctrl-alt-del.target\n[...]\n\n$ sudo systemctl mask ctrl-alt-del.target\nCreated symlink /etc/systemd/system/ctrl-alt-del.target ? /dev/null.\n\nReload the daemon to take effect: \n\n$ sudo systemctl daemon-reload",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-270712r1068363_rule",
   "severity": "high",

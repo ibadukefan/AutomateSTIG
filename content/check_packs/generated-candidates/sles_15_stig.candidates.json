@@ -1365,6 +1365,20 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "The SUSE operating system must disable the x86 Ctrl-Alt-Delete key sequence.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-234988"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/group",
         "pattern": "users:x:250:doduser,doduser,nsauser",

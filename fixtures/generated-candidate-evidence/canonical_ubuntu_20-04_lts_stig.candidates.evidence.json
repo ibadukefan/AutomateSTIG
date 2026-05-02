@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 113,
+  "candidate_checks": 114,
   "cases": [
     {
       "check": {
@@ -2819,6 +2819,33 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "The Ubuntu operating system must disable the x86 Ctrl-Alt-Delete key sequence.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238380"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/pam.d/common-auth",
         "pattern": "/etc/pam.d/common-password",
@@ -3145,5 +3172,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 113
+  "validated_candidates": 114
 }

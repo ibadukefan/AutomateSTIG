@@ -958,6 +958,22 @@ If the "debug-shell.service" is loaded and not masked, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'debug-shell', 'expected_status': 'disabled'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
 
+    def test_infers_linux_masked_target_status_candidate_when_not_masked_is_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270712',
+            'title': 'Ubuntu 24.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence.',
+            'check_content': '''Verify Ubuntu 24.04 LTS is not configured to reboot the system when Ctrl-Alt-Delete is pressed with the following command:
+
+$ systemctl status ctrl-alt-del.target
+o   ctrl-alt-del.target
+     Loaded: masked (Reason: Unit ctrl-alt-del.target is masked.)
+     Active: inactive (dead)
+
+If the "ctrl-alt-del.target" is not masked, this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'ctrl-alt-del', 'expected_status': 'disabled'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
+
     def test_infers_linux_service_running_candidate_from_systemctl_status_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-244545',

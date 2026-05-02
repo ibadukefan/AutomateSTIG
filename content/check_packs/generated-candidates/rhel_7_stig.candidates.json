@@ -237,6 +237,20 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the x86 Ctrl-Alt-Delete key sequence is disabled on the command line.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204455"
+    },
+    {
+      "check": {
         "command": "grep logout /etc/dconf/db/local.d/*",
         "type": "command_output"
       },

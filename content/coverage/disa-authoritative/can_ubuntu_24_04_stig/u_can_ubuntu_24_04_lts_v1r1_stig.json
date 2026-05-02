@@ -1063,16 +1063,17 @@
       "vuln_id": "V-270711"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270712",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270712r1068363_rule",
       "severity": "high",
       "title": "Ubuntu 24.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence.",
-      "tracking_issue": "TODO-V-270712",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/6abfdf294296013732f9d73914f9d5b969163275f6d19d2d81f59c501f0004a8/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip"
       ],
       "vuln_id": "V-270712"
@@ -1602,16 +1603,17 @@
       "vuln_id": "V-270745"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270746",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270746r1066727_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must disable kernel core dumps.",
-      "tracking_issue": "TODO-V-270746",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/6abfdf294296013732f9d73914f9d5b969163275f6d19d2d81f59c501f0004a8/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip"
       ],
       "vuln_id": "V-270746"

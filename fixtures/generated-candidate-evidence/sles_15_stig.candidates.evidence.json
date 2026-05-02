@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 132,
+  "candidate_checks": 133,
   "cases": [
     {
       "check": {
@@ -2679,6 +2679,33 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "The SUSE operating system must disable the x86 Ctrl-Alt-Delete key sequence.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234988"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/group",
         "pattern": "users:x:250:doduser,doduser,nsauser",
@@ -3503,5 +3530,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 132
+  "validated_candidates": 133
 }
