@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "SMB1Protocol",
+      "should_be_installed": false,
+      "type": "windows_feature"
+    },
+    "description": "The Server Message Block (SMB) v1 protocol must be disabled on the system.",
+    "expected": {
+      "type": "is_false"
+    },
+    "platform": "windows",
+    "vuln_id": "V-220729"
+  },
   "check_content_excerpt": "Different methods are available to disable SMBv1 on Windows 10.  This is the preferred method, however if V-220730 and V-220731 are configured, this is NA.\n\nRun \"Windows PowerShell\" with elevated privileges (run as administrator).\n\nEnter the following:\nGet-WindowsOptionalFeature -Online | Where FeatureName -eq SMB1Protocol\n\nIf \"State : Enabled\" is returned, this is a finding.\n\nAlternately:\nSearch for \"Features\".\n\nSelect \"Turn Windows features on or off\".\n\nIf \"SMB 1.0/CIFS File Sharing Support\" is selected, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Disable the SMBv1 protocol.\n\nRun \"Windows PowerShell\" with elevated privileges (run as administrator).\n\nEnter the following:\nDisable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol\n\nAlternately:\nSearch for \"Features\".\n\nSelect \"Turn Windows features on or off\".\n\nDe-select \"SMB 1.0/CIFS File Sharing Support\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "windows_feature",
   "remediation": "planned",
   "rule_id": "SV-220729r958478_rule",
   "severity": "medium",

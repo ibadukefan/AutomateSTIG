@@ -30,6 +30,19 @@
     },
     {
       "check": {
+        "name": "SMB1Protocol",
+        "should_be_installed": false,
+        "type": "windows_feature"
+      },
+      "description": "The Server Message Block (SMB) v1 protocol must be disabled on the system.",
+      "expected": {
+        "type": "is_false"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220729"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\Connectivity",
         "type": "registry",
         "value_name": "AllowBluetooth"

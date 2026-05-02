@@ -343,6 +343,20 @@ If the network parameter "ipv6.conf.all.accept_source_route" is not equal to "0"
         self.assertEqual(candidate['check'], {'type': 'sysctl', 'key': 'net.ipv6.conf.all.accept_source_route'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '0'})
 
+    def test_infers_windows_optional_feature_candidate_check_from_powershell_content(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-220729',
+            'title': 'The Server Message Block (SMB) v1 protocol must be disabled on the system.',
+            'check_content': '''Run "Windows PowerShell" with elevated privileges (run as administrator). Enter the following:
+
+Get-WindowsOptionalFeature -Online | Where FeatureName -eq SMB1Protocol
+
+If "State : Enabled" is returned, this is a finding.'''
+        }, 'MS_Windows_10_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'windows_feature', 'name': 'SMB1Protocol', 'should_be_installed': False})
+        self.assertEqual(candidate['expected'], {'type': 'is_false'})
+
     def test_infers_linux_package_absent_candidate_check_from_rhel_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230239',

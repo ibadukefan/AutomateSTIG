@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 170,
+  "candidate_checks": 171,
   "cases": [
     {
       "check": {
@@ -54,6 +54,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-220704"
+    },
+    {
+      "check": {
+        "name": "SMB1Protocol",
+        "should_be_installed": false,
+        "type": "windows_feature"
+      },
+      "description": "The Server Message Block (SMB) v1 protocol must be disabled on the system.",
+      "evidence_type": "windows_feature_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "SMB1Protocol": true
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "packages": {
+          "SMB1Protocol": false
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220729"
     },
     {
       "check": {
@@ -4597,5 +4623,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 170
+  "validated_candidates": 171
 }

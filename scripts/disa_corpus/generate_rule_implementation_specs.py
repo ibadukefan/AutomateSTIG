@@ -1187,7 +1187,13 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         feature = re.search(r'Get-WindowsFeature\s*\|\s*Where\s+Name\s+-eq\s+([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
         if not feature:
             feature = re.search(r'Get-WindowsFeature\s+-Name\s+([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
-        if feature and re.search(r'Installed[^\n.]+is[^\n.]+finding|If[^\n.]+Installed[^\n.]+finding', content, re.IGNORECASE):
+        optional_feature = False
+        if not feature:
+            feature = re.search(r'Get-WindowsOptionalFeature\s+-Online\s*\|\s*Where\s+FeatureName\s+-eq\s+([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
+            optional_feature = bool(feature)
+        feature_finding = re.search(r'Installed[^\n.]+is[^\n.]+finding|If[^\n.]+Installed[^\n.]+finding', content, re.IGNORECASE)
+        optional_feature_finding = optional_feature and re.search(r'If\s+["“]?State\s*:\s*Enabled["”]?\s+is\s+returned,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        if feature and (feature_finding or optional_feature_finding):
             return {
                 'vuln_id': rule.get('vuln_id', ''),
                 'platform': 'windows',
