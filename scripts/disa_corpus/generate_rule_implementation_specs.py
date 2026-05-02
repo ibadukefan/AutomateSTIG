@@ -699,7 +699,10 @@ def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
         if (
             re.fullmatch(r'gsettings\s+get\s+org\.gnome\.settings-daemon\.plugins\.media-keys\s+logout', command)
             and expected_line in ("['']", '"[\'\']"', '@as []')
-            and re.search(r'If\s+the\s+["“]logout["”]\s+key\s+is\s+bound\s+to\s+an\s+action', content, re.IGNORECASE)
+            and (
+                re.search(r'If\s+the\s+["“]logout["”]\s+key\s+is\s+bound\s+to\s+an\s+action', content, re.IGNORECASE)
+                or re.search(r'If\s+the\s+GNOME\s+desktop\s+is\s+configured\s+to\s+shut\s+down\s+when\s+Ctrl-Alt-Del\s+is\s+pressed', content, re.IGNORECASE)
+            )
         ):
             return {
                 'vuln_id': rule.get('vuln_id', ''),

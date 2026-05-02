@@ -749,6 +749,24 @@ If the "logout" key is bound to an action, is commented out, or is missing, this
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'gsettings get org.gnome.settings-daemon.plugins.media-keys logout'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': "['']"})
 
+    def test_infers_gsettings_empty_logout_action_candidate_from_shutdown_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258031',
+            'title': 'RHEL 9 must disable the ability of a user to accidentally press Ctrl-Alt-Del and cause a system to shut down or reboot.',
+            'check_content': '''Verify RHEL 9 is configured to ignore the Ctrl-Alt-Del sequence in the GNOME desktop with the following command:
+
+Note: This requirement assumes the use of the RHEL 9 default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.
+
+$ gsettings get org.gnome.settings-daemon.plugins.media-keys logout 
+
+"['']"
+
+If the GNOME desktop is configured to shut down when Ctrl-Alt-Del is pressed, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'gsettings get org.gnome.settings-daemon.plugins.media-keys logout'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '"[\'\']"'})
+
     def test_infers_grep_literal_output_from_authoritative_output_statement(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271687',

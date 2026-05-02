@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "gsettings get org.gnome.settings-daemon.plugins.media-keys logout",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 must disable the ability of a user to accidentally press Ctrl-Alt-Del and cause a system to shut down or reboot.",
+    "expected": {
+      "type": "equals",
+      "value": "\"['']\""
+    },
+    "platform": "linux",
+    "vuln_id": "V-258031"
+  },
   "check_content_excerpt": "Verify RHEL 9 is configured to ignore the Ctrl-Alt-Del sequence in the GNOME desktop with the following command:\n\nNote: This requirement assumes the use of the RHEL 9 default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\n$ gsettings get org.gnome.settings-daemon.plugins.media-keys logout \n\n\"['']\"\n\nIf the GNOME desktop is configured to shut down when Ctrl-Alt-Del is pressed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "\"['']\""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to ignore the Ctrl-Alt-Del sequence in the GNOME desktop.\n\nRun the following command to set the media-keys logout setting:\n\n$ gsettings set org.gnome.settings-daemon.plugins.media-keys logout \"['']\"\n\nRun the following command to update the database:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258031r1045114_rule",
   "severity": "medium",

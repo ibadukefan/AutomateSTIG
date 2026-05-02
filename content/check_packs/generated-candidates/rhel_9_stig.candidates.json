@@ -2514,6 +2514,19 @@
     },
     {
       "check": {
+        "command": "gsettings get org.gnome.settings-daemon.plugins.media-keys logout",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must disable the ability of a user to accidentally press Ctrl-Alt-Del and cause a system to shut down or reboot.",
+      "expected": {
+        "type": "equals",
+        "value": "\"['']\""
+      },
+      "platform": "linux",
+      "vuln_id": "V-258031"
+    },
+    {
+      "check": {
         "command": "gsettings writable org.gnome.settings-daemon.plugins.media-keys logout",
         "type": "command_output"
       },
