@@ -366,6 +366,10 @@ def _package_candidate(rule: dict) -> dict | None:
         if len(zypper_matches) == 1 and not re.search(r'\bsystemctl\b', content, re.IGNORECASE):
             match = re.match(r'(.+)', zypper_matches[0])
     if not match:
+        zypper_search_matches = re.findall(r'\bzypper\s+se\s+([A-Za-z0-9_.:+-]+)\b', content, re.IGNORECASE)
+        if len(zypper_search_matches) == 1 and re.search(rf'^\s*i\s*\|\s*{re.escape(zypper_search_matches[0])}\s*\|', content, re.IGNORECASE | re.MULTILINE):
+            match = re.match(r'(.+)', zypper_search_matches[0])
+    if not match:
         match = re.search(r'\b([A-Za-z0-9_.:+-]+)\s+package\s+(?:has\s+)?(?:not\s+)?(?:been\s+)?installed', content, re.IGNORECASE)
     if not match:
         return None

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 133,
+  "candidate_checks": 134,
   "cases": [
     {
       "check": {
@@ -3499,6 +3499,32 @@
     },
     {
       "check": {
+        "name": "mailx",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The SUSE operating system must be configured to allow sending email notifications of unauthorized configuration changes to designated personnel.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "mailx": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "mailx": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256983"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/cron.d",
         "pattern": "-w /etc/cron.d -p wa -k cronjobs",
@@ -3530,5 +3556,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 133
+  "validated_candidates": 134
 }

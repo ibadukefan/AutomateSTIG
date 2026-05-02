@@ -430,6 +430,25 @@ If the "audit-audispd-plugins" package is not installed, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'package', 'name': 'audit-audispd-plugins', 'should_be_installed': True})
         self.assertEqual(candidate['expected'], {'type': 'is_true'})
 
+    def test_infers_sles_package_candidate_from_single_zypper_search_command(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-256983',
+            'title': 'The SUSE operating system must be configured to allow sending email notifications.',
+            'check_content': '''Verify that the operating system is configured to allow sending email notifications.
+
+Note: The "mailx" package provides the "mail" command that is used to send email messages.
+
+Verify that the "mailx" package is installed on the system:
+
+> sudo zypper se mailx
+
+i | mailx | A MIME-Capable Implementation of the mailx Command | package
+
+If "mailx" is not installed, this is a finding.'''
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate['check'], {'type': 'package', 'name': 'mailx', 'should_be_installed': True})
+        self.assertEqual(candidate['expected'], {'type': 'is_true'})
+
     def test_infers_linux_package_absent_candidate_from_dpkg_grep_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-238326',

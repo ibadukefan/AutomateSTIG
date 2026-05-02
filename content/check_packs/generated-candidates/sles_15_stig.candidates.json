@@ -1782,6 +1782,19 @@
     },
     {
       "check": {
+        "name": "mailx",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The SUSE operating system must be configured to allow sending email notifications of unauthorized configuration changes to designated personnel.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-256983"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/cron.d",
         "pattern": "-w /etc/cron.d -p wa -k cronjobs",
