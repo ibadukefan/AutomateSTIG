@@ -1624,6 +1624,28 @@ If the result is not "1", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': '/usr/sbin/spctl --status | /usr/bin/grep -c "assessments enabled"'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
 
+    def test_infers_macos_absolute_command_substitution_result_equals_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259432',
+            'title': 'The macOS system must configure audit log files to not contain access control lists.',
+            'check_content': '''Verify the macOS system is configured without ACLs applied to log files with the following command:
+
+/bin/ls -le $(/usr/bin/grep '^dir' /etc/security/audit_control | /usr/bin/awk -F: '{print $2}') | /usr/bin/awk '{print $1}' | /usr/bin/grep -c ":"
+
+If the result is not "0", this is a finding.'''
+        }, 'Apple_macOS_14_STIG')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "/bin/ls -le $(/usr/bin/grep '^dir' /etc/security/audit_control | /usr/bin/awk -F: '{print $2}') | /usr/bin/awk '{print $1}' | /usr/bin/grep -c \":\""})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '0'})
+
+    def test_skips_result_literal_when_no_shell_command_is_present(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-NO-COMMAND',
+            'title': 'A manual prose rule must not be inferred as command output.',
+            'check_content': 'Review the setting manually. If the result is not "true", this is a finding.'
+        }, 'Apple_macOS_14_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_linux_gsettings_get_candidate_from_false_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-244536',

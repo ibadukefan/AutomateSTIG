@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/bin/stat -f '%Su:%Sg:%N' $(/usr/bin/grep -e '^>' /etc/asl.conf /etc/asl/* | /usr/bin/awk '{ print $2 }') 2> /dev/null | /usr/bin/awk '!/^root:wheel:/{print $1}' | /usr/bin/wc -l | /usr/bin/tr -d ' '",
+      "type": "command_output"
+    },
+    "description": "The macOS system must configure Apple System Log (ASL) files owned by root and group to wheel.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "generic",
+    "vuln_id": "V-268550"
+  },
   "check_content_excerpt": "Verify the macOS system is configured with ASL files owned by root and group to wheel with the following command:\n\n/usr/bin/stat -f '%Su:%Sg:%N' $(/usr/bin/grep -e '^>' /etc/asl.conf /etc/asl/* | /usr/bin/awk '{ print $2 }') 2> /dev/null | /usr/bin/awk '!/^root:wheel:/{print $1}' | /usr/bin/wc -l | /usr/bin/tr -d ' '\n\nIf the result is not \"0\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system with ASL files owned by root and group to wheel with the following command:\n\n/usr/sbin/chown root:wheel $(/usr/bin/stat -f '%Su:%Sg:%N' $(/usr/bin/grep -e '^>' /etc/asl.conf /etc/asl/* | /usr/bin/awk '{ print $2 }') 2> /dev/null | /usr/bin/awk '!/^root:wheel:/{print $1}' | /usr/bin/awk -F\":\" '!/^root:wheel:/{print $3}')",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-268550r1034590_rule",
   "severity": "medium",

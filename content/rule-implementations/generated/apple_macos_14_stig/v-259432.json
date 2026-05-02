@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/bin/ls -le $(/usr/bin/grep '^dir' /etc/security/audit_control | /usr/bin/awk -F: '{print $2}') | /usr/bin/awk '{print $1}' | /usr/bin/grep -c \":\"",
+      "type": "command_output"
+    },
+    "description": "The macOS system must configure audit log files to not contain access control lists.",
+    "expected": {
+      "type": "equals",
+      "value": "0"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259432"
+  },
   "check_content_excerpt": "Verify the macOS system is configured without ACLs applied to log files with the following command:\n\n/bin/ls -le $(/usr/bin/grep '^dir' /etc/security/audit_control | /usr/bin/awk -F: '{print $2}') | /usr/bin/awk '{print $1}' | /usr/bin/grep -c \":\"\n\nIf the result is not \"0\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "0"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system without ACLs applied to log files with the following command:\n\n/bin/chmod -RN /var/audit",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259432r958434_rule",
   "severity": "medium",

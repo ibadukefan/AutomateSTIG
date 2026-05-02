@@ -678,9 +678,28 @@ def _normalize_command(command: str) -> str:
     return command.strip()
 
 
-def _has_unsafe_shell_token(command: str) -> bool:
+def _macos_platform(stig_id: str) -> bool:
+    return 'macos' in stig_id.lower() or 'apple' in stig_id.lower()
+
+
+def _command_substitutions_are_absolute(command: str) -> bool:
+    substitutions = re.findall(r'\$\(([^()]*)\)', command)
+    if not substitutions:
+        return False
+    for substitution in substitutions:
+        if any(token in substitution for token in ('`', '$(', '&&', '<<', ';')):
+            return False
+        for segment in substitution.split('|'):
+            stripped = segment.strip()
+            if not re.match(r'^/[A-Za-z0-9_./:+-]+\b', stripped):
+                return False
+    return True
+
+
+def _has_unsafe_shell_token(command: str, *, allow_command_substitution: bool = False) -> bool:
     unquoted = re.sub(r"'[^']*'|\"[^\"]*\"", '', command)
-    return any(token in unquoted for token in ('`', '$(', '&&', '<<'))
+    tokens = ('`', '&&', '<<') if allow_command_substitution else ('`', '$(', '&&', '<<')
+    return any(token in unquoted for token in tokens)
 
 
 def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
@@ -1034,7 +1053,14 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             re.IGNORECASE,
         ):
             command = _normalize_command(absolute_command.group('command'))
-    if not command or _has_unsafe_shell_token(command):
+    allow_macos_command_substitution = bool(
+        command
+        and _macos_platform(stig_id)
+        and command.startswith('/')
+        and '$(' in command
+        and _command_substitutions_are_absolute(command)
+    )
+    if not command or _has_unsafe_shell_token(command, allow_command_substitution=allow_macos_command_substitution):
         return None
     if re.search(r'\bPART\b', command) and '[PART]' in content:
         return None

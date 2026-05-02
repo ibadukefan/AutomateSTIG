@@ -190,16 +190,17 @@
       "vuln_id": "V-259431"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259432",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259432r958434_rule",
       "severity": "medium",
       "title": "The macOS system must configure audit log files to not contain access control lists.",
-      "tracking_issue": "TODO-V-259432",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259432"
@@ -552,76 +553,81 @@
       "vuln_id": "V-259455"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259456",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259456r958434_rule",
       "severity": "medium",
       "title": "The macOS system must configure audit log files to be owned by root.",
-      "tracking_issue": "TODO-V-259456",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259456"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259457",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259457r958434_rule",
       "severity": "medium",
       "title": "The macOS system must configure audit log folders to be owned by root.",
-      "tracking_issue": "TODO-V-259457",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259457"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259458",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259458r958434_rule",
       "severity": "medium",
       "title": "The macOS system must configure audit log files group to wheel.",
-      "tracking_issue": "TODO-V-259458",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259458"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259459",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259459r958434_rule",
       "severity": "medium",
       "title": "The macOS system must configure audit log folders group to wheel.",
-      "tracking_issue": "TODO-V-259459",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259459"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259460",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259460r958434_rule",
       "severity": "medium",
       "title": "The macOS system must configure audit log files to mode 440 or less permissive.",
-      "tracking_issue": "TODO-V-259460",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259460"
@@ -2076,31 +2082,33 @@
       "vuln_id": "V-259552"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259553",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259553r958564_rule",
       "severity": "medium",
       "title": "The macOS system must configure Apple System Log files to be owned by root and group to wheel.",
-      "tracking_issue": "TODO-V-259553",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259553"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259554",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259554r958564_rule",
       "severity": "medium",
       "title": "The macOS system must configure Apple System Log files to mode 640 or less permissive.",
-      "tracking_issue": "TODO-V-259554",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259554"
@@ -2122,31 +2130,33 @@
       "vuln_id": "V-259555"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259556",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259556r958564_rule",
       "severity": "medium",
       "title": "The macOS system must configure system log files to be owned by root and group to wheel.",
-      "tracking_issue": "TODO-V-259556",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259556"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259557",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259557r958564_rule",
       "severity": "medium",
       "title": "The macOS system must configure system log files to mode 640 or less permissive.",
-      "tracking_issue": "TODO-V-259557",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259557"
