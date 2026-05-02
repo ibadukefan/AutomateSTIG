@@ -4499,6 +4499,19 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "Successful/unsuccessful uses of the umount2 system call in RHEL 9 must generate an audit record.",
+      "expected": {
+        "substring": "-a always,exit -S arch=b64 -S umount2 -F auid>=1000 -F auid!=-1 -F key=privileged-umount\n-a always,exit -S arch=b32 -S umount2 -F auid>=1000 -F auid!=-1 -F key=privileged-umount",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258216"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/sudoers.",
       "expected": {
         "substring": "-w /etc/sudoers -p wa -k identity",
