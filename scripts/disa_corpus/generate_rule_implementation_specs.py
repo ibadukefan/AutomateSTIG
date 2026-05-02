@@ -195,14 +195,18 @@ def _windows_platform(stig_id: str) -> bool:
 
 def _windows_audit_policy_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
     title = rule.get('title', '') or ''
+    policy_text = '\n'.join(part for part in (content, fix_text) if part)
     has_auditpol_context = bool(re.search(r'\bauditpol\b', content, re.IGNORECASE))
-    has_advanced_audit_policy_context = 'Advanced Audit Policy Configuration' in content
+    has_advanced_audit_policy_context = 'Advanced Audit Policy Configuration' in policy_text
     if not has_auditpol_context and not has_advanced_audit_policy_context:
         return None
     outcome_match = re.search(r'\b(successes|failures|success|failure)\b', title, re.IGNORECASE) or re.search(r'audit\s+(successes|failures|success|failure)', content, re.IGNORECASE)
     if not outcome_match:
         outcome_match = re.search(r'is\s+not\s+set\s+to\s+"(Success|Failure)"', content, re.IGNORECASE)
+    if not outcome_match:
+        outcome_match = re.search(r'with\s+"?(Success|Failure)"?\s+selected\s*\.', fix_text, re.IGNORECASE)
     if not outcome_match:
         return None
     raw_outcome = outcome_match.group(1).lower()
@@ -212,7 +216,7 @@ def _windows_audit_policy_candidate(rule: dict) -> dict | None:
     quoted = re.search(r'"([A-Za-z][A-Za-z /-]+?)"\s+audit policy setting', content, re.IGNORECASE)
     if quoted:
         candidates.append(quoted.group(1))
-    gpo_path = re.search(r'Advanced Audit Policy Configuration\s*>>\s*System Audit Policies\s*>>\s*[^\n\r]+?\s*>>\s*([^\n\r.]+)', content, re.IGNORECASE)
+    gpo_path = re.search(r'Advanced Audit Policy Configuration\s*>>\s*System Audit Polic(?:y|ies)\s*>>\s*[^\n\r]+?\s*>>\s*"?([^"\n\r.]+?)"?\s*(?:with\s+"?(?:Success|Failure)"?\s+selected|\.)', policy_text, re.IGNORECASE)
     if gpo_path:
         candidates.append(gpo_path.group(1))
     title_policy = re.search(r'\baudit\s+(.+?)\s+(?:successes|failures|success|failure)\.?$', title, re.IGNORECASE)

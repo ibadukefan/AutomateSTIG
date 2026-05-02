@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "setting": "Failure",
+      "subcategory": "Process Creation",
+      "type": "audit_policy"
+    },
+    "description": "Windows 11 must have command line process auditing events enabled for failures.",
+    "expected": {
+      "substring": "Failure",
+      "type": "contains"
+    },
+    "platform": "windows",
+    "vuln_id": "V-257770"
+  },
   "check_content_excerpt": "Ensure Audit Process Creation auditing has been enabled: \n\nComputer Configuration >> Windows Settings >> Security Settings >> Advanced Audit Policy Configuration >> System Audit Policy >> Detailed Tracking >> Audit Process Creation. \n\nIf \"Audit Process Creation\" is not set to \"Failure\", this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "Failure",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Go to Computer Configuration >> Windows Settings >>Security Settings>> Advanced Audit Policy Configuration >> System Audit Policies >> Detailed Tracking >> Set \"Audit Process Creation\" to \"Failure\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "audit_policy",
   "remediation": "planned",
   "rule_id": "SV-257770r958412_rule",
   "severity": "medium",

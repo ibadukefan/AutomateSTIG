@@ -2131,6 +2131,20 @@
     {
       "check": {
         "setting": "Failure",
+        "subcategory": "Process Creation",
+        "type": "audit_policy"
+      },
+      "description": "Windows 11 must have command line process auditing events enabled for failures.",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-257770"
+    },
+    {
+      "check": {
+        "setting": "Failure",
         "subcategory": "File System",
         "type": "audit_policy"
       },

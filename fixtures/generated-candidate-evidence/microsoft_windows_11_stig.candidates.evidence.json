@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 161,
+  "candidate_checks": 162,
   "cases": [
     {
       "check": {
@@ -4108,6 +4108,33 @@
     {
       "check": {
         "setting": "Failure",
+        "subcategory": "Process Creation",
+        "type": "audit_policy"
+      },
+      "description": "Windows 11 must have command line process auditing events enabled for failures.",
+      "evidence_type": "windows_audit_policy_contains",
+      "expected": {
+        "substring": "Failure",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "audit_policy": {
+          "Process Creation": "No Auditing"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "audit_policy": {
+          "Process Creation": "Failure"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257770"
+    },
+    {
+      "check": {
+        "setting": "Failure",
         "subcategory": "File System",
         "type": "audit_policy"
       },
@@ -4354,5 +4381,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 161
+  "validated_candidates": 162
 }

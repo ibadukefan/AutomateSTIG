@@ -1771,6 +1771,30 @@ If "Audit Registry" is not set to "Success", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'audit_policy', 'subcategory': 'Registry', 'setting': 'Success'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Success'})
 
+    def test_infers_windows_advanced_audit_policy_candidate_from_fix_text_only_scap(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-278946',
+            'title': 'Windows Server 2022 must be configured to audit registry failures.',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Advanced Audit Policy Configuration >> System Audit Policies >> Object Access >> "Audit Registry" with "Failure" selected.'
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'audit_policy', 'subcategory': 'Registry', 'setting': 'Failure'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Failure'})
+
+    def test_infers_windows_advanced_audit_policy_candidate_from_singular_system_audit_policy_path(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257770',
+            'title': 'Windows 11 must have command line process auditing events enabled for failures.',
+            'check_content': '''Ensure Audit Process Creation auditing has been enabled:
+
+Computer Configuration >> Windows Settings >> Security Settings >> Advanced Audit Policy Configuration >> System Audit Policy >> Detailed Tracking >> Audit Process Creation.
+
+If "Audit Process Creation" is not set to "Failure", this is a finding.'''
+        }, 'Microsoft_Windows_11_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'audit_policy', 'subcategory': 'Process Creation', 'setting': 'Failure'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Failure'})
+
     def test_infers_windows_user_right_security_policy_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254506',
