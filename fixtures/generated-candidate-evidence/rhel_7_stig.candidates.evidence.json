@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 132,
+  "candidate_checks": 133,
   "cases": [
     {
       "check": {
@@ -376,6 +376,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204450"
+    },
+    {
+      "check": {
+        "expected_status": "stopped",
+        "name": "autofs",
+        "type": "service"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must disable the file system automounter unless required.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "stopped"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "autofs": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "autofs": "stopped"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204451"
     },
     {
       "check": {
@@ -3538,5 +3565,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 132
+  "validated_candidates": 133
 }

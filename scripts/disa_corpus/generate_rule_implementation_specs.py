@@ -642,9 +642,11 @@ def _service_candidate(rule: dict) -> dict | None:
         else:
             return None
     elif command == 'status':
+        if re.search(r'if\s+["“][^"”]+["”]\s+is\s+active\s+and\s+is\s+not\s+configured\s+to\b', lower):
+            return None
         if masked_status:
             expected_status = 'disabled'
-        elif re.search(r'if\s+(?:the\s+)?(?:"[^"]+"\s+)?(?:service\s+)?(?:status\s+)?(?:is\s+)?(?:set\s+to\s+)?(?:"?)?(?:active|running)(?:"?)?,?\s+this\s+is\s+a\s+finding', lower):
+        elif re.search(r'if\s+(?:the\s+)?(?:"[^"]+"\s+)?(?:service\s+)?(?:status\s+)?(?:is\s+)?(?:set\s+to\s+)?(?:"?)?(?:active|running)(?:"?)?(?:\s+and\s+is\s+not\s+documented\s+with\s+[^.\n]+?\s+as\s+an\s+operational\s+requirement)?,?\s+this\s+is\s+a\s+finding', lower):
             expected_status = 'stopped'
         elif re.search(r'(?:does\s+not\s+show\s+a\s+status\s+of|is\s+not)\s+["“]?(?:active|enabled)["”]?\s+and\s+["“]?running["”]?', lower) or re.search(r'is\s+not\s+enabled\s+and\s+(?:active|running)', lower):
             expected_status = 'running'

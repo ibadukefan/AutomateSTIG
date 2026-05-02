@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 302,
+  "candidate_checks": 303,
   "cases": [
     {
       "check": {
@@ -6218,6 +6218,33 @@
     },
     {
       "check": {
+        "expected_status": "stopped",
+        "name": "autofs",
+        "type": "service"
+      },
+      "description": "The OL 8 file system automounter must be disabled unless required.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "stopped"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "autofs": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "autofs": "stopped"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248836"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/modprobe.d/",
         "pattern": "usb-storage",
@@ -8206,5 +8233,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 302
+  "validated_candidates": 303
 }

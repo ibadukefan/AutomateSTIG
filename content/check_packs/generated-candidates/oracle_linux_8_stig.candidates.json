@@ -3146,6 +3146,20 @@
     },
     {
       "check": {
+        "expected_status": "stopped",
+        "name": "autofs",
+        "type": "service"
+      },
+      "description": "The OL 8 file system automounter must be disabled unless required.",
+      "expected": {
+        "type": "equals",
+        "value": "stopped"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248836"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/modprobe.d/",
         "pattern": "usb-storage",

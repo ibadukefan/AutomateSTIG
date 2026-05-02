@@ -1144,6 +1144,38 @@ If the "autofs" status is set to "active", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'autofs', 'expected_status': 'stopped'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'stopped'})
 
+    def test_infers_linux_service_stopped_candidate_when_active_requires_documented_exception(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248836',
+            'title': 'The OL 8 file system automounter must be disabled unless required.',
+            'check_content': '''Determine if the automounter service is active with the following command:
+
+$ sudo systemctl status autofs
+
+autofs.service - Automounts filesystems on demand
+Loaded: loaded (/usr/lib/systemd/system/autofs.service; disabled)
+Active: inactive (dead)
+
+If the "autofs" status is set to "active" and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.'''
+        }, 'Oracle_Linux_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'autofs', 'expected_status': 'stopped'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'stopped'})
+
+    def test_skips_linux_service_stopped_candidate_when_active_requires_configuration(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204628',
+            'title': 'The Red Hat Enterprise Linux operating system access control program must be configured to grant or deny system access to specific hosts and services.',
+            'check_content': '''Check to see if "firewalld" is active with the following command:
+
+# systemctl status firewalld
+firewalld.service - firewalld - dynamic firewall daemon
+Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled)
+Active: active (running)
+
+If "firewalld" is active and is not configured to grant access to specific hosts, this is a finding.'''
+        }, 'RHEL_7_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_linux_masked_systemctl_status_candidate_as_disabled(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230532',
