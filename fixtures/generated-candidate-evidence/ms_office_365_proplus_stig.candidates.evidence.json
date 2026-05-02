@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 73,
+  "candidate_checks": 91,
   "cases": [
     {
       "check": {
@@ -975,6 +975,303 @@
     },
     {
       "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\rpc",
+        "type": "registry",
+        "value_name": "enablerpcencryption"
+      },
+      "description": "Outlook must use remote procedure call (RPC) encryption to communicate with Microsoft Exchange servers.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\rpc\\enablerpcencryption": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\rpc\\enablerpcencryption": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223347"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "publicfolderscript"
+      },
+      "description": "Scripts associated with public folders must be prevented from execution in Outlook.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\publicfolderscript": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\publicfolderscript": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223348"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "sharedfolderscript"
+      },
+      "description": "Scripts associated with shared folders must be prevented from execution in Outlook.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\sharedfolderscript": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\sharedfolderscript": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223349"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\options\\general",
+        "type": "registry",
+        "value_name": "msgformat"
+      },
+      "description": "Files dragged from an Outlook e-mail to the file system must be created in ANSI format.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\options\\general\\msgformat": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\options\\general\\msgformat": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223350"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "allowactivexoneoffforms"
+      },
+      "description": "Active X One-Off forms must only be enabled to load with Outlook Controls.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\allowactivexoneoffforms": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\allowactivexoneoffforms": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223352"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook",
+        "type": "registry",
+        "value_name": "disallowattachmentcustomization"
+      },
+      "description": "Outlook must be configured to prevent users overriding attachment security settings.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\disallowattachmentcustomization": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\disallowattachmentcustomization": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223353"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\options\\mail",
+        "type": "registry",
+        "value_name": "Internet"
+      },
+      "description": "Internet must not be included in Safe Zone for picture download in Outlook.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\options\\mail\\Internet": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\options\\mail\\Internet": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223354"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "publishtogaldisabled"
+      },
+      "description": "The Publish to Global Address List (GAL) button must be disabled in Outlook.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\publishtogaldisabled": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\publishtogaldisabled": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223355"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "warnaboutinvalid"
+      },
+      "description": "The warning about invalid digital signatures must be enabled to warn Outlook users.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\warnaboutinvalid": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\warnaboutinvalid": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223357"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "usecrlchasing"
+      },
+      "description": "Outlook must be configured to allow retrieving of Certificate Revocation Lists (CRLs) always when online.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\usecrlchasing": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\usecrlchasing": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223358"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "adminsecuritymode"
+      },
+      "description": "The Outlook Security Mode must be enabled to always use the Outlook Security Group Policy.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 3
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\adminsecuritymode": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\adminsecuritymode": 3
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223359"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
         "type": "registry",
         "value_name": "allowuserstolowerattachments"
@@ -1056,6 +1353,168 @@
     },
     {
       "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "promptoomaddressbookaccess"
+      },
+      "description": "When an untrusted program attempts to programmatically access an Address Book using the Outlook object model, Outlook must automatically deny it.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\promptoomaddressbookaccess": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\promptoomaddressbookaccess": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223366"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "PromptOOMFormulaAccess"
+      },
+      "description": "When a user designs a custom form in Outlook and attempts to bind an Address Information field to a combination or formula custom field, Outlook must automatically deny it.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\outlook\\security\\PromptOOMFormulaAccess": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\outlook\\security\\PromptOOMFormulaAccess": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223367"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "promptoomsaveas"
+      },
+      "description": "When an untrusted program attempts to use the Save As command to programmatically save an item, Outlook must automatically deny it.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\promptoomsaveas": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\promptoomsaveas": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223368"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "promptoomaddressinformationaccess"
+      },
+      "description": "When an untrusted program attempts to gain access to a recipient field, such as the, To: field, using the Outlook object model, Outlook must automatically deny it.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\promptoomaddressinformationaccess": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\promptoomaddressinformationaccess": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223369"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "promptoommeetingtaskrequestresponse"
+      },
+      "description": "When an untrusted program attempts to programmatically send e-mail in Outlook using the Response method of a task or meeting request, Outlook must automatically deny it.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\promptoommeetingtaskrequestresponse": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\promptoommeetingtaskrequestresponse": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223370"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "promptoomsend"
+      },
+      "description": "When an untrusted program attempts to send e-mail programmatically using the Outlook object model, Outlook must automatically deny it.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\promptoomsend": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\promptoomsend": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223371"
+    },
+    {
+      "check": {
         "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\outlook\\options\\mail",
         "type": "registry",
         "value_name": "JunkMailEnableLinks"
@@ -1080,6 +1539,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223372"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "level"
+      },
+      "description": "The Security Level for macros in Outlook must be configured to Warn for signed and disable unsigned.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 3
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\level": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\\level": 3
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223373"
     },
     {
       "check": {
@@ -1978,5 +2464,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Office_365_ProPlus_STIG",
-  "validated_candidates": 73
+  "validated_candidates": 91
 }

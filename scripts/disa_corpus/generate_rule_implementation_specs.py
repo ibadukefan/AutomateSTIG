@@ -115,7 +115,7 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
         expected_value = _parse_expected_registry_data(content)
     else:
         path_match = re.search(
-            r'Windows\s+Registry\s+Editor\s+to\s+navigate\s+to\s+the\s+following\s+key:\s*\n\s*((?:HKLM|HKCU|HKCR|HKU|HKCC|HKEY_[A-Z_]+)\\[^\n\r]+)',
+            r'Windows\s+Registry(?:\s+Editor)?\s+to\s+navigate\s+to\s+the\s+following\s+key:\s*\n\s*((?:HKLM|HKCU|HKCR|HKU|HKCC|HKEY_[A-Z_]+)\\[^\n\r]+)',
             content,
             re.IGNORECASE,
         )

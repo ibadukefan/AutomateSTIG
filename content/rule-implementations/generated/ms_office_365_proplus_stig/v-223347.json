@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\rpc",
+      "type": "registry",
+      "value_name": "enablerpcencryption"
+    },
+    "description": "Outlook must use remote procedure call (RPC) encryption to communicate with Microsoft Exchange servers.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-223347"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Account Settings >> Exchange >> Enable RPC encryption is set to \"Enabled\".\n\nUse the Windows Registry to navigate to the following key:\n\nHKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\rpc\n\nIf the value for enablerpcencryption is set to REG_DWORD = 1, this is not a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Account Settings >> Exchange >> Enable RPC encryption to \"Enabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223347r961878_rule",
   "severity": "medium",

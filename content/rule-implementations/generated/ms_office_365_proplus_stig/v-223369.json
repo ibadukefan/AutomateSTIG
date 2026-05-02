@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+      "type": "registry",
+      "value_name": "promptoomaddressinformationaccess"
+    },
+    "description": "When an untrusted program attempts to gain access to a recipient field, such as the, To: field, using the Outlook object model, Outlook must automatically deny it.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-223369"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Security >> Security Form Settings >> Programmatic Security >> Configure Outlook object model prompt when reading address information is set to \"Enabled (Automatically Deny)\".\n\nUse the Windows Registry to navigate to the following key:\n\nHKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\n\nIf the value for promptoomaddressinformationaccess is set to REG_DWORD = 0, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Security >> Security Form Settings >> Programmatic Security >> Configure Outlook object model prompt when reading address information to \"Enabled (Automatically Deny)\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223369r961779_rule",
   "severity": "medium",

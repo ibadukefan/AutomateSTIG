@@ -190,6 +190,24 @@ If the value DifandSylkFiles is REG_DWORD = 2, this is not a finding.'''
         self.assertEqual(candidate['check']['value_name'], 'DifandSylkFiles')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 2})
 
+    def test_infers_office_registry_candidate_from_windows_registry_without_editor(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223354',
+            'title': 'Internet must not be included in Safe Zone for picture download in Outlook.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Security >> Automatic Picture Download Settings >> Include Internet in Safe Zones for Automatic Picture Download is set to "Disabled".
+
+Use the Windows Registry to navigate to the following key:
+
+HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\options\\mail
+
+If the value for Internet is set to REG_DWORD = 0, this is not a finding.'''
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'registry')
+        self.assertEqual(candidate['check']['path'], 'HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\options\\mail')
+        self.assertEqual(candidate['check']['value_name'], 'Internet')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
+
     def test_infers_required_user_right_candidate_from_sid_parenthetical_plural(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254422',

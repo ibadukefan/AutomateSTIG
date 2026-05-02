@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+      "type": "registry",
+      "value_name": "level"
+    },
+    "description": "The Security Level for macros in Outlook must be configured to Warn for signed and disable unsigned.",
+    "expected": {
+      "type": "equals",
+      "value": 3
+    },
+    "platform": "windows",
+    "vuln_id": "V-223373"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Security >> Trust Center >> Security setting for macros must be set to \"Enabled: Warn for signed, disable unsigned\".\n\nUse the Windows Registry to navigate to the following key:\n\nHKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security\n\nIf the value for level is set to REG_DWORD = 3, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 3
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Security >> Trust Center >> Security setting for macros must to \"Enabled: Warn for signed, disable unsigned\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223373r961086_rule",
   "severity": "medium",
