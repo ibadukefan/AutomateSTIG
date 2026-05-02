@@ -1,6 +1,438 @@
 {
-  "candidate_checks": 3,
+  "candidate_checks": 23,
   "cases": [
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security",
+        "type": "registry",
+        "value_name": "macroruntimescanscope"
+      },
+      "description": "The Macro Runtime Scan Scope must be enabled for all documents.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security\\macroruntimescanscope": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security\\macroruntimescanscope": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223284"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\portal",
+        "type": "registry",
+        "value_name": "linkpublishingdisabled"
+      },
+      "description": "The Office client must be prevented from polling the SharePoint Server for published links.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\portal\\linkpublishingdisabled": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\portal\\linkpublishingdisabled": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223286"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\common\\smart tag",
+        "type": "registry",
+        "value_name": "neverloadmanifests"
+      },
+      "description": "Office applications must not load XML expansion packs with Smart Documents.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\common\\smart tag\\neverloadmanifests": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\common\\smart tag\\neverloadmanifests": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223294"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Office\\Common\\COM Compatibility",
+        "type": "registry",
+        "value_name": "COMMENT"
+      },
+      "description": "Flash player activation must be disabled in all Office programs.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Block all Flash activation"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Office\\Common\\COM Compatibility\\COMMENT": "unexpected-Block all Flash activation"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Microsoft\\Office\\Common\\COM Compatibility\\COMMENT": "Block all Flash activation"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223309"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\fileblock",
+        "type": "registry",
+        "value_name": "xl95workbooks"
+      },
+      "description": "Open/save of Excel 95 workbooks must be blocked.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\fileblock\\xl95workbooks": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\fileblock\\xl95workbooks": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223323"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\fileblock",
+        "type": "registry",
+        "value_name": "htmlandxmlssfiles"
+      },
+      "description": "Open/save of Web pages and Excel 2003 XML spreadsheets must be blocked.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\fileblock\\htmlandxmlssfiles": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\fileblock\\htmlandxmlssfiles": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223326"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options",
+        "type": "registry",
+        "value_name": "extractdatadisableui"
+      },
+      "description": "Extraction options must be blocked when opening corrupt Excel workbooks.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options\\extractdatadisableui": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options\\extractdatadisableui": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223327"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options\\binaryoptions",
+        "type": "registry",
+        "value_name": "fupdateext_78_1"
+      },
+      "description": "Updating of links in Excel must be prompted and not automatic.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options\\binaryoptions\\fupdateext_78_1": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options\\binaryoptions\\fupdateext_78_1": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223328"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\internet",
+        "type": "registry",
+        "value_name": "donotloadpictures"
+      },
+      "description": "Loading of pictures from Web pages not created in Excel must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\internet\\donotloadpictures": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\internet\\donotloadpictures": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223329"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options",
+        "type": "registry",
+        "value_name": "disableautorepublish"
+      },
+      "description": "AutoRepublish in Excel must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options\\disableautorepublish": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options\\disableautorepublish": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223330"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\filevalidation",
+        "type": "registry",
+        "value_name": "enableonload"
+      },
+      "description": "File validation in Excel must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\filevalidation\\enableonload": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\filevalidation\\enableonload": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223334"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security",
+        "type": "registry",
+        "value_name": "notbpromptunsignedaddin"
+      },
+      "description": "Trust Bar notification must be enabled for unsigned application add-ins in Excel and blocked.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\notbpromptunsignedaddin": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\notbpromptunsignedaddin": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223337"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\external content",
+        "type": "registry",
+        "value_name": "enableblockunsecurequeryfiles"
+      },
+      "description": "Untrusted Microsoft Query files must be blocked from opening in Excel.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\external content\\enableblockunsecurequeryfiles": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\external content\\enableblockunsecurequeryfiles": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223338"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview",
+        "type": "registry",
+        "value_name": "enabledatabasefileprotectedview"
+      },
+      "description": "Untrusted database files must be opened in Excel in Protected View mode.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview\\enabledatabasefileprotectedview": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview\\enabledatabasefileprotectedview": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223339"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\powerpoint\\security\\fileblock",
+        "type": "registry",
+        "value_name": "binaryfiles"
+      },
+      "description": "Open/Save of PowerPoint 97-2003 presentations, shows, templates, and add-in files must be blocked.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\powerpoint\\security\\fileblock\\binaryfiles": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\powerpoint\\security\\fileblock\\binaryfiles": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223379"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\visio\\security\\trusted locations",
+        "type": "registry",
+        "value_name": "allownetworklocations"
+      },
+      "description": "Trusted Locations on the network must be disabled in Visio.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\visio\\security\\trusted locations\\allownetworklocations": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\visio\\security\\trusted locations\\allownetworklocations": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223394"
+    },
     {
       "check": {
         "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\visio\\security\\fileblock",
@@ -81,6 +513,114 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223398"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security",
+        "type": "registry",
+        "value_name": "notbpromptunsignedaddin"
+      },
+      "description": "Word must automatically disable unsigned add-ins without informing users.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\notbpromptunsignedaddin": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\notbpromptunsignedaddin": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223400"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\protectedview",
+        "type": "registry",
+        "value_name": "disableattachmentsinpv"
+      },
+      "description": "Word attachments opened from Outlook must be in Protected View.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\protectedview\\disableattachmentsinpv": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\protectedview\\disableattachmentsinpv": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223405"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\trusted locations",
+        "type": "registry",
+        "value_name": "allownetworklocations"
+      },
+      "description": "Trusted Locations on the network must be disabled in Word.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\trusted locations\\allownetworklocations": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\trusted locations\\allownetworklocations": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223416"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\filevalidation",
+        "type": "registry",
+        "value_name": "enableonload"
+      },
+      "description": "File validation in Word must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\filevalidation\\enableonload": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\filevalidation\\enableonload": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223418"
     }
   ],
   "production_claim": false,
@@ -88,5 +628,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Office_365_ProPlus_STIG",
-  "validated_candidates": 3
+  "validated_candidates": 23
 }

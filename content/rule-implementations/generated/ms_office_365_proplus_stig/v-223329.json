@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\internet",
+      "type": "registry",
+      "value_name": "donotloadpictures"
+    },
+    "description": "Loading of pictures from Web pages not created in Excel must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-223329"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Excel 2016 >> Excel Options >> Advanced >> Web Options... >> General.\n\nLoad pictures from Web pages not created in Excel is set to \"Disabled\".\n\nUse the Windows Registry Editor to navigate to the following key: \n\nHKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\internet\n\nIf the value for donotloadpictures is REG_DWORD = 1, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set policy value for User Configuration >> Administrative Templates >> Microsoft Excel 2016 >> Excel Options >> Advanced >> Web Options... >> General >> Load pictures from Web pages not created in Excel to \"Disabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223329r961779_rule",
   "severity": "medium",

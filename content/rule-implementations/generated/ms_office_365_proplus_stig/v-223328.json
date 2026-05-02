@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options\\binaryoptions",
+      "type": "registry",
+      "value_name": "fupdateext_78_1"
+    },
+    "description": "Updating of links in Excel must be prompted and not automatic.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-223328"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Excel 2016 >> Excel Options >> Advanced >> Ask to update automatic links is set to \"Enabled\".\n\nUse the Windows Registry Editor to navigate to the following key: \n\nHKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options\\binaryoptions\n\nIf the value for fupdateext_78_1 is REG_DWORD = 0, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Excel 2016 >> Excel Options >> Advanced >> Ask to update automatic links to \"Enabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223328r961092_rule",
   "severity": "medium",

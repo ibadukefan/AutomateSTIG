@@ -2,6 +2,230 @@
   "checks": [
     {
       "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security",
+        "type": "registry",
+        "value_name": "macroruntimescanscope"
+      },
+      "description": "The Macro Runtime Scan Scope must be enabled for all documents.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223284"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\portal",
+        "type": "registry",
+        "value_name": "linkpublishingdisabled"
+      },
+      "description": "The Office client must be prevented from polling the SharePoint Server for published links.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223286"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\common\\smart tag",
+        "type": "registry",
+        "value_name": "neverloadmanifests"
+      },
+      "description": "Office applications must not load XML expansion packs with Smart Documents.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223294"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Microsoft\\Office\\Common\\COM Compatibility",
+        "type": "registry",
+        "value_name": "COMMENT"
+      },
+      "description": "Flash player activation must be disabled in all Office programs.",
+      "expected": {
+        "type": "equals",
+        "value": "Block all Flash activation"
+      },
+      "platform": "windows",
+      "vuln_id": "V-223309"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\fileblock",
+        "type": "registry",
+        "value_name": "xl95workbooks"
+      },
+      "description": "Open/save of Excel 95 workbooks must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223323"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\fileblock",
+        "type": "registry",
+        "value_name": "htmlandxmlssfiles"
+      },
+      "description": "Open/save of Web pages and Excel 2003 XML spreadsheets must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223326"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options",
+        "type": "registry",
+        "value_name": "extractdatadisableui"
+      },
+      "description": "Extraction options must be blocked when opening corrupt Excel workbooks.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223327"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options\\binaryoptions",
+        "type": "registry",
+        "value_name": "fupdateext_78_1"
+      },
+      "description": "Updating of links in Excel must be prompted and not automatic.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223328"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\internet",
+        "type": "registry",
+        "value_name": "donotloadpictures"
+      },
+      "description": "Loading of pictures from Web pages not created in Excel must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223329"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options",
+        "type": "registry",
+        "value_name": "disableautorepublish"
+      },
+      "description": "AutoRepublish in Excel must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223330"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\filevalidation",
+        "type": "registry",
+        "value_name": "enableonload"
+      },
+      "description": "File validation in Excel must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223334"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security",
+        "type": "registry",
+        "value_name": "notbpromptunsignedaddin"
+      },
+      "description": "Trust Bar notification must be enabled for unsigned application add-ins in Excel and blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223337"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\external content",
+        "type": "registry",
+        "value_name": "enableblockunsecurequeryfiles"
+      },
+      "description": "Untrusted Microsoft Query files must be blocked from opening in Excel.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223338"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview",
+        "type": "registry",
+        "value_name": "enabledatabasefileprotectedview"
+      },
+      "description": "Untrusted database files must be opened in Excel in Protected View mode.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223339"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\powerpoint\\security\\fileblock",
+        "type": "registry",
+        "value_name": "binaryfiles"
+      },
+      "description": "Open/Save of PowerPoint 97-2003 presentations, shows, templates, and add-in files must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223379"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\visio\\security\\trusted locations",
+        "type": "registry",
+        "value_name": "allownetworklocations"
+      },
+      "description": "Trusted Locations on the network must be disabled in Visio.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223394"
+    },
+    {
+      "check": {
         "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\visio\\security\\fileblock",
         "type": "registry",
         "value_name": "visio2000files"
@@ -41,6 +265,62 @@
       },
       "platform": "windows",
       "vuln_id": "V-223398"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security",
+        "type": "registry",
+        "value_name": "notbpromptunsignedaddin"
+      },
+      "description": "Word must automatically disable unsigned add-ins without informing users.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223400"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\protectedview",
+        "type": "registry",
+        "value_name": "disableattachmentsinpv"
+      },
+      "description": "Word attachments opened from Outlook must be in Protected View.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223405"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\trusted locations",
+        "type": "registry",
+        "value_name": "allownetworklocations"
+      },
+      "description": "Trusted Locations on the network must be disabled in Word.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223416"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\filevalidation",
+        "type": "registry",
+        "value_name": "enableonload"
+      },
+      "description": "File validation in Word must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223418"
     }
   ],
   "platform": "windows",

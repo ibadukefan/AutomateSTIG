@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Microsoft\\Office\\Common\\COM Compatibility",
+      "type": "registry",
+      "value_name": "COMMENT"
+    },
+    "description": "Flash player activation must be disabled in all Office programs.",
+    "expected": {
+      "type": "equals",
+      "value": "Block all Flash activation"
+    },
+    "platform": "windows",
+    "vuln_id": "V-223309"
+  },
   "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> MS Security Guide >> Block Flash activation in Office documents >> Enabled >> Block all activation is set to \"Enabled\" Block all activation.\n\nUse the Windows Registry Editor to navigate to the following key:\n\nHKLM\\SOFTWARE\\Microsoft\\Office\\Common\\COM Compatibility\n\nIf the value for COMMENT is REG_SZ = Block all Flash activation, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Block all Flash activation"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> MS Security Guide >> Block Flash activation in Office documents >> Enabled >> Block all activation to \"Enabled\" (Block all activation).",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223309r961779_rule",
   "severity": "medium",

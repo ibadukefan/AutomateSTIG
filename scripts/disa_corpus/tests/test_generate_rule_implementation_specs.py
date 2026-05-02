@@ -154,6 +154,24 @@ If the value "visio2003files" is REG_DWORD = 2, this is not a finding.'''
         self.assertEqual(candidate['check']['value_name'], 'visio2003files')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 2})
 
+    def test_infers_office_registry_candidate_from_value_for_not_finding_statement(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223339',
+            'title': 'Excel must open database files in Protected View.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Excel 2016 >> Excel Options >> Security >> Trust Center >> Protected View >> Open database files in Protected View is set to "Enabled".
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview
+
+If the value for enabledatabasefileprotectedview is REG_DWORD = 1, this is not a finding.'''
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'registry')
+        self.assertEqual(candidate['check']['path'], 'HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview')
+        self.assertEqual(candidate['check']['value_name'], 'enabledatabasefileprotectedview')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 1})
+
     def test_infers_windows_feature_candidate_check_from_powershell_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254269',

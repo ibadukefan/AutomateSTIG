@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\portal",
+      "type": "registry",
+      "value_name": "linkpublishingdisabled"
+    },
+    "description": "The Office client must be prevented from polling the SharePoint Server for published links.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-223286"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Server Settings >> Disable the Office client from polling the SharePoint Server for published links is set to \"Enabled\".\n\nUse the Windows Registry Editor to navigate to the following key: \n\nHKCU\\software\\policies\\microsoft\\office\\16.0\\common\\portal\n\nIf the value for linkpublishingdisabled is REG_DWORD = \"1\", this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Server Settings >> Disable the Office client from polling the SharePoint Server for published links to \"Enabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223286r960963_rule",
   "severity": "medium",

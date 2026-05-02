@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\software\\policies\\microsoft\\office\\common\\smart tag",
+      "type": "registry",
+      "value_name": "neverloadmanifests"
+    },
+    "description": "Office applications must not load XML expansion packs with Smart Documents.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-223294"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Smart Documents (Word, Excel) >> Disable Smart Document's use of manifests is set to \"Enabled\".\n\nUse the Windows Registry Editor to navigate to the following key:\n\nHKCU\\software\\policies\\microsoft\\office\\common\\smart tag\n\nIf the value for neverloadmanifests is REG_DWORD = 1, this is not a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Smart Documents (Word, Excel) >> Disable Smart Document's use of manifests to \"Enabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223294r961863_rule",
   "severity": "medium",
