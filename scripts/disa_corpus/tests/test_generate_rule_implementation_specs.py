@@ -1167,6 +1167,20 @@ If the "/var/log/syslog" file is not group-owned by adm, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/var/log/syslog', 'owner': None, 'group': 'adm', 'mode': None})
         self.assertEqual(candidate['expected'], {'type': 'is_true'})
 
+    def test_infers_linux_file_permission_candidate_from_find_exec_stat_output(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270759',
+            'title': 'Ubuntu 24.04 LTS must be configured so that the "journalctl" command is owned by "root".',
+            'check_content': '''Verify the journalctl command is owned by "root" with the following command:
+
+$ sudo find /usr/bin/journalctl -exec stat -c "%n %U" {} \\;
+/usr/bin/journalctl root
+
+If journalctl is not owned by "root", this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/usr/bin/journalctl', 'owner': 'root', 'group': None, 'mode': None})
+        self.assertEqual(candidate['expected'], {'type': 'is_true'})
+
     def test_infers_linux_file_permission_owner_candidate_from_single_field_stat_output(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-248555',

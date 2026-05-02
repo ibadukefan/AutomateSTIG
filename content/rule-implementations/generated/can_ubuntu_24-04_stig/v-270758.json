@@ -1,9 +1,24 @@
 {
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": "740",
+      "owner": null,
+      "path": "/usr/bin/journalctl",
+      "type": "file_permission"
+    },
+    "description": "Ubuntu 24.04 LTS must be configured so that the \"journalctl\" command is not accessible by unauthorized users.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270758"
+  },
   "check_content_excerpt": "Verify the journalctl command has a permission set of \"740\" with the following command:\n\n$ sudo find /usr/bin/journalctl -exec stat -c \"%n %a\" {} \\;\n/usr/bin/journalctl 740\n\nIf journalctl is not set to \"740\", this is a finding",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +26,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure journalctl to have a permission set of \"740\":\n\n$ sudo chmod 740 /usr/bin/journalctl",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_permission",
   "remediation": "planned",
   "rule_id": "SV-270758r1066763_rule",
   "severity": "medium",

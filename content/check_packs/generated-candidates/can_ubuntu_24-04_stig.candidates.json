@@ -1256,6 +1256,51 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": "740",
+        "owner": null,
+        "path": "/usr/bin/journalctl",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured so that the \"journalctl\" command is not accessible by unauthorized users.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270758"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/usr/bin/journalctl",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured so that the \"journalctl\" command is owned by \"root\".",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270759"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/usr/bin/journalctl",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured so that the \"journalctl\" command is group-owned by \"root\".",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270760"
+    },
+    {
+      "check": {
         "group": "syslog",
         "mode": null,
         "owner": null,

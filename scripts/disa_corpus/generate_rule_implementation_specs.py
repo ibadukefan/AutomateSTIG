@@ -1051,12 +1051,16 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
 
 def _file_permission_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
+    find_exec_stat_match = re.search(
+        r'\bfind\s+(?P<path>/[A-Za-z0-9_./:+-]+)\s+-exec\s+stat\s+-c\s+["\'](?P<format>[^"\']+)["\']\s+\{\}\s+\\;',
+        content,
+    )
     path_match = re.search(r'\bstat\s+(?:-[A-Za-z]+\s+)*(?:["\'][^"\']+["\']\s+)?(/[A-Za-z0-9_./:+-]+)', content)
     if not path_match:
         path_match = re.search(r'\b(?:permissions|mode)[^\n.]+\s+(/[A-Za-z0-9_./:+-]+)', content, re.IGNORECASE)
-    if not path_match:
+    if not path_match and not find_exec_stat_match:
         return None
-    path = path_match.group(1)
+    path = path_match.group(1) if path_match else find_exec_stat_match.group('path')
     owner = None
     group = None
     mode = None
@@ -1067,8 +1071,8 @@ def _file_permission_candidate(rule: dict) -> dict | None:
         mode = mode_match.group(1)
 
     stat_match = re.search(r'\bstat\s+-c\s+["\'](?P<format>[^"\']+)["\']\s+' + re.escape(path), content)
-    if stat_match:
-        fields = re.findall(r'%[aAUGn]', stat_match.group('format'))
+    if stat_match or find_exec_stat_match:
+        fields = re.findall(r'%[aAUGn]', (stat_match or find_exec_stat_match).group('format'))
         for sample_line in content.splitlines():
             values = sample_line.strip().split()
             if len(values) != len(fields) or path not in values:
@@ -1081,7 +1085,7 @@ def _file_permission_candidate(rule: dict) -> dict | None:
                 elif field == '%G':
                     group = value
             break
-        if fields in (['%U'], ['%G'], ['%a'], ['%A']):
+        if stat_match and fields in (['%U'], ['%G'], ['%a'], ['%A']):
             sample_line = None
             for raw_line in content[stat_match.end():].splitlines():
                 stripped = raw_line.strip()

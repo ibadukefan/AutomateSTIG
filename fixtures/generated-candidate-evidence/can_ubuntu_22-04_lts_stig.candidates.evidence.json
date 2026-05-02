@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 109,
+  "candidate_checks": 111,
   "cases": [
     {
       "check": {
@@ -353,6 +353,82 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-260500"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/usr/bin/journalctl",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 22.04 LTS must be configured so that the \"journalctl\" command is owned by \"root\".",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/usr/bin/journalctl": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/usr/bin/journalctl": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260505"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/usr/bin/journalctl",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 22.04 LTS must be configured so that the \"journalctl\" command is group-owned by \"root\".",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/usr/bin/journalctl": {
+            "exists": true,
+            "group": "unexpected-root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/usr/bin/journalctl": {
+            "exists": true,
+            "group": "root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260506"
     },
     {
       "check": {
@@ -2954,5 +3030,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
-  "validated_candidates": 109
+  "validated_candidates": 111
 }

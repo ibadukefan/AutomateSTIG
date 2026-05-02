@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 154,
+  "candidate_checks": 157,
   "cases": [
     {
       "check": {
@@ -2466,6 +2466,120 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": "740",
+        "owner": null,
+        "path": "/usr/bin/journalctl",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured so that the \"journalctl\" command is not accessible by unauthorized users.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/usr/bin/journalctl": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-740",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/usr/bin/journalctl": {
+            "exists": true,
+            "group": null,
+            "mode": "740",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270758"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/usr/bin/journalctl",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured so that the \"journalctl\" command is owned by \"root\".",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/usr/bin/journalctl": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/usr/bin/journalctl": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270759"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/usr/bin/journalctl",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured so that the \"journalctl\" command is group-owned by \"root\".",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/usr/bin/journalctl": {
+            "exists": true,
+            "group": "unexpected-root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/usr/bin/journalctl": {
+            "exists": true,
+            "group": "root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270760"
+    },
+    {
+      "check": {
         "group": "syslog",
         "mode": null,
         "owner": null,
@@ -4207,5 +4321,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 154
+  "validated_candidates": 157
 }

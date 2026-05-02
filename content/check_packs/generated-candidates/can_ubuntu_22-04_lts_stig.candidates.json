@@ -179,6 +179,36 @@
         "group": null,
         "mode": null,
         "owner": "root",
+        "path": "/usr/bin/journalctl",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 22.04 LTS must be configured so that the \"journalctl\" command is owned by \"root\".",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260505"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/usr/bin/journalctl",
+        "type": "file_permission"
+      },
+      "description": "Ubuntu 22.04 LTS must be configured so that the \"journalctl\" command is group-owned by \"root\".",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260506"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
         "path": "/sbin/auditctl",
         "type": "file_permission"
       },
