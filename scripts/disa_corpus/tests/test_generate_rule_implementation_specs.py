@@ -991,6 +991,21 @@ If the command does not return a line, or the line is commented out, this is a f
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': '-w /etc/passwd -p wa -k identity'})
 
+    def test_infers_linux_auditctl_single_rule_after_chained_grep_command(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258215',
+            'title': 'Successful/unsuccessful uses of the umount system call in RHEL 9 must generate an audit record.',
+            'check_content': '''To determine if the system is configured to audit calls to the umount system call, run the following command:
+
+$ sudo auditctl -l | grep b32 | grep 'umount\\b'
+
+-a always,exit -S arch=b32 -S umount -F auid>=1000 -F auid!=-1 -F key=privileged-umount
+
+If the command does not return a line, or the line is commented out, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': '-a always,exit -S arch=b32 -S umount -F auid>=1000 -F auid!=-1 -F key=privileged-umount'})
+
     def test_infers_linux_auditctl_multiline_rules_when_no_line_is_returned_is_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258216',

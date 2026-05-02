@@ -605,7 +605,9 @@ def _auditctl_expected_rule_candidate(rule: dict) -> dict | None:
         elif expected_lines:
             break
     if len(expected_lines) < 2:
-        return None
+        chained_grep = re.search(r'\|\s*e?grep\b.*\|\s*e?grep\b', command_match.group(0), re.IGNORECASE)
+        if len(expected_lines) != 1 or not chained_grep:
+            return None
     return {
         'vuln_id': rule.get('vuln_id', ''),
         'platform': 'linux',
