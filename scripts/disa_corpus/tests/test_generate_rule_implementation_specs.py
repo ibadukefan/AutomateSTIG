@@ -1369,6 +1369,23 @@ The "-k" allows for specifying an arbitrary identifier. The string following "-k
             'substring': '-a always,exit -S all -F path=/usr/bin/chmod -F perm=x -F auid>=1000 -F auid!=-1',
         })
 
+    def test_infers_linux_auditctl_single_rule_candidate_when_an_audit_rule_is_required(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271568',
+            'title': 'OL 9 must audit all uses of umount system calls.',
+            'check_content': '''Verify that OL 9 is configured to audit the execution of the umount command with the following command:
+
+$ sudo auditctl -l | grep umount
+-a always,exit -F path=/usr/bin/umount -F perm=x -F auid>=1000 -F auid!=unset -k privileged-mount
+
+If the command does not return an audit rule for umount or any of the lines returned are commented out, this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
+        self.assertEqual(candidate['expected'], {
+            'type': 'contains',
+            'substring': '-a always,exit -F path=/usr/bin/umount -F perm=x -F auid>=1000 -F auid!=unset -k privileged-mount',
+        })
+
     def test_infers_linux_service_running_candidate_when_active_output_must_be_returned(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257936',

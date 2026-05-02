@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "OL 9 must be configured so that successful/unsuccessful uses of the umount2 system call generate an audit record.",
+    "expected": {
+      "substring": "-a always,exit -F arch=b32 -S umount2 -F auid>=1000 -F auid!=-1 -F key=privileged-umount\n-a always,exit -F arch=b64 -S umount2 -F auid>=1000 -F auid!=-1 -F key=privileged-umount",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271595"
+  },
   "check_content_excerpt": "Verify OL 9 generates an audit record for all uses of the umount2 system call with the following commands:\n\n$ sudo auditctl -l | grep umount2\n\n-a always,exit -F arch=b32 -S umount2 -F auid>=1000 -F auid!=-1 -F key=privileged-umount\n-a always,exit -F arch=b64 -S umount2 -F auid>=1000 -F auid!=-1 -F key=privileged-umount\n\nIf the command does not return an audit rule for \"umount2\" or any of the lines returned are commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-a always,exit -F arch=b32 -S umount2 -F auid>=1000 -F auid!=-1 -F key=privileged-umount\n-a always,exit -F arch=b64 -S umount2 -F auid>=1000 -F auid!=-1 -F key=privileged-umount",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit system to generate an audit event for any successful/unsuccessful use of the umount2 system call by adding the following rules to a rules file in /etc/audit/rules.d/ directory: (Example /etc/audit/rules.d/audit.rules)\n\n-a always,exit -F arch=b32 -S umount2 -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S umount2 -F auid>=1000 -F auid!=unset -k perm_mod\n\nThe audit daemon must be restarted for the changes to take effect.\n\nRestart auditd:\n$ sudo service auditd restart",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271595r1155316_rule",
   "severity": "medium",

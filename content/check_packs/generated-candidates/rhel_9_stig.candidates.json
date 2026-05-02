@@ -4184,6 +4184,32 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "RHEL 9 must audit all uses of the rename, unlink, rmdir, renameat, and unlinkat system calls.",
+      "expected": {
+        "substring": "-a always,exit -S arch=b32 -S unlink,rename,rmdir,unlinkat,renameat -F auid>=1000 -F auid!=-1 -F key=delete\n-a always,exit -S arch=b64 -S rename,rmdir,unlink,unlinkat,renameat -F auid>=1000 -F auid!=-1 -F key=delete",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258187"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must audit all uses of the truncate, ftruncate, creat, open, openat, and open_by_handle_at system calls.",
+      "expected": {
+        "substring": "-a always,exit -S arch=b32 -S open,creat,truncate,ftruncate,openat,open_by_handle_at -F exit=-EPERM -F auid>=1000 -S auid!=-1 -F key=perm_access\n-a always,exit -F arch=b64 -S open,truncate,ftruncate,creat,openat,open_by_handle_at -F exit=-EPERM -F auid>=1000 -S auid!=-1 -F key=perm_access\n-a always,exit -F arch=b32 -S open,creat,truncate,ftruncate,openat,open_by_handle_at -F exit=-EACCES -F auid>=1000 -S auid!=-1 -F key=perm_access\n-a always,exit -F arch=b64 -S open,truncate,ftruncate,creat,openat,open_by_handle_at -F exit=-EACCES -F auid>=1000 -S auid!=-1 -F key=perm_access",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258188"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "RHEL 9 must audit all uses of the delete_module system call.",
       "expected": {
         "substring": "-a always,exit -S arch=b32 -S delete_module -F auid>=1000 -F auid!=-1 -F key=module_chng\n-a always,exit -S arch=b64 -S delete_module -F auid>=1000 -F auid!=-1 -F key=module_chng",

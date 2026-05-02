@@ -1509,6 +1509,19 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "OL 9 must audit all uses of the truncate, ftruncate, creat, open, openat, and open_by_handle_at system calls.",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EPERM -F auid>=1000 -F auid!=unset -k perm_access\n-a always,exit -F arch=b64 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EPERM -F auid>=1000 -F auid!=unset -k perm_access\n-a always,exit -F arch=b32 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EACCES -F auid>=1000 -F auid!=unset -k perm_access\n-a always,exit -F arch=b64 -S truncate,ftruncate,creat,open,openat,open_by_handle_at -F exit=-EACCES -F auid>=1000 -F auid!=unset -k perm_access",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271554"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "OL 9 must audit all uses of the chmod, fchmod, and fchmodat system calls.",
       "expected": {
         "substring": "-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -k perm_mod\n-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -k perm_mod",
@@ -1614,6 +1627,19 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "OL 9 must audit all uses of the rename, unlink, rmdir, renameat, and unlinkat system calls.",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S rename,unlink,rmdir,renameat,unlinkat -F auid>=1000 -F auid!=unset -k delete\n-a always,exit -F arch=b64 -S rename,unlink,rmdir,renameat,unlinkat -F auid>=1000 -F auid!=unset -k delete",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271563"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "OL 9 must audit all uses of the delete_module system call.",
       "expected": {
         "substring": "-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=unset -k module_chng",
@@ -1661,6 +1687,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-271567"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must audit all uses of umount system calls.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/umount -F perm=x -F auid>=1000 -F auid!=unset -k privileged-mount",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271568"
     },
     {
       "check": {
@@ -2008,6 +2047,19 @@
       },
       "platform": "linux",
       "vuln_id": "V-271594"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured so that successful/unsuccessful uses of the umount2 system call generate an audit record.",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S umount2 -F auid>=1000 -F auid!=-1 -F key=privileged-umount\n-a always,exit -F arch=b64 -S umount2 -F auid>=1000 -F auid!=-1 -F key=privileged-umount",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271595"
     },
     {
       "check": {
