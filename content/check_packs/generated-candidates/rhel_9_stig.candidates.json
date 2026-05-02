@@ -140,6 +140,20 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "kdump",
+        "type": "service"
+      },
+      "description": "The kdump service on RHEL 9 must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257818"
+    },
+    {
+      "check": {
         "name": "--queryformat",
         "should_be_installed": true,
         "type": "package"

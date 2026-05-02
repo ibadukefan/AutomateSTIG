@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 375,
+  "candidate_checks": 376,
   "cases": [
     {
       "check": {
@@ -6930,6 +6930,33 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "kdump",
+        "type": "service"
+      },
+      "description": "OL 9 must be configured so that the kdump service is disabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "kdump": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "kdump": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271733"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/grub",
         "pattern": "GRUB_CMDLINE_LINUX=\"slub_debug=P\"",
@@ -10361,5 +10388,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 375
+  "validated_candidates": 376
 }

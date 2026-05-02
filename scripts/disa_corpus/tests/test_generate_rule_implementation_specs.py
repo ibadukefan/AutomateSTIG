@@ -1105,6 +1105,34 @@ If the "ctrl-alt-del.target" is not masked, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'ctrl-alt-del', 'expected_status': 'disabled'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
 
+    def test_infers_linux_masked_service_from_systemctl_show_loadstate_and_unitfilestate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257818',
+            'title': 'The kdump service on RHEL 9 must be disabled.',
+            'check_content': '''Verify that the kdump service is disabled in system boot configuration with the following command:
+
+$ sudo systemctl is-enabled  kdump
+
+disabled
+
+Verify that the kdump service is not active (i.e., not running) through current runtime configuration with the following command:
+
+$ sudo systemctl is-active kdump
+
+masked
+
+Verify that the kdump service is masked with the following command:
+
+$ sudo systemctl show  kdump  | grep "LoadState\\|UnitFileState"
+
+LoadState=masked
+UnitFileState=masked
+
+If the "kdump" service is loaded or active, and is not masked, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'kdump', 'expected_status': 'disabled'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
+
     def test_infers_linux_service_running_candidate_from_systemctl_status_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-244545',

@@ -3542,6 +3542,20 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "kdump",
+        "type": "service"
+      },
+      "description": "OL 9 must be configured so that the kdump service is disabled.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271733"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/grub",
         "pattern": "GRUB_CMDLINE_LINUX=\"slub_debug=P\"",

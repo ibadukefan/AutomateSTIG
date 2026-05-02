@@ -582,22 +582,30 @@ def _auditctl_expected_rule_candidate(rule: dict) -> dict | None:
 def _service_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
-    matches = list(re.finditer(r'\bsystemctl\s+(is-enabled|is-active|status)\s+([^\s;|&]+)', content))
+    matches = list(re.finditer(r'\bsystemctl\s+(is-enabled|is-active|status|show)\s+([^\s;|&]+)', content))
     if not matches:
         return None
-    match = next((m for m in matches if m.group(1) == 'is-active'), matches[0])
+    lower = f"{title}\n{content}".lower()
+    match = next((m for m in matches if m.group(1) == 'show' and 'loadstate=masked' in lower and 'unitfilestate=masked' in lower), None)
+    if not match:
+        match = next((m for m in matches if m.group(1) == 'is-active'), matches[0])
     command = match.group(1)
     raw_name = match.group(2).strip('"\'')
-    lower = f"{title}\n{content}".lower()
     masked_status = command == 'status' and re.search(r'loaded:\s+masked\b', lower) and re.search(r'(?:loaded\s+and\s+)?not\s+masked', lower)
+    masked_show = command == 'show' and 'loadstate=masked' in lower and 'unitfilestate=masked' in lower and re.search(r'(?:loaded\s+or\s+active,?\s+and\s+is\s+)?not\s+masked', lower)
     if raw_name.endswith('.target') and not masked_status:
         return None
-    if 'masked' in lower and not masked_status:
+    if 'masked' in lower and not masked_status and not masked_show:
         return None
     if '.' in raw_name and not raw_name.endswith(('.service', '.target')):
         return None
     name = raw_name.removesuffix('.service').removesuffix('.target')
-    if command == 'status':
+    if command == 'show':
+        if masked_show:
+            expected_status = 'disabled'
+        else:
+            return None
+    elif command == 'status':
         if masked_status:
             expected_status = 'disabled'
         elif re.search(r'if\s+(?:the\s+)?(?:"[^"]+"\s+)?(?:service\s+)?(?:status\s+)?(?:is\s+)?(?:set\s+to\s+)?(?:"?)?(?:active|running)(?:"?)?,?\s+this\s+is\s+a\s+finding', lower):

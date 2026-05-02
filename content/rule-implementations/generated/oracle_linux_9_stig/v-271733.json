@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "disabled",
+      "name": "kdump",
+      "type": "service"
+    },
+    "description": "OL 9 must be configured so that the kdump service is disabled.",
+    "expected": {
+      "type": "equals",
+      "value": "disabled"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271733"
+  },
   "check_content_excerpt": "Verify that OL 9 kdump service is disabled or masked in system boot configuration with the following command:\n\n$ systemctl is-enabled  kdump  \ndisabled (or masked)\n\nVerify that the kdump service is not active (i.e., not running) through current runtime configuration with the following command:\n\n$ systemctl is-active kdump \ninactive \n\nVerify that the kdump service is masked with the following command:\n\n$ systemctl show  kdump  | grep \"LoadState\\|UnitFileState\" \nLoadState=masked \nUnitFileState=masked \n\nIf the \"kdump\" service is loaded or active, and is not masked, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "disabled"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to disable and mask the kdump service.\n\nTo disable the kdump service, run the following command:\n\n$ sudo systemctl disable --now kdump\n\nTo mask the kdump service, run the following command:\n\n$ sudo systemctl mask --now kdump",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-271733r1092598_rule",
   "severity": "medium",
