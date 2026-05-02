@@ -612,6 +612,38 @@ If the command produces any output, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep "^vmx\\.log" /etc/vmware/config'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_absolute_pipeline_when_command_does_not_return_literal_is_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259430',
+            'title': 'The macOS system must enforce SSH to display the Standard Mandatory DOD Notice and Consent Banner.',
+            'check_content': '''Verify the macOS system is configured to display the contents of "/etc/banner" before granting access to the system with the following command:
+
+/usr/sbin/sshd -G | /usr/bin/grep -c "^banner /etc/banner"
+
+If the command does not return "1", this is a finding.'''
+        }, 'Apple_macOS_14_STIG')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': '/usr/sbin/sshd -G | /usr/bin/grep -c "^banner /etc/banner"'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
+
+    def test_skips_absolute_pipeline_literal_when_rule_has_additional_banner_text_requirement(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-268431',
+            'title': 'The macOS system must display the Standard Mandatory DOD Notice and Consent Banner at the login window.',
+            'check_content': '''Verify the macOS system is configured to display a policy banner with the following command:
+
+/bin/ls -ld /Library/Security/PolicyBanner.rtf* | /usr/bin/wc -l | /usr/bin/tr -d ' '
+
+If the command does not return "1", this is a finding.
+
+The banner text of the document must read:
+
+"You are accessing a U.S. Government (USG) Information System (IS)."
+
+If the text is not worded exactly this way, this is a finding.'''
+        }, 'Apple_macOS_15_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_grep_command_output_candidate_from_authoritative_sample_line(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230358',

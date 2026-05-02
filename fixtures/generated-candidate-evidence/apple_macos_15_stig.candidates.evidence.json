@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 125,
+  "candidate_checks": 126,
   "cases": [
     {
       "check": {
@@ -3071,6 +3071,32 @@
     },
     {
       "check": {
+        "command": "/usr/sbin/sshd -G | /usr/bin/grep -c \"^banner /etc/banner\"",
+        "type": "command_output"
+      },
+      "description": "The macOS system must enforce SSH to display a policy banner.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/sbin/sshd -G | /usr/bin/grep -c \"^banner /etc/banner\"": "unexpected-1"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/sbin/sshd -G | /usr/bin/grep -c \"^banner /etc/banner\"": "1"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-269093"
+    },
+    {
+      "check": {
         "command": "/usr/bin/awk -F':' '/^flags/ { print $NF }' /etc/security/audit_control | /usr/bin/tr ',' '\\n' | /usr/bin/grep -Ec '\\-ex'",
         "type": "command_output"
       },
@@ -3257,5 +3283,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apple_macos_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apple_macOS_15_STIG",
-  "validated_candidates": 125
+  "validated_candidates": 126
 }

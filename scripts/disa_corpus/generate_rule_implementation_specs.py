@@ -1025,7 +1025,11 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         command = _normalize_command(command_matches[0].group('command'))
     else:
         absolute_command = re.search(r'^\s*(?P<command>/[A-Za-z0-9_./:+-]+\b[^\n\r]*)$', content, re.MULTILINE)
-        if absolute_command and re.search(r'If\s+the\s+result\s+is\s+not\s+["“][^"”\n]+["”]', content, re.IGNORECASE):
+        if absolute_command and re.search(
+            r'If\s+the\s+(?:result\s+is\s+not|command\s+does\s+not\s+return)\s+["“][^"”\n]+["”]',
+            content,
+            re.IGNORECASE,
+        ):
             command = _normalize_command(absolute_command.group('command'))
     if not command or _has_unsafe_shell_token(command):
         return None
@@ -1086,8 +1090,16 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'description': rule.get('title', ''),
         }
 
-    result_match = re.search(r'If\s+the\s+result\s+is\s+not\s+["“]([^"”\n]+)["”]', content, re.IGNORECASE)
+    result_match = re.search(
+        r'If\s+the\s+(?:result\s+is\s+not|command\s+does\s+not\s+return)\s+["“]([^"”\n]+)["”]',
+        content,
+        re.IGNORECASE,
+    )
     if result_match:
+        if re.search(r'command\s+does\s+not\s+return', result_match.group(0), re.IGNORECASE):
+            tail = content[result_match.end():]
+            if re.search(r'\b(?:banner\s+)?text\b[^.\n]*(?:must\s+read|worded\s+exactly)|If\s+the\s+text\s+is\s+not\s+worded\s+exactly', tail, re.IGNORECASE):
+                return None
         return {
             'vuln_id': rule.get('vuln_id', ''),
             'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',

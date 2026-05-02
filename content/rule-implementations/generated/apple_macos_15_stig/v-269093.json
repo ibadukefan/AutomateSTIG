@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/sbin/sshd -G | /usr/bin/grep -c \"^banner /etc/banner\"",
+      "type": "command_output"
+    },
+    "description": "The macOS system must enforce SSH to display a policy banner.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "generic",
+    "vuln_id": "V-269093"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to display the contents of \"/etc/banner\" before granting access to the system with the following command:\n\n/usr/sbin/sshd -G | /usr/bin/grep -c \"^banner /etc/banner\"\n\nIf the command does not return \"1\", this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to display the contents of \"/etc/banner\" before granting access to the system with the following command:\n\ninclude_dir=$(/usr/bin/awk '/^Include/ {print $2}' /etc/ssh/sshd_config | /usr/bin/tr -d '*')\n\nif [[ -z $include_dir ]]; then\n/usr/bin/sed -i.bk \"1s/.*/Include \\/etc\\/ssh\\/sshd_config.d\\/\\*/\" /etc/ssh/sshd_config\nfi\n\n/usr/bin/grep -qxF 'banner /etc/banner' \"${include_dir}01-mscp-sshd.conf\" 2>/dev/null || echo \"banner /etc/banner\" >> \"${include_dir}01-mscp-sshd.conf\"\n\nfor file in $(ls ${include_dir}); do\nif [[ \"$file\" == \"100-macos.conf\" ]]; then\ncontinue\nfi\nif [[ \"$file\" == \"01-mscp-sshd.conf\" ]]; then\nbreak\nfi\n/bin/mv ${include_dir}${file} ${include_dir}20-${file}\ndone",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-269093r1131184_rule",
   "severity": "medium",

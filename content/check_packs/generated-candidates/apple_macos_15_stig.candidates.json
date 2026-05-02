@@ -1536,6 +1536,19 @@
     },
     {
       "check": {
+        "command": "/usr/sbin/sshd -G | /usr/bin/grep -c \"^banner /etc/banner\"",
+        "type": "command_output"
+      },
+      "description": "The macOS system must enforce SSH to display a policy banner.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "generic",
+      "vuln_id": "V-269093"
+    },
+    {
+      "check": {
         "command": "/usr/bin/awk -F':' '/^flags/ { print $NF }' /etc/security/audit_control | /usr/bin/tr ',' '\\n' | /usr/bin/grep -Ec '\\-ex'",
         "type": "command_output"
       },

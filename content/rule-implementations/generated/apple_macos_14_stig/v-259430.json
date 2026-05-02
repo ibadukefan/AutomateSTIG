@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/sbin/sshd -G | /usr/bin/grep -c \"^banner /etc/banner\"",
+      "type": "command_output"
+    },
+    "description": "The macOS system must enforce SSH to display the Standard Mandatory DOD Notice and Consent Banner.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "generic",
+    "vuln_id": "V-259430"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to display the contents of \"/etc/banner\" before granting access to the system with the following command:\n\n/usr/sbin/sshd -G | /usr/bin/grep -c \"^banner /etc/banner\"\n\nIf the command does not return \"1\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to display the contents of \"/etc/banner\" before granting access to the system by creating a plain text file in the /private/etc/ssh/sshd_config.d/ directory containing the following:\n\nbanner /etc/banner",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259430r958390_rule",
   "severity": "medium",

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 101,
+  "candidate_checks": 102,
   "cases": [
     {
       "check": {
@@ -182,6 +182,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259428"
+    },
+    {
+      "check": {
+        "command": "/usr/sbin/sshd -G | /usr/bin/grep -c \"^banner /etc/banner\"",
+        "type": "command_output"
+      },
+      "description": "The macOS system must enforce SSH to display the Standard Mandatory DOD Notice and Consent Banner.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/sbin/sshd -G | /usr/bin/grep -c \"^banner /etc/banner\"": "unexpected-1"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/sbin/sshd -G | /usr/bin/grep -c \"^banner /etc/banner\"": "1"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259430"
     },
     {
       "check": {
@@ -2633,5 +2659,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apple_macOS_14_STIG",
-  "validated_candidates": 101
+  "validated_candidates": 102
 }

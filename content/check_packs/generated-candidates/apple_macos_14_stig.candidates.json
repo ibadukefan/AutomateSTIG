@@ -93,6 +93,19 @@
     },
     {
       "check": {
+        "command": "/usr/sbin/sshd -G | /usr/bin/grep -c \"^banner /etc/banner\"",
+        "type": "command_output"
+      },
+      "description": "The macOS system must enforce SSH to display the Standard Mandatory DOD Notice and Consent Banner.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259430"
+    },
+    {
+      "check": {
         "command": "/bin/ls -lde /var/audit | /usr/bin/awk '{print $1}' | /usr/bin/grep -c \":\"",
         "type": "command_output"
       },
