@@ -685,6 +685,21 @@ If the result is not 'lock-screen', this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'gsettings get org.gnome.settings-daemon.peripherals.smartcard removal-action'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': "'lock-screen'"})
 
+    def test_infers_gsettings_empty_logout_action_candidate_from_bound_action_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270711',
+            'title': 'Ubuntu 24.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence if a graphical user interface is installed.',
+            'check_content': '''Verify Ubuntu 24.04 LTS is not configured to reboot the system when Ctrl-Alt-Delete is pressed when using a graphical user interface with the following command:
+
+$ gsettings get org.gnome.settings-daemon.plugins.media-keys logout
+['']
+
+If the "logout" key is bound to an action, is commented out, or is missing, this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'gsettings get org.gnome.settings-daemon.plugins.media-keys logout'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': "['']"})
+
     def test_infers_grep_literal_output_from_authoritative_output_statement(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271687',

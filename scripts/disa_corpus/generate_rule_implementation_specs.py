@@ -653,6 +653,18 @@ def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
         expected_line = stripped
         break
     if expected_line not in ('true', 'false'):
+        if (
+            re.fullmatch(r'gsettings\s+get\s+org\.gnome\.settings-daemon\.plugins\.media-keys\s+logout', command)
+            and expected_line in ("['']", '"[\'\']"', '@as []')
+            and re.search(r'If\s+the\s+["“]logout["”]\s+key\s+is\s+bound\s+to\s+an\s+action', content, re.IGNORECASE)
+        ):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'linux',
+                'check': {'type': 'command_output', 'command': command},
+                'expected': {'type': 'equals', 'value': expected_line},
+                'description': rule.get('title', ''),
+            }
         return None
     if re.search(r'if[^.\n]+(?:setting|result|[A-Za-z0-9_.-]+["”]?)\s+is\s+["“]false["”]', content, re.IGNORECASE):
         expected_value = 'true'

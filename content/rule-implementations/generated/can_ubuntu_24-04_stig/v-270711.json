@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "gsettings get org.gnome.settings-daemon.plugins.media-keys logout",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence if a graphical user interface is installed.",
+    "expected": {
+      "type": "equals",
+      "value": "['']"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270711"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS is not configured to reboot the system when Ctrl-Alt-Delete is pressed when using a graphical user interface with the following command:\n\n$ gsettings get org.gnome.settings-daemon.plugins.media-keys logout\n['']\n\nIf the \"logout\" key is bound to an action, is commented out, or is missing, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "['']"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the system to disable the Ctrl-Alt-Delete sequence when using a graphical user interface.\n\nCreate or edit a file named /etc/dconf/db/local.d/00-screensaver with the following contents:\n\n[org/gnome/settings-daemon/plugins/media-keys]\nlogout=['']\n\nUpdate the dconf settings:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270711r1101772_rule",
   "severity": "high",

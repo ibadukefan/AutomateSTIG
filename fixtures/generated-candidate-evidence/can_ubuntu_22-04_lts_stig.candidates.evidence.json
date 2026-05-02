@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 112,
+  "candidate_checks": 113,
   "cases": [
     {
       "check": {
@@ -837,6 +837,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-260537"
+    },
+    {
+      "check": {
+        "command": "gsettings get org.gnome.settings-daemon.plugins.media-keys logout",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 22.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence if a graphical user interface is installed.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "@as []"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.settings-daemon.plugins.media-keys logout": "unexpected-@as []"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.settings-daemon.plugins.media-keys logout": "@as []"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-260539"
     },
     {
       "check": {
@@ -3056,5 +3082,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_22-04_LTS_STIG",
-  "validated_candidates": 112
+  "validated_candidates": 113
 }

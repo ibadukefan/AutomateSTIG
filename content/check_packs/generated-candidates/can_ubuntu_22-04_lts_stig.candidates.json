@@ -402,6 +402,19 @@
     },
     {
       "check": {
+        "command": "gsettings get org.gnome.settings-daemon.plugins.media-keys logout",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 22.04 LTS must disable the x86 Ctrl-Alt-Delete key sequence if a graphical user interface is installed.",
+      "expected": {
+        "type": "equals",
+        "value": "@as []"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260539"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "PASS_MIN_DAYS    1",
