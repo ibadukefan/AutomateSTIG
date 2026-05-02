@@ -172,6 +172,24 @@ If the value for enabledatabasefileprotectedview is REG_DWORD = 1, this is not a
         self.assertEqual(candidate['check']['value_name'], 'enabledatabasefileprotectedview')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 1})
 
+    def test_infers_office_registry_candidate_from_unquoted_value_name_not_finding_statement(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223315',
+            'title': 'Open/save of Dif and Sylk format files must be blocked.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Excel 2016 >> Excel Options >> Security >> Trust Center >> File Block Settings "Dif and Sylk files" is set to "Enabled: Open/Save blocked, use open policy".
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\fileblock
+
+If the value DifandSylkFiles is REG_DWORD = 2, this is not a finding.'''
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'registry')
+        self.assertEqual(candidate['check']['path'], 'HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\fileblock')
+        self.assertEqual(candidate['check']['value_name'], 'DifandSylkFiles')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 2})
+
     def test_infers_windows_feature_candidate_check_from_powershell_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254269',

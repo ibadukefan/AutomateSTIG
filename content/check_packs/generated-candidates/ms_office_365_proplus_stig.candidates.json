@@ -2,6 +2,34 @@
   "checks": [
     {
       "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\access\\security",
+        "type": "registry",
+        "value_name": "blockcontentexecutionfrominternet"
+      },
+      "description": "Macros must be blocked from running in Access files from the Internet.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223280"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\access\\security",
+        "type": "registry",
+        "value_name": "NoTBPromptUnsignedAddin"
+      },
+      "description": "Trust Bar Notifications for unsigned application add-ins in Access must be disabled and blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223281"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security",
         "type": "registry",
         "value_name": "macroruntimescanscope"
@@ -16,6 +44,20 @@
     },
     {
       "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\common\\security",
+        "type": "registry",
+        "value_name": "DRMEncryptProperty"
+      },
+      "description": "Document metadata for rights managed Office Open XML files must be protected.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223285"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\portal",
         "type": "registry",
         "value_name": "linkpublishingdisabled"
@@ -27,6 +69,48 @@
       },
       "platform": "windows",
       "vuln_id": "V-223286"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\Common\\Security",
+        "type": "registry",
+        "value_name": "UFIControls"
+      },
+      "description": "ActiveX Controls must be initialized in Safe Mode.",
+      "expected": {
+        "type": "equals",
+        "value": 6
+      },
+      "platform": "windows",
+      "vuln_id": "V-223288"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\Common\\Security",
+        "type": "registry",
+        "value_name": "AutomationSecurity"
+      },
+      "description": "Macros in all Office applications that are opened programmatically by another application must be opened based upon macro security level.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223289"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\trustcenter",
+        "type": "registry",
+        "value_name": "trustbar"
+      },
+      "description": "Trust Bar notifications must be configured to display information in the Message Bar about the content that has been automatically blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223290"
     },
     {
       "check": {
@@ -58,6 +142,146 @@
     },
     {
       "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\trusted locations",
+        "type": "registry",
+        "value_name": "AllowNetworkLocations"
+      },
+      "description": "Trusted Locations on the network must be disabled in Excel.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223310"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\fileblock",
+        "type": "registry",
+        "value_name": "DBaseFiles"
+      },
+      "description": "Open/save of dBase III / IV format files must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223314"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\fileblock",
+        "type": "registry",
+        "value_name": "DifandSylkFiles"
+      },
+      "description": "Open/save of Dif and Sylk format files must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223315"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\fileblock",
+        "type": "registry",
+        "value_name": "XL2Macros"
+      },
+      "description": "Open/save of Excel 2 macrosheets and add-in files must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223316"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\fileblock",
+        "type": "registry",
+        "value_name": "XL2Worksheets"
+      },
+      "description": "Open/save of Excel 2 worksheets must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223317"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\fileblock",
+        "type": "registry",
+        "value_name": "XL3Macros"
+      },
+      "description": "Open/save of Excel 3 macrosheets and add-in files must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223318"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\fileblock",
+        "type": "registry",
+        "value_name": "XL3Worksheets"
+      },
+      "description": "Open/save of Excel 3 worksheets must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223319"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\fileblock",
+        "type": "registry",
+        "value_name": "XL4Macros"
+      },
+      "description": "Open/save of Excel 4 macrosheets and add-in files must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223320"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\fileblock",
+        "type": "registry",
+        "value_name": "XL4Workbooks"
+      },
+      "description": "Open/save of Excel 4 workbooks must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223321"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\fileblock",
+        "type": "registry",
+        "value_name": "XL4Worksheets"
+      },
+      "description": "Open/save of Excel 4 worksheets must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223322"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\fileblock",
         "type": "registry",
         "value_name": "xl95workbooks"
@@ -69,6 +293,34 @@
       },
       "platform": "windows",
       "vuln_id": "V-223323"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\office\\16.0\\excel\\security\\fileblock",
+        "type": "registry",
+        "value_name": "XL9597WorkbooksandTemplates"
+      },
+      "description": "Open/save of Excel 95-97 workbooks and templates must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223324"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\excel\\security\\fileblock",
+        "type": "registry",
+        "value_name": "OpenInProtectedView"
+      },
+      "description": "The default file block behavior must be set to not open blocked files in Excel.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223325"
     },
     {
       "check": {
@@ -158,6 +410,20 @@
       "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security",
         "type": "registry",
+        "value_name": "blockcontentexecutionfrominternet"
+      },
+      "description": "Macros must be blocked from running in Excel files from the Internet.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223336"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security",
+        "type": "registry",
         "value_name": "notbpromptunsignedaddin"
       },
       "description": "Trust Bar notification must be enabled for unsigned application add-ins in Excel and blocked.",
@@ -198,6 +464,132 @@
     },
     {
       "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview",
+        "type": "registry",
+        "value_name": "DisableAttachmentsInPV"
+      },
+      "description": "File attachments from Outlook must be opened in Excel in Protected mode.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223343"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\office\\16.0\\lync",
+        "type": "registry",
+        "value_name": "enablesiphighsecuritymode"
+      },
+      "description": "The SIP security mode in Lync must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223344"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\office\\16.0\\lync",
+        "type": "registry",
+        "value_name": "disablehttpconnect"
+      },
+      "description": "The HTTP fallback for SIP connection in Lync must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223345"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "allowuserstolowerattachments"
+      },
+      "description": "The ability to demote attachments from Level 2 to Level 1 must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223360"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "ShowLevel1Attach"
+      },
+      "description": "The display of Level 1 attachments must be disabled in Outlook.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223361"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\outlook\\security",
+        "type": "registry",
+        "value_name": "EnableOneOffFormScripts"
+      },
+      "description": "Outlook must be configured to not run scripts in forms in which the script and the layout are contained within the message.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223364"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\outlook\\options\\mail",
+        "type": "registry",
+        "value_name": "JunkMailEnableLinks"
+      },
+      "description": "Outlook must be configured to not allow hyperlinks in suspected phishing messages.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223372"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\ms project\\security\\trusted locations",
+        "type": "registry",
+        "value_name": "allownetworklocations"
+      },
+      "description": "Trusted Locations on the network must be disabled in Project.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223374"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\Microsoft\\office\\16.0\\ms project\\security",
+        "type": "registry",
+        "value_name": "notbpromptunsignedaddin"
+      },
+      "description": "Project must automatically disable unsigned add-ins without informing users.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223375"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\powerpoint\\security\\fileblock",
         "type": "registry",
         "value_name": "binaryfiles"
@@ -212,6 +604,146 @@
     },
     {
       "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security\\fileblock",
+        "type": "registry",
+        "value_name": "OpenInProtectedView"
+      },
+      "description": "The default file block behavior must be set to not open blocked files in PowerPoint.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223380"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security\\filevalidation",
+        "type": "registry",
+        "value_name": "EnableOnLoad"
+      },
+      "description": "File validation in PowerPoint must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223382"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\powerpoint\\security",
+        "type": "registry",
+        "value_name": "blockcontentexecutionfrominternet"
+      },
+      "description": "Macros from the Internet must be blocked from running in PowerPoint.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223383"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\Microsoft\\office\\16.0\\powerpoint\\security",
+        "type": "registry",
+        "value_name": "notbpromptunsignedaddin"
+      },
+      "description": "Unsigned add-ins in PowerPoint must be blocked with no Trust Bar Notification to the user.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223384"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security\\protectedview",
+        "type": "registry",
+        "value_name": "DisableInternetFilesInPV"
+      },
+      "description": "Files downloaded from the Internet must be opened in Protected view in PowerPoint.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223385"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security\\protectedview",
+        "type": "registry",
+        "value_name": "DisableAttachmentsInPV"
+      },
+      "description": "PowerPoint attachments opened from Outlook must be in Protected View.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223386"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security\\protectedview",
+        "type": "registry",
+        "value_name": "DisableUnsafeLocationsInPV"
+      },
+      "description": "Files in unsafe locations must be opened in Protected view in PowerPoint.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223387"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security\\trusted locations",
+        "type": "registry",
+        "value_name": "AllowNetworkLocations"
+      },
+      "description": "The use of network locations must be ignored in PowerPoint.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223389"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\common\\security",
+        "type": "registry",
+        "value_name": "automationsecuritypublisher"
+      },
+      "description": "Publisher must be configured to prompt the user when another application programmatically opens a macro.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223390"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\publisher\\security",
+        "type": "registry",
+        "value_name": "notbpromptunsignedaddin"
+      },
+      "description": "Publisher must automatically disable unsigned add-ins without informing users.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223391"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\visio\\security\\trusted locations",
         "type": "registry",
         "value_name": "allownetworklocations"
@@ -223,6 +755,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-223394"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\visio\\security",
+        "type": "registry",
+        "value_name": "notbpromptunsignedaddin"
+      },
+      "description": "Visio must automatically disable unsigned add-ins without informing users.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223395"
     },
     {
       "check": {
@@ -268,6 +814,20 @@
     },
     {
       "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\visio\\security",
+        "type": "registry",
+        "value_name": "blockcontentexecutionfrominternet"
+      },
+      "description": "Macros must be blocked from running in Visio files from the Internet.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223399"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security",
         "type": "registry",
         "value_name": "notbpromptunsignedaddin"
@@ -293,6 +853,146 @@
       },
       "platform": "windows",
       "vuln_id": "V-223405"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\word\\security\\fileblock",
+        "type": "registry",
+        "value_name": "OpenInProtectedView"
+      },
+      "description": "The default file block behavior must be set to not open blocked files in Word.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223406"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\word\\security\\fileblock",
+        "type": "registry",
+        "value_name": "Word2Files"
+      },
+      "description": "Open/Save of Word 2 and earlier binary documents and templates must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223407"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\word\\security\\fileblock",
+        "type": "registry",
+        "value_name": "Word2000Files"
+      },
+      "description": "Open/Save of Word 2000 binary documents and templates must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223408"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\word\\security\\fileblock",
+        "type": "registry",
+        "value_name": "word2003files"
+      },
+      "description": "Open/Save of Word 2003 binary documents and templates must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223409"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\word\\security\\fileblock",
+        "type": "registry",
+        "value_name": "word2007files"
+      },
+      "description": "Open/Save of Word 2007 and later binary documents and templates must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223410"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\word\\security\\fileblock",
+        "type": "registry",
+        "value_name": "word60files"
+      },
+      "description": "Open/Save of Word 6.0 binary documents and templates must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223411"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\word\\security\\fileblock",
+        "type": "registry",
+        "value_name": "word95files"
+      },
+      "description": "Open/Save of Word 95 binary documents and templates must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223412"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\word\\security\\fileblock",
+        "type": "registry",
+        "value_name": "word97files"
+      },
+      "description": "Open/Save of Word 97 binary documents and templates must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223413"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\word\\security\\fileblock",
+        "type": "registry",
+        "value_name": "wordxpfiles"
+      },
+      "description": "Open/Save of Word XP binary documents and templates must be blocked.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223414"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\word\\security",
+        "type": "registry",
+        "value_name": "blockcontentexecutionfrominternet"
+      },
+      "description": "In Word, macros must be blocked from running, even if Enable all macros is selected in the Macro Settings section of the Trust Center.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223415"
     },
     {
       "check": {

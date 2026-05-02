@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\word\\security",
+      "type": "registry",
+      "value_name": "blockcontentexecutionfrominternet"
+    },
+    "description": "In Word, macros must be blocked from running, even if Enable all macros is selected in the Macro Settings section of the Trust Center.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-223415"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Word 2016 >> Word Options >> Security >> Trust Center \"Block macros from running in Office files from the Internet\" is set to \"Enabled\".\n\nUse the Windows Registry Editor to navigate to the following key: \n\nHKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\word\\security\n\nIf the value blockcontentexecutionfrominternet is REG_DWORD = 1, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Word 2016 >> Word Options >> Security >> Trust Center \"Block macros from running in Office files from the Internet\" to \"Enabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223415r961092_rule",
   "severity": "medium",

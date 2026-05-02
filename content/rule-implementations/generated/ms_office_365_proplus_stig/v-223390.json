@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\software\\policies\\microsoft\\office\\common\\security",
+      "type": "registry",
+      "value_name": "automationsecuritypublisher"
+    },
+    "description": "Publisher must be configured to prompt the user when another application programmatically opens a macro.",
+    "expected": {
+      "type": "equals",
+      "value": 2
+    },
+    "platform": "windows",
+    "vuln_id": "V-223390"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Publisher 2016 >> Security >> Publisher Automation Security Level is set to \"Enabled\" \"By UI (prompted)\".\n \nUse the Windows Registry Editor to navigate to the following key:\n\nHKCU\\software\\policies\\microsoft\\office\\common\\security\n\nIf the value automationsecuritypublisher is REG_DWORD = 2, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 2
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Publisher 2016 >> Security >> Publisher Automation Security Level to \"Enabled\" \"By UI (prompted)\"",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223390r961086_rule",
   "severity": "medium",

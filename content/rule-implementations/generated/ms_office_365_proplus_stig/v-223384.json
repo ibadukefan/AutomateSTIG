@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\software\\policies\\Microsoft\\office\\16.0\\powerpoint\\security",
+      "type": "registry",
+      "value_name": "notbpromptunsignedaddin"
+    },
+    "description": "Unsigned add-ins in PowerPoint must be blocked with no Trust Bar Notification to the user.",
+    "expected": {
+      "type": "equals",
+      "value": 1
+    },
+    "platform": "windows",
+    "vuln_id": "V-223384"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft PowerPoint 2016 >> PowerPoint Options >> Security >> Trust Center \"Disable Trust Bar Notification for unsigned application add-ins and block them\" is set to \"Enabled\".\n\nUse the Windows Registry Editor to navigate to the following key:\n\nHKCU\\software\\policies\\Microsoft\\office\\16.0\\powerpoint\\security\n\nIf the value notbpromptunsignedaddin is REG_DWORD = 1, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 1
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft PowerPoint 2016 >> PowerPoint Options >> Security >> Trust Center \"Disable Trust Bar Notification for unsigned application add-ins and block them\" to \"Enabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223384r1016170_rule",
   "severity": "medium",

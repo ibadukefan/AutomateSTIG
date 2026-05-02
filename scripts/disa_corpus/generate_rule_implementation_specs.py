@@ -145,12 +145,15 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
             re.IGNORECASE,
         ):
             value_match = re.search(
-                r'(?:Criteria:\s*)?If\s+the\s+value\s+(?:["“]([^"”]+)["”]|for\s+([A-Za-z0-9_.-]+))\s+is\s+(?:set\s+to\s+)?REG_(DWORD|SZ)\s*=\s*([^,\.\n\r()]+)(?:\s*\([^)]*\))?\s*,?\s+this\s+is\s+not\s+a\s+finding\.',
+                r'(?:Criteria:\s*)?If\s+the\s+value\s+(?:["“]([^"”]+)["”]|for\s+([A-Za-z0-9_.-]+)|([A-Za-z0-9_.-]+))\s+is\s+(?:set\s+to\s+)?REG_(DWORD|SZ)\s*=\s*([^,\.\n\r()]+)(?:\s*\([^)]*\))?\s*,?\s+this\s+is\s+not\s+a\s+finding\.',
                 content,
                 re.IGNORECASE,
             )
         if value_match and expected_value is None:
-            if getattr(value_match, 'lastindex', 0) >= 4:
+            if getattr(value_match, 'lastindex', 0) >= 5:
+                raw_value = value_match.group(5).strip().strip('"“”')
+                registry_type = value_match.group(4).upper()
+            elif getattr(value_match, 'lastindex', 0) >= 4:
                 raw_value = value_match.group(4).strip().strip('"“”')
                 registry_type = value_match.group(3).upper()
             else:
@@ -164,7 +167,7 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
                 expected_value = raw_value
     if not path_match or not value_match or expected_value is None:
         return None
-    value_name = (value_match.group(1) or (value_match.group(2) if getattr(value_match, 'lastindex', 0) and value_match.lastindex >= 2 else '')).strip()
+    value_name = (value_match.group(1) or (value_match.group(2) if getattr(value_match, 'lastindex', 0) and value_match.lastindex >= 2 else '') or (value_match.group(3) if getattr(value_match, 'lastindex', 0) and value_match.lastindex >= 3 else '')).strip()
     if path_match is value_match and getattr(value_match, 'lastindex', 0) and value_match.lastindex >= 2:
         value_name = value_match.group(2).strip().rstrip('.')
     return {

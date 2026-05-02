@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\outlook\\security",
+      "type": "registry",
+      "value_name": "EnableOneOffFormScripts"
+    },
+    "description": "Outlook must be configured to not run scripts in forms in which the script and the layout are contained within the message.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-223364"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Security >> Security Form Settings >> Custom Form Security \"Allow scripts in one-off Outlook forms\" is set to \"Disabled\".\n\nUse the Windows Registry Editor to navigate to the following key: \n\nHKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\outlook\\security\n\nIf the value EnableOneOffFormScripts is REG_DWORD = 0, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft Outlook 2016 >> Security >> Security Form Settings >> Custom Form Security \"Allow scripts in one-off Outlook forms\" to \"Disabled\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223364r961092_rule",
   "severity": "medium",

@@ -2,31 +2,33 @@
   "generated_from": "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip",
   "rules": [
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223280",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223280r961050_rule",
       "severity": "medium",
       "title": "Macros must be blocked from running in Access files from the Internet.",
-      "tracking_issue": "TODO-V-223280",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223280"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223281",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223281r1016166_rule",
       "severity": "medium",
       "title": "Trust Bar Notifications for unsigned application add-ins in Access must be disabled and blocked.",
-      "tracking_issue": "TODO-V-223281",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223281"
@@ -63,16 +65,17 @@
       "vuln_id": "V-223284"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223285",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223285r1067544_rule",
       "severity": "high",
       "title": "Document metadata for rights managed Office Open XML files must be protected.",
-      "tracking_issue": "TODO-V-223285",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223285"
@@ -109,46 +112,49 @@
       "vuln_id": "V-223287"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223288",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223288r961779_rule",
       "severity": "medium",
       "title": "ActiveX Controls must be initialized in Safe Mode.",
-      "tracking_issue": "TODO-V-223288",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223288"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223289",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223289r961092_rule",
       "severity": "medium",
       "title": "Macros in all Office applications that are opened programmatically by another application must be opened based upon macro security level.",
-      "tracking_issue": "TODO-V-223289",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223289"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223290",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223290r1016167_rule",
       "severity": "medium",
       "title": "Trust Bar notifications must be configured to display information in the Message Bar about the content that has been automatically blocked.",
-      "tracking_issue": "TODO-V-223290",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223290"
@@ -441,16 +447,17 @@
       "vuln_id": "V-223309"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223310",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223310r961092_rule",
       "severity": "medium",
       "title": "Trusted Locations on the network must be disabled in Excel.",
-      "tracking_issue": "TODO-V-223310",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223310"
@@ -501,136 +508,145 @@
       "vuln_id": "V-223313"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223314",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223314r961086_rule",
       "severity": "medium",
       "title": "Open/save of dBase III / IV format files must be blocked.",
-      "tracking_issue": "TODO-V-223314",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223314"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223315",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223315r961086_rule",
       "severity": "medium",
       "title": "Open/save of Dif and Sylk format files must be blocked.",
-      "tracking_issue": "TODO-V-223315",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223315"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223316",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223316r961086_rule",
       "severity": "medium",
       "title": "Open/save of Excel 2 macrosheets and add-in files must be blocked.",
-      "tracking_issue": "TODO-V-223316",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223316"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223317",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223317r961086_rule",
       "severity": "medium",
       "title": "Open/save of Excel 2 worksheets must be blocked.",
-      "tracking_issue": "TODO-V-223317",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223317"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223318",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223318r961086_rule",
       "severity": "medium",
       "title": "Open/save of Excel 3 macrosheets and add-in files must be blocked.",
-      "tracking_issue": "TODO-V-223318",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223318"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223319",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223319r961086_rule",
       "severity": "medium",
       "title": "Open/save of Excel 3 worksheets must be blocked.",
-      "tracking_issue": "TODO-V-223319",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223319"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223320",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223320r961086_rule",
       "severity": "medium",
       "title": "Open/save of Excel 4 macrosheets and add-in files must be blocked.",
-      "tracking_issue": "TODO-V-223320",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223320"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223321",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223321r961086_rule",
       "severity": "medium",
       "title": "Open/save of Excel 4 workbooks must be blocked.",
-      "tracking_issue": "TODO-V-223321",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223321"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223322",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223322r961086_rule",
       "severity": "medium",
       "title": "Open/save of Excel 4 worksheets must be blocked.",
-      "tracking_issue": "TODO-V-223322",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223322"
@@ -652,31 +668,33 @@
       "vuln_id": "V-223323"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223324",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223324r961086_rule",
       "severity": "medium",
       "title": "Open/save of Excel 95-97 workbooks and templates must be blocked.",
-      "tracking_issue": "TODO-V-223324",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223324"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223325",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223325r961086_rule",
       "severity": "medium",
       "title": "The default file block behavior must be set to not open blocked files in Excel.",
-      "tracking_issue": "TODO-V-223325",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223325"
@@ -838,16 +856,17 @@
       "vuln_id": "V-223335"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223336",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223336r961092_rule",
       "severity": "medium",
       "title": "Macros must be blocked from running in Excel files from the Internet.",
-      "tracking_issue": "TODO-V-223336",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223336"
@@ -946,46 +965,49 @@
       "vuln_id": "V-223342"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223343",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223343r961092_rule",
       "severity": "medium",
       "title": "File attachments from Outlook must be opened in Excel in Protected mode.",
-      "tracking_issue": "TODO-V-223343",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223343"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223344",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223344r1043178_rule",
       "severity": "medium",
       "title": "The SIP security mode in Lync must be enabled.",
-      "tracking_issue": "TODO-V-223344",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223344"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223345",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223345r1043178_rule",
       "severity": "medium",
       "title": "The HTTP fallback for SIP connection in Lync must be disabled.",
-      "tracking_issue": "TODO-V-223345",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223345"
@@ -1201,31 +1223,33 @@
       "vuln_id": "V-223359"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223360",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223360r961086_rule",
       "severity": "medium",
       "title": "The ability to demote attachments from Level 2 to Level 1 must be disabled.",
-      "tracking_issue": "TODO-V-223360",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223360"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223361",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223361r961086_rule",
       "severity": "medium",
       "title": "The display of Level 1 attachments must be disabled in Outlook.",
-      "tracking_issue": "TODO-V-223361",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223361"
@@ -1261,16 +1285,17 @@
       "vuln_id": "V-223363"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223364",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223364r961092_rule",
       "severity": "medium",
       "title": "Outlook must be configured to not run scripts in forms in which the script and the layout are contained within the message.",
-      "tracking_issue": "TODO-V-223364",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223364"
@@ -1381,16 +1406,17 @@
       "vuln_id": "V-223371"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223372",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223372r961863_rule",
       "severity": "medium",
       "title": "Outlook must be configured to not allow hyperlinks in suspected phishing messages.",
-      "tracking_issue": "TODO-V-223372",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223372"
@@ -1411,31 +1437,33 @@
       "vuln_id": "V-223373"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223374",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223374r961092_rule",
       "severity": "medium",
       "title": "Trusted Locations on the network must be disabled in Project.",
-      "tracking_issue": "TODO-V-223374",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223374"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223375",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223375r1016169_rule",
       "severity": "medium",
       "title": "Project must automatically disable unsigned add-ins without informing users.",
-      "tracking_issue": "TODO-V-223375",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223375"
@@ -1502,16 +1530,17 @@
       "vuln_id": "V-223379"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223380",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223380r961086_rule",
       "severity": "medium",
       "title": "The default file block behavior must be set to not open blocked files in PowerPoint.",
-      "tracking_issue": "TODO-V-223380",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223380"
@@ -1532,91 +1561,97 @@
       "vuln_id": "V-223381"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223382",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223382r961092_rule",
       "severity": "medium",
       "title": "File validation in PowerPoint must be enabled.",
-      "tracking_issue": "TODO-V-223382",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223382"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223383",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223383r961092_rule",
       "severity": "medium",
       "title": "Macros from the Internet must be blocked from running in PowerPoint.",
-      "tracking_issue": "TODO-V-223383",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223383"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223384",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223384r1016170_rule",
       "severity": "medium",
       "title": "Unsigned add-ins in PowerPoint must be blocked with no Trust Bar Notification to the user.",
-      "tracking_issue": "TODO-V-223384",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223384"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223385",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223385r961086_rule",
       "severity": "medium",
       "title": "Files downloaded from the Internet must be opened in Protected view in PowerPoint.",
-      "tracking_issue": "TODO-V-223385",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223385"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223386",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223386r961086_rule",
       "severity": "medium",
       "title": "PowerPoint attachments opened from Outlook must be in Protected View.",
-      "tracking_issue": "TODO-V-223386",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223386"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223387",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223387r961086_rule",
       "severity": "medium",
       "title": "Files in unsafe locations must be opened in Protected view in PowerPoint.",
-      "tracking_issue": "TODO-V-223387",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223387"
@@ -1637,46 +1672,49 @@
       "vuln_id": "V-223388"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223389",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223389r961092_rule",
       "severity": "medium",
       "title": "The use of network locations must be ignored in PowerPoint.",
-      "tracking_issue": "TODO-V-223389",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223389"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223390",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223390r961086_rule",
       "severity": "medium",
       "title": "Publisher must be configured to prompt the user when another application programmatically opens a macro.",
-      "tracking_issue": "TODO-V-223390",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223390"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223391",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223391r1016171_rule",
       "severity": "medium",
       "title": "Publisher must automatically disable unsigned add-ins without informing users.",
-      "tracking_issue": "TODO-V-223391",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223391"
@@ -1728,16 +1766,17 @@
       "vuln_id": "V-223394"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223395",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223395r1016173_rule",
       "severity": "medium",
       "title": "Visio must automatically disable unsigned add-ins without informing users.",
-      "tracking_issue": "TODO-V-223395",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223395"
@@ -1791,16 +1830,17 @@
       "vuln_id": "V-223398"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223399",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223399r961092_rule",
       "severity": "medium",
       "title": "Macros must be blocked from running in Visio files from the Internet.",
-      "tracking_issue": "TODO-V-223399",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223399"
@@ -1898,151 +1938,161 @@
       "vuln_id": "V-223405"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223406",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223406r961086_rule",
       "severity": "medium",
       "title": "The default file block behavior must be set to not open blocked files in Word.",
-      "tracking_issue": "TODO-V-223406",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223406"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223407",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223407r961086_rule",
       "severity": "medium",
       "title": "Open/Save of Word 2 and earlier binary documents and templates must be blocked.",
-      "tracking_issue": "TODO-V-223407",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223407"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223408",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223408r961086_rule",
       "severity": "medium",
       "title": "Open/Save of Word 2000 binary documents and templates must be blocked.",
-      "tracking_issue": "TODO-V-223408",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223408"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223409",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223409r961086_rule",
       "severity": "medium",
       "title": "Open/Save of Word 2003 binary documents and templates must be blocked.",
-      "tracking_issue": "TODO-V-223409",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223409"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223410",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223410r961086_rule",
       "severity": "medium",
       "title": "Open/Save of Word 2007 and later binary documents and templates must be blocked.",
-      "tracking_issue": "TODO-V-223410",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223410"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223411",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223411r961086_rule",
       "severity": "medium",
       "title": "Open/Save of Word 6.0 binary documents and templates must be blocked.",
-      "tracking_issue": "TODO-V-223411",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223411"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223412",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223412r961086_rule",
       "severity": "medium",
       "title": "Open/Save of Word 95 binary documents and templates must be blocked.",
-      "tracking_issue": "TODO-V-223412",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223412"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223413",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223413r961086_rule",
       "severity": "medium",
       "title": "Open/Save of Word 97 binary documents and templates must be blocked.",
-      "tracking_issue": "TODO-V-223413",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223413"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223414",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223414r961086_rule",
       "severity": "medium",
       "title": "Open/Save of Word XP binary documents and templates must be blocked.",
-      "tracking_issue": "TODO-V-223414",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223414"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223415",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223415r961092_rule",
       "severity": "medium",
       "title": "In Word, macros must be blocked from running, even if Enable all macros is selected in the Macro Settings section of the Trust Center.",
-      "tracking_issue": "TODO-V-223415",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223415"
