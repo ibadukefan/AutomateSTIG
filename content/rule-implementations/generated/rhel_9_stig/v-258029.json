@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "gsettings get org.gnome.login-screen disable-restart-buttons",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 must disable the ability of a user to restart the system from the login screen.",
+    "expected": {
+      "type": "equals",
+      "value": "true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258029"
+  },
   "check_content_excerpt": "Note: This requirement assumes the use of the RHEL 9 default graphical user interface, Gnome Shell. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nVerify RHEL 9 disables a user's ability to restart the system with the following command:\n\n$ gsettings get org.gnome.login-screen disable-restart-buttons\n \ntrue\n \nIf \"disable-restart-buttons\" is \"false\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to disable a user's ability to restart the system.\n\n$ gsettings set org.gnome.login-screen disable-restart-buttons true\n\nUpdate the dconf system databases:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258029r1045109_rule",
   "severity": "medium",

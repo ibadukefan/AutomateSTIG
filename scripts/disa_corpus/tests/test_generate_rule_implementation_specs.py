@@ -1426,6 +1426,22 @@ If "picture-uri" is writable and the result is "true", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'gsettings writable org.gnome.desktop.screensaver picture-uri'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'false'})
 
+    def test_infers_linux_gsettings_get_candidate_from_quoted_key_false_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258029',
+            'title': 'RHEL 9 must disable the ability of a user to restart the system from the login screen.',
+            'check_content': '''Verify RHEL 9 disables a user's ability to restart the system with the following command:
+
+$ gsettings get org.gnome.login-screen disable-restart-buttons
+ 
+true
+ 
+If "disable-restart-buttons" is "false", this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'gsettings get org.gnome.login-screen disable-restart-buttons'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'true'})
+
     def test_infers_linux_gsettings_get_false_candidate_from_true_setting_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258014',
