@@ -1658,16 +1658,17 @@
       "vuln_id": "V-234909"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234910",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234910r958412_rule",
       "severity": "medium",
       "title": "The SUSE operating system must generate audit records for all uses of the unix_chkpwd or unix2_chkpwd commands.",
-      "tracking_issue": "TODO-V-234910",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234910"
@@ -1720,61 +1721,65 @@
       "vuln_id": "V-234913"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234914",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234914r958412_rule",
       "severity": "medium",
       "title": "The SUSE operating system must generate audit records for all uses of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls.",
-      "tracking_issue": "TODO-V-234914",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234914"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234918",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234918r958412_rule",
       "severity": "medium",
       "title": "The SUSE operating system must generate audit records for all uses of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls.",
-      "tracking_issue": "TODO-V-234918",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234918"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234924",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234924r958412_rule",
       "severity": "medium",
       "title": "The SUSE operating system must generate audit records for all uses of the chown, fchown, fchownat, and lchown system calls.",
-      "tracking_issue": "TODO-V-234924",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234924"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234928",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234928r958412_rule",
       "severity": "medium",
       "title": "The SUSE operating system must generate audit records for all uses of the chmod, fchmod, and fchmodat system calls.",
-      "tracking_issue": "TODO-V-234928",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234928"
@@ -1812,31 +1817,33 @@
       "vuln_id": "V-234933"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234934",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234934r958412_rule",
       "severity": "low",
       "title": "The SUSE operating system must generate audit records for all uses of the mount system call.",
-      "tracking_issue": "TODO-V-234934",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234934"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234935",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234935r958412_rule",
       "severity": "low",
       "title": "The SUSE operating system must generate audit records for all uses of the umount system call.",
-      "tracking_issue": "TODO-V-234935",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234935"
@@ -2082,31 +2089,33 @@
       "vuln_id": "V-234950"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234951",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234951r958412_rule",
       "severity": "medium",
       "title": "The SUSE operating system must generate audit records for all uses of the delete_module system call.",
-      "tracking_issue": "TODO-V-234951",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234951"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234952",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234952r958412_rule",
       "severity": "medium",
       "title": "The SUSE operating system must generate audit records for all uses of the init_module and finit_module system calls.",
-      "tracking_issue": "TODO-V-234952",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234952"
@@ -2351,16 +2360,17 @@
       "vuln_id": "V-234969"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-234973",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-234973r991577_rule",
       "severity": "medium",
       "title": "The SUSE operating system must generate audit records for all uses of the unlink, unlinkat, rename, renameat, and rmdir system calls.",
-      "tracking_issue": "TODO-V-234973",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/4df8cccdc6a0ccda754846e3ba43cbf77d952728c46b0d4e5b48edabbea493aa/U_SLES_15_V2R7_STIG.zip"
       ],
       "vuln_id": "V-234973"

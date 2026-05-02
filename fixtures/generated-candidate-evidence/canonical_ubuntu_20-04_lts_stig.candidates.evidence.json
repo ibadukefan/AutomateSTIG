@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 115,
+  "candidate_checks": 123,
   "cases": [
     {
       "check": {
@@ -773,6 +773,110 @@
     },
     {
       "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for any use of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0\n-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0\n-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238258"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chown, fchown, fchownat, and lchown system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238264"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the chmod, fchmod, and fchmodat system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238268"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238271"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/usr/bin/sudo",
         "pattern": "-a always,exit -S all -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=-1 -F key=priv_cmd",
@@ -1243,6 +1347,58 @@
     },
     {
       "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the init_module and finit_module syscalls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238295"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for successful/unsuccessful uses of the delete_module syscall.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238297"
+    },
+    {
+      "check": {
         "name": "auditd",
         "should_be_installed": true,
         "type": "package"
@@ -1410,6 +1566,32 @@
     },
     {
       "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must prevent all software from executing at higher privilege levels than users executing the software and the audit system must be configured to audit the execution of privileged functions.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0\n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0\n-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0\n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0\n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0\n-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0\n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238304"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/auditd.conf",
         "pattern": "log_file = /var/log/audit/audit.log",
@@ -1514,6 +1696,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-238309"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must generate audit records for any successful/unsuccessful use of unlink, unlinkat, rename, renameat, and rmdir system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b64 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b64 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238310"
     },
     {
       "check": {
@@ -3198,5 +3406,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 115
+  "validated_candidates": 123
 }

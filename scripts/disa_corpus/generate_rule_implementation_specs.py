@@ -370,7 +370,7 @@ def _sysctl_candidate(rule: dict) -> dict | None:
 def _package_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
-    match = re.search(r'\b(?:dnf|yum|rpm)\s+(?:list\s+(?:--installed|installed)|-q)\s+([A-Za-z0-9_.:+-]+)', content)
+    match = re.search(r'\b(?:dnf|yum|rpm)\s+(?:list\s+(?:--installed|installed)|-q)\s+["\']?([A-Za-z0-9_.:+-]+)["\']?', content)
     if not match:
         match = re.search(r'\bdpkg\s+-l\s*\|\s*grep\s+([A-Za-z0-9_.:+-]+)', content)
     if not match:
@@ -389,7 +389,7 @@ def _package_candidate(rule: dict) -> dict | None:
         return None
     package = match.group(1)
     lower = f"{title}\n{content}".lower()
-    should_be_installed = not bool(re.search(r'must\s+not\s+(?:have\s+\S+\s+)?be\s+installed|must\s+not\s+have\s+the\s+\S+\s+package\s+installed|has\s+not\s+been\s+installed|if\s+(?:the\s+)?(?:[a-z0-9_.:+-]+\s+)?package\s+is\s+installed,?\s+this\s+is\s+a\s+finding', lower))
+    should_be_installed = not bool(re.search(r'must\s+not\s+(?:have\s+\S+\s+)?be\s+installed|must\s+not\s+have\s+the\s+\S+\s+package\s+installed|has\s+not\s+been\s+installed|if\s+(?:the\s+)?["“]?(?:[a-z0-9_.:+-]+)["”]?\s+package\s+is\s+installed,?\s+this\s+is\s+a\s+finding', lower))
     return {
         'vuln_id': rule.get('vuln_id', ''),
         'platform': 'linux',
@@ -520,16 +520,19 @@ def _auditctl_expected_rule_candidate(rule: dict) -> dict | None:
                 expected_lines.append(stripped)
             elif expected_lines:
                 break
-        if len(expected_lines) != 1:
+        if not expected_lines:
             return None
-        expected_line = re.sub(r'\s+(?:-k\s+\S+|-F\s+key=\S+)\s*$', '', expected_lines[0]).strip()
-        if expected_line == expected_lines[0]:
-            return None
+        stripped_expected_lines = []
+        for expected_line in expected_lines:
+            stripped_line = re.sub(r'\s+(?:-k\s+\S+|-F\s+key=\S+)\s*$', '', expected_line).strip()
+            if stripped_line == expected_line:
+                return None
+            stripped_expected_lines.append(stripped_line)
         return {
             'vuln_id': rule.get('vuln_id', ''),
             'platform': 'linux',
             'check': {'type': 'command_output', 'command': 'auditctl -l'},
-            'expected': {'type': 'contains', 'substring': expected_line},
+            'expected': {'type': 'contains', 'substring': '\n'.join(stripped_expected_lines)},
             'description': rule.get('title', ''),
         }
 

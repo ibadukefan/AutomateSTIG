@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "The SUSE operating system must generate audit records for all uses of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls.",
+    "expected": {
+      "substring": "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234914"
+  },
   "check_content_excerpt": "Verify the SUSE operating system generates an audit record for all uses of the \"creat\", \"open\", \"openat\", \"open_by_handle_at\", \"truncate\", and \"ftruncate\" system calls.\n\nCheck that the system calls are being audited by performing the following command:\n\n> sudo auditctl -l | grep 'open\\|truncate\\|creat'\n\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1 -k perm_access\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1 -k perm_access\n\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1 -k perm_access\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1 -k perm_access\n\nIf both the \"b32\" and \"b64\" audit rules are not defined for the \"creat\", \"open\", \"openat\", \"open_by_handle_at\", \"truncate\", and \"ftruncate\" syscalls, this is a finding.\n\nIf the output does not produce rules containing \"-F exit=-EPERM\", this is a finding.\n\nIf the output does not produce rules containing \"-F exit=-EACCES\", this is a finding.\n\nNote:\nThe \"-k\" allows for specifying an arbitrary identifier. The string following \"-k\" does not need to match the example output above.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to generate an audit record for all uses of the \"creat\", \"open\", \"openat\", \"open_by_handle_at\", \"truncate\", and \"ftruncate\" system calls. \n\nAdd or update the following rules to \"/etc/audit/rules.d/audit.rules\":\n\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k perm_access\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k perm_access\n\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k perm_access\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k perm_access\n\nTo reload the rules file, restart the audit daemon:\n\n> sudo systemctl restart auditd.service\n\nor issue the following command:\n\n> sudo augenrules --load",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-234914r958412_rule",
   "severity": "medium",

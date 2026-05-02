@@ -383,6 +383,19 @@
     },
     {
       "check": {
+        "name": "xorg",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "OL 9 must not have a graphical display manager installed unless approved.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271465"
+    },
+    {
+      "check": {
         "name": "sendmail",
         "should_be_installed": true,
         "type": "package"

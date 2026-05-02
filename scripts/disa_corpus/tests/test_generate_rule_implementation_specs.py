@@ -444,6 +444,20 @@ If the sendmail package is installed, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'package', 'name': 'sendmail', 'should_be_installed': False})
         self.assertEqual(candidate['expected'], {'type': 'is_false'})
 
+    def test_infers_linux_package_candidate_from_quoted_dnf_package_name(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257837',
+            'title': 'RHEL 9 must not have a graphical display manager installed unless approved.',
+            'check_content': '''Verify the xorg-x11-server-common package is not installed with the following command:
+
+$ dnf list --installed "xorg-x11-server-common"
+Error: No matching Packages to list
+
+If the "xorg-x11-server-common" package is installed, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'package', 'name': 'xorg-x11-server-common', 'should_be_installed': False})
+        self.assertEqual(candidate['expected'], {'type': 'is_false'})
+
     def test_infers_sles_package_candidate_from_single_zypper_info_command(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-234966',
@@ -945,7 +959,7 @@ If the command does not return audit rules for the "init_module" and "finit_modu
             'substring': '-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=-1 -k module_chng\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=-1 -k module_chng',
         })
 
-    def test_skips_linux_auditctl_multiline_rules_when_key_is_arbitrary(self):
+    def test_infers_linux_auditctl_multiline_rules_when_key_is_arbitrary(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270786',
             'title': 'Ubuntu must audit chmod syscalls.',
@@ -958,7 +972,11 @@ If the command does not return audit rules for the "chmod", "fchmod" and "fchmod
 Notes:
 - The "-k" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.'''
         }, 'CAN_Ubuntu_24-04_STIG')
-        self.assertIsNone(candidate)
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
+        self.assertEqual(candidate['expected'], {
+            'type': 'contains',
+            'substring': '-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1',
+        })
 
     def test_infers_linux_auditctl_single_rule_when_key_identifier_is_arbitrary(self):
         candidate = mod.infer_candidate_check({

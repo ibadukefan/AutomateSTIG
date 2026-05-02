@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "name": "xorg",
+      "should_be_installed": true,
+      "type": "package"
+    },
+    "description": "OL 9 must not have a graphical display manager installed unless approved.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271465"
+  },
   "check_content_excerpt": "Verify that OL 9 does not have a graphical user interface installed with the following command:\n\n$ dnf list --installed \"xorg*common\"\nError: No matching Packages to list\n\nIf the \"x11-server-common\" package is installed, and the use of a graphical user interface has not been documented with the information system security officer (ISSO) as an operational requirement, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Remove all xorg packages with the following command:\n\nWarning: If accessing the system through the graphical user interface, change to the multi-user.target with the following command:\n\n$ sudo systemctl isolate multi-user.target\n\nWarning: Removal of the graphical user interface will immediately render it useless. The following commands must not be run from a virtual terminal emulator in the graphical interface.\n\n$ sudo dnf remove \"xorg*\"\n$ sudo systemctl set-default multi-user.target\n\nIf there is an operational requirement for a graphical user interface it must be documented with the ISSO.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "package",
   "remediation": "planned",
   "rule_id": "SV-271465r1091107_rule",
   "severity": "medium",

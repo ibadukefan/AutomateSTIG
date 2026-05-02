@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 159,
+  "candidate_checks": 167,
   "cases": [
     {
       "check": {
@@ -999,6 +999,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270688"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must prevent all software from executing at higher privilege levels than users executing the software and the audit system must be configured to audit the execution of privileged functions.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0\n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0\n-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0\n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0\n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0\n-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0\n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270689"
     },
     {
       "check": {
@@ -3128,6 +3154,110 @@
     },
     {
       "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for any use of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0\n-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0\n-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270784"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the chown, fchown, fchownat, and lchown system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270785"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the chmod, fchmod, and fchmodat system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270786"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270787"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/usr/bin/sudo",
         "pattern": "-a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=-1 -k priv_cmd",
@@ -3549,6 +3679,58 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the init_module and finit_module syscalls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270805"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the delete_module syscall.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270806"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "Ubuntu 24.04 LTS must generate audit records when successful/unsuccessful attempts to modify the /etc/sudoers file occur.",
       "evidence_type": "command_output_contains",
       "expected": {
@@ -3595,6 +3777,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270808"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must generate audit records for any successful/unsuccessful use of unlink, unlinkat, rename, renameat, and rmdir system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b64 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b64 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270809"
     },
     {
       "check": {
@@ -4373,5 +4581,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 159
+  "validated_candidates": 167
 }

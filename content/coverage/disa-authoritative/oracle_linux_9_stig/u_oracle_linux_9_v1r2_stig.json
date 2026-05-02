@@ -540,16 +540,17 @@
       "vuln_id": "V-271464"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271465",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271465r1091107_rule",
       "severity": "medium",
       "title": "OL 9 must not have a graphical display manager installed unless approved.",
-      "tracking_issue": "TODO-V-271465",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/c4e4e9a9fe08a58dfa7ad867f739bb2fad9261a2a39f787b9e976fb1fd835fa6/U_Oracle_Linux_9_V1R2_STIG.zip"
       ],
       "vuln_id": "V-271465"

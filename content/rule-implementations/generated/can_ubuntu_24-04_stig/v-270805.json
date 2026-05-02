@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the init_module and finit_module syscalls.",
+    "expected": {
+      "substring": "-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=-1",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270805"
+  },
   "check_content_excerpt": "Verify Ubuntu 24.04 LTS generates an audit record for any successful/unsuccessful attempts to use the \"init_module\" and \"finit_module\" syscalls with the following command:  \n \n$ sudo auditctl -l | grep init_module\n-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=-1 -k module_chng \n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=-1 -k module_chng  \n \nIf the command does not return audit rules for the \"init_module\" and \"finit_module\" syscalls or the lines are commented out, this is a finding.\n \nNotes: \n- For 32-bit architectures, only the 32-bit specific output lines from the commands are required. \n- The \"-k\" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=-1",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit system to generate an audit event for any successful/unsuccessful use of the \"init_module\" and \"finit_module\" syscalls.  \n \nAdd or update the following rules in the \"/etc/audit/rules.d/stig.rules\" file: \n \n-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=-1 -k module_chng \n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=-1 -k module_chng \n  \nNote: For 32-bit architectures, only the 32-bit specific entries are required.  \n  \nTo reload the rules file, issue the following command: \n \n$ sudo augenrules --load",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270805r1068384_rule",
   "severity": "medium",

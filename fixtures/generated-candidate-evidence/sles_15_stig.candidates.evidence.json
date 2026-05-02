@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 135,
+  "candidate_checks": 145,
   "cases": [
     {
       "check": {
@@ -1522,6 +1522,32 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "The SUSE operating system must generate audit records for all uses of the unix_chkpwd or unix2_chkpwd commands.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/sbin/unix_chkpwd -F perm=x -F auid>=1000 -F auid!=-1\n-a always,exit -S all -F path=/sbin/unix2_chkpwd -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -S all -F path=/sbin/unix_chkpwd -F perm=x -F auid>=1000 -F auid!=-1\n-a always,exit -S all -F path=/sbin/unix2_chkpwd -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234910"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "The SUSE operating system must generate audit records for all uses of the chage command.",
       "evidence_type": "command_output_contains",
       "expected": {
@@ -1574,6 +1600,110 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "The SUSE operating system must generate audit records for all uses of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234914"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234918"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the chown, fchown, fchownat, and lchown system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S chown,fchown,fchownat,lchown -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234924"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the chmod, fchmod, and fchmodat system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234928"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "The SUSE operating system must generate audit records for all uses of the sudoedit command.",
       "evidence_type": "command_output_contains",
       "expected": {
@@ -1620,6 +1750,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234933"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the mount system call.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234934"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the umount system call.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S umount -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S umount2 -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S umount2 -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S umount -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S umount2 -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S umount2 -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234935"
     },
     {
       "check": {
@@ -2016,6 +2198,58 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "The SUSE operating system must generate audit records for all uses of the delete_module system call.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S delete_module -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S delete_module -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234951"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the init_module and finit_module system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S init_module,finit_module -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S init_module,finit_module -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234952"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "The SUSE operating system must generate audit records for all uses of the su command.",
       "evidence_type": "command_output_contains",
       "expected": {
@@ -2384,6 +2618,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234969"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must generate audit records for all uses of the unlink, unlinkat, rename, renameat, and rmdir system calls.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F arch=b32 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F arch=b32 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S unlink,unlinkat,rename,renameat,rmdir -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234973"
     },
     {
       "check": {
@@ -3582,5 +3842,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 135
+  "validated_candidates": 145
 }

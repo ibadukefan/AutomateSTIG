@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 352,
+  "candidate_checks": 353,
   "cases": [
     {
       "check": {
@@ -529,6 +529,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257834"
+    },
+    {
+      "check": {
+        "name": "xorg-x11-server-common",
+        "should_be_installed": false,
+        "type": "package"
+      },
+      "description": "A graphical display manager must not be installed on RHEL 9 unless approved.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_false"
+      },
+      "fail_fixture": {
+        "packages": {
+          "xorg-x11-server-common": true
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "xorg-x11-server-common": false
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257837"
     },
     {
       "check": {
@@ -9811,5 +9837,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 352
+  "validated_candidates": 353
 }
