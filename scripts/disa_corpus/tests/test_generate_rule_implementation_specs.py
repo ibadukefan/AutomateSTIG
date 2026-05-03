@@ -1087,6 +1087,32 @@ If the /dev/shm file system is mounted without the "noexec" option, this is a fi
         }, 'RHEL_9_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_linux_fstab_mount_option_candidate_from_title_and_fix_text(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-230518',
+            'title': 'RHEL 8 must mount /var/log/audit with the nosuid option.',
+            'fix_text': '''Configure the system so that /var/log/audit is mounted with the "nosuid" option by adding /modifying the /etc/fstab with the following line:
+
+/dev/mapper/rhel-var-log-audit /var/log/audit xfs defaults,nodev,nosuid,noexec 0 0'''
+        }, 'scap_mil.disa.stig_collection_U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'findmnt /var/log/audit'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'nosuid'})
+
+    def test_infers_linux_stat_mode_zero_candidate_from_path_sample(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271804',
+            'title': 'OL 9 /etc/gshadow file must have mode 0000 or less permissive to prevent unauthorized access.',
+            'check_content': '''Verify that OL 9 configures the "/etc/gshadow" file to have a mode pf "0000" with the following command:
+
+$ stat -c "%a %n" /etc/gshadow
+0 /etc/gshadow
+
+If a value of "0" is not returned, this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/etc/gshadow', 'owner': None, 'group': None, 'mode': '0000'})
+        self.assertEqual(candidate['expected'], {'type': 'is_true'})
+
     def test_infers_linux_file_content_candidate_from_cat_pipe_grep_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-251713',

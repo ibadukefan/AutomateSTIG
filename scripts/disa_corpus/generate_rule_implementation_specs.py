@@ -974,6 +974,42 @@ def _findmnt_option_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _fstab_mount_option_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    title = rule.get('title', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    combined = '\n'.join(part for part in (title, fix_text) if part)
+    if re.search(
+        r'user\s+home\s+directories|removable\s+media|Network\s+File\s+System|\bNFS\b|imported\s+via|separate\s+file\s+system',
+        combined,
+        re.IGNORECASE,
+    ):
+        return None
+    title_match = re.search(
+        r'\bmust\s+mount\s+(?P<path>/[A-Za-z0-9_./:+-]+)\s+with\s+the\s+["“]?(?P<option>nodev|nosuid|noexec)["”]?\s+option\b',
+        title,
+        re.IGNORECASE,
+    )
+    if not title_match or not re.search(r'/etc/fstab', fix_text, re.IGNORECASE):
+        return None
+    mount_path = title_match.group('path')
+    required_option = title_match.group('option').lower()
+    if not re.search(
+        rf'\bso\s+that\s+{re.escape(mount_path)}\s+is\s+mounted\s+with\s+the\s+["“]{re.escape(required_option)}["”]\s+option\b',
+        fix_text,
+        re.IGNORECASE,
+    ):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': f'findmnt {mount_path}'},
+        'expected': {'type': 'contains', 'substring': required_option},
+        'description': rule.get('title', ''),
+    }
+
+
 def _dconf_grep_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -1127,6 +1163,9 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     findmnt_candidate = _findmnt_option_candidate(rule, stig_id)
     if findmnt_candidate:
         return findmnt_candidate
+    fstab_mount_candidate = _fstab_mount_option_candidate(rule, stig_id)
+    if fstab_mount_candidate:
+        return fstab_mount_candidate
     selinux_sestatus_candidate = _selinux_sestatus_policy_candidate(rule, stig_id)
     if selinux_sestatus_candidate:
         return selinux_sestatus_candidate
@@ -1345,8 +1384,8 @@ def _file_permission_candidate(rule: dict) -> dict | None:
             if len(values) != len(fields) or path not in values:
                 continue
             for field, value in zip(fields, values):
-                if field in ('%a', '%A') and re.fullmatch(r'[0-7]{3,4}', value):
-                    mode = mode or value
+                if field in ('%a', '%A') and re.fullmatch(r'[0-7]{1,4}', value):
+                    mode = mode or value.zfill(4)
                 elif field == '%U':
                     owner = value
                 elif field == '%G':

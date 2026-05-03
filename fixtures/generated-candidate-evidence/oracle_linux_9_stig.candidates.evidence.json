@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 385,
+  "candidate_checks": 386,
   "cases": [
     {
       "check": {
@@ -8691,6 +8691,44 @@
         "group": null,
         "mode": "0000",
         "owner": null,
+        "path": "/etc/gshadow",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/gshadow file must have mode 0000 or less permissive to prevent unauthorized access.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/gshadow": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/gshadow": {
+            "exists": true,
+            "group": null,
+            "mode": "0000",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271804"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
         "path": "/etc/gshadow-",
         "type": "file_permission"
       },
@@ -10623,5 +10661,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 385
+  "validated_candidates": 386
 }

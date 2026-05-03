@@ -4380,6 +4380,21 @@
         "group": null,
         "mode": "0000",
         "owner": null,
+        "path": "/etc/gshadow",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /etc/gshadow file must have mode 0000 or less permissive to prevent unauthorized access.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271804"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0000",
+        "owner": null,
         "path": "/etc/gshadow-",
         "type": "file_permission"
       },
