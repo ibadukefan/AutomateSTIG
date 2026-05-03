@@ -2502,6 +2502,35 @@ If "Enforce user logon restrictions" is not set to "Enabled", this is a finding.
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Kerberos Policy', 'key': 'Enforce user logon restrictions'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Enabled'})
 
+    def test_infers_windows_kerberos_policy_less_or_equal_candidate_from_fix_text(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254389',
+            'title': 'Windows Server 2022 Kerberos policy user ticket renewal maximum lifetime must be limited to seven days or less.',
+            'check_content': '''This applies to domain controllers. It is NA for other systems.
+
+Verify the following is configured in the Default Domain Policy:
+
+Navigate to Computer Configuration >> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy.
+
+If the "Maximum lifetime for user ticket renewal" is greater than "7" days, this is a finding.''',
+            'fix_text': 'Configure the policy value in the Default Domain Policy for Computer Configuration >> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy >> Maximum lifetime for user ticket renewal to a maximum of "7" days or less.',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Kerberos Policy', 'key': 'Maximum lifetime for user ticket renewal'})
+        self.assertEqual(candidate['expected'], {'type': 'less_or_equal', 'value': 7})
+
+    def test_skips_windows_kerberos_policy_less_or_equal_when_nonzero_minimum_is_required(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254388',
+            'title': 'Windows Server 2022 Kerberos user ticket lifetime must be limited to 10 hours or less.',
+            'check_content': '''Navigate to Computer Configuration >> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy.
+
+If the value for "Maximum lifetime for user ticket" is greater than "10" hours or is set to "0", this is a finding.''',
+            'fix_text': 'Configure the policy value in the Default Domain Policy for Computer Configuration >> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy >> Maximum lifetime for user ticket to a maximum of "10" hours but not "0", which equates to "Ticket doesn\'t expire".',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_windows_security_option_candidate_from_explicit_disabled_value(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254465',

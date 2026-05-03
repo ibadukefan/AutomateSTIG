@@ -263,6 +263,19 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                 'expected': {'type': 'equals', 'value': kerberos_option.group(2).strip()},
                 'description': rule.get('title', ''),
             }
+        kerberos_less_or_equal = re.search(
+            r'Account\s+Policies\s*>>\s*Kerberos\s+Policy\s*>>\s*"?([^"\n]+?)"?\s+to\s+a\s+maximum\s+of\s+"(\d+)"\s+[^.\n]*\bor\s+less\s*\.\s*(?:\n|$)',
+            policy_text,
+            re.IGNORECASE,
+        )
+        if kerberos_less_or_equal and not re.search(r'\bbut\s+not\s+"?0"?|not\s+"?0"?', kerberos_less_or_equal.group(0), re.IGNORECASE):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'windows',
+                'check': {'type': 'security_policy', 'section': 'Kerberos Policy', 'key': kerberos_less_or_equal.group(1).strip()},
+                'expected': {'type': 'less_or_equal', 'value': int(kerberos_less_or_equal.group(2))},
+                'description': rule.get('title', ''),
+            }
 
     if 'Local Policies >> Security Options' in policy_text:
         security_option = re.search(
