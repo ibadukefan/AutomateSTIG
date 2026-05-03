@@ -1251,7 +1251,17 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             content,
             re.IGNORECASE,
         )
-        if len(expected_lines) == 1 and (expected_result_is_required or xpath_empty_result_is_required):
+        xml_attribute_result_is_required = False
+        if len(expected_lines) == 1:
+            xml_attribute_match = re.fullmatch(r'([A-Za-z][A-Za-z0-9_.:-]*)="([^"\n]+)"', expected_lines[0])
+            if xml_attribute_match:
+                attribute, value = xml_attribute_match.groups()
+                xml_attribute_result_is_required = bool(re.search(
+                    rf'If\s+["“]{re.escape(attribute)}["”]\s+does\s+not\s+equal\s+["“]{re.escape(value)}["”],?\s+this\s+is\s+a\s+finding',
+                    content,
+                    re.IGNORECASE,
+                ))
+        if len(expected_lines) == 1 and (expected_result_is_required or xpath_empty_result_is_required or xml_attribute_result_is_required):
             return {
                 'vuln_id': rule.get('vuln_id', ''),
                 'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',

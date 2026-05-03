@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 8,
+  "candidate_checks": 10,
   "cases": [
     {
       "check": {
@@ -185,6 +185,58 @@
     },
     {
       "check": {
+        "command": "xmllint --xpath \"//Host/@deployXML\" /usr/lib/vmware-lookupsvc/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service deployXML attribute must be disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "deployXML=\"false\""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"//Host/@deployXML\" /usr/lib/vmware-lookupsvc/conf/server.xml": "unexpected-deployXML=\"false\""
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"//Host/@deployXML\" /usr/lib/vmware-lookupsvc/conf/server.xml": "deployXML=\"false\""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259060"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath \"//Host/@autoDeploy\" /usr/lib/vmware-lookupsvc/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service must have Autodeploy disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "autoDeploy=\"false\""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"//Host/@autoDeploy\" /usr/lib/vmware-lookupsvc/conf/server.xml": "unexpected-autoDeploy=\"false\""
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --xpath \"//Host/@autoDeploy\" /usr/lib/vmware-lookupsvc/conf/server.xml": "autoDeploy=\"false\""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259061"
+    },
+    {
+      "check": {
         "command": "find /usr/lib/vmware-lookupsvc/ -xdev -type f -a '(' -perm -o+w -o -not -user root -o -not -group root ')' -exec ls -ld {} \\;",
         "type": "command_output"
       },
@@ -215,5 +267,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
-  "validated_candidates": 8
+  "validated_candidates": 10
 }

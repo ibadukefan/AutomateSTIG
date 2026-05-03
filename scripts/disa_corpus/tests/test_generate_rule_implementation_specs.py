@@ -1065,6 +1065,31 @@ If any connectors are returned, this is a finding.'''
         }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_xmllint_single_attribute_expected_result_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259060',
+            'title': 'The vCenter Lookup service deployXML attribute must be disabled.',
+            'check_content': '''At the command prompt, run the following command:
+
+# xmllint --xpath "//Host/@deployXML" /usr/lib/vmware-lookupsvc/conf/server.xml
+
+Expected result:
+
+deployXML="false"
+
+If "deployXML" does not equal "false", this is a finding.'''
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259060',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'xmllint --xpath "//Host/@deployXML" /usr/lib/vmware-lookupsvc/conf/server.xml',
+            },
+            'expected': {'type': 'equals', 'value': 'deployXML="false"'},
+            'description': 'The vCenter Lookup service deployXML attribute must be disabled.',
+        })
+
     def test_infers_dconf_grep_candidate_from_exact_authoritative_sample(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271690',
