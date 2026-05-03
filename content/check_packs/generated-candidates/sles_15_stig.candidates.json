@@ -633,6 +633,19 @@
     },
     {
       "check": {
+        "command": "grep pam_unix.so /etc/pam.d/* | grep nullok",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must not be configured to allow blank or null passwords.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-234898"
+    },
+    {
+      "check": {
         "command": "auditctl -l",
         "type": "command_output"
       },

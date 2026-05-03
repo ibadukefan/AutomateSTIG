@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep pam_unix.so /etc/pam.d/* | grep nullok",
+      "type": "command_output"
+    },
+    "description": "The SUSE operating system must not be configured to allow blank or null passwords.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-234898"
+  },
   "check_content_excerpt": "Verify the SUSE operating system is not configured to allow blank or null passwords.\n\nCheck that blank or null passwords cannot be used by running the following command:\n\n> grep pam_unix.so /etc/pam.d/* | grep nullok\n\nIf this produces any output, it may be possible to log on with accounts with empty passwords.\n\nIf null passwords can be used, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system to not allow blank or null passwords.\n\nRemove any instances of the \"nullok\" option in \"/etc/pam.d/common-auth\" and \"/etc/pam.d/common-password\" to prevent logons with empty passwords.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-234898r991589_rule",
   "severity": "high",

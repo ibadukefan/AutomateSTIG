@@ -612,6 +612,24 @@ If the command produces any output, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep "^vmx\\.log" /etc/vmware/config'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_grep_pipeline_when_this_produces_any_output_is_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234898',
+            'title': 'The SUSE operating system must not be configured to allow blank or null passwords.',
+            'check_content': '''Verify the SUSE operating system is not configured to allow blank or null passwords.
+
+Check that blank or null passwords cannot be used by running the following command:
+
+> grep pam_unix.so /etc/pam.d/* | grep nullok
+
+If this produces any output, it may be possible to log on with accounts with empty passwords.
+
+If null passwords can be used, this is a finding.'''
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep pam_unix.so /etc/pam.d/* | grep nullok'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_esxi_absolute_command_when_output_is_not_literal_is_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-256430',

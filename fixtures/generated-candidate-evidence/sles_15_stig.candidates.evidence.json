@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 146,
+  "candidate_checks": 147,
   "cases": [
     {
       "check": {
@@ -1229,6 +1229,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234897"
+    },
+    {
+      "check": {
+        "command": "grep pam_unix.so /etc/pam.d/* | grep nullok",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must not be configured to allow blank or null passwords.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep pam_unix.so /etc/pam.d/* | grep nullok": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep pam_unix.so /etc/pam.d/* | grep nullok": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234898"
     },
     {
       "check": {
@@ -3869,5 +3895,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 146
+  "validated_candidates": 147
 }
