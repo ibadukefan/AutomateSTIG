@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "netsh interface portproxy show all",
+      "type": "command_output"
+    },
+    "description": "Windows 10 must not have portproxy enabled or in use.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "windows",
+    "vuln_id": "V-257593"
+  },
   "check_content_excerpt": "Check the registry key for existence of proxied ports:\nHKLM\\SYSTEM\\CurrentControlSet\\Services\\PortProxy\\. \n\nIf the key contains v4tov4\\tcp\\ or is populated v4tov4\\tcp\\, this is a finding. \n\nRun \"netsh interface portproxy show all\". \n\nIf the command displays any results, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Contact the Administrator to run \"netsh interface portproxy delete\" with elevation. Remove any enabled portproxies that may be configured.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-257593r991589_rule",
   "severity": "medium",

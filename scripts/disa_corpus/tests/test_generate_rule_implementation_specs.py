@@ -612,6 +612,23 @@ If the command produces any output, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep "^vmx\\.log" /etc/vmware/config'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_quoted_netsh_portproxy_command_when_displays_any_results_is_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257593',
+            'title': 'Windows 10 must not have portproxy enabled or in use.',
+            'check_content': '''Check the registry key for existence of proxied ports:
+HKLM\\SYSTEM\\CurrentControlSet\\Services\\PortProxy\\.
+
+If the key contains v4tov4\\tcp\\ or is populated v4tov4\\tcp\\, this is a finding.
+
+Run "netsh interface portproxy show all".
+
+If the command displays any results, this is a finding.'''
+        }, 'MS_Windows_10_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'netsh interface portproxy show all'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_absolute_pipeline_when_command_does_not_return_literal_is_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-259430',

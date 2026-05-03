@@ -1043,8 +1043,10 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         return selinux_candidate
     command_matches = list(re.finditer(r'^\s*[$#>]\s*(?P<command>(?:sudo\s+)?(?:/[A-Za-z0-9_./:+-]+|[A-Za-z0-9_.:+-]+)\b[^\n\r]*)$', content, re.MULTILINE))
     command = None
+    command_end = None
     if command_matches:
         command = _normalize_command(command_matches[0].group('command'))
+        command_end = command_matches[0].end()
     else:
         absolute_command = re.search(r'^\s*(?P<command>/[A-Za-z0-9_./:+-]+\b[^\n\r]*)$', content, re.MULTILINE)
         if absolute_command and re.search(
@@ -1053,6 +1055,11 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             re.IGNORECASE,
         ):
             command = _normalize_command(absolute_command.group('command'))
+            command_end = absolute_command.end()
+        quoted_netsh_command = re.search(r'\bRun\s+["“](?P<command>netsh\s+interface\s+portproxy\s+show\s+all)["”]', content, re.IGNORECASE)
+        if not command and quoted_netsh_command and re.search(r'If\s+the\s+command\s+displays\s+any\s+results,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+            command = _normalize_command(quoted_netsh_command.group('command'))
+            command_end = quoted_netsh_command.end()
     allow_macos_command_substitution = bool(
         command
         and _macos_platform(stig_id)
@@ -1069,7 +1076,6 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     if command.startswith('xmllint ') and re.search(r'\bnot\s*\[', command):
         return None
 
-    command_end = command_matches[0].end() if command_matches else absolute_command.end()
     grep_sample_candidate = _grep_sample_line_candidate(rule, stig_id, command, command_end)
     if grep_sample_candidate:
         return grep_sample_candidate
@@ -1156,7 +1162,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         content,
         re.IGNORECASE,
     )
-    no_output_for_explicit_output = re.search(r'if\s+(?:any\s+)?output\s+is\s+produced,?\s+this\s+is\s+a\s+finding|if\s+the\s+command\s+displays\s+any\s+output,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    no_output_for_explicit_output = re.search(r'if\s+(?:any\s+)?output\s+is\s+produced,?\s+this\s+is\s+a\s+finding|if\s+the\s+command\s+displays\s+any\s+(?:output|results),?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
     no_output_for_command_output = re.search(r'if\s+the\s+command\s+(?:has|produces)\s+any\s+output,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
     no_output_for_any_output = re.search(r'if\s+(?:there\s+is\s+output|any\s+output\s+is\s+returned|(?:the\s+)?command\s+returns\s+any\s+output),?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
     no_output_for_shadow_blank_password = (
@@ -1171,7 +1177,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     if no_output_for_find or no_output_for_explicit_output or no_output_for_command_output or no_output_for_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found:
         return {
             'vuln_id': rule.get('vuln_id', ''),
-            'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+            'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',
             'check': {'type': 'command_output', 'command': command},
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),

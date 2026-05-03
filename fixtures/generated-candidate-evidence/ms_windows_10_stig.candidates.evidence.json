@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 177,
+  "candidate_checks": 178,
   "cases": [
     {
       "check": {
@@ -4538,6 +4538,32 @@
     },
     {
       "check": {
+        "command": "netsh interface portproxy show all",
+        "type": "command_output"
+      },
+      "description": "Windows 10 must not have portproxy enabled or in use.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "netsh interface portproxy show all": "unexpected"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "netsh interface portproxy show all": ""
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257593"
+    },
+    {
+      "check": {
         "setting": "Failure",
         "subcategory": "File System",
         "type": "audit_policy"
@@ -4785,5 +4811,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 177
+  "validated_candidates": 178
 }

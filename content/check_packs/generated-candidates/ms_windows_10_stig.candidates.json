@@ -2353,6 +2353,19 @@
     },
     {
       "check": {
+        "command": "netsh interface portproxy show all",
+        "type": "command_output"
+      },
+      "description": "Windows 10 must not have portproxy enabled or in use.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-257593"
+    },
+    {
+      "check": {
         "setting": "Failure",
         "subcategory": "File System",
         "type": "audit_policy"

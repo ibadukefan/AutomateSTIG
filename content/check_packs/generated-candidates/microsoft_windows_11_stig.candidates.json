@@ -2130,6 +2130,19 @@
     },
     {
       "check": {
+        "command": "netsh interface portproxy show all",
+        "type": "command_output"
+      },
+      "description": "Windows 11 must not have portproxy enabled or in use.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "windows",
+      "vuln_id": "V-257592"
+    },
+    {
+      "check": {
         "setting": "Failure",
         "subcategory": "Process Creation",
         "type": "audit_policy"
