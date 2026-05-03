@@ -2283,6 +2283,20 @@
     },
     {
       "check": {
+        "key": "SeInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Allow log on locally user right must only be assigned to the Administrators and Users groups.",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220959"
+    },
+    {
+      "check": {
         "key": "SeBackupPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"

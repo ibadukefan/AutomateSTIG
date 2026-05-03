@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 176,
+  "candidate_checks": 177,
   "cases": [
     {
       "check": {
@@ -4026,6 +4026,33 @@
     },
     {
       "check": {
+        "key": "SeInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The \"Allow log on locally\" user right must only be assigned to the Administrators and Users groups.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeInteractiveLogonRight": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeInteractiveLogonRight": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253482"
+    },
+    {
+      "check": {
         "key": "SeBackupPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -4758,5 +4785,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 176
+  "validated_candidates": 177
 }

@@ -331,17 +331,18 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                 }
 
         administrators_only_right_match = re.search(
-            r'If\s+any\s+groups\s+or\s+accounts\s+other\s+than\s+the\s+following\s+are\s+granted\s+the\s+"([^"]+)"\s+user\s+right,\s+this\s+is\s+a\s+finding:\s*\n\s*Administrators\s*(?:\n|\Z)',
+            r'If\s+any\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups)\s+other\s+than\s+the\s+following\s+are\s+granted\s+the\s+"([^"]+)"\s+user\s+right,\s+this\s+is\s+a\s+finding:\s*\n\s*-?\s*Administrators\s*(?:\n|\Z)',
             content,
             re.IGNORECASE,
         )
         administrators_only_fix = re.search(
-            r'User\s+Rights\s+Assignment\s*>>\s*"?([^"\n]+?)"?\s+to\s+only\s+include\s+the\s+following\s+groups\s+or\s+accounts:\s*\n\s*Administrators\s*(?:\n|\Z)',
+            r'User\s+Rights\s+Assignment\s*>>\s*"?([^"\n]+?)"?\s+to\s+(?:only\s+include|include\s+only)\s+the\s+following\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups):\s*\n\s*-?\s*Administrators\s*(?:\n|\Z)',
             fix_text,
             re.IGNORECASE,
         )
         administrators_only_right_keys = {
             'back up files and directories': 'SeBackupPrivilege',
+            'allow log on locally': 'SeInteractiveLogonRight',
             'create a pagefile': 'SeCreatePagefilePrivilege',
             'create symbolic links': 'SeCreateSymbolicLinkPrivilege',
             'debug programs': 'SeDebugPrivilege',

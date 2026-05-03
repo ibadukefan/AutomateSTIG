@@ -198,6 +198,20 @@
     },
     {
       "check": {
+        "key": "SeInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Allow log on locally user right must only be assigned to the Administrators group.",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205676"
+    },
+    {
+      "check": {
         "name": "Fax",
         "should_be_installed": false,
         "type": "windows_feature"

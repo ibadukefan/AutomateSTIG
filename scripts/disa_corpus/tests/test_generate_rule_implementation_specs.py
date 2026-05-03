@@ -244,6 +244,27 @@ Administrators'''
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeCreatePagefilePrivilege'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '*S-1-5-32-544'})
 
+    def test_infers_user_right_candidate_when_accounts_or_groups_only_administrators_are_allowed(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254493',
+            'title': 'Windows Server 2022 Allow log on locally user right must only be assigned to the Administrators group.',
+            'check_content': '''Verify the effective setting in Local Group Policy Editor.
+
+Run "gpedit.msc".
+
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If any accounts or groups other than the following are granted the "Allow log on locally" user right, this is a finding:
+
+- Administrators''',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Allow log on locally to include only the following accounts or groups:
+
+- Administrators'''
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeInteractiveLogonRight'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '*S-1-5-32-544'})
+
     def test_infers_required_user_right_candidate_from_sid_parenthetical_plural(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254422',
