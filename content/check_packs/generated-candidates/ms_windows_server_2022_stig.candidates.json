@@ -1035,6 +1035,34 @@
     },
     {
       "check": {
+        "key": "Maximum lifetime for user ticket renewal",
+        "section": "Kerberos Policy",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 Kerberos policy user ticket renewal maximum lifetime must be limited to seven days or less.",
+      "expected": {
+        "type": "less_or_equal",
+        "value": 7
+      },
+      "platform": "windows",
+      "vuln_id": "V-254389"
+    },
+    {
+      "check": {
+        "key": "Maximum tolerance for computer clock synchronization",
+        "section": "Kerberos Policy",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 computer clock synchronization tolerance must be limited to five minutes or less.",
+      "expected": {
+        "type": "less_or_equal",
+        "value": 5
+      },
+      "platform": "windows",
+      "vuln_id": "V-254390"
+    },
+    {
+      "check": {
         "setting": "Success",
         "subcategory": "Computer Account Management",
         "type": "audit_policy"

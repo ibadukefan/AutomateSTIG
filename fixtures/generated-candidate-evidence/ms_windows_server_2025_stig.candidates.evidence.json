@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 202,
+  "candidate_checks": 204,
   "cases": [
     {
       "check": {
@@ -2748,6 +2748,60 @@
     },
     {
       "check": {
+        "key": "Maximum lifetime for user ticket renewal",
+        "section": "Kerberos Policy",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 Kerberos policy user ticket renewal maximum lifetime must be limited to seven days or less.",
+      "evidence_type": "windows_security_policy_less_or_equal",
+      "expected": {
+        "type": "less_or_equal",
+        "value": 7
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Kerberos Policy\\Maximum lifetime for user ticket renewal": 8
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Kerberos Policy\\Maximum lifetime for user ticket renewal": 7
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278136"
+    },
+    {
+      "check": {
+        "key": "Maximum tolerance for computer clock synchronization",
+        "section": "Kerberos Policy",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 computer clock synchronization tolerance must be limited to five minutes or less.",
+      "evidence_type": "windows_security_policy_less_or_equal",
+      "expected": {
+        "type": "less_or_equal",
+        "value": 5
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Kerberos Policy\\Maximum tolerance for computer clock synchronization": 6
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Kerberos Policy\\Maximum tolerance for computer clock synchronization": 5
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278137"
+    },
+    {
+      "check": {
         "setting": "Success",
         "subcategory": "Computer Account Management",
         "type": "audit_policy"
@@ -5452,5 +5506,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 202
+  "validated_candidates": 204
 }

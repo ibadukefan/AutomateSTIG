@@ -2386,31 +2386,33 @@
       "vuln_id": "V-254388"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254389",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254389r1051104_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Kerberos policy user ticket renewal maximum lifetime must be limited to seven days or less.",
-      "tracking_issue": "TODO-V-254389",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/005f1c728455ec0925e3a1720409429d0291d15e312744fe666a5d2ce3308a12/U_MS_Windows_Server_2022_V2R5_STIG.zip"
       ],
       "vuln_id": "V-254389"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254390",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254390r1051105_rule",
       "severity": "medium",
       "title": "Windows Server 2022 computer clock synchronization tolerance must be limited to five minutes or less.",
-      "tracking_issue": "TODO-V-254390",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/005f1c728455ec0925e3a1720409429d0291d15e312744fe666a5d2ce3308a12/U_MS_Windows_Server_2022_V2R5_STIG.zip"
       ],
       "vuln_id": "V-254390"
