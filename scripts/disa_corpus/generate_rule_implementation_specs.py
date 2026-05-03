@@ -1282,7 +1282,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     if expected_match:
         expected_lines = [line.strip() for line in expected_match.group('body').splitlines() if line.strip()]
         expected_lines = [line for line in expected_lines if not line.startswith(('$', '#', '>'))]
-        expected_result_is_required = re.search(r'output\s+does\s+not\s+match\s+the\s+expected\s+result', content, re.IGNORECASE)
+        expected_result_is_required = re.search(r'output\s+(?:of\s+the\s+command\s+)?does\s+not\s+match\s+the\s+expected\s+result', content, re.IGNORECASE)
         xpath_empty_result_is_required = expected_lines == ['XPath set is empty'] and re.search(
             r'If\s+any\s+connectors\s+are\s+returned,?\s+this\s+is\s+a\s+finding',
             content,

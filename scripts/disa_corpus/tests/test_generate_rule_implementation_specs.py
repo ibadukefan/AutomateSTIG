@@ -1049,6 +1049,31 @@ If any connectors are returned, this is a finding.'''
             'description': 'The vCenter Lookup service must disable stack tracing.',
         })
 
+    def test_infers_xmllint_expected_xml_element_when_output_of_command_must_match(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259038',
+            'title': 'The vCenter Lookup service cookies must have secure flag set.',
+            'check_content': '''At the command prompt, run the following command:
+
+# xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=".*"//g' | xmllint --xpath '/web-app/session-config/cookie-config/secure' -
+
+Expected result:
+
+<secure>true</secure>
+
+If the output of the command does not match the expected result, this is a finding.'''
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259038',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed \'s/xmlns=".*"//g\' | xmllint --xpath \'/web-app/session-config/cookie-config/secure\' -',
+            },
+            'expected': {'type': 'equals', 'value': '<secure>true</secure>'},
+            'description': 'The vCenter Lookup service cookies must have secure flag set.',
+        })
+
     def test_skips_xmllint_xpath_empty_expected_result_with_malformed_xpath(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-259047',

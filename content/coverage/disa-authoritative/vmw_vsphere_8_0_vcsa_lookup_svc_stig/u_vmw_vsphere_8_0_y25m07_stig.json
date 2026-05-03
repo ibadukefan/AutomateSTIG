@@ -18,16 +18,17 @@
       "vuln_id": "V-259037"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259038",
+      "check_pack": "generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259038r960792_rule",
       "severity": "medium",
       "title": "The vCenter Lookup service cookies must have secure flag set.",
-      "tracking_issue": "TODO-V-259038",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
         "content/disa-corpus/artifacts/825130530366e146f4914987b7b6af9d693f6ba8d237b3a59f61577b1abeb753/U_VMW_vSphere_8-0_Y25M07_STIG.zip"
       ],
       "vuln_id": "V-259038"

@@ -15,6 +15,19 @@
     },
     {
       "check": {
+        "command": "xmllint --format /usr/lib/vmware-lookupsvc/conf/web.xml | sed 's/xmlns=\".*\"//g' | xmllint --xpath '/web-app/session-config/cookie-config/secure' -",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service cookies must have secure flag set.",
+      "expected": {
+        "type": "equals",
+        "value": "<secure>true</secure>"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259038"
+    },
+    {
+      "check": {
         "command": "find /var/log/vmware/lookupsvc/ -xdev ! -name lookupsvc-init.log ! -name lookupsvc-prestart.log -type f -a '(' -perm -o+w -o -not -user lookupsvc -o -not -group lookupsvc ')' -exec ls -ld {} \\;",
         "type": "command_output"
       },
