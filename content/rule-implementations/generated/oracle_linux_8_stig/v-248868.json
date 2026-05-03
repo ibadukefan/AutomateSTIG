@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/ssh/sshd_config",
+      "pattern": "RekeyLimit 1G 1h",
+      "type": "file_content"
+    },
+    "description": "OL 8 must force a frequent session key renegotiation for SSH connections to the server.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248868"
+  },
   "check_content_excerpt": "Verify the SSH server is configured to force frequent session key renegotiation with the following command:\n\n$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*rekeylimit'\n\nRekeyLimit 1G 1h\n\nIf \"RekeyLimit\" does not have a maximum data amount and maximum time defined or is missing or commented out, this is a finding.\n\nIf conflicting results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the system to force a frequent session key renegotiation for SSH connections to the server by adding or modifying the following line in the \"/etc/ssh/sshd_config\" file: \n \nRekeyLimit 1G 1h \n \nThe SSH daemon must be restarted for the settings to take effect. \n \n$ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-248868r958408_rule",
   "severity": "medium",

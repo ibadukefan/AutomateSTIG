@@ -3274,6 +3274,20 @@
       "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
+        "pattern": "RekeyLimit 1G 1h",
+        "type": "file_content"
+      },
+      "description": "OL 9 must force a frequent session key renegotiation for SSH connections to the server.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271705"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
         "pattern": "PermitEmptyPasswords no",
         "type": "file_content"
       },

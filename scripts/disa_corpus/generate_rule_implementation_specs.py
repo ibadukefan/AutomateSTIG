@@ -632,7 +632,7 @@ def _sshd_config_candidate(rule: dict) -> dict | None:
     if not keyword_match:
         return None
     keyword = keyword_match.group(1)
-    expected_match = re.search(rf'^\s*({re.escape(keyword)}\s+[^\s\n\r]+)\s*$', content, re.IGNORECASE | re.MULTILINE)
+    expected_match = re.search(rf'^\s*({re.escape(keyword)}\s+[^\n\r]+?)\s*$', content, re.IGNORECASE | re.MULTILINE)
     if not expected_match:
         return None
     return {

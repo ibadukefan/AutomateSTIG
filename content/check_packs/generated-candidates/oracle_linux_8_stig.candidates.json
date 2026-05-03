@@ -3561,6 +3561,20 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "RekeyLimit 1G 1h",
+        "type": "file_content"
+      },
+      "description": "OL 8 must force a frequent session key renegotiation for SSH connections to the server.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248868"
+    },
+    {
+      "check": {
         "expected_status": "disabled",
         "name": "ctrl-alt-del",
         "type": "service"

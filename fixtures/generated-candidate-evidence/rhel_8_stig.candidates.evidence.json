@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 277,
+  "candidate_checks": 278,
   "cases": [
     {
       "check": {
@@ -5157,6 +5157,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/ssh/sshd_config",
+        "pattern": "RekeyLimit 1G 1h",
+        "type": "file_content"
+      },
+      "description": "RHEL 8 must force a frequent session key renegotiation for SSH connections to the server.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/ssh/sshd_config": "before\nRekeyLimit 1G 1h\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230527"
+    },
+    {
+      "check": {
         "expected_status": "disabled",
         "name": "ctrl-alt-del",
         "type": "service"
@@ -7464,5 +7491,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 277
+  "validated_candidates": 278
 }

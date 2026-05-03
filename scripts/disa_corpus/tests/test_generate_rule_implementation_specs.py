@@ -1902,19 +1902,35 @@ If "/etc/group-" file does not have an owner of "root", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/etc/group-', 'owner': 'root', 'group': None, 'mode': None})
         self.assertEqual(candidate['expected'], {'type': 'is_true'})
 
-    def test_infers_linux_sshd_config_keyword_candidate(self):
+    def test_infers_linux_sshd_config_candidate_from_runtime_dump(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230555',
-            'title': 'RHEL 8 remote X connections for interactive users must be disabled.',
+            'title': 'RHEL 8 remote X connections for interactive users must be disabled unless to fulfill documented and validated operational requirements.',
             'check_content': '''Verify X11Forwarding is disabled with the following command:
 
-$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\r' | tr '\n' ' ' | xargs sudo grep -iH '^\\s*x11forwarding'
-
+$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*x11forwarding'
 X11Forwarding no
 
-If the "X11Forwarding" keyword is set to "yes" and is not documented with the information system security officer (ISSO) as an operational requirement or is missing, this is a finding.'''
+If the "X11Forwarding" keyword is set to "yes", is missing, or is commented out, this is a finding.'''
         }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
         self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/ssh/sshd_config', 'pattern': 'X11Forwarding no', 'is_regex': False})
+        self.assertEqual(candidate['expected'], {'type': 'contains'})
+
+    def test_infers_linux_sshd_config_candidate_with_multi_token_expected_line(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230527',
+            'title': 'RHEL 8 must force a frequent session key renegotiation for SSH connections to the server.',
+            'check_content': '''Verify the SSH server is configured to force frequent session key renegotiation with the following command:
+
+$ sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iH '^\\s*rekeylimit'
+RekeyLimit 1G 1h
+
+If "RekeyLimit" is not set to "1G 1h", is missing, or is commented out, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/ssh/sshd_config', 'pattern': 'RekeyLimit 1G 1h', 'is_regex': False})
         self.assertEqual(candidate['expected'], {'type': 'contains'})
 
     def test_infers_linux_grep_expected_line_candidate(self):
