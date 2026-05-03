@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 125,
+  "candidate_checks": 126,
   "cases": [
     {
       "check": {
@@ -2964,6 +2964,33 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "ufw",
+        "type": "service"
+      },
+      "description": "The Ubuntu operating system must have an application firewall enabled.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "ufw": "disabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "ufw": "running"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238374"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0755",
         "owner": null,
@@ -3459,5 +3486,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 125
+  "validated_candidates": 126
 }

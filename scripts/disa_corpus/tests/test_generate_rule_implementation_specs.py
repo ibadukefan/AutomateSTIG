@@ -1437,6 +1437,20 @@ If the command above returns "inactive", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'auditd', 'expected_status': 'running'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
 
+    def test_infers_linux_service_running_candidate_from_systemctl_status_grep_active_pipeline(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-238374',
+            'title': 'The Ubuntu operating system must have an application firewall enabled.',
+            'check_content': '''Verify the Uncomplicated Firewall is enabled on the system by running the following command:
+
+$ systemctl status ufw.service | grep -i "active:"
+Active: active (exited) since Mon 2016-10-17 12:30:29 CDT; 1s ago
+
+If the above command returns the status as "inactive", this is a finding.'''
+        }, 'Canonical_Ubuntu_20-04_LTS_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'ufw', 'expected_status': 'running'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
+
     def test_infers_linux_service_stopped_candidate_from_systemctl_status_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230502',

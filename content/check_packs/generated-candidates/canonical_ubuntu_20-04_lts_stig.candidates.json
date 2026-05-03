@@ -1452,6 +1452,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "ufw",
+        "type": "service"
+      },
+      "description": "The Ubuntu operating system must have an application firewall enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238374"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0755",
         "owner": null,

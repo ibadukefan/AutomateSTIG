@@ -716,7 +716,12 @@ def _service_candidate(rule: dict) -> dict | None:
     raw_name = match.group(2).strip('"\'')
     masked_status = command == 'status' and re.search(r'loaded:\s+masked\b', lower) and re.search(r'(?:loaded\s+and\s+)?not\s+masked', lower)
     masked_show = command == 'show' and 'loadstate=masked' in lower and 'unitfilestate=masked' in lower and re.search(r'(?:loaded\s+or\s+active,?\s+and\s+is\s+)?not\s+masked', lower)
-    sample_lines, _finding_text = _authoritative_sample_block_after_command(content, match.end())
+    command_end = match.end()
+    if command == 'status':
+        line_end = content.find('\n', match.end())
+        if line_end != -1 and re.search(r'\|\s*grep\b[^\n]*(?:active:|Active:)', content[match.end():line_end], re.IGNORECASE):
+            command_end = line_end
+    sample_lines, _finding_text = _authoritative_sample_block_after_command(content, command_end)
     masked_is_enabled = (
         command == 'is-enabled'
         and sample_lines == ['masked']
@@ -745,7 +750,10 @@ def _service_candidate(rule: dict) -> dict | None:
             expected_status = 'stopped'
         elif (
             any(re.match(r'Active:\s+active\b', line, re.IGNORECASE) for line in sample_lines)
-            and re.search(rf'If\s+["“]?{re.escape(raw_name)}["”]?\s+is\s+["“]?inactive["”]?', content, re.IGNORECASE)
+            and (
+                re.search(rf'If\s+["“]?{re.escape(raw_name)}["”]?\s+is\s+["“]?inactive["”]?', content, re.IGNORECASE)
+                or re.search(r'If\s+the\s+(?:above\s+)?command\s+returns\s+(?:the\s+)?status\s+as\s+["“]inactive["”]', content, re.IGNORECASE)
+            )
         ):
             expected_status = 'running'
         elif re.search(r'(?:does\s+not\s+show\s+a\s+status\s+of|is\s+not)\s+["“]?(?:active|enabled)["”]?\s+and\s+["“]?running["”]?', lower) or re.search(r'is\s+not\s+enabled\s+and\s+(?:active|running)', lower):
