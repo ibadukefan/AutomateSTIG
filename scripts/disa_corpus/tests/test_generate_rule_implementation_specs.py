@@ -579,6 +579,24 @@ $ sudo sysctl --system'''
         self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/usr/lib/systemd/system/rescue.service', 'pattern': 'sulogin-shell', 'is_regex': False})
         self.assertEqual(candidate['expected'], {'type': 'contains'})
 
+    def test_infers_sles_zypper_gpgcheck_enabled_from_off_finding_and_fix_line(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234852',
+            'title': 'The SUSE operating system tool zypper must have gpgcheck enabled.',
+            'check_content': '''Verify the SLES 12 zypper tool has gpgcheck enabled with the following command:
+
+> grep -i '^gpgcheck' /etc/zypp/zypp.conf
+
+If "gpgcheck" is set to "off", this is a finding.''',
+            'fix_text': '''Configure the SLES 12 zypper tool to enable gpgcheck.
+
+Add or modify the following line in the "/etc/zypp/zypp.conf" file or remove the line completely ensuring that the default zypper setting is enabled:
+
+gpgcheck = on'''
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/zypp/zypp.conf', 'pattern': 'gpgcheck = on', 'is_regex': False})
+        self.assertEqual(candidate['expected'], {'type': 'contains'})
+
     def test_infers_rpm_verify_command_as_empty_output_requirement(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271481',

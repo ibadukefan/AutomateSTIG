@@ -499,6 +499,24 @@ def _grep_file_match(content: str):
 
 def _file_content_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    zypper_gpgcheck = re.search(
+        r'\bgrep\s+-i\s+["\']?\^?gpgcheck["\']?\s+(?P<path>/etc/zypp/zypp\.conf)\b',
+        content,
+        re.IGNORECASE,
+    )
+    if (
+        zypper_gpgcheck
+        and re.search(r'if\s+["“]?gpgcheck["”]?\s+is\s+set\s+to\s+["“]?off["”]?,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'^\s*gpgcheck\s*=\s*on\s*$', fix_text, re.IGNORECASE | re.MULTILINE)
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'file_content', 'path': zypper_gpgcheck.group('path'), 'pattern': 'gpgcheck = on', 'is_regex': False},
+            'expected': {'type': 'contains'},
+            'description': rule.get('title', ''),
+        }
     grep = _grep_file_match(content)
     cat_pipe_grep = None
     if not grep:

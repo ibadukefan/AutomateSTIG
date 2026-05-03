@@ -244,6 +244,20 @@
     {
       "check": {
         "is_regex": false,
+        "path": "/etc/zypp/zypp.conf",
+        "pattern": "gpgcheck = on",
+        "type": "file_content"
+      },
+      "description": "The SUSE operating system tool zypper must have gpgcheck enabled.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-234852"
+    },
+    {
+      "check": {
+        "is_regex": false,
         "path": "/etc/pam_pkcs11/pam_pkcs11.conf",
         "pattern": "| awk '/pkcs11_module coolkey {/,/}/' /etc/pam_pkcs11/pam_pkcs11.conf | grep cert_policy",
         "type": "file_content"

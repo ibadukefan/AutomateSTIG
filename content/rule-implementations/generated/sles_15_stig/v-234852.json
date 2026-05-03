@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "is_regex": false,
+      "path": "/etc/zypp/zypp.conf",
+      "pattern": "gpgcheck = on",
+      "type": "file_content"
+    },
+    "description": "The SUSE operating system tool zypper must have gpgcheck enabled.",
+    "expected": {
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234852"
+  },
   "check_content_excerpt": "Verify the SLES 12 zypper tool has gpgcheck enabled with the following command: \n\n     > grep -i '^gpgcheck' /etc/zypp/zypp.conf\n\nIf \"gpgcheck\" is set to \"off\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SLES 12 zypper tool to enable gpgcheck.\n\nAdd or modify the following line in the \"/etc/zypp/zypp.conf\" file or remove the line completely ensuring that the default zypper setting is enabled:\n\ngpgcheck = on",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_content",
   "remediation": "planned",
   "rule_id": "SV-234852r1190820_rule",
   "severity": "high",
