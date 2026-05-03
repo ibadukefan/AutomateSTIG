@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/lib/vmware/secureboot/bin/secureBoot.py -s",
+      "type": "command_output"
+    },
+    "description": "The ESXi host must enable Secure Boot.",
+    "expected": {
+      "type": "equals",
+      "value": "Enabled"
+    },
+    "platform": "generic",
+    "vuln_id": "V-256430"
+  },
   "check_content_excerpt": "From an ESXi shell, run the following command:\n\n# /usr/lib/vmware/secureboot/bin/secureBoot.py -s\n\nIf the output is not \"Enabled\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "Enabled"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From an ESXi shell, run the following command:\n\n# /usr/lib/vmware/secureboot/bin/secureBoot.py -c\n\nIf the output indicates that Secure Boot cannot be enabled, correct the discrepancies and try again.\n\nIf the discrepancies cannot be rectified, this finding is downgraded to a CAT III.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-256430r959010_rule",
   "severity": "medium",

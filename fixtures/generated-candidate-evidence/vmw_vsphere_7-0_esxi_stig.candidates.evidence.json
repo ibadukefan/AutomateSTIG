@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 14,
+  "candidate_checks": 15,
   "cases": [
     {
       "check": {
@@ -156,6 +156,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-256394"
+    },
+    {
+      "check": {
+        "command": "/usr/lib/vmware/secureboot/bin/secureBoot.py -s",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must enable Secure Boot.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Enabled"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/secureboot/bin/secureBoot.py -s": "unexpected-Enabled"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/lib/vmware/secureboot/bin/secureBoot.py -s": "Enabled"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256430"
     },
     {
       "check": {
@@ -371,5 +397,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_7-0_esxi_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "VMW_vSphere_7-0_ESXi_STIG",
-  "validated_candidates": 14
+  "validated_candidates": 15
 }

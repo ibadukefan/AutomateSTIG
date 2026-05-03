@@ -863,16 +863,17 @@
       "vuln_id": "V-256429"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-256430",
+      "check_pack": "generated-candidates/vmw_vsphere_7-0_esxi_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-256430r959010_rule",
       "severity": "medium",
       "title": "The ESXi host must enable Secure Boot.",
-      "tracking_issue": "TODO-V-256430",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/vmw_vsphere_7-0_esxi_stig.candidates.json",
         "content/disa-corpus/artifacts/39f3743471023ece7c96ca16ad1c1e132973a65a7151ce9ecbe1aba44b2eeb6f/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
       ],
       "vuln_id": "V-256430"

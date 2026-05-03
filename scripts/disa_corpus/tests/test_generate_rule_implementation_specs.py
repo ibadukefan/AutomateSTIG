@@ -612,6 +612,20 @@ If the command produces any output, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep "^vmx\\.log" /etc/vmware/config'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_esxi_absolute_command_when_output_is_not_literal_is_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-256430',
+            'title': 'The ESXi host must enable Secure Boot.',
+            'check_content': '''From an ESXi shell, run the following command:
+
+# /usr/lib/vmware/secureboot/bin/secureBoot.py -s
+
+If the output is not "Enabled", this is a finding.'''
+        }, 'VMW_vSphere_7-0_ESXi_STIG')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': '/usr/lib/vmware/secureboot/bin/secureBoot.py -s'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Enabled'})
+
     def test_infers_quoted_netsh_portproxy_command_when_displays_any_results_is_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257593',

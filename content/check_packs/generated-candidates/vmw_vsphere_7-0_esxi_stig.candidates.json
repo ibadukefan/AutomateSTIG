@@ -80,6 +80,19 @@
     },
     {
       "check": {
+        "command": "/usr/lib/vmware/secureboot/bin/secureBoot.py -s",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must enable Secure Boot.",
+      "expected": {
+        "type": "equals",
+        "value": "Enabled"
+      },
+      "platform": "generic",
+      "vuln_id": "V-256430"
+    },
+    {
+      "check": {
         "command": "/usr/lib/vmware/openssh/bin/sshd -T|grep allowtcpforwarding",
         "type": "command_output"
       },

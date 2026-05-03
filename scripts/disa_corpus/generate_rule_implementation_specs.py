@@ -1136,7 +1136,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         }
 
     result_match = re.search(
-        r'If\s+the\s+(?:result\s+is\s+not|command\s+does\s+not\s+return)\s+["“]([^"”\n]+)["”]',
+        r'If\s+the\s+(?:result\s+is\s+not|output\s+is\s+not|command\s+does\s+not\s+return)\s+["“]([^"”\n]+)["”]',
         content,
         re.IGNORECASE,
     )
