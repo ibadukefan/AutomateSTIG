@@ -1177,6 +1177,20 @@ If network interfaces are found on the system in promiscuous mode and their use 
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'telnet', 'expected_status': 'disabled'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
 
+    def test_infers_linux_service_disabled_candidate_from_systemctl_is_enabled_masked_output(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271639',
+            'title': 'OL 9 file system automount function must be disabled unless required.',
+            'check_content': '''Verify that OL 9 file system automount function has been disabled and masked with the following command:
+
+$ systemctl is-enabled  autofs
+masked
+
+If the returned value is not "masked" and is not documented as operational requirement with the information system security officer (ISSO), this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'autofs', 'expected_status': 'disabled'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
+
     def test_infers_linux_service_running_candidate_when_systemctl_is_active_returns_inactive_is_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270657',

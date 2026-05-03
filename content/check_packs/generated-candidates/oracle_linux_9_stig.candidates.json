@@ -2566,6 +2566,20 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "autofs",
+        "type": "service"
+      },
+      "description": "OL 9 file system automount function must be disabled unless required.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271639"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/dev/sda1",
         "pattern": "on /boot type xfs (rw,nodev,relatime,seclabel,attr2)",

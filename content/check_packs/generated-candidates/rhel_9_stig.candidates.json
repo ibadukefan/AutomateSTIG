@@ -420,6 +420,20 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "autofs",
+        "type": "service"
+      },
+      "description": "RHEL 9 file system automount function must be disabled unless required.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257849"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/home",
         "pattern": "tmpfs on /home type xfs (rw,nodev,nosuid,noexec,seclabel)",

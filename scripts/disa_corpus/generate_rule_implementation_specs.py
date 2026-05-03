@@ -632,9 +632,15 @@ def _service_candidate(rule: dict) -> dict | None:
     raw_name = match.group(2).strip('"\'')
     masked_status = command == 'status' and re.search(r'loaded:\s+masked\b', lower) and re.search(r'(?:loaded\s+and\s+)?not\s+masked', lower)
     masked_show = command == 'show' and 'loadstate=masked' in lower and 'unitfilestate=masked' in lower and re.search(r'(?:loaded\s+or\s+active,?\s+and\s+is\s+)?not\s+masked', lower)
+    sample_lines, _finding_text = _authoritative_sample_block_after_command(content, match.end())
+    masked_is_enabled = (
+        command == 'is-enabled'
+        and sample_lines == ['masked']
+        and re.search(r'returned\s+value\s+is\s+not\s+["“]masked["”]', lower)
+    )
     if raw_name.endswith('.target') and not masked_status:
         return None
-    if 'masked' in lower and not masked_status and not masked_show:
+    if 'masked' in lower and not masked_status and not masked_show and not masked_is_enabled:
         return None
     if '.' in raw_name and not raw_name.endswith(('.service', '.target')):
         return None
@@ -644,6 +650,8 @@ def _service_candidate(rule: dict) -> dict | None:
             expected_status = 'disabled'
         else:
             return None
+    elif command == 'is-enabled' and masked_is_enabled:
+        expected_status = 'disabled'
     elif command == 'status':
         if re.search(r'if\s+["“][^"”]+["”]\s+is\s+active\s+and\s+is\s+not\s+configured\s+to\b', lower):
             return None

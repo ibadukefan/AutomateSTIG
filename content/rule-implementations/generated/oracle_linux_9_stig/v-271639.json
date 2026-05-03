@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "disabled",
+      "name": "autofs",
+      "type": "service"
+    },
+    "description": "OL 9 file system automount function must be disabled unless required.",
+    "expected": {
+      "type": "equals",
+      "value": "disabled"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271639"
+  },
   "check_content_excerpt": "Verify that OL 9 file system automount function has been disabled and masked with the following command:\n\n$ systemctl is-enabled  autofs\nmasked\n\nIf the returned value is not \"masked\" and is not documented as operational requirement with the information system security officer (ISSO), this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "disabled"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to disable and mask the ability to automount devices.\n\nThe autofs service can be disabled and masked with the following command:\n\n$ sudo systemctl mask --now autofs.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-271639r1091629_rule",
   "severity": "medium",

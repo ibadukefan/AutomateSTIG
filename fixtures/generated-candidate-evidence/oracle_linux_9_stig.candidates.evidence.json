@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 382,
+  "candidate_checks": 383,
   "cases": [
     {
       "check": {
@@ -5041,6 +5041,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271638"
+    },
+    {
+      "check": {
+        "expected_status": "disabled",
+        "name": "autofs",
+        "type": "service"
+      },
+      "description": "OL 9 file system automount function must be disabled unless required.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "autofs": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "autofs": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271639"
     },
     {
       "check": {
@@ -10544,5 +10571,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 382
+  "validated_candidates": 383
 }
