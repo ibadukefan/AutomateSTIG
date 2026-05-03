@@ -2841,16 +2841,17 @@
       "vuln_id": "V-278166"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278167",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278167r1182140_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Allow log on through Remote Desktop Services\" user right must only be assigned to the Administrators group on domain controllers.",
-      "tracking_issue": "TODO-V-278167",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278167"
@@ -4014,16 +4015,17 @@
       "vuln_id": "V-278242"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-278243",
+      "check_pack": "generated-candidates/ms_windows_server_2025_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-278243r1182210_rule",
       "severity": "medium",
       "title": "The Windows Server 2025 \"Allow log on locally\" user right must only be assigned to the Administrators group.",
-      "tracking_issue": "TODO-V-278243",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
         "content/disa-corpus/artifacts/60d7a5abd433d989578c3d1fed5c0fa5ca89009e42a00549306cf4774df410d1/U_MS_Windows_Server_2025_V1R1_STIG.zip"
       ],
       "vuln_id": "V-278243"

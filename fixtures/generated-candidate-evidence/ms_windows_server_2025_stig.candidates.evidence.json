@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 199,
+  "candidate_checks": 201,
   "cases": [
     {
       "check": {
@@ -2937,6 +2937,33 @@
     },
     {
       "check": {
+        "key": "SeRemoteInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Allow log on through Remote Desktop Services\" user right must only be assigned to the Administrators group on domain controllers.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRemoteInteractiveLogonRight": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRemoteInteractiveLogonRight": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278167"
+    },
+    {
+      "check": {
         "key": "SeDenyNetworkLogonRight",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -4638,6 +4665,33 @@
     },
     {
       "check": {
+        "key": "SeInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 \"Allow log on locally\" user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeInteractiveLogonRight": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeInteractiveLogonRight": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278243"
+    },
+    {
+      "check": {
         "key": "SeBackupPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -5371,5 +5425,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 199
+  "validated_candidates": 201
 }

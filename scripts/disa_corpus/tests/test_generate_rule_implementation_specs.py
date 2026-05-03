@@ -265,6 +265,37 @@ If any accounts or groups other than the following are granted the "Allow log on
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeInteractiveLogonRight'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '*S-1-5-32-544'})
 
+    def test_infers_remote_desktop_user_right_when_only_administrators_with_period_are_allowed(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278167',
+            'title': 'The Windows Server 2025 "Allow log on through Remote Desktop Services" user right must only be assigned to the Administrators group on domain controllers.',
+            'check_content': '''This applies to domain controllers, it is not applicable for other systems.
+
+Verify the effective setting in Local Group Policy Editor.
+
+Run gpedit.msc.
+
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If any accounts or groups other than the following are granted the "Allow log on through Remote Desktop Services" user right, this is a finding:
+- Administrators.
+
+For server core installations, run the following command:
+
+Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt
+
+Review the text file.
+
+If any SIDs other than the following are granted the "SeRemoteInteractiveLogonRight" user right, this is a finding:
+
+S-1-5-32-544 (Administrators)''',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Allow log on through Remote Desktop Services to include only the following accounts or groups:
+- Administrators.'''
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeRemoteInteractiveLogonRight'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '*S-1-5-32-544'})
+
     def test_infers_required_user_right_candidate_from_sid_parenthetical_plural(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254422',
