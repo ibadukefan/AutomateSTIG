@@ -1291,7 +1291,12 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         content,
         re.IGNORECASE,
     )
-    if no_output_for_find or no_output_for_explicit_output or no_output_for_command_output or no_output_for_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found:
+    no_output_for_grep_occurrences_return = re.search(r'\b(?:e?grep|grep)\b', command) and re.search(
+        r'if\s+any\s+occurrences\s+of\s+["“][^"”\n]+["”]\s+return\s+from\s+the\s+command,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if no_output_for_find or no_output_for_explicit_output or no_output_for_command_output or no_output_for_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found or no_output_for_grep_occurrences_return:
         return {
             'vuln_id': rule.get('vuln_id', ''),
             'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',

@@ -562,6 +562,19 @@
     },
     {
       "check": {
+        "command": "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/",
+        "type": "command_output"
+      },
+      "description": "OL 8 must require users to reauthenticate for privilege escalation and changing roles.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248582"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sudoers",
         "pattern": "/etc/sudoers.d/ | grep -v '#'",

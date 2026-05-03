@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 167,
+  "candidate_checks": 168,
   "cases": [
     {
       "check": {
@@ -1448,6 +1448,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270706"
+    },
+    {
+      "check": {
+        "command": "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must require users to reauthenticate for privilege escalation or when changing roles.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270707"
     },
     {
       "check": {
@@ -4581,5 +4607,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 167
+  "validated_candidates": 168
 }

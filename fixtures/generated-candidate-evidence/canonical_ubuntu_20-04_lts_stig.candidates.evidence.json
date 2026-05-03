@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 124,
+  "candidate_checks": 125,
   "cases": [
     {
       "check": {
@@ -108,6 +108,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-238207"
+    },
+    {
+      "check": {
+        "command": "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must require users to reauthenticate for privilege escalation or when changing roles.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238208"
     },
     {
       "check": {
@@ -3433,5 +3459,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 124
+  "validated_candidates": 125
 }

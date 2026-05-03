@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 304,
+  "candidate_checks": 305,
   "cases": [
     {
       "check": {
@@ -1153,6 +1153,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248581"
+    },
+    {
+      "check": {
+        "command": "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/",
+        "type": "command_output"
+      },
+      "description": "OL 8 must require users to reauthenticate for privilege escalation and changing roles.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248582"
     },
     {
       "check": {
@@ -8260,5 +8286,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 304
+  "validated_candidates": 305
 }

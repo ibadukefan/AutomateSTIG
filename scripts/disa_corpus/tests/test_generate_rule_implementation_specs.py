@@ -1999,6 +1999,20 @@ If output is produced, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep -i nullok /etc/pam.d/password-auth'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_no_output_candidate_when_grep_occurrences_return_from_command(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270707',
+            'title': 'Ubuntu 24.04 LTS must require users to reauthenticate for privilege escalation or when changing roles.',
+            'check_content': '''Verify the "/etc/sudoers" file has no occurrences of "!authenticate" with the following command:
+
+$ sudo egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/
+
+If any occurrences of "!authenticate" return from the command, this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/"})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_skips_no_output_candidate_when_returned_items_are_qualified(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271901',
