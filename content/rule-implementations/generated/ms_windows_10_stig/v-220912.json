@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "key": "Accounts: Rename guest account",
+      "section": "Security Options",
+      "type": "security_policy"
+    },
+    "description": "The built-in guest account must be renamed.",
+    "expected": {
+      "type": "not_equals",
+      "value": "Guest"
+    },
+    "platform": "windows",
+    "vuln_id": "V-220912"
+  },
   "check_content_excerpt": "Verify the effective setting in Local Group Policy Editor.\nRun \"gpedit.msc\".\n\nNavigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options.\n\nIf the value for \"Accounts: Rename guest account\" is set to \"Guest\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "not_equals",
+    "value": "Guest"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> \"Accounts: Rename guest account\" to a name other than \"Guest\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "security_policy",
   "remediation": "planned",
   "rule_id": "SV-220912r991589_rule",
   "severity": "medium",

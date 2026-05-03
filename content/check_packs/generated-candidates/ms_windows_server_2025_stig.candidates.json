@@ -1786,6 +1786,34 @@
     },
     {
       "check": {
+        "key": "Accounts: Rename administrator account",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 built-in administrator account must be renamed.",
+      "expected": {
+        "type": "not_equals",
+        "value": "Administrator"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278197"
+    },
+    {
+      "check": {
+        "key": "Accounts: Rename guest account",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 built-in guest account must be renamed.",
+      "expected": {
+        "type": "not_equals",
+        "value": "Guest"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278198"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "SCENoApplyLegacyAuditPolicy"

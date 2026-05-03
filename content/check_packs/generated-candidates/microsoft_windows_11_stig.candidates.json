@@ -1500,6 +1500,20 @@
     },
     {
       "check": {
+        "key": "Accounts: Rename guest account",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "The built-in guest account must be renamed.",
+      "expected": {
+        "type": "not_equals",
+        "value": "Guest"
+      },
+      "platform": "windows",
+      "vuln_id": "V-253436"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "SCENoApplyLegacyAuditPolicy"

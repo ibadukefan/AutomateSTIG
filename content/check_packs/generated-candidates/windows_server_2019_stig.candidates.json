@@ -2013,6 +2013,34 @@
     },
     {
       "check": {
+        "key": "Accounts: Rename administrator account",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 built-in administrator account must be renamed.",
+      "expected": {
+        "type": "not_equals",
+        "value": "Administrator"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205909"
+    },
+    {
+      "check": {
+        "key": "Accounts: Rename guest account",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 built-in guest account must be renamed.",
+      "expected": {
+        "type": "not_equals",
+        "value": "Guest"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205910"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters",
         "type": "registry",
         "value_name": "MaximumPasswordAge"

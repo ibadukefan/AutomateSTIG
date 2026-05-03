@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 196,
+  "candidate_checks": 198,
   "cases": [
     {
       "check": {
@@ -3451,6 +3451,60 @@
     },
     {
       "check": {
+        "key": "Accounts: Rename administrator account",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 built-in administrator account must be renamed.",
+      "evidence_type": "windows_security_policy_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": "Administrator"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Accounts: Rename administrator account": "Administrator"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Accounts: Rename administrator account": "unexpected-Administrator"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278197"
+    },
+    {
+      "check": {
+        "key": "Accounts: Rename guest account",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "The Windows Server 2025 built-in guest account must be renamed.",
+      "evidence_type": "windows_security_policy_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": "Guest"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Accounts: Rename guest account": "Guest"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Accounts: Rename guest account": "unexpected-Guest"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-278198"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "SCENoApplyLegacyAuditPolicy"
@@ -5291,5 +5345,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2025_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2025_STIG",
-  "validated_candidates": 196
+  "validated_candidates": 198
 }

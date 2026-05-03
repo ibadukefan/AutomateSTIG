@@ -2182,6 +2182,29 @@ Value4 (or less)''',
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeLockMemoryPrivilege'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_windows_rename_administrator_security_option_not_equals_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278197',
+            'title': 'The Windows Server 2025 built-in administrator account must be renamed.',
+            'check_content': '''This applies to member servers and stand-alone or nondomain-joined systems; it is not applicable for domain controllers.
+
+Verify the effective setting in Local Group Policy Editor. Run "gpedit.msc".
+
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options.
+
+If the value for "Accounts: Rename administrator account" is not set to a value other than "Administrator", this is a finding.
+
+For server core installations, run the following command:
+Secedit /Export /Areas SecurityPolicy /CFG C:\\Path\\FileName.Txt
+
+If "NewAdministratorName" is not something other than "Administrator" in the file, this is a finding.''',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> Accounts: Rename administrator account to a name other than "Administrator".',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Security Options', 'key': 'Accounts: Rename administrator account'})
+        self.assertEqual(candidate['expected'], {'type': 'not_equals', 'value': 'Administrator'})
+
     def test_infers_linux_rpm_verify_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257999',

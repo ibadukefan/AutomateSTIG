@@ -2323,31 +2323,33 @@
       "vuln_id": "V-254446"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254447",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-254447 from source identifier xccdf_mil.disa.stig_group_V-254447.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-254447r991589_rule",
       "severity": "medium",
       "title": "Windows Server 2022 built-in administrator account must be renamed.",
-      "tracking_issue": "TODO-V-254447",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/5459c32c9f0d5581bc9f6d28c451a3ab0b63e4db7c444d5b4c83ca878772f33d/U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-254447"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254448",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-254448 from source identifier xccdf_mil.disa.stig_group_V-254448.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-254448r991589_rule",
       "severity": "medium",
       "title": "Windows Server 2022 built-in guest account must be renamed.",
-      "tracking_issue": "TODO-V-254448",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/5459c32c9f0d5581bc9f6d28c451a3ab0b63e4db7c444d5b4c83ca878772f33d/U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-254448"

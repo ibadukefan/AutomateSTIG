@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 163,
+  "candidate_checks": 164,
   "cases": [
     {
       "check": {
@@ -2892,6 +2892,33 @@
     },
     {
       "check": {
+        "key": "Accounts: Rename guest account",
+        "section": "Security Options",
+        "type": "security_policy"
+      },
+      "description": "The built-in guest account must be renamed.",
+      "evidence_type": "windows_security_policy_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": "Guest"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Accounts: Rename guest account": "Guest"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Security Options\\Accounts: Rename guest account": "unexpected-Guest"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253436"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "SCENoApplyLegacyAuditPolicy"
@@ -4407,5 +4434,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 163
+  "validated_candidates": 164
 }

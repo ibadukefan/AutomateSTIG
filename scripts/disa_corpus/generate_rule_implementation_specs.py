@@ -250,6 +250,26 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
             re.IGNORECASE,
         )
         if not security_option:
+            rename_option = re.search(
+                r'If\s+the\s+value\s+for\s+"(?P<key>Accounts:\s+Rename\s+(?:administrator|guest)\s+account)"\s+is\s+not\s+set\s+to\s+a\s+value\s+other\s+than\s+"(?P<value>Administrator|Guest)",\s+this\s+is\s+a\s+finding',
+                content,
+                re.IGNORECASE,
+            )
+            if not rename_option:
+                rename_option = re.search(
+                    r'If\s+the\s+value\s+for\s+"(?P<key>Accounts:\s+Rename\s+(?:administrator|guest)\s+account)"\s+is\s+set\s+to\s+"(?P<value>Administrator|Guest)",\s+this\s+is\s+a\s+finding',
+                    content,
+                    re.IGNORECASE,
+                )
+            if rename_option:
+                return {
+                    'vuln_id': rule.get('vuln_id', ''),
+                    'platform': 'windows',
+                    'check': {'type': 'security_policy', 'section': 'Security Options', 'key': rename_option.group('key').strip()},
+                    'expected': {'type': 'not_equals', 'value': rename_option.group('value').strip()},
+                    'description': rule.get('title', ''),
+                }
+        if not security_option:
             security_option = re.search(
                 r'Configure\s+the\s+policy\s+value\s+for\s+Computer\s+Configuration\s*>>\s*Windows\s+Settings\s*>>\s*Security\s+Settings\s*>>\s*Local\s+Policies\s*>>\s*Security\s+Options\s*>>\s*"?([^"\n]+?)"?\s+to\s+"(Enabled|Disabled)"\s*\.\s*(?:\n|$)',
                 policy_text,
