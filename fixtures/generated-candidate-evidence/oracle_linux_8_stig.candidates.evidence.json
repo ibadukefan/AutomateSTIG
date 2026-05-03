@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 305,
+  "candidate_checks": 306,
   "cases": [
     {
       "check": {
@@ -7023,6 +7023,33 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "The x86 Ctrl-Alt-Delete key sequence must be disabled on OL 8.",
+      "evidence_type": "linux_service_status",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "fail_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "running"
+        }
+      },
+      "pass_fixture": {
+        "platform": "linux",
+        "services": {
+          "ctrl-alt-del": "disabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248869"
+    },
+    {
+      "check": {
         "command": "grep logout /etc/dconf/db/local.d/*",
         "type": "command_output"
       },
@@ -8286,5 +8313,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 305
+  "validated_candidates": 306
 }

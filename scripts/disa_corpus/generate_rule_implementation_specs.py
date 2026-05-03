@@ -740,7 +740,10 @@ def _service_candidate(rule: dict) -> dict | None:
         match = next((m for m in matches if m.group(1) == 'is-active'), matches[0])
     command = match.group(1)
     raw_name = match.group(2).strip('"\'')
-    masked_status = command == 'status' and re.search(r'loaded:\s+masked\b', lower) and re.search(r'(?:loaded\s+and\s+)?not\s+masked', lower)
+    masked_status = command == 'status' and re.search(r'loaded:\s+masked\b', lower) and (
+        re.search(r'(?:loaded\s+and\s+)?not\s+masked', lower)
+        or re.search(r'loaded:\s+value\s+is\s+not\s+set\s+to\s+["“]masked["”]', lower)
+    )
     masked_show = command == 'show' and 'loadstate=masked' in lower and 'unitfilestate=masked' in lower and re.search(r'(?:loaded\s+or\s+active,?\s+and\s+is\s+)?not\s+masked', lower)
     command_end = match.end()
     if command == 'status':

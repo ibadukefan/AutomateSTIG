@@ -1570,6 +1570,21 @@ If the "ctrl-alt-del.target" is not masked, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'ctrl-alt-del', 'expected_status': 'disabled'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
 
+    def test_infers_linux_masked_target_status_candidate_when_loaded_value_not_masked_is_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248869',
+            'title': 'The x86 Ctrl-Alt-Delete key sequence must be disabled on OL 8.',
+            'check_content': '''Verify OL 8 is not configured to reboot the system when Ctrl-Alt-Delete is pressed with the following command:
+
+$ sudo systemctl status ctrl-alt-del.target | grep Loaded:
+
+Loaded: masked (Reason: Unit ctrl-alt-del.target is masked.)
+
+If the "ctrl-alt-del.target" Loaded: value is not set to "masked", this is a finding.'''
+        }, 'Oracle_Linux_8_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'ctrl-alt-del', 'expected_status': 'disabled'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'disabled'})
+
     def test_infers_linux_masked_service_from_systemctl_show_loadstate_and_unitfilestate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257818',

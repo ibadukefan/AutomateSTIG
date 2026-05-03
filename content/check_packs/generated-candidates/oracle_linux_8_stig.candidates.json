@@ -3561,6 +3561,20 @@
     },
     {
       "check": {
+        "expected_status": "disabled",
+        "name": "ctrl-alt-del",
+        "type": "service"
+      },
+      "description": "The x86 Ctrl-Alt-Delete key sequence must be disabled on OL 8.",
+      "expected": {
+        "type": "equals",
+        "value": "disabled"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248869"
+    },
+    {
+      "check": {
         "command": "grep logout /etc/dconf/db/local.d/*",
         "type": "command_output"
       },
