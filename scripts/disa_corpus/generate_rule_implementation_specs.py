@@ -249,6 +249,21 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
     policy_text = '\n'.join(part for part in (content, fix_text, title) if part)
     has_secedit_context = bool(re.search(r'\bsecedit\b', content, re.IGNORECASE))
 
+    if 'Account Policies >> Kerberos Policy' in policy_text:
+        kerberos_option = re.search(
+            r'If\s+the\s+"([^"]+)"\s+is\s+not\s+set\s+to\s+"(Enabled|Disabled)"\s*,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+        if kerberos_option:
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'windows',
+                'check': {'type': 'security_policy', 'section': 'Kerberos Policy', 'key': kerberos_option.group(1).strip()},
+                'expected': {'type': 'equals', 'value': kerberos_option.group(2).strip()},
+                'description': rule.get('title', ''),
+            }
+
     if 'Local Policies >> Security Options' in policy_text:
         security_option = re.search(
             r'If\s+the\s+value\s+for\s+"([^"]+)"\s+is\s+not\s+set\s+to\s+"(Enabled|Disabled)"',

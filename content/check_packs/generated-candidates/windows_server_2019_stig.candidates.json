@@ -389,6 +389,20 @@
     },
     {
       "check": {
+        "key": "Enforce user logon restrictions",
+        "section": "Kerberos Policy",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Kerberos user logon restrictions must be enforced.",
+      "expected": {
+        "type": "equals",
+        "value": "Enabled"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205702"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters",
         "type": "registry",
         "value_name": "SupportedEncryptionTypes"

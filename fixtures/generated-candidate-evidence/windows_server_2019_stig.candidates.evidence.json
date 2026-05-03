@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 173,
+  "candidate_checks": 174,
   "cases": [
     {
       "check": {
@@ -751,6 +751,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-205698"
+    },
+    {
+      "check": {
+        "key": "Enforce user logon restrictions",
+        "section": "Kerberos Policy",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Kerberos user logon restrictions must be enforced.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "Enabled"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Kerberos Policy\\Enforce user logon restrictions": "unexpected-Enabled"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Kerberos Policy\\Enforce user logon restrictions": "Enabled"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205702"
     },
     {
       "check": {
@@ -4672,5 +4699,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 173
+  "validated_candidates": 174
 }
