@@ -1258,6 +1258,24 @@ If the service is active and is not documented, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'kdump', 'expected_status': 'stopped'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'stopped'})
 
+    def test_infers_linux_service_stopped_candidate_from_is_active_inactive_documented_exception(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-238334',
+            'title': 'The Ubuntu operating system must disable kernel core dumps so that it can fail to a secure state.',
+            'check_content': '''Verify that kernel core dumps are disabled unless needed.
+
+Check if "kdump" service is active with the following command:
+
+$ systemctl is-active kdump.service
+inactive
+
+If the "kdump" service is active, ask the SA if the use of the service is required and documented with the ISSO.
+
+If the service is active and is not documented, this is a finding.'''
+        }, 'Canonical_Ubuntu_20-04_LTS_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'kdump', 'expected_status': 'stopped'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'stopped'})
+
     def test_skips_linux_service_stopped_candidate_when_active_requires_configuration(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-204628',

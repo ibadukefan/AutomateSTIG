@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "stopped",
+      "name": "kdump",
+      "type": "service"
+    },
+    "description": "The Ubuntu operating system must disable kernel core dumps  so that it can fail to a secure state if system initialization fails, shutdown fails or aborts fail.",
+    "expected": {
+      "type": "equals",
+      "value": "stopped"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238334"
+  },
   "check_content_excerpt": "Verify that kernel core dumps are disabled unless needed. \n \nCheck if \"kdump\" service is active with the following command: \n \n$ systemctl is-active kdump.service \ninactive \n \nIf the \"kdump\" service is active, ask the SA if the use of the service is required and documented with the ISSO. \n \nIf the service is active and is not documented, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "stopped"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "If kernel core dumps are not required, disable the \"kdump\" service with the following command: \n \n$ sudo systemctl disable kdump.service \n \nIf kernel core dumps are required, document the need with the ISSO.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-238334r958550_rule",
   "severity": "medium",

@@ -1026,6 +1026,20 @@
     },
     {
       "check": {
+        "expected_status": "stopped",
+        "name": "kdump",
+        "type": "service"
+      },
+      "description": "The Ubuntu operating system must disable kernel core dumps  so that it can fail to a secure state if system initialization fails, shutdown fails or aborts fail.",
+      "expected": {
+        "type": "equals",
+        "value": "stopped"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238334"
+    },
+    {
+      "check": {
         "command": "find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' -type f -exec stat -c \"%n %a\" {} \\;",
         "type": "command_output"
       },
