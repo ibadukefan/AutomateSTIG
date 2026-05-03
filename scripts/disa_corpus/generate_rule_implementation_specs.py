@@ -1173,7 +1173,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         }
 
     no_output_for_find = command.startswith('find ') and re.search(
-        r'if\s+(?:a|any)\s+(?:["“][^"”]+["”]|[^\n.]+?)\s+(?:(?:file|files|directory|directories)\s+)?(?:is|are)\s+(?:found|returned)[^.]*?this\s+is\s+a\s+finding',
+        r'if\s+(?:(?:a|any)\s+(?:["“][^"”]+["”]|[^\n.]+?)\s+(?:(?:file|files|directory|directories)\s+)?(?:is|are)\s+(?:found|returned)|there\s+is\s+output\s+that\s+indicates)[^.]*?this\s+is\s+a\s+finding',
         content,
         re.IGNORECASE,
     )

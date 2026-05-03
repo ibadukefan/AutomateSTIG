@@ -1871,6 +1871,20 @@ If any system-wide shared library directory is returned, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'find /lib /lib64 /usr/lib /usr/lib64 ! -user root -type d -exec stat -c "%n %U" \'{}\' \\;'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_no_output_command_candidate_from_find_output_that_indicates_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230318',
+            'title': 'All RHEL 8 world-writable directories must be owned by root, sys, bin, or an application user.',
+            'check_content': '''Verify RHEL 8 world writable directories are owned by root, a system account, or an application account with the following command:
+
+$ sudo find / -xdev -type d -perm -0002 -uid +999 -exec stat -c "%U, %u, %A, %n" {} \\; 2>/dev/null
+
+If there is output that indicates world-writable directories are owned by any account other than root or an approved system account, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'find / -xdev -type d -perm -0002 -uid +999 -exec stat -c "%U, %u, %A, %n" {} \\; 2>/dev/null'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_no_output_command_candidate_from_find_found_directory_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270824',

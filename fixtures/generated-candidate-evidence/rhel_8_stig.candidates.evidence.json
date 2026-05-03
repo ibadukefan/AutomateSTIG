@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 276,
+  "candidate_checks": 277,
   "cases": [
     {
       "check": {
@@ -799,6 +799,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230316"
+    },
+    {
+      "check": {
+        "command": "find / -xdev -type d -perm -0002 -uid +999 -exec stat -c \"%U, %u, %A, %n\" {} \\; 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "All RHEL 8 world-writable directories must be owned by root, sys, bin, or an application user.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / -xdev -type d -perm -0002 -uid +999 -exec stat -c \"%U, %u, %A, %n\" {} \\; 2>/dev/null": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / -xdev -type d -perm -0002 -uid +999 -exec stat -c \"%U, %u, %A, %n\" {} \\; 2>/dev/null": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230318"
     },
     {
       "check": {
@@ -7438,5 +7464,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 276
+  "validated_candidates": 277
 }
