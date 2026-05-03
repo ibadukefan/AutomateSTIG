@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 173,
+  "candidate_checks": 174,
   "cases": [
     {
       "check": {
@@ -2184,6 +2184,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-254419"
+    },
+    {
+      "check": {
+        "key": "SeRemoteInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2022 Allow log on through Remote Desktop Services user right must only be assigned to the Administrators group on domain controllers.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRemoteInteractiveLogonRight": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRemoteInteractiveLogonRight": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254420"
     },
     {
       "check": {
@@ -4675,5 +4702,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2022_STIG",
-  "validated_candidates": 173
+  "validated_candidates": 174
 }

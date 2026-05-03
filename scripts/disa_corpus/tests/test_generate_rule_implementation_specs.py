@@ -2469,6 +2469,46 @@ If "NewAdministratorName" is not something other than "Administrator" in the fil
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Security Options', 'key': 'Accounts: Rename administrator account'})
         self.assertEqual(candidate['expected'], {'type': 'not_equals', 'value': 'Administrator'})
 
+    def test_infers_windows_rename_guest_security_option_from_scap_fix_text_only(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-254448',
+            'title': 'Windows Server 2022 built-in guest account must be renamed.',
+            'check_content': '',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> Accounts: Rename guest account to a name other than "Guest".',
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Security Options', 'key': 'Accounts: Rename guest account'})
+        self.assertEqual(candidate['expected'], {'type': 'not_equals', 'value': 'Guest'})
+
+    def test_infers_windows_administrators_only_user_right_when_check_says_right(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254420',
+            'title': 'Windows Server 2022 Allow log on through Remote Desktop Services user right must only be assigned to the Administrators group on domain controllers.',
+            'check_content': '''Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If any accounts or groups other than the following are granted the "Allow log on through Remote Desktop Services" right, this is a finding.
+
+- Administrators
+
+For server core installations, run the following command:
+
+Secedit /Export /Areas User_Rights /cfg c:\\path\\filename.txt
+
+Review the text file.
+
+If any SIDs other than the following are granted the "SeRemoteInteractiveLogonRight" user right, this is a finding.
+
+S-1-5-32-544 (Administrators)''',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Allow log on through Remote Desktop Services to include only the following accounts or groups:
+
+- Administrators''',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeRemoteInteractiveLogonRight'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '*S-1-5-32-544'})
+
     def test_infers_linux_auditctl_arbitrary_key_multiline_match_examples_output(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-234913',

@@ -142,6 +142,20 @@
     },
     {
       "check": {
+        "key": "SeRemoteInteractiveLogonRight",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2019 Allow log on through Remote Desktop Services user right must only be assigned to the Administrators group on domain controllers.",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205666"
+    },
+    {
+      "check": {
         "key": "SeDenyNetworkLogonRight",
         "section": "Privilege Rights",
         "type": "security_policy"

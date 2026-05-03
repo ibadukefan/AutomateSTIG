@@ -282,6 +282,17 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                     content,
                     re.IGNORECASE,
                 )
+            if not rename_option:
+                rename_option = re.search(
+                    r'Configure\s+the\s+policy\s+value\s+for\s+Computer\s+Configuration\s*>>\s*Windows\s+Settings\s*>>\s*Security\s+Settings\s*>>\s*Local\s+Policies\s*>>\s*Security\s+Options\s*>>\s*(?P<key>Accounts:\s+Rename\s+(?P<account>administrator|guest)\s+account)\s+to\s+a\s+name\s+other\s+than\s+"(?P<value>Administrator|Guest)"\s*\.\s*(?:\n|$)',
+                    policy_text,
+                    re.IGNORECASE,
+                )
+                if rename_option and (
+                    rename_option.group('account').lower() != rename_option.group('value').lower()
+                    or not re.search(rf'\bbuilt-in\s+{rename_option.group("account")}\s+account\s+must\s+be\s+renamed\b', title, re.IGNORECASE)
+                ):
+                    rename_option = None
             if rename_option:
                 return {
                     'vuln_id': rule.get('vuln_id', ''),
@@ -352,7 +363,7 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                 }
 
         administrators_only_right_match = re.search(
-            r'If\s+any\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups)\s+other\s+than\s+the\s+following\s+are\s+granted\s+the\s+"([^"]+)"\s+user\s+right,\s+this\s+is\s+a\s+finding:\s*\n\s*-?\s*Administrators\.?\s*(?:\n|\Z)',
+            r'If\s+any\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups)\s+other\s+than\s+the\s+following\s+are\s+granted\s+the\s+"([^"]+)"\s+(?:user\s+)?right,\s+this\s+is\s+a\s+finding[:.]\s*\n\s*-?\s*Administrators\.?\s*(?:\n|\Z)',
             content,
             re.IGNORECASE,
         )
