@@ -749,16 +749,17 @@
       "vuln_id": "V-260515"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-260516",
+      "check_pack": "generated-candidates/can_ubuntu_22-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-260516r991593_rule",
       "severity": "medium",
       "title": "Ubuntu 22.04 LTS must have an application firewall enabled.",
-      "tracking_issue": "TODO-V-260516",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_22-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/b1859ee637f8efe909beae01435c280dd987fcb29d26d93786bd4aaddf8c9cbe/U_CAN_Ubuntu_22-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-260516"

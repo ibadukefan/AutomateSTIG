@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "ufw",
+      "type": "service"
+    },
+    "description": "Ubuntu 22.04 LTS must have an application firewall enabled.",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-260516"
+  },
   "check_content_excerpt": "Verify the Uncomplicated Firewall (ufw) is enabled on the system with the following command:  \n  \n     $ systemctl status ufw.service | grep -i \"active:\" \n     Active: active (exited) since Thu 2022-12-25 00:00:01 NZTD; 365 days 11h ago \n  \nIf \"ufw.service\" is \"inactive\", this is a finding.  \n  \nIf the ufw is not installed, ask the system administrator if another application firewall is installed. If no application firewall is installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Enable and start the ufw by using the following command:  \n  \n     $ sudo systemctl enable ufw.service --now",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-260516r991593_rule",
   "severity": "medium",

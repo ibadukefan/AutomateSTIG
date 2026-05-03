@@ -1397,6 +1397,22 @@ If the chronyd service is not active, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'chronyd', 'expected_status': 'running'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
 
+    def test_infers_linux_service_running_candidate_from_systemctl_status_inactive_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-260516',
+            'title': 'Ubuntu 22.04 LTS must have an application firewall enabled.',
+            'check_content': '''Verify the Uncomplicated Firewall (ufw) is enabled on the system with the following command:
+
+$ systemctl status ufw.service | grep -i "active:"
+Active: active (exited) since Thu 2022-12-25 00:00:01 NZTD; 365 days 11h ago
+
+If "ufw.service" is "inactive", this is a finding.
+
+If the ufw is not installed, ask the system administrator if another application firewall is installed. If no application firewall is installed, this is a finding.'''
+        }, 'CAN_Ubuntu_22-04_LTS_STIG')
+        self.assertEqual(candidate['check'], {'type': 'service', 'name': 'ufw', 'expected_status': 'running'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
+
     def test_infers_linux_systemctl_get_default_candidate_from_authoritative_sample(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-251718',

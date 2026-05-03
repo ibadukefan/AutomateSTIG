@@ -278,6 +278,20 @@
     {
       "check": {
         "expected_status": "running",
+        "name": "ufw",
+        "type": "service"
+      },
+      "description": "Ubuntu 22.04 LTS must have an application firewall enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-260516"
+    },
+    {
+      "check": {
+        "expected_status": "running",
         "name": "ssh",
         "type": "service"
       },
