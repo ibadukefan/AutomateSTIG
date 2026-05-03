@@ -1227,6 +1227,28 @@ If the command does not return a line containing the value "pam_pwquality.so" as
         self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/pam.d/system-auth', 'pattern': 'pam_pwquality.so', 'is_regex': False})
         self.assertEqual(candidate['expected'], {'type': 'contains'})
 
+    def test_infers_linux_file_content_candidate_from_cat_pipe_grep_expected_sample_when_value_must_equal(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-238325',
+            'title': 'The Ubuntu operating system must encrypt all stored passwords with a FIPS 140-2 approved cryptographic hashing algorithm.',
+            'check_content': '''Verify that the shadow password suite configuration is set to encrypt passwords with a FIPS 140-2 approved cryptographic hashing algorithm.
+
+Check the hashing algorithm that is being used to hash passwords with the following command:
+
+$ cat /etc/login.defs | grep -i encrypt_method
+
+ENCRYPT_METHOD SHA512
+
+If "ENCRYPT_METHOD" does not equal SHA512 or greater, this is a finding.''',
+            'fix_text': '''Configure the Ubuntu operating system to encrypt all stored passwords.
+
+Edit/modify the following line in the "/etc/login.defs" file and set "ENCRYPT_METHOD" to SHA512:
+
+ENCRYPT_METHOD SHA512'''
+        }, 'Canonical_Ubuntu_20-04_LTS_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/login.defs', 'pattern': 'ENCRYPT_METHOD SHA512', 'is_regex': False})
+        self.assertEqual(candidate['expected'], {'type': 'contains'})
+
     def test_infers_linux_file_content_absent_candidate_from_grep_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-251712',

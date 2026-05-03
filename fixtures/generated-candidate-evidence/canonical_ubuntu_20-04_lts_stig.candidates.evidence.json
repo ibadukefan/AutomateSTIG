@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 126,
+  "candidate_checks": 127,
   "cases": [
     {
       "check": {
@@ -1934,6 +1934,33 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/etc/login.defs",
+        "pattern": "ENCRYPT_METHOD SHA512",
+        "type": "file_content"
+      },
+      "description": "The Ubuntu operating system must encrypt all stored passwords with a FIPS 140-2 approved cryptographic hashing algorithm.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "files": {
+          "/etc/login.defs": "before\nENCRYPT_METHOD SHA512\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238325"
+    },
+    {
+      "check": {
         "name": "telnetd",
         "should_be_installed": false,
         "type": "package"
@@ -3486,5 +3513,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 126
+  "validated_candidates": 127
 }

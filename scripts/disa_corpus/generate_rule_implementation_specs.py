@@ -576,6 +576,17 @@ def _file_content_candidate(rule: dict) -> dict | None:
             value_match = re.search(r'line\s+containing\s+the\s+value\s+["“]([^"”\n]+)["”]', content, re.IGNORECASE)
             if value_match:
                 pattern = value_match.group(1).strip()
+    elif cat_pipe_grep and re.search(rf'if\s+["“]?{re.escape(pattern)}["”]?\s+does\s+not\s+equal\s+[^.]+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        for line in content[cat_pipe_grep.end():].splitlines():
+            sample = line.strip()
+            if not sample or sample.startswith('$'):
+                continue
+            if sample.lower().startswith(('if ', 'note:', 'ask ', 'verify ', 'check ')):
+                break
+            if re.search(rf'\b{re.escape(pattern)}\b', sample, re.IGNORECASE):
+                pattern = sample
+                expected = {'type': 'contains'}
+                break
     if expected is None:
         return None
     return {
