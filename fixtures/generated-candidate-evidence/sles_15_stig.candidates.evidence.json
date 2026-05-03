@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 148,
+  "candidate_checks": 149,
   "cases": [
     {
       "check": {
@@ -1647,6 +1647,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234912"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must audit all uses of the sudoers file and all files in the /etc/sudoers.d/ directory.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-w /etc/sudoers -p wa\n-w /etc/sudoers.d -p wa",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-w /etc/sudoers -p wa\n-w /etc/sudoers.d -p wa\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234913"
     },
     {
       "check": {
@@ -3922,5 +3948,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 148
+  "validated_candidates": 149
 }

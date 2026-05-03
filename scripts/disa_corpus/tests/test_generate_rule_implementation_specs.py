@@ -2376,6 +2376,29 @@ If "NewAdministratorName" is not something other than "Administrator" in the fil
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Security Options', 'key': 'Accounts: Rename administrator account'})
         self.assertEqual(candidate['expected'], {'type': 'not_equals', 'value': 'Administrator'})
 
+    def test_infers_linux_auditctl_arbitrary_key_multiline_match_examples_output(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234913',
+            'title': 'The SUSE operating system must audit all uses of the sudoers file and all files in the /etc/sudoers.d/ directory.',
+            'check_content': '''Verify the operating system generates audit records when successful/unsuccessful attempts to access the "/etc/sudoers" file and files in the "/etc/sudoers.d/" directory.
+
+Check that the file and directory is being audited by performing the following command:
+
+> sudo auditctl -l | grep -w '/etc/sudoers'
+
+-w /etc/sudoers -p wa -k privileged-actions
+-w /etc/sudoers.d -p wa -k privileged-actions
+
+If the commands do not return output that match the examples, this is a finding.
+
+Notes:
+The "-k" allows for specifying an arbitrary identifier. The string following "-k" does not need to match the example output above.'''
+        }, 'SLES_15_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': '-w /etc/sudoers -p wa\n-w /etc/sudoers.d -p wa'})
+
     def test_infers_linux_rpm_verify_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257999',

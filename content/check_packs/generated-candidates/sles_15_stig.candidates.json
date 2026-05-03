@@ -846,6 +846,19 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "The SUSE operating system must audit all uses of the sudoers file and all files in the /etc/sudoers.d/ directory.",
+      "expected": {
+        "substring": "-w /etc/sudoers -p wa\n-w /etc/sudoers.d -p wa",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-234913"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "The SUSE operating system must generate audit records for all uses of the creat, open, openat, open_by_handle_at, truncate, and ftruncate system calls.",
       "expected": {
         "substring": "-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b32 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S creat,open,openat,open_by_handle_at,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1",
