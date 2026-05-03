@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 171,
+  "candidate_checks": 172,
   "cases": [
     {
       "check": {
@@ -3346,6 +3346,32 @@
     },
     {
       "check": {
+        "command": "Confirm-SecureBootUEFI",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 must have Secure Boot enabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "True"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Confirm-SecureBootUEFI": "unexpected-True"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Confirm-SecureBootUEFI": "True"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205857"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters",
         "type": "registry",
         "value_name": "DisableIPSourceRouting"
@@ -4619,5 +4645,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 171
+  "validated_candidates": 172
 }

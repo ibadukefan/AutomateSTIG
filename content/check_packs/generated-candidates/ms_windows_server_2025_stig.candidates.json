@@ -134,6 +134,19 @@
     },
     {
       "check": {
+        "command": "Confirm-SecureBootUEFI",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 must have Secure Boot enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "True"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278032"
+    },
+    {
+      "check": {
         "key": "LockoutDuration",
         "section": "System Access",
         "type": "security_policy"

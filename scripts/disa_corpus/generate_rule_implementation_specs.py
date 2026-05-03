@@ -1114,6 +1114,18 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     selinux_candidate = _selinux_getenforce_candidate(rule, stig_id)
     if selinux_candidate:
         return selinux_candidate
+    if _windows_platform(stig_id) and re.search(r'^\s*Confirm-SecureBootUEFI\s*$', content, re.MULTILINE) and re.search(
+        r'If\s+a\s+value\s+of\s+["“]True["”]\s+is\s+not\s+returned,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': 'Confirm-SecureBootUEFI'},
+            'expected': {'type': 'equals', 'value': 'True'},
+            'description': rule.get('title', ''),
+        }
     command_matches = list(re.finditer(r'^\s*[$#>]\s*(?P<command>(?:sudo\s+)?(?:/[A-Za-z0-9_./:+-]+|[A-Za-z0-9_.:+-]+)\b[^\n\r]*)$', content, re.MULTILINE))
     command = None
     command_end = None

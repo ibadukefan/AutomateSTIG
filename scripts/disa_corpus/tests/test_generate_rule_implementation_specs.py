@@ -680,6 +680,24 @@ If the command displays any results, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'netsh interface portproxy show all'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_confirm_secure_boot_powershell_literal_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278032',
+            'title': 'Windows Server 2025 must have Secure Boot enabled.',
+            'check_content': '''Devices that have UEFI firmware must have Secure Boot enabled.
+
+Run "System Information". Under "System Summary", if "Secure Boot State" does not display "On", this is a finding.
+
+On server core installations, run the following PowerShell command:
+
+Confirm-SecureBootUEFI
+
+If a value of "True" is not returned, this is a finding.'''
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'Confirm-SecureBootUEFI'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'True'})
+
     def test_infers_absolute_pipeline_when_command_does_not_return_literal_is_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-259430',

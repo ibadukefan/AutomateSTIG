@@ -1733,6 +1733,19 @@
     },
     {
       "check": {
+        "command": "Confirm-SecureBootUEFI",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 must have Secure Boot enabled.",
+      "expected": {
+        "type": "equals",
+        "value": "True"
+      },
+      "platform": "windows",
+      "vuln_id": "V-205857"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters",
         "type": "registry",
         "value_name": "DisableIPSourceRouting"

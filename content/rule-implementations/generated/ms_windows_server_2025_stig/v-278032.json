@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "Confirm-SecureBootUEFI",
+      "type": "command_output"
+    },
+    "description": "Windows Server 2025 must have Secure Boot enabled.",
+    "expected": {
+      "type": "equals",
+      "value": "True"
+    },
+    "platform": "windows",
+    "vuln_id": "V-278032"
+  },
   "check_content_excerpt": "Devices that have UEFI firmware must have Secure Boot enabled.\n\nRun \"System Information\".\n\nUnder \"System Summary\", if \"Secure Boot State\" does not display \"On\", this is a finding.\n\nOn server core installations, run the following PowerShell command:\n\nConfirm-SecureBootUEFI\n\nIf a value of \"True\" is not returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "True"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Enable Secure Boot in the system firmware.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-278032r1180802_rule",
   "severity": "medium",
