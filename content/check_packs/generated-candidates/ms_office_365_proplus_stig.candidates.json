@@ -114,6 +114,20 @@
     },
     {
       "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security\\trusted locations",
+        "type": "registry",
+        "value_name": "allow user locations"
+      },
+      "description": "Users must be prevented from creating new trusted locations in the Trust Center.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223293"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\common\\smart tag",
         "type": "registry",
         "value_name": "neverloadmanifests"

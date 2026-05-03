@@ -225,6 +225,24 @@ If the value for Internet is set to REG_DWORD = 0, this is not a finding.'''
         self.assertEqual(candidate['check']['value_name'], 'Internet')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
 
+    def test_infers_office_registry_candidate_from_multiword_unquoted_value_for_not_finding_statement(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223293',
+            'title': 'Users must be prevented from creating new trusted locations in the Trust Center.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016\\Security Settings\\Trust Center >> Allow mix of policy and user locations is set to "Disabled".
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security\\trusted locations
+
+If the value for allow user locations is set to REG_DWORD = 0, this is not a finding.'''
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'registry')
+        self.assertEqual(candidate['check']['path'], 'HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security\\trusted locations')
+        self.assertEqual(candidate['check']['value_name'], 'allow user locations')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
+
     def test_infers_user_right_candidate_when_only_administrators_are_allowed(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-220962',

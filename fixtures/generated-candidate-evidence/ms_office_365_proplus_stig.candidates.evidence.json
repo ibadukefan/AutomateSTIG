@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 93,
+  "candidate_checks": 94,
   "cases": [
     {
       "check": {
@@ -216,6 +216,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223290"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security\\trusted locations",
+        "type": "registry",
+        "value_name": "allow user locations"
+      },
+      "description": "Users must be prevented from creating new trusted locations in the Trust Center.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security\\trusted locations\\allow user locations": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\common\\security\\trusted locations\\allow user locations": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223293"
     },
     {
       "check": {
@@ -2518,5 +2545,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Office_365_ProPlus_STIG",
-  "validated_candidates": 93
+  "validated_candidates": 94
 }
