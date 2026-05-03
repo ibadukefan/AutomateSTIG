@@ -3051,6 +3051,19 @@
     },
     {
       "check": {
+        "command": "grep -R disable-restart-buttons /etc/dconf/db/*",
+        "type": "command_output"
+      },
+      "description": "OL 9 must disable the ability of a user to restart the system from the login screen.",
+      "expected": {
+        "substring": "disable-restart-buttons='true'",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271685"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/dconf/profile/user",
         "pattern": "system-db",

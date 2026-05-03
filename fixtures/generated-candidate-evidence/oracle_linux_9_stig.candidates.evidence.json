@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 389,
+  "candidate_checks": 390,
   "cases": [
     {
       "check": {
@@ -5984,6 +5984,32 @@
     },
     {
       "check": {
+        "command": "grep -R disable-restart-buttons /etc/dconf/db/*",
+        "type": "command_output"
+      },
+      "description": "OL 9 must disable the ability of a user to restart the system from the login screen.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "disable-restart-buttons='true'",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -R disable-restart-buttons /etc/dconf/db/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -R disable-restart-buttons /etc/dconf/db/*": "before\ndisable-restart-buttons='true'\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271685"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/dconf/profile/user",
         "pattern": "system-db",
@@ -10740,5 +10766,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 389
+  "validated_candidates": 390
 }

@@ -1158,6 +1158,20 @@ If the "removal-action='lock-screen'" setting is missing or commented out from t
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep -R removal-action /etc/dconf/db/*'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': "removal-action='lock-screen'"})
 
+    def test_infers_dconf_grep_candidate_from_plural_key_when_finding_text_uses_singular_typo(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271685',
+            'title': 'OL 9 must disable the ability of a user to restart the system from the login screen.',
+            'check_content': '''Verify that OL 9 disables a user's ability to restart the system with the following command:
+
+$ grep -R disable-restart-buttons /etc/dconf/db/*
+/etc/dconf/db/distro.d/20-authselect:disable-restart-buttons='true'
+
+If the "disable-restart-button" setting is not set to "true", is missing or commented out from the dconf database files, this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep -R disable-restart-buttons /etc/dconf/db/*'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': "disable-restart-buttons='true'"})
+
     def test_infers_linux_findmnt_option_candidate_from_authoritative_sample(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257864',

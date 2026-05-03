@@ -1108,8 +1108,11 @@ def _dconf_grep_candidate(rule: dict, stig_id: str) -> dict | None:
     if not value_match:
         return None
     expected_value = value_match.group('value')
+    finding_key_pattern = re.escape(key)
+    if key.endswith('s'):
+        finding_key_pattern = rf'{finding_key_pattern}|{re.escape(key[:-1])}'
     explicit_value_required = re.search(
-        rf'If\s+the\s+["“]{re.escape(key)}["”]\s+setting\s+is\s+not\s+set\s+to\s+["“]{re.escape(expected_value)}["”]',
+        rf'If\s+the\s+["“](?:{finding_key_pattern})["”]\s+setting\s+is\s+not\s+set\s+to\s+["“]{re.escape(expected_value)}["”]',
         content,
         re.IGNORECASE,
     )

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -R disable-restart-buttons /etc/dconf/db/*",
+      "type": "command_output"
+    },
+    "description": "OL 9 must disable the ability of a user to restart the system from the login screen.",
+    "expected": {
+      "substring": "disable-restart-buttons='true'",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271685"
+  },
   "check_content_excerpt": "This requirement assumes the use of the OL 9 default graphical user interface\u2014the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nVerify that OL 9 disables a user's ability to restart the system with the following command:\n\n$ grep -R disable-restart-buttons /etc/dconf/db/*\n/etc/dconf/db/distro.d/20-authselect:disable-restart-buttons='true'\n\nIf the \"disable-restart-button\" setting is not set to \"true\", is missing or commented out from the dconf database files, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "disable-restart-buttons='true'",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to disable a user's ability to restart the system.\n\nAdd or update the [org/gnome/settings-daemon/] section of the /etc/dconf/db/local.d/00-security-settings\" database file and add or update the following lines:\n\n[org/gnome/settings-daemon/peripherals/smartcard]\ndisable-restart-buttons='true'\n\nThen update the dconf system databases:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271685r1091767_rule",
   "severity": "medium",
