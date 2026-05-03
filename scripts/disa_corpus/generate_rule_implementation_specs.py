@@ -251,7 +251,7 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
 
     if 'Account Policies >> Kerberos Policy' in policy_text:
         kerberos_option = re.search(
-            r'If\s+the\s+"([^"]+)"\s+is\s+not\s+set\s+to\s+"(Enabled|Disabled)"\s*,?\s+this\s+is\s+a\s+finding',
+            r'If\s+(?:the\s+)?"([^"]+)"\s+is\s+not\s+set\s+to\s+"(Enabled|Disabled)"\s*,?\s+this\s+is\s+a\s+finding',
             content,
             re.IGNORECASE,
         )

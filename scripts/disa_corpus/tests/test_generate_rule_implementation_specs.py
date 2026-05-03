@@ -2366,6 +2366,24 @@ If the "Enforce user logon restrictions" is not set to "Enabled", this is a find
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Kerberos Policy', 'key': 'Enforce user logon restrictions'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Enabled'})
 
+    def test_infers_windows_kerberos_policy_enabled_candidate_without_the_before_policy_name(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278133',
+            'title': 'Windows Server 2025 Kerberos user logon restrictions must be enforced.',
+            'check_content': '''This applies to domain controllers. It is not applicable for other systems.
+
+Verify the following is configured in the Default Domain Policy:
+
+Navigate to Computer Configuration >> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy.
+
+If "Enforce user logon restrictions" is not set to "Enabled", this is a finding.''',
+            'fix_text': 'Configure the policy value in the Default Domain Policy for Computer Configuration >> Policies >> Windows Settings >> Security Settings >> Account Policies >> Kerberos Policy >> Enforce user logon restrictions to "Enabled".',
+        }, 'MS_Windows_Server_2025_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Kerberos Policy', 'key': 'Enforce user logon restrictions'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'Enabled'})
+
     def test_infers_windows_security_option_candidate_from_explicit_disabled_value(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254465',

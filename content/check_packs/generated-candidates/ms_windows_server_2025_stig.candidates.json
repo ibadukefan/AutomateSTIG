@@ -1407,6 +1407,20 @@
     },
     {
       "check": {
+        "key": "Enforce user logon restrictions",
+        "section": "Kerberos Policy",
+        "type": "security_policy"
+      },
+      "description": "Windows Server 2025 Kerberos user logon restrictions must be enforced.",
+      "expected": {
+        "type": "equals",
+        "value": "Enabled"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278133"
+    },
+    {
+      "check": {
         "setting": "Success",
         "subcategory": "Computer Account Management",
         "type": "audit_policy"
