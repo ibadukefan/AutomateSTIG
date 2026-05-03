@@ -657,6 +657,20 @@ If the command displays any output, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'find /var/log -perm /137 ! -name \'*[bw]tmp\' ! -name \'*lastlog\' -type f -exec stat -c "%n %a" {} \\;'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_find_stat_not_owned_filter_as_empty_output_requirement(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257922',
+            'title': 'RHEL 9 library directories must be owned by root.',
+            'check_content': '''Verify the systemwide shared library directories are owned by root with the following command:
+
+$ sudo find /lib /lib64 /usr/lib /usr/lib64 ! -user root -type d -exec stat -c "%U %n" {} \\;
+
+If any systemwide shared library directory is not owned by "root", this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'find /lib /lib64 /usr/lib /usr/lib64 ! -user root -type d -exec stat -c "%U %n" {} \\;'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_grep_command_when_produces_any_output_is_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-256445',

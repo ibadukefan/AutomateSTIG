@@ -1279,6 +1279,15 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         content,
         re.IGNORECASE,
     )
+    no_output_for_find_not_owner = command.startswith('find ') and re.search(
+        r'!\s+-(?:user|group)\s+\S+[^\n]*\s+-exec\s+stat\s+-c\s+["\'][^"\']*[UG][^"\']*["\']',
+        command,
+        re.IGNORECASE,
+    ) and re.search(
+        r'If\s+any\s+(?:system-?wide\s+)?(?:shared\s+library\s+)?director(?:y|ies)\s+is\s+not\s+(?:owned|group-owned)\s+by\s+["“]?[A-Za-z0-9_.-]+["”]?,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
     no_output_for_explicit_output = re.search(r'if\s+(?:any\s+)?output\s+is\s+produced,?\s+this\s+is\s+a\s+finding|if\s+this\s+produces\s+any\s+output|if\s+the\s+command\s+displays\s+any\s+(?:output|results),?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
     no_output_for_command_output = re.search(r'if\s+the\s+command\s+(?:has|produces)\s+any\s+output,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
     no_output_for_any_output = re.search(r'if\s+(?:there\s+is\s+output|any\s+output\s+is\s+returned|(?:the\s+)?command\s+returns\s+any\s+output),?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
@@ -1296,7 +1305,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         content,
         re.IGNORECASE,
     )
-    if no_output_for_find or no_output_for_explicit_output or no_output_for_command_output or no_output_for_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found or no_output_for_grep_occurrences_return:
+    if no_output_for_find or no_output_for_find_not_owner or no_output_for_explicit_output or no_output_for_command_output or no_output_for_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found or no_output_for_grep_occurrences_return:
         return {
             'vuln_id': rule.get('vuln_id', ''),
             'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',
