@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 307,
+  "candidate_checks": 309,
   "cases": [
     {
       "check": {
@@ -2279,6 +2279,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248644"
+    },
+    {
+      "check": {
+        "command": "find / -nouser",
+        "type": "command_output"
+      },
+      "description": "All OL 8 files and directories must have a valid owner.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / -nouser": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / -nouser": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248646"
+    },
+    {
+      "check": {
+        "command": "find / -nogroup",
+        "type": "command_output"
+      },
+      "description": "All OL 8 files and directories must have a valid group owner.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / -nogroup": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / -nogroup": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248647"
     },
     {
       "check": {
@@ -8340,5 +8392,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 307
+  "validated_candidates": 309
 }

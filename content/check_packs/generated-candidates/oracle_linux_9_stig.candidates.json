@@ -4106,6 +4106,32 @@
     },
     {
       "check": {
+        "command": "df --local -P | awk {'if (NR!=1) print $6'} | sudo xargs -I '{}' find '{}' -xdev -nogroup",
+        "type": "command_output"
+      },
+      "description": "OL 9 local files and directories must have a valid group owner.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271780"
+    },
+    {
+      "check": {
+        "command": "df --local -P | awk {'if (NR!=1) print $6'} | sudo xargs -I '{}' find '{}' -xdev -nouser",
+        "type": "command_output"
+      },
+      "description": "OL 9 local files and directories must have a valid owner.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271781"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/passwd",
         "pattern": "| awk -F: '{print $4}') /etc/group",

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 150,
+  "candidate_checks": 152,
   "cases": [
     {
       "check": {
@@ -3730,6 +3730,58 @@
     },
     {
       "check": {
+        "command": "find / -fstype xfs -nouser",
+        "type": "command_output"
+      },
+      "description": "All SUSE operating system files and directories must have a valid owner.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / -fstype xfs -nouser": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / -fstype xfs -nouser": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235028"
+    },
+    {
+      "check": {
+        "command": "find / -fstype xfs -nogroup",
+        "type": "command_output"
+      },
+      "description": "All SUSE operating system files and directories must have a valid group owner.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / -fstype xfs -nogroup": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / -fstype xfs -nogroup": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235029"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "UMASK 077",
@@ -3974,5 +4026,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 150
+  "validated_candidates": 152
 }

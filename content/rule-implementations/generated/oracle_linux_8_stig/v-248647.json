@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find / -nogroup",
+      "type": "command_output"
+    },
+    "description": "All OL 8 files and directories must have a valid group owner.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-248647"
+  },
   "check_content_excerpt": "Verify all files and directories on OL 8 have a valid group with the following command: \n \n$ sudo find / -nogroup \n \nIf any files on the system do not have an assigned group, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Either remove all files and directories from OL 8 that do not have a valid group, or assign a valid group to all files and directories on the system with the \"chgrp\" command: \n \n$ sudo chgrp <group> <file>",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-248647r991589_rule",
   "severity": "medium",

@@ -2697,5 +2697,25 @@ If the command returns any results, this is a finding.''',
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
 
+    def test_infers_find_nouser_pipeline_as_empty_command_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230326',
+            'title': 'All RHEL 8 local files and directories must have a valid owner.',
+            'check_content': '''Verify all files and directories on RHEL 8 have a valid owner with the following command:
+
+$ df --local -P | awk {'if (NR!=1) print $6'} | sudo xargs -I '{}' find '{}' -xdev -nouser
+
+If any files on the system do not have an assigned owner, this is a finding.''',
+        }, 'RHEL_8_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': "df --local -P | awk {'if (NR!=1) print $6'} | sudo xargs -I '{}' find '{}' -xdev -nouser",
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+
 if __name__ == '__main__':
     unittest.main()

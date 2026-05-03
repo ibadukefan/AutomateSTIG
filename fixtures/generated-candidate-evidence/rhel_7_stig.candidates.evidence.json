@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 134,
+  "candidate_checks": 136,
   "cases": [
     {
       "check": {
@@ -563,6 +563,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204457"
+    },
+    {
+      "check": {
+        "command": "find / -fstype xfs -nouser",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all files and directories have a valid owner.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / -fstype xfs -nouser": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / -fstype xfs -nouser": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204463"
+    },
+    {
+      "check": {
+        "command": "find / -fstype xfs -nogroup",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all files and directories have a valid group owner.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / -fstype xfs -nogroup": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / -fstype xfs -nogroup": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204464"
     },
     {
       "check": {
@@ -3592,5 +3644,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 134
+  "validated_candidates": 136
 }

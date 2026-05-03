@@ -1142,6 +1142,32 @@
     },
     {
       "check": {
+        "command": "find / -nouser",
+        "type": "command_output"
+      },
+      "description": "All OL 8 files and directories must have a valid owner.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248646"
+    },
+    {
+      "check": {
+        "command": "find / -nogroup",
+        "type": "command_output"
+      },
+      "description": "All OL 8 files and directories must have a valid group owner.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248647"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/home",
         "pattern": "/etc/fstab",

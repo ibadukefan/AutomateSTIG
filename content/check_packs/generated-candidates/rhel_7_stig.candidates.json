@@ -292,6 +292,32 @@
     },
     {
       "check": {
+        "command": "find / -fstype xfs -nouser",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all files and directories have a valid owner.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-204463"
+    },
+    {
+      "check": {
+        "command": "find / -fstype xfs -nogroup",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all files and directories have a valid group owner.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-204464"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "CREATE_HOME yes",

@@ -5523,31 +5523,33 @@
       "vuln_id": "V-271779"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271780",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271780r1092052_rule",
       "severity": "medium",
       "title": "OL 9 local files and directories must have a valid group owner.",
-      "tracking_issue": "TODO-V-271780",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271780"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271781",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271781r1092055_rule",
       "severity": "medium",
       "title": "OL 9 local files and directories must have a valid owner.",
-      "tracking_issue": "TODO-V-271781",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271781"

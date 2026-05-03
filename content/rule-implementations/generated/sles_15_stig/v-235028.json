@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find / -fstype xfs -nouser",
+      "type": "command_output"
+    },
+    "description": "All SUSE operating system files and directories must have a valid owner.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-235028"
+  },
   "check_content_excerpt": "Verify that all SUSE operating system files and directories on the system have a valid owner.\n\nCheck the owner of all files and directories with the following command:\n\nNote: The value after -fstype must be replaced with the filesystem type. XFS is used as an example.\n\n> sudo find / -fstype xfs -nouser\n\nIf any files on the system do not have an assigned owner, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Either remove all files and directories from the SUSE operating system that do not have a valid user, or assign a valid user to all unowned files and directories on the system with the \"chown\" command:\n\n> sudo chown <user> <file>",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-235028r991589_rule",
   "severity": "medium",

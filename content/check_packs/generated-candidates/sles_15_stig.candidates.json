@@ -1896,6 +1896,32 @@
     },
     {
       "check": {
+        "command": "find / -fstype xfs -nouser",
+        "type": "command_output"
+      },
+      "description": "All SUSE operating system files and directories must have a valid owner.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-235028"
+    },
+    {
+      "check": {
+        "command": "find / -fstype xfs -nogroup",
+        "type": "command_output"
+      },
+      "description": "All SUSE operating system files and directories must have a valid group owner.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-235029"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "UMASK 077",
