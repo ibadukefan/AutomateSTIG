@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 136,
+  "candidate_checks": 138,
   "cases": [
     {
       "check": {
@@ -2889,6 +2889,32 @@
     },
     {
       "check": {
+        "command": "/usr/sbin/aslmanager -dd 2>&1 | /usr/bin/awk '/\\/var\\/log\\/install.log$/ {count++} /Processing module com.apple.install/,/Finished/ { for (i=1;i<=NR;i++) { if ($i == \"TTL\" && $(i+2) >= 365) { ttl=\"True\" }; if ($i == \"MAX\") {max=\"True\"}}} END{if (count > 1) { print \"Multiple config files for /var/log/install, manually remove the extra files\"} else if (max == \"True\") { print \"all_max setting is configured, must be removed\" } if (ttl != \"True\") { print \"TTL not configured\" } else { print \"Yes\" }}'",
+        "type": "command_output"
+      },
+      "description": "The macOS system must configure install.log retention to 365.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "yes"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/sbin/aslmanager -dd 2>&1 | /usr/bin/awk '/\\/var\\/log\\/install.log$/ {count++} /Processing module com.apple.install/,/Finished/ { for (i=1;i<=NR;i++) { if ($i == \"TTL\" && $(i+2) >= 365) { ttl=\"True\" }; if ($i == \"MAX\") {max=\"True\"}}} END{if (count > 1) { print \"Multiple config files for /var/log/install, manually remove the extra files\"} else if (max == \"True\") { print \"all_max setting is configured, must be removed\" } if (ttl != \"True\") { print \"TTL not configured\" } else { print \"Yes\" }}'": "unexpected-yes"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/sbin/aslmanager -dd 2>&1 | /usr/bin/awk '/\\/var\\/log\\/install.log$/ {count++} /Processing module com.apple.install/,/Finished/ { for (i=1;i<=NR;i++) { if ($i == \"TTL\" && $(i+2) >= 365) { ttl=\"True\" }; if ($i == \"MAX\") {max=\"True\"}}} END{if (count > 1) { print \"Multiple config files for /var/log/install, manually remove the extra files\"} else if (max == \"True\") { print \"all_max setting is configured, must be removed\" } if (ttl != \"True\") { print \"TTL not configured\" } else { print \"Yes\" }}'": "yes"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-268554"
+    },
+    {
+      "check": {
         "command": "/usr/bin/csrutil status | /usr/bin/grep -c 'System Integrity Protection status: enabled.'",
         "type": "command_output"
       },
@@ -3146,6 +3172,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-268564"
+    },
+    {
+      "check": {
+        "command": "/usr/libexec/mdmclient QuerySecurityInfo | /usr/bin/grep -c \"AuthenticatedRootVolumeEnabled = 1;\"",
+        "type": "command_output"
+      },
+      "description": "The macOS system must enable Authenticated Root.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/libexec/mdmclient QuerySecurityInfo | /usr/bin/grep -c \"AuthenticatedRootVolumeEnabled = 1;\"": "unexpected-1"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/libexec/mdmclient QuerySecurityInfo | /usr/bin/grep -c \"AuthenticatedRootVolumeEnabled = 1;\"": "1"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-268565"
     },
     {
       "check": {
@@ -3543,5 +3595,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apple_macos_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apple_macOS_15_STIG",
-  "validated_candidates": 136
+  "validated_candidates": 138
 }

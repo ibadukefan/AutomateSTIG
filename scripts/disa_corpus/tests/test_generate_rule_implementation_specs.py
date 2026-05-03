@@ -748,6 +748,16 @@ If the text is not worded exactly this way, this is a finding.'''
         }, 'Apple_macOS_15_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_inline_macos_absolute_pipeline_when_result_is_not_literal(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-268565',
+            'title': 'The macOS system must enable Authenticated Root.',
+            'check_content': '''Verify the macOS system is configured to enable authenticated root with the following command:  /usr/libexec/mdmclient QuerySecurityInfo | /usr/bin/grep -c "AuthenticatedRootVolumeEnabled = 1;"  If the result is not "1", this is a finding.'''
+        }, 'Apple_macOS_15_STIG')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': '/usr/libexec/mdmclient QuerySecurityInfo | /usr/bin/grep -c "AuthenticatedRootVolumeEnabled = 1;"'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
+
     def test_infers_grep_command_output_candidate_from_authoritative_sample_line(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230358',

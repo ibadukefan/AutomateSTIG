@@ -856,16 +856,17 @@
       "vuln_id": "V-259474"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259475",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259475r958434_rule",
       "severity": "medium",
       "title": "The macOS system must configure audit_control to mode 440 or less permissive.",
-      "tracking_issue": "TODO-V-259475",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259475"
@@ -2162,16 +2163,17 @@
       "vuln_id": "V-259557"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259558",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259558r958752_rule",
       "severity": "low",
       "title": "The macOS system must configure install.log retention to 365.",
-      "tracking_issue": "TODO-V-259558",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259558"

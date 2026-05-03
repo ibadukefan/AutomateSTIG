@@ -574,6 +574,19 @@
     },
     {
       "check": {
+        "command": "/bin/ls -l /etc/security/audit_control | /usr/bin/awk '!/-r--[r-]-----|current|total/{print $1}' | /usr/bin/wc -l | /usr/bin/xargs",
+        "type": "command_output"
+      },
+      "description": "The macOS system must configure audit_control to mode 440 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259475"
+    },
+    {
+      "check": {
         "command": "/bin/ls -le /etc/security/audit_control | /usr/bin/awk '{print $1}' | /usr/bin/grep -c \":\"",
         "type": "command_output"
       },
@@ -1247,6 +1260,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-259557"
+    },
+    {
+      "check": {
+        "command": "/usr/sbin/aslmanager -dd 2>&1 | /usr/bin/awk '/\\/var\\/log\\/install.log/ {count++} /Processing module com.apple.install/,/Finished/ { for (i=1;i<=NR;i++) { if ($i == \"TTL\" && $(i+2) >= 365) { ttl=\"True\" }; if ($i == \"MAX\") {max=\"True\"}}} END{if (count > 1) { print \"Multiple config files for /var/log/install, manually remove\"} else if (ttl != \"True\") { print \"TTL not configured\" } else if (max == \"True\") { print \"Max Size is configured, must be removed\" } else { print \"Yes\" }}'",
+        "type": "command_output"
+      },
+      "description": "The macOS system must configure install.log retention to 365.",
+      "expected": {
+        "type": "equals",
+        "value": "yes"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259558"
     },
     {
       "check": {

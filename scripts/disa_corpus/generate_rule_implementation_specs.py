@@ -1152,13 +1152,19 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         command_end = command_matches[0].end()
     else:
         absolute_command = re.search(r'^\s*(?P<command>/[A-Za-z0-9_./:+-]+\b[^\n\r]*)$', content, re.MULTILINE)
-        if absolute_command and re.search(
-            r'If\s+the\s+(?:result\s+is\s+not|command\s+does\s+not\s+return)\s+["“][^"”\n]+["”]',
+        inline_absolute_command = re.search(
+            r'following\s+commands?:\s+(?P<command>/[A-Za-z0-9_./:+-]+\b.*?)(?=\s+If\s+the\s+(?:results?\s+(?:is|are)\s+not|command\s+does\s+not\s+return)\s+["“])',
+            content,
+            re.IGNORECASE | re.DOTALL,
+        )
+        if (absolute_command or inline_absolute_command) and re.search(
+            r'If\s+the\s+(?:results?\s+(?:is|are)\s+not|command\s+does\s+not\s+return)\s+["“][^"”\n]+["”]',
             content,
             re.IGNORECASE,
         ):
-            command = _normalize_command(absolute_command.group('command'))
-            command_end = absolute_command.end()
+            selected_command = absolute_command or inline_absolute_command
+            command = _normalize_command(selected_command.group('command'))
+            command_end = selected_command.end()
         quoted_netsh_command = re.search(r'\bRun\s+["“](?P<command>netsh\s+interface\s+portproxy\s+show\s+all)["”]', content, re.IGNORECASE)
         if not command and quoted_netsh_command and re.search(r'If\s+the\s+command\s+displays\s+any\s+results,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
             command = _normalize_command(quoted_netsh_command.group('command'))
@@ -1174,7 +1180,8 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         return None
     if re.search(r'\bPART\b', command) and '[PART]' in content:
         return None
-    if ';' in command and not re.fullmatch(r'[^;]*(?:\\;[^;]*)*', command):
+    unquoted_semicolon_command = re.sub(r"'[^']*'|\"[^\"]*\"", '', command)
+    if ';' in unquoted_semicolon_command and not re.fullmatch(r'[^;]*(?:\\;[^;]*)*', unquoted_semicolon_command):
         return None
     if command.startswith('xmllint ') and re.search(r'\bnot\s*\[', command):
         return None
@@ -1233,6 +1240,12 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         content,
         re.IGNORECASE,
     )
+    if not result_match and _macos_platform(stig_id) and command.startswith('/'):
+        result_match = re.search(
+            r'If\s+the\s+results\s+are\s+not\s+["“]([^"”\n]+)["”]',
+            content,
+            re.IGNORECASE,
+        )
     if result_match:
         if re.search(r'command\s+does\s+not\s+return', result_match.group(0), re.IGNORECASE):
             tail = content[result_match.end():]

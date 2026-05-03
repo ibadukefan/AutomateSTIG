@@ -1445,6 +1445,19 @@
     },
     {
       "check": {
+        "command": "/usr/sbin/aslmanager -dd 2>&1 | /usr/bin/awk '/\\/var\\/log\\/install.log$/ {count++} /Processing module com.apple.install/,/Finished/ { for (i=1;i<=NR;i++) { if ($i == \"TTL\" && $(i+2) >= 365) { ttl=\"True\" }; if ($i == \"MAX\") {max=\"True\"}}} END{if (count > 1) { print \"Multiple config files for /var/log/install, manually remove the extra files\"} else if (max == \"True\") { print \"all_max setting is configured, must be removed\" } if (ttl != \"True\") { print \"TTL not configured\" } else { print \"Yes\" }}'",
+        "type": "command_output"
+      },
+      "description": "The macOS system must configure install.log retention to 365.",
+      "expected": {
+        "type": "equals",
+        "value": "yes"
+      },
+      "platform": "generic",
+      "vuln_id": "V-268554"
+    },
+    {
+      "check": {
         "command": "/usr/bin/csrutil status | /usr/bin/grep -c 'System Integrity Protection status: enabled.'",
         "type": "command_output"
       },
@@ -1572,6 +1585,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-268564"
+    },
+    {
+      "check": {
+        "command": "/usr/libexec/mdmclient QuerySecurityInfo | /usr/bin/grep -c \"AuthenticatedRootVolumeEnabled = 1;\"",
+        "type": "command_output"
+      },
+      "description": "The macOS system must enable Authenticated Root.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "generic",
+      "vuln_id": "V-268565"
     },
     {
       "check": {
