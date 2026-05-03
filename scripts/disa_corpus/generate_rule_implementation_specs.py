@@ -649,7 +649,7 @@ def _auditctl_expected_rule_candidate(rule: dict) -> dict | None:
     if not re.search(r'\bauditctl\s+-l\s*\|\s*e?grep\b', content, re.IGNORECASE):
         return None
     single_audit_rule_required = re.search(r'does\s+not\s+return\s+an?\s+audit\s+rule\s+for\b', content, re.IGNORECASE)
-    if not re.search(r'does\s+not\s+return\s+(?:a\s+line|lines?)\b|does\s+not\s+return\s+(?:a\s+line|lines?)\s+that\s+match(?:es)?\s+the\s+example|do\s+not\s+return\s+output\s+that\s+match(?:es)?\s+the\s+examples?|does\s+not\s+return\s+audit\s+rules?\s+for|does\s+not\s+return\s+any\s+output|no\s+line\s+is\s+returned|line\s+is\s+commented\s+out|audit\s+rules?\s+are\s+not\s+defined|both\s+the\s+"b32"\s+and\s+"b64"\s+audit\s+rules\s+are\s+not\s+defined|does\s+not\s+return\s+all\s+lines', content, re.IGNORECASE) and not single_audit_rule_required:
+    if not re.search(r'does\s+not\s+return\s+(?:a\s+line|lines?)\b|does\s+not\s+return\s+(?:a\s+line|lines?)\s+that\s+match(?:es)?\s+the\s+example|do\s+not\s+return\s+output\s+that\s+match(?:es)?\s+the\s+examples?|does\s+not\s+return\s+audit\s+rules?\s+for|does\s+not\s+return\s+any\s+output|no\s+line\s+is\s+returned|line\s+is\s+commented\s+out|audit\s+rules?\s+are\s+not\s+defined|both\s+the\s+"b32"\s+and\s+"b64"\s+audit\s+rules(?:\s+for\s+"[^"]+"\s+files)?\s+are\s+not\s+defined|does\s+not\s+return\s+all\s+lines', content, re.IGNORECASE) and not single_audit_rule_required:
         return None
     command_match = re.search(r'[$#>]\s*(?:sudo\s+)?auditctl\s+-l\s*\|\s*e?grep\b[^\n\r]*', content, re.IGNORECASE)
     if not command_match:

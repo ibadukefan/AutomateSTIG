@@ -1346,6 +1346,31 @@ Notes:
             'substring': '-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1\n-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=-1',
         })
 
+    def test_infers_sles_auditctl_privileged_execve_rules_when_key_is_arbitrary(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234963',
+            'title': 'The SUSE operating system must generate audit records for all uses of the privileged functions.',
+            'check_content': '''Verify the SUSE operating system generates an audit record for any privileged use of the "execve" system call.
+
+> sudo auditctl -l | grep -w 'execve'
+
+-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k setuid
+-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k setuid
+-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k setgid
+-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k setgid
+
+If both the "b32" and "b64" audit rules for "SUID" files are not defined, this is a finding.
+
+If both the "b32" and "b64" audit rules for "SGID" files are not defined, this is a finding.
+
+Note: The "-k" allows for specifying an arbitrary identifier. The string following "-k" does not need to match the example output above.'''
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
+        self.assertEqual(candidate['expected'], {
+            'type': 'contains',
+            'substring': '-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0\n-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0\n-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0\n-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0',
+        })
+
     def test_infers_linux_auditctl_single_rule_when_key_identifier_is_arbitrary(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-234901',
