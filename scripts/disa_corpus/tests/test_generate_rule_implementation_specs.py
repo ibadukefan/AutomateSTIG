@@ -41,6 +41,21 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertEqual(classification, 'manual')
         self.assertEqual(collector, 'manual_evidence_workflow')
 
+    def test_infers_socket_is_active_command_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258125',
+            'title': 'The pcscd service on RHEL 9 must be active.',
+            'check_content': '''Verify that the "pcscd" socket is active with the following command:
+
+$ systemctl is-active pcscd.socket
+
+active
+
+If the pcscd socket is not active, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'systemctl is-active pcscd.socket'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'active'})
+
     def test_infers_registry_candidate_check_from_disa_check_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254382',

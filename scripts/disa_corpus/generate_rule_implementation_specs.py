@@ -1275,6 +1275,20 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         return None
     if re.search(r'\bPART\b', command) and '[PART]' in content:
         return None
+    systemctl_active_socket = (
+        _linux_platform(stig_id)
+        and re.fullmatch(r'systemctl\s+is-active\s+[A-Za-z0-9_.@-]+\.socket', command)
+        and re.search(rf'{re.escape(command)}\s*\n\s*active\b', content, re.IGNORECASE)
+        and re.search(r'If\s+[^.\n]*\bsocket\s+is\s+not\s+["“]?active["”]?,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    )
+    if systemctl_active_socket:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'active'},
+            'description': rule.get('title', ''),
+        }
     unquoted_semicolon_command = re.sub(r"'[^']*'|\"[^\"]*\"", '', command)
     if ';' in unquoted_semicolon_command and not re.fullmatch(r'[^;]*(?:\\;[^;]*)*', unquoted_semicolon_command):
         return None

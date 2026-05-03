@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 365,
+  "candidate_checks": 366,
   "cases": [
     {
       "check": {
@@ -7250,6 +7250,32 @@
     },
     {
       "check": {
+        "command": "systemctl is-active pcscd.socket",
+        "type": "command_output"
+      },
+      "description": "The pcscd service on RHEL 9 must be active.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "active"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "systemctl is-active pcscd.socket": "unexpected-active"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "systemctl is-active pcscd.socket": "active"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258125"
+    },
+    {
+      "check": {
         "name": "opensc",
         "should_be_installed": true,
         "type": "package"
@@ -10152,5 +10178,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 365
+  "validated_candidates": 366
 }

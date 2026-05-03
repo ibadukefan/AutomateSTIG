@@ -3548,6 +3548,19 @@
     },
     {
       "check": {
+        "command": "systemctl is-active pcscd.socket",
+        "type": "command_output"
+      },
+      "description": "The pcscd service on RHEL 9 must be active.",
+      "expected": {
+        "type": "equals",
+        "value": "active"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258125"
+    },
+    {
+      "check": {
         "name": "opensc",
         "should_be_installed": true,
         "type": "package"
