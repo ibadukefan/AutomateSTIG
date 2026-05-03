@@ -330,6 +330,44 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                     'description': rule.get('title', ''),
                 }
 
+        administrators_only_right_match = re.search(
+            r'If\s+any\s+groups\s+or\s+accounts\s+other\s+than\s+the\s+following\s+are\s+granted\s+the\s+"([^"]+)"\s+user\s+right,\s+this\s+is\s+a\s+finding:\s*\n\s*Administrators\s*(?:\n|\Z)',
+            content,
+            re.IGNORECASE,
+        )
+        administrators_only_fix = re.search(
+            r'User\s+Rights\s+Assignment\s*>>\s*"?([^"\n]+?)"?\s+to\s+only\s+include\s+the\s+following\s+groups\s+or\s+accounts:\s*\n\s*Administrators\s*(?:\n|\Z)',
+            fix_text,
+            re.IGNORECASE,
+        )
+        administrators_only_right_keys = {
+            'back up files and directories': 'SeBackupPrivilege',
+            'create a pagefile': 'SeCreatePagefilePrivilege',
+            'create symbolic links': 'SeCreateSymbolicLinkPrivilege',
+            'debug programs': 'SeDebugPrivilege',
+            'force shutdown from a remote system': 'SeRemoteShutdownPrivilege',
+            'load and unload device drivers': 'SeLoadDriverPrivilege',
+            'manage auditing and security log': 'SeSecurityPrivilege',
+            'modify firmware environment values': 'SeSystemEnvironmentPrivilege',
+            'perform volume maintenance tasks': 'SeManageVolumePrivilege',
+            'profile single process': 'SeProfileSingleProcessPrivilege',
+            'restore files and directories': 'SeRestorePrivilege',
+            'take ownership of files or other objects': 'SeTakeOwnershipPrivilege',
+        }
+        if administrators_only_right_match and administrators_only_fix:
+            check_display_name = administrators_only_right_match.group(1).strip().strip('"')
+            fix_display_name = administrators_only_fix.group(1).strip().strip('"')
+            if check_display_name.lower() == fix_display_name.lower():
+                key = administrators_only_right_keys.get(check_display_name.lower())
+                if key:
+                    return {
+                        'vuln_id': rule.get('vuln_id', ''),
+                        'platform': 'windows',
+                        'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': key},
+                        'expected': {'type': 'equals', 'value': '*S-1-5-32-544'},
+                        'description': rule.get('title', ''),
+                    }
+
     if has_secedit_context:
         required_sids_match = re.search(
             r'following\s+SID(?:\(s\)|s)\s+are\s+not\s+defined\s+for\s+the\s+"(Se[A-Za-z0-9]+)"\s+user\s+right(?P<body>.*?)(?:\n\s*\n\s*If\b|\Z)',

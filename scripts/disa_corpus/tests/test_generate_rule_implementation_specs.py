@@ -225,6 +225,25 @@ If the value for Internet is set to REG_DWORD = 0, this is not a finding.'''
         self.assertEqual(candidate['check']['value_name'], 'Internet')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
 
+    def test_infers_user_right_candidate_when_only_administrators_are_allowed(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-220962',
+            'title': 'The Create a pagefile user right must only be assigned to the Administrators group.',
+            'check_content': '''Verify the effective setting in Local Group Policy Editor.
+Run "gpedit.msc".
+
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If any groups or accounts other than the following are granted the "Create a pagefile" user right, this is a finding:
+
+Administrators''',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> "Create a pagefile" to only include the following groups or accounts:
+
+Administrators'''
+        }, 'MS_Windows_10_STIG')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeCreatePagefilePrivilege'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '*S-1-5-32-544'})
+
     def test_infers_required_user_right_candidate_from_sid_parenthetical_plural(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254422',

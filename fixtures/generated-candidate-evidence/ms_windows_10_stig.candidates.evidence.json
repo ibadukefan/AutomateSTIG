@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 180,
+  "candidate_checks": 192,
   "cases": [
     {
       "check": {
@@ -4403,6 +4403,60 @@
     },
     {
       "check": {
+        "key": "SeBackupPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Back up files and directories user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeBackupPrivilege": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeBackupPrivilege": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220960"
+    },
+    {
+      "check": {
+        "key": "SeCreatePagefilePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Create a pagefile user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreatePagefilePrivilege": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreatePagefilePrivilege": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220962"
+    },
+    {
+      "check": {
         "key": "SeCreateTokenPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -4457,6 +4511,60 @@
     },
     {
       "check": {
+        "key": "SeCreateSymbolicLinkPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Create symbolic links user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateSymbolicLinkPrivilege": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateSymbolicLinkPrivilege": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220966"
+    },
+    {
+      "check": {
+        "key": "SeDebugPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Debug programs user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDebugPrivilege": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeDebugPrivilege": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220967"
+    },
+    {
+      "check": {
         "key": "SeEnableDelegationPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -4484,6 +4592,60 @@
     },
     {
       "check": {
+        "key": "SeRemoteShutdownPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Force shutdown from a remote system user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRemoteShutdownPrivilege": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRemoteShutdownPrivilege": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220974"
+    },
+    {
+      "check": {
+        "key": "SeLoadDriverPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Load and unload device drivers user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeLoadDriverPrivilege": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeLoadDriverPrivilege": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220976"
+    },
+    {
+      "check": {
         "key": "SeLockMemoryPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -4508,6 +4670,168 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-220977"
+    },
+    {
+      "check": {
+        "key": "SeSecurityPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Manage auditing and security log user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSecurityPrivilege": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSecurityPrivilege": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220978"
+    },
+    {
+      "check": {
+        "key": "SeSystemEnvironmentPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Modify firmware environment values user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSystemEnvironmentPrivilege": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSystemEnvironmentPrivilege": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220979"
+    },
+    {
+      "check": {
+        "key": "SeManageVolumePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Perform volume maintenance tasks user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeManageVolumePrivilege": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeManageVolumePrivilege": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220980"
+    },
+    {
+      "check": {
+        "key": "SeProfileSingleProcessPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Profile single process user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeProfileSingleProcessPrivilege": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeProfileSingleProcessPrivilege": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220981"
+    },
+    {
+      "check": {
+        "key": "SeRestorePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Restore files and directories user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRestorePrivilege": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeRestorePrivilege": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220982"
+    },
+    {
+      "check": {
+        "key": "SeTakeOwnershipPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Take ownership of files or other objects user right must only be assigned to the Administrators group.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTakeOwnershipPrivilege": "unexpected-*S-1-5-32-544"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeTakeOwnershipPrivilege": "*S-1-5-32-544"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220983"
     },
     {
       "check": {
@@ -4865,5 +5189,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 180
+  "validated_candidates": 192
 }
