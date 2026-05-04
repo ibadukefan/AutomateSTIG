@@ -1,0 +1,89 @@
+{
+  "candidate_checks": 3,
+  "cases": [
+    {
+      "check": {
+        "command": "stat -c %U:%G /etc/kubernetes/manifests/* | grep -v root:root",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes component manifests must be owned by root.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "stat -c %U:%G /etc/kubernetes/manifests/* | grep -v root:root": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "stat -c %U:%G /etc/kubernetes/manifests/* | grep -v root:root": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242444"
+    },
+    {
+      "check": {
+        "command": "stat -c %U:%G /etc/kubernetes/kubelet.conf| grep -v root:root",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes kubelet KubeConfig file must be owned by root.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "stat -c %U:%G /etc/kubernetes/kubelet.conf| grep -v root:root": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "stat -c %U:%G /etc/kubernetes/kubelet.conf| grep -v root:root": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242453"
+    },
+    {
+      "check": {
+        "command": "stat -c %U:%G /var/lib/kubelet/config.yaml| grep -v root:root",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes kubelet config must be owned by root.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "stat -c %U:%G /var/lib/kubelet/config.yaml| grep -v root:root": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "stat -c %U:%G /var/lib/kubelet/config.yaml| grep -v root:root": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242457"
+    }
+  ],
+  "production_claim": false,
+  "schema_version": "1.0",
+  "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
+  "status": "fixture_validated_candidates",
+  "stig_id": "Kubernetes_STIG",
+  "validated_candidates": 3
+}

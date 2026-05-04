@@ -1750,6 +1750,23 @@ If the above command returns the status as "inactive", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'service', 'name': 'ufw', 'expected_status': 'running'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'running'})
 
+    def test_infers_kubernetes_stat_grep_root_ownership_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242457',
+            'title': 'The Kubernetes kubelet config must be owned by root.',
+            'check_content': '''Review the Kubernetes Kubeadm kubelet conf file by using the command:
+
+stat -c %U:%G /var/lib/kubelet/config.yaml| grep -v root:root
+
+If the command returns any non root:root file permissions, this is a finding.'''
+        }, 'Kubernetes_STIG')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': 'stat -c %U:%G /var/lib/kubelet/config.yaml| grep -v root:root',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_linux_service_stopped_candidate_from_systemctl_status_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230502',

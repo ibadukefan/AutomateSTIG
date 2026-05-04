@@ -925,16 +925,17 @@
       "vuln_id": "V-242443"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242444",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242444r961863_rule",
       "severity": "medium",
       "title": "The Kubernetes component manifests must be owned by root.",
-      "tracking_issue": "TODO-V-242444",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242444"
@@ -1060,16 +1061,17 @@
       "vuln_id": "V-242452"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242453",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242453r961863_rule",
       "severity": "medium",
       "title": "The Kubernetes kubelet KubeConfig file must be owned by root.",
-      "tracking_issue": "TODO-V-242453",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242453"
@@ -1120,16 +1122,17 @@
       "vuln_id": "V-242456"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242457",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242457r961863_rule",
       "severity": "medium",
       "title": "The Kubernetes kubelet config must be owned by root.",
-      "tracking_issue": "TODO-V-242457",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242457"

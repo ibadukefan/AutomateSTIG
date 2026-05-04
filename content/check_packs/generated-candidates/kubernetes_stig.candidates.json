@@ -1,0 +1,46 @@
+{
+  "checks": [
+    {
+      "check": {
+        "command": "stat -c %U:%G /etc/kubernetes/manifests/* | grep -v root:root",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes component manifests must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-242444"
+    },
+    {
+      "check": {
+        "command": "stat -c %U:%G /etc/kubernetes/kubelet.conf| grep -v root:root",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes kubelet KubeConfig file must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-242453"
+    },
+    {
+      "check": {
+        "command": "stat -c %U:%G /var/lib/kubelet/config.yaml| grep -v root:root",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes kubelet config must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-242457"
+    }
+  ],
+  "platform": "generic",
+  "stig_id": "Kubernetes_STIG",
+  "version": "candidate-planned"
+}
