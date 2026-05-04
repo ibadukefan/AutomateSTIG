@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 390,
+  "candidate_checks": 391,
   "cases": [
     {
       "check": {
@@ -9515,6 +9515,32 @@
     },
     {
       "check": {
+        "command": "awk -F: '$3 == 0 {print $1}' /etc/passwd",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured so that the root account is the only account having unrestricted access to the system.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "root"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '$3 == 0 {print $1}' /etc/passwd": "unexpected-root"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '$3 == 0 {print $1}' /etc/passwd": "root"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271831"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/security/faillock.conf",
         "pattern": "dir = /var/log/faillock",
@@ -10766,5 +10792,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 390
+  "validated_candidates": 391
 }

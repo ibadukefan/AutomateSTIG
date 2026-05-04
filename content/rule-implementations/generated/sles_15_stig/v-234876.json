@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "awk -F: '$3 == 0 {print $1}' /etc/passwd",
+      "type": "command_output"
+    },
+    "description": "The SUSE operating system root account must be the only account with unrestricted access to the system.",
+    "expected": {
+      "type": "equals",
+      "value": "root"
+    },
+    "platform": "linux",
+    "vuln_id": "V-234876"
+  },
   "check_content_excerpt": "Verify that the SUSE operating system root account is the only account with unrestricted access to the system.\n\nCheck the system for duplicate UID \"0\" assignments with the following command:\n\n> awk -F: '$3 == 0 {print $1}' /etc/passwd\n\nroot\n\nIf any accounts other than root have a UID of \"0\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "root"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the UID of any account on the SUSE operating system, other than the root account, that has a UID of \"0\". \n\nIf the account is associated with system commands or applications, the UID should be changed to one greater than \"0\" but less than \"1000\". Otherwise, assign a UID of greater than \"1000\" that has not already been assigned.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-234876r991589_rule",
   "severity": "high",

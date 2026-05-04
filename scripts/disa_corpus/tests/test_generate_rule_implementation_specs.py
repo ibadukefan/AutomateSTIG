@@ -3009,6 +3009,26 @@ If the above command returns the status as "inactive" or any type of error, this
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'ufw status'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Status: active'})
 
+    def test_infers_duplicate_uid_zero_root_only_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258059',
+            'title': 'The root account must be the only account having unrestricted access to RHEL 9 system.',
+            'check_content': '''Verify that only the "root" account has a UID "0" assignment with the following command:
+
+$ awk -F: '$3 == 0 {print $1}' /etc/passwd
+
+root
+
+If any accounts other than "root" have a UID of "0", this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': "awk -F: '$3 == 0 {print $1}' /etc/passwd",
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'root'})
+
     def test_infers_shadow_blank_password_command_returns_any_results_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258120',

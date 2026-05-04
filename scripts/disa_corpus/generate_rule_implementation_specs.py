@@ -1501,6 +1501,23 @@ def _windows_ad_smartcard_no_listed_users_candidate(rule: dict, stig_id: str) ->
 
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
+    duplicate_uid_zero_match = re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?(?P<command>awk\s+-F:\s+["\']\$3\s*==\s*0\s*\{print\s+\$1\}\s*["\']\s+/etc/passwd)\s*$',
+        content,
+        re.MULTILINE,
+    )
+    if duplicate_uid_zero_match and re.search(
+        r'If\s+any\s+accounts\s+other\s+than\s+["“]?root["”]?\s+have\s+a\s+UID\s+of\s+["“]?0["”]?,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+            'check': {'type': 'command_output', 'command': _normalize_command(duplicate_uid_zero_match.group('command'))},
+            'expected': {'type': 'equals', 'value': 'root'},
+            'description': rule.get('title', ''),
+        }
     macos_osascript_true_candidate = _macos_osascript_true_heredoc_candidate(rule, stig_id)
     if macos_osascript_true_candidate:
         return macos_osascript_true_candidate

@@ -3682,6 +3682,19 @@
     },
     {
       "check": {
+        "command": "awk -F: '$3 == 0 {print $1}' /etc/passwd",
+        "type": "command_output"
+      },
+      "description": "The root account must be the only account having unrestricted access to the OL 8 system.",
+      "expected": {
+        "type": "equals",
+        "value": "root"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248874"
+    },
+    {
+      "check": {
         "key": "net.ipv4.conf.default.accept_redirects",
         "type": "sysctl"
       },

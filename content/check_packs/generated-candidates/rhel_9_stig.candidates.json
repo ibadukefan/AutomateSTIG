@@ -2828,6 +2828,19 @@
     },
     {
       "check": {
+        "command": "awk -F: '$3 == 0 {print $1}' /etc/passwd",
+        "type": "command_output"
+      },
+      "description": "The root account must be the only account having unrestricted access to RHEL 9 system.",
+      "expected": {
+        "type": "equals",
+        "value": "root"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258059"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/security/faillock.conf",
         "pattern": "dir = /var/log/faillock",

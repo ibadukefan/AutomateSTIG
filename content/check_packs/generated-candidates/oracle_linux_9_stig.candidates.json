@@ -4715,6 +4715,19 @@
     },
     {
       "check": {
+        "command": "awk -F: '$3 == 0 {print $1}' /etc/passwd",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured so that the root account is the only account having unrestricted access to the system.",
+      "expected": {
+        "type": "equals",
+        "value": "root"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271831"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/security/faillock.conf",
         "pattern": "dir = /var/log/faillock",

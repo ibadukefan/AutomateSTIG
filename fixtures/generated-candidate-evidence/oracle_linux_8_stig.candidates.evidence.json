@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 310,
+  "candidate_checks": 311,
   "cases": [
     {
       "check": {
@@ -7261,6 +7261,32 @@
     },
     {
       "check": {
+        "command": "awk -F: '$3 == 0 {print $1}' /etc/passwd",
+        "type": "command_output"
+      },
+      "description": "The root account must be the only account having unrestricted access to the OL 8 system.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "root"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F: '$3 == 0 {print $1}' /etc/passwd": "unexpected-root"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F: '$3 == 0 {print $1}' /etc/passwd": "root"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248874"
+    },
+    {
+      "check": {
         "key": "net.ipv4.conf.default.accept_redirects",
         "type": "sysctl"
       },
@@ -8418,5 +8444,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 310
+  "validated_candidates": 311
 }
