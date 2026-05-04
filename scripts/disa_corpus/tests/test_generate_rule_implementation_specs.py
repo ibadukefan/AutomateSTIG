@@ -2451,6 +2451,21 @@ If "Audit Process Creation" is not set to "Failure", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'audit_policy', 'subcategory': 'Process Creation', 'setting': 'Failure'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Failure'})
 
+    def test_infers_linux_audit_rules_file_cat_grep_expected_rule_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258214',
+            'title': 'Successful/unsuccessful uses of the shutdown command in RHEL 9 must generate an audit record.',
+            'check_content': '''Verify that RHEL 9 is configured to audit the execution of the "shutdown" command with the following command:
+
+$ sudo cat /etc/audit/rules.d/* | grep shutdown
+-a always,exit -S all -F path=/usr/sbin/shutdown -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-shutdown
+
+If the command does not return a line, or the line is commented out, this is a finding.''',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'cat /etc/audit/rules.d/* | grep shutdown'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': '-a always,exit -S all -F path=/usr/sbin/shutdown -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-shutdown'})
+
     def test_infers_windows_user_right_security_policy_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254506',

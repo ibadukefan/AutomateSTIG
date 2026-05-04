@@ -752,6 +752,38 @@ def _auditctl_expected_rule_candidate(rule: dict) -> dict | None:
     }
 
 
+def _audit_rules_file_expected_rule_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    if not re.search(r'\bcat\s+/etc/audit/rules\.d/\*\s*\|\s*grep\b', content, re.IGNORECASE):
+        return None
+    if not re.search(r'does\s+not\s+return\s+a\s+line\b|line\s+is\s+commented\s+out', content, re.IGNORECASE):
+        return None
+    command_match = re.search(r'[$#>]\s*(?:sudo\s+)?(cat\s+/etc/audit/rules\.d/\*\s*\|\s*grep\s+[^\n\r]+)', content, re.IGNORECASE)
+    if not command_match:
+        return None
+    command = ' '.join(command_match.group(1).strip().split())
+    expected_lines: list[str] = []
+    for line in content[command_match.end():].splitlines():
+        stripped = ' '.join(line.strip().split())
+        if not stripped:
+            continue
+        if stripped.lower().startswith(('if ', 'note:', 'notes:')):
+            break
+        if stripped.startswith(('-a ', '-w ')):
+            expected_lines.append(stripped)
+        elif expected_lines:
+            break
+    if len(expected_lines) != 1:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'contains', 'substring': expected_lines[0]},
+        'description': rule.get('title', ''),
+    }
+
+
 def _service_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
@@ -1769,7 +1801,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return command_candidate
 
     if _linux_platform(stig_id):
-        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _auditctl_expected_rule_candidate, _service_candidate, _file_permission_candidate):
+        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _auditctl_expected_rule_candidate, _audit_rules_file_expected_rule_candidate, _service_candidate, _file_permission_candidate):
             candidate = infer(rule)
             if candidate:
                 return candidate

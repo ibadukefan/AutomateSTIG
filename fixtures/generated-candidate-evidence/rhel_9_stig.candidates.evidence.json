@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 366,
+  "candidate_checks": 367,
   "cases": [
     {
       "check": {
@@ -9380,6 +9380,32 @@
     },
     {
       "check": {
+        "command": "cat /etc/audit/rules.d/* | grep shutdown",
+        "type": "command_output"
+      },
+      "description": "Successful/unsuccessful uses of the shutdown command in RHEL 9 must generate an audit record.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -S all -F path=/usr/sbin/shutdown -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-shutdown",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "cat /etc/audit/rules.d/* | grep shutdown": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "cat /etc/audit/rules.d/* | grep shutdown": "before\n-a always,exit -S all -F path=/usr/sbin/shutdown -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-shutdown\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258214"
+    },
+    {
+      "check": {
         "command": "auditctl -l",
         "type": "command_output"
       },
@@ -10178,5 +10204,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 366
+  "validated_candidates": 367
 }
