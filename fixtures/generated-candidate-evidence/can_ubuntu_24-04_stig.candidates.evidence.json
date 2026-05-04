@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 169,
+  "candidate_checks": 170,
   "cases": [
     {
       "check": {
@@ -1686,6 +1686,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270716"
+    },
+    {
+      "check": {
+        "command": "egrep -r '(Permit(.*?)(Passwords|Environment))' /etc/ssh/sshd_config",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must not allow unattended or automatic login via SSH.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "PermitEmptyPasswords no\nPermitUserEnvironment no",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "egrep -r '(Permit(.*?)(Passwords|Environment))' /etc/ssh/sshd_config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "egrep -r '(Permit(.*?)(Passwords|Environment))' /etc/ssh/sshd_config": "before\nPermitEmptyPasswords no\nPermitUserEnvironment no\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270717"
     },
     {
       "check": {
@@ -4633,5 +4659,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 169
+  "validated_candidates": 170
 }

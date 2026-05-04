@@ -1130,16 +1130,17 @@
       "vuln_id": "V-270716"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270717",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270717r1067177_rule",
       "severity": "high",
       "title": "Ubuntu 24.04 LTS must not allow unattended or automatic login via SSH.",
-      "tracking_issue": "TODO-V-270717",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/1a8ff7978aa4fed0a1800ef56394b176fb0d1338e91e91ebc837e086d88321c9/U_CAN_Ubuntu_24-04_LTS_V1R4_STIG.zip"
       ],
       "vuln_id": "V-270717"

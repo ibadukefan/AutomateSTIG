@@ -676,6 +676,42 @@ def _file_content_candidate(rule: dict) -> dict | None:
     }
 
 
+def _sshd_multi_directive_egrep_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    command_match = re.search(
+        r"^\s*[$#>]\s*(?P<command>egrep\s+-r\s+'\(Permit\(\.\*\?\)\(Passwords\|Environment\)\)'\s+/etc/ssh/sshd_config)\s*$",
+        content,
+        re.MULTILINE,
+    )
+    if not command_match:
+        return None
+    expected_lines = []
+    for raw_line in content[command_match.end():].splitlines():
+        stripped = raw_line.strip()
+        if not stripped:
+            if expected_lines:
+                break
+            continue
+        if stripped.lower().startswith(('if ', 'note:', '$', '#', '>')):
+            break
+        expected_lines.append(stripped)
+    if expected_lines != ['PermitEmptyPasswords no', 'PermitUserEnvironment no']:
+        return None
+    if not re.search(
+        r'If\s+the\s+["“]PermitEmptyPasswords["”]\s+or\s+["“]PermitUserEnvironment["”]\s+keywords\s+are\s+set\s+to\s+a\s+value\s+other\s+than\s+["“]no["”],\s+are\s+commented\s+out,\s+are\s+both\s+missing,\s+or\s+conflicting\s+results\s+are\s+returned,\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': _normalize_command(command_match.group('command'))},
+        'expected': {'type': 'contains', 'substring': '\n'.join(expected_lines)},
+        'description': rule.get('title', ''),
+    }
+
+
 def _grep_expected_line_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     grep = re.search(r'\bgrep\s+(?:-[A-Za-z]+\s+)*(?:(?:["\'][^"\']+["\']|[^\s|;]+)\s+)?(?P<path>/[A-Za-z0-9_./:*+{}-]+)', content)
@@ -2169,7 +2205,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return tomcat_auditctl_candidate
 
     if _linux_platform(stig_id):
-        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _auditctl_expected_rule_candidate, _audit_rules_file_expected_rule_candidate, _service_candidate, _aide_audit_tool_selection_candidate, _file_permission_candidate):
+        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _sshd_multi_directive_egrep_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _auditctl_expected_rule_candidate, _audit_rules_file_expected_rule_candidate, _service_candidate, _aide_audit_tool_selection_candidate, _file_permission_candidate):
             candidate = infer(rule)
             if candidate:
                 return candidate

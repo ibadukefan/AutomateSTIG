@@ -856,6 +856,19 @@
     },
     {
       "check": {
+        "command": "egrep -r '(Permit(.*?)(Passwords|Environment))' /etc/ssh/sshd_config",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must not allow unattended or automatic login via SSH.",
+      "expected": {
+        "substring": "PermitEmptyPasswords no\nPermitUserEnvironment no",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270717"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/modprobe.d/",
         "pattern": "usb-storage",

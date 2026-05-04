@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "egrep -r '(Permit(.*?)(Passwords|Environment))' /etc/ssh/sshd_config",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must not allow unattended or automatic login via SSH.",
+    "expected": {
+      "substring": "PermitEmptyPasswords no\nPermitUserEnvironment no",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-270717"
+  },
   "check_content_excerpt": "Verify unattended or automatic login via SSH is disabled with the following command:\n\n$ egrep -r '(Permit(.*?)(Passwords|Environment))' /etc/ssh/sshd_config\nPermitEmptyPasswords no\nPermitUserEnvironment no\n\nIf the \"PermitEmptyPasswords\" or \"PermitUserEnvironment\" keywords are set to a value other than \"no\", are commented out, are both missing, or conflicting results are returned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "PermitEmptyPasswords no\nPermitUserEnvironment no",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Ubuntu 24.04 LTS to allow the SSH daemon to not allow unattended or automatic login to the system. \n \nAdd or edit the following lines in the \"/etc/ssh/sshd_config\" file: \n \nPermitEmptyPasswords no \nPermitUserEnvironment no \n \nRestart the SSH daemon for the changes to take effect: \n \n$ sudo systemctl restart sshd.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270717r1067177_rule",
   "severity": "high",

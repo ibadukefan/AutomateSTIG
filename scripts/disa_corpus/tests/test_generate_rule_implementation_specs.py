@@ -56,6 +56,28 @@ If the pcscd socket is not active, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'systemctl is-active pcscd.socket'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'active'})
 
+    def test_infers_ubuntu_sshd_multi_directive_egrep_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270717',
+            'title': 'Ubuntu 24.04 LTS must not allow unattended or automatic login via SSH.',
+            'check_content': '''Verify unattended or automatic login via SSH is disabled with the following command:
+
+$ egrep -r '(Permit(.*?)(Passwords|Environment))' /etc/ssh/sshd_config
+PermitEmptyPasswords no
+PermitUserEnvironment no
+
+If the "PermitEmptyPasswords" or "PermitUserEnvironment" keywords are set to a value other than "no", are commented out, are both missing, or conflicting results are returned, this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': "egrep -r '(Permit(.*?)(Passwords|Environment))' /etc/ssh/sshd_config",
+        })
+        self.assertEqual(candidate['expected'], {
+            'type': 'contains',
+            'substring': 'PermitEmptyPasswords no\nPermitUserEnvironment no',
+        })
+
     def test_infers_windows_ad_smartcard_required_no_listed_users_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254415',
