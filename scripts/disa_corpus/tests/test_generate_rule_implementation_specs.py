@@ -78,6 +78,27 @@ If any user accounts, including administrators, are listed, this is a finding.''
         })
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_linux_dmesg_does_not_show_active_contains_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271760',
+            'title': 'OL 9 must implement nonexecutable data to protect its memory from unauthorized code execution.',
+            'check_content': '''Verify that OL 9 ExecShield is enabled on 64-bit systems with the following command:
+
+$ sudo dmesg | grep '[NX|DX]*protection'
+[    0.000000] NX (Execute Disable) protection: active
+
+If "dmesg" does not show "NX (Execute Disable) protection" active, this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': "dmesg | grep '[NX|DX]*protection'",
+        })
+        self.assertEqual(candidate['expected'], {
+            'type': 'contains',
+            'substring': 'NX (Execute Disable) protection: active',
+        })
+
     def test_infers_aide_audit_tool_selection_lines_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270831',

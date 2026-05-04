@@ -4013,6 +4013,19 @@
     },
     {
       "check": {
+        "command": "dmesg | grep '[NX|DX]*protection'",
+        "type": "command_output"
+      },
+      "description": "OL 9 must implement nonexecutable data to protect its memory from unauthorized code execution.",
+      "expected": {
+        "substring": "NX (Execute Disable) protection: active",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271760"
+    },
+    {
+      "check": {
         "key": "kernel.randomize_va_space",
         "type": "sysctl"
       },

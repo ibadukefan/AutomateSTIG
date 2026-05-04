@@ -1743,6 +1743,22 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'description': rule.get('title', ''),
         }
 
+    dmesg_active_match = re.search(
+        r'If\s+["“]dmesg["”]\s+does\s+not\s+show\s+["“](?P<phrase>[^"”\n]+)["”]\s+active,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if command.startswith('dmesg ') and dmesg_active_match:
+        expected_substring = f"{dmesg_active_match.group('phrase').strip()}: active"
+        if re.search(rf'^.*{re.escape(expected_substring)}\s*$', content, re.IGNORECASE | re.MULTILINE):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+                'check': {'type': 'command_output', 'command': command},
+                'expected': {'type': 'contains', 'substring': expected_substring},
+                'description': rule.get('title', ''),
+            }
+
     result_match = re.search(
         r'If\s+the\s+(?:result\s+is\s+not|output\s+is\s+not|command\s+does\s+not\s+return)\s+["“]([^"”\n]+)["”]',
         content,
