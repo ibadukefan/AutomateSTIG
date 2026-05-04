@@ -327,6 +327,19 @@
     },
     {
       "check": {
+        "command": "LAUNCHD_RUNNING=$(/bin/launchctl list | /usr/bin/grep -c com.apple.auditd)\nAUDITD_RUNNING=$(/usr/sbin/audit -c | /usr/bin/grep -c \"AUC_AUDITING\")\nif [[ $LAUNCHD_RUNNING == 1 ]] && [[ -e /etc/security/audit_control ]] && [[ $AUDITD_RUNNING == 1 ]]; then\n  echo \"pass\"\nelse\n  echo \"fail\"\nfi",
+        "type": "command_output"
+      },
+      "description": "The macOS system must enable security auditing.",
+      "expected": {
+        "type": "equals",
+        "value": "pass"
+      },
+      "platform": "macos",
+      "vuln_id": "V-268454"
+    },
+    {
+      "check": {
         "command": "/usr/bin/awk -F':' '/^policy/ {print $NF}' /etc/security/audit_control | /usr/bin/tr ',' '\\n' | /usr/bin/grep -Ec 'ahlt'",
         "type": "command_output"
       },

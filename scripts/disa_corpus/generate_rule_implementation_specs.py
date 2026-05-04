@@ -1226,8 +1226,46 @@ def _grep_sample_line_candidate(rule: dict, stig_id: str, command: str, command_
     }
 
 
+def _macos_pass_fail_shell_block_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _macos_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    if not re.search(r'If\s+the\s+result\s+is\s+not\s+["“]pass["”],?\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+        return None
+    block_match = re.search(
+        r'(?P<command>(?:[A-Z][A-Z0-9_]*=\$\([^\n]+\)\n)+if\s+\[\[.*?\]\];\s+then\n\s*echo\s+["“]pass["”]\nelse\n\s*echo\s+["“]fail["”]\nfi)',
+        content,
+        re.DOTALL,
+    )
+    if not block_match:
+        return None
+    command = block_match.group('command').strip()
+    unquoted = re.sub(r"'[^']*'|\"[^\"]*\"", '', command)
+    if any(token in unquoted for token in ('`', '<<', '>', '>>')):
+        return None
+    allowed_line = re.compile(
+        r'^(?:[A-Z][A-Z0-9_]*=\$\([^\n]+\)|if\s+\[\[.*\]\];\s+then|\s*echo\s+"(?:pass|fail)"|else|fi)$'
+    )
+    lines = command.splitlines()
+    if not lines or not all(allowed_line.fullmatch(line) for line in lines):
+        return None
+    for assignment in [line for line in lines if '$(' in line]:
+        if not _command_substitutions_are_absolute(assignment):
+            return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'macos',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'pass'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
+    macos_pass_fail_candidate = _macos_pass_fail_shell_block_candidate(rule, stig_id)
+    if macos_pass_fail_candidate:
+        return macos_pass_fail_candidate
     dconf_candidate = _dconf_grep_candidate(rule, stig_id)
     if dconf_candidate:
         return dconf_candidate

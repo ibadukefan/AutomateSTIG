@@ -847,6 +847,21 @@ If the text is not worded exactly this way, this is a finding.'''
         }, 'Apple_macOS_15_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_macos_pass_fail_shell_block_as_command_output(self):
+        command = 'LAUNCHD_RUNNING=$(/bin/launchctl list | /usr/bin/grep -c com.apple.auditd)\nAUDITD_RUNNING=$(/usr/sbin/audit -c | /usr/bin/grep -c "AUC_AUDITING")\nif [[ $LAUNCHD_RUNNING == 1 ]] && [[ -e /etc/security/audit_control ]] && [[ $AUDITD_RUNNING == 1 ]]; then\n  echo "pass"\nelse\n  echo "fail"\nfi'
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-268454',
+            'title': 'The macOS system must enable security auditing.',
+            'check_content': f'''Verify the macOS system is configured to enable the auditd service with the following command:
+
+{command}
+
+If the result is not "pass", this is a finding.'''
+        }, 'Apple_macOS_15_STIG')
+        self.assertEqual(candidate['platform'], 'macos')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': command})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'pass'})
+
     def test_infers_inline_macos_absolute_pipeline_when_result_is_not_literal(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-268565',

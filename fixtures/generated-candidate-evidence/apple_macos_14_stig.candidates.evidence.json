@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 114,
+  "candidate_checks": 115,
   "cases": [
     {
       "check": {
@@ -650,6 +650,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259453"
+    },
+    {
+      "check": {
+        "command": "LAUNCHD_RUNNING=$(/bin/launchctl list | /usr/bin/grep -c com.apple.auditd)\nif [[ $LAUNCHD_RUNNING == 1 ]] && [[ -e /etc/security/audit_control ]]; then\n  echo \"pass\"\nelse\n  echo \"fail\"\nfi",
+        "type": "command_output"
+      },
+      "description": "The macOS system must enable security auditing.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "pass"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "LAUNCHD_RUNNING=$(/bin/launchctl list | /usr/bin/grep -c com.apple.auditd)\nif [[ $LAUNCHD_RUNNING == 1 ]] && [[ -e /etc/security/audit_control ]]; then\n  echo \"pass\"\nelse\n  echo \"fail\"\nfi": "unexpected-pass"
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "LAUNCHD_RUNNING=$(/bin/launchctl list | /usr/bin/grep -c com.apple.auditd)\nif [[ $LAUNCHD_RUNNING == 1 ]] && [[ -e /etc/security/audit_control ]]; then\n  echo \"pass\"\nelse\n  echo \"fail\"\nfi": "pass"
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259454"
     },
     {
       "check": {
@@ -2971,5 +2997,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apple_macOS_14_STIG",
-  "validated_candidates": 114
+  "validated_candidates": 115
 }

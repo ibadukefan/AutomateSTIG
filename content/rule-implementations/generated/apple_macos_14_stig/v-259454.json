@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "LAUNCHD_RUNNING=$(/bin/launchctl list | /usr/bin/grep -c com.apple.auditd)\nif [[ $LAUNCHD_RUNNING == 1 ]] && [[ -e /etc/security/audit_control ]]; then\n  echo \"pass\"\nelse\n  echo \"fail\"\nfi",
+      "type": "command_output"
+    },
+    "description": "The macOS system must enable security auditing.",
+    "expected": {
+      "type": "equals",
+      "value": "pass"
+    },
+    "platform": "macos",
+    "vuln_id": "V-259454"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to enable the auditd service with the following command:\n\nLAUNCHD_RUNNING=$(/bin/launchctl list | /usr/bin/grep -c com.apple.auditd)\nif [[ $LAUNCHD_RUNNING == 1 ]] && [[ -e /etc/security/audit_control ]]; then\n  echo \"pass\"\nelse\n  echo \"fail\"\nfi\n\nIf the result is not \"pass\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "pass"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to enable the auditd service with the following command:\n\nLAUNCHD_RUNNING=$(/bin/launchctl list | /usr/bin/grep -c com.apple.auditd)\n\nif [[ ! $LAUNCHD_RUNNING == 1 ]]; then\n  /bin/launchctl load -w /System/Library/LaunchDaemons/com.apple.auditd.plist\nfi\n\nif [[ ! -e /etc/security/audit_control ]] && [[ -e /etc/security/audit_control.example ]];then\n  /bin/cp /etc/security/audit_control.example /etc/security/audit_control\nelse\n  /usr/bin/touch /etc/security/audit_control\nfi",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259454r1009584_rule",
   "severity": "medium",
