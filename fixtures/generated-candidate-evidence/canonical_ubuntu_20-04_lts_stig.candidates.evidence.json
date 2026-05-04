@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 127,
+  "candidate_checks": 128,
   "cases": [
     {
       "check": {
@@ -1589,6 +1589,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-238302"
+    },
+    {
+      "check": {
+        "command": "egrep '(\\/sbin\\/(audit|au))' /etc/aide/aide.conf",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must use cryptographic mechanisms to protect the integrity of audit tools.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/audispd p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "egrep '(\\/sbin\\/(audit|au))' /etc/aide/aide.conf": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "egrep '(\\/sbin\\/(audit|au))' /etc/aide/aide.conf": "before\n/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/audispd p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238303"
     },
     {
       "check": {
@@ -3513,5 +3539,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 127
+  "validated_candidates": 128
 }

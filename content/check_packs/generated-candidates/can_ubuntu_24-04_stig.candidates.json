@@ -2170,6 +2170,19 @@
     },
     {
       "check": {
+        "command": "egrep '(\\/sbin\\/(audit|au))' /etc/aide/aide.conf",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must use cryptographic mechanisms to protect the integrity of audit tools.",
+      "expected": {
+        "substring": "/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512\n/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270831"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/audit.rules",
         "pattern": "-e 2",

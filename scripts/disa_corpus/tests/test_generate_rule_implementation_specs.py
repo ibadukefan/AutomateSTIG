@@ -78,6 +78,39 @@ If any user accounts, including administrators, are listed, this is a finding.''
         })
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_aide_audit_tool_selection_lines_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270831',
+            'title': 'Ubuntu 24.04 LTS must use cryptographic mechanisms to protect the integrity of audit tools.',
+            'check_content': '''Verify that Advanced Intrusion Detection Environment (AIDE) is properly configured to use cryptographic mechanisms to protect the integrity of audit tools with the following command:
+
+$ egrep '(\\/sbin\\/(audit|au))' /etc/aide/aide.conf
+/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512
+/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512
+/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512
+/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512
+/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512
+/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512
+
+If any of the seven audit tools do not have appropriate selection lines, this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': "egrep '(\\/sbin\\/(audit|au))' /etc/aide/aide.conf",
+        })
+        self.assertEqual(candidate['expected'], {
+            'type': 'contains',
+            'substring': '\n'.join([
+                '/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512',
+                '/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512',
+                '/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512',
+                '/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512',
+                '/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512',
+                '/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512',
+            ]),
+        })
+
     def test_infers_registry_candidate_check_from_disa_check_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254382',
