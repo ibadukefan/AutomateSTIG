@@ -1406,6 +1406,19 @@
     },
     {
       "check": {
+        "command": "HINT=$(/usr/bin/dscl . -list /Users hint | /usr/bin/awk '{ print $2 }')\nif [ -z \"$HINT\" ]; then echo \"PASS\"\nelse echo \"FAIL\"\nfi",
+        "type": "command_output"
+      },
+      "description": "The macOS system must remove password hints from user accounts.",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "platform": "macos",
+      "vuln_id": "V-268541"
+    },
+    {
+      "check": {
         "command": ".NSUserDefaults.alloc.initWithSuiteName('com.apple.security.smartcard')\\",
         "type": "command_output"
       },

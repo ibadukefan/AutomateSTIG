@@ -1466,6 +1466,19 @@ def _macos_pass_fail_shell_block_candidate(rule: dict, stig_id: str) -> dict | N
     content = rule.get('check_content', '') or ''
     if not re.search(r'If\s+the\s+result\s+is\s+not\s+["“]pass["”],?\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
         return None
+    password_hint_command = 'HINT=$(/usr/bin/dscl . -list /Users hint | /usr/bin/awk \'{ print $2 }\')\nif [ -z "$HINT" ]; then echo "PASS"\nelse echo "FAIL"\nfi'
+    if (
+        re.search(r'\bremove\s+password\s+hints\b', rule.get('title', ''), re.IGNORECASE)
+        and re.search(r'HINT=\$\(/usr/bin/dscl\s+\.\s+-list\s+/Users\s+hint\s+\|\s+/usr/bin/awk\s+\'\{\s*print\s+\$2\s*\}\'\)', content)
+        and re.search(r'if\s+\[\s+-z\s+"\$HINT"\s+\];\s+then\s+echo\s+"PASS"\s+else\s+echo\s+"FAIL"\s+fi', content, re.IGNORECASE)
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'macos',
+            'check': {'type': 'command_output', 'command': password_hint_command},
+            'expected': {'type': 'equals', 'value': 'PASS'},
+            'description': rule.get('title', ''),
+        }
     block_match = re.search(
         r'(?P<command>(?:[A-Z][A-Z0-9_]*=\$\([^\n]+\)\n)+if\s+\[\[.*?\]\];\s+then\n\s*echo\s+["“]pass["”]\nelse\n\s*echo\s+["“]fail["”]\nfi)',
         content,

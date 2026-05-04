@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "HINT=$(/usr/bin/dscl . -list /Users hint | /usr/bin/awk '{ print $2 }')\nif [ -z \"$HINT\" ]; then echo \"PASS\"\nelse echo \"FAIL\"\nfi",
+      "type": "command_output"
+    },
+    "description": "The macOS system must remove password hints from user accounts.",
+    "expected": {
+      "type": "equals",
+      "value": "PASS"
+    },
+    "platform": "macos",
+    "vuln_id": "V-268541"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to remove password hints from user accounts with the following command:\n\nHINT=$(/usr/bin/dscl . -list /Users hint | /usr/bin/awk '{ print $2 }')\n\nif [ -z \"$HINT\" ]; then\necho \"PASS\"\nelse\necho \"FAIL\"\nfi\n\nIf the result is not \"PASS\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "PASS"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to remove password hints from user accounts with the following command:\n\nfor u in $(/usr/bin/dscl . -list /Users UniqueID | /usr/bin/awk '$2 > 500 {print $1}'); do\n/usr/bin/dscl . -delete /Users/$u hint\ndone",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-268541r1131242_rule",
   "severity": "medium",

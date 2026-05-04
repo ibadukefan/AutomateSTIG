@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 149,
+  "candidate_checks": 150,
   "cases": [
     {
       "check": {
@@ -2811,6 +2811,32 @@
     },
     {
       "check": {
+        "command": "HINT=$(/usr/bin/dscl . -list /Users hint | /usr/bin/awk '{ print $2 }')\nif [ -z \"$HINT\" ]; then echo \"PASS\"\nelse echo \"FAIL\"\nfi",
+        "type": "command_output"
+      },
+      "description": "The macOS system must remove password hints from user accounts.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "PASS"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "HINT=$(/usr/bin/dscl . -list /Users hint | /usr/bin/awk '{ print $2 }')\nif [ -z \"$HINT\" ]; then echo \"PASS\"\nelse echo \"FAIL\"\nfi": "unexpected-PASS"
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "HINT=$(/usr/bin/dscl . -list /Users hint | /usr/bin/awk '{ print $2 }')\nif [ -z \"$HINT\" ]; then echo \"PASS\"\nelse echo \"FAIL\"\nfi": "PASS"
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-268541"
+    },
+    {
+      "check": {
         "command": ".NSUserDefaults.alloc.initWithSuiteName('com.apple.security.smartcard')\\",
         "type": "command_output"
       },
@@ -3881,5 +3907,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apple_macos_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apple_macOS_15_STIG",
-  "validated_candidates": 149
+  "validated_candidates": 150
 }

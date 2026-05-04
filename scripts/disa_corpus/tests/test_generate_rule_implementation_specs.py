@@ -1123,6 +1123,21 @@ If the result is not "pass", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': command})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'pass'})
 
+    def test_infers_inline_macos_password_hint_pass_fail_shell_block(self):
+        command = 'HINT=$(/usr/bin/dscl . -list /Users hint | /usr/bin/awk \'{ print $2 }\')\nif [ -z "$HINT" ]; then echo "PASS"\nelse echo "FAIL"\nfi'
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-268541',
+            'title': 'The macOS system must remove password hints from user accounts.',
+            'check_content': f'''Verify the macOS system is configured to remove password hints from user accounts with the following command:
+
+{command}
+
+If the result is not "PASS", this is a finding.'''
+        }, 'Apple_macOS_15_STIG')
+        self.assertEqual(candidate['platform'], 'macos')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': command})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'PASS'})
+
     def test_infers_macos_osascript_true_heredoc_with_javascript_conjunctions(self):
         command = '''/usr/bin/osascript -l JavaScript << EOS
 function run() {
