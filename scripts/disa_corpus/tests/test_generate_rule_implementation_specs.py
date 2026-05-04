@@ -56,6 +56,28 @@ If the pcscd socket is not active, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'systemctl is-active pcscd.socket'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'active'})
 
+    def test_infers_windows_ad_smartcard_required_no_listed_users_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254415',
+            'title': 'Windows Server 2022 Active Directory user accounts must require CAC authentication.',
+            'check_content': '''This applies to domain controllers. It is NA for other systems.
+
+Open "PowerShell".
+
+Enter the following:
+
+"Get-ADUser -Filter {(Enabled -eq $True) -and (SmartcardLogonRequired -eq $False)} | FT Name"
+("DistinguishedName" may be substituted for "Name" for more detailed output.)
+
+If any user accounts, including administrators, are listed, this is a finding.'''
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': 'Get-ADUser -Filter {(Enabled -eq $True) -and (SmartcardLogonRequired -eq $False)} | FT Name',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_registry_candidate_check_from_disa_check_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254382',

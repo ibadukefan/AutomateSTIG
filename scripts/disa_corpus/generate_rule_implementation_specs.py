@@ -1422,6 +1422,32 @@ def _macos_pass_fail_shell_block_candidate(rule: dict, stig_id: str) -> dict | N
     }
 
 
+def _windows_ad_smartcard_no_listed_users_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    command_match = re.search(
+        r'["“](?P<command>Get-ADUser\s+-Filter\s+\{\(Enabled\s+-eq\s+\$True\)\s+-and\s+\(SmartcardLogonRequired\s+-eq\s+\$False\)\}\s*\|\s*FT\s+Name)["”]',
+        content,
+        re.IGNORECASE,
+    )
+    if not command_match:
+        return None
+    if not re.search(
+        r'If\s+any\s+user\s+accounts,?\s+including\s+administrators,?\s+are\s+listed,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': re.sub(r'\s+', ' ', command_match.group('command')).strip()},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     macos_osascript_true_candidate = _macos_osascript_true_heredoc_candidate(rule, stig_id)
@@ -1820,6 +1846,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         security_policy_candidate = _windows_security_policy_candidate(rule)
         if security_policy_candidate:
             return security_policy_candidate
+
+        ad_smartcard_candidate = _windows_ad_smartcard_no_listed_users_candidate(rule, stig_id)
+        if ad_smartcard_candidate:
+            return ad_smartcard_candidate
 
         feature = re.search(r'Get-WindowsFeature\s*\|\s*Where\s+Name\s+-eq\s+([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
         if not feature:

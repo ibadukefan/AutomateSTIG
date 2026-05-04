@@ -2752,16 +2752,17 @@
       "vuln_id": "V-254414"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254415",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254415r1081074_rule",
       "severity": "medium",
       "title": "Windows Server 2022 Active Directory user accounts, including administrators, must be configured to require the use of a Common Access Card (CAC), Personal Identity Verification (PIV)-compliant hardware token, or Alternate Logon Token (ALT) for user authentication.",
-      "tracking_issue": "TODO-V-254415",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/7681561809403e3f48c26bcf72e1273b3713b6327cf8dfdc5427977a1ee5967d/U_MS_Windows_Server_2022_V2R8_STIG.zip"
       ],
       "vuln_id": "V-254415"
