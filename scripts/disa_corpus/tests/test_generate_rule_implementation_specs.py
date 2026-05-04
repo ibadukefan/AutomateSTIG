@@ -204,6 +204,58 @@ Value: 1'''
         }, 'Adobe_Acrobat_Pro_DC_Continuous_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_windows_security_option_exact_string_from_fix_text_only(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-254475',
+            'title': 'Windows Server 2022 LAN Manager authentication level must be configured to send NTLMv2 response only and to refuse LM and NTLM.',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> Network security: LAN Manager authentication level to "Send NTLMv2 response only. Refuse LM & NTLM".'''
+        }, 'scap_mil.disa.stig_collection_U_MS_Windows_Server_2022_V2R8_STIG_SCAP_1-3_Benchmark')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {
+            'type': 'security_policy',
+            'section': 'Security Options',
+            'key': 'Network security: LAN Manager authentication level',
+        })
+        self.assertEqual(candidate['expected'], {
+            'type': 'equals',
+            'value': 'Send NTLMv2 response only. Refuse LM & NTLM',
+        })
+
+    def test_infers_user_namespace_sysctl_from_fix_text_exact_line(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'xccdf_mil.disa.stig_group_V-257816',
+            'title': 'RHEL 9 must disable the use of user namespaces.',
+            'fix_text': '''Configure RHEL 9 to disable the use of user namespaces by adding the following line to a file, in the "/etc/sysctl.d" directory:
+
+user.max_user_namespaces = 0
+
+The system configuration files need to be reloaded for the changes to take effect. To reload the contents of the files, run the following command:
+
+$ sudo sysctl --system'''
+        }, 'scap_mil.disa.stig_collection_U_RHEL_9_V2R4_STIG_SCAP_1-3_Benchmark')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'sysctl', 'key': 'user.max_user_namespaces'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '0'})
+
+    def test_infers_opensc_cac_card_driver_exact_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258121',
+            'title': 'RHEL 9 must use the common access card (CAC) smart card driver.',
+            'check_content': '''Verify that RHEL loads the CAC driver with the following command:
+
+$ sudo opensc-tool --get-conf-entry app:default:card_drivers cac
+
+cac
+
+If "cac" is not listed as a card driver, or no line is returned for "card_drivers", this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': 'opensc-tool --get-conf-entry app:default:card_drivers cac',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'cac'})
+
     def test_infers_defender_registry_candidate_from_explicit_criteria_not_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278668',

@@ -321,6 +321,27 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                 re.IGNORECASE,
             )
         if not security_option:
+            exact_string_option = re.search(
+                r'Configure\s+the\s+policy\s+value\s+for\s+Computer\s+Configuration\s*>>\s*Windows\s+Settings\s*>>\s*Security\s+Settings\s*>>\s*Local\s+Policies\s*>>\s*Security\s+Options\s*>>\s*"?([^"\n]+?)"?\s+to\s+"([^"\n]+)"\s*\.\s*(?:\n|$)',
+                policy_text,
+                re.IGNORECASE,
+            )
+            if exact_string_option:
+                exact_value = exact_string_option.group(2).strip()
+                unsafe_string_context = re.search(
+                    r'\b(?:also\s+acceptable|acceptable|at\s+a\s+minimum|organization-defined|equivalent|all\s+options\s+selected|with\s+only\s+the\s+following\s+selected)\b',
+                    policy_text,
+                    re.IGNORECASE,
+                )
+                if exact_value not in {'Enabled', 'Disabled'} and not unsafe_string_context:
+                    return {
+                        'vuln_id': rule.get('vuln_id', ''),
+                        'platform': 'windows',
+                        'check': {'type': 'security_policy', 'section': 'Security Options', 'key': exact_string_option.group(1).strip()},
+                        'expected': {'type': 'equals', 'value': exact_value},
+                        'description': rule.get('title', ''),
+                    }
+        if not security_option:
             less_or_equal_option = re.search(
                 r'Configure\s+the\s+policy\s+value\s+for\s+Computer\s+Configuration\s*>>\s*Windows\s+Settings\s*>>\s*Security\s+Settings\s*>>\s*Local\s+Policies\s*>>\s*Security\s+Options\s*>>\s*"?([^"\n]+?)"?\s+to\s+"(\d+)"\s+[^.\n]*\bor\s+less\s*\.\s*(?:\n|$)',
                 policy_text,
@@ -529,7 +550,7 @@ def _sysctl_candidate(rule: dict) -> dict | None:
             expected = value_match.group(1).strip().strip('"')
     if not key or expected is None:
         config_match = re.search(
-            r'^\s*((?:kernel|net|fs|vm)\.[A-Za-z0-9_.-]+)\s*=\s*([^\s#]+)\s*$',
+            r'^\s*((?:kernel|net|fs|vm|user)\.[A-Za-z0-9_.-]+)\s*=\s*([^\s#]+)\s*$',
             combined,
             re.MULTILINE,
         )
@@ -1628,6 +1649,23 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'platform': 'linux' if _linux_platform(stig_id) else 'generic',
             'check': {'type': 'command_output', 'command': command},
             'expected': {'type': 'equals', 'value': '1'},
+            'description': rule.get('title', ''),
+        }
+
+    if command == 'opensc-tool --get-conf-entry app:default:card_drivers cac' and re.search(
+        r'^[ \t]*cac[ \t]*$',
+        content,
+        re.IGNORECASE | re.MULTILINE,
+    ) and re.search(
+        r'If\s+["“]cac["”]\s+is\s+not\s+listed\s+as\s+a\s+card\s+driver,?\s+or\s+no\s+line\s+is\s+returned\s+for\s+["“]card_drivers["”],?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'cac'},
             'description': rule.get('title', ''),
         }
 

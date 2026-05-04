@@ -3520,6 +3520,19 @@
     },
     {
       "check": {
+        "command": "opensc-tool --get-conf-entry app:default:card_drivers cac",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must use the common access card (CAC) smart card driver.",
+      "expected": {
+        "substring": "cac",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258121"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sssd/sssd.conf",
         "pattern": "/etc/sssd/conf.d/",

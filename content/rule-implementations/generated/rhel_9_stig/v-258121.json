@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "opensc-tool --get-conf-entry app:default:card_drivers cac",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 must use the common access card (CAC) smart card driver.",
+    "expected": {
+      "substring": "cac",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-258121"
+  },
   "check_content_excerpt": "Verify that RHEL loads the CAC driver with the following command:\n\n$ sudo opensc-tool --get-conf-entry app:default:card_drivers cac\n\ncac\n\nIf \"cac\" is not listed as a card driver, or no line is returned for \"card_drivers\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "cac",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to load the CAC driver.\n\n$ sudo opensc-tool --set-conf-entry app:default:card_driver:cac\n\nRestart the pcscd service to apply the changes:\n\n$ sudo systemctl restart pcscd",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258121r1102086_rule",
   "severity": "medium",
