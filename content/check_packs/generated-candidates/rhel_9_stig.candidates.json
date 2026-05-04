@@ -3525,8 +3525,8 @@
       },
       "description": "RHEL 9 must use the common access card (CAC) smart card driver.",
       "expected": {
-        "substring": "cac",
-        "type": "contains"
+        "type": "equals",
+        "value": "cac"
       },
       "platform": "linux",
       "vuln_id": "V-258121"

@@ -7200,20 +7200,20 @@
         "type": "command_output"
       },
       "description": "RHEL 9 must use the common access card (CAC) smart card driver.",
-      "evidence_type": "command_output_contains",
+      "evidence_type": "command_output_equals",
       "expected": {
-        "substring": "cac",
-        "type": "contains"
+        "type": "equals",
+        "value": "cac"
       },
       "fail_fixture": {
         "command_outputs": {
-          "opensc-tool --get-conf-entry app:default:card_drivers cac": "before\nafter\n"
+          "opensc-tool --get-conf-entry app:default:card_drivers cac": "different"
         },
         "platform": "linux"
       },
       "pass_fixture": {
         "command_outputs": {
-          "opensc-tool --get-conf-entry app:default:card_drivers cac": "before\ncac\nafter\n"
+          "opensc-tool --get-conf-entry app:default:card_drivers cac": "cac"
         },
         "platform": "linux"
       },

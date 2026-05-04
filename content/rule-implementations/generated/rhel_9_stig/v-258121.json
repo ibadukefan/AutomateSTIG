@@ -6,8 +6,8 @@
     },
     "description": "RHEL 9 must use the common access card (CAC) smart card driver.",
     "expected": {
-      "substring": "cac",
-      "type": "contains"
+      "type": "equals",
+      "value": "cac"
     },
     "platform": "linux",
     "vuln_id": "V-258121"
@@ -25,8 +25,8 @@
     "source_artifact"
   ],
   "expected_values": {
-    "substring": "cac",
-    "type": "contains"
+    "type": "equals",
+    "value": "cac"
   },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure RHEL 9 to load the CAC driver.\n\n$ sudo opensc-tool --set-conf-entry app:default:card_driver:cac\n\nRestart the pcscd service to apply the changes:\n\n$ sudo systemctl restart pcscd",
