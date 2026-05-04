@@ -78,6 +78,43 @@ If any user accounts, including administrators, are listed, this is a finding.''
         })
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_windows_certificate_store_thumbprint_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-220903',
+            'title': 'The DoD Root CA certificates must be installed in the Trusted Root Store.',
+            'check_content': '''Verify the DoD Root CA certificates are installed as Trusted Root Certification Authorities.
+
+Run "PowerShell" as an administrator.
+
+Execute the following command:
+
+Get-ChildItem -Path Cert:Localmachine\\root | Where Subject -Like "*DoD*" | FL Subject, Thumbprint, NotAfter
+
+If the following certificate "Subject" and "Thumbprint" information is not displayed, this is a finding.
+
+Subject: CN=DoD Root CA 3, OU=PKI, OU=DoD, O=U.S. Government, C=US
+Thumbprint: D73CA91102A2204A36459ED32213B467D7CE97FB
+NotAfter: 12/30/2029
+
+Subject: CN=DoD Root CA 4, OU=PKI, OU=DoD, O=U.S. Government, C=US
+Thumbprint: B8269F25DBD937ECAFD4C35A9838571723F2D026
+NotAfter: 7/25/2032
+
+Alternately, use the Certificates MMC snap-in:
+
+DoD Root CA 3
+Thumbprint: D73CA91102A2204A36459ED32213B467D7CE97FB'''
+        }, 'MS_Windows_10_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': 'Get-ChildItem -Path Cert:Localmachine\\root | Where Subject -Like "*DoD*" | FL Subject, Thumbprint, NotAfter',
+        })
+        self.assertEqual(candidate['expected'], {
+            'type': 'contains',
+            'substring': 'Subject: CN=DoD Root CA 3, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: D73CA91102A2204A36459ED32213B467D7CE97FB\nNotAfter: 12/30/2029\n\nSubject: CN=DoD Root CA 4, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: B8269F25DBD937ECAFD4C35A9838571723F2D026\nNotAfter: 7/25/2032',
+        })
+
     def test_infers_linux_dmesg_does_not_show_active_contains_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271760',

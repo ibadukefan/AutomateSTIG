@@ -1473,6 +1473,52 @@ def _macos_pass_fail_shell_block_candidate(rule: dict, stig_id: str) -> dict | N
     }
 
 
+def _windows_certificate_store_thumbprint_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    command_matches = list(re.finditer(
+        r'^\s*(?P<command>Get-ChildItem\s+-Path\s+Cert:Localmachine\\(?:root|disallowed)\b[^\n\r]+\|\s*FL\s+[^\n\r]*Thumbprint[^\n\r]*)\s*$',
+        content,
+        re.IGNORECASE | re.MULTILINE,
+    ))
+    if len(command_matches) != 1:
+        return None
+    finding_match = re.search(
+        r'If\s+the\s+following\s+certificate\s+["“]Subject["”][^\n.]*["“]Thumbprint["”]\s+information\s+is\s+not\s+displayed,?\s+this\s+is\s+a\s+finding[:.]?\s*(?P<body>.*?)(?:\n\s*Alternately\b|\n\s*or\s*\n|\Z)',
+        content,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not finding_match:
+        return None
+    block_lines = []
+    for raw_line in finding_match.group('body').splitlines():
+        stripped = raw_line.strip()
+        if not stripped:
+            if block_lines and block_lines[-1] != '':
+                block_lines.append('')
+            continue
+        if re.match(r'^(?:Subject|Issuer|Thumbprint|NotAfter)\s*:', stripped, re.IGNORECASE):
+            block_lines.append(stripped)
+            continue
+        return None
+    while block_lines and block_lines[-1] == '':
+        block_lines.pop()
+    expected_substring = '\n'.join(block_lines)
+    if 'Subject:' not in expected_substring or 'Thumbprint' not in expected_substring:
+        return None
+    thumbprints = re.findall(r'Thumbprint\s*:\s*([A-Fa-f0-9]{40})', expected_substring)
+    if not thumbprints:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': _normalize_command(command_matches[0].group('command'))},
+        'expected': {'type': 'contains', 'substring': expected_substring},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_ad_smartcard_no_listed_users_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -2040,6 +2086,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         security_policy_candidate = _windows_security_policy_candidate(rule)
         if security_policy_candidate:
             return security_policy_candidate
+
+        certificate_candidate = _windows_certificate_store_thumbprint_candidate(rule, stig_id)
+        if certificate_candidate:
+            return certificate_candidate
 
         ad_smartcard_candidate = _windows_ad_smartcard_no_listed_users_candidate(rule, stig_id)
         if ad_smartcard_candidate:

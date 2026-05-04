@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 178,
+  "candidate_checks": 181,
   "cases": [
     {
       "check": {
@@ -2865,6 +2865,84 @@
     },
     {
       "check": {
+        "command": "Get-ChildItem -Path Cert:Localmachine\\root | Where Subject -Like \"*DoD*\" | FL Subject, Thumbprint, NotAfter",
+        "type": "command_output"
+      },
+      "description": "The DoD Root CA certificates must be installed in the Trusted Root Store.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "Subject: CN=DoD Root CA 3, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: D73CA91102A2204A36459ED32213B467D7CE97FB\nNotAfter: 12/30/2029\n\nSubject: CN=DoD Root CA 4, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: B8269F25DBD937ECAFD4C35A9838571723F2D026\nNotAfter: 7/25/2032\n\nSubject: CN=DoD Root CA 5, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: 4ECB5CC3095670454DA1CBD410FC921F46B8564B\nNotAfter: 6/14/2041\n\nSubject: CN=DoD Root CA 6 OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: D37ECF61C0B4ED88681EF3630C4E2FC787B37AEF\nNotAfter: 1/24/2053",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-ChildItem -Path Cert:Localmachine\\root | Where Subject -Like \"*DoD*\" | FL Subject, Thumbprint, NotAfter": "before\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-ChildItem -Path Cert:Localmachine\\root | Where Subject -Like \"*DoD*\" | FL Subject, Thumbprint, NotAfter": "before\nSubject: CN=DoD Root CA 3, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: D73CA91102A2204A36459ED32213B467D7CE97FB\nNotAfter: 12/30/2029\n\nSubject: CN=DoD Root CA 4, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: B8269F25DBD937ECAFD4C35A9838571723F2D026\nNotAfter: 7/25/2032\n\nSubject: CN=DoD Root CA 5, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: 4ECB5CC3095670454DA1CBD410FC921F46B8564B\nNotAfter: 6/14/2041\n\nSubject: CN=DoD Root CA 6 OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: D37ECF61C0B4ED88681EF3630C4E2FC787B37AEF\nNotAfter: 1/24/2053\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253427"
+    },
+    {
+      "check": {
+        "command": "Get-ChildItem -Path Cert:Localmachine\\root | Where Subject -Like \"*ECA*\" | FL Subject, Thumbprint, NotAfter",
+        "type": "command_output"
+      },
+      "description": "The External Root CA certificates must be installed in the Trusted Root Store on unclassified systems.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "Subject: CN=ECA Root CA 4, OU=ECA, O=U.S. Government, C=US\nThumbprint: 73E8BB08E337D6A5A6AEF90CFFDD97D9176CB582\nNotAfter: 12/30/2029",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-ChildItem -Path Cert:Localmachine\\root | Where Subject -Like \"*ECA*\" | FL Subject, Thumbprint, NotAfter": "before\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-ChildItem -Path Cert:Localmachine\\root | Where Subject -Like \"*ECA*\" | FL Subject, Thumbprint, NotAfter": "before\nSubject: CN=ECA Root CA 4, OU=ECA, O=U.S. Government, C=US\nThumbprint: 73E8BB08E337D6A5A6AEF90CFFDD97D9176CB582\nNotAfter: 12/30/2029\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253428"
+    },
+    {
+      "check": {
+        "command": "Get-ChildItem -Path Cert:Localmachine\\disallowed | Where {$_.Issuer -Like \"*DoD Interoperability*\" -and $_.Subject -Like \"*DoD*\"} | FL Subject, Issuer, Thumbprint, NotAfter",
+        "type": "command_output"
+      },
+      "description": "The DoD Interoperability Root CA cross-certificates must be installed in the Untrusted Certificates Store on unclassified systems.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "Subject: CN=DoD Root CA 3, OU=PKI, OU=DoD, O=U.S. Government, C=US\nIssuer: CN=DoD Interoperability Root CA 2, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: 49CBE933151872E17C8EAE7F0ABA97FB610F6477\nNotAfter: 11/16/2024\n\nSubject: CN=DoD Root CA 3, OU=PKI, OU=DoD, O=U.S. Government, C=US\nIssuer: CN=DoD Interoperability Root CA 2, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: AC06108CA348CC03B53795C64BF84403C1DBD341\nNotAfter: 1/22/2022",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-ChildItem -Path Cert:Localmachine\\disallowed | Where {$_.Issuer -Like \"*DoD Interoperability*\" -and $_.Subject -Like \"*DoD*\"} | FL Subject, Issuer, Thumbprint, NotAfter": "before\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-ChildItem -Path Cert:Localmachine\\disallowed | Where {$_.Issuer -Like \"*DoD Interoperability*\" -and $_.Subject -Like \"*DoD*\"} | FL Subject, Issuer, Thumbprint, NotAfter": "before\nSubject: CN=DoD Root CA 3, OU=PKI, OU=DoD, O=U.S. Government, C=US\nIssuer: CN=DoD Interoperability Root CA 2, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: 49CBE933151872E17C8EAE7F0ABA97FB610F6477\nNotAfter: 11/16/2024\n\nSubject: CN=DoD Root CA 3, OU=PKI, OU=DoD, O=U.S. Government, C=US\nIssuer: CN=DoD Interoperability Root CA 2, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: AC06108CA348CC03B53795C64BF84403C1DBD341\nNotAfter: 1/22/2022\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253429"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
         "type": "registry",
         "value_name": "LimitBlankPasswordUse"
@@ -4812,5 +4890,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 178
+  "validated_candidates": 181
 }

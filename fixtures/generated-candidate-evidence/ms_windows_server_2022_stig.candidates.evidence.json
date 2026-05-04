@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 177,
+  "candidate_checks": 180,
   "cases": [
     {
       "check": {
@@ -2753,6 +2753,84 @@
     },
     {
       "check": {
+        "command": "Get-ChildItem -Path Cert:Localmachine\\root | Where Subject -Like \"*DoD*\" | FL Subject, Thumbprint, NotAfter",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "Subject: CN=DoD Root CA 3, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: D73CA91102A2204A36459ED32213B467D7CE97FB\nNotAfter: 12/30/2029\n\nSubject: CN=DoD Root CA 4, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: B8269F25DBD937ECAFD4C35A9838571723F2D026\nNotAfter: 7/25/2032\n\nSubject: CN=DoD Root CA 5, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: 4ECB5CC3095670454DA1CBD410FC921F46B8564B\nNotAfter: 6/14/2041\n\nSubject: CN=DoD Root CA 6, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint : D37ECF61C0B4ED88681EF3630C4E2FC787B37AEF\nNotAfter: 1/24/2053 11:36:17 AM",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-ChildItem -Path Cert:Localmachine\\root | Where Subject -Like \"*DoD*\" | FL Subject, Thumbprint, NotAfter": "before\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-ChildItem -Path Cert:Localmachine\\root | Where Subject -Like \"*DoD*\" | FL Subject, Thumbprint, NotAfter": "before\nSubject: CN=DoD Root CA 3, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: D73CA91102A2204A36459ED32213B467D7CE97FB\nNotAfter: 12/30/2029\n\nSubject: CN=DoD Root CA 4, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: B8269F25DBD937ECAFD4C35A9838571723F2D026\nNotAfter: 7/25/2032\n\nSubject: CN=DoD Root CA 5, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: 4ECB5CC3095670454DA1CBD410FC921F46B8564B\nNotAfter: 6/14/2041\n\nSubject: CN=DoD Root CA 6, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint : D37ECF61C0B4ED88681EF3630C4E2FC787B37AEF\nNotAfter: 1/24/2053 11:36:17 AM\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254442"
+    },
+    {
+      "check": {
+        "command": "Get-ChildItem -Path Cert:Localmachine\\disallowed | Where {$_.Issuer -Like \"*DoD Interoperability*\" -and $_.Subject -Like \"*DoD*\"} | FL Subject, Issuer, Thumbprint, NotAfter",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2022 must have the DoD Interoperability Root Certificate Authority (CA) cross-certificates installed in the Untrusted Certificates Store on unclassified systems.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "Subject: CN=DoD Root CA 3, OU=PKI, OU=DoD, O=U.S. Government, C=US\nIssuer: CN=DoD Interoperability Root CA 2, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: 49CBE933151872E17C8EAE7F0ABA97FB610F6477\nNotAfter: 11/16/2024 09:57:16 AM",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-ChildItem -Path Cert:Localmachine\\disallowed | Where {$_.Issuer -Like \"*DoD Interoperability*\" -and $_.Subject -Like \"*DoD*\"} | FL Subject, Issuer, Thumbprint, NotAfter": "before\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-ChildItem -Path Cert:Localmachine\\disallowed | Where {$_.Issuer -Like \"*DoD Interoperability*\" -and $_.Subject -Like \"*DoD*\"} | FL Subject, Issuer, Thumbprint, NotAfter": "before\nSubject: CN=DoD Root CA 3, OU=PKI, OU=DoD, O=U.S. Government, C=US\nIssuer: CN=DoD Interoperability Root CA 2, OU=PKI, OU=DoD, O=U.S. Government, C=US\nThumbprint: 49CBE933151872E17C8EAE7F0ABA97FB610F6477\nNotAfter: 11/16/2024 09:57:16 AM\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254443"
+    },
+    {
+      "check": {
+        "command": "Get-ChildItem -Path Cert:Localmachine\\disallowed | Where Issuer -Like \"*CCEB Interoperability*\" | FL Subject, Issuer, Thumbprint, NotAfter",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2022 must have the US DOD CCEB Interoperability Root CA cross-certificates in the Untrusted Certificates Store on unclassified systems.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "Subject: CN=DOD Root CA 3, OU=PKI, OU=DOD, O=U.S. Government, C=US\nIssuer: CN=US DOD CCEB Interoperability Root CA 2, OU=PKI, OU=DOD, O=U.S. Government, C=US\nThumbprint: 9B74964506C7ED9138070D08D5F8B969866560C8\nNotAfter: 7/18/2025 9:56:22 AM",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-ChildItem -Path Cert:Localmachine\\disallowed | Where Issuer -Like \"*CCEB Interoperability*\" | FL Subject, Issuer, Thumbprint, NotAfter": "before\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-ChildItem -Path Cert:Localmachine\\disallowed | Where Issuer -Like \"*CCEB Interoperability*\" | FL Subject, Issuer, Thumbprint, NotAfter": "before\nSubject: CN=DOD Root CA 3, OU=PKI, OU=DOD, O=U.S. Government, C=US\nIssuer: CN=US DOD CCEB Interoperability Root CA 2, OU=PKI, OU=DOD, O=U.S. Government, C=US\nThumbprint: 9B74964506C7ED9138070D08D5F8B969866560C8\nNotAfter: 7/18/2025 9:56:22 AM\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-254444"
+    },
+    {
+      "check": {
         "key": "Accounts: Guest account status",
         "section": "Security Options",
         "type": "security_policy"
@@ -4782,5 +4860,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_Server_2022_STIG",
-  "validated_candidates": 177
+  "validated_candidates": 180
 }

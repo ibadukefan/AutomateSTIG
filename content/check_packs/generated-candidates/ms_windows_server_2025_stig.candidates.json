@@ -1840,6 +1840,45 @@
     },
     {
       "check": {
+        "command": "Get-ChildItem -Path Cert:Localmachine\\root | Where Subject -Like \"*DOD*\" | FL Subject, Thumbprint, NotAfter",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 must have the DOD Root Certificate Authority (CA) certificates installed in the Trusted Root Store.",
+      "expected": {
+        "substring": "Subject: CN=DOD Root CA 2, OU=PKI, OU=DOD, O=U.S. Government, C=US\nThumbprint: 8C941B34EA1EA6ED9AE2BC54CF687252B4C9B561\nNotAfter: 12/5/2029\n\nSubject: CN=DOD Root CA 3, OU=PKI, OU=DOD, O=U.S. Government, C=US\nThumbprint: D73CA91102A2204A36459ED32213B467D7CE97FB\nNotAfter: 12/30/2029\n\nSubject: CN=DOD Root CA 4, OU=PKI, OU=DOD, O=U.S. Government, C=US\nThumbprint: B8269F25DBD937ECAFD4C35A9838571723F2D026\nNotAfter: 7/25/2032\n\nSubject: CN=DOD Root CA 5, OU=PKI, OU=DOD, O=U.S. Government, C=US\nThumbprint: 4ECB5CC3095670454DA1CBD410FC921F46B8564B\nNotAfter: 6/14/2041",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278192"
+    },
+    {
+      "check": {
+        "command": "Get-ChildItem -Path Cert:Localmachine\\disallowed | Where {$_.Issuer -Like \"*DOD Interoperability*\" -and $_.Subject -Like \"*DOD*\"} | FL Subject, Issuer, Thumbprint, NotAfter",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 must have the DOD Interoperability Root Certificate Authority (CA) cross-certificates installed in the Untrusted Certificates Store on unclassified systems.",
+      "expected": {
+        "substring": "Subject: CN=DOD Root CA 3, OU=PKI, OU=DOD, O=U.S. Government, C=US\nIssuer: CN=DOD Interoperability Root CA 2, OU=PKI, OU=DOD, O=U.S. Government, C=US\nThumbprint: AC06108CA348CC03B53795C64BF84403C1DBD341\nNotAfter: 1/22/2025 10:22:56 AM\n\nSubject: CN=DOD Root CA 2, OU=PKI, OU=DOD, O=U.S. Government, C=US\nIssuer: CN=DOD Interoperability Root CA 1, OU=PKI, OU=DOD, O=U.S. Government, C=US\nThumbprint: A8C27332CCB4CA49554CE55D34062A7DD2850C02\nNotAfter: 8/26/2025 9:25:51 AM",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278193"
+    },
+    {
+      "check": {
+        "command": "Get-ChildItem -Path Cert:Localmachine\\disallowed | Where Issuer -Like \"*CCEB Interoperability*\" | FL Subject, Issuer, Thumbprint, NotAfter",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2025 must have the US DOD CCEB Interoperability Root CA cross-certificates in the Untrusted Certificates Store on unclassified systems.",
+      "expected": {
+        "substring": "Subject: CN=DOD Root CA 3, OU=PKI, OU=DOD, O=U.S. Government, C=US\nIssuer: CN=US DOD CCEB Interoperability Root CA 2, OU=PKI, OU=DOD, O=U.S. Government, C=US\nThumbprint: AF132AC65DE86FC4FB3FE51FD637EBA0FF0B12A9\nNotAfter: 8/26/2025 9:07:50 AM\n\nSubject: CN=DOD Root CA 3, OU=PKI, OU=DOD, O=U.S. Government, C=US\nIssuer: CN=US DOD CCEB Interoperability Root CA 2, OU=PKI, OU=DOD, O=U.S. Government, C=US\nThumbprint: 929BF3196896994C0A201DF4A5B71F603FEFBF2E\nNotAfter: 9/27/2025",
+        "type": "contains"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278194"
+    },
+    {
+      "check": {
         "key": "Accounts: Guest account status",
         "section": "Security Options",
         "type": "security_policy"

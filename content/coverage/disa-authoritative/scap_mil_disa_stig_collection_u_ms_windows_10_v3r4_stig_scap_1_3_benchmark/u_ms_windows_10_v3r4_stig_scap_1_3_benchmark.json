@@ -2251,61 +2251,65 @@
       "vuln_id": "V-220902"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-220903",
+      "check_pack": "generated-candidates/ms_windows_10_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-220903 from source identifier xccdf_mil.disa.stig_group_V-220903.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-220903r958448_rule",
       "severity": "medium",
       "title": "The DoD Root CA certificates must be installed in the Trusted Root Store.",
-      "tracking_issue": "TODO-V-220903",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
         "content/disa-corpus/artifacts/83cfd98b3f06b000e15e310272e3afdd3e7e8052112aa5cc36325950f3038230/U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-220903"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-220904",
+      "check_pack": "generated-candidates/ms_windows_10_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-220904 from source identifier xccdf_mil.disa.stig_group_V-220904.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-220904r958448_rule",
       "severity": "medium",
       "title": "The External Root CA certificates must be installed in the Trusted Root Store on unclassified systems.",
-      "tracking_issue": "TODO-V-220904",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
         "content/disa-corpus/artifacts/83cfd98b3f06b000e15e310272e3afdd3e7e8052112aa5cc36325950f3038230/U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-220904"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-220905",
+      "check_pack": "generated-candidates/ms_windows_10_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-220905 from source identifier xccdf_mil.disa.stig_group_V-220905.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-220905r958448_rule",
       "severity": "medium",
       "title": "The DoD Interoperability Root CA cross-certificates must be installed in the Untrusted Certificates Store on unclassified systems.",
-      "tracking_issue": "TODO-V-220905",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
         "content/disa-corpus/artifacts/83cfd98b3f06b000e15e310272e3afdd3e7e8052112aa5cc36325950f3038230/U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-220905"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-220906",
+      "check_pack": "generated-candidates/ms_windows_10_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-220906 from source identifier xccdf_mil.disa.stig_group_V-220906.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-220906r1081051_rule",
       "severity": "medium",
       "title": "The US DOD CCEB Interoperability Root CA cross-certificates must be installed in the Untrusted Certificates Store on unclassified systems.",
-      "tracking_issue": "TODO-V-220906",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
         "content/disa-corpus/artifacts/83cfd98b3f06b000e15e310272e3afdd3e7e8052112aa5cc36325950f3038230/U_MS_Windows_10_V3R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-220906"

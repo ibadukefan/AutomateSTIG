@@ -3179,46 +3179,49 @@
       "vuln_id": "V-254441"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254442",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254442r958448_rule",
       "severity": "medium",
       "title": "Windows Server 2022 must have the DoD Root Certificate Authority (CA) certificates installed in the Trusted Root Store.",
-      "tracking_issue": "TODO-V-254442",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/7681561809403e3f48c26bcf72e1273b3713b6327cf8dfdc5427977a1ee5967d/U_MS_Windows_Server_2022_V2R8_STIG.zip"
       ],
       "vuln_id": "V-254442"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254443",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254443r958448_rule",
       "severity": "medium",
       "title": "Windows Server 2022 must have the DoD Interoperability Root Certificate Authority (CA) cross-certificates installed in the Untrusted Certificates Store on unclassified systems.",
-      "tracking_issue": "TODO-V-254443",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/7681561809403e3f48c26bcf72e1273b3713b6327cf8dfdc5427977a1ee5967d/U_MS_Windows_Server_2022_V2R8_STIG.zip"
       ],
       "vuln_id": "V-254443"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-254444",
+      "check_pack": "generated-candidates/ms_windows_server_2022_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-254444r1081077_rule",
       "severity": "medium",
       "title": "Windows Server 2022 must have the US DOD CCEB Interoperability Root CA cross-certificates in the Untrusted Certificates Store on unclassified systems.",
-      "tracking_issue": "TODO-V-254444",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_windows_server_2022_stig.candidates.json",
         "content/disa-corpus/artifacts/7681561809403e3f48c26bcf72e1273b3713b6327cf8dfdc5427977a1ee5967d/U_MS_Windows_Server_2022_V2R8_STIG.zip"
       ],
       "vuln_id": "V-254444"
