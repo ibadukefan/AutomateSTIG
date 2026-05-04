@@ -7207,7 +7207,7 @@
       },
       "fail_fixture": {
         "command_outputs": {
-          "opensc-tool --get-conf-entry app:default:card_drivers cac": "different"
+          "opensc-tool --get-conf-entry app:default:card_drivers cac": "unexpected-cac"
         },
         "platform": "linux"
       },

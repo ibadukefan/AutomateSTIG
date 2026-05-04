@@ -2439,6 +2439,28 @@ If output is produced, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep -i nullok /etc/pam.d/password-auth'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_pwck_home_directory_no_output_candidate_after_preceding_command(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230323',
+            'title': 'All RHEL 8 local interactive user home directories defined in the /etc/passwd file must exist.',
+            'check_content': '''Verify the assigned home directory of all local interactive users on RHEL 8 exists with the following command:
+
+$ sudo ls -ld $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd)
+
+drwxr-xr-x 2 smithj admin 4096 Jun 5 12:41 smithj
+
+Check that all referenced home directories exist with the following command:
+
+$ sudo pwck -r
+
+user 'smithj': directory '/home/smithj' does not exist
+
+If any home directories referenced in "/etc/passwd" are returned as not defined, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'pwck -r'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_no_output_candidate_when_grep_occurrences_return_from_command(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270707',

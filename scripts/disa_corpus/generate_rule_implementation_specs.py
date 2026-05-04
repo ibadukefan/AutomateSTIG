@@ -1562,6 +1562,15 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         if not command and quoted_netsh_command and re.search(r'If\s+the\s+command\s+displays\s+any\s+results,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
             command = _normalize_command(quoted_netsh_command.group('command'))
             command_end = quoted_netsh_command.end()
+    pwck_home_directory_match = re.search(r'^\s*[$#>]\s*(?:sudo\s+)?(?P<command>pwck\s+-r)\s*$', content, re.MULTILINE)
+    if pwck_home_directory_match and re.search(
+        r'If\s+any\s+home\s+directories\s+referenced\s+in\s+["“]/etc/passwd["”]\s+are\s+returned\s+as\s+not\s+defined,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        command = _normalize_command(pwck_home_directory_match.group('command'))
+        command_end = pwck_home_directory_match.end()
+
     allow_macos_command_substitution = bool(
         command
         and _macos_platform(stig_id)
@@ -1756,7 +1765,12 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         content,
         re.IGNORECASE,
     )
-    if no_output_for_find or no_output_for_find_not_owner or no_output_for_explicit_output or no_output_for_command_output or no_output_for_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found or no_output_for_grep_occurrences_return or no_output_for_find_unassigned_owner_group:
+    no_output_for_pwck_home_directories = command == 'pwck -r' and re.search(
+        r'If\s+any\s+home\s+directories\s+referenced\s+in\s+["“]/etc/passwd["”]\s+are\s+returned\s+as\s+not\s+defined,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if no_output_for_find or no_output_for_find_not_owner or no_output_for_explicit_output or no_output_for_command_output or no_output_for_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found or no_output_for_grep_occurrences_return or no_output_for_find_unassigned_owner_group or no_output_for_pwck_home_directories:
         return {
             'vuln_id': rule.get('vuln_id', ''),
             'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',

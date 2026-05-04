@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 153,
+  "candidate_checks": 154,
   "cases": [
     {
       "check": {
@@ -3097,6 +3097,32 @@
     },
     {
       "check": {
+        "command": "pwck -r",
+        "type": "command_output"
+      },
+      "description": "All SUSE operating system local interactive user home directories defined in the /etc/passwd file must exist.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "pwck -r": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "pwck -r": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234992"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/group",
         "pattern": "users:x:250:doduser,doduser,nsauser",
@@ -4052,5 +4078,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 153
+  "validated_candidates": 154
 }

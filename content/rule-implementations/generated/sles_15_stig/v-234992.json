@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "pwck -r",
+      "type": "command_output"
+    },
+    "description": "All SUSE operating system local interactive user home directories defined in the /etc/passwd file must exist.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-234992"
+  },
   "check_content_excerpt": "Verify the assigned home directory of all SUSE operating system local interactive users on the system exists.\n\nCheck the home directory assignment for all local interactive nonprivileged users on the system with the following command:\n\n> awk -F: '($3>=1000)&&($7 !~ /nologin/){print $1, $6}' /etc/passwd\n\ndoduser /home/doduser\n\nNote: This may miss interactive users that have been assigned a privileged User Identifier (UID). Evidence of interactive use may be obtained from a number of log files containing system logon information.\n\nCheck that all referenced home directories exist with the following command:\n\n> sudo pwck -r\n\nuser 'doduser': directory '/home/doduser' does not exist\n\nIf any home directories referenced in \"/etc/passwd\" are returned as not defined, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Create home directories to all SUSE operating system local interactive users that currently do not have a home directory assigned. Use the following commands to create the user home directory assigned in \"/etc/ passwd\":\n\nNote: The example will be for the user doduser, who has a home directory of \"/home/doduser\", a UID of \"doduser\", and a Group Identifier (GID) of \"users assigned\" in \"/etc/passwd\".\n\n> sudo mkdir /home/doduser \n> sudo chown doduser /home/doduser\n> sudo chgrp users /home/doduser\n> sudo chmod 0750 /home/doduser",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-234992r1184471_rule",
   "severity": "medium",

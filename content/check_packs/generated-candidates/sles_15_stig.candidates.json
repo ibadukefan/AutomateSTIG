@@ -1575,6 +1575,19 @@
     },
     {
       "check": {
+        "command": "pwck -r",
+        "type": "command_output"
+      },
+      "description": "All SUSE operating system local interactive user home directories defined in the /etc/passwd file must exist.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-234992"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/group",
         "pattern": "users:x:250:doduser,doduser,nsauser",

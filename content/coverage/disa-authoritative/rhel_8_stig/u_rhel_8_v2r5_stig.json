@@ -1570,16 +1570,17 @@
       "vuln_id": "V-230322"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230323",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230323r1017134_rule",
       "severity": "medium",
       "title": "All RHEL 8 local interactive user home directories defined in the /etc/passwd file must exist.",
-      "tracking_issue": "TODO-V-230323",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/2fc75413a96b0979c7b99b120111279cd58f8389a88dec7dfd64d9cc1406ba8a/U_RHEL_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-230323"
