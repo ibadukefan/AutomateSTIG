@@ -2805,5 +2805,33 @@ If any files on the system do not have an assigned owner, this is a finding.''',
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
 
+    def test_infers_macos_osascript_true_heredoc_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259420',
+            'title': 'The macOS system must enforce session lock no more than five seconds after screen saver is started.',
+            'check_content': '''Verify the macOS system is configured to initiate a session lock within five seconds of the screen saver starting with the following command:
+
+/usr/bin/osascript -l JavaScript << EOS
+function run() {
+  let delay = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\
+.objectForKey('askForPasswordDelay'))
+  if ( delay <= 5 ) {
+    return("true")
+  } else {
+    return("false")
+  }
+}
+EOS
+
+If the result is not "true", this is a finding.'''
+        }, 'Apple_macOS_14_STIG')
+
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'macos')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertTrue(candidate['check']['command'].startswith('/usr/bin/osascript -l JavaScript << EOS'))
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'true'})
+
+
 if __name__ == '__main__':
     unittest.main()

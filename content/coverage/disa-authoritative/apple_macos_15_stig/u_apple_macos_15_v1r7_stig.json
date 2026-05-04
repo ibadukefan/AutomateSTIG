@@ -34,16 +34,17 @@
       "vuln_id": "V-268421"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-268422",
+      "check_pack": "generated-candidates/apple_macos_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-268422r1131177_rule",
       "severity": "medium",
       "title": "The macOS system must enforce session lock no more than five seconds after screen saver is started.",
-      "tracking_issue": "TODO-V-268422",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_15_stig.candidates.json",
         "content/disa-corpus/artifacts/c3ffd7b41d90f636f8562bc707c7d888abecf1ea927d6e50b36c95555f0ac9da/U_Apple_macOS_15_V1R7_STIG.zip"
       ],
       "vuln_id": "V-268422"
@@ -316,16 +317,17 @@
       "vuln_id": "V-268440"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-268441",
+      "check_pack": "generated-candidates/apple_macos_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-268441r1131199_rule",
       "severity": "medium",
       "title": "The macOS system must enforce screen saver timeout.",
-      "tracking_issue": "TODO-V-268441",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_15_stig.candidates.json",
         "content/disa-corpus/artifacts/c3ffd7b41d90f636f8562bc707c7d888abecf1ea927d6e50b36c95555f0ac9da/U_Apple_macOS_15_V1R7_STIG.zip"
       ],
       "vuln_id": "V-268441"
@@ -2271,16 +2273,17 @@
       "vuln_id": "V-268566"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-268567",
+      "check_pack": "generated-candidates/apple_macos_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-268567r1131252_rule",
       "severity": "medium",
       "title": "The macOS system must authorize USB devices before allowing connection.",
-      "tracking_issue": "TODO-V-268567",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_15_stig.candidates.json",
         "content/disa-corpus/artifacts/c3ffd7b41d90f636f8562bc707c7d888abecf1ea927d6e50b36c95555f0ac9da/U_Apple_macOS_15_V1R7_STIG.zip"
       ],
       "vuln_id": "V-268567"

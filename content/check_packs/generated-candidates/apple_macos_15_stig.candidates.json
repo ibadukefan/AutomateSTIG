@@ -28,6 +28,19 @@
     },
     {
       "check": {
+        "command": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet delay = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\\n.objectForKey('askForPasswordDelay'))\nif ( delay <= 5 ) {\nreturn(\"true\")\n} else {\nreturn(\"false\")\n}\n}\nEOS",
+        "type": "command_output"
+      },
+      "description": "The macOS system must enforce session lock no more than five seconds after screen saver is started.",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "platform": "macos",
+      "vuln_id": "V-268422"
+    },
+    {
+      "check": {
         "command": ".NSUserDefaults.alloc.initWithSuiteName('com.apple.security.smartcard')\\",
         "type": "command_output"
       },
@@ -181,6 +194,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-268440"
+    },
+    {
+      "check": {
+        "command": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet timeout = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\\n.objectForKey('idleTime'))\nif ( timeout <= 900 ) {\nreturn(\"true\")\n} else {\nreturn(\"false\")\n}\n}\nEOS",
+        "type": "command_output"
+      },
+      "description": "The macOS system must enforce screen saver timeout.",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "platform": "macos",
+      "vuln_id": "V-268441"
     },
     {
       "check": {
@@ -1611,6 +1637,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-268565"
+    },
+    {
+      "check": {
+        "command": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('allowUSBRestrictedMode'))\nif ( pref1 == false ) {\nreturn(\"false\")\n} else {\nreturn(\"true\")\n}\n}\nEOS",
+        "type": "command_output"
+      },
+      "description": "The macOS system must authorize USB devices before allowing connection.",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "platform": "macos",
+      "vuln_id": "V-268567"
     },
     {
       "check": {

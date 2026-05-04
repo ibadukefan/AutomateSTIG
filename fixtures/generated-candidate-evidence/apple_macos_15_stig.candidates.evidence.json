@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 139,
+  "candidate_checks": 142,
   "cases": [
     {
       "check": {
@@ -52,6 +52,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-268421"
+    },
+    {
+      "check": {
+        "command": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet delay = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\\n.objectForKey('askForPasswordDelay'))\nif ( delay <= 5 ) {\nreturn(\"true\")\n} else {\nreturn(\"false\")\n}\n}\nEOS",
+        "type": "command_output"
+      },
+      "description": "The macOS system must enforce session lock no more than five seconds after screen saver is started.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet delay = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\\n.objectForKey('askForPasswordDelay'))\nif ( delay <= 5 ) {\nreturn(\"true\")\n} else {\nreturn(\"false\")\n}\n}\nEOS": "unexpected-true"
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet delay = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\\n.objectForKey('askForPasswordDelay'))\nif ( delay <= 5 ) {\nreturn(\"true\")\n} else {\nreturn(\"false\")\n}\n}\nEOS": "true"
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-268422"
     },
     {
       "check": {
@@ -364,6 +390,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-268440"
+    },
+    {
+      "check": {
+        "command": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet timeout = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\\n.objectForKey('idleTime'))\nif ( timeout <= 900 ) {\nreturn(\"true\")\n} else {\nreturn(\"false\")\n}\n}\nEOS",
+        "type": "command_output"
+      },
+      "description": "The macOS system must enforce screen saver timeout.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet timeout = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\\n.objectForKey('idleTime'))\nif ( timeout <= 900 ) {\nreturn(\"true\")\n} else {\nreturn(\"false\")\n}\n}\nEOS": "unexpected-true"
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet timeout = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\\n.objectForKey('idleTime'))\nif ( timeout <= 900 ) {\nreturn(\"true\")\n} else {\nreturn(\"false\")\n}\n}\nEOS": "true"
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-268441"
     },
     {
       "check": {
@@ -3227,6 +3279,32 @@
     },
     {
       "check": {
+        "command": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('allowUSBRestrictedMode'))\nif ( pref1 == false ) {\nreturn(\"false\")\n} else {\nreturn(\"true\")\n}\n}\nEOS",
+        "type": "command_output"
+      },
+      "description": "The macOS system must authorize USB devices before allowing connection.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('allowUSBRestrictedMode'))\nif ( pref1 == false ) {\nreturn(\"false\")\n} else {\nreturn(\"true\")\n}\n}\nEOS": "unexpected-true"
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('allowUSBRestrictedMode'))\nif ( pref1 == false ) {\nreturn(\"false\")\n} else {\nreturn(\"true\")\n}\n}\nEOS": "true"
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-268567"
+    },
+    {
+      "check": {
         "command": "/usr/libexec/mdmclient QuerySecurityInfo | /usr/bin/grep -c \"SecureBootLevel = full\"",
         "type": "command_output"
       },
@@ -3621,5 +3699,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apple_macos_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apple_macOS_15_STIG",
-  "validated_candidates": 139
+  "validated_candidates": 142
 }

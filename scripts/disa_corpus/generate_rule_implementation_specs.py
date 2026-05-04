@@ -1251,6 +1251,37 @@ def _grep_sample_line_candidate(rule: dict, stig_id: str, command: str, command_
     }
 
 
+def _macos_osascript_true_heredoc_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _macos_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    if not re.search(r'If\s+the\s+result\s+is\s+not\s+["“]true["”],?\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+        return None
+    block_match = re.search(
+        r'(?P<command>^/usr/bin/osascript\s+-l\s+JavaScript\s+<<\s+EOS\n(?:(?!^EOS\s*$).+\n)+^EOS\s*$)',
+        content,
+        re.MULTILINE,
+    )
+    if not block_match:
+        return None
+    command = block_match.group('command').strip()
+    body = command.split('\n', 1)[1].rsplit('\n', 1)[0]
+    if 'function run()' not in body:
+        return None
+    if 'return("true")' not in body or 'return("false")' not in body:
+        return None
+    unquoted = re.sub(r"'[^']*'|\"[^\"]*\"", '', body)
+    if any(token in unquoted for token in ('`', '$(', '&&', '>>')):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'macos',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'true'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _macos_result_variable_shell_block_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _macos_platform(stig_id):
         return None
@@ -1323,6 +1354,9 @@ def _macos_pass_fail_shell_block_candidate(rule: dict, stig_id: str) -> dict | N
 
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
+    macos_osascript_true_candidate = _macos_osascript_true_heredoc_candidate(rule, stig_id)
+    if macos_osascript_true_candidate:
+        return macos_osascript_true_candidate
     macos_result_variable_candidate = _macos_result_variable_shell_block_candidate(rule, stig_id)
     if macos_result_variable_candidate:
         return macos_result_variable_candidate
