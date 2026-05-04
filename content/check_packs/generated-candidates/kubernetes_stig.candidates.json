@@ -15,6 +15,19 @@
     },
     {
       "check": {
+        "command": "stat -c %U:%G /var/lib/etcd/* | grep -v etcd:etcd",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes component etcd must be owned by etcd.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-242445"
+    },
+    {
+      "check": {
         "command": "stat -c %U:%G /etc/kubernetes/kubelet.conf| grep -v root:root",
         "type": "command_output"
       },

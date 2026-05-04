@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "stat -c %U:%G /var/lib/etcd/* | grep -v etcd:etcd",
+      "type": "command_output"
+    },
+    "description": "The Kubernetes component etcd must be owned by etcd.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-242445"
+  },
   "check_content_excerpt": "Review the ownership of the Kubernetes etcd files by using the command:\n\nstat -c %U:%G /var/lib/etcd/* | grep -v etcd:etcd\n\nIf the command returns any non etcd:etcd file permissions, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the ownership of the manifest files to etcd:etcd by executing the command:\n\nchown etcd:etcd /var/lib/etcd/*",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242445r961863_rule",
   "severity": "medium",

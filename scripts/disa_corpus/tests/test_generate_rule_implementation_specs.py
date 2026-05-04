@@ -1909,6 +1909,23 @@ If the command returns any non root:root file permissions, this is a finding.'''
         })
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_kubernetes_stat_grep_etcd_ownership_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242445',
+            'title': 'The Kubernetes component etcd must be owned by etcd.',
+            'check_content': '''Review the ownership of the Kubernetes etcd files by using the command:
+
+stat -c %U:%G /var/lib/etcd/* | grep -v etcd:etcd
+
+If the command returns any non etcd:etcd file permissions, this is a finding.'''
+        }, 'Kubernetes_STIG')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': 'stat -c %U:%G /var/lib/etcd/* | grep -v etcd:etcd',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_linux_service_stopped_candidate_from_systemctl_status_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230502',

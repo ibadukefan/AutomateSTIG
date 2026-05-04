@@ -1635,29 +1635,25 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': 'True'},
             'description': rule.get('title', ''),
         }
-    kubernetes_root_ownership_commands = [
-        _normalize_command(m.group('command'))
-        for m in re.finditer(
-            r'^\s*(?P<command>stat\s+-c\s+%U:%G\s+/[A-Za-z0-9_./:+-]+\*?\s*\|\s*grep\s+-v\s+root:root)\s*$',
-            content,
-            re.MULTILINE,
-        )
-    ]
-    if (
-        len(kubernetes_root_ownership_commands) == 1
-        and re.search(
-            r'If\s+the\s+command\s+returns\s+any\s+non\s+root:root\s+file\s+permissions,?\s+this\s+is\s+a\s+finding',
+    kubernetes_ownership_matches = list(re.finditer(
+        r'^\s*(?P<command>stat\s+-c\s+%U:%G\s+/[A-Za-z0-9_./:+-]+\*?\s*\|\s*grep\s+-v\s+(?P<owner_group>[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+))\s*$',
+        content,
+        re.MULTILINE,
+    ))
+    if len(kubernetes_ownership_matches) == 1:
+        owner_group = kubernetes_ownership_matches[0].group('owner_group')
+        if re.search(
+            rf'If\s+the\s+command\s+returns\s+any\s+non\s+{re.escape(owner_group)}\s+file\s+permissions,?\s+this\s+is\s+a\s+finding',
             content,
             re.IGNORECASE,
-        )
-    ):
-        return {
-            'vuln_id': rule.get('vuln_id', ''),
-            'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',
-            'check': {'type': 'command_output', 'command': kubernetes_root_ownership_commands[0]},
-            'expected': {'type': 'equals', 'value': ''},
-            'description': rule.get('title', ''),
-        }
+        ):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',
+                'check': {'type': 'command_output', 'command': _normalize_command(kubernetes_ownership_matches[0].group('command'))},
+                'expected': {'type': 'equals', 'value': ''},
+                'description': rule.get('title', ''),
+            }
     command_matches = list(re.finditer(r'^\s*[$#>]\s*(?P<command>(?:sudo\s+)?(?:/[A-Za-z0-9_./:+-]+|[A-Za-z0-9_.:+-]+)\b[^\n\r]*)$', content, re.MULTILINE))
     command = None
     command_end = None
