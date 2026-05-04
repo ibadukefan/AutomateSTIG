@@ -4754,6 +4754,19 @@
     },
     {
       "check": {
+        "command": "cut -d : -f 3 /etc/group | uniq -d",
+        "type": "command_output"
+      },
+      "description": "OL 9 groups must have unique Group ID (GID).",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271835"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/security/faillock.conf",
         "pattern": "dir = /var/log/faillock",

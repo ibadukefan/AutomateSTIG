@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "cut -d : -f 3 /etc/group | uniq -d",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 groups must have unique Group ID (GID).",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-258061"
+  },
   "check_content_excerpt": "Verify that RHEL 9 contains no duplicate GIDs for interactive users with the following command:\n \n $  cut -d : -f 3 /etc/group | uniq -d\n \nIf the system has duplicate GIDs, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the file \"/etc/group\" and provide each group that has a duplicate GID with a unique GID.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258061r958482_rule",
   "severity": "medium",

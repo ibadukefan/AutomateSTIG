@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 370,
+  "candidate_checks": 371,
   "cases": [
     {
       "check": {
@@ -5907,6 +5907,32 @@
     },
     {
       "check": {
+        "command": "cut -d : -f 3 /etc/group | uniq -d",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 groups must have unique Group ID (GID).",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "cut -d : -f 3 /etc/group | uniq -d": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "cut -d : -f 3 /etc/group | uniq -d": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258061"
+    },
+    {
+      "check": {
         "command": "find /home -perm -002 -type f -name \".[^.]*\" -exec ls -ld {} \\;",
         "type": "command_output"
       },
@@ -10282,5 +10308,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 370
+  "validated_candidates": 371
 }

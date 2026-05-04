@@ -99,6 +99,24 @@ If "dmesg" does not show "NX (Execute Disable) protection" active, this is a fin
             'substring': 'NX (Execute Disable) protection: active',
         })
 
+    def test_infers_duplicate_gid_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258061',
+            'title': 'RHEL 9 groups must have unique Group ID (GID).',
+            'check_content': '''Verify that RHEL 9 contains no duplicate GIDs for interactive users with the following command:
+
+ $  cut -d : -f 3 /etc/group | uniq -d
+
+If the system has duplicate GIDs, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': 'cut -d : -f 3 /etc/group | uniq -d',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_aide_audit_tool_selection_lines_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270831',

@@ -1838,12 +1838,17 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         content,
         re.IGNORECASE,
     )
+    no_output_for_duplicate_gid = re.fullmatch(r'cut\s+-d\s+:\s+-f\s+3\s+/etc/group\s*\|\s*uniq\s+-d', command) and re.search(
+        r'If\s+the\s+system\s+has\s+duplicate\s+GIDs,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
     no_output_for_pwck_home_directories = command == 'pwck -r' and re.search(
         r'If\s+any\s+home\s+directories\s+referenced\s+in\s+["“]/etc/passwd["”]\s+are\s+returned\s+as\s+not\s+defined,?\s+this\s+is\s+a\s+finding',
         content,
         re.IGNORECASE,
     )
-    if no_output_for_find or no_output_for_find_not_owner or no_output_for_explicit_output or no_output_for_command_output or no_output_for_any_output or no_output_for_rpm_va_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found or no_output_for_grep_occurrences_return or no_output_for_find_unassigned_owner_group or no_output_for_pwck_home_directories:
+    if no_output_for_find or no_output_for_find_not_owner or no_output_for_explicit_output or no_output_for_command_output or no_output_for_any_output or no_output_for_rpm_va_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found or no_output_for_grep_occurrences_return or no_output_for_find_unassigned_owner_group or no_output_for_duplicate_gid or no_output_for_pwck_home_directories:
         return {
             'vuln_id': rule.get('vuln_id', ''),
             'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',
