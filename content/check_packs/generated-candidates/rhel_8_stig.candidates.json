@@ -3874,6 +3874,19 @@
     },
     {
       "check": {
+        "command": "update-crypto-policies --is-applied",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 cryptographic policy must not be overridden.",
+      "expected": {
+        "type": "equals",
+        "value": "The configured policy is applied"
+      },
+      "platform": "linux",
+      "vuln_id": "V-279932"
+    },
+    {
+      "check": {
         "name": "crypto-policies",
         "should_be_installed": true,
         "type": "package"

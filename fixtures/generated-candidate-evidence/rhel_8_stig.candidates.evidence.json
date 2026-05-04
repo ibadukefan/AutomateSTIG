@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 283,
+  "candidate_checks": 284,
   "cases": [
     {
       "check": {
@@ -7591,6 +7591,32 @@
     },
     {
       "check": {
+        "command": "update-crypto-policies --is-applied",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 cryptographic policy must not be overridden.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "The configured policy is applied"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "update-crypto-policies --is-applied": "unexpected-The configured policy is applied"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "update-crypto-policies --is-applied": "The configured policy is applied"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-279932"
+    },
+    {
+      "check": {
         "name": "crypto-policies",
         "should_be_installed": true,
         "type": "package"
@@ -7621,5 +7647,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 283
+  "validated_candidates": 284
 }

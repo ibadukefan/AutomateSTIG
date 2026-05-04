@@ -1332,6 +1332,22 @@ def _literal_command_output_candidate(rule: dict, stig_id: str, command: str, co
         re.IGNORECASE,
     )
     if not literal_match:
+        if (
+            command == 'update-crypto-policies --is-applied'
+            and sample_line == 'The configured policy is applied'
+            and re.search(
+                r'If\s+the\s+returned\s+message\s+does\s+not\s+match\s+the\s+above,?\s+this\s+is\s+a\s+finding',
+                finding_text,
+                re.IGNORECASE,
+            )
+        ):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+                'check': {'type': 'command_output', 'command': command},
+                'expected': {'type': 'equals', 'value': sample_line},
+                'description': rule.get('title', ''),
+            }
         return None
     literal = literal_match.group('value').strip()
     sample_without_outer_quotes = sample_line.strip().strip('"“”\'')

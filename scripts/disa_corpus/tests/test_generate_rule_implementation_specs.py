@@ -1131,6 +1131,28 @@ If the result is not "true", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': '/usr/libexec/mdmclient QuerySecurityInfo | /usr/bin/grep -c "AuthenticatedRootVolumeEnabled = 1;"'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
 
+    def test_infers_update_crypto_policies_is_applied_literal_output(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-279932',
+            'title': 'RHEL 8 cryptographic policy must not be overridden.',
+            'check_content': '''Verify RHEL 8 cryptographic policies are not overridden.
+
+Verify the configured policy matches the generated policy with the following command:
+
+$ sudo update-crypto-policies --is-applied
+
+The configured policy is applied
+
+If the returned message does not match the above, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-279932',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'update-crypto-policies --is-applied'},
+            'expected': {'type': 'equals', 'value': 'The configured policy is applied'},
+            'description': 'RHEL 8 cryptographic policy must not be overridden.',
+        })
+
     def test_infers_grep_command_output_candidate_from_authoritative_sample_line(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230358',
