@@ -1011,16 +1011,17 @@
       "vuln_id": "V-222997"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-222998",
+      "check_pack": "generated-candidates/tomcat_application_server_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-222998r1193096_rule",
       "severity": "medium",
       "title": "Changes to $CATALINA_HOME/bin/ folder must be logged.",
-      "tracking_issue": "TODO-V-222998",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-222998"
@@ -1041,16 +1042,17 @@
       "vuln_id": "V-222999"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223000",
+      "check_pack": "generated-candidates/tomcat_application_server_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223000r1193100_rule",
       "severity": "medium",
       "title": "Changes to $CATALINA_HOME/lib/ folder must be logged.",
-      "tracking_issue": "TODO-V-223000",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
         "content/disa-corpus/artifacts/b511e7a82da44a99aed3c715f26550ee615abe8da73270db6c8e18b7441dfbaa/U_Apache_Tomcat_Application_Server_9_V3R4_STIG.zip"
       ],
       "vuln_id": "V-223000"

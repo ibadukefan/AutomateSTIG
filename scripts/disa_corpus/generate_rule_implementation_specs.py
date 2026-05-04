@@ -790,6 +790,36 @@ def _auditctl_expected_rule_candidate(rule: dict) -> dict | None:
     }
 
 
+def _tomcat_auditctl_expected_rule_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    if 'tomcat' not in stig_id.lower():
+        return None
+    command_match = re.search(
+        r'(?:^|\n)\s*(?:[$#>]\s*)?(?:sudo\s+)?auditctl\s+-l\s*\|\s*grep\s+(?P<path>\$CATALINA_(?:HOME|BASE)/(?:bin|lib|conf))\s*(?:\n|$)',
+        content,
+        re.IGNORECASE,
+    )
+    if not command_match:
+        return None
+    finding_match = re.search(
+        r'If\s+the\s+results\s+do\s+not\s+include\s+"(?P<expected>-w\s+\$CATALINA_(?:HOME|BASE)/(?:bin|lib|conf)\s+-p\s+wa\s+-k\s+tomcat)"\s+or\s+if\s+there\s+are\s+no\s+results,\s+this\s+is\s+a\s+finding\.',
+        content,
+        re.IGNORECASE,
+    )
+    if not finding_match:
+        return None
+    expected = ' '.join(finding_match.group('expected').split())
+    if not expected.startswith(f'-w {command_match.group("path")} '):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': 'auditctl -l'},
+        'expected': {'type': 'contains', 'substring': expected},
+        'description': rule.get('title', ''),
+    }
+
+
 def _audit_rules_file_expected_rule_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     if not re.search(r'\bcat\s+/etc/audit/rules\.d/\*\s*\|\s*grep\b', content, re.IGNORECASE):
@@ -1880,6 +1910,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:
         return command_candidate
+
+    tomcat_auditctl_candidate = _tomcat_auditctl_expected_rule_candidate(rule, stig_id)
+    if tomcat_auditctl_candidate:
+        return tomcat_auditctl_candidate
 
     if _linux_platform(stig_id):
         for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _auditctl_expected_rule_candidate, _audit_rules_file_expected_rule_candidate, _service_candidate, _file_permission_candidate):

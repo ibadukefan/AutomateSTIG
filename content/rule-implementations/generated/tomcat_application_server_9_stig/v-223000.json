@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "auditctl -l",
+      "type": "command_output"
+    },
+    "description": "Changes to $CATALINA_HOME/lib/ folder must be logged.",
+    "expected": {
+      "substring": "-w $CATALINA_HOME/lib -p wa -k tomcat",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-223000"
+  },
   "check_content_excerpt": "Check the audit rules for the Tomcat folders. Run the following command from the Tomcat server as a privileged user:\n\nsudo auditctl -l | grep $CATALINA_HOME/lib\n\nIf the results do not include \"-w $CATALINA_HOME/lib -p wa -k tomcat\" or if there are no results, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "-w $CATALINA_HOME/lib -p wa -k tomcat",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From the Tomcat server as a privileged user:\n\n1. Identify the home folder for the Tomcat server:\n#grep -i -- 'catalina_home\\|catalina_base' /etc/systemd/system/tomcat.service\n\nLines similar to the following should be returned:\nEnvironment=\"CATALINA_HOME=/opt/tomcat\"\nEnvironment=\"CATALINA_BASE=/opt/tomcat\"\nwhere /opt/tomcat in the example will be referred to as <homefolderpath>\n\n2. Add rules to a rules file. These files will typically be /etc/audit/rules.d/audit.rules or stig.rules. Open the rules file <rulesfile> in a text editor.\n\n3. Alter or add the following line to the rules file, replacing <homefolderpath> with the actual path. (e.g., /opt/tomcat):\n-w <homefolderpath>/lib -p wa -k tomcat\n\n4. Load the rules, replacing <rulesfile> with the actual filename (e.g., audit.rules):\n#auditctl -R <rulesfile>\n\n5. Make the rules persistent:\n#augenrules --load",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-223000r1193100_rule",
   "severity": "medium",

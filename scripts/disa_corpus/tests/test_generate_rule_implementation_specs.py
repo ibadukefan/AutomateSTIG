@@ -2531,6 +2531,20 @@ If the command does not return a line, or the line is commented out, this is a f
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'cat /etc/audit/rules.d/* | grep shutdown'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': '-a always,exit -S all -F path=/usr/sbin/shutdown -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged-shutdown'})
 
+    def test_infers_tomcat_auditctl_expected_rule_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222998',
+            'title': 'Changes to $CATALINA_HOME/bin/ folder must be logged.',
+            'check_content': '''Check the audit rules for the Tomcat folders. Run the following command from the Tomcat server as a privileged user:
+
+sudo auditctl -l | grep $CATALINA_HOME/bin
+
+If the results do not include "-w $CATALINA_HOME/bin -p wa -k tomcat" or if there are no results, this is a finding.''',
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': '-w $CATALINA_HOME/bin -p wa -k tomcat'})
+
     def test_infers_windows_user_right_security_policy_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254506',

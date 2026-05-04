@@ -1,0 +1,33 @@
+{
+  "checks": [
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Changes to $CATALINA_HOME/bin/ folder must be logged.",
+      "expected": {
+        "substring": "-w $CATALINA_HOME/bin -p wa -k tomcat",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-222998"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
+      "description": "Changes to $CATALINA_HOME/lib/ folder must be logged.",
+      "expected": {
+        "substring": "-w $CATALINA_HOME/lib -p wa -k tomcat",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-223000"
+    }
+  ],
+  "platform": "linux",
+  "stig_id": "Tomcat_Application_Server_9_STIG",
+  "version": "candidate-planned"
+}
