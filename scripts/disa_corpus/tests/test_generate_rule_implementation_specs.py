@@ -2515,6 +2515,31 @@ If any SIDs are granted the "SeLockMemoryPrivilege" user right, this is a findin
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeLockMemoryPrivilege'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_windows_user_right_fixed_service_account_allowlist_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253487',
+            'title': 'The "Create global objects" user right must only be assigned to Administrators, Service, Local Service, and Network Service.',
+            'check_content': '''Verify the effective setting in Local Group Policy Editor.
+
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If any groups or accounts other than the following are granted the "Create global objects" user right, this is a finding:
+
+Administrators
+LOCAL SERVICE
+NETWORK SERVICE
+SERVICE''',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> "Create global objects" to only include the following groups or accounts:
+
+Administrators
+LOCAL SERVICE
+NETWORK SERVICE
+SERVICE''',
+        }, 'Microsoft_Windows_11_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeCreateGlobalPrivilege'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '*S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6'})
+
     def test_infers_windows_user_right_required_sid_list_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254438',

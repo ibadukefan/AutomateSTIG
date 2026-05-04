@@ -2339,6 +2339,20 @@
     },
     {
       "check": {
+        "key": "SeCreateGlobalPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Create global objects user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220964"
+    },
+    {
+      "check": {
         "key": "SeCreatePermanentPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -2406,6 +2420,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-220974"
+    },
+    {
+      "check": {
+        "key": "SeImpersonatePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The \"Impersonate a client after authentication\" user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220975"
     },
     {
       "check": {

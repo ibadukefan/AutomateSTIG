@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 177,
+  "candidate_checks": 178,
   "cases": [
     {
       "check": {
@@ -4134,6 +4134,33 @@
     },
     {
       "check": {
+        "key": "SeCreateGlobalPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The \"Create global objects\" user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateGlobalPrivilege": "unexpected-*S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateGlobalPrivilege": "*S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253487"
+    },
+    {
+      "check": {
         "key": "SeCreatePermanentPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -4785,5 +4812,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 177
+  "validated_candidates": 178
 }

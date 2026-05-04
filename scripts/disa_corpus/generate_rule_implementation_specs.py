@@ -415,6 +415,44 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                         'description': rule.get('title', ''),
                     }
 
+        fixed_service_allowlist_match = re.search(
+            r'If\s+any\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups)\s+other\s+than\s+the\s+following\s+are\s+granted\s+the\s+"([^"]+)"\s+user\s+right,\s+this\s+is\s+a\s+finding:\s*\n(?P<body>.*?)(?:\n\s*\n|\Z)',
+            content,
+            re.IGNORECASE | re.DOTALL,
+        )
+        fixed_service_allowlist_fix = re.search(
+            r'User\s+Rights\s+Assignment\s*>>\s*"?([^"\n]+?)"?\s+to\s+only\s+include\s+the\s+following\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups):\s*\n(?P<body>.*?)(?:\n\s*\n|\Z)',
+            fix_text,
+            re.IGNORECASE | re.DOTALL,
+        )
+        fixed_service_right_keys = {
+            'create global objects': 'SeCreateGlobalPrivilege',
+            'impersonate a client after authentication': 'SeImpersonatePrivilege',
+        }
+        fixed_service_principal_sids = {
+            'administrators': '*S-1-5-32-544',
+            'local service': '*S-1-5-19',
+            'network service': '*S-1-5-20',
+            'service': '*S-1-5-6',
+        }
+        if fixed_service_allowlist_match and fixed_service_allowlist_fix and not re.search(r'\b(application|documented|ISSO|organization-defined|site-defined)\b', policy_text, re.IGNORECASE):
+            check_display_name = fixed_service_allowlist_match.group(1).strip().strip('"')
+            fix_display_name = fixed_service_allowlist_fix.group(1).strip().strip('"')
+            check_principals = [line.strip(' -\t.').lower() for line in fixed_service_allowlist_match.group('body').splitlines() if line.strip()]
+            fix_principals = [line.strip(' -\t.').lower() for line in fixed_service_allowlist_fix.group('body').splitlines() if line.strip()]
+            expected_principals = ['administrators', 'local service', 'network service', 'service']
+            if check_display_name.lower() == fix_display_name.lower() and sorted(check_principals) == sorted(expected_principals) and sorted(fix_principals) == sorted(expected_principals):
+                key = fixed_service_right_keys.get(check_display_name.lower())
+                if key:
+                    expected_value = ','.join(fixed_service_principal_sids[principal] for principal in expected_principals)
+                    return {
+                        'vuln_id': rule.get('vuln_id', ''),
+                        'platform': 'windows',
+                        'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': key},
+                        'expected': {'type': 'equals', 'value': expected_value},
+                        'description': rule.get('title', ''),
+                    }
+
     if has_secedit_context:
         required_sids_match = re.search(
             r'following\s+SID(?:\(s\)|s)\s+are\s+not\s+defined\s+for\s+the\s+"(Se[A-Za-z0-9]+)"\s+user\s+right(?P<body>.*?)(?:\n\s*\n\s*If\b|\Z)',

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 193,
+  "candidate_checks": 195,
   "cases": [
     {
       "check": {
@@ -4511,6 +4511,33 @@
     },
     {
       "check": {
+        "key": "SeCreateGlobalPrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The Create global objects user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateGlobalPrivilege": "unexpected-*S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeCreateGlobalPrivilege": "*S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220964"
+    },
+    {
+      "check": {
         "key": "SeCreatePermanentPrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -4643,6 +4670,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-220974"
+    },
+    {
+      "check": {
+        "key": "SeImpersonatePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The \"Impersonate a client after authentication\" user right must only be assigned to Administrators, Service, Local Service, and Network Service.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeImpersonatePrivilege": "unexpected-*S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeImpersonatePrivilege": "*S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220975"
     },
     {
       "check": {
@@ -5216,5 +5270,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 193
+  "validated_candidates": 195
 }
