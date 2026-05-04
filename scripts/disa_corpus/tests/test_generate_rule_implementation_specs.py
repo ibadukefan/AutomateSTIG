@@ -154,6 +154,35 @@ If the system has duplicate GIDs, this is a finding.'''
         })
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_audit_backlog_limit_grep_v_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271592',
+            'title': 'OL 9 must allocate an audit_backlog_limit of sufficient size to capture processes that start prior to the audit daemon.',
+            'check_content': '''Verify that OL 9 allocates a sufficient audit_backlog_limit to capture processes that start prior to the audit daemon with the following command:
+
+$ sudo grubby --info=ALL | grep args | grep -v 'audit_backlog_limit=8192'
+
+If the command returns any outputs, and audit_backlog_limit is less than "8192", this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': "grubby --info=ALL | grep args | grep -v 'audit_backlog_limit=8192'",
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_skips_audit_backlog_limit_presence_grep_threshold_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258173',
+            'title': 'RHEL 9 must allocate an audit_backlog_limit of sufficient size to capture processes that start prior to the audit daemon.',
+            'check_content': '''Verify RHEL 9 allocates a sufficient audit_backlog_limit to capture processes that start prior to the audit daemon with the following command:
+
+$ sudo grubby --info=ALL | grep args | grep 'audit_backlog_limit'
+
+If the command returns any outputs, and audit_backlog_limit is less than "8192", this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_aide_audit_tool_selection_lines_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270831',
