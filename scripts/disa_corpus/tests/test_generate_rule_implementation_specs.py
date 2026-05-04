@@ -831,6 +831,24 @@ If there is output, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'rpm -Va --noconfig | awk \'$1 ~ /..5/ && $2 != "c"\''})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_rpm_va_grep_hash_mismatch_when_any_output_from_command_is_finding(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-214799',
+            'title': 'The Red Hat Enterprise Linux operating system must be configured so that the cryptographic hash of system files and commands matches vendor values.',
+            'check_content': '''Verify the cryptographic hash of system files and commands match the vendor values.
+
+Check the cryptographic hash of system files and commands with the following command:
+
+Note: System configuration files (indicated by a "c" in the second column) are expected to change over time. Unusual modifications should be investigated through the system audit log.
+
+# rpm -Va --noconfig | grep '^..5'
+
+If there is any output from the command for system files or binaries, this is a finding.'''
+        }, 'RHEL_7_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "rpm -Va --noconfig | grep '^..5'"})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_find_command_when_displays_any_output_is_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-238337',

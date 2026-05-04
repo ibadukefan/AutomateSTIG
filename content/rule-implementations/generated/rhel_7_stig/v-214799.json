@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "rpm -Va --noconfig | grep '^..5'",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that the cryptographic hash of system files and commands matches vendor values.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-214799"
+  },
   "check_content_excerpt": "Verify the cryptographic hash of system files and commands match the vendor values.\n\nCheck the cryptographic hash of system files and commands with the following command:\n\nNote: System configuration files (indicated by a \"c\" in the second column) are expected to change over time. Unusual modifications should be investigated through the system audit log.\n\n# rpm -Va --noconfig | grep '^..5'\n\nIf there is any output from the command for system files or binaries, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Run the following command to determine which package owns the file:\n\n# rpm -qf <filename>\n\nThe package can be reinstalled from a yum repository using the command:\n\n# sudo yum reinstall <packagename>\n\nAlternatively, the package can be reinstalled from trusted media using the command:\n\n# sudo rpm -Uvh <packagename>",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-214799r991589_rule",
   "severity": "high",

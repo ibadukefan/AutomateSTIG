@@ -1640,6 +1640,19 @@
     },
     {
       "check": {
+        "command": "rpm -Va --noconfig | grep '^..5'",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the cryptographic hash of system files and commands matches vendor values.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-214799"
+    },
+    {
+      "check": {
         "name": "following",
         "should_be_installed": true,
         "type": "package"

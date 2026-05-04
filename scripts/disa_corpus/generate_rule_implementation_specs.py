@@ -1763,6 +1763,11 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     no_output_for_explicit_output = re.search(r'if\s+(?:any\s+)?output\s+is\s+produced,?\s+this\s+is\s+a\s+finding|if\s+this\s+produces\s+any\s+output|if\s+the\s+command\s+displays\s+any\s+(?:output|results),?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
     no_output_for_command_output = re.search(r'if\s+the\s+command\s+(?:has|produces)\s+any\s+output,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
     no_output_for_any_output = re.search(r'if\s+(?:there\s+is\s+output|any\s+output\s+is\s+returned|(?:the\s+)?command\s+returns\s+any\s+output),?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    no_output_for_rpm_va_any_output = re.fullmatch(r"rpm\s+-Va\s+--noconfig\s+\|\s+grep\s+'\^\.\.5'", command) and re.search(
+        r'If\s+there\s+is\s+any\s+output\s+from\s+the\s+command\s+for\s+system\s+files\s+or\s+binaries,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
     no_output_for_shadow_blank_password = (
         re.search(r"^awk\s+-F:\s+['\"]!\$2\s+\{print\s+\$1\}\s*['\"]\s+/etc/shadow$", command)
         and re.search(r'if\s+the\s+command\s+returns\s+any\s+results,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
@@ -1787,7 +1792,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         content,
         re.IGNORECASE,
     )
-    if no_output_for_find or no_output_for_find_not_owner or no_output_for_explicit_output or no_output_for_command_output or no_output_for_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found or no_output_for_grep_occurrences_return or no_output_for_find_unassigned_owner_group or no_output_for_pwck_home_directories:
+    if no_output_for_find or no_output_for_find_not_owner or no_output_for_explicit_output or no_output_for_command_output or no_output_for_any_output or no_output_for_rpm_va_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found or no_output_for_grep_occurrences_return or no_output_for_find_unassigned_owner_group or no_output_for_pwck_home_directories:
         return {
             'vuln_id': rule.get('vuln_id', ''),
             'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',

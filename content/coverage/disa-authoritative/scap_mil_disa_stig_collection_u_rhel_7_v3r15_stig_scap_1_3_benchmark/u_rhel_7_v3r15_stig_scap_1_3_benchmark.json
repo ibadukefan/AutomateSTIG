@@ -2500,16 +2500,17 @@
       "vuln_id": "V-204633"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-214799",
+      "check_pack": "generated-candidates/rhel_7_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-214799 from source identifier xccdf_mil.disa.stig_group_V-214799.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-214799r991589_rule",
       "severity": "high",
       "title": "The Red Hat Enterprise Linux operating system must be configured so that the cryptographic hash of system files and commands matches vendor values.",
-      "tracking_issue": "TODO-V-214799",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
         "content/disa-corpus/artifacts/617778d51a5e039cc03ba5b82c3d435d797ad3ae4aac060f5d075f46f3ec1c41/U_RHEL_7_V3R15_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-214799"
