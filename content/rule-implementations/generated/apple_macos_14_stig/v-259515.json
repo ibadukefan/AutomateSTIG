@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "authDBs=(\"system.preferences\" \"system.preferences.energysaver\" \"system.preferences.network\" \"system.preferences.printing\" \"system.preferences.sharing\" \"system.preferences.softwareupdate\" \"system.preferences.startupdisk\" \"system.preferences.timemachine\")\nresult=\"1\"\nfor section in ${authDBs[@]}; do\n  if [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"shared\")]/following-sibling::*[1])' -) != \"false\" ]]; then\n    result=\"0\"\n  fi\ndone\necho $result",
+      "type": "command_output"
+    },
+    "description": "The macOS system must require administrator privileges to modify systemwide settings.",
+    "expected": {
+      "type": "equals",
+      "value": "1"
+    },
+    "platform": "macos",
+    "vuln_id": "V-259515"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to require administrator privileges to modify systemwide settings with the following command:\n\nauthDBs=(\"system.preferences\" \"system.preferences.energysaver\" \"system.preferences.network\" \"system.preferences.printing\" \"system.preferences.sharing\" \"system.preferences.softwareupdate\" \"system.preferences.startupdisk\" \"system.preferences.timemachine\")\nresult=\"1\"\nfor section in ${authDBs[@]}; do\n  if [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"shared\")]/following-sibling::*[1])' -) != \"false\" ]]; then\n    result=\"0\"\n  fi\ndone\necho $result\n\nIf the result is not \"1\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "1"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to require administrator privileges to modify systemwide settings with the following command:\n\nauthDBs=(\"system.preferences\" \"system.preferences.energysaver\" \"system.preferences.network\" \"system.preferences.printing\" \"system.preferences.sharing\" \"system.preferences.softwareupdate\" \"system.preferences.startupdisk\" \"system.preferences.timemachine\")\n\nfor section in ${authDBs[@]}; do\n/usr/bin/security -q authorizationdb read \"$section\" > \"/tmp/$section.plist\"\nkey_value=$(/usr/libexec/PlistBuddy -c \"Print :shared\" \"/tmp/$section.plist\" 2>&1)\nif [[ \"$key_value\" == *\"Does Not Exist\"* ]]; then\n  /usr/libexec/PlistBuddy -c \"Add :shared bool false\" \"/tmp/$section.plist\"\nelse\n  /usr/libexec/PlistBuddy -c \"Set :shared false\" \"/tmp/$section.plist\"\nfi\n  /usr/bin/security -q authorizationdb write \"$section\" < \"/tmp/$section.plist\"\ndone",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259515r958726_rule",
   "severity": "high",

@@ -1494,16 +1494,17 @@
       "vuln_id": "V-259514"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-259515",
+      "check_pack": "generated-candidates/apple_macos_14_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-259515r958726_rule",
       "severity": "high",
       "title": "The macOS system must require administrator privileges to modify systemwide settings.",
-      "tracking_issue": "TODO-V-259515",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
         "content/disa-corpus/artifacts/d25991aba59c1fd7ec245ba915138c97be4078fc10aded852cb04f8708855f65/U_Apple_macOS_14_V2R4_STIG.zip"
       ],
       "vuln_id": "V-259515"

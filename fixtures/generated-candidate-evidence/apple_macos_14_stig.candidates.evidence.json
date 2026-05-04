@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 115,
+  "candidate_checks": 116,
   "cases": [
     {
       "check": {
@@ -2135,6 +2135,32 @@
     },
     {
       "check": {
+        "command": "authDBs=(\"system.preferences\" \"system.preferences.energysaver\" \"system.preferences.network\" \"system.preferences.printing\" \"system.preferences.sharing\" \"system.preferences.softwareupdate\" \"system.preferences.startupdisk\" \"system.preferences.timemachine\")\nresult=\"1\"\nfor section in ${authDBs[@]}; do\n  if [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"shared\")]/following-sibling::*[1])' -) != \"false\" ]]; then\n    result=\"0\"\n  fi\ndone\necho $result",
+        "type": "command_output"
+      },
+      "description": "The macOS system must require administrator privileges to modify systemwide settings.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "authDBs=(\"system.preferences\" \"system.preferences.energysaver\" \"system.preferences.network\" \"system.preferences.printing\" \"system.preferences.sharing\" \"system.preferences.softwareupdate\" \"system.preferences.startupdisk\" \"system.preferences.timemachine\")\nresult=\"1\"\nfor section in ${authDBs[@]}; do\n  if [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"shared\")]/following-sibling::*[1])' -) != \"false\" ]]; then\n    result=\"0\"\n  fi\ndone\necho $result": "unexpected-1"
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "authDBs=(\"system.preferences\" \"system.preferences.energysaver\" \"system.preferences.network\" \"system.preferences.printing\" \"system.preferences.sharing\" \"system.preferences.softwareupdate\" \"system.preferences.startupdisk\" \"system.preferences.timemachine\")\nresult=\"1\"\nfor section in ${authDBs[@]}; do\n  if [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"shared\")]/following-sibling::*[1])' -) != \"false\" ]]; then\n    result=\"0\"\n  fi\ndone\necho $result": "1"
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259515"
+    },
+    {
+      "check": {
         "command": ".NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\",
         "type": "command_output"
       },
@@ -2997,5 +3023,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apple_macOS_14_STIG",
-  "validated_candidates": 115
+  "validated_candidates": 116
 }

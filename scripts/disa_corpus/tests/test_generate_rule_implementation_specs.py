@@ -847,6 +847,21 @@ If the text is not worded exactly this way, this is a finding.'''
         }, 'Apple_macOS_15_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_macos_result_variable_shell_block_as_command_output(self):
+        command = 'authDBs=("system.preferences" "system.preferences.energysaver" "system.preferences.network")\nresult="1"\nfor section in ${authDBs[@]}; do\n  if [[ $(/usr/bin/security -q authorizationdb read "$section" | /usr/bin/xmllint -xpath \'name(//*[contains(text(), "shared")]/following-sibling::*[1])\' -) != "false" ]]; then\n    result="0"\n  fi\ndone\necho $result'
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259515',
+            'title': 'The macOS system must require administrator privileges to modify systemwide settings.',
+            'check_content': f'''Verify the macOS system is configured to require administrator privileges to modify systemwide settings with the following command:
+
+{command}
+
+If the result is not "1", this is a finding.'''
+        }, 'Apple_macOS_14_STIG')
+        self.assertEqual(candidate['platform'], 'macos')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': command})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
+
     def test_infers_macos_pass_fail_shell_block_as_command_output(self):
         command = 'LAUNCHD_RUNNING=$(/bin/launchctl list | /usr/bin/grep -c com.apple.auditd)\nAUDITD_RUNNING=$(/usr/sbin/audit -c | /usr/bin/grep -c "AUC_AUDITING")\nif [[ $LAUNCHD_RUNNING == 1 ]] && [[ -e /etc/security/audit_control ]] && [[ $AUDITD_RUNNING == 1 ]]; then\n  echo "pass"\nelse\n  echo "fail"\nfi'
         candidate = mod.infer_candidate_check({

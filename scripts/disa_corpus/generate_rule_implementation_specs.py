@@ -843,11 +843,36 @@ def _macos_platform(stig_id: str) -> bool:
 
 
 def _command_substitutions_are_absolute(command: str) -> bool:
-    substitutions = re.findall(r'\$\(([^()]*)\)', command)
+    substitutions = []
+    idx = 0
+    while idx < len(command):
+        start = command.find('$(', idx)
+        if start == -1:
+            break
+        depth = 1
+        quote = None
+        pos = start + 2
+        while pos < len(command) and depth:
+            char = command[pos]
+            if quote:
+                if char == quote:
+                    quote = None
+            elif char in ('\'', '"'):
+                quote = char
+            elif char == '(':
+                depth += 1
+            elif char == ')':
+                depth -= 1
+            pos += 1
+        if depth:
+            return False
+        substitutions.append(command[start + 2:pos - 1])
+        idx = pos
     if not substitutions:
         return False
     for substitution in substitutions:
-        if any(token in substitution for token in ('`', '$(', '&&', '<<', ';')):
+        unquoted = re.sub(r"'[^']*'|\"[^\"]*\"", '', substitution)
+        if any(token in unquoted for token in ('`', '$(', '&&', '<<', ';')):
             return False
         for segment in substitution.split('|'):
             stripped = segment.strip()
@@ -1226,6 +1251,41 @@ def _grep_sample_line_candidate(rule: dict, stig_id: str, command: str, command_
     }
 
 
+def _macos_result_variable_shell_block_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _macos_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    if not re.search(r'If\s+the\s+result\s+is\s+not\s+["“]1["”],?\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+        return None
+    block_match = re.search(
+        r'(?P<command>authDBs=\([^\n]+\)\nresult=["“]1["”]\nfor\s+section\s+in\s+\$\{authDBs\[@\]\};\s+do\n(?:(?!\n\s*done\n\s*echo\s+\$result\b).+\n)+\s*done\n\s*echo\s+\$result)',
+        content,
+        re.DOTALL,
+    )
+    if not block_match:
+        return None
+    command = block_match.group('command').strip()
+    unquoted = re.sub(r"'[^']*'|\"[^\"]*\"", '', command)
+    if any(token in unquoted for token in ('`', '&&', '<<', '>', '>>')):
+        return None
+    if 'result="0"' not in command and 'result=“0”' not in command:
+        return None
+    allowed_line = re.compile(
+        r'^(?:authDBs=\([^\n]+\)|\s*result=["“][01]["”]|for\s+section\s+in\s+\$\{authDBs\[@\]\};\s+do|\s*if\s+\[\[\s+\$\([^\n]+\)\s+!=\s+["“][^"”]+["”]\s+\]\];\s+then|\s*fi|done|\s*echo\s+\$result)$'
+    )
+    if not all(allowed_line.fullmatch(line) for line in command.splitlines()):
+        return None
+    if not _command_substitutions_are_absolute(command):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'macos',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': '1'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _macos_pass_fail_shell_block_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _macos_platform(stig_id):
         return None
@@ -1263,6 +1323,9 @@ def _macos_pass_fail_shell_block_candidate(rule: dict, stig_id: str) -> dict | N
 
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
+    macos_result_variable_candidate = _macos_result_variable_shell_block_candidate(rule, stig_id)
+    if macos_result_variable_candidate:
+        return macos_result_variable_candidate
     macos_pass_fail_candidate = _macos_pass_fail_shell_block_candidate(rule, stig_id)
     if macos_pass_fail_candidate:
         return macos_pass_fail_candidate
