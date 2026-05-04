@@ -1303,7 +1303,7 @@ def _macos_osascript_true_heredoc_candidate(rule: dict, stig_id: str) -> dict | 
     if 'return("true")' not in body or 'return("false")' not in body:
         return None
     unquoted = re.sub(r"'[^']*'|\"[^\"]*\"", '', body)
-    if any(token in unquoted for token in ('`', '$(', '&&', '>>')):
+    if any(token in unquoted for token in ('`', '$(', '>>')):
         return None
     return {
         'vuln_id': rule.get('vuln_id', ''),

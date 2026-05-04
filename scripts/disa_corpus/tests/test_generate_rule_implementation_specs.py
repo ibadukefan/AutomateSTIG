@@ -877,6 +877,33 @@ If the result is not "pass", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': command})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'pass'})
 
+    def test_infers_macos_osascript_true_heredoc_with_javascript_conjunctions(self):
+        command = '''/usr/bin/osascript -l JavaScript << EOS
+function run() {
+let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\
+.objectForKey('DisableGuestAccount'))
+let pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\
+.objectForKey('EnableGuestAccount'))
+if ( pref1 == true && pref2 == false ) {
+return("true")
+} else {
+return("false")
+}
+}
+EOS'''
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-268510',
+            'title': 'The macOS system must disable the guest account.',
+            'check_content': f'''Verify the macOS system is configured to disable the guest account with the following command:
+
+{command}
+
+If the result is not "true", this is a finding.'''
+        }, 'Apple_macOS_15_STIG')
+        self.assertEqual(candidate['platform'], 'macos')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': command})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'true'})
+
     def test_infers_inline_macos_absolute_pipeline_when_result_is_not_literal(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-268565',

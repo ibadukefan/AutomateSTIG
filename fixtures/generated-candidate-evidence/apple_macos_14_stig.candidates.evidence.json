@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 119,
+  "candidate_checks": 124,
   "cases": [
     {
       "check": {
@@ -1511,6 +1511,32 @@
     },
     {
       "check": {
+        "command": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('familyControlsEnabled'))\n  let pathlist = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('pathBlackList').js\n  for ( let app in pathlist ) {\n      if ( ObjC.unwrap(pathlist[app]) == \"/Applications/FaceTime.app\" && pref1 == true ){\n          return(\"true\")\n      }\n  }\n  return(\"false\")\n  }\nEOS",
+        "type": "command_output"
+      },
+      "description": "The macOS system must disable FaceTime.app.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('familyControlsEnabled'))\n  let pathlist = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('pathBlackList').js\n  for ( let app in pathlist ) {\n      if ( ObjC.unwrap(pathlist[app]) == \"/Applications/FaceTime.app\" && pref1 == true ){\n          return(\"true\")\n      }\n  }\n  return(\"false\")\n  }\nEOS": "unexpected-true"
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('familyControlsEnabled'))\n  let pathlist = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('pathBlackList').js\n  for ( let app in pathlist ) {\n      if ( ObjC.unwrap(pathlist[app]) == \"/Applications/FaceTime.app\" && pref1 == true ){\n          return(\"true\")\n      }\n  }\n  return(\"false\")\n  }\nEOS": "true"
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259486"
+    },
+    {
+      "check": {
         "command": ".NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\",
         "type": "command_output"
       },
@@ -1690,6 +1716,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259493"
+    },
+    {
+      "check": {
+        "command": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet pref1 = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.SubmitDiagInfo')\\\n.objectForKey('AutoSubmit').js\nlet pref2 = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('allowDiagnosticSubmission').js\nif ( pref1 == false && pref2 == false ){\n    return(\"true\")\n} else {\n    return(\"false\")\n}\n}\nEOS",
+        "type": "command_output"
+      },
+      "description": "The macOS system must disable sending diagnostic and usage data to Apple.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet pref1 = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.SubmitDiagInfo')\\\n.objectForKey('AutoSubmit').js\nlet pref2 = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('allowDiagnosticSubmission').js\nif ( pref1 == false && pref2 == false ){\n    return(\"true\")\n} else {\n    return(\"false\")\n}\n}\nEOS": "unexpected-true"
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet pref1 = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.SubmitDiagInfo')\\\n.objectForKey('AutoSubmit').js\nlet pref2 = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('allowDiagnosticSubmission').js\nif ( pref1 == false && pref2 == false ){\n    return(\"true\")\n} else {\n    return(\"false\")\n}\n}\nEOS": "true"
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259494"
     },
     {
       "check": {
@@ -2109,6 +2161,32 @@
     },
     {
       "check": {
+        "command": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\\n.objectForKey('DisableGuestAccount'))\n  let pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\\n.objectForKey('EnableGuestAccount'))\n  if ( pref1 == true && pref2 == false ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS",
+        "type": "command_output"
+      },
+      "description": "The macOS system must disable the guest account.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\\n.objectForKey('DisableGuestAccount'))\n  let pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\\n.objectForKey('EnableGuestAccount'))\n  if ( pref1 == true && pref2 == false ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS": "unexpected-true"
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\\n.objectForKey('DisableGuestAccount'))\n  let pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\\n.objectForKey('EnableGuestAccount'))\n  if ( pref1 == true && pref2 == false ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS": "true"
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259511"
+    },
+    {
+      "check": {
         "command": "/usr/sbin/spctl --status | /usr/bin/grep -c \"assessments enabled\"",
         "type": "command_output"
       },
@@ -2262,6 +2340,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259517"
+    },
+    {
+      "check": {
+        "command": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.preferences.sharing.SharingPrefsExtension')\\\n  .objectForKey('homeSharingUIStatus'))\n  let pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.preferences.sharing.SharingPrefsExtension')\\\n  .objectForKey('legacySharingUIStatus'))\n  let pref3 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.preferences.sharing.SharingPrefsExtension')\\\n  .objectForKey('mediaSharingUIStatus'))\n  if ( pref1 == 0 && pref2 == 0 && pref3 == 0 ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS",
+        "type": "command_output"
+      },
+      "description": "The macOS system must disable Media Sharing.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.preferences.sharing.SharingPrefsExtension')\\\n  .objectForKey('homeSharingUIStatus'))\n  let pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.preferences.sharing.SharingPrefsExtension')\\\n  .objectForKey('legacySharingUIStatus'))\n  let pref3 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.preferences.sharing.SharingPrefsExtension')\\\n  .objectForKey('mediaSharingUIStatus'))\n  if ( pref1 == 0 && pref2 == 0 && pref3 == 0 ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS": "unexpected-true"
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.preferences.sharing.SharingPrefsExtension')\\\n  .objectForKey('homeSharingUIStatus'))\n  let pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.preferences.sharing.SharingPrefsExtension')\\\n  .objectForKey('legacySharingUIStatus'))\n  let pref3 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.preferences.sharing.SharingPrefsExtension')\\\n  .objectForKey('mediaSharingUIStatus'))\n  if ( pref1 == 0 && pref2 == 0 && pref3 == 0 ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS": "true"
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259518"
     },
     {
       "check": {
@@ -2967,6 +3071,32 @@
     },
     {
       "check": {
+        "command": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('familyControlsEnabled'))\n  let pathlist = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('pathBlackList').js\n  for ( let app in pathlist ) {\n      if ( ObjC.unwrap(pathlist[app]) == \"/Users/\" && pref1 == true ){\n          return(\"true\")\n      }\n  }\n  return(\"false\")\n  }\nEOS",
+        "type": "command_output"
+      },
+      "description": "The macOS system must prohibit user installation of software into /users/.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('familyControlsEnabled'))\n  let pathlist = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('pathBlackList').js\n  for ( let app in pathlist ) {\n      if ( ObjC.unwrap(pathlist[app]) == \"/Users/\" && pref1 == true ){\n          return(\"true\")\n      }\n  }\n  return(\"false\")\n  }\nEOS": "unexpected-true"
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('familyControlsEnabled'))\n  let pathlist = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('pathBlackList').js\n  for ( let app in pathlist ) {\n      if ( ObjC.unwrap(pathlist[app]) == \"/Users/\" && pref1 == true ){\n          return(\"true\")\n      }\n  }\n  return(\"false\")\n  }\nEOS": "true"
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259571"
+    },
+    {
+      "check": {
         "command": "/usr/bin/osascript -l JavaScript << EOS\n  function run() {\n    let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n  .objectForKey('allowUSBRestrictedMode'))\n    if ( pref1 == false ) {\n      return(\"false\")\n    } else {\n      return(\"true\")\n    }\n  }\nEOS",
         "type": "command_output"
       },
@@ -3101,5 +3231,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apple_macOS_14_STIG",
-  "validated_candidates": 119
+  "validated_candidates": 124
 }

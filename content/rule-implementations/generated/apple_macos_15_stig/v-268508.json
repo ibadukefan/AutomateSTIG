@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.systempolicy.control')\\\n.objectForKey('AllowIdentifiedDevelopers'))\nlet pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.systempolicy.control')\\\n.objectForKey('EnableAssessment'))\nif ( pref1 == true && pref2 == true ) {\nreturn(\"true\")\n} else {\nreturn(\"false\")\n}\n}\nEOS",
+      "type": "command_output"
+    },
+    "description": "The macOS system must apply gatekeeper settings to block applications from unidentified developers.",
+    "expected": {
+      "type": "equals",
+      "value": "true"
+    },
+    "platform": "macos",
+    "vuln_id": "V-268508"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to apply gatekeeper settings to block applications from unidentified developers with the following commands:\n\n/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\nlet pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.systempolicy.control')\\\n.objectForKey('AllowIdentifiedDevelopers'))\nlet pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.systempolicy.control')\\\n.objectForKey('EnableAssessment'))\nif ( pref1 == true && pref2 == true ) {\nreturn(\"true\")\n} else {\nreturn(\"false\")\n}\n}\nEOS\n\nIf the result is not \"true\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to apply gatekeeper settings to block applications from unidentified developers by installing the \"com.apple.systempolicy.control\" configuration profile.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-268508r1131219_rule",
   "severity": "high",

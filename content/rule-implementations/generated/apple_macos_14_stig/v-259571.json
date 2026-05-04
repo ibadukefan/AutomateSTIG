@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('familyControlsEnabled'))\n  let pathlist = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('pathBlackList').js\n  for ( let app in pathlist ) {\n      if ( ObjC.unwrap(pathlist[app]) == \"/Users/\" && pref1 == true ){\n          return(\"true\")\n      }\n  }\n  return(\"false\")\n  }\nEOS",
+      "type": "command_output"
+    },
+    "description": "The macOS system must prohibit user installation of software into /users/.",
+    "expected": {
+      "type": "equals",
+      "value": "true"
+    },
+    "platform": "macos",
+    "vuln_id": "V-259571"
+  },
   "check_content_excerpt": "Verify the macOS system is configured to prohibit user installation of software into /users/ with the following command:\n\n/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('familyControlsEnabled'))\n  let pathlist = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('pathBlackList').js\n  for ( let app in pathlist ) {\n      if ( ObjC.unwrap(pathlist[app]) == \"/Users/\" && pref1 == true ){\n          return(\"true\")\n      }\n  }\n  return(\"false\")\n  }\nEOS\n\nIf the result is not \"true\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system to prohibit user installation of software into /users/ by installing the \"com.apple.applicationaccess.new\" configuration profile.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259571r1009608_rule",
   "severity": "medium",
