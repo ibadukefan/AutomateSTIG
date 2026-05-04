@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 367,
+  "candidate_checks": 368,
   "cases": [
     {
       "check": {
@@ -6389,6 +6389,32 @@
     },
     {
       "check": {
+        "command": "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must require users to reauthenticate for privilege escalation.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258086"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sudoers",
         "pattern": "/etc/sudoers.d/ | grep -v '#'",
@@ -10204,5 +10230,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 367
+  "validated_candidates": 368
 }

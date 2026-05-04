@@ -2461,6 +2461,20 @@ If the loaded policy name is not "targeted", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'sestatus | grep policy'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Loaded policy name:             targeted'})
 
+    def test_infers_linux_grep_no_output_candidate_when_occurrences_are_returned(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258086',
+            'title': 'RHEL 9 must require users to reauthenticate for privilege escalation.',
+            'check_content': '''Verify that "/etc/sudoers" has no occurrences of "!authenticate" with the following command:
+
+$ sudo egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/
+
+If any occurrences of "!authenticate" are returned, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/"})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_windows_audit_policy_candidate_from_auditpol_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254304',

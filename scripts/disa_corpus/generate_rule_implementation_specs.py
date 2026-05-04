@@ -1709,7 +1709,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         re.IGNORECASE,
     )
     no_output_for_grep_occurrences_return = re.search(r'\b(?:e?grep|grep)\b', command) and re.search(
-        r'if\s+any\s+occurrences\s+of\s+["“][^"”\n]+["”]\s+return\s+from\s+the\s+command,?\s+this\s+is\s+a\s+finding',
+        r'if\s+any\s+occurrences\s+of\s+["“][^"”\n]+["”]\s+(?:return|are\s+returned)\s+from\s+the\s+command,?\s+this\s+is\s+a\s+finding|if\s+any\s+occurrences\s+of\s+["“][^"”\n]+["”]\s+are\s+returned,?\s+this\s+is\s+a\s+finding',
         content,
         re.IGNORECASE,
     )
