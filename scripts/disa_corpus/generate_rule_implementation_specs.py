@@ -1562,6 +1562,19 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'description': rule.get('title', ''),
         }
 
+    if command == 'cat /proc/sys/crypto/fips_enabled' and re.search(
+        r'(?:fips_enabled\s+is\s+not\s+["“]1["”]|value\s+returned\s+is\s+["“]0["”])[^.]*this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': '1'},
+            'description': rule.get('title', ''),
+        }
+
     if command == 'ufw status' and re.search(r'^\s*Status:\s+active\s*$', content, re.IGNORECASE | re.MULTILINE) and re.search(
         r'If\s+[^.\n]*status\s+as\s+["“]inactive["”]\s+or\s+any\s+type\s+of\s+error,?\s+this\s+is\s+a\s+finding',
         content,

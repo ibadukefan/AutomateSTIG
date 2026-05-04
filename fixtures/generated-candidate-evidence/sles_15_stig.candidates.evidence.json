@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 152,
+  "candidate_checks": 153,
   "cases": [
     {
       "check": {
@@ -610,6 +610,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234858"
+    },
+    {
+      "check": {
+        "command": "cat /proc/sys/crypto/fips_enabled",
+        "type": "command_output"
+      },
+      "description": "FIPS 140-2 mode must be enabled on the SUSE operating system.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "cat /proc/sys/crypto/fips_enabled": "unexpected-1"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "cat /proc/sys/crypto/fips_enabled": "1"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234859"
     },
     {
       "check": {
@@ -4026,5 +4052,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 152
+  "validated_candidates": 153
 }

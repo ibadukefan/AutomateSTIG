@@ -313,6 +313,19 @@
     },
     {
       "check": {
+        "command": "cat /proc/sys/crypto/fips_enabled",
+        "type": "command_output"
+      },
+      "description": "FIPS 140-2 mode must be enabled on the SUSE operating system.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "linux",
+      "vuln_id": "V-234859"
+    },
+    {
+      "check": {
         "key": "kernel.kptr_restrict",
         "type": "sysctl"
       },

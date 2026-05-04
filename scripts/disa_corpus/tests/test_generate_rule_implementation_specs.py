@@ -682,6 +682,22 @@ gpgcheck = on'''
         self.assertEqual(candidate['check'], {'type': 'file_content', 'path': '/etc/zypp/zypp.conf', 'pattern': 'gpgcheck = on', 'is_regex': False})
         self.assertEqual(candidate['expected'], {'type': 'contains'})
 
+    def test_infers_proc_fips_enabled_command_as_literal_one_requirement(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234859',
+            'title': 'FIPS 140-2 mode must be enabled on the SUSE operating system.',
+            'check_content': '''Verify the SUSE operating system is running in FIPS mode by running the following command.
+
+> cat /proc/sys/crypto/fips_enabled
+
+1
+
+If nothing is returned, the file does not exist, or the value returned is "0", this is a finding.'''
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'cat /proc/sys/crypto/fips_enabled'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
+
     def test_infers_rpm_verify_command_as_empty_output_requirement(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271481',
