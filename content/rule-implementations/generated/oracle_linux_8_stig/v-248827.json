@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "dnf repolist | grep -i epel",
+      "type": "command_output"
+    },
+    "description": "OL 8 must not install packages from the Extra Packages for Enterprise Linux (EPEL) repository.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-248827"
+  },
   "check_content_excerpt": "Verify that OL 8 is not able to install packages from the EPEL with the following command:\n\n$ dnf repolist\nrepo id                         repo name\nol8_UEKR7                       Latest Unbreakable Enterprise Kernel Release 7 for Oracle Linux 8 (x86_64)\nol8_appstream                   Oracle Linux 8 Application Stream (x86_64)\nol8_baseos_latest               Oracle Linux 8 BaseOS Latest (x86_64)\n\nIf any repositories containing the word \"epel\" in the name exist, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "The repo package can be manually removed with the following command:\n\n$ sudo dnf remove epel-release\n\nConfigure OL 8 to disable use of the EPEL repository with the following command:\n\n$ sudo dnf config-manager --set-disabled epel",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-248827r1134850_rule",
   "severity": "high",

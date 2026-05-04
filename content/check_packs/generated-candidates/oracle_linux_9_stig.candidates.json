@@ -292,6 +292,19 @@
     },
     {
       "check": {
+        "command": "dnf repolist | grep -i epel",
+        "type": "command_output"
+      },
+      "description": "OL 9 must not install packages from the Extra Packages for Enterprise Linux (EPEL) repository.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271457"
+    },
+    {
+      "check": {
         "name": "telnet-server",
         "should_be_installed": true,
         "type": "package"

@@ -1620,6 +1620,18 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     )
     if not command or _has_unsafe_shell_token(command, allow_command_substitution=allow_macos_command_substitution):
         return None
+    if command in {'dnf repolist', 'yum repolist'} and re.search(
+        r'If\s+any\s+repositories\s+containing\s+the\s+word\s+["“]epel["”]\s+in\s+the\s+name\s+exist,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+            'check': {'type': 'command_output', 'command': f'{command} | grep -i epel'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     if re.search(r'\bPART\b', command) and '[PART]' in content:
         return None
     systemctl_active_socket = (

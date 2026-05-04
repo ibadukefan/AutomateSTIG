@@ -3044,6 +3044,23 @@ If the above command returns the status as "inactive" or any type of error, this
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'ufw status'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Status: active'})
 
+    def test_infers_linux_epel_repolist_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230492',
+            'title': 'RHEL 8 must not install packages from the Extra Packages for Enterprise Linux (EPEL) repository.',
+            'check_content': '''Verify that RHEL 8 is not able to install packages from the EPEL with the following command:
+
+$ dnf repolist
+rhel-8-for-x86_64-appstream-rpms                      Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+rhel-8-for-x86_64-baseos-rpms                         Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+
+If any repositories containing the word "epel" in the name exist, this is a finding.''',
+        }, 'RHEL_8_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'dnf repolist | grep -i epel'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_duplicate_uid_zero_root_only_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258059',
