@@ -2155,6 +2155,20 @@
     },
     {
       "check": {
+        "key": "SeSystemtimePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The \"Change the system time\" user right must only be assigned to Administrators and Local Service.",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544,*S-1-5-19"
+      },
+      "platform": "windows",
+      "vuln_id": "V-253484"
+    },
+    {
+      "check": {
         "key": "SeCreatePagefilePrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"

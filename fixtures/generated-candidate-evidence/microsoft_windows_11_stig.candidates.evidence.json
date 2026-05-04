@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 181,
+  "candidate_checks": 182,
   "cases": [
     {
       "check": {
@@ -4158,6 +4158,33 @@
     },
     {
       "check": {
+        "key": "SeSystemtimePrivilege",
+        "section": "Privilege Rights",
+        "type": "security_policy"
+      },
+      "description": "The \"Change the system time\" user right must only be assigned to Administrators and Local Service.",
+      "evidence_type": "windows_security_policy_equals",
+      "expected": {
+        "type": "equals",
+        "value": "*S-1-5-32-544,*S-1-5-19"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSystemtimePrivilege": "unexpected-*S-1-5-32-544,*S-1-5-19"
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "security_policy": {
+          "Privilege Rights\\SeSystemtimePrivilege": "*S-1-5-32-544,*S-1-5-19"
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253484"
+    },
+    {
+      "check": {
         "key": "SeCreatePagefilePrivilege",
         "section": "Privilege Rights",
         "type": "security_policy"
@@ -4890,5 +4917,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 181
+  "validated_candidates": 182
 }

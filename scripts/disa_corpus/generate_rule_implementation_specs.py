@@ -447,6 +447,7 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
             re.IGNORECASE | re.DOTALL,
         )
         fixed_service_right_keys = {
+            'change the system time': 'SeSystemtimePrivilege',
             'create global objects': 'SeCreateGlobalPrivilege',
             'impersonate a client after authentication': 'SeImpersonatePrivilege',
         }
@@ -456,13 +457,18 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
             'network service': '*S-1-5-20',
             'service': '*S-1-5-6',
         }
+        fixed_service_expected_principals = {
+            'change the system time': ['administrators', 'local service'],
+            'create global objects': ['administrators', 'local service', 'network service', 'service'],
+            'impersonate a client after authentication': ['administrators', 'local service', 'network service', 'service'],
+        }
         if fixed_service_allowlist_match and fixed_service_allowlist_fix and not re.search(r'\b(application|documented|ISSO|organization-defined|site-defined)\b', policy_text, re.IGNORECASE):
             check_display_name = fixed_service_allowlist_match.group(1).strip().strip('"')
             fix_display_name = fixed_service_allowlist_fix.group(1).strip().strip('"')
             check_principals = [line.strip(' -\t.').lower() for line in fixed_service_allowlist_match.group('body').splitlines() if line.strip()]
             fix_principals = [line.strip(' -\t.').lower() for line in fixed_service_allowlist_fix.group('body').splitlines() if line.strip()]
-            expected_principals = ['administrators', 'local service', 'network service', 'service']
-            if check_display_name.lower() == fix_display_name.lower() and sorted(check_principals) == sorted(expected_principals) and sorted(fix_principals) == sorted(expected_principals):
+            expected_principals = fixed_service_expected_principals.get(check_display_name.lower())
+            if expected_principals and check_display_name.lower() == fix_display_name.lower() and sorted(check_principals) == sorted(expected_principals) and sorted(fix_principals) == sorted(expected_principals):
                 key = fixed_service_right_keys.get(check_display_name.lower())
                 if key:
                     expected_value = ','.join(fixed_service_principal_sids[principal] for principal in expected_principals)

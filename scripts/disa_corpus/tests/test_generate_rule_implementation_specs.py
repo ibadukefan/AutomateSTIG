@@ -2824,6 +2824,28 @@ SERVICE''',
         self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeCreateGlobalPrivilege'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '*S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6'})
 
+    def test_infers_windows_user_right_change_system_time_local_service_allowlist_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253484',
+            'title': 'The "Change the system time" user right must only be assigned to Administrators and Local Service.',
+            'check_content': '''Verify the effective setting in Local Group Policy Editor.
+Run "gpedit.msc".
+
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If any groups or accounts other than the following are granted the "Change the system time" user right, this is a finding:
+
+Administrators
+LOCAL SERVICE''',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> "Change the system time" to only include the following groups or accounts:
+
+Administrators
+LOCAL SERVICE''',
+        }, 'Microsoft_Windows_11_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeSystemtimePrivilege'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '*S-1-5-32-544,*S-1-5-19'})
+
     def test_infers_windows_user_right_required_sid_list_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254438',

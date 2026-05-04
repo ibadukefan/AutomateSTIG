@@ -3641,16 +3641,17 @@
       "vuln_id": "V-253483"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-253484",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-253484r958726_rule",
       "severity": "medium",
       "title": "The \"Change the system time\" user right must only be assigned to Administrators and Local Service.",
-      "tracking_issue": "TODO-V-253484",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
         "content/disa-corpus/artifacts/60ad20b3f31d0c90f3d683c2ef0a4125b127588ac9fa452a3cf482a8ff5e0316/U_MS_Windows_11_V2R5_STIG.zip"
       ],
       "vuln_id": "V-253484"
