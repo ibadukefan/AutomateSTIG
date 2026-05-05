@@ -958,16 +958,17 @@
       "vuln_id": "V-242445"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242446",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-242446r961863_rule",
       "severity": "medium",
       "title": "The Kubernetes conf files must be owned by root.",
-      "tracking_issue": "TODO-V-242446",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/2e66cc46e19889f337b40a7827745146c40c7b532529c03d826ba7462419876a/U_Kubernetes_V2R6_STIG.zip"
       ],
       "vuln_id": "V-242446"

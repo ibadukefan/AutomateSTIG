@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 5,
+  "candidate_checks": 6,
   "cases": [
     {
       "check": {
@@ -81,6 +81,32 @@
     },
     {
       "check": {
+        "command": "stat -c %U:%G /etc/kubernetes/admin.conf /etc/kubernetes/scheduler.conf /etc/kubernetes/controller-manager.conf | grep -v root:root",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes conf files must be owned by root.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "stat -c %U:%G /etc/kubernetes/admin.conf /etc/kubernetes/scheduler.conf /etc/kubernetes/controller-manager.conf | grep -v root:root": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "stat -c %U:%G /etc/kubernetes/admin.conf /etc/kubernetes/scheduler.conf /etc/kubernetes/controller-manager.conf | grep -v root:root": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242446"
+    },
+    {
+      "check": {
         "command": "stat -c %U:%G /etc/kubernetes/kubelet.conf| grep -v root:root",
         "type": "command_output"
       },
@@ -137,5 +163,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 5
+  "validated_candidates": 6
 }

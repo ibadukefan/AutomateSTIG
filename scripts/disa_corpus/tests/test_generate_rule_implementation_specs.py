@@ -214,6 +214,26 @@ The configured policy does NOT match the generated policy''',
             'description': 'RHEL 9 cryptographic policy must not be overridden.',
         })
 
+    def test_infers_kubernetes_multiple_root_owned_conf_stat_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242446',
+            'title': 'The Kubernetes conf files must be owned by root.',
+            'check_content': '''Review the Kubernetes conf files by using the command:
+
+stat -c %U:%G /etc/kubernetes/admin.conf | grep -v root:root
+stat -c %U:%G /etc/kubernetes/scheduler.conf | grep -v root:root
+stat -c %U:%G /etc/kubernetes/controller-manager.conf | grep -v root:root
+
+If the command returns any non root:root file permissions, this is a finding.''',
+        }, 'Kubernetes_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-242446',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'stat -c %U:%G /etc/kubernetes/admin.conf /etc/kubernetes/scheduler.conf /etc/kubernetes/controller-manager.conf | grep -v root:root'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Kubernetes conf files must be owned by root.',
+        })
+
     def test_infers_linux_yum_repo_gpgcheck_all_returned_lines_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271525',

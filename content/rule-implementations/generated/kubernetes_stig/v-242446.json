@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "stat -c %U:%G /etc/kubernetes/admin.conf /etc/kubernetes/scheduler.conf /etc/kubernetes/controller-manager.conf | grep -v root:root",
+      "type": "command_output"
+    },
+    "description": "The Kubernetes conf files must be owned by root.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-242446"
+  },
   "check_content_excerpt": "Review the Kubernetes conf files by using the command:\n\nstat -c %U:%G /etc/kubernetes/admin.conf | grep -v root:root\nstat -c %U:%G /etc/kubernetes/scheduler.conf | grep -v root:root\nstat -c %U:%G /etc/kubernetes/controller-manager.conf | grep -v root:root\n\nIf the command returns any non root:root file permissions, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the ownership of the conf files to root: root by executing the command:\n\nchown root:root /etc/kubernetes/admin.conf \nchown root:root /etc/kubernetes/scheduler.conf \nchown root:root /etc/kubernetes/controller-manager.conf",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242446r961863_rule",
   "severity": "medium",

@@ -41,6 +41,19 @@
     },
     {
       "check": {
+        "command": "stat -c %U:%G /etc/kubernetes/admin.conf /etc/kubernetes/scheduler.conf /etc/kubernetes/controller-manager.conf | grep -v root:root",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes conf files must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-242446"
+    },
+    {
+      "check": {
         "command": "stat -c %U:%G /etc/kubernetes/kubelet.conf| grep -v root:root",
         "type": "command_output"
       },

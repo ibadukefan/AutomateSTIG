@@ -2016,20 +2016,37 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         content,
         re.MULTILINE,
     ))
-    if len(kubernetes_ownership_matches) == 1:
-        owner_group = kubernetes_ownership_matches[0].group('owner_group')
-        if re.search(
-            rf'If\s+the\s+command\s+returns\s+any\s+non\s+{re.escape(owner_group)}\s+file\s+permissions,?\s+this\s+is\s+a\s+finding',
-            content,
-            re.IGNORECASE,
-        ):
-            return {
-                'vuln_id': rule.get('vuln_id', ''),
-                'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',
-                'check': {'type': 'command_output', 'command': _normalize_command(kubernetes_ownership_matches[0].group('command'))},
-                'expected': {'type': 'equals', 'value': ''},
-                'description': rule.get('title', ''),
-            }
+    if kubernetes_ownership_matches:
+        owner_groups = {match.group('owner_group') for match in kubernetes_ownership_matches}
+        if len(owner_groups) == 1:
+            owner_group = next(iter(owner_groups))
+            if re.search(
+                rf'If\s+the\s+command\s+returns\s+any\s+non\s+{re.escape(owner_group)}\s+file\s+permissions,?\s+this\s+is\s+a\s+finding',
+                content,
+                re.IGNORECASE,
+            ):
+                if len(kubernetes_ownership_matches) == 1:
+                    command = _normalize_command(kubernetes_ownership_matches[0].group('command'))
+                else:
+                    paths = []
+                    for match in kubernetes_ownership_matches:
+                        path_match = re.search(r'stat\s+-c\s+%U:%G\s+(?P<path>/[A-Za-z0-9_./:+-]+\*?)\s*\|', match.group('command'))
+                        if not path_match:
+                            paths = []
+                            break
+                        paths.append(path_match.group('path'))
+                    if not paths:
+                        command = ''
+                    else:
+                        command = f"stat -c %U:%G {' '.join(paths)} | grep -v {owner_group}"
+                if command:
+                    return {
+                        'vuln_id': rule.get('vuln_id', ''),
+                        'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',
+                        'check': {'type': 'command_output', 'command': command},
+                        'expected': {'type': 'equals', 'value': ''},
+                        'description': rule.get('title', ''),
+                    }
     journal_find_stat_match = re.search(
         r'^\s*[$#>]\s*(?:sudo\s+)?find\s+/run/log/journal\s+/var/log/journal\s+-type\s+(?P<kind>[df])\s+-exec\s+stat\s+-c\s+["\']%n\s+%(?P<field>[UG])["\']\s+\{\}\s+\\;\s*$',
         content,
