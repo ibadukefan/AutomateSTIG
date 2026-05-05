@@ -25,6 +25,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-233585"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW shared_preload_libraries\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must provide the means for individuals in authorized roles to change the auditing to be performed on all application components, based on all selectable event criteria within organization-defined time thresholds.",
+      "expected": {
+        "substring": "pgaudit",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233600"
     }
   ],
   "platform": "generic",

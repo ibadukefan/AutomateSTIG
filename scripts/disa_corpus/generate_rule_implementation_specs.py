@@ -1844,6 +1844,23 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    postgresql_pgaudit_shared_preload_libraries = (
+        'postgresql' in stig_id.lower()
+        and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+shared_preload_libraries["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(
+            r'If\s+pgaudit\s+is\s+not\s+present\s+in\s+the\s+result\s+from\s+the\s+query,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+    )
+    if postgresql_pgaudit_shared_preload_libraries:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'psql -c "SHOW shared_preload_libraries"'},
+            'expected': {'type': 'contains', 'substring': 'pgaudit'},
+            'description': rule.get('title', ''),
+        }
     apt_allowunauthenticated_true = (
         _linux_platform(stig_id)
         and re.search(r'^\s*[$#>]\s*grep\s+AllowUnauthenticated\s+/etc/apt/apt\.conf\.d/\*\s*$', content, re.MULTILINE)

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 2,
+  "candidate_checks": 3,
   "cases": [
     {
       "check": {
@@ -52,6 +52,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-233585"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW shared_preload_libraries\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must provide the means for individuals in authorized roles to change the auditing to be performed on all application components, based on all selectable event criteria within organization-defined time thresholds.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "pgaudit",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW shared_preload_libraries\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW shared_preload_libraries\"": "before\npgaudit\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233600"
     }
   ],
   "production_claim": false,
@@ -59,5 +85,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 2
+  "validated_candidates": 3
 }

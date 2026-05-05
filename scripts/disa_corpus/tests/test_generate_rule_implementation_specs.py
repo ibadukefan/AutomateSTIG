@@ -77,6 +77,25 @@ If the "TFTP" application exists, this is a finding.''',
         self.assertEqual(classification, 'manual')
         self.assertEqual(collector, 'manual_evidence_workflow')
 
+    def test_infers_postgresql_shared_preload_libraries_pgaudit_contains_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233600',
+            'title': 'PostgreSQL must provide the means for individuals in authorized roles to change the auditing to be performed on all application components, based on all selectable event criteria within organization-defined time thresholds.',
+            'check_content': '''First, as the database administrator, check if pgaudit is present in shared_preload_libraries:
+
+$ sudo su - postgres
+$ psql -c "SHOW shared_preload_libraries"
+
+If pgaudit is not present in the result from the query, this is a finding.''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-233600',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'psql -c "SHOW shared_preload_libraries"'},
+            'expected': {'type': 'contains', 'substring': 'pgaudit'},
+            'description': 'PostgreSQL must provide the means for individuals in authorized roles to change the auditing to be performed on all application components, based on all selectable event criteria within organization-defined time thresholds.',
+        })
+
     def test_infers_linux_snmp_default_community_strings_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-204627',
