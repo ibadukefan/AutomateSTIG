@@ -132,6 +132,19 @@
     },
     {
       "check": {
+        "command": "Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.hostsvc.esxAdminsGroup | Select-Object -ExpandProperty Value",
+        "type": "command_output"
+      },
+      "description": "Active Directory ESX Admin group membership must not be used when adding ESXi hosts to Active Directory.",
+      "expected": {
+        "type": "not_equals",
+        "value": "ESX Admins"
+      },
+      "platform": "generic",
+      "vuln_id": "V-256404"
+    },
+    {
+      "check": {
         "command": "Get-VMHost | Get-AdvancedSetting -Name UserVars.DcuiTimeOut | Select-Object -ExpandProperty Value",
         "type": "command_output"
       },

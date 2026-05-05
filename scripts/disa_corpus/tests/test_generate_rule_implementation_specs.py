@@ -216,6 +216,29 @@ If the "Security.AccountLockFailures" setting is set to a value other than "3", 
             'description': 'The ESXi host must enforce the limit of three consecutive invalid logon attempts by a user.',
         })
 
+    def test_infers_esxi_advanced_setting_not_equals_bad_value_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-256404',
+            'title': 'Active Directory ESX Admin group membership must not be used when adding ESXi hosts to Active Directory.',
+            'check_content': '''For systems that do not use Active Directory, this is not applicable.
+
+From a PowerCLI command prompt while connected to the ESXi host, run the following command:
+
+Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.hostsvc.esxAdminsGroup
+
+If the "Config.HostAgent.plugins.hostsvc.esxAdminsGroup" key is set to "ESX Admins", this is a finding.'''
+        }, 'VMW_vSphere_7-0_ESXi_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-256404',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.hostsvc.esxAdminsGroup | Select-Object -ExpandProperty Value',
+            },
+            'expected': {'type': 'not_equals', 'value': 'ESX Admins'},
+            'description': 'Active Directory ESX Admin group membership must not be used when adding ESXi hosts to Active Directory.',
+        })
+
     def test_infers_systemctl_status_socket_masked_command_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230312',

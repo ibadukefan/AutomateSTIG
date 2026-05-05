@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 28,
+  "candidate_checks": 29,
   "cases": [
     {
       "check": {
@@ -260,6 +260,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-256402"
+    },
+    {
+      "check": {
+        "command": "Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.hostsvc.esxAdminsGroup | Select-Object -ExpandProperty Value",
+        "type": "command_output"
+      },
+      "description": "Active Directory ESX Admin group membership must not be used when adding ESXi hosts to Active Directory.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": "ESX Admins"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.hostsvc.esxAdminsGroup | Select-Object -ExpandProperty Value": "ESX Admins"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.hostsvc.esxAdminsGroup | Select-Object -ExpandProperty Value": "unexpected-ESX Admins"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256404"
     },
     {
       "check": {
@@ -735,5 +761,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_7-0_esxi_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "VMW_vSphere_7-0_ESXi_STIG",
-  "validated_candidates": 28
+  "validated_candidates": 29
 }

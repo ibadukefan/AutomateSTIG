@@ -138,6 +138,12 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
             pass_fixture['command_outputs'] = {command: expected_value}
             fail_fixture['command_outputs'] = {command: _alternate_value(expected_value)}
             evidence_type = 'command_output_equals'
+        elif expected.get('type') == 'not_equals':
+            command = check['command']
+            expected_value = str(expected['value'])
+            pass_fixture['command_outputs'] = {command: _alternate_value(expected_value)}
+            fail_fixture['command_outputs'] = {command: expected_value}
+            evidence_type = 'command_output_not_equals'
         elif expected.get('type') == 'contains':
             command = check['command']
             substring = expected['substring']
@@ -145,7 +151,7 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
             fail_fixture['command_outputs'] = {command: "before\nafter\n"}
             evidence_type = 'command_output_contains'
         else:
-            raise ValueError(f"{candidate['vuln_id']}: command_output candidate only supports equals or contains evidence")
+            raise ValueError(f"{candidate['vuln_id']}: command_output candidate only supports equals, not_equals, or contains evidence")
     else:
         raise ValueError(f"{candidate['vuln_id']}: unsupported candidate check type {check_type}")
 

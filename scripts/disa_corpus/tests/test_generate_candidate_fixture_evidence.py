@@ -155,6 +155,18 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
         self.assertEqual(case['pass_fixture']['command_outputs'], {'/usr/lib/vmware/openssh/bin/sshd -T|grep permittunnel': 'permittunnel no'})
         self.assertNotEqual(case['fail_fixture']['command_outputs']['/usr/lib/vmware/openssh/bin/sshd -T|grep permittunnel'], 'permittunnel no')
 
+    def test_builds_command_output_not_equals_fixture_case(self):
+        case = mod.build_case({
+            'vuln_id': 'V-256404',
+            'platform': 'generic',
+            'description': 'ESX Admins group must not be used',
+            'check': {'type': 'command_output', 'command': 'Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.hostsvc.esxAdminsGroup | Select-Object -ExpandProperty Value'},
+            'expected': {'type': 'not_equals', 'value': 'ESX Admins'},
+        })
+        self.assertEqual(case['evidence_type'], 'command_output_not_equals')
+        self.assertNotEqual(case['pass_fixture']['command_outputs']['Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.hostsvc.esxAdminsGroup | Select-Object -ExpandProperty Value'], 'ESX Admins')
+        self.assertEqual(case['fail_fixture']['command_outputs'], {'Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.hostsvc.esxAdminsGroup | Select-Object -ExpandProperty Value': 'ESX Admins'})
+
     def test_builds_file_content_absent_fixture_case(self):
         case = mod.build_case({
             'vuln_id': 'V-251712',

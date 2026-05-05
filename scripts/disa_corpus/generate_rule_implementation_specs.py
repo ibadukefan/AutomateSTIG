@@ -1701,6 +1701,14 @@ def _esxi_advanced_setting_exact_value_candidate(rule: dict, stig_id: str) -> di
         content,
         re.IGNORECASE,
     )
+    expected_type = 'equals'
+    if not finding_match:
+        finding_match = re.search(
+            rf'If\s+(?:the\s+)?"{quoted_name}"\s+(?:key\s+)?is\s+set\s+to\s+"([^"]+)"\s*,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+        expected_type = 'not_equals'
     if not finding_match:
         return None
     expected_value = finding_match.group(1).strip()
@@ -1713,7 +1721,7 @@ def _esxi_advanced_setting_exact_value_candidate(rule: dict, stig_id: str) -> di
             'type': 'command_output',
             'command': f'Get-VMHost | Get-AdvancedSetting -Name {setting_name} | Select-Object -ExpandProperty Value',
         },
-        'expected': {'type': 'equals', 'value': expected_value},
+        'expected': {'type': expected_type, 'value': expected_value},
         'description': rule.get('title', ''),
     }
 
