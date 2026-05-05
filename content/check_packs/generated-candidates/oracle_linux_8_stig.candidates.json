@@ -3377,6 +3377,19 @@
     },
     {
       "check": {
+        "command": "nmcli -t -f TYPE device status | grep -Fx 'wifi'",
+        "type": "command_output"
+      },
+      "description": "OL 8 wireless network adapters must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248842"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/modprobe.d",
         "pattern": "bluetooth",

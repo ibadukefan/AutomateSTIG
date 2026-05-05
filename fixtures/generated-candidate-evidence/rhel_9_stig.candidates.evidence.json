@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 380,
+  "candidate_checks": 381,
   "cases": [
     {
       "check": {
@@ -5741,6 +5741,32 @@
     },
     {
       "check": {
+        "command": "nmcli -t -f TYPE device status | grep -Fx 'wifi'",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 wireless network adapters must be disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "nmcli -t -f TYPE device status | grep -Fx 'wifi'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "nmcli -t -f TYPE device status | grep -Fx 'wifi'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258040"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "PASS_MAX_DAYS 60",
@@ -10542,5 +10568,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 380
+  "validated_candidates": 381
 }

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 321,
+  "candidate_checks": 322,
   "cases": [
     {
       "check": {
@@ -6700,6 +6700,32 @@
     },
     {
       "check": {
+        "command": "nmcli -t -f TYPE device status | grep -Fx 'wifi'",
+        "type": "command_output"
+      },
+      "description": "OL 8 wireless network adapters must be disabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "nmcli -t -f TYPE device status | grep -Fx 'wifi'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "nmcli -t -f TYPE device status | grep -Fx 'wifi'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248842"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/modprobe.d",
         "pattern": "bluetooth",
@@ -8740,5 +8766,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 321
+  "validated_candidates": 322
 }

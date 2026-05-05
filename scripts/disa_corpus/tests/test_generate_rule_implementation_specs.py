@@ -3907,6 +3907,27 @@ If the value for "Maximum lifetime for user ticket" is greater than "10" hours o
         }, 'MS_Windows_Server_2022_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_linux_nmcli_wireless_interface_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248842',
+            'title': 'OL 8 wireless network adapters must be disabled.',
+            'check_content': '''Verify there are no wireless interfaces configured on the system with the following command.
+
+$ sudo nmcli device status
+
+DEVICE TYPE STATE CONNECTION
+virbr0 bridge connected virbr0
+wlp7s0 wifi connected wifiSSID
+enp6s0 ethernet disconnected --
+
+If a wireless interface is configured and has not been documented and approved by the Information System Security Officer (ISSO), this is a finding.''',
+            'fix_text': 'Configure the system to disable all wireless network interfaces.',
+        }, 'Oracle_Linux_8_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "nmcli -t -f TYPE device status | grep -Fx 'wifi'"})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_linux_ftp_server_package_glob_absent_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230558',
