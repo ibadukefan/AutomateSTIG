@@ -57,6 +57,24 @@ If the use of a graphical user interface on the system is not documented with th
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'rpm -qa | grep xorg | grep server'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_oracle_linux_rpm_xorg_server_absent_unless_documented_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248898',
+            'title': 'The graphical display manager must not be installed on OL 8 unless approved.',
+            'check_content': '''Verify that if the system has a display server installed, it is authorized.
+
+Check for the display server package with the following example command:
+
+$ sudo rpm -qa | grep xorg | grep server
+
+Ask the System Administrator if use of the display server is an operational requirement.
+
+If the use of a display server on the system is not documented with the Information System Security Officer (ISSO), this is a finding.'''
+        }, 'Oracle_Linux_8_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'rpm -qa | grep xorg | grep server'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_socket_is_active_command_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258125',

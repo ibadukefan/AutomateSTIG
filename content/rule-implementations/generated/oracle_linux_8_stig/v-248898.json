@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "rpm -qa | grep xorg | grep server",
+      "type": "command_output"
+    },
+    "description": "The graphical display manager must not be installed on OL 8 unless approved.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-248898"
+  },
   "check_content_excerpt": "Verify that if the system has a display server installed, it is authorized. \n \nCheck for the display server package with the following example command: \n \n$ sudo rpm -qa | grep xorg | grep server \n \nAsk the System Administrator if use of the display server is an operational requirement. \n \nIf the use of a display server on the system is not documented with the Information System Security Officer (ISSO), this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Document the requirement for a display server with the ISSO or remove the related packages with the following example command: \n \n$ sudo rpm -e xorg-x11-server-common",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-248898r991589_rule",
   "severity": "medium",

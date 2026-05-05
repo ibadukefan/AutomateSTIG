@@ -191,7 +191,7 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
 
 def _linux_platform(stig_id: str) -> bool:
     lower = stig_id.lower()
-    return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'ubuntu', 'sles', 'suse'))
+    return any(token in lower for token in ('rhel', 'red_hat', 'linux', 'oracle_linux', 'ol_', 'ubuntu', 'sles', 'suse'))
 
 
 def _windows_platform(stig_id: str) -> bool:
@@ -1830,8 +1830,12 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         and len(rpm_xorg_server_matches) == 1
         and _linux_platform(stig_id)
         and re.search(r'\b(?:graphical\s+display\s+manager|display\s+server)\b', rule.get('title', '') or '', re.IGNORECASE)
-        and re.search(r'\b(?:must\s+not\s+(?:have\s+\S+\s+)?be\s+installed|not\s+installed)\b', content, re.IGNORECASE)
-        and re.search(r'If\s+the\s+use\s+of\s+(?:a\s+graphical\s+user\s+interface|the\s+display\s+server)\s+[^.\n]*not\s+documented\s+with\s+the\s+(?:Information\s+System\s+Security\s+Officer\s+\()?ISSO\)?[^.\n]*this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(
+            r'\b(?:must\s+not\s+(?:have\s+\S+\s+)?be\s+installed|not\s+installed|display\s+server\s+installed,\s+it\s+is\s+authorized)\b',
+            content,
+            re.IGNORECASE,
+        )
+        and re.search(r'If\s+the\s+use\s+of\s+(?:a\s+graphical\s+user\s+interface|(?:(?:a|the)\s+)?display\s+server)\s+[^.\n]*not\s+documented\s+with\s+the\s+(?:Information\s+System\s+Security\s+Officer\s+\()?ISSO\)?[^.\n]*this\s+is\s+a\s+finding', content, re.IGNORECASE)
     ):
         return {
             'vuln_id': rule.get('vuln_id', ''),
