@@ -1626,16 +1626,17 @@
       "vuln_id": "V-235007"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235008",
+      "check_pack": "generated-candidates/sles_15_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235008 from source identifier xccdf_mil.disa.stig_group_V-235008.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235008r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system SSH daemon public host key files must have mode 0644 or less permissive.",
-      "tracking_issue": "TODO-V-235008",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
         "content/disa-corpus/artifacts/08756061f75f7423c6cfe76a18aca2ebb1d67c514a92c4ba4bc93d3217fbf440/U_SLES_15_V2R8_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-235008"

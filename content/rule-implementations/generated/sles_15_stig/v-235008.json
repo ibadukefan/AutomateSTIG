@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /etc/ssh -maxdepth 1 -type f -name 'ssh_host*key.pub' -perm /133 -exec stat -c \"%n %a\" {} \\;",
+      "type": "command_output"
+    },
+    "description": "The SUSE operating system SSH daemon public host key files must have mode 0644 or less permissive.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-235008"
+  },
   "check_content_excerpt": "Verify the SUSE operating system SSH daemon public host key files have mode \"0644\" or less permissive.\n\nNote: SSH public key files may be found in other directories on the system depending on the installation.\n\nThe following command will find all SSH public key files on the system:\n\n> find /etc/ssh -name 'ssh_host*key.pub' -exec stat -c \"%a %n\" {} \\;\n\n644 /etc/ssh/ssh_host_rsa_key.pub\n644 /etc/ssh/ssh_host_dsa_key.pub\n644 /etc/ssh/ssh_host_ecdsa_key.pub\n644 /etc/ssh/ssh_host_ed25519_key.pub\n\nIf any file has a mode more permissive than \"0644\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system SSH daemon public host key files have mode \"0644\" or less permissive.\n\nNote: SSH public key files may be found in other directories on the system depending on the installation. \n\nChange the mode of public host key files under \"/etc/ssh\" to \"0644\" with the following command:\n\n> sudo chmod 0644 /etc/ssh/ssh_host*key.pub",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-235008r991589_rule",
   "severity": "medium",

@@ -1723,6 +1723,28 @@ If any private host key file has a mode more permissive than "0640", this is a f
             'description': 'The RHEL 8 SSH private host key files must have mode 0640 or less permissive.',
         })
 
+    def test_infers_ssh_public_host_key_mode_glob_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-235008',
+            'title': 'The SUSE operating system SSH daemon public host key files must have mode 0644 or less permissive.',
+            'check_content': '''Verify the SUSE operating system SSH daemon public host key files have mode "0644" or less permissive.
+
+The following command will find all SSH public key files on the system:
+> find /etc/ssh -name 'ssh_host*key.pub' -exec stat -c "%a %n" {} \\;
+
+If any file has a mode more permissive than "0644", this is a finding.'''
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-235008',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'find /etc/ssh -maxdepth 1 -type f -name \'ssh_host*key.pub\' -perm /133 -exec stat -c "%n %a" {} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The SUSE operating system SSH daemon public host key files must have mode 0644 or less permissive.',
+        })
+
     def test_infers_grep_command_when_produces_any_output_is_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-256445',
