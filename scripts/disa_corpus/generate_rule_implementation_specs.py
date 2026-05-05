@@ -2001,8 +2001,49 @@ def _windows_ad_smartcard_no_listed_users_candidate(rule: dict, stig_id: str) ->
     }
 
 
+def _ssh_private_host_key_mode_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    command_match = re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?ls\s+-l\s+/etc/ssh/ssh_host\*key\s*$',
+        content,
+        re.MULTILINE,
+    )
+    if not command_match:
+        return None
+    mode_match = re.search(
+        r'SSH\s+private\s+host\s+key\s+files\s+have\s+mode\s+["“](?P<mode>0?[0-7]{3})["”]\s+or\s+less\s+permissive',
+        content,
+        re.IGNORECASE,
+    )
+    if not mode_match or not re.search(
+        r'If\s+any\s+private\s+host\s+key\s+file\s+has\s+a\s+mode\s+more\s+permissive\s+than\s+["“]0?[0-7]{3}["”],?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return None
+    mode = int(mode_match.group('mode'), 8)
+    prohibited_bits = 0o777 & ~mode
+    if prohibited_bits == 0:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {
+            'type': 'command_output',
+            'command': f'find /etc/ssh -maxdepth 1 -type f -name \'ssh_host*key\' -perm /{prohibited_bits:o} -exec stat -c "%n %a" {{}} \\;',
+        },
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
+    ssh_private_host_key_mode_candidate = _ssh_private_host_key_mode_candidate(rule, stig_id)
+    if ssh_private_host_key_mode_candidate:
+        return ssh_private_host_key_mode_candidate
     snmp_default_community_strings = (
         _linux_platform(stig_id)
         and re.search(r'^\s*[$#>]\s*grep\s+public\s+/etc/snmp/snmpd\.conf\s*$', content, re.MULTILINE)

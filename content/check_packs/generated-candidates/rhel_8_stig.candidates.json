@@ -285,6 +285,19 @@
     },
     {
       "check": {
+        "command": "find /etc/ssh -maxdepth 1 -type f -name 'ssh_host*key' -perm /137 -exec stat -c \"%n %a\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The RHEL 8 SSH private host key files must have mode 0640 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-230287"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config:StrictModes",
         "pattern": "yes",

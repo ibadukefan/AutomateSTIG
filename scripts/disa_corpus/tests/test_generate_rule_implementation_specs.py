@@ -1699,6 +1699,30 @@ If any systemwide shared library directory is not owned by "root", this is a fin
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'find /lib /lib64 /usr/lib /usr/lib64 ! -user root -type d -exec stat -c "%U %n" {} \\;'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_ssh_private_host_key_mode_glob_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230287',
+            'title': 'The RHEL 8 SSH private host key files must have mode 0640 or less permissive.',
+            'check_content': '''Verify the SSH private host key files have mode "0640" or less permissive with the following command:
+
+$ sudo ls -l /etc/ssh/ssh_host*key
+-rw-r----- 1 root ssh_keys 668 Nov 28 06:43 ssh_host_dsa_key
+-rw-r----- 1 root ssh_keys 582 Nov 28 06:43 ssh_host_key
+-rw-r----- 1 root ssh_keys 887 Nov 28 06:43 ssh_host_rsa_key
+
+If any private host key file has a mode more permissive than "0640", this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-230287',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'find /etc/ssh -maxdepth 1 -type f -name \'ssh_host*key\' -perm /137 -exec stat -c "%n %a" {} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The RHEL 8 SSH private host key files must have mode 0640 or less permissive.',
+        })
+
     def test_infers_grep_command_when_produces_any_output_is_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-256445',
