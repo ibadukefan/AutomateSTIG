@@ -2771,6 +2771,19 @@
     },
     {
       "check": {
+        "command": "pwck -r",
+        "type": "command_output"
+      },
+      "description": "All RHEL 9 local interactive user home directories defined in the /etc/passwd file must exist.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-258052"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/passwd",
         "pattern": "| awk -F: \u2018{print $4}') /etc/group",

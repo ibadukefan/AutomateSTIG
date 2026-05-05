@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 372,
+  "candidate_checks": 373,
   "cases": [
     {
       "check": {
@@ -5745,6 +5745,32 @@
     },
     {
       "check": {
+        "command": "pwck -r",
+        "type": "command_output"
+      },
+      "description": "All RHEL 9 local interactive user home directories defined in the /etc/passwd file must exist.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "pwck -r": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "pwck -r": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258052"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/passwd",
         "pattern": "| awk -F: \u2018{print $4}') /etc/group",
@@ -10334,5 +10360,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 372
+  "validated_candidates": 373
 }

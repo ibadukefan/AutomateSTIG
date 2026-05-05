@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 405,
+  "candidate_checks": 406,
   "cases": [
     {
       "check": {
@@ -10202,6 +10202,32 @@
     },
     {
       "check": {
+        "command": "pwck -r",
+        "type": "command_output"
+      },
+      "description": "OL 9 local interactive user home directories defined in the /etc/passwd file must exist.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "pwck -r": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "pwck -r": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271844"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/login.defs",
         "pattern": "CREATE_HOME yes",
@@ -11264,5 +11290,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 405
+  "validated_candidates": 406
 }

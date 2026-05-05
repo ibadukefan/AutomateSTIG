@@ -3071,6 +3071,24 @@ If any home directories referenced in "/etc/passwd" are returned as not defined,
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'pwck -r'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_pwck_home_directory_does_not_exist_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258052',
+            'title': 'All RHEL 9 local interactive user home directories defined in the /etc/passwd file must exist.',
+            'check_content': '''Verify the assigned home directories of all interactive users on the system exist with the following command:
+
+$ sudo pwck -r
+
+user 'mailnull': directory 'var/spool/mqueue' does not exist
+
+The output should not return any interactive users.
+
+If users home directory does not exist, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'pwck -r'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_pwck_gid_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258048',
