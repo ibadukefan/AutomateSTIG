@@ -2,6 +2,71 @@
   "checks": [
     {
       "check": {
+        "command": "find $CATALINA_HOME -follow -maxdepth 0 \\( ! -user root -o ! -group tomcat \\) -ls",
+        "type": "command_output"
+      },
+      "description": "$CATALINA_HOME folder must be owned by the root user, group tomcat.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-222986"
+    },
+    {
+      "check": {
+        "command": "find $CATALINA_BASE/conf -follow -maxdepth 0 \\( ! -user root -o ! -group tomcat \\) -ls",
+        "type": "command_output"
+      },
+      "description": "$CATALINA_BASE/conf/ folder must be owned by root,  group tomcat.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-222987"
+    },
+    {
+      "check": {
+        "command": "find $CATALINA_BASE/logs -follow -maxdepth 0 \\( ! -user tomcat -o ! -group tomcat \\) -ls",
+        "type": "command_output"
+      },
+      "description": "$CATALINA_BASE/logs/ folder must be owned by tomcat user, group tomcat.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-222988"
+    },
+    {
+      "check": {
+        "command": "find $CATALINA_BASE/temp -follow -maxdepth 0 \\( ! -user tomcat -o ! -group tomcat \\) -ls",
+        "type": "command_output"
+      },
+      "description": "$CATALINA_BASE/temp/ folder must be owned by tomcat user, group tomcat.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-222989"
+    },
+    {
+      "check": {
+        "command": "find $CATALINA_BASE/work -follow -maxdepth 0 \\( ! -user tomcat -o ! -group tomcat \\) -ls",
+        "type": "command_output"
+      },
+      "description": "$CATALINA_BASE/work/ folder must be owned by tomcat user, group tomcat.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-222991"
+    },
+    {
+      "check": {
         "command": "auditctl -l",
         "type": "command_output"
       },

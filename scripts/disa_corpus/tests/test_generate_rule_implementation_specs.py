@@ -56,6 +56,25 @@ If the pcscd socket is not active, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'systemctl is-active pcscd.socket'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'active'})
 
+    def test_infers_tomcat_find_not_owner_or_group_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222986',
+            'title': '$CATALINA_HOME folder must be owned by the root user, group tomcat.',
+            'check_content': '''Access the Tomcat server from the command line and execute the following OS command:
+
+sudo find $CATALINA_HOME -follow -maxdepth 0 \\(  ! -user root -o ! -group tomcat \\) -ls
+
+If no folders are displayed, this is not a finding.
+
+If results indicate the $CATALINA_HOME folder ownership and group membership is not set to root:tomcat, this is a finding.'''
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate['platform'], 'generic')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': 'find $CATALINA_HOME -follow -maxdepth 0 \\( ! -user root -o ! -group tomcat \\) -ls',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_ubuntu_sshd_multi_directive_egrep_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270717',

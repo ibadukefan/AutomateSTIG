@@ -1,6 +1,136 @@
 {
-  "candidate_checks": 2,
+  "candidate_checks": 7,
   "cases": [
+    {
+      "check": {
+        "command": "find $CATALINA_HOME -follow -maxdepth 0 \\( ! -user root -o ! -group tomcat \\) -ls",
+        "type": "command_output"
+      },
+      "description": "$CATALINA_HOME folder must be owned by the root user, group tomcat.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find $CATALINA_HOME -follow -maxdepth 0 \\( ! -user root -o ! -group tomcat \\) -ls": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find $CATALINA_HOME -follow -maxdepth 0 \\( ! -user root -o ! -group tomcat \\) -ls": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222986"
+    },
+    {
+      "check": {
+        "command": "find $CATALINA_BASE/conf -follow -maxdepth 0 \\( ! -user root -o ! -group tomcat \\) -ls",
+        "type": "command_output"
+      },
+      "description": "$CATALINA_BASE/conf/ folder must be owned by root,  group tomcat.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find $CATALINA_BASE/conf -follow -maxdepth 0 \\( ! -user root -o ! -group tomcat \\) -ls": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find $CATALINA_BASE/conf -follow -maxdepth 0 \\( ! -user root -o ! -group tomcat \\) -ls": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222987"
+    },
+    {
+      "check": {
+        "command": "find $CATALINA_BASE/logs -follow -maxdepth 0 \\( ! -user tomcat -o ! -group tomcat \\) -ls",
+        "type": "command_output"
+      },
+      "description": "$CATALINA_BASE/logs/ folder must be owned by tomcat user, group tomcat.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find $CATALINA_BASE/logs -follow -maxdepth 0 \\( ! -user tomcat -o ! -group tomcat \\) -ls": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find $CATALINA_BASE/logs -follow -maxdepth 0 \\( ! -user tomcat -o ! -group tomcat \\) -ls": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222988"
+    },
+    {
+      "check": {
+        "command": "find $CATALINA_BASE/temp -follow -maxdepth 0 \\( ! -user tomcat -o ! -group tomcat \\) -ls",
+        "type": "command_output"
+      },
+      "description": "$CATALINA_BASE/temp/ folder must be owned by tomcat user, group tomcat.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find $CATALINA_BASE/temp -follow -maxdepth 0 \\( ! -user tomcat -o ! -group tomcat \\) -ls": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find $CATALINA_BASE/temp -follow -maxdepth 0 \\( ! -user tomcat -o ! -group tomcat \\) -ls": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222989"
+    },
+    {
+      "check": {
+        "command": "find $CATALINA_BASE/work -follow -maxdepth 0 \\( ! -user tomcat -o ! -group tomcat \\) -ls",
+        "type": "command_output"
+      },
+      "description": "$CATALINA_BASE/work/ folder must be owned by tomcat user, group tomcat.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find $CATALINA_BASE/work -follow -maxdepth 0 \\( ! -user tomcat -o ! -group tomcat \\) -ls": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find $CATALINA_BASE/work -follow -maxdepth 0 \\( ! -user tomcat -o ! -group tomcat \\) -ls": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222991"
+    },
     {
       "check": {
         "command": "auditctl -l",
@@ -59,5 +189,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 2
+  "validated_candidates": 7
 }

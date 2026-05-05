@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find $CATALINA_BASE/work -follow -maxdepth 0 \\( ! -user tomcat -o ! -group tomcat \\) -ls",
+      "type": "command_output"
+    },
+    "description": "$CATALINA_BASE/work/ folder must be owned by tomcat user, group tomcat.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-222991"
+  },
   "check_content_excerpt": "Access the Tomcat server from the command line and execute the following OS command:\n\nsudo find $CATALINA_BASE/work -follow -maxdepth 0 \\(  ! -user tomcat -o ! -group tomcat \\) -ls\n\nIf ISSM risk acceptance specifies deviation from requirement based on operational/application needs, this is not a finding if the permissions are set in accordance with the risk acceptance.\n\nIf no folders are displayed, this is not a finding.\n\nIf results indicate the $CATALINA_BASE/work folder ownership and group membership is not set to tomcat:tomcat, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "If operational/application requirements specify different group file permissions, obtain ISSM risk acceptance and set permissions according to risk acceptance.\n\nRun the following commands on the Tomcat server:\n\nsudo find $CATALINA_BASE/work -maxdepth 0 \\( ! -user tomcat \\) | sudo xargs chown tomcat\n\nsudo find $CATALINA_BASE/work -maxdepth 0 \\( ! -group tomcat \\) | sudo xargs chgrp tomcat",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-222991r961461_rule",
   "severity": "medium",
