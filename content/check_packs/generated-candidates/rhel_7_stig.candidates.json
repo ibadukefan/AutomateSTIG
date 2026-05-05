@@ -1084,6 +1084,19 @@
     },
     {
       "check": {
+        "name": "openssh-server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all networked systems have SSH installed.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204585"
+    },
+    {
+      "check": {
         "expected_status": "running",
         "name": "sshd",
         "type": "service"

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 140,
+  "candidate_checks": 141,
   "cases": [
     {
       "check": {
@@ -2099,6 +2099,32 @@
     },
     {
       "check": {
+        "name": "openssh-server",
+        "should_be_installed": true,
+        "type": "package"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all networked systems have SSH installed.",
+      "evidence_type": "linux_package_install_state",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "packages": {
+          "openssh-server": false
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "packages": {
+          "openssh-server": true
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204585"
+    },
+    {
+      "check": {
         "expected_status": "running",
         "name": "sshd",
         "type": "service"
@@ -3760,5 +3786,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 140
+  "validated_candidates": 141
 }

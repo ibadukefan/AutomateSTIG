@@ -623,6 +623,30 @@ def _package_candidate(rule: dict) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    ssh_glob_install_match = re.search(
+        r'\byum\s+list\s+installed\s+\\?\*ssh\\?\*',
+        content,
+        re.IGNORECASE,
+    )
+    ssh_fix_match = re.search(
+        r'\byum\s+install\s+(openssh-server)(?:\.[A-Za-z0-9_]+)?\b',
+        rule.get('fix_text', '') or '',
+        re.IGNORECASE,
+    )
+    if (
+        ssh_glob_install_match
+        and ssh_fix_match
+        and re.search(r'\bnetworked\s+systems\s+have\s+SSH\s+installed\b', title, re.IGNORECASE)
+        and re.search(r'If\s+the\s+["“]SSH\s+server["”]\s+package\s+is\s+not\s+installed,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'^\s*openssh-server(?:\.[A-Za-z0-9_]+)?\b', content, re.IGNORECASE | re.MULTILINE)
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'package', 'name': ssh_fix_match.group(1).lower(), 'should_be_installed': True},
+            'expected': {'type': 'is_true'},
+            'description': rule.get('title', ''),
+        }
     match = re.search(r'\b(?:dnf|yum|rpm)\s+(?:list\s+(?:--installed|installed)|-q)\s+["\']?([A-Za-z0-9_.:+-]+)["\']?', content)
     if not match:
         match = re.search(r'\bdpkg\s+-l\s*\|\s*grep\s+([A-Za-z0-9_.:+-]+)', content)

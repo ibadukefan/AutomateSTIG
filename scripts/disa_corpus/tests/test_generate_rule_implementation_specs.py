@@ -1032,6 +1032,25 @@ If the "xorg-x11-server-common" package is installed, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'package', 'name': 'xorg-x11-server-common', 'should_be_installed': False})
         self.assertEqual(candidate['expected'], {'type': 'is_false'})
 
+    def test_infers_rhel7_openssh_server_package_from_ssh_glob_install_prose(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204585',
+            'title': 'The Red Hat Enterprise Linux operating system must be configured so that all networked systems have SSH installed.',
+            'check_content': '''Check to see if sshd is installed with the following command:
+
+# yum list installed \\*ssh\\*
+libssh2.x86_64 1.4.3-8.el7 @anaconda/7.1
+openssh.x86_64 6.6.1p1-11.el7 @anaconda/7.1
+openssh-server.x86_64 6.6.1p1-11.el7 @anaconda/7.1
+
+If the "SSH server" package is not installed, this is a finding.''',
+            'fix_text': '''Install SSH packages onto the host with the following commands:
+
+# yum install openssh-server.x86_64'''
+        }, 'RHEL_7_STIG')
+        self.assertEqual(candidate['check'], {'type': 'package', 'name': 'openssh-server', 'should_be_installed': True})
+        self.assertEqual(candidate['expected'], {'type': 'is_true'})
+
     def test_infers_sles_package_candidate_from_single_zypper_info_command(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-234966',
