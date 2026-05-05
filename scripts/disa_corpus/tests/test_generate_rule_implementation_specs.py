@@ -1301,6 +1301,23 @@ Windows method:
         self.assertEqual(candidate['check'], {'type': 'registry', 'path': 'HKLM\\Software\\Policies\\Google\\Chrome', 'value_name': 'QuicAllowed'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 0})
 
+    def test_infers_chrome_quoted_key_registry_policy_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221599',
+            'title': 'Chrome development tools must be disabled.',
+            'check_content': '''Universal method:
+1. In the omnibox (address bar) type chrome://policy
+2. If the policy "DeveloperToolsAvailability" is not shown or is not set to "2", this is a finding.
+
+Windows method:
+1. Start regedit
+2. Navigate to HKLM\\Software\\Policies\\Google\\Chrome
+3. If the key "DeveloperToolsAvailability" does not exist or is not set to "2", this is a finding.'''
+        }, 'Google_Chrome_Current_Windows')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {'type': 'registry', 'path': 'HKLM\\Software\\Policies\\Google\\Chrome', 'value_name': 'DeveloperToolsAvailability'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 2})
+
     def test_infers_windows_browser_registry_policy_candidate_from_registry_editor_key(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-235756',

@@ -168,6 +168,19 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
         if not value_match:
             value_match = re.search(r'If\s+([A-Za-z0-9_.-]+)\s+is\s+not\s+displayed[^\n\r.]*?or\s+it\s+is\s+not\s+set\s+to', content, re.IGNORECASE)
         expected_value = _parse_expected_registry_data(content)
+        if (expected_value is None or not value_match) and 'chrome' in stig_id.lower():
+            chrome_key_value = re.search(
+                r'If\s+the\s+key\s+["“]([A-Za-z0-9_.-]+)["”]\s+does\s+not\s+exist\s+or\s+is\s+not\s+set\s+to\s+["“]?(\d+)["”]?,\s+this\s+is\s+a\s+finding',
+                content,
+                re.IGNORECASE,
+            )
+            if chrome_key_value and re.search(
+                rf'If\s+the\s+policy\s+["“]{re.escape(chrome_key_value.group(1))}["”]\s+is\s+not\s+shown\s+or\s+is\s+not\s+set\s+to\s+["“]?{re.escape(chrome_key_value.group(2))}["”]?,\s+this\s+is\s+a\s+finding',
+                content,
+                re.IGNORECASE,
+            ):
+                value_match = chrome_key_value
+                expected_value = int(chrome_key_value.group(2))
     else:
         path_match = re.search(
             r'Windows\s+Registry(?:\s+Editor)?\s+to\s+navigate\s+to\s+the\s+following\s+key:\s*\n\s*((?:HKLM|HKCU|HKCR|HKU|HKCC|HKEY_[A-Z_]+)\\[^\n\r]+)',

@@ -144,6 +144,20 @@
       "check": {
         "path": "HKLM\\Software\\Policies\\Google\\Chrome",
         "type": "registry",
+        "value_name": "DeveloperToolsAvailability"
+      },
+      "description": "Chrome development tools must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-221599"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
         "value_name": "BrowserGuestModeEnabled"
       },
       "description": "Guest Mode must be disabled.",

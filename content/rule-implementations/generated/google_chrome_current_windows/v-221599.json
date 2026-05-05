@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+      "type": "registry",
+      "value_name": "DeveloperToolsAvailability"
+    },
+    "description": "Chrome development tools must be disabled.",
+    "expected": {
+      "type": "equals",
+      "value": 2
+    },
+    "platform": "windows",
+    "vuln_id": "V-221599"
+  },
   "check_content_excerpt": "Universal method: \n1. In the omnibox (address bar) type chrome://policy \n2. If the policy \"DeveloperToolsAvailability\" is not shown or is not set to \"2\", this is a finding.\n\nWindows method:\n1. Start regedit\n2. Navigate to HKLM\\Software\\Policies\\Google\\Chrome\\\n3. If the key \"DeveloperToolsAvailability\" does not exist or is not set to \"2\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 2
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Windows group policy:\n1. Open the \"group policy editor\" tool with gpedit.msc \n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Google\\Google Chrome\nPolicy Name: Control where Developer Tools can be used\nPolicy State: Enabled\nPolicy Value: Disallow usage of the Developer Tools",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-221599r961167_rule",
   "severity": "low",

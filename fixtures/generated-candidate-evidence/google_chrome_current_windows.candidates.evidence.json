@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 22,
+  "candidate_checks": 23,
   "cases": [
     {
       "check": {
@@ -270,6 +270,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-221598"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "DeveloperToolsAvailability"
+      },
+      "description": "Chrome development tools must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\DeveloperToolsAvailability": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\DeveloperToolsAvailability": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221599"
     },
     {
       "check": {
@@ -601,5 +628,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Google_Chrome_Current_Windows",
-  "validated_candidates": 22
+  "validated_candidates": 23
 }

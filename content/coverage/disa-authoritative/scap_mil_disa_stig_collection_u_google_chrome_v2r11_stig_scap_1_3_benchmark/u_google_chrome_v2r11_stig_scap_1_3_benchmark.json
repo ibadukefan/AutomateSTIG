@@ -466,16 +466,17 @@
       "vuln_id": "V-221598"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-221599",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-221599 from source identifier xccdf_mil.disa.stig_group_V-221599.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-221599r961167_rule",
       "severity": "low",
       "title": "Chrome development tools must be disabled.",
-      "tracking_issue": "TODO-V-221599",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
         "content/disa-corpus/artifacts/40dff23a918fe6fe8cda92177120a2c3c9c7e8d878b5f4f83a59c53784ac8ace/U_Google_Chrome_V2R11_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-221599"
