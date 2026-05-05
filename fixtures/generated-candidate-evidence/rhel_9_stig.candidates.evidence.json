@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 375,
+  "candidate_checks": 376,
   "cases": [
     {
       "check": {
@@ -10117,6 +10117,32 @@
     },
     {
       "check": {
+        "command": "update-crypto-policies --check",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 cryptographic policy must not be overridden.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "The configured policy matches the generated policy"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "update-crypto-policies --check": "unexpected-The configured policy matches the generated policy"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "update-crypto-policies --check": "The configured policy matches the generated policy"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258236"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/crypto-policies/state/CURRENT.pol",
         "pattern": "hash = SHA2-256 SHA2-384 SHA2-512 SHA2-224 SHA3-256 SHA3-384 SHA3-512 SHAKE-256",
@@ -10412,5 +10438,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 375
+  "validated_candidates": 376
 }

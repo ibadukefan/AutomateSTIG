@@ -5001,6 +5001,19 @@
     },
     {
       "check": {
+        "command": "update-crypto-policies --check",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 cryptographic policy must not be overridden.",
+      "expected": {
+        "type": "equals",
+        "value": "The configured policy matches the generated policy"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258236"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/crypto-policies/state/CURRENT.pol",
         "pattern": "hash = SHA2-256 SHA2-384 SHA2-512 SHA2-224 SHA3-256 SHA3-384 SHA3-512 SHAKE-256",

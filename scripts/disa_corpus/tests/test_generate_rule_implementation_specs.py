@@ -192,6 +192,28 @@ If an "shosts.equiv" file is found, this is a finding.''',
             'description': 'There must be no "shosts.equiv" files on the OL 8 operating system.',
         })
 
+    def test_infers_linux_update_crypto_policies_check_literal_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258236',
+            'title': 'RHEL 9 cryptographic policy must not be overridden.',
+            'check_content': '''Verify that RHEL 9 cryptographic policies are not overridden.
+
+Verify that the configured policy matches the generated policy with the following command:
+
+$ sudo update-crypto-policies --check
+The configured policy matches the generated policy
+
+If the returned message does not match the above, but instead matches the following, this is a finding:
+The configured policy does NOT match the generated policy''',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-258236',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'update-crypto-policies --check'},
+            'expected': {'type': 'equals', 'value': 'The configured policy matches the generated policy'},
+            'description': 'RHEL 9 cryptographic policy must not be overridden.',
+        })
+
     def test_infers_linux_apt_allowunauthenticated_true_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-238359',

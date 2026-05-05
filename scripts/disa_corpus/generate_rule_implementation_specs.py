@@ -1523,11 +1523,15 @@ def _literal_command_output_candidate(rule: dict, stig_id: str, command: str, co
         re.IGNORECASE,
     )
     if not literal_match:
+        update_crypto_expected_messages = {
+            'update-crypto-policies --is-applied': 'The configured policy is applied',
+            'update-crypto-policies --check': 'The configured policy matches the generated policy',
+        }
         if (
-            command == 'update-crypto-policies --is-applied'
-            and sample_line == 'The configured policy is applied'
+            command in update_crypto_expected_messages
+            and sample_line == update_crypto_expected_messages[command]
             and re.search(
-                r'If\s+the\s+returned\s+message\s+does\s+not\s+match\s+the\s+above,?\s+this\s+is\s+a\s+finding',
+                r'If\s+the\s+returned\s+message\s+does\s+not\s+match\s+the\s+above,?\s+(?:but\s+instead\s+matches\s+the\s+following,?\s+)?this\s+is\s+a\s+finding',
                 finding_text,
                 re.IGNORECASE,
             )
