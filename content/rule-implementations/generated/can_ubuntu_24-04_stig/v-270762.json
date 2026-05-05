@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /run/log/journal /var/log/journal -type f ! -group systemd-journal -exec stat -c \"%n %G\" {} \\;",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must configure the files used by the system journal to be group-owned by \"systemd-journal\".",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-270762"
+  },
   "check_content_excerpt": "Verify the /run/log/journal and /var/log/journal files are group-owned by \"systemd-journal\" with the following command:\n\n$ sudo find /run/log/journal /var/log/journal  -type f -exec stat -c \"%n %G\" {} \\; \n/var/log/journal/d5745ad455d34fb8b6f78be37c1fcd3e/system.journal systemd-journal\n/var/log/journal/d5745ad455d34fb8b6f78be37c1fcd3e/user-1000@0005f97cd4a8c9b5-f088232c3718485a.journal~ systemd-journal\n/var/log/journal/d5745ad455d34fb8b6f78be37c1fcd3e/system@0005f97cd2a1e0a7-d58b848af46813a4.journal~ systemd-journal\n/var/log/journal/d5745ad455d34fb8b6f78be37c1fcd3e/system@0005f97cb900e501-55ea053b7f75ae1c.journal~ systemd-journal\n/var/log/journal/d5745ad455d34fb8b6f78be37c1fcd3e/user-1000.journal systemd-journal\n\nIf any output returned is not group-owned by \"systemd-journal\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the system to set the appropriate group-ownership to the files used by the systemd journal:\n\nZ /run/log/journal/%m ~2640 root systemd-journal - -\nz /var/log/journal/%m 2640 root systemd-journal - -\nz /var/log/journal/%m/system.journal 0640 root systemd-journal - -\n\nNote: The system must be restarted for these settings to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270762r1066775_rule",
   "severity": "medium",

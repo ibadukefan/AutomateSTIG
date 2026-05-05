@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 170,
+  "candidate_checks": 174,
   "cases": [
     {
       "check": {
@@ -2710,6 +2710,110 @@
     },
     {
       "check": {
+        "command": "find /run/log/journal /var/log/journal -type d ! -group systemd-journal -exec stat -c \"%n %G\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must configure the directories used by the system journal to be group-owned by \"systemd-journal\".",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /run/log/journal /var/log/journal -type d ! -group systemd-journal -exec stat -c \"%n %G\" {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /run/log/journal /var/log/journal -type d ! -group systemd-journal -exec stat -c \"%n %G\" {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270761"
+    },
+    {
+      "check": {
+        "command": "find /run/log/journal /var/log/journal -type f ! -group systemd-journal -exec stat -c \"%n %G\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must configure the files used by the system journal to be group-owned by \"systemd-journal\".",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /run/log/journal /var/log/journal -type f ! -group systemd-journal -exec stat -c \"%n %G\" {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /run/log/journal /var/log/journal -type f ! -group systemd-journal -exec stat -c \"%n %G\" {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270762"
+    },
+    {
+      "check": {
+        "command": "find /run/log/journal /var/log/journal -type d ! -user root -exec stat -c \"%n %U\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must configure the directories used by the system journal to be owned by \"root\".",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /run/log/journal /var/log/journal -type d ! -user root -exec stat -c \"%n %U\" {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /run/log/journal /var/log/journal -type d ! -user root -exec stat -c \"%n %U\" {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270763"
+    },
+    {
+      "check": {
+        "command": "find /run/log/journal /var/log/journal -type f ! -user root -exec stat -c \"%n %U\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must configure the files used by the system journal to be owned by \"root\"",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /run/log/journal /var/log/journal -type f ! -user root -exec stat -c \"%n %U\" {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /run/log/journal /var/log/journal -type f ! -user root -exec stat -c \"%n %U\" {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270764"
+    },
+    {
+      "check": {
         "group": "syslog",
         "mode": null,
         "owner": null,
@@ -4659,5 +4763,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 170
+  "validated_candidates": 174
 }

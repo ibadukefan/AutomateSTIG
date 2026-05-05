@@ -1843,61 +1843,65 @@
       "vuln_id": "V-270760"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270761",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270761r1067180_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must configure the directories used by the system journal to be group-owned by \"systemd-journal\".",
-      "tracking_issue": "TODO-V-270761",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270761"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270762",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270762r1066775_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must configure the files used by the system journal to be group-owned by \"systemd-journal\".",
-      "tracking_issue": "TODO-V-270762",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270762"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270763",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270763r1066778_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must configure the directories used by the system journal to be owned by \"root\".",
-      "tracking_issue": "TODO-V-270763",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270763"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270764",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270764r1066781_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must configure the files used by the system journal to be owned by \"root\"",
-      "tracking_issue": "TODO-V-270764",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/0857f6f878f3109e1865958bbffb26c347922c70280ce8232682d9f6f0cb1dac/U_CAN_Ubuntu_24-04_LTS_V1R2_STIG.zip"
       ],
       "vuln_id": "V-270764"

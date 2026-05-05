@@ -1765,6 +1765,39 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
                 'expected': {'type': 'equals', 'value': ''},
                 'description': rule.get('title', ''),
             }
+    journal_find_stat_match = re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?find\s+/run/log/journal\s+/var/log/journal\s+-type\s+(?P<kind>[df])\s+-exec\s+stat\s+-c\s+["\']%n\s+%(?P<field>[UG])["\']\s+\{\}\s+\\;\s*$',
+        content,
+        re.MULTILINE,
+    )
+    if journal_find_stat_match:
+        field = journal_find_stat_match.group('field')
+        if field == 'U':
+            finding = re.search(
+                r'If\s+any\s+output\s+returned\s+is\s+not\s+owned\s+by\s+["“](?P<principal>[A-Za-z0-9_.-]+)["”],?\s+this\s+is\s+a\s+finding',
+                content,
+                re.IGNORECASE,
+            )
+            predicate = '-user'
+        else:
+            finding = re.search(
+                r'If\s+any\s+output\s+returned\s+is\s+not\s+group-owned\s+by\s+["“](?P<principal>[A-Za-z0-9_.-]+)["”],?\s+this\s+is\s+a\s+finding',
+                content,
+                re.IGNORECASE,
+            )
+            predicate = '-group'
+        if finding:
+            principal = finding.group('principal')
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+                'check': {
+                    'type': 'command_output',
+                    'command': f'find /run/log/journal /var/log/journal -type {journal_find_stat_match.group("kind")} ! {predicate} {principal} -exec stat -c "%n %{field}" {{}} \\;',
+                },
+                'expected': {'type': 'equals', 'value': ''},
+                'description': rule.get('title', ''),
+            }
     command_matches = list(re.finditer(r'^\s*[$#>]\s*(?P<command>(?:sudo\s+)?(?:/[A-Za-z0-9_./:+-]+|[A-Za-z0-9_.:+-]+)\b[^\n\r]*)$', content, re.MULTILINE))
     command = None
     command_end = None

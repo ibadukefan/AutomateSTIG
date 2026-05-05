@@ -1439,6 +1439,25 @@ If any output is returned, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "grubby --info=ALL | grep args | grep 'systemd.confirm_spawn'"})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_journal_find_stat_owner_group_negative_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270761',
+            'title': 'Ubuntu 24.04 LTS must configure the directories used by the system journal to be group-owned by "systemd-journal".',
+            'check_content': '''Verify the /run/log/journal and /var/log/journal directories are group-owned by "systemd-journal" with the following command:
+
+$ sudo find /run/log/journal /var/log/journal  -type d -exec stat -c "%n %G" {} \\;
+/run/log/journal systemd-journal
+/var/log/journal systemd-journal
+/var/log/journal/d5745ad455d34fb8b6f78be37c1fcd3e systemd-journal
+
+If any output returned is not group-owned by "systemd-journal", this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': 'find /run/log/journal /var/log/journal -type d ! -group systemd-journal -exec stat -c "%n %G" {} \\;',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_xmllint_xpath_empty_expected_result_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-259043',
