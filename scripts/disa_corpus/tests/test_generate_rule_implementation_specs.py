@@ -1269,6 +1269,20 @@ If the command does not return "1", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': '/usr/sbin/sshd -G | /usr/bin/grep -c "^banner /etc/banner"'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
 
+    def test_infers_macos_audit_control_flag_count_when_flag_must_be_listed(self):
+        command = "/usr/bin/awk -F':' '/^flags/ { print $NF }' /etc/security/audit_control | /usr/bin/tr ',' '\\n' | /usr/bin/grep -Ec 'ad'"
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259452',
+            'title': 'The macOS system must be configured to audit all administrative action events.',
+            'check_content': f'''Verify the macOS system is configured to audit privileged access with the following command:
+
+{command}
+
+If "ad" is not listed in the output, this is a finding.'''
+        }, 'Apple_macOS_14_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': command})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
+
     def test_skips_absolute_pipeline_literal_when_rule_has_additional_banner_text_requirement(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-268431',

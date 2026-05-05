@@ -1871,6 +1871,18 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         if not command and quoted_netsh_command and re.search(r'If\s+the\s+command\s+displays\s+any\s+results,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
             command = _normalize_command(quoted_netsh_command.group('command'))
             command_end = quoted_netsh_command.end()
+        macos_audit_flag_command = re.search(
+            r'^\s*(?P<command>/usr/bin/awk\s+-F["\']?:["\']?\s+["\']?/\^flags/\s+\{\s*print\s+\$NF\s*\}["\']?\s+/etc/security/audit_control\s+\|\s+/usr/bin/tr\s+["\'],["\']\s+["\']\\n["\']\s+\|\s+/usr/bin/grep\s+-Ec\s+["\'](?P<flag>[A-Za-z0-9_-]+)["\'])\s*$',
+            content,
+            re.MULTILINE,
+        )
+        if not command and macos_audit_flag_command and _macos_platform(stig_id) and re.search(
+            rf'If\s+["“]{re.escape(macos_audit_flag_command.group("flag"))}["”]\s+is\s+not\s+listed\s+in\s+the\s+output,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        ):
+            command = _normalize_command(macos_audit_flag_command.group('command'))
+            command_end = macos_audit_flag_command.end()
     pwck_home_directory_match = re.search(r'^\s*[$#>]\s*(?:sudo\s+)?(?P<command>pwck\s+-r)\s*$', content, re.MULTILINE)
     if pwck_home_directory_match and (
         re.search(
@@ -1915,6 +1927,22 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         }
     if re.search(r'\bPART\b', command) and '[PART]' in content:
         return None
+    macos_audit_flag_count = re.fullmatch(
+        r'/usr/bin/awk\s+-F["\']?:["\']?\s+["\']?/\^flags/\s+\{\s*print\s+\$NF\s*\}["\']?\s+/etc/security/audit_control\s+\|\s+/usr/bin/tr\s+["\'],["\']\s+["\']\\n["\']\s+\|\s+/usr/bin/grep\s+-Ec\s+["\'](?P<flag>[A-Za-z0-9_-]+)["\']',
+        command,
+    )
+    if macos_audit_flag_count and _macos_platform(stig_id) and re.search(
+        rf'If\s+["“]{re.escape(macos_audit_flag_count.group("flag"))}["”]\s+is\s+not\s+listed\s+in\s+the\s+output,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'macos',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': '1'},
+            'description': rule.get('title', ''),
+        }
     systemctl_active_socket = (
         _linux_platform(stig_id)
         and re.fullmatch(r'systemctl\s+is-active\s+[A-Za-z0-9_.@-]+\.socket', command)

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 125,
+  "candidate_checks": 126,
   "cases": [
     {
       "check": {
@@ -702,6 +702,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259451"
+    },
+    {
+      "check": {
+        "command": "/usr/bin/awk -F':' '/^flags/ { print $NF }' /etc/security/audit_control | /usr/bin/tr ',' '\\n' | /usr/bin/grep -Ec 'ad'",
+        "type": "command_output"
+      },
+      "description": "The macOS system must be configured to audit all administrative action events.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/bin/awk -F':' '/^flags/ { print $NF }' /etc/security/audit_control | /usr/bin/tr ',' '\\n' | /usr/bin/grep -Ec 'ad'": "unexpected-1"
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/bin/awk -F':' '/^flags/ { print $NF }' /etc/security/audit_control | /usr/bin/tr ',' '\\n' | /usr/bin/grep -Ec 'ad'": "1"
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259452"
     },
     {
       "check": {
@@ -3257,5 +3283,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apple_macOS_14_STIG",
-  "validated_candidates": 125
+  "validated_candidates": 126
 }

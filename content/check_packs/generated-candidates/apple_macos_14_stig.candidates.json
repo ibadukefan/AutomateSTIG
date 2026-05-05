@@ -353,6 +353,19 @@
     },
     {
       "check": {
+        "command": "/usr/bin/awk -F':' '/^flags/ { print $NF }' /etc/security/audit_control | /usr/bin/tr ',' '\\n' | /usr/bin/grep -Ec 'ad'",
+        "type": "command_output"
+      },
+      "description": "The macOS system must be configured to audit all administrative action events.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "macos",
+      "vuln_id": "V-259452"
+    },
+    {
+      "check": {
         "command": "/usr/bin/awk -F':' '/^flags/ { print $NF }' /etc/security/audit_control | /usr/bin/tr ',' '\\n' | /usr/bin/grep -Ec '^lo'",
         "type": "command_output"
       },
