@@ -36,6 +36,42 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertIn('"vuln_id": "V-1"', text)
             self.assertNotIn('V-2', text)
 
+    def test_infers_windows_system32_telnet_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-220721',
+            'title': 'The Telnet Client must not be installed on the system.',
+            'check_content': '''Verify the Telnet Client is not installed.
+
+Navigate to the Windows\\System32 directory.
+
+If the "telnet" application exists, this is a finding.''',
+            'fix_text': 'Remove the Telnet Client from the system.',
+        }, 'MS_Windows_10_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-220721',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': 'powershell -NoProfile -Command "Test-Path \\\"$env:windir\\System32\\telnet.exe\\\""',
+            },
+            'expected': {'type': 'equals', 'value': 'False'},
+            'description': 'The Telnet Client must not be installed on the system.',
+        })
+
+    def test_infers_windows_system32_tftp_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-220722',
+            'title': 'The TFTP Client must not be installed on the system.',
+            'check_content': '''Verify the TFTP Client is not installed.
+
+Navigate to the Windows\\System32 directory.
+
+If the "TFTP" application exists, this is a finding.''',
+            'fix_text': 'Remove the TFTP Client from the system.',
+        }, 'MS_Windows_10_STIG')
+        self.assertEqual(candidate['check']['command'], 'powershell -NoProfile -Command "Test-Path \\\"$env:windir\\System32\\tftp.exe\\\""')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'False'})
+
     def test_classifies_policy_language_as_manual_evidence_workflow(self):
         classification, collector = mod.classify_rule('The organization must document an approval process.')
         self.assertEqual(classification, 'manual')

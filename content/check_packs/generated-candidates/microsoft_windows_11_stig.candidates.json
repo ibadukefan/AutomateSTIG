@@ -2,6 +2,32 @@
   "checks": [
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"Test-Path \\\"$env:windir\\System32\\telnet.exe\\\"\"",
+        "type": "command_output"
+      },
+      "description": "The Telnet Client must not be installed on the system.",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "platform": "windows",
+      "vuln_id": "V-253278"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"Test-Path \\\"$env:windir\\System32\\tftp.exe\\\"\"",
+        "type": "command_output"
+      },
+      "description": "The TFTP Client must not be installed on the system.",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "platform": "windows",
+      "vuln_id": "V-253279"
+    },
+    {
+      "check": {
         "path": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel",
         "type": "registry",
         "value_name": "DisableExceptionChainValidation"

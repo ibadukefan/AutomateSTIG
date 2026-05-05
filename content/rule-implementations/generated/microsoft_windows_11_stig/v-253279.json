@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "powershell -NoProfile -Command \"Test-Path \\\"$env:windir\\System32\\tftp.exe\\\"\"",
+      "type": "command_output"
+    },
+    "description": "The TFTP Client must not be installed on the system.",
+    "expected": {
+      "type": "equals",
+      "value": "False"
+    },
+    "platform": "windows",
+    "vuln_id": "V-253279"
+  },
   "check_content_excerpt": "Verify TFTP Client has not been installed.\n\nNavigate to the Windows\\System32 directory.\n\nIf the \"TFTP\" application exists, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "False"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Uninstall \"TFTP Client\" from the system.\n\nRun \"Programs and Features\".\nSelect \"Turn Windows Features on or off\".\nDe-select \"TFTP Client\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-253279r958480_rule",
   "severity": "medium",

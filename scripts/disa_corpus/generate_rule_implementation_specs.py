@@ -2320,6 +2320,35 @@ def _file_permission_candidate(rule: dict) -> dict | None:
     }
 
 
+def _windows_system32_absent_application_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    if not re.search(r'Navigate\s+to\s+the\s+Windows\\System32\s+directory\.', content, re.IGNORECASE):
+        return None
+    app_match = re.search(
+        r'If\s+the\s+["“](telnet|tftp)["”]\s+application\s+exists,?\s+this\s+is\s+a\s+finding\.',
+        content,
+        re.IGNORECASE,
+    )
+    if not app_match:
+        return None
+    app = app_match.group(1).lower()
+    expected_title = f'The {"Telnet" if app == "telnet" else "TFTP"} Client must not be installed on the system.'
+    if rule.get('title', '').strip().lower() != expected_title.lower():
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {
+            'type': 'command_output',
+            'command': f'powershell -NoProfile -Command "Test-Path \\"$env:windir\\System32\\{app}.exe\\""',
+        },
+        'expected': {'type': 'equals', 'value': 'False'},
+        'description': rule.get('title', ''),
+    }
+
+
 def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     """Infer a conservative executable check candidate from DISA prose.
 
@@ -2395,6 +2424,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         certificate_candidate = _windows_certificate_store_thumbprint_candidate(rule, stig_id)
         if certificate_candidate:
             return certificate_candidate
+
+        system32_absent_app_candidate = _windows_system32_absent_application_candidate(rule, stig_id)
+        if system32_absent_app_candidate:
+            return system32_absent_app_candidate
 
         ad_smartcard_candidate = _windows_ad_smartcard_no_listed_users_candidate(rule, stig_id)
         if ad_smartcard_candidate:

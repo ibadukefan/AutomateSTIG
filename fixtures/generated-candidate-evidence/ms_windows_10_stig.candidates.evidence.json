@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 200,
+  "candidate_checks": 202,
   "cases": [
     {
       "check": {
@@ -54,6 +54,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-220704"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"Test-Path \\\"$env:windir\\System32\\telnet.exe\\\"\"",
+        "type": "command_output"
+      },
+      "description": "The Telnet Client must not be installed on the system.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Test-Path \\\"$env:windir\\System32\\telnet.exe\\\"\"": "unexpected-False"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Test-Path \\\"$env:windir\\System32\\telnet.exe\\\"\"": "False"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220721"
+    },
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"Test-Path \\\"$env:windir\\System32\\tftp.exe\\\"\"",
+        "type": "command_output"
+      },
+      "description": "The TFTP Client must not be installed on the system.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Test-Path \\\"$env:windir\\System32\\tftp.exe\\\"\"": "unexpected-False"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Test-Path \\\"$env:windir\\System32\\tftp.exe\\\"\"": "False"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-220722"
     },
     {
       "check": {
@@ -5400,5 +5452,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 200
+  "validated_candidates": 202
 }
