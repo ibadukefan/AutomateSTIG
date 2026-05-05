@@ -1664,6 +1664,29 @@ def _macos_pass_fail_shell_block_candidate(rule: dict, stig_id: str) -> dict | N
     }
 
 
+def _esxi_active_directory_authentication_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'esxi' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    command_match = re.search(r'(?m)^\s*(?:PS>\s*)?Get-VMHost\s*\|\s*Get-VMHostAuthentication\s*$', content)
+    if not command_match:
+        return None
+    if not re.search(r'Directory\s+Services\s+Type[^.\n]+set\s+to\s+["“]Active\s+Directory["”]', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+Directory\s+Services\s+Type\s+is\s+not\s+set\s+to\s+["“]Active\s+Directory["”]\s*,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {
+            'type': 'command_output',
+            'command': 'Get-VMHost | Get-VMHostAuthentication',
+        },
+        'expected': {'type': 'contains', 'substring': 'Active Directory'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _esxi_advanced_setting_exact_value_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'esxi' not in stig_id.lower():
         return None
@@ -2562,6 +2585,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     systemctl_get_default_candidate = _systemctl_get_default_candidate(rule, stig_id)
     if systemctl_get_default_candidate:
         return systemctl_get_default_candidate
+
+    esxi_active_directory_authentication_candidate = _esxi_active_directory_authentication_candidate(rule, stig_id)
+    if esxi_active_directory_authentication_candidate:
+        return esxi_active_directory_authentication_candidate
 
     esxi_advanced_setting_candidate = _esxi_advanced_setting_exact_value_candidate(rule, stig_id)
     if esxi_advanced_setting_candidate:

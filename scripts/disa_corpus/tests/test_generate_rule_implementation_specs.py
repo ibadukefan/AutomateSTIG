@@ -154,6 +154,39 @@ If the pcscd socket is not active, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'systemctl is-active pcscd.socket'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'active'})
 
+    def test_infers_esxi_active_directory_authentication_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-256402',
+            'title': 'The ESXi host must use Active Directory for local user authentication.',
+            'check_content': '''For systems that do not use Active Directory and have no local user accounts other than root and/or service accounts, this is not applicable.
+
+From the vSphere Client, go to Hosts and Clusters.
+
+Select the ESXi Host >> Configure >> System >> Authentication Services.
+
+Verify the "Directory Services Type" is set to "Active Directory".
+
+or
+
+From a PowerCLI command prompt while connected to the ESXi host, run the following command:
+
+Get-VMHost | Get-VMHostAuthentication
+
+For systems that do not use Active Directory and do have local user accounts, other than root and/or service accounts, this is a finding.
+
+If the Directory Services Type is not set to "Active Directory", this is a finding.'''
+        }, 'VMW_vSphere_7-0_ESXi_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-256402',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'Get-VMHost | Get-VMHostAuthentication',
+            },
+            'expected': {'type': 'contains', 'substring': 'Active Directory'},
+            'description': 'The ESXi host must use Active Directory for local user authentication.',
+        })
+
     def test_infers_esxi_advanced_setting_exact_value_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-256379',

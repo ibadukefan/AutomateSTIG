@@ -119,6 +119,19 @@
     },
     {
       "check": {
+        "command": "Get-VMHost | Get-VMHostAuthentication",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must use Active Directory for local user authentication.",
+      "expected": {
+        "substring": "Active Directory",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-256402"
+    },
+    {
+      "check": {
         "command": "Get-VMHost | Get-AdvancedSetting -Name UserVars.DcuiTimeOut | Select-Object -ExpandProperty Value",
         "type": "command_output"
       },
