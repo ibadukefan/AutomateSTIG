@@ -5053,6 +5053,19 @@
     },
     {
       "check": {
+        "command": "file /etc/crypto-policies/back-ends/krb5.config",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must use mechanisms meeting the requirements of applicable federal laws, executive orders, directives, policies, regulations, standards, and guidance for authentication to a cryptographic module.",
+      "expected": {
+        "substring": "/etc/crypto-policies/back-ends/krb5.config: symbolic link to /usr/share/crypto-policies/FIPS/krb5.txt",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-258237"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/crypto-policies/state/CURRENT.pol",
         "pattern": "hash = SHA2-256 SHA2-384 SHA2-512 SHA2-224 SHA3-256 SHA3-384 SHA3-512 SHAKE-256",

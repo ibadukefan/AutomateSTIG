@@ -2313,6 +2313,30 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         }
     if re.search(r'\bPART\b', command) and '[PART]' in content:
         return None
+    crypto_policy_krb5_symlink = (
+        _linux_platform(stig_id)
+        and command == 'file /etc/crypto-policies/back-ends/krb5.config'
+        and re.search(
+            r'If\s+command\s+output\s+shows\s+the\s+following\s+line,\s+Kerberos\s+is\s+configured\s+to\s+use\s+the\s+systemwide\s+crypto\s+policy:',
+            content,
+            re.IGNORECASE,
+        )
+        and re.search(
+            r'If\s+the\s+symlink\s+does\s+not\s+exist\s+or\s+points\s+to\s+a\s+different\s+target,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+    )
+    if crypto_policy_krb5_symlink:
+        expected_line = '/etc/crypto-policies/back-ends/krb5.config: symbolic link to /usr/share/crypto-policies/FIPS/krb5.txt'
+        if re.search(rf'^\s*{re.escape(expected_line)}\s*$', content, re.MULTILINE):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'linux',
+                'check': {'type': 'command_output', 'command': command},
+                'expected': {'type': 'contains', 'substring': expected_line},
+                'description': rule.get('title', ''),
+            }
     macos_audit_flag_count = re.fullmatch(
         r'/usr/bin/awk\s+-F["\']?:["\']?\s+["\']?/\^flags/\s+\{\s*print\s+\$NF\s*\}["\']?\s+/etc/security/audit_control\s+\|\s+/usr/bin/tr\s+["\'],["\']\s+["\']\\n["\']\s+\|\s+/usr/bin/grep\s+-Ec\s+["\'](?P<flag>[A-Za-z0-9_-]+)["\']',
         command,

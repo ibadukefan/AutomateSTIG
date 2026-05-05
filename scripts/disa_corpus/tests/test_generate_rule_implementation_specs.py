@@ -214,6 +214,31 @@ The configured policy does NOT match the generated policy''',
             'description': 'RHEL 9 cryptographic policy must not be overridden.',
         })
 
+    def test_infers_linux_krb5_crypto_policy_symlink_contains_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258237',
+            'title': 'RHEL 9 must use mechanisms meeting the requirements of applicable federal laws, executive orders, directives, policies, regulations, standards, and guidance for authentication to a cryptographic module.',
+            'check_content': '''Verify that the symlink exists and targets the correct Kerberos cryptographic policy with the following command:
+
+$ file /etc/crypto-policies/back-ends/krb5.config
+
+If command output shows the following line, Kerberos is configured to use the systemwide crypto policy:
+
+/etc/crypto-policies/back-ends/krb5.config: symbolic link to /usr/share/crypto-policies/FIPS/krb5.txt
+
+If the symlink does not exist or points to a different target, this is a finding.''',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-258237',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'file /etc/crypto-policies/back-ends/krb5.config'},
+            'expected': {
+                'type': 'contains',
+                'substring': '/etc/crypto-policies/back-ends/krb5.config: symbolic link to /usr/share/crypto-policies/FIPS/krb5.txt',
+            },
+            'description': 'RHEL 9 must use mechanisms meeting the requirements of applicable federal laws, executive orders, directives, policies, regulations, standards, and guidance for authentication to a cryptographic module.',
+        })
+
     def test_infers_linux_cron_stat_group_root_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257927',
