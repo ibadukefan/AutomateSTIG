@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /etc/ssh/sshd_config /etc/ssh/sshd_config.d ! -user root -exec stat -c \"%U %n\" {} \\;",
+      "type": "command_output"
+    },
+    "description": "The RHEL 9 SSH server configuration file must be owned by root.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-257998"
+  },
   "check_content_excerpt": "Verify the ownership of the \"/etc/ssh/sshd_config\" file and the contents of \"/etc/ssh/sshd_config.d\" with the following command:\n\n$ sudo find /etc/ssh/sshd_config /etc/ssh/sshd_config.d -exec stat -c \"%U %n\" {} \\;\n\nroot /etc/ssh/sshd_config\nroot /etc/ssh/sshd_config.d\nroot /etc/ssh/sshd_config.d/50-cloud-init.conf\nroot /etc/ssh/sshd_config.d/50-redhat.conf\n\nIf the \"/etc/ssh/sshd_config\" file or \"/etc/ssh/sshd_config.d\" or any files in the \"sshd_config.d\" directory do not have an owner of \"root\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure  the \"/etc/ssh/sshd_config\" file and the contents of \"/etc/ssh/sshd_config.d\" to be owned by root with the following command:\n\n$ sudo chown -R root /etc/ssh/sshd_config /etc/ssh/sshd_config.d",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-257998r1082181_rule",
   "severity": "medium",

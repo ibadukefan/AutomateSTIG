@@ -2228,6 +2228,32 @@
     },
     {
       "check": {
+        "command": "find /etc/ssh/sshd_config /etc/ssh/sshd_config.d ! -group root -exec stat -c \"%G %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 SSH server configuration file must be group-owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257997"
+    },
+    {
+      "check": {
+        "command": "find /etc/ssh/sshd_config /etc/ssh/sshd_config.d ! -user root -exec stat -c \"%U %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The RHEL 9 SSH server configuration file must be owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257998"
+    },
+    {
+      "check": {
         "command": "rpm --verify openssh-server",
         "type": "command_output"
       },

@@ -76,6 +76,37 @@ def _registry_value(check_content: str):
     return raw
 
 
+
+def _registry_dword_allowed_values(check_content: str) -> list[int] | None:
+    match = re.search(
+        r'^\s*Value(?!\s*(?:Name|Type))(?:\s+data)?\s*:?[ \t]*(0x[0-9a-fA-F]+.*)$',
+        check_content,
+        re.IGNORECASE | re.MULTILINE,
+    )
+    if not match:
+        return None
+    line = match.group(1).strip()
+    if ',' not in line:
+        return None
+    if re.search(r'\b(?:or\s+less|or\s+greater|between|minimum|maximum|not\s+0|not\s+"0")\b', line, re.IGNORECASE):
+        return None
+    parenthesized_values = re.findall(r'\(([-+]?\d+)\)', line)
+    if parenthesized_values:
+        parts_without_parentheses = [re.sub(r'\([^)]*\)', '', part).strip() for part in line.split(',')]
+        if len(parts_without_parentheses) != len(parenthesized_values):
+            return None
+        if any(not re.fullmatch(r'0x[0-9a-fA-F]+', part) for part in parts_without_parentheses):
+            return None
+        values = [int(value) for value in parenthesized_values]
+    else:
+        raw_values = [part.strip() for part in line.split(',')]
+        if not raw_values or not all(re.fullmatch(r'0x[0-9a-fA-F]+|[-+]?\d+', value) for value in raw_values):
+            return None
+        values = [int(value, 16) if value.lower().startswith('0x') else int(value) for value in raw_values]
+    unique_values = sorted(set(values))
+    return unique_values if len(unique_values) > 1 else None
+
+
 def _normalize_registry_path(path: str) -> str:
     path = path.strip().strip('"“”').strip().rstrip('\\/.')
     path = re.sub(r'\\+', r'\\', path)
@@ -2047,6 +2078,39 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
                         'expected': {'type': 'equals', 'value': ''},
                         'description': rule.get('title', ''),
                     }
+    sshd_config_find_stat_match = re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?find\s+/etc/ssh/sshd_config\s+/etc/ssh/sshd_config\.d\s+-exec\s+stat\s+-c\s+["\']%(?P<field>[UG])\s+%n["\']\s+\{\}\s+\\;\s*$',
+        content,
+        re.MULTILINE,
+    )
+    if sshd_config_find_stat_match:
+        field = sshd_config_find_stat_match.group('field')
+        if field == 'U':
+            finding = re.search(
+                r'If\s+the\s+["“]/etc/ssh/sshd_config["”]\s+file\s+or\s+["“]/etc/ssh/sshd_config\.d["”]\s+or\s+any\s+files\s+in\s+the\s+["“]sshd_config\.d["”]\s+directory\s+do\s+not\s+have\s+an?\s+owner\s+of\s+["“](?P<principal>[A-Za-z0-9_.-]+)["”],?\s+this\s+is\s+a\s+finding',
+                content,
+                re.IGNORECASE,
+            )
+            predicate = '-user'
+        else:
+            finding = re.search(
+                r'If\s+the\s+["“]/etc/ssh/sshd_config["”]\s+file\s+or\s+["“]/etc/ssh/sshd_config\.d["”]\s+or\s+any\s+files\s+in\s+the\s+["“]?sshd_config\.d["”]?\s+directory\s+do\s+not\s+have\s+a\s+group\s+owner\s+of\s+["“](?P<principal>[A-Za-z0-9_.-]+)["”],?\s+this\s+is\s+a\s+finding',
+                content,
+                re.IGNORECASE,
+            )
+            predicate = '-group'
+        if finding:
+            principal = finding.group('principal')
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+                'check': {
+                    'type': 'command_output',
+                    'command': f'find /etc/ssh/sshd_config /etc/ssh/sshd_config.d ! {predicate} {principal} -exec stat -c "%{field} %n" {{}} \\;',
+                },
+                'expected': {'type': 'equals', 'value': ''},
+                'description': rule.get('title', ''),
+            }
     journal_find_stat_match = re.search(
         r'^\s*[$#>]\s*(?:sudo\s+)?find\s+/run/log/journal\s+/var/log/journal\s+-type\s+(?P<kind>[df])\s+-exec\s+stat\s+-c\s+["\']%n\s+%(?P<field>[UG])["\']\s+\{\}\s+\\;\s*$',
         content,

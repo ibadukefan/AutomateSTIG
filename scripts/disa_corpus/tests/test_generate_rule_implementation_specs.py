@@ -1125,7 +1125,7 @@ Value4 (or less)'''
         }, 'MS_Windows_Server_2025_STIG')
         self.assertIsNone(candidate)
 
-    def test_skips_registry_candidate_when_value_line_lists_multiple_allowed_values(self):
+    def test_infers_registry_candidate_when_value_line_lists_multiple_allowed_values(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278103',
             'title': 'Windows Server 2025 Telemetry must be configured to limit diagnostic data sent to Microsoft.',
@@ -1135,7 +1135,8 @@ Value Name: AllowTelemetry
 Type: REG_DWORD
 Value0x00000000 (0), 0x00000001 (1)'''
         }, 'MS_Windows_Server_2025_STIG')
-        self.assertIsNone(candidate)
+        self.assertEqual(candidate['check']['type'], 'registry')
+        self.assertEqual(candidate['expected'], {'type': 'matches', 'pattern': '^(?:0|1)$'})
 
     def test_skips_registry_candidate_when_multiple_authoritative_paths_disagree(self):
         candidate = mod.infer_candidate_check({
@@ -1923,6 +1924,27 @@ If any output returned is not group-owned by "systemd-journal", this is a findin
         self.assertEqual(candidate['check'], {
             'type': 'command_output',
             'command': 'find /run/log/journal /var/log/journal -type d ! -group systemd-journal -exec stat -c "%n %G" {} \\;',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_sshd_config_find_stat_owner_negative_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257998',
+            'title': 'The RHEL 9 SSH server configuration file must be owned by root.',
+            'check_content': '''Verify the ownership of the "/etc/ssh/sshd_config" file and the contents of "/etc/ssh/sshd_config.d" with the following command:
+
+$ sudo find /etc/ssh/sshd_config /etc/ssh/sshd_config.d -exec stat -c "%U %n" {} \\;
+
+root /etc/ssh/sshd_config
+root /etc/ssh/sshd_config.d
+root /etc/ssh/sshd_config.d/50-cloud-init.conf
+root /etc/ssh/sshd_config.d/50-redhat.conf
+
+If the "/etc/ssh/sshd_config" file or "/etc/ssh/sshd_config.d" or any files in the "sshd_config.d" directory do not have an owner of "root", this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': 'find /etc/ssh/sshd_config /etc/ssh/sshd_config.d ! -user root -exec stat -c "%U %n" {} \\;',
         })
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 

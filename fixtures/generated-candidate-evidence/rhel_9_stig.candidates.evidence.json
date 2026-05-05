@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 376,
+  "candidate_checks": 378,
   "cases": [
     {
       "check": {
@@ -4659,6 +4659,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257996"
+    },
+    {
+      "check": {
+        "command": "find /etc/ssh/sshd_config /etc/ssh/sshd_config.d ! -group root -exec stat -c \"%G %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 SSH server configuration file must be group-owned by root.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /etc/ssh/sshd_config /etc/ssh/sshd_config.d ! -group root -exec stat -c \"%G %n\" {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /etc/ssh/sshd_config /etc/ssh/sshd_config.d ! -group root -exec stat -c \"%G %n\" {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257997"
+    },
+    {
+      "check": {
+        "command": "find /etc/ssh/sshd_config /etc/ssh/sshd_config.d ! -user root -exec stat -c \"%U %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The RHEL 9 SSH server configuration file must be owned by root.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /etc/ssh/sshd_config /etc/ssh/sshd_config.d ! -user root -exec stat -c \"%U %n\" {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /etc/ssh/sshd_config /etc/ssh/sshd_config.d ! -user root -exec stat -c \"%U %n\" {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257998"
     },
     {
       "check": {
@@ -10438,5 +10490,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 376
+  "validated_candidates": 378
 }
