@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "rpm -qa | grep xorg | grep server",
+      "type": "command_output"
+    },
+    "description": "The graphical display manager must not be installed on RHEL 8 unless approved.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-230553"
+  },
   "check_content_excerpt": "Verify that a graphical user interface is not installed:\n\n$ rpm -qa | grep xorg | grep server\n\nAsk the System Administrator if use of a graphical user interface is an operational requirement.\n\nIf the use of a graphical user interface on the system is not documented with the ISSO, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Document the requirement for a graphical user interface with the ISSO or reinstall the operating system without the graphical user interface. If reinstallation is not feasible, then continue with the following procedure:\n\nOpen an SSH session and enter the following commands:\n\n$ sudo yum remove xorg-x11-server-Xorg xorg-x11-server-common xorg-x11-server-utils xorg-x11-server-Xwayland\n\nA reboot is required for the changes to take effect.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-230553r1017315_rule",
   "severity": "medium",

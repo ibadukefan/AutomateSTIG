@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 285,
+  "candidate_checks": 286,
   "cases": [
     {
       "check": {
@@ -5900,6 +5900,32 @@
     },
     {
       "check": {
+        "command": "rpm -qa | grep xorg | grep server",
+        "type": "command_output"
+      },
+      "description": "The graphical display manager must not be installed on RHEL 8 unless approved.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "rpm -qa | grep xorg | grep server": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "rpm -qa | grep xorg | grep server": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230553"
+    },
+    {
+      "check": {
         "command": "ip link | grep -i promisc",
         "type": "command_output"
       },
@@ -7685,5 +7711,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 285
+  "validated_candidates": 286
 }

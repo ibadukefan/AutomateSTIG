@@ -41,6 +41,22 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
         self.assertEqual(classification, 'manual')
         self.assertEqual(collector, 'manual_evidence_workflow')
 
+    def test_infers_rpm_xorg_server_absent_unless_approved_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230553',
+            'title': 'The graphical display manager must not be installed on RHEL 8 unless approved.',
+            'check_content': '''Verify that a graphical user interface is not installed:
+
+$ rpm -qa | grep xorg | grep server
+
+Ask the System Administrator if use of a graphical user interface is an operational requirement.
+
+If the use of a graphical user interface on the system is not documented with the ISSO, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'rpm -qa | grep xorg | grep server'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_socket_is_active_command_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258125',

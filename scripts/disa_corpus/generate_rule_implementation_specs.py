@@ -1821,6 +1821,25 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             }
 
     command_matches = list(re.finditer(r'^\s*[$#>]\s*(?P<command>(?:sudo\s+)?(?:/[A-Za-z0-9_./:+-]+|[A-Za-z0-9_.:+-]+)\b[^\n\r]*)$', content, re.MULTILINE))
+    rpm_xorg_server_matches = [
+        match for match in command_matches
+        if re.fullmatch(r'(?:sudo\s+)?rpm\s+-qa\s+\|\s+grep\s+xorg\s+\|\s+grep\s+server', match.group('command').strip())
+    ]
+    if (
+        len(command_matches) == 1
+        and len(rpm_xorg_server_matches) == 1
+        and _linux_platform(stig_id)
+        and re.search(r'\b(?:graphical\s+display\s+manager|display\s+server)\b', rule.get('title', '') or '', re.IGNORECASE)
+        and re.search(r'\b(?:must\s+not\s+(?:have\s+\S+\s+)?be\s+installed|not\s+installed)\b', content, re.IGNORECASE)
+        and re.search(r'If\s+the\s+use\s+of\s+(?:a\s+graphical\s+user\s+interface|the\s+display\s+server)\s+[^.\n]*not\s+documented\s+with\s+the\s+(?:Information\s+System\s+Security\s+Officer\s+\()?ISSO\)?[^.\n]*this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': _normalize_command(rpm_xorg_server_matches[0].group('command'))},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     command = None
     command_end = None
     if command_matches:
