@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 199,
+  "candidate_checks": 200,
   "cases": [
     {
       "check": {
@@ -5020,6 +5020,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$p='HKLM:\\\\SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows\\\\NetworkProvider\\\\HardenedPaths'; '\\\\*\\NETLOGON=' + (Get-ItemPropertyValue -Path $p -Name '\\\\*\\NETLOGON'); '\\\\*\\SYSVOL=' + (Get-ItemPropertyValue -Path $p -Name '\\\\*\\SYSVOL')\"",
+        "type": "command_output"
+      },
+      "description": "Hardened UNC paths must be defined to require mutual authentication and integrity for at least the \\\\*\\SYSVOL and \\\\*\\NETLOGON shares.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "\\\\*\\NETLOGON=RequireMutualAuthentication=1, RequireIntegrity=1\n\\\\*\\SYSVOL=RequireMutualAuthentication=1, RequireIntegrity=1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKLM:\\\\SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows\\\\NetworkProvider\\\\HardenedPaths'; '\\\\*\\NETLOGON=' + (Get-ItemPropertyValue -Path $p -Name '\\\\*\\NETLOGON'); '\\\\*\\SYSVOL=' + (Get-ItemPropertyValue -Path $p -Name '\\\\*\\SYSVOL')\"": "before\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKLM:\\\\SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows\\\\NetworkProvider\\\\HardenedPaths'; '\\\\*\\NETLOGON=' + (Get-ItemPropertyValue -Path $p -Name '\\\\*\\NETLOGON'); '\\\\*\\SYSVOL=' + (Get-ItemPropertyValue -Path $p -Name '\\\\*\\SYSVOL')\"": "before\n\\\\*\\NETLOGON=RequireMutualAuthentication=1, RequireIntegrity=1\n\\\\*\\SYSVOL=RequireMutualAuthentication=1, RequireIntegrity=1\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-250319"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription",
         "type": "registry",
         "value_name": "EnableTranscripting"
@@ -5374,5 +5400,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_windows_10_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Windows_10_STIG",
-  "validated_candidates": 199
+  "validated_candidates": 200
 }

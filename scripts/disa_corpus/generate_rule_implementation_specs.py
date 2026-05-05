@@ -199,6 +199,40 @@ def _windows_platform(stig_id: str) -> bool:
     return 'windows' in lower or 'ms_windows' in lower
 
 
+def _windows_hardened_unc_paths_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    policy_text = '\n'.join(part for part in (content, fix_text) if part)
+    required_value = 'RequireMutualAuthentication=1, RequireIntegrity=1'
+    if not re.search(r'NetworkProvider\\\\HardenedPaths|HardenedPaths', policy_text, re.IGNORECASE):
+        return None
+    if '\\SOFTWARE\\Policies\\Microsoft\\Windows\\NetworkProvider\\HardenedPaths' not in policy_text:
+        return None
+    if required_value not in policy_text:
+        return None
+    if '\\\\*\\NETLOGON' not in policy_text:
+        return None
+    if '\\\\*\\SYSVOL' not in policy_text:
+        return None
+    expected = '\\\\*\\NETLOGON=RequireMutualAuthentication=1, RequireIntegrity=1\n\\\\*\\SYSVOL=RequireMutualAuthentication=1, RequireIntegrity=1'
+    command = (
+        'powershell -NoProfile -Command "'
+        "$p='HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\NetworkProvider\\HardenedPaths'; "
+        "'\\\\*\\NETLOGON=' + (Get-ItemPropertyValue -Path $p -Name '\\\\*\\NETLOGON'); "
+        "'\\\\*\\SYSVOL=' + (Get-ItemPropertyValue -Path $p -Name '\\\\*\\SYSVOL')"
+        '"'
+    )
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'contains', 'substring': expected},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_audit_policy_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -2223,6 +2257,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
             }
 
     if _windows_platform(stig_id) or any(token in stig_id.lower() for token in ('chrome', 'edge', 'defender', 'office')):
+        hardened_unc_candidate = _windows_hardened_unc_paths_candidate(rule, stig_id)
+        if hardened_unc_candidate:
+            return hardened_unc_candidate
+
         policy_candidate = _windows_registry_policy_candidate(rule, stig_id)
         if policy_candidate:
             return policy_candidate

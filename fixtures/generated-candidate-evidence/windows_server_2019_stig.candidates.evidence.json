@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 177,
+  "candidate_checks": 178,
   "cases": [
     {
       "check": {
@@ -3615,6 +3615,32 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$p='HKLM:\\\\SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows\\\\NetworkProvider\\\\HardenedPaths'; '\\\\*\\NETLOGON=' + (Get-ItemPropertyValue -Path $p -Name '\\\\*\\NETLOGON'); '\\\\*\\SYSVOL=' + (Get-ItemPropertyValue -Path $p -Name '\\\\*\\SYSVOL')\"",
+        "type": "command_output"
+      },
+      "description": "Windows Server 2019 hardened Universal Naming Convention (UNC) paths must be defined to require mutual authentication and integrity for at least the \\\\*\\SYSVOL and \\\\*\\NETLOGON shares.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "\\\\*\\NETLOGON=RequireMutualAuthentication=1, RequireIntegrity=1\n\\\\*\\SYSVOL=RequireMutualAuthentication=1, RequireIntegrity=1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKLM:\\\\SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows\\\\NetworkProvider\\\\HardenedPaths'; '\\\\*\\NETLOGON=' + (Get-ItemPropertyValue -Path $p -Name '\\\\*\\NETLOGON'); '\\\\*\\SYSVOL=' + (Get-ItemPropertyValue -Path $p -Name '\\\\*\\SYSVOL')\"": "before\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"$p='HKLM:\\\\SOFTWARE\\\\Policies\\\\Microsoft\\\\Windows\\\\NetworkProvider\\\\HardenedPaths'; '\\\\*\\NETLOGON=' + (Get-ItemPropertyValue -Path $p -Name '\\\\*\\NETLOGON'); '\\\\*\\SYSVOL=' + (Get-ItemPropertyValue -Path $p -Name '\\\\*\\SYSVOL')\"": "before\n\\\\*\\NETLOGON=RequireMutualAuthentication=1, RequireIntegrity=1\n\\\\*\\SYSVOL=RequireMutualAuthentication=1, RequireIntegrity=1\nafter\n"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-205862"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CredentialsDelegation",
         "type": "registry",
         "value_name": "AllowProtectedCreds"
@@ -4780,5 +4806,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/windows_server_2019_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Windows_Server_2019_STIG",
-  "validated_candidates": 177
+  "validated_candidates": 178
 }

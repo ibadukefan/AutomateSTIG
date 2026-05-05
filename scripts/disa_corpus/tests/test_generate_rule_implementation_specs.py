@@ -78,6 +78,44 @@ If the "PermitEmptyPasswords" or "PermitUserEnvironment" keywords are set to a v
             'substring': 'PermitEmptyPasswords no\nPermitUserEnvironment no',
         })
 
+    def test_infers_windows_hardened_unc_paths_registry_pair_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-250319',
+            'title': 'Hardened UNC paths must be defined to require mutual authentication and integrity for at least the \\\\*\\SYSVOL and \\\\*\\NETLOGON shares.',
+            'check_content': '''This requirement is applicable to domain-joined systems. For standalone or nondomain-joined systems, this is NA.
+
+If the following registry values do not exist or are not configured as specified, this is a finding.
+
+Registry Hive: HKEY_LOCAL_MACHINE
+Registry Path: \\SOFTWARE\\Policies\\Microsoft\\Windows\\NetworkProvider\\HardenedPaths\\
+
+Value Name: \\\\*\\NETLOGON
+Value Type: REG_SZ
+Value: RequireMutualAuthentication=1, RequireIntegrity=1
+
+Value Name: \\\\*\\SYSVOL
+Value Type: REG_SZ
+Value: RequireMutualAuthentication=1, RequireIntegrity=1
+
+Additional entries would not be a finding.''',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Administrative Templates >> Network >> Network Provider >> "Hardened UNC Paths" to "Enabled" with at least the following configured in "Hardened UNC Paths:" (click the "Show" button to display).
+
+Value Name: \\\\*\\SYSVOL
+Value: RequireMutualAuthentication=1, RequireIntegrity=1
+
+Value Name: \\\\*\\NETLOGON
+Value: RequireMutualAuthentication=1, RequireIntegrity=1'''
+        }, 'MS_Windows_10_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertIn('HardenedPaths', candidate['check']['command'])
+        self.assertIn('NETLOGON', candidate['check']['command'])
+        self.assertIn('SYSVOL', candidate['check']['command'])
+        self.assertEqual(candidate['expected'], {
+            'type': 'contains',
+            'substring': '\\\\*\\NETLOGON=RequireMutualAuthentication=1, RequireIntegrity=1\n\\\\*\\SYSVOL=RequireMutualAuthentication=1, RequireIntegrity=1',
+        })
+
     def test_infers_windows_ad_smartcard_required_no_listed_users_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254415',
