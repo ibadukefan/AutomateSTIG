@@ -136,6 +136,30 @@ def _parse_expected_registry_data(text: str):
 
 def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if 'chrome' in stig_id.lower():
+        chrome_download_restrictions = re.search(
+            r'Navigate\s+to\s+["“]?(HKLM\\Software\\Policies\\Google\\Chrome)\\?["”]?\.?',
+            content,
+            re.IGNORECASE,
+        )
+        if (
+            chrome_download_restrictions
+            and re.search(r'If\s+(?:the\s+)?["“]DownloadRestrictions["”]\s+value\s+name\s+does\s+not\s+exist\s+or\s+its\s+value\s+data\s+is\s+set\s+to\s+["“]?0["”]?,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+            and re.search(r'Policy\s+Name:\s+Allow\s+download\s+restrictions', fix_text, re.IGNORECASE)
+            and re.search(r'Policy\s+State:\s+1,\s*2,\s*or\s*4\b', fix_text, re.IGNORECASE)
+        ):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'windows',
+                'check': {
+                    'type': 'registry',
+                    'path': _normalize_registry_path(chrome_download_restrictions.group(1)),
+                    'value_name': 'DownloadRestrictions',
+                },
+                'expected': {'type': 'matches', 'pattern': '^(?:1|2|4)$'},
+                'description': rule.get('title', ''),
+            }
     path_match = re.search(r'Navigate\s+to\s+["“]?((?:HKLM|HKCU|HKCR|HKU|HKCC|HKEY_[A-Z_]+)\\[^\n\r"”]+)', content, re.IGNORECASE)
     value_match = None
     expected_value = None

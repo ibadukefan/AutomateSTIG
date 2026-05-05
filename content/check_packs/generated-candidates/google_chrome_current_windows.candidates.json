@@ -46,6 +46,20 @@
       "check": {
         "path": "HKLM\\Software\\Policies\\Google\\Chrome",
         "type": "registry",
+        "value_name": "DownloadRestrictions"
+      },
+      "description": "Download restrictions must be configured.",
+      "expected": {
+        "pattern": "^(?:1|2|4)$",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-221588"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
         "value_name": "SafeBrowsingExtendedReportingEnabled"
       },
       "description": "Safe Browsing Extended Reporting must be disabled.",

@@ -36,6 +36,39 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertIn('"vuln_id": "V-1"', text)
             self.assertNotIn('V-2', text)
 
+    def test_infers_chrome_download_restrictions_allowed_registry_values_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-221588',
+            'title': 'Download restrictions must be configured.',
+            'check_content': '''If the system is on the SIPRNet, this requirement is Not Applicable.
+
+Universal method:
+1. In the omnibox (address bar) type "chrome:// policy".
+2. If "DownloadRestrictions" is not displayed under the "Policy Name" column or it is set to "0", this is a finding.
+
+Windows method:
+1. Start "regedit".
+2. Navigate to "HKLM\\Software\\Policies\\Google\\Chrome\\".
+3. If the "DownloadRestrictions" value name does not exist or its value data is set to "0", this is a finding.''',
+            'fix_text': '''Windows group policy:
+1. Open the group policy editor tool with gpedit.msc.
+2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Google\\Google Chrome\\
+Policy Name: Allow download restrictions
+Policy State: 1, 2, or 4
+Policy Value: N/A''',
+        }, 'Google_Chrome_Current_Windows')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-221588',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKLM\\Software\\Policies\\Google\\Chrome',
+                'value_name': 'DownloadRestrictions',
+            },
+            'expected': {'type': 'matches', 'pattern': '^(?:1|2|4)$'},
+            'description': 'Download restrictions must be configured.',
+        })
+
     def test_infers_windows_system32_telnet_absent_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-220721',

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 21,
+  "candidate_checks": 22,
   "cases": [
     {
       "check": {
@@ -81,6 +81,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-221587"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
+        "value_name": "DownloadRestrictions"
+      },
+      "description": "Download restrictions must be configured.",
+      "evidence_type": "registry_value_matches",
+      "expected": {
+        "pattern": "^(?:1|2|4)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\DownloadRestrictions": 5
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\DownloadRestrictions": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-221588"
     },
     {
       "check": {
@@ -574,5 +601,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Google_Chrome_Current_Windows",
-  "validated_candidates": 21
+  "validated_candidates": 22
 }
