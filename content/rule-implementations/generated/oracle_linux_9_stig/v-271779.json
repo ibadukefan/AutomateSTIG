@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find / -type d \\( -perm -0002 -a ! -perm -1000 \\) -print 2>/dev/null",
+      "type": "command_output"
+    },
+    "description": "OL 9 must be configured so that a sticky bit must be set on all public directories.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-271779"
+  },
   "check_content_excerpt": "Verify that OL 9 world-writable directories have the sticky bit set.\n\nDetermine if all world-writable directories have the sticky bit set by running the following command:\n\n$ sudo find / -type d \\( -perm -0002 -a ! -perm -1000 \\) -print 2>/dev/null\ndrwxrwxrwt 7 root root 4096 Jul 26 11:19 /tmp\n\nIf any of the returned directories are world-writable and do not have the sticky bit set, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure all world-writable directories to have the sticky bit set to prevent unauthorized and unintended information transferred via shared system resources.\n\nSet the sticky bit on all world-writable directories using the command, replace \"[World-Writable Directory]\" with any directory path missing the sticky bit:\n\n$ sudo chmod a+t [World-Writable Directory]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271779r1137695_rule",
   "severity": "medium",

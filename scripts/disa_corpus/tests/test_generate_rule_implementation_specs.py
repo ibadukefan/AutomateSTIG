@@ -3049,6 +3049,22 @@ If output is produced, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep -i nullok /etc/pam.d/password-auth'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_public_directory_sticky_bit_find_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257929',
+            'title': 'A sticky bit must be set on all RHEL 9 public directories.',
+            'check_content': '''Verify that all world-writable directories have the sticky bit set.
+
+Determine if all world-writable directories have the sticky bit set by running the following command:
+
+$ sudo find / -type d \\( -perm -0002 -a ! -perm -1000 \\) -print 2>/dev/null
+
+If any of the returned directories are world-writable and do not have the sticky bit set, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'find / -type d \\( -perm -0002 -a ! -perm -1000 \\) -print 2>/dev/null'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_pwck_home_directory_no_output_candidate_after_preceding_command(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230323',

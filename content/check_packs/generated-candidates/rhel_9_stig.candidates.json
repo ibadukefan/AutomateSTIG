@@ -1434,6 +1434,19 @@
     },
     {
       "check": {
+        "command": "find / -type d \\( -perm -0002 -a ! -perm -1000 \\) -print 2>/dev/null",
+        "type": "command_output"
+      },
+      "description": "A sticky bit must be set on all RHEL 9 public directories.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-257929"
+    },
+    {
+      "check": {
         "command": "df --local -P | awk {'if (NR!=1) print $6'} | sudo xargs -I '{}' find '{}' -xdev -nogroup",
         "type": "command_output"
       },

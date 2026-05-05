@@ -460,16 +460,17 @@
       "vuln_id": "V-248549"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248551",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248551r958524_rule",
       "severity": "medium",
       "title": "A sticky bit must be set on all OL 8 public directories to prevent unauthorized and unintended information transferred via shared system resources.",
-      "tracking_issue": "TODO-V-248551",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/86d96a07c5fc39e792789e31e68cd2b33b73b895a70f0b3327137fbe1825f296/U_Oracle_Linux_8_V2R5_STIG.zip"
       ],
       "vuln_id": "V-248551"
