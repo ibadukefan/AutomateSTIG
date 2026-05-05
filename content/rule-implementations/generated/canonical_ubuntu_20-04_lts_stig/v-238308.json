@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "timedatectl status | grep -i \"time zone\" | grep -E \"UTC|GMT\"",
+      "type": "command_output"
+    },
+    "description": "The Ubuntu operating system must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT).",
+    "expected": {
+      "type": "not_equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-238308"
+  },
   "check_content_excerpt": "To verify the time zone is configured to use UTC or GMT, run the following command.  \n \n$ timedatectl status | grep -i \"time zone\" \nTimezone: UTC (UTC, +0000) \n \nIf \"Timezone\" is not set to UTC or GMT, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "not_equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "To configure the system time zone to use UTC or GMT, run the following command, replacing [ZONE] with UTC or GMT: \n \n$ sudo timedatectl set-timezone [ZONE]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-238308r958788_rule",
   "severity": "low",

@@ -855,6 +855,19 @@
     },
     {
       "check": {
+        "command": "timedatectl status | grep -i \"time zone\" | grep -E \"UTC|GMT\"",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT).",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-238308"
+    },
+    {
+      "check": {
         "command": "auditctl -l",
         "type": "command_output"
       },

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 175,
+  "candidate_checks": 176,
   "cases": [
     {
       "check": {
@@ -4199,6 +4199,32 @@
     },
     {
       "check": {
+        "command": "timedatectl status | grep -i \"time zone\" | grep -E \"UTC|GMT\"",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT).",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "timedatectl status | grep -i \"time zone\" | grep -E \"UTC|GMT\"": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "timedatectl status | grep -i \"time zone\" | grep -E \"UTC|GMT\"": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270820"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0755",
         "owner": null,
@@ -4789,5 +4815,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 175
+  "validated_candidates": 176
 }

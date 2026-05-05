@@ -2020,6 +2020,23 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    timedatectl_timezone_utc_or_gmt = (
+        _linux_platform(stig_id)
+        and re.search(r'^\s*[$#>]\s*timedatectl\s+status\s*\|\s*grep\s+-i\s+["“]time\s+zone["”]\s*$', content, re.MULTILINE)
+        and re.search(
+            r'If\s+["“]Timezone["”]\s+is\s+not\s+set\s+to\s+UTC\s+or\s+GMT,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+    )
+    if timedatectl_timezone_utc_or_gmt:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'timedatectl status | grep -i "time zone" | grep -E "UTC|GMT"'},
+            'expected': {'type': 'not_equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     nmcli_wireless_disabled = (
         _linux_platform(stig_id)
         and re.search(r'^\s*[$#>]\s*(?:sudo\s+)?nmcli\s+device\s+status\s*$', content, re.MULTILINE)

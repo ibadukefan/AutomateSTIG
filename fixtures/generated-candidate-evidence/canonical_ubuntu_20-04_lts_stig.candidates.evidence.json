@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 131,
+  "candidate_checks": 132,
   "cases": [
     {
       "check": {
@@ -1722,6 +1722,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-238307"
+    },
+    {
+      "check": {
+        "command": "timedatectl status | grep -i \"time zone\" | grep -E \"UTC|GMT\"",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT).",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "timedatectl status | grep -i \"time zone\" | grep -E \"UTC|GMT\"": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "timedatectl status | grep -i \"time zone\" | grep -E \"UTC|GMT\"": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238308"
     },
     {
       "check": {
@@ -3618,5 +3644,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 131
+  "validated_candidates": 132
 }

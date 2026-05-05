@@ -401,6 +401,25 @@ If any of the files returned from the command with "AllowUnauthenticated" are se
             'description': 'The Ubuntu operating system\'s Advance Package Tool (APT) must be configured to prevent the installation of patches, service packs, device drivers, or Ubuntu operating system components without verification they have been digitally signed using a certificate that is recognized and approved by the organization.',
         })
 
+    def test_infers_linux_timedatectl_timezone_utc_or_gmt_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-238308',
+            'title': 'The Ubuntu operating system must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT).',
+            'check_content': '''Verify the operating system is configured to record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT) with the following command:
+
+$ timedatectl status | grep -i "time zone"
+                Time zone: Etc/UTC (UTC, +0000)
+
+If "Timezone" is not set to UTC or GMT, this is a finding.''',
+        }, 'Canonical_Ubuntu_20-04_LTS_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-238308',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'timedatectl status | grep -i "time zone" | grep -E "UTC|GMT"'},
+            'expected': {'type': 'not_equals', 'value': ''},
+            'description': 'The Ubuntu operating system must record time stamps for audit records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT).',
+        })
+
     def test_infers_rpm_xorg_server_absent_unless_approved_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230553',
