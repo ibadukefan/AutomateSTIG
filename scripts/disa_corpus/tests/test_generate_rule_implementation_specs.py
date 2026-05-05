@@ -214,6 +214,25 @@ The configured policy does NOT match the generated policy''',
             'description': 'RHEL 9 cryptographic policy must not be overridden.',
         })
 
+    def test_infers_linux_yum_repo_gpgcheck_all_returned_lines_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271525',
+            'title': 'OL 9 must have GPG signature verification enabled for all software repositories.',
+            'check_content': '''Verify that OL 9 software repositories defined in "/etc/yum.repos.d/" have been configured with "gpgcheck" enabled:
+
+$ grep gpgcheck /etc/yum.repos.d/*.repo | more
+gpgcheck = 1
+
+If "gpgcheck" is not set to "1" for all returned lines, this is a finding.''',
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-271525',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "grep gpgcheck /etc/yum.repos.d/*.repo | grep -v -E '^gpgcheck\\s*=\\s*1$'"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'OL 9 must have GPG signature verification enabled for all software repositories.',
+        })
+
     def test_infers_linux_apt_allowunauthenticated_true_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-238359',

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep gpgcheck /etc/yum.repos.d/*.repo | grep -v -E '^gpgcheck\\s*=\\s*1$'",
+      "type": "command_output"
+    },
+    "description": "OL 9 must have GPG signature verification enabled for all software repositories.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-271525"
+  },
   "check_content_excerpt": "Verify that OL 9 software repositories defined in \"/etc/yum.repos.d/\" have been configured with \"gpgcheck\" enabled:\n\n$ grep gpgcheck /etc/yum.repos.d/*.repo | more\ngpgcheck = 1\n\nIf \"gpgcheck\" is not set to \"1\" for all returned lines, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure all software repositories defined in \"/etc/yum.repos.d/\" to have \"gpgcheck\" enabled:\n\n$ sudo sed -i 's/gpgcheck\\s*=.*/gpgcheck=1/g' /etc/yum.repos.d/*",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271525r1091287_rule",
   "severity": "high",

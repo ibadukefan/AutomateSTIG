@@ -1150,6 +1150,19 @@
     },
     {
       "check": {
+        "command": "grep gpgcheck /etc/yum.repos.d/*.repo | grep -v -E '^gpgcheck\\s*=\\s*1$'",
+        "type": "command_output"
+      },
+      "description": "OL 9 must have GPG signature verification enabled for all software repositories.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271525"
+    },
+    {
+      "check": {
         "name": "--queryformat",
         "should_be_installed": true,
         "type": "package"

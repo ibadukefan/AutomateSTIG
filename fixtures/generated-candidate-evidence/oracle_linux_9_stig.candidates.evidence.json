@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 409,
+  "candidate_checks": 410,
   "cases": [
     {
       "check": {
@@ -2253,6 +2253,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-271524"
+    },
+    {
+      "check": {
+        "command": "grep gpgcheck /etc/yum.repos.d/*.repo | grep -v -E '^gpgcheck\\s*=\\s*1$'",
+        "type": "command_output"
+      },
+      "description": "OL 9 must have GPG signature verification enabled for all software repositories.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep gpgcheck /etc/yum.repos.d/*.repo | grep -v -E '^gpgcheck\\s*=\\s*1$'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep gpgcheck /etc/yum.repos.d/*.repo | grep -v -E '^gpgcheck\\s*=\\s*1$'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271525"
     },
     {
       "check": {
@@ -11368,5 +11394,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 409
+  "validated_candidates": 410
 }

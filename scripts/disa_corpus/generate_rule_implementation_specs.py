@@ -1912,6 +1912,24 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'contains', 'substring': 'pgaudit'},
             'description': rule.get('title', ''),
         }
+    yum_repo_gpgcheck_all_returned_lines = (
+        _linux_platform(stig_id)
+        and re.search(r'^\s*[$#>]\s*grep\s+gpgcheck\s+/etc/yum\.repos\.d/\*\.repo\s*\|\s*more\s*$', content, re.MULTILINE)
+        and re.search(r'^\s*gpgcheck\s*=\s*1\s*$', content, re.IGNORECASE | re.MULTILINE)
+        and re.search(
+            r'If\s+["“]gpgcheck["”]\s+is\s+not\s+set\s+to\s+["“]1["”]\s+for\s+all\s+returned\s+lines,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+    )
+    if yum_repo_gpgcheck_all_returned_lines:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "grep gpgcheck /etc/yum.repos.d/*.repo | grep -v -E '^gpgcheck\\s*=\\s*1$'"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     apt_allowunauthenticated_true = (
         _linux_platform(stig_id)
         and re.search(r'^\s*[$#>]\s*grep\s+AllowUnauthenticated\s+/etc/apt/apt\.conf\.d/\*\s*$', content, re.MULTILINE)
