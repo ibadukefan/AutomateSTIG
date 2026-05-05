@@ -285,6 +285,19 @@
     },
     {
       "check": {
+        "command": "find /etc/ssh -maxdepth 1 -type f -name 'ssh_host*key.pub' -perm /133 -exec stat -c \"%n %a\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The RHEL 8 SSH public host key files must have mode 0644 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-230286"
+    },
+    {
+      "check": {
         "command": "find /etc/ssh -maxdepth 1 -type f -name 'ssh_host*key' -perm /137 -exec stat -c \"%n %a\" {} \\;",
         "type": "command_output"
       },

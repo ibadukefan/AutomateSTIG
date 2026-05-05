@@ -2029,7 +2029,7 @@ def _ssh_host_key_mode_candidate(rule: dict, stig_id: str) -> dict | None:
         re.IGNORECASE,
     )
     if not mode_match or not re.search(
-        rf'If\s+any\s+(?:{key_kind}\s+host\s+key\s+)?file\s+has\s+a\s+mode\s+more\s+permissive\s+than\s+["“]0?[0-7]{{3}}["”],?\s+this\s+is\s+a\s+finding',
+        rf'If\s+any\s+(?:(?:{key_kind}\s+host\s+key|key\.pub)\s+)?file\s+has\s+a\s+mode\s+more\s+permissive\s+than\s+["“]0?[0-7]{{3}}["”],?\s+this\s+is\s+a\s+finding',
         content,
         re.IGNORECASE,
     ):

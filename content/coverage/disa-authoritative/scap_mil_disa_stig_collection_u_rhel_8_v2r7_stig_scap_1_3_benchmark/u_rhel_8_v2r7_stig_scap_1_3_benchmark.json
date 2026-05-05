@@ -673,16 +673,17 @@
       "vuln_id": "V-230284"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230286",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-230286 from source identifier xccdf_mil.disa.stig_group_V-230286.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-230286r1017097_rule",
       "severity": "medium",
       "title": "The RHEL 8 SSH public host key files must have mode 0644 or less permissive.",
-      "tracking_issue": "TODO-V-230286",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/12dfbda0e7ad9858023074da0dd6006df46292654525f5c491d2cac0ff9d76c3/U_RHEL_8_V2R7_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-230286"
