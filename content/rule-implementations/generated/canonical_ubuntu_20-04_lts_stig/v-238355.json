@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "expected_status": "running",
+      "name": "ufw",
+      "type": "service"
+    },
+    "description": "The Ubuntu operating system must enable and run the uncomplicated firewall(ufw).",
+    "expected": {
+      "type": "equals",
+      "value": "running"
+    },
+    "platform": "linux",
+    "vuln_id": "V-238355"
+  },
   "check_content_excerpt": "Verify the Uncomplicated Firewall is enabled on the system by running the following command: \n \n$ systemctl is-enabled ufw \n \nIf the above command returns the status as \"disabled\", this is a finding. \n \nVerify the Uncomplicated Firewall is active on the system by running the following command: \n \n$ systemctl is-active ufw \n \nIf the above command returns \"inactive\" or any kind of error, this is a finding. \n \nIf the Uncomplicated Firewall is not installed, ask the System Administrator if another application firewall is installed.  \n \nIf no application firewall is installed, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "network_config_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "running"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Enable the Uncomplicated Firewall by using the following command: \n \n$ sudo systemctl enable --now ufw.service",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "service",
   "remediation": "planned",
   "rule_id": "SV-238355r958672_rule",
   "severity": "medium",

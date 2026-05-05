@@ -1010,7 +1010,10 @@ def _service_candidate(rule: dict) -> dict | None:
             expected_status = 'running'
         else:
             return None
-    elif command == 'is-active' and re.search(rf'systemctl\s+is-active\s+{re.escape(raw_name)}\s*\n\s*active\b', content, re.IGNORECASE) and (re.search(r'(?:is|service\s+is)\s+not\s+["“]?active["”]?', lower) or re.search(r'["“]?active["”]?\s+is\s+not\s+returned', lower) or re.search(r'returns\s+["“]?inactive["”]?', lower) or re.search(r'is\s+not\s+["“]?enabled["”]?\s+and\s+["“]?active["”]?', lower)):
+    elif command == 'is-active' and (
+        re.search(rf'systemctl\s+is-active\s+{re.escape(raw_name)}\s*\n\s*active\b', content, re.IGNORECASE)
+        or re.search(r'If\s+the\s+(?:above\s+)?command\s+returns\s+["“]inactive["”]\s+or\s+any\s+kind\s+of\s+error,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    ) and (re.search(r'(?:is|service\s+is)\s+not\s+["“]?active["”]?', lower) or re.search(r'["“]?active["”]?\s+is\s+not\s+returned', lower) or re.search(r'returns\s+["“]?inactive["”]?', lower) or re.search(r'is\s+not\s+["“]?enabled["”]?\s+and\s+["“]?active["”]?', lower)):
         expected_status = 'running'
     elif command == 'is-active' and sample_lines == ['inactive'] and re.search(r'if\s+the\s+service\s+is\s+active\s+and\s+is\s+not\s+documented,?\s+this\s+is\s+a\s+finding', lower):
         expected_status = 'stopped'

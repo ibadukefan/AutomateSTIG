@@ -75,6 +75,34 @@ If the use of a display server on the system is not documented with the Informat
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'rpm -qa | grep xorg | grep server'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_linux_service_running_candidate_when_systemctl_is_active_returns_inactive_without_sample(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-238355',
+            'title': 'The Ubuntu operating system must enable and run the uncomplicated firewall(ufw).',
+            'check_content': '''Verify the Uncomplicated Firewall is enabled on the system by running the following command:
+
+$ systemctl is-enabled ufw
+
+If the above command returns the status as "disabled", this is a finding.
+
+Verify the Uncomplicated Firewall is active on the system by running the following command:
+
+$ systemctl is-active ufw
+
+If the above command returns "inactive" or any kind of error, this is a finding.
+
+If the Uncomplicated Firewall is not installed, ask the System Administrator if another application firewall is installed.
+
+If no application firewall is installed, this is a finding.'''
+        }, 'Canonical_Ubuntu_20-04_LTS_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-238355',
+            'platform': 'linux',
+            'check': {'type': 'service', 'name': 'ufw', 'expected_status': 'running'},
+            'expected': {'type': 'equals', 'value': 'running'},
+            'description': 'The Ubuntu operating system must enable and run the uncomplicated firewall(ufw).',
+        })
+
     def test_infers_socket_is_active_command_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258125',

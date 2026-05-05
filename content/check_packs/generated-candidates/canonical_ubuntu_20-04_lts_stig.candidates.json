@@ -1328,6 +1328,20 @@
     },
     {
       "check": {
+        "expected_status": "running",
+        "name": "ufw",
+        "type": "service"
+      },
+      "description": "The Ubuntu operating system must enable and run the uncomplicated firewall(ufw).",
+      "expected": {
+        "type": "equals",
+        "value": "running"
+      },
+      "platform": "linux",
+      "vuln_id": "V-238355"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/chrony/chrony.conf",
         "pattern": "server tick.usno.navy.mil iburst maxpoll 16",
