@@ -174,6 +174,24 @@ If this command produces any file(s), this is a finding.''',
             'description': 'RHEL 8 must prevent system daemons from using Kerberos for authentication.',
         })
 
+    def test_infers_linux_find_named_file_found_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248597',
+            'title': 'There must be no "shosts.equiv" files on the OL 8 operating system.',
+            'check_content': '''Verify there are no "shosts.equiv" files on OL 8 with the following command:
+
+$ sudo find / -name shosts.equiv
+
+If an "shosts.equiv" file is found, this is a finding.''',
+        }, 'Oracle_Linux_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-248597',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'find / -name shosts.equiv'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'There must be no "shosts.equiv" files on the OL 8 operating system.',
+        })
+
     def test_infers_linux_apt_allowunauthenticated_true_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-238359',

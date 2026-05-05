@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 320,
+  "candidate_checks": 321,
   "cases": [
     {
       "check": {
@@ -1552,6 +1552,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248596"
+    },
+    {
+      "check": {
+        "command": "find / -name shosts.equiv",
+        "type": "command_output"
+      },
+      "description": "There must be no \"shosts.equiv\" files on the OL 8 operating system.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find / -name shosts.equiv": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find / -name shosts.equiv": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248597"
     },
     {
       "check": {
@@ -8714,5 +8740,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 320
+  "validated_candidates": 321
 }
