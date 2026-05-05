@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "ps -ef | grep '[k]ubelet' | grep -- '--hostname-override'",
+        "type": "command_output"
+      },
+      "description": "Kubernetes Kubelet must deny hostname override.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-242404"
+    },
+    {
+      "check": {
         "command": "stat -c %U:%G /etc/kubernetes/manifests/* | grep -v root:root",
         "type": "command_output"
       },

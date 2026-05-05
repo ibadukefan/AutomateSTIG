@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "ps -ef | grep '[k]ubelet' | grep -- '--hostname-override'",
+      "type": "command_output"
+    },
+    "description": "Kubernetes Kubelet must deny hostname override.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-242404"
+  },
   "check_content_excerpt": "On the Control Plane and Worker nodes, run the command:\nps -ef | grep kubelet\n\nIf the option \"--hostname-override\" is present, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Run the command:  \nsystemctl status kubelet.  \nNote the path to the drop-in file.\n\nDetermine the path to the environment file(s) with the command: \ngrep -i EnvironmentFile <path_to_drop_in_file>.\n\nRemove the \"--hostname-override\" option from any environment file where it is present.  \n\nRestart the kubelet service using the following command:\nsystemctl daemon-reload && systemctl restart kubelet",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242404r960960_rule",
   "severity": "medium",

@@ -3801,5 +3801,22 @@ If the result is not "true", this is a finding.'''
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'true'})
 
 
+    def test_infers_kubernetes_kubelet_hostname_override_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242404',
+            'title': 'Kubernetes Kubelet must deny hostname override.',
+            'check_content': '''On the Control Plane and Worker nodes, run the command:
+ps -ef | grep kubelet
+
+If the option "--hostname-override" is present, this is a finding.''',
+        }, 'Kubernetes_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-242404',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': "ps -ef | grep '[k]ubelet' | grep -- '--hostname-override'"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'Kubernetes Kubelet must deny hostname override.',
+        })
+
 if __name__ == '__main__':
     unittest.main()

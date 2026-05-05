@@ -1905,6 +1905,24 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         content,
         re.MULTILINE,
     )
+    kubelet_hostname_override_match = re.search(
+        r'^\s*ps\s+-ef\s+\|\s+grep\s+kubelet\s*$',
+        content,
+        re.MULTILINE,
+    )
+    if (
+        kubelet_hostname_override_match
+        and 'kubernetes' in stig_id.lower()
+        and re.search(r'\bdeny\s+hostname\s+override\b', rule.get('title', ''), re.IGNORECASE)
+        and re.search(r'If\s+the\s+option\s+["“]--hostname-override["”]\s+is\s+present,?\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE)
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': "ps -ef | grep '[k]ubelet' | grep -- '--hostname-override'"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     if tomcat_find_owner_match:
         owner = tomcat_find_owner_match.group('owner')
         group = tomcat_find_owner_match.group('group')

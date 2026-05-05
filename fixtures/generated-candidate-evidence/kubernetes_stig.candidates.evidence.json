@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 4,
+  "candidate_checks": 5,
   "cases": [
+    {
+      "check": {
+        "command": "ps -ef | grep '[k]ubelet' | grep -- '--hostname-override'",
+        "type": "command_output"
+      },
+      "description": "Kubernetes Kubelet must deny hostname override.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "ps -ef | grep '[k]ubelet' | grep -- '--hostname-override'": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "ps -ef | grep '[k]ubelet' | grep -- '--hostname-override'": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242404"
+    },
     {
       "check": {
         "command": "stat -c %U:%G /etc/kubernetes/manifests/* | grep -v root:root",
@@ -111,5 +137,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 4
+  "validated_candidates": 5
 }
