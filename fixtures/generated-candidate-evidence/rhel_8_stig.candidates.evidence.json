@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 286,
+  "candidate_checks": 287,
   "cases": [
     {
       "check": {
@@ -691,6 +691,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230311"
+    },
+    {
+      "check": {
+        "command": "systemctl status systemd-coredump.socket",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must disable acquiring, saving, and processing core dumps.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "Loaded: masked",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "systemctl status systemd-coredump.socket": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "systemctl status systemd-coredump.socket": "before\nLoaded: masked\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230312"
     },
     {
       "check": {
@@ -7711,5 +7737,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 286
+  "validated_candidates": 287
 }

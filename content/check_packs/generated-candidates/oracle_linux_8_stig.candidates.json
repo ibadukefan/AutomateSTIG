@@ -1044,6 +1044,19 @@
     },
     {
       "check": {
+        "command": "systemctl status systemd-coredump.socket",
+        "type": "command_output"
+      },
+      "description": "OL 8 must disable acquiring, saving, and processing core dumps.",
+      "expected": {
+        "substring": "Loaded: masked",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248630"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/security/limits.conf",
         "pattern": "/etc/security/limits.d/*.conf",

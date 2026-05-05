@@ -4169,16 +4169,17 @@
       "vuln_id": "V-271731"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271732",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-271732 from source identifier xccdf_mil.disa.stig_group_V-271732.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-271732r1155329_rule",
       "severity": "medium",
       "title": "OL 9 must disable acquiring, saving, and processing core dumps.",
-      "tracking_issue": "TODO-V-271732",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/f5fae2254266ef0f00a38588c8655d04408b67b31f875ef489e6a2ba5349250c/U_Oracle_Linux_9_V1R3_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-271732"

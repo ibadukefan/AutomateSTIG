@@ -1926,6 +1926,20 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': 'active'},
             'description': rule.get('title', ''),
         }
+    systemctl_masked_socket = (
+        _linux_platform(stig_id)
+        and re.fullmatch(r'systemctl\s+status\s+[A-Za-z0-9_.@-]+\.socket', command)
+        and re.search(r'^\s*Loaded:\s+masked\b', content, re.IGNORECASE | re.MULTILINE)
+        and re.search(r'If\s+[^.\n]*\.socket["”]?\s+is\s+loaded\s+and\s+not\s+masked\b', content, re.IGNORECASE)
+    )
+    if systemctl_masked_socket:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'contains', 'substring': 'Loaded: masked'},
+            'description': rule.get('title', ''),
+        }
     unquoted_semicolon_command = re.sub(r"'[^']*'|\"[^\"]*\"", '', command)
     if ';' in unquoted_semicolon_command and not re.fullmatch(r'[^;]*(?:\\;[^;]*)*', unquoted_semicolon_command):
         return None

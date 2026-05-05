@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "systemctl status systemd-coredump.socket",
+      "type": "command_output"
+    },
+    "description": "OL 9 must disable acquiring, saving, and processing core dumps.",
+    "expected": {
+      "substring": "Loaded: masked",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271732"
+  },
   "check_content_excerpt": "Note: If kernel dumps are disabled in accordance with OL09-00-002380, this requirement is not applicable.\n\nVerify OL 9 is not configured to acquire, save, or process core dumps with the following command:\n\n$ systemctl status systemd-coredump.socket\nsystemd-coredump.socket\nLoaded: masked (Reason: Unit systemd-coredump.socket is masked.)\nActive: inactive (dead)\n\nIf the \"systemd-coredump.socket\" is loaded and not masked and the need for core dumps is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "Loaded: masked",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the system to disable the systemd-coredump.socket with the following command:\n\n$ sudo systemctl mask --now systemd-coredump.socket\n\nCreated symlink /etc/systemd/system/systemd-coredump.socket -> /dev/null\n\nReload the daemon for this change to take effect.\n\n$ sudo systemctl daemon-reload",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271732r1155329_rule",
   "severity": "medium",

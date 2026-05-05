@@ -90,6 +90,23 @@ If the pcscd socket is not active, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'systemctl is-active pcscd.socket'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'active'})
 
+    def test_infers_systemctl_status_socket_masked_command_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230312',
+            'title': 'RHEL 8 must disable acquiring, saving, and processing core dumps.',
+            'check_content': '''Verify RHEL 8 is not configured to acquire, save, or process core dumps with the following command:
+
+$ sudo systemctl status systemd-coredump.socket
+systemd-coredump.socket
+Loaded: masked (Reason: Unit systemd-coredump.socket is masked.)
+Active: inactive (dead)
+
+If the "systemd-coredump.socket" is loaded and not masked and the need for core dumps is not documented with the information system security officer (ISSO) as an operational requirement, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'systemctl status systemd-coredump.socket'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Loaded: masked'})
+
     def test_infers_tomcat_find_not_owner_or_group_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222986',
