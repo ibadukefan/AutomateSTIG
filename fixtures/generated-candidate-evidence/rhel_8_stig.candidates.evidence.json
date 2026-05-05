@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 287,
+  "candidate_checks": 288,
   "cases": [
     {
       "check": {
@@ -6059,6 +6059,32 @@
     },
     {
       "check": {
+        "command": "yum list installed *ftpd*",
+        "type": "command_output"
+      },
+      "description": "A File Transfer Protocol (FTP) server package must not be installed unless mission essential on RHEL 8.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "yum list installed *ftpd*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "yum list installed *ftpd*": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230558"
+    },
+    {
+      "check": {
         "name": "gssproxy",
         "should_be_installed": false,
         "type": "package"
@@ -7737,5 +7763,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 287
+  "validated_candidates": 288
 }

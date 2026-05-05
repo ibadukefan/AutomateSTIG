@@ -4758,16 +4758,17 @@
       "vuln_id": "V-230557"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230558",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230558r1017320_rule",
       "severity": "high",
       "title": "A File Transfer Protocol (FTP) server package must not be installed unless mission essential on RHEL 8.",
-      "tracking_issue": "TODO-V-230558",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/45a4c12d5134d75e43ab4508ac92d2c43b2f6228716cd9fbb96cc4fd42c139cb/U_RHEL_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-230558"

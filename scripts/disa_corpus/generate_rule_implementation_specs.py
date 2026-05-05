@@ -610,6 +610,19 @@ def _sysctl_candidate(rule: dict) -> dict | None:
 def _package_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
+    ftp_glob_match = re.search(r'\b(?P<command>(?:sudo\s+)?(?:dnf|yum)\s+list\s+installed\s+\*ftpd\*)', content, re.IGNORECASE)
+    if (
+        ftp_glob_match
+        and re.search(r'\bFile\s+Transfer\s+Protocol\s*\(FTP\)\s+server\s+package\s+must\s+not\s+be\s+installed\b', title, re.IGNORECASE)
+        and re.search(r'If\s+an\s+FTP\s+server\s+is\s+installed\s+and\s+is\s+not\s+documented\s+with\s+the\s+Information\s+System\s+Security\s+Officer\s+\(ISSO\)\s+as\s+an\s+operational\s+requirement,\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': _normalize_command(ftp_glob_match.group('command'))},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     match = re.search(r'\b(?:dnf|yum|rpm)\s+(?:list\s+(?:--installed|installed)|-q)\s+["\']?([A-Za-z0-9_.:+-]+)["\']?', content)
     if not match:
         match = re.search(r'\bdpkg\s+-l\s*\|\s*grep\s+([A-Za-z0-9_.:+-]+)', content)

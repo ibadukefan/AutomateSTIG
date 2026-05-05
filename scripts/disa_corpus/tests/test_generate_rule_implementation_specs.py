@@ -3399,6 +3399,24 @@ If the value for "Maximum lifetime for user ticket" is greater than "10" hours o
         }, 'MS_Windows_Server_2022_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_linux_ftp_server_package_glob_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230558',
+            'title': 'A File Transfer Protocol (FTP) server package must not be installed unless mission essential on RHEL 8.',
+            'check_content': '''Verify an FTP server has not been installed on the system with the following commands:
+
+$ sudo yum list installed *ftpd*
+
+vsftpd.x86_64                                                     3.0.3-28.el8                                                  appstream
+
+If an FTP server is installed and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.''',
+            'fix_text': 'Document the FTP server package with the ISSO as an operational requirement or remove it from the system with the following command:\n\n$ sudo yum remove vsftpd',
+        }, 'RHEL_8_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'yum list installed *ftpd*'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_windows_security_option_candidate_from_explicit_disabled_value(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254465',

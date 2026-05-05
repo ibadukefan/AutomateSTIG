@@ -3086,6 +3086,19 @@
     },
     {
       "check": {
+        "command": "yum list installed *ftpd*",
+        "type": "command_output"
+      },
+      "description": "A File Transfer Protocol (FTP) server package must not be installed unless mission essential on RHEL 8.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-230558"
+    },
+    {
+      "check": {
         "name": "gssproxy",
         "should_be_installed": false,
         "type": "package"
