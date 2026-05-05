@@ -488,6 +488,25 @@ If the value for "disableddeserverlookup" is REG_DWORD = 1, this is not a findin
         self.assertEqual(candidate['check']['value_name'], 'disableddeserverlookup')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 1})
 
+    def test_infers_office_registry_not_finding_when_quoted_value_contains_reg_dword_assignment(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-278355',
+            'title': 'Sending of diagnostic data to Microsoft must be disabled.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Office 2016 >> Privacy >> Trust Center >> "Configure the level of client software diagnostic data sent by Office to Microsoft" is set to "Enabled", and "Neither" from the Options is selected.
+
+Use the Windows Registry Editor to navigate to the following key:
+HKCU\\software\\policies\\Microsoft\\office\\common\\clienttelemetry
+
+If the value "SendTelemetry" is "REG_DWORD = 3", this is not a finding.
+
+If the registry key does not exist or is not configured properly, this is a finding.'''
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check']['type'], 'registry')
+        self.assertEqual(candidate['check']['path'], 'HKCU\\software\\policies\\Microsoft\\office\\common\\clienttelemetry')
+        self.assertEqual(candidate['check']['value_name'], 'SendTelemetry')
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 3})
+
     def test_infers_registry_candidate_when_check_and_fix_repeat_same_authoritative_fields(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-213117',

@@ -1315,6 +1315,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-223418"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\Microsoft\\office\\common\\clienttelemetry",
+        "type": "registry",
+        "value_name": "SendTelemetry"
+      },
+      "description": "Sending of diagnostic data to Microsoft must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 3
+      },
+      "platform": "windows",
+      "vuln_id": "V-278355"
     }
   ],
   "platform": "windows",
