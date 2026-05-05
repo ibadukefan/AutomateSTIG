@@ -1028,6 +1028,20 @@
     },
     {
       "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+        "type": "registry",
+        "value_name": "AllowTelemetry"
+      },
+      "description": "Windows Server 2025 Telemetry must be configured to limit diagnostic data sent to Microsoft.",
+      "expected": {
+        "pattern": "^(?:0|1)$",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-278103"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization",
         "type": "registry",
         "value_name": "DODownloadMode"

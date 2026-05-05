@@ -143,6 +143,18 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
             self.assertNotEqual(cases['V-12']['pass_fixture']['security_policy']['Security Options\\Accounts: Rename administrator account'], 'Administrator')
             self.assertEqual(cases['V-12']['fail_fixture']['security_policy']['Security Options\\Accounts: Rename administrator account'], 'Administrator')
 
+    def test_builds_registry_matches_fixture_case(self):
+        case = mod.build_case({
+            'vuln_id': 'V-278103',
+            'platform': 'windows',
+            'description': 'Telemetry allowed values',
+            'check': {'type': 'registry', 'path': 'HKLM\\Software\\Policies\\Example', 'value_name': 'AllowTelemetry'},
+            'expected': {'type': 'matches', 'pattern': '^(?:0|1)$'},
+        })
+        self.assertEqual(case['evidence_type'], 'registry_value_matches')
+        self.assertEqual(case['pass_fixture']['registry']['HKLM\\Software\\Policies\\Example\\AllowTelemetry'], 0)
+        self.assertEqual(case['fail_fixture']['registry']['HKLM\\Software\\Policies\\Example\\AllowTelemetry'], 2)
+
     def test_builds_command_output_fixture_case(self):
         case = mod.build_case({
             'vuln_id': 'V-256393',

@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+      "type": "registry",
+      "value_name": "AllowTelemetry"
+    },
+    "description": "Windows Server 2025 Telemetry must be configured to limit diagnostic data sent to Microsoft.",
+    "expected": {
+      "pattern": "^(?:0|1)$",
+      "type": "matches"
+    },
+    "platform": "windows",
+    "vuln_id": "V-278103"
+  },
   "check_content_excerpt": "If the following registry value does not exist or is not configured as specified, this is a finding:\n\nRegistry Hive: HKEY_LOCAL_MACHINE\nRegistry Path: \\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\\\n\nValue Name: AllowTelemetry\n\nType: REG_DWORD\nValue0x00000000 (0), 0x00000001 (1)",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "windows_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "pattern": "^(?:0|1)$",
+    "type": "matches"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Data Collection and Preview Build >> Allow Diagnostic Data to \"Enabled\" with \"Send required diagnostic data\" selected or \"Diagnostic data off (not recommended)\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-278103r1181982_rule",
   "severity": "medium",

@@ -40,13 +40,21 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
     fail_fixture: dict[str, Any] = {'platform': candidate.get('platform', 'generic')}
 
     if check_type == 'registry':
-        if expected.get('type') != 'equals':
-            raise ValueError(f"{candidate['vuln_id']}: registry candidate only supports equals evidence")
         key = _registry_key(check)
-        expected_value = expected['value']
-        pass_fixture['registry'] = {key: expected_value}
-        fail_fixture['registry'] = {key: _alternate_value(expected_value)}
-        evidence_type = 'registry_value_equals'
+        if expected.get('type') == 'equals':
+            expected_value = expected['value']
+            pass_fixture['registry'] = {key: expected_value}
+            fail_fixture['registry'] = {key: _alternate_value(expected_value)}
+            evidence_type = 'registry_value_equals'
+        elif expected.get('type') == 'matches':
+            literals = [int(value) for value in re.findall(r'(?<!\\d)([-+]?\d+)(?!\\d)', expected.get('pattern', ''))]
+            if not literals:
+                raise ValueError(f"{candidate['vuln_id']}: registry matches evidence requires numeric literals")
+            pass_fixture['registry'] = {key: literals[0]}
+            fail_fixture['registry'] = {key: max(literals) + 1}
+            evidence_type = 'registry_value_matches'
+        else:
+            raise ValueError(f"{candidate['vuln_id']}: registry candidate only supports equals or matches evidence")
     elif check_type == 'windows_feature':
         name = check['name']
         should_be_installed = bool(check['should_be_installed'])

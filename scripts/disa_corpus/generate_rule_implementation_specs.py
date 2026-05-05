@@ -2784,6 +2784,26 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
                 if security_policy_candidate:
                     return security_policy_candidate
             return None
+        allowed_dword_values = _registry_dword_allowed_values(combined_registry_content)
+        if allowed_dword_values:
+            if (
+                len(normalized_hives) == 1
+                and len(normalized_paths) == 1
+                and len(normalized_value_names) == 1
+                and re.search(r'^\s*(?:Value\s+Type|Type)\s*:?\s*REG_DWORD\s*$', combined_registry_content, re.IGNORECASE | re.MULTILINE)
+            ):
+                return {
+                    'vuln_id': rule.get('vuln_id', ''),
+                    'platform': 'windows' if 'windows' in stig_id.lower() or 'win' in stig_id.lower() else 'generic',
+                    'check': {
+                        'type': 'registry',
+                        'path': f"{next(iter(normalized_hives))}\\{next(iter(normalized_paths))}",
+                        'value_name': next(iter(normalized_value_names)),
+                    },
+                    'expected': {'type': 'matches', 'pattern': f"^(?:{'|'.join(str(value) for value in allowed_dword_values)})$"},
+                    'description': rule.get('title', ''),
+                }
+            return None
         if re.search(r'^\s*Value(?!\s*(?:Name|Type))[^\n\r]*,\s*(?:0x[0-9a-fA-F]+|[-+]?\d+)', combined_registry_content, re.IGNORECASE | re.MULTILINE):
             return None
         expected_value = _registry_value(combined_registry_content)
