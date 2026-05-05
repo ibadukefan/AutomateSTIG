@@ -2835,6 +2835,38 @@ If any home directories referenced in "/etc/passwd" are returned as not defined,
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'pwck -r'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_pwck_gid_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258048',
+            'title': 'All RHEL 9 interactive users must have a primary group that exists.',
+            'check_content': '''Verify that all RHEL 9 interactive users have a valid GID.
+
+Check that the interactive users have a valid GID with the following command:
+
+$ sudo pwck -r
+
+If pwck reports "no group" for any interactive user, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'pwck -r'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_pwck_gid_not_defined_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204461',
+            'title': 'The Red Hat Enterprise Linux operating system must be configured so that all Group Identifiers (GIDs) referenced in the /etc/passwd file are defined in the /etc/group file.',
+            'check_content': '''Verify all GIDs referenced in the "/etc/passwd" file are defined in the "/etc/group" file.
+
+Check that all referenced GIDs exist with the following command:
+
+# pwck -r
+
+If GIDs referenced in "/etc/passwd" file are returned as not defined in "/etc/group" file, this is a finding.'''
+        }, 'RHEL_7_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'pwck -r'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_no_output_candidate_when_grep_occurrences_return_from_command(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270707',

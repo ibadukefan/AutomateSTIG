@@ -292,6 +292,19 @@
     },
     {
       "check": {
+        "command": "pwck -r",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all Group Identifiers (GIDs) referenced in the /etc/passwd file are defined in the /etc/group file.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-204461"
+    },
+    {
+      "check": {
         "command": "awk -F: '$3 == 0 {print $1}' /etc/passwd",
         "type": "command_output"
       },

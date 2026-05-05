@@ -2744,6 +2744,19 @@
     },
     {
       "check": {
+        "command": "pwck -r",
+        "type": "command_output"
+      },
+      "description": "All RHEL 9 interactive users must have a primary group that exists.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-258048"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/useradd",
         "pattern": "INACTIVE=35",

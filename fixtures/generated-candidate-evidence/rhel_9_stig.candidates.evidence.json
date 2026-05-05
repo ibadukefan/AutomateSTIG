@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 371,
+  "candidate_checks": 372,
   "cases": [
     {
       "check": {
@@ -5692,6 +5692,32 @@
     },
     {
       "check": {
+        "command": "pwck -r",
+        "type": "command_output"
+      },
+      "description": "All RHEL 9 interactive users must have a primary group that exists.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "pwck -r": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "pwck -r": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258048"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/default/useradd",
         "pattern": "INACTIVE=35",
@@ -10308,5 +10334,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 371
+  "validated_candidates": 372
 }

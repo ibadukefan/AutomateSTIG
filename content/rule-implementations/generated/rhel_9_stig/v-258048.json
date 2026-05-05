@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "pwck -r",
+      "type": "command_output"
+    },
+    "description": "All RHEL 9 interactive users must have a primary group that exists.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-258048"
+  },
   "check_content_excerpt": "Verify that all RHEL 9 interactive users have a valid GID.\n\nCheck that the interactive users have a valid GID with the following command:\n\n$ sudo pwck -r\n\nIf pwck reports \"no group\" for any interactive user, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the system so that all GIDs are referenced in \"/etc/passwd\" are defined in \"/etc/group\".\n\nEdit the file \"/etc/passwd\" and ensure that every user's GID is a valid GID.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258048r1069380_rule",
   "severity": "medium",
