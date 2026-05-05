@@ -4158,6 +4158,51 @@
     },
     {
       "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/ssh/sshd_config",
+        "type": "file_permission"
+      },
+      "description": "OL 9 SSH server configuration file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271776"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/ssh/sshd_config",
+        "type": "file_permission"
+      },
+      "description": "OL 9 SSH server configuration file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271777"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0600",
+        "owner": null,
+        "path": "/etc/ssh/sshd_config",
+        "type": "file_permission"
+      },
+      "description": "OL 9 SSH server configuration file must have mode 0600 or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271778"
+    },
+    {
+      "check": {
         "command": "df --local -P | awk {'if (NR!=1) print $6'} | sudo xargs -I '{}' find '{}' -xdev -nogroup",
         "type": "command_output"
       },
@@ -4676,6 +4721,96 @@
       },
       "platform": "linux",
       "vuln_id": "V-271817"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /var/log directory must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271818"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /var/log directory must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271819"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0755",
+        "owner": null,
+        "path": "/var/log",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /var/log directory must have mode 0755 or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271820"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/var/log/messages",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /var/log/messages file must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271821"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/var/log/messages",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /var/log/messages file must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271822"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/var/log/messages",
+        "type": "file_permission"
+      },
+      "description": "OL 9 /var/log/messages file must have mode 0640 or less permissive.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271823"
     },
     {
       "check": {

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 138,
+  "candidate_checks": 139,
   "cases": [
     {
       "check": {
@@ -3267,6 +3267,44 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": "0600",
+        "owner": null,
+        "path": "/var/log/audit",
+        "type": "file_permission"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must protect audit information from unauthorized read, modification, or deletion.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/var/log/audit": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0600",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/var/log/audit": {
+            "exists": true,
+            "group": null,
+            "mode": "0600",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-228564"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "X11UseLocalhost yes",
@@ -3696,5 +3734,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 138
+  "validated_candidates": 139
 }

@@ -5467,46 +5467,49 @@
       "vuln_id": "V-271775"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271776",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271776r1092040_rule",
       "severity": "medium",
       "title": "OL 9 SSH server configuration file must be group-owned by root.",
-      "tracking_issue": "TODO-V-271776",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271776"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271777",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271777r1092043_rule",
       "severity": "medium",
       "title": "OL 9 SSH server configuration file must be owned by root.",
-      "tracking_issue": "TODO-V-271777",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271777"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271778",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271778r1092046_rule",
       "severity": "medium",
       "title": "OL 9 SSH server configuration file must have mode 0600 or less permissive.",
-      "tracking_issue": "TODO-V-271778",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271778"
@@ -6133,91 +6136,97 @@
       "vuln_id": "V-271817"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271818",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271818r1092166_rule",
       "severity": "medium",
       "title": "OL 9 /var/log directory must be group-owned by root.",
-      "tracking_issue": "TODO-V-271818",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271818"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271819",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271819r1092169_rule",
       "severity": "medium",
       "title": "OL 9 /var/log directory must be owned by root.",
-      "tracking_issue": "TODO-V-271819",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271819"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271820",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271820r1092172_rule",
       "severity": "medium",
       "title": "OL 9 /var/log directory must have mode 0755 or less permissive.",
-      "tracking_issue": "TODO-V-271820",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271820"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271821",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271821r1092175_rule",
       "severity": "medium",
       "title": "OL 9 /var/log/messages file must be group-owned by root.",
-      "tracking_issue": "TODO-V-271821",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271821"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271822",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271822r1092178_rule",
       "severity": "medium",
       "title": "OL 9 /var/log/messages file must be owned by root.",
-      "tracking_issue": "TODO-V-271822",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271822"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271823",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271823r1092181_rule",
       "severity": "medium",
       "title": "OL 9 /var/log/messages file must have mode 0640 or less permissive.",
-      "tracking_issue": "TODO-V-271823",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/90f96805598f24a440e14c9ca9745a875b6f346ac1d4419683f2cd9390a1f40e/U_Oracle_Linux_9_V1R1_STIG.zip"
       ],
       "vuln_id": "V-271823"

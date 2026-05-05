@@ -1,9 +1,24 @@
 {
+  "candidate_check": {
+    "check": {
+      "group": "root",
+      "mode": null,
+      "owner": null,
+      "path": "/usr/bin/lastlog",
+      "type": "file_permission"
+    },
+    "description": "The OL 8 lastlog command must be group-owned by root.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-248707"
+  },
   "check_content_excerpt": "Verify the \"lastlog\" command is group-owned by root with the following command: \n \n$ sudo ls -l /usr/bin/lastlog\n \n-rwxr-x---. 1  root  root  21200 Nov  4   22:51  /usr/bin/lastlog\n \nIf the \"lastlog\" command is not group-owned by root, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +26,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the \"lastlog\" command for OL 8 to be group-owned by root with the following command:  \n \n$ sudo chgrp root /usr/bin/lastlog",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_permission",
   "remediation": "planned",
   "rule_id": "SV-248707r958566_rule",
   "severity": "medium",

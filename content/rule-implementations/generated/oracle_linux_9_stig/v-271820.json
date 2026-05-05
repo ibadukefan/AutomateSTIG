@@ -1,9 +1,24 @@
 {
+  "candidate_check": {
+    "check": {
+      "group": null,
+      "mode": "0755",
+      "owner": null,
+      "path": "/var/log",
+      "type": "file_permission"
+    },
+    "description": "OL 9 /var/log directory must have mode 0755 or less permissive.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271820"
+  },
   "check_content_excerpt": "Verify that OL 9 configures the \"/var/log\" directory to have a mode of \"0755\" or less permissive with the following command:\n\n$ ls -ld /var/log\ndrwxr-xr-x. 16 root root 4096 July 11 11:34 /var/log\n\nIf \"/var/log\" does not have a mode of \"0755\" or less permissive, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +26,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the \"/var/log\" directory to a mode of \"0755\" by running the following command:\n\n$ sudo chmod 0755 /var/log",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_permission",
   "remediation": "planned",
   "rule_id": "SV-271820r1092172_rule",
   "severity": "medium",

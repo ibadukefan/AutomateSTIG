@@ -1,9 +1,24 @@
 {
+  "candidate_check": {
+    "check": {
+      "group": "root",
+      "mode": null,
+      "owner": null,
+      "path": "/var/log",
+      "type": "file_permission"
+    },
+    "description": "OL 9 /var/log directory must be group-owned by root.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271818"
+  },
   "check_content_excerpt": "Verify that OL 9 configures the \"/var/log\" directory to be group-owned by root with the following command:\n\n$ ls -ld /var/log\ndrwxr-xr-x. 16 root root 4096 July 11 11:34 /var/log\n\nIf \"/var/log\" does not have a group owner of \"root\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +26,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the group owner of the directory \"/var/log\" to \"root\" by running the following command:\n\n$ sudo chgrp root /var/log",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_permission",
   "remediation": "planned",
   "rule_id": "SV-271818r1092166_rule",
   "severity": "medium",

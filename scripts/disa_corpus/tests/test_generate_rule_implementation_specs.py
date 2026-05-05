@@ -1603,6 +1603,33 @@ If a value of "0" is not returned, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/etc/gshadow', 'owner': None, 'group': None, 'mode': '0000'})
         self.assertEqual(candidate['expected'], {'type': 'is_true'})
 
+    def test_infers_linux_file_permission_candidate_from_single_file_ls_owner_group_sample(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271776',
+            'title': 'OL 9 SSH server configuration file must be group-owned by root.',
+            'check_content': '''Verify that OL 9 configures group ownership of the "/etc/ssh/sshd_config" file with the following command:
+
+$ ls -al /etc/ssh/sshd_config
+rw-------. 1 root root 3669 Feb 22 11:34 /etc/ssh/sshd_config
+
+If the "/etc/ssh/sshd_config" file does not have a group owner of "root", this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/etc/ssh/sshd_config', 'owner': None, 'group': 'root', 'mode': None})
+        self.assertEqual(candidate['expected'], {'type': 'is_true'})
+
+    def test_skips_recursive_ls_file_permission_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-244531',
+            'title': 'All RHEL 8 local interactive user home directory files must have mode 0750 or less permissive.',
+            'check_content': '''Verify all files and directories contained in a local interactive user home directory have a mode of "0750".
+
+$ sudo ls -lLR /home/smithj
+-rwxr-x--- 1 smithj smithj 18 Mar 5 17:06 file1
+
+If any files or directories are found with a mode more permissive than "0750", this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertIsNone(candidate)
+
     def test_infers_linux_file_content_candidate_from_cat_pipe_grep_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-251713',

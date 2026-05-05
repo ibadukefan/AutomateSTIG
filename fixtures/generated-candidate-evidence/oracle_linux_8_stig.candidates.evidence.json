@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 312,
+  "candidate_checks": 315,
   "cases": [
     {
       "check": {
@@ -3549,6 +3549,82 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/usr/bin/lastlog",
+        "type": "file_permission"
+      },
+      "description": "The OL 8 lastlog command must be owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/usr/bin/lastlog": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/usr/bin/lastlog": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248706"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/usr/bin/lastlog",
+        "type": "file_permission"
+      },
+      "description": "The OL 8 lastlog command must be group-owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/usr/bin/lastlog": {
+            "exists": true,
+            "group": "unexpected-root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/usr/bin/lastlog": {
+            "exists": true,
+            "group": "root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248707"
+    },
+    {
+      "check": {
         "command": "grep -r ocredit /etc/security/pwquality.conf*",
         "type": "command_output"
       },
@@ -5589,6 +5665,44 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248805"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/etc/audit/auditd.conf",
+        "type": "file_permission"
+      },
+      "description": "OL 8 must allow only the Information System Security Manager (ISSM) (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/audit/auditd.conf": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/audit/auditd.conf": {
+            "exists": true,
+            "group": null,
+            "mode": "0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248806"
     },
     {
       "check": {
@@ -8470,5 +8584,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 312
+  "validated_candidates": 315
 }

@@ -2020,12 +2020,17 @@ def _file_permission_candidate(rule: dict) -> dict | None:
         r'\bfind\s+(?P<path>/[A-Za-z0-9_./:+-]+)\s+-exec\s+stat\s+-c\s+["\'](?P<format>[^"\']+)["\']\s+\{\}\s+\\;',
         content,
     )
+    ls_file_match = re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?ls\s+-(?![A-Za-z]*R)[A-Za-z]*l[A-Za-z]*\s+(?P<path>/[A-Za-z0-9_./:+-]+)\s*$',
+        content,
+        re.MULTILINE,
+    )
     path_match = re.search(r'\bstat\s+(?:-[A-Za-z]+\s+)*(?:["\'][^"\']+["\']\s+)?(/[A-Za-z0-9_./:+-]+)', content)
     if not path_match:
         path_match = re.search(r'\b(?:permissions|mode)[^\n.]+\s+(/[A-Za-z0-9_./:+-]+)', content, re.IGNORECASE)
-    if not path_match and not find_exec_stat_match:
+    if not path_match and not find_exec_stat_match and not ls_file_match:
         return None
-    path = path_match.group(1) if path_match else find_exec_stat_match.group('path')
+    path = path_match.group(1) if path_match else find_exec_stat_match.group('path') if find_exec_stat_match else ls_file_match.group('path')
     owner = None
     group = None
     mode = None
@@ -2073,6 +2078,33 @@ def _file_permission_candidate(rule: dict) -> dict | None:
                     owner = sample_line
                 elif field == '%G' and re.fullmatch(r'[A-Za-z0-9_.-]+', sample_line):
                     group = sample_line
+
+    if ls_file_match:
+        for raw_line in content[ls_file_match.end():].splitlines():
+            stripped = raw_line.strip()
+            if not stripped:
+                continue
+            if stripped.lower().startswith(('if ', 'note:', '$', '#', '>')):
+                break
+            values = stripped.split()
+            if len(values) >= 5 and values[-1] == path:
+                sample_owner = values[2]
+                sample_group = values[3]
+                owner_finding = re.search(
+                    rf'If\s+(?:the\s+)?["“]?{re.escape(path)}["”]?[^.\n]*does\s+not\s+have\s+an?\s+owner\s+of\s+["“]?{re.escape(sample_owner)}["”]?',
+                    content,
+                    re.IGNORECASE,
+                )
+                group_finding = re.search(
+                    rf'If\s+(?:the\s+)?["“]?{re.escape(path)}["”]?[^.\n]*does\s+not\s+have\s+a\s+group\s+owner\s+of\s+["“]?{re.escape(sample_group)}["”]?',
+                    content,
+                    re.IGNORECASE,
+                )
+                if owner_finding:
+                    owner = owner or sample_owner
+                if group_finding:
+                    group = group or sample_group
+            break
 
     if owner is None:
         owner_match = re.search(r'not\s+owned\s+by\s+["“]?([A-Za-z0-9_.-]+)', content, re.IGNORECASE)

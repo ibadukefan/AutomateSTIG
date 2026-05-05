@@ -1788,6 +1788,36 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/usr/bin/lastlog",
+        "type": "file_permission"
+      },
+      "description": "The OL 8 lastlog command must be owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248706"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/usr/bin/lastlog",
+        "type": "file_permission"
+      },
+      "description": "The OL 8 lastlog command must be group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248707"
+    },
+    {
+      "check": {
         "command": "grep -r ocredit /etc/security/pwquality.conf*",
         "type": "command_output"
       },
@@ -2833,6 +2863,21 @@
       },
       "platform": "linux",
       "vuln_id": "V-248805"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/etc/audit/auditd.conf",
+        "type": "file_permission"
+      },
+      "description": "OL 8 must allow only the Information System Security Manager (ISSM) (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248806"
     },
     {
       "check": {

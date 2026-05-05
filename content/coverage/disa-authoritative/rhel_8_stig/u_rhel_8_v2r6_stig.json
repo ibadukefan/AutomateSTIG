@@ -3419,16 +3419,17 @@
       "vuln_id": "V-230470"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-230471",
+      "check_pack": "generated-candidates/rhel_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-230471r1069296_rule",
       "severity": "medium",
       "title": "RHEL 8 must allow only the Information System Security Manager (ISSM) (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited.",
-      "tracking_issue": "TODO-V-230471",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
         "content/disa-corpus/artifacts/45a4c12d5134d75e43ab4508ac92d2c43b2f6228716cd9fbb96cc4fd42c139cb/U_RHEL_8_V2R6_STIG.zip"
       ],
       "vuln_id": "V-230471"

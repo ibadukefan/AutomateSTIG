@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 284,
+  "candidate_checks": 285,
   "cases": [
     {
       "check": {
@@ -3914,6 +3914,44 @@
     {
       "check": {
         "group": null,
+        "mode": "0640",
+        "owner": null,
+        "path": "/etc/audit/auditd.conf",
+        "type": "file_permission"
+      },
+      "description": "RHEL 8 must allow only the Information System Security Manager (ISSM) (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/audit/auditd.conf": {
+            "exists": true,
+            "group": null,
+            "mode": "unexpected-0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/audit/auditd.conf": {
+            "exists": true,
+            "group": null,
+            "mode": "0640",
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230471"
+    },
+    {
+      "check": {
+        "group": null,
         "mode": "755",
         "owner": null,
         "path": "/sbin/auditctl",
@@ -7647,5 +7685,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 284
+  "validated_candidates": 285
 }

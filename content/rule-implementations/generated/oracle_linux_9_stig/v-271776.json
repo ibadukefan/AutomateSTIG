@@ -1,9 +1,24 @@
 {
+  "candidate_check": {
+    "check": {
+      "group": "root",
+      "mode": null,
+      "owner": null,
+      "path": "/etc/ssh/sshd_config",
+      "type": "file_permission"
+    },
+    "description": "OL 9 SSH server configuration file must be group-owned by root.",
+    "expected": {
+      "type": "is_true"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271776"
+  },
   "check_content_excerpt": "Verify that OL 9 configures group ownership of the \"/etc/ssh/sshd_config\" file with the following command:\n\n$ ls -al /etc/ssh/sshd_config\nrw-------. 1 root root 3669 Feb 22 11:34 /etc/ssh/sshd_config\n\nIf the \"/etc/ssh/sshd_config\" file does not have a group owner of \"root\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +26,15 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "is_true"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the \"/etc/ssh/sshd_config\" file to be group-owned by root with the following command:\n\n$ sudo chgrp root /etc/ssh/sshd_config",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "file_permission",
   "remediation": "planned",
   "rule_id": "SV-271776r1092040_rule",
   "severity": "medium",

@@ -1680,6 +1680,21 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": "0600",
+        "owner": null,
+        "path": "/var/log/audit",
+        "type": "file_permission"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must protect audit information from unauthorized read, modification, or deletion.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-228564"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "X11UseLocalhost yes",
