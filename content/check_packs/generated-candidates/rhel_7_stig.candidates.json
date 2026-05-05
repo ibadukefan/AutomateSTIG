@@ -1598,6 +1598,19 @@
     },
     {
       "check": {
+        "command": "grep -E 'public|private' /etc/snmp/snmpd.conf",
+        "type": "command_output"
+      },
+      "description": "SNMP community strings on the Red Hat Enterprise Linux operating system must be changed from the default.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-204627"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ipsec.conf",
         "pattern": "/etc/ipsec.d/*.conf",

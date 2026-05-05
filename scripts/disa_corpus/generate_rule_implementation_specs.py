@@ -1826,6 +1826,24 @@ def _windows_ad_smartcard_no_listed_users_candidate(rule: dict, stig_id: str) ->
 
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
+    snmp_default_community_strings = (
+        _linux_platform(stig_id)
+        and re.search(r'^\s*[$#>]\s*grep\s+public\s+/etc/snmp/snmpd\.conf\s*$', content, re.MULTILINE)
+        and re.search(r'^\s*[$#>]\s*grep\s+private\s+/etc/snmp/snmpd\.conf\s*$', content, re.MULTILINE)
+        and re.search(
+            r'If\s+either\s+of\s+these\s+commands\s+returns\s+any\s+output,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+    )
+    if snmp_default_community_strings:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "grep -E 'public|private' /etc/snmp/snmpd.conf"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     duplicate_uid_zero_match = re.search(
         r'^\s*[$#>]\s*(?:sudo\s+)?(?P<command>awk\s+-F:\s+["\']\$3\s*==\s*0\s*\{print\s+\$1\}\s*["\']\s+/etc/passwd)\s*$',
         content,

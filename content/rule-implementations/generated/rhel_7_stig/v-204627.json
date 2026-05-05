@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -E 'public|private' /etc/snmp/snmpd.conf",
+      "type": "command_output"
+    },
+    "description": "SNMP community strings on the Red Hat Enterprise Linux operating system must be changed from the default.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-204627"
+  },
   "check_content_excerpt": "Verify that a system using SNMP is not using default community strings.\n\nCheck to see if the \"/etc/snmp/snmpd.conf\" file exists with the following command:\n\n# ls -al /etc/snmp/snmpd.conf\n -rw-------   1 root root      52640 Mar 12 11:08 snmpd.conf\n\nIf the file does not exist, this is Not Applicable.\n\nIf the file does exist, check for the default community strings with the following commands:\n\n# grep public /etc/snmp/snmpd.conf\n# grep private /etc/snmp/snmpd.conf\n\nIf either of these commands returns any output, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "If the \"/etc/snmp/snmpd.conf\" file exists, modify any lines that contain a community string value of \"public\" or \"private\" to another string value.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-204627r991589_rule",
   "severity": "high",

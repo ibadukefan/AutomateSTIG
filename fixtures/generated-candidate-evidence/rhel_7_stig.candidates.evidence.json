@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 141,
+  "candidate_checks": 142,
   "cases": [
     {
       "check": {
@@ -3107,6 +3107,32 @@
     },
     {
       "check": {
+        "command": "grep -E 'public|private' /etc/snmp/snmpd.conf",
+        "type": "command_output"
+      },
+      "description": "SNMP community strings on the Red Hat Enterprise Linux operating system must be changed from the default.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -E 'public|private' /etc/snmp/snmpd.conf": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -E 'public|private' /etc/snmp/snmpd.conf": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204627"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ipsec.conf",
         "pattern": "/etc/ipsec.d/*.conf",
@@ -3786,5 +3812,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 141
+  "validated_candidates": 142
 }

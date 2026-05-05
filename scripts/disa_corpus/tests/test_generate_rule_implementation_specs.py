@@ -77,6 +77,34 @@ If the "TFTP" application exists, this is a finding.''',
         self.assertEqual(classification, 'manual')
         self.assertEqual(collector, 'manual_evidence_workflow')
 
+    def test_infers_linux_snmp_default_community_strings_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204627',
+            'title': 'SNMP community strings on the Red Hat Enterprise Linux operating system must be changed from the default.',
+            'check_content': '''Verify that a system using SNMP is not using default community strings.
+
+Check to see if the "/etc/snmp/snmpd.conf" file exists with the following command:
+
+# ls -al /etc/snmp/snmpd.conf
+-rw-------   1 root root      52640 Mar 12 11:08 snmpd.conf
+
+If the file does not exist, this is Not Applicable.
+
+If the file does exist, check for the default community strings with the following commands:
+
+# grep public /etc/snmp/snmpd.conf
+# grep private /etc/snmp/snmpd.conf
+
+If either of these commands returns any output, this is a finding.''',
+        }, 'RHEL_7_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-204627',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "grep -E 'public|private' /etc/snmp/snmpd.conf"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'SNMP community strings on the Red Hat Enterprise Linux operating system must be changed from the default.',
+        })
+
     def test_infers_rpm_xorg_server_absent_unless_approved_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230553',
