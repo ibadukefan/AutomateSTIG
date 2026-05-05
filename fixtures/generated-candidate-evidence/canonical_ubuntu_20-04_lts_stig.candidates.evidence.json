@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 130,
+  "candidate_checks": 131,
   "cases": [
     {
       "check": {
@@ -2804,6 +2804,32 @@
     },
     {
       "check": {
+        "command": "grep AllowUnauthenticated /etc/apt/apt.conf.d/* | grep -i 'true'",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system's Advance Package Tool (APT) must be configured to prevent the installation of patches, service packs, device drivers, or Ubuntu operating system components without verification they have been digitally signed using a certificate that is recognized and approved by the organization.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep AllowUnauthenticated /etc/apt/apt.conf.d/* | grep -i 'true'": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep AllowUnauthenticated /etc/apt/apt.conf.d/* | grep -i 'true'": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-238359"
+    },
+    {
+      "check": {
         "name": "apparmor",
         "should_be_installed": true,
         "type": "package"
@@ -3592,5 +3618,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 130
+  "validated_candidates": 131
 }

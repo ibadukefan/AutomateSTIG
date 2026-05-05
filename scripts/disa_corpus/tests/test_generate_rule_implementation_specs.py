@@ -105,6 +105,27 @@ If either of these commands returns any output, this is a finding.''',
             'description': 'SNMP community strings on the Red Hat Enterprise Linux operating system must be changed from the default.',
         })
 
+    def test_infers_linux_apt_allowunauthenticated_true_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-238359',
+            'title': 'The Ubuntu operating system\'s Advance Package Tool (APT) must be configured to prevent the installation of patches, service packs, device drivers, or Ubuntu operating system components without verification they have been digitally signed using a certificate that is recognized and approved by the organization.',
+            'check_content': '''Verify that APT is configured to prevent the installation of patches, service packs, device drivers, or Ubuntu operating system components without verification they have been digitally signed using a certificate that is recognized and approved by the organization.
+
+Check that the "AllowUnauthenticated" variable is not set at all or is set to "false" with the following command:
+
+$ grep AllowUnauthenticated /etc/apt/apt.conf.d/*
+/etc/apt/apt.conf.d/01-vendor-Ubuntu:APT::Get::AllowUnauthenticated "false";
+
+If any of the files returned from the command with "AllowUnauthenticated" are set to "true", this is a finding.''',
+        }, 'Canonical_Ubuntu_20-04_LTS_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-238359',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "grep AllowUnauthenticated /etc/apt/apt.conf.d/* | grep -i 'true'"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Ubuntu operating system\'s Advance Package Tool (APT) must be configured to prevent the installation of patches, service packs, device drivers, or Ubuntu operating system components without verification they have been digitally signed using a certificate that is recognized and approved by the organization.',
+        })
+
     def test_infers_rpm_xorg_server_absent_unless_approved_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230553',

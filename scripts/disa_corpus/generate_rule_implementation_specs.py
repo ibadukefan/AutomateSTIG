@@ -1844,6 +1844,28 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    apt_allowunauthenticated_true = (
+        _linux_platform(stig_id)
+        and re.search(r'^\s*[$#>]\s*grep\s+AllowUnauthenticated\s+/etc/apt/apt\.conf\.d/\*\s*$', content, re.MULTILINE)
+        and re.search(
+            r'Check\s+that\s+the\s+["“]AllowUnauthenticated["”]\s+variable\s+is\s+not\s+set\s+at\s+all\s+or\s+is\s+set\s+to\s+["“]false["”]',
+            content,
+            re.IGNORECASE,
+        )
+        and re.search(
+            r'If\s+any\s+of\s+the\s+files\s+returned\s+from\s+the\s+command\s+with\s+["“]AllowUnauthenticated["”]\s+are\s+set\s+to\s+["“]true["”],?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+    )
+    if apt_allowunauthenticated_true:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "grep AllowUnauthenticated /etc/apt/apt.conf.d/* | grep -i 'true'"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     duplicate_uid_zero_match = re.search(
         r'^\s*[$#>]\s*(?:sudo\s+)?(?P<command>awk\s+-F:\s+["\']\$3\s*==\s*0\s*\{print\s+\$1\}\s*["\']\s+/etc/passwd)\s*$',
         content,
