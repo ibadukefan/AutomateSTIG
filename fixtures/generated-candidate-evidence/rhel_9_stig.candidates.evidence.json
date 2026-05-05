@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 374,
+  "candidate_checks": 375,
   "cases": [
     {
       "check": {
@@ -5373,6 +5373,32 @@
     },
     {
       "check": {
+        "command": "function dconf_needs_update { for db in $(find /etc/dconf/db -maxdepth 1 -type f); do db_mtime=$(stat -c %Y \"$db\"); keyfile_mtime=$(stat -c %Y \"$db\".d/* | sort -n | tail -1); if [ -n \"$db_mtime\" ] && [ -n \"$keyfile_mtime\" ] && [ \"$db_mtime\" -lt \"$keyfile_mtime\" ]; then echo \"$db needs update\"; return 1; fi; done; }; dconf_needs_update",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 effective dconf policy must match the policy keyfiles.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "function dconf_needs_update { for db in $(find /etc/dconf/db -maxdepth 1 -type f); do db_mtime=$(stat -c %Y \"$db\"); keyfile_mtime=$(stat -c %Y \"$db\".d/* | sort -n | tail -1); if [ -n \"$db_mtime\" ] && [ -n \"$keyfile_mtime\" ] && [ \"$db_mtime\" -lt \"$keyfile_mtime\" ]; then echo \"$db needs update\"; return 1; fi; done; }; dconf_needs_update": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "function dconf_needs_update { for db in $(find /etc/dconf/db -maxdepth 1 -type f); do db_mtime=$(stat -c %Y \"$db\"); keyfile_mtime=$(stat -c %Y \"$db\".d/* | sort -n | tail -1); if [ -n \"$db_mtime\" ] && [ -n \"$keyfile_mtime\" ] && [ \"$db_mtime\" -lt \"$keyfile_mtime\" ]; then echo \"$db needs update\"; return 1; fi; done; }; dconf_needs_update": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258028"
+    },
+    {
+      "check": {
         "command": "gsettings get org.gnome.login-screen disable-restart-buttons",
         "type": "command_output"
       },
@@ -10386,5 +10412,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 374
+  "validated_candidates": 375
 }

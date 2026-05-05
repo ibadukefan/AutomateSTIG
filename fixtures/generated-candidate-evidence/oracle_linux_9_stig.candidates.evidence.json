@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 407,
+  "candidate_checks": 408,
   "cases": [
     {
       "check": {
@@ -6194,6 +6194,32 @@
     },
     {
       "check": {
+        "command": "function dconf_needs_update { for db in $(find /etc/dconf/db -maxdepth 1 -type f); do db_mtime=$(stat -c %Y \"$db\"); keyfile_mtime=$(stat -c %Y \"$db\".d/* | sort -n | tail -1); if [ -n \"$db_mtime\" ] && [ -n \"$keyfile_mtime\" ] && [ \"$db_mtime\" -lt \"$keyfile_mtime\" ]; then echo \"$db needs update\"; return 1; fi; done; }; dconf_needs_update",
+        "type": "command_output"
+      },
+      "description": "OL 9 effective dconf policy must match the policy keyfiles.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "function dconf_needs_update { for db in $(find /etc/dconf/db -maxdepth 1 -type f); do db_mtime=$(stat -c %Y \"$db\"); keyfile_mtime=$(stat -c %Y \"$db\".d/* | sort -n | tail -1); if [ -n \"$db_mtime\" ] && [ -n \"$keyfile_mtime\" ] && [ \"$db_mtime\" -lt \"$keyfile_mtime\" ]; then echo \"$db needs update\"; return 1; fi; done; }; dconf_needs_update": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "function dconf_needs_update { for db in $(find /etc/dconf/db -maxdepth 1 -type f); do db_mtime=$(stat -c %Y \"$db\"); keyfile_mtime=$(stat -c %Y \"$db\".d/* | sort -n | tail -1); if [ -n \"$db_mtime\" ] && [ -n \"$keyfile_mtime\" ] && [ \"$db_mtime\" -lt \"$keyfile_mtime\" ]; then echo \"$db needs update\"; return 1; fi; done; }; dconf_needs_update": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271692"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/bashrc",
         "pattern": "umask 077",
@@ -11316,5 +11342,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 407
+  "validated_candidates": 408
 }

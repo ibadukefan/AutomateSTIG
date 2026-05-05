@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "function dconf_needs_update { for db in $(find /etc/dconf/db -maxdepth 1 -type f); do db_mtime=$(stat -c %Y \"$db\"); keyfile_mtime=$(stat -c %Y \"$db\".d/* | sort -n | tail -1); if [ -n \"$db_mtime\" ] && [ -n \"$keyfile_mtime\" ] && [ \"$db_mtime\" -lt \"$keyfile_mtime\" ]; then echo \"$db needs update\"; return 1; fi; done; }; dconf_needs_update",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 effective dconf policy must match the policy keyfiles.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-258028"
+  },
   "check_content_excerpt": "Check the last modification time of the local databases, comparing it to the last modification time of the related keyfiles. The following command will check every dconf database and compare its modification time to the related system keyfiles:\n\nNote: This requirement assumes the use of the RHEL 9 default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\n$ function dconf_needs_update { for db in $(find /etc/dconf/db -maxdepth 1 -type f); do db_mtime=$(stat -c %Y \"$db\"); keyfile_mtime=$(stat -c %Y \"$db\".d/* | sort -n | tail -1); if [ -n \"$db_mtime\" ] && [ -n \"$keyfile_mtime\" ] && [ \"$db_mtime\" -lt \"$keyfile_mtime\" ]; then echo \"$db needs update\"; return 1; fi; done; }; dconf_needs_update\n\nIf the command has any output, then a dconf database needs to be updated, and this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Update the dconf databases by running the following command:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258028r991589_rule",
   "severity": "medium",

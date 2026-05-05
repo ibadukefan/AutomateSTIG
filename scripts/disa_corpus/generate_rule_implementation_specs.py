@@ -1348,6 +1348,32 @@ def _fstab_mount_option_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _dconf_needs_update_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _linux_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    command_match = re.search(
+        r'^\s*[$#>]\s*(?P<command>function\s+dconf_needs_update\s+\{\s+for\s+db\s+in\s+\$\(find\s+/etc/dconf/db\s+-maxdepth\s+1\s+-type\s+f\);\s+do\s+db_mtime=\$\(stat\s+-c\s+%Y\s+"\$db"\);\s+keyfile_mtime=\$\(stat\s+-c\s+%Y\s+"\$db"\.d/\*\s+\|\s+sort\s+-n\s+\|\s+tail\s+-1\);\s+if\s+\[\s+-n\s+"\$db_mtime"\s+\]\s+&&\s+\[\s+-n\s+"\$keyfile_mtime"\s+\]\s+&&\s+\[\s+"\$db_mtime"\s+-lt\s+"\$keyfile_mtime"\s+\];\s+then\s+echo\s+"\$db\s+needs\s+update";\s+return\s+1;\s+fi;\s+done;\s+\};\s+dconf_needs_update)\s*$',
+        content,
+        re.MULTILINE,
+    )
+    if not command_match:
+        return None
+    if not re.search(
+        r'If\s+the\s+command\s+has\s+any\s+output,\s+then\s+a\s+dconf\s+database\s+needs\s+to\s+be\s+updated,\s+and\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': _normalize_command(command_match.group('command'))},
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _dconf_grep_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -1829,6 +1855,9 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     macos_pass_fail_candidate = _macos_pass_fail_shell_block_candidate(rule, stig_id)
     if macos_pass_fail_candidate:
         return macos_pass_fail_candidate
+    dconf_needs_update_candidate = _dconf_needs_update_candidate(rule, stig_id)
+    if dconf_needs_update_candidate:
+        return dconf_needs_update_candidate
     dconf_candidate = _dconf_grep_candidate(rule, stig_id)
     if dconf_candidate:
         return dconf_candidate

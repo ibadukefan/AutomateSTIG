@@ -1862,6 +1862,23 @@ If the "disable-restart-button" setting is not set to "true", is missing or comm
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep -R disable-restart-buttons /etc/dconf/db/*'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': "disable-restart-buttons='true'"})
 
+    def test_infers_linux_dconf_update_no_output_candidate_from_exact_shell_function(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258028',
+            'title': 'RHEL 9 effective dconf policy must match the policy keyfiles.',
+            'check_content': '''Check the last modification time of the local databases, comparing it to the last modification time of the related keyfiles. The following command will check every dconf database and compare its modification time to the related system keyfiles:
+
+$ function dconf_needs_update { for db in $(find /etc/dconf/db -maxdepth 1 -type f); do db_mtime=$(stat -c %Y "$db"); keyfile_mtime=$(stat -c %Y "$db".d/* | sort -n | tail -1); if [ -n "$db_mtime" ] && [ -n "$keyfile_mtime" ] && [ "$db_mtime" -lt "$keyfile_mtime" ]; then echo "$db needs update"; return 1; fi; done; }; dconf_needs_update
+
+If the command has any output, then a dconf database needs to be updated, and this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': 'function dconf_needs_update { for db in $(find /etc/dconf/db -maxdepth 1 -type f); do db_mtime=$(stat -c %Y "$db"); keyfile_mtime=$(stat -c %Y "$db".d/* | sort -n | tail -1); if [ -n "$db_mtime" ] && [ -n "$keyfile_mtime" ] && [ "$db_mtime" -lt "$keyfile_mtime" ]; then echo "$db needs update"; return 1; fi; done; }; dconf_needs_update',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_linux_findmnt_option_candidate_from_authoritative_sample(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257864',
