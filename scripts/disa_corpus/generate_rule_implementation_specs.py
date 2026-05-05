@@ -2353,10 +2353,17 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     crypto_policy_krb5_symlink = (
         _linux_platform(stig_id)
         and command == 'file /etc/crypto-policies/back-ends/krb5.config'
-        and re.search(
-            r'If\s+command\s+output\s+shows\s+the\s+following\s+line,\s+Kerberos\s+is\s+configured\s+to\s+use\s+the\s+systemwide\s+crypto\s+policy:',
-            content,
-            re.IGNORECASE,
+        and (
+            re.search(
+                r'If\s+command\s+output\s+shows\s+the\s+following\s+line,\s+Kerberos\s+is\s+configured\s+to\s+use\s+the\s+systemwide\s+crypto\s+policy:',
+                content,
+                re.IGNORECASE,
+            )
+            or re.search(
+                r'Verify\s+that\s+[^.\n]*\bconfigures\s+Kerberos\s+to\s+use\s+the\s+systemwide\s+crypto\s+policy\s+with\s+the\s+following\s+command:',
+                content,
+                re.IGNORECASE,
+            )
         )
         and re.search(
             r'If\s+the\s+symlink\s+does\s+not\s+exist\s+or\s+points\s+to\s+a\s+different\s+target,?\s+this\s+is\s+a\s+finding',
@@ -2366,7 +2373,8 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     )
     if crypto_policy_krb5_symlink:
         expected_line = '/etc/crypto-policies/back-ends/krb5.config: symbolic link to /usr/share/crypto-policies/FIPS/krb5.txt'
-        if re.search(rf'^\s*{re.escape(expected_line)}\s*$', content, re.MULTILINE):
+        expected_line_pattern = re.escape(expected_line).replace(r'\ ', r'\s+')
+        if re.search(rf'^\s*{expected_line_pattern}\s*$', content, re.MULTILINE):
             return {
                 'vuln_id': rule.get('vuln_id', ''),
                 'platform': 'linux',

@@ -272,6 +272,28 @@ If the symlink does not exist or points to a different target, this is a finding
             'description': 'RHEL 9 must use mechanisms meeting the requirements of applicable federal laws, executive orders, directives, policies, regulations, standards, and guidance for authentication to a cryptographic module.',
         })
 
+    def test_infers_oracle_linux_krb5_crypto_policy_symlink_without_intro_phrase(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271762',
+            'title': 'OL 9 must use mechanisms meeting the requirements of applicable federal laws, executive orders, directives, policies, regulations, standards, and guidance for authentication to a cryptographic module.',
+            'check_content': '''Verify that OL 9 configures Kerberos to use the systemwide crypto policy with the following command:
+
+$ file /etc/crypto-policies/back-ends/krb5.config
+/etc/crypto-policies/back-ends/krb5.config: symbolic link to  /usr/share/crypto-policies/FIPS/krb5.txt
+
+If the symlink does not exist or points to a different target, this is a finding.''',
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-271762',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'file /etc/crypto-policies/back-ends/krb5.config'},
+            'expected': {
+                'type': 'contains',
+                'substring': '/etc/crypto-policies/back-ends/krb5.config: symbolic link to /usr/share/crypto-policies/FIPS/krb5.txt',
+            },
+            'description': 'OL 9 must use mechanisms meeting the requirements of applicable federal laws, executive orders, directives, policies, regulations, standards, and guidance for authentication to a cryptographic module.',
+        })
+
     def test_infers_linux_getsebool_literal_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-250313',

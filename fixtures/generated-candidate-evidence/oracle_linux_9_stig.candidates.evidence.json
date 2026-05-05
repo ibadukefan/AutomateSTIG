@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 411,
+  "candidate_checks": 412,
   "cases": [
     {
       "check": {
@@ -8012,6 +8012,32 @@
     },
     {
       "check": {
+        "command": "file /etc/crypto-policies/back-ends/krb5.config",
+        "type": "command_output"
+      },
+      "description": "OL 9 must use mechanisms meeting the requirements of applicable federal laws, executive orders, directives, policies, regulations, standards, and guidance for authentication to a cryptographic module.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "/etc/crypto-policies/back-ends/krb5.config: symbolic link to /usr/share/crypto-policies/FIPS/krb5.txt",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "file /etc/crypto-policies/back-ends/krb5.config": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "file /etc/crypto-policies/back-ends/krb5.config": "before\n/etc/crypto-policies/back-ends/krb5.config: symbolic link to /usr/share/crypto-policies/FIPS/krb5.txt\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271762"
+    },
+    {
+      "check": {
         "name": "tftp-server",
         "should_be_installed": true,
         "type": "package"
@@ -11420,5 +11446,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 411
+  "validated_candidates": 412
 }

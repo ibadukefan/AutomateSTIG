@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "file /etc/crypto-policies/back-ends/krb5.config",
+      "type": "command_output"
+    },
+    "description": "OL 9 must use mechanisms meeting the requirements of applicable federal laws, executive orders, directives, policies, regulations, standards, and guidance for authentication to a cryptographic module.",
+    "expected": {
+      "substring": "/etc/crypto-policies/back-ends/krb5.config: symbolic link to /usr/share/crypto-policies/FIPS/krb5.txt",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271762"
+  },
   "check_content_excerpt": "Verify that OL 9 configures Kerberos to use the systemwide crypto policy with the following command:\n\n$ file /etc/crypto-policies/back-ends/krb5.config\n/etc/crypto-policies/back-ends/krb5.config: symbolic link to  /usr/share/crypto-policies/FIPS/krb5.txt\n\nIf the symlink does not exist or points to a different target, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "/etc/crypto-policies/back-ends/krb5.config: symbolic link to /usr/share/crypto-policies/FIPS/krb5.txt",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure Kerberos to use system crypto policy.\n\nRemove incorrect symlink if it exists using the following command:\n\n$ sudo rm /etc/crypto-policies/back-ends/krb5.config\n\nCreate a symlink pointing to system crypto policy in the Kerberos configuration using the following command:\n\n$ sudo ln -s /usr/share/crypto-policies/FIPS/krb5.txt /etc/crypto-policies/back-ends/krb5.config",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271762r1091998_rule",
   "severity": "medium",
