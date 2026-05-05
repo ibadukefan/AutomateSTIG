@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 317,
+  "candidate_checks": 318,
   "cases": [
     {
       "check": {
@@ -8159,6 +8159,32 @@
     },
     {
       "check": {
+        "command": "yum list installed | grep ftpd",
+        "type": "command_output"
+      },
+      "description": "A File Transfer Protocol (FTP) server package must not be installed unless mission essential on OL 8.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "yum list installed | grep ftpd": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "yum list installed | grep ftpd": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248903"
+    },
+    {
+      "check": {
         "name": "gssproxy",
         "should_be_installed": false,
         "type": "package"
@@ -8636,5 +8662,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 317
+  "validated_candidates": 318
 }

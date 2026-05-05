@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "yum list installed | grep ftpd",
+      "type": "command_output"
+    },
+    "description": "A File Transfer Protocol (FTP) server package must not be installed unless mission essential on OL 8.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-248903"
+  },
   "check_content_excerpt": "Verify an FTP server has not been installed on the system with the following commands: \n \n$ sudo yum list installed | grep ftpd \n \nvsftpd-3.0.3.el8.x86_64.rpm \n \nIf an FTP server is installed and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Document the FTP server package with the ISSO as an operational requirement or remove it from the system with the following command: \n \n$ sudo yum remove vsftpd",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-248903r991589_rule",
   "severity": "high",

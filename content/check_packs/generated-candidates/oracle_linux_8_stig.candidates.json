@@ -4121,6 +4121,19 @@
     },
     {
       "check": {
+        "command": "yum list installed | grep ftpd",
+        "type": "command_output"
+      },
+      "description": "A File Transfer Protocol (FTP) server package must not be installed unless mission essential on OL 8.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248903"
+    },
+    {
+      "check": {
         "name": "gssproxy",
         "should_be_installed": false,
         "type": "package"

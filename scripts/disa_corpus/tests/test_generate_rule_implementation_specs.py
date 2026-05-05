@@ -3436,6 +3436,24 @@ If an FTP server is installed and is not documented with the Information System 
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'yum list installed *ftpd*'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_linux_ftp_server_package_pipeline_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248903',
+            'title': 'A File Transfer Protocol (FTP) server package must not be installed unless mission essential on OL 8.',
+            'check_content': '''Verify an FTP server has not been installed on the system with the following commands:
+
+$ sudo yum list installed | grep ftpd
+
+vsftpd-3.0.3.el8.x86_64.rpm
+
+If an FTP server is installed and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding.''',
+            'fix_text': 'Remove the FTP server package from the system with the following command:\n\n$ sudo yum remove vsftpd',
+        }, 'Oracle_Linux_8_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'yum list installed | grep ftpd'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_windows_security_option_candidate_from_explicit_disabled_value(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-254465',
