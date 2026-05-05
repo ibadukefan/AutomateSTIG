@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 142,
+  "candidate_checks": 143,
   "cases": [
     {
       "check": {
@@ -3545,6 +3545,32 @@
     },
     {
       "check": {
+        "command": "getsebool ssh_sysadm_login",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not allow privileged accounts to utilize SSH.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "ssh_sysadm_login --> off"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "getsebool ssh_sysadm_login": "unexpected-ssh_sysadm_login --> off"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "getsebool ssh_sysadm_login": "ssh_sysadm_login --> off"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-250313"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sudoers",
         "pattern": "/etc/sudoers.d",
@@ -3812,5 +3838,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 142
+  "validated_candidates": 143
 }

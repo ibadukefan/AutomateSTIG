@@ -239,6 +239,25 @@ If the symlink does not exist or points to a different target, this is a finding
             'description': 'RHEL 9 must use mechanisms meeting the requirements of applicable federal laws, executive orders, directives, policies, regulations, standards, and guidance for authentication to a cryptographic module.',
         })
 
+    def test_infers_linux_getsebool_literal_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-250313',
+            'title': 'The Red Hat Enterprise Linux operating system must not allow privileged accounts to utilize SSH.',
+            'check_content': '''Verify the operating system prevents privileged accounts from utilizing SSH. Check the SELinux ssh_sysadm_login boolean with the following command:
+
+$ sudo getsebool ssh_sysadm_login
+ssh_sysadm_login --> off
+
+If the "ssh_sysadm_login" boolean is not "off" and is not documented with the ISSO as an operational requirement, this is a finding.''',
+        }, 'RHEL_7_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-250313',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'getsebool ssh_sysadm_login'},
+            'expected': {'type': 'equals', 'value': 'ssh_sysadm_login --> off'},
+            'description': 'The Red Hat Enterprise Linux operating system must not allow privileged accounts to utilize SSH.',
+        })
+
     def test_infers_linux_cron_stat_group_root_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257927',

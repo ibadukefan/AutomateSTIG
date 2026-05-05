@@ -1818,6 +1818,19 @@
     },
     {
       "check": {
+        "command": "getsebool ssh_sysadm_login",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must not allow privileged accounts to utilize SSH.",
+      "expected": {
+        "type": "equals",
+        "value": "ssh_sysadm_login --> off"
+      },
+      "platform": "linux",
+      "vuln_id": "V-250313"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sudoers",
         "pattern": "/etc/sudoers.d",

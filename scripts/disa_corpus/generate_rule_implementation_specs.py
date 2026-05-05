@@ -2492,6 +2492,23 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
                 'description': rule.get('title', ''),
             }
 
+    getsebool_match = re.fullmatch(r'getsebool\s+(?P<boolean>[A-Za-z0-9_]+)', command)
+    if getsebool_match:
+        boolean_name = getsebool_match.group('boolean')
+        sample_match = re.search(rf'^\s*{re.escape(boolean_name)}\s+-->\s+(?P<value>on|off)\s*$', content, re.IGNORECASE | re.MULTILINE)
+        if sample_match and re.search(
+            rf'If\s+the\s+["“]{re.escape(boolean_name)}["”]\s+boolean\s+is\s+not\s+["“]{re.escape(sample_match.group("value"))}["”][^.\n]*this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        ):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+                'check': {'type': 'command_output', 'command': command},
+                'expected': {'type': 'equals', 'value': f'{boolean_name} --> {sample_match.group("value").lower()}'},
+                'description': rule.get('title', ''),
+            }
+
     result_match = re.search(
         r'If\s+the\s+(?:result\s+is\s+not|output\s+is\s+not|command\s+does\s+not\s+return)\s+["“]([^"”\n]+)["”]',
         content,
