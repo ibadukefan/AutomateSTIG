@@ -158,8 +158,19 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
             pass_fixture['command_outputs'] = {command: f"before\n{substring}\nafter\n"}
             fail_fixture['command_outputs'] = {command: "before\nafter\n"}
             evidence_type = 'command_output_contains'
+        elif expected.get('type') == 'matches':
+            command = check['command']
+            pattern = expected.get('pattern', '')
+            uint32_match = re.search(r'\|([1-9][0-9]{0,2})\)\$', pattern)
+            if uint32_match and pattern.startswith('^uint32 '):
+                maximum = int(uint32_match.group(1))
+                pass_fixture['command_outputs'] = {command: f'uint32 {maximum}'}
+                fail_fixture['command_outputs'] = {command: f'uint32 {maximum + 1}'}
+            else:
+                raise ValueError(f"{candidate['vuln_id']}: command_output matches evidence requires supported deterministic regex")
+            evidence_type = 'command_output_matches'
         else:
-            raise ValueError(f"{candidate['vuln_id']}: command_output candidate only supports equals, not_equals, or contains evidence")
+            raise ValueError(f"{candidate['vuln_id']}: command_output candidate only supports equals, not_equals, contains, or matches evidence")
     else:
         raise ValueError(f"{candidate['vuln_id']}: unsupported candidate check type {check_type}")
 

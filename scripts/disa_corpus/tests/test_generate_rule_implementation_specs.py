@@ -105,6 +105,26 @@ If the "TFTP" application exists, this is a finding.''',
         self.assertEqual(candidate['check']['command'], 'powershell -NoProfile -Command "Test-Path \\\"$env:windir\\System32\\tftp.exe\\\""')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'False'})
 
+    def test_infers_linux_gsettings_uint32_positive_maximum_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230352',
+            'title': 'RHEL 8 must automatically lock graphical user sessions after 15 minutes of inactivity.',
+            'check_content': '''Verify RHEL 8 initiates a session lock after a 15-minute period of inactivity for graphical user interfaces with the following command:
+
+$ sudo gsettings get org.gnome.desktop.session idle-delay
+
+uint32 900
+
+If "idle-delay" is set to "0" or a value greater than "900", this is a finding.''',
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-230352',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'gsettings get org.gnome.desktop.session idle-delay'},
+            'expected': {'type': 'matches', 'pattern': r'^uint32 (?:[1-9]|[1-9][0-9]|[1-8][0-9]{2}|900)$'},
+            'description': 'RHEL 8 must automatically lock graphical user sessions after 15 minutes of inactivity.',
+        })
+
     def test_classifies_policy_language_as_manual_evidence_workflow(self):
         classification, collector = mod.classify_rule('The organization must document an approval process.')
         self.assertEqual(classification, 'manual')

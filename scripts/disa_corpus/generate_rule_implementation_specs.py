@@ -1247,6 +1247,41 @@ def _has_unsafe_shell_token(command: str, *, allow_command_substitution: bool = 
     return any(token in unquoted for token in tokens)
 
 
+def _uint32_positive_le_pattern(maximum: int) -> str | None:
+    if maximum <= 0 or maximum > 999:
+        return None
+    if maximum < 10:
+        return rf'^uint32 [1-{maximum}]$'
+    if maximum < 100:
+        tens = maximum // 10
+        ones = maximum % 10
+        parts = ['[1-9]']
+        if tens > 1:
+            parts.append(f'[1-{tens - 1}][0-9]')
+        parts.append(f'{tens}[0-{ones}]')
+        alternation = '|'.join(parts)
+        return rf'^uint32 (?:{alternation})$'
+    hundreds = maximum // 100
+    remainder = maximum % 100
+    parts = ['[1-9]', '[1-9][0-9]']
+    if hundreds > 1:
+        parts.append(f'[1-{hundreds - 1}][0-9]{{2}}')
+    if remainder == 99:
+        parts.append(f'{hundreds}[0-9]{{2}}')
+    elif remainder == 0:
+        parts.append(f'{hundreds}00')
+    elif remainder < 10:
+        parts.append(f'{hundreds}0[0-{remainder}]')
+    else:
+        tens = remainder // 10
+        ones = remainder % 10
+        if tens > 0:
+            parts.append(f'{hundreds}[0-{tens - 1}][0-9]')
+        parts.append(f'{hundreds}{tens}[0-{ones}]')
+    alternation = '|'.join(parts)
+    return rf'^uint32 (?:{alternation})$'
+
+
 def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
@@ -1269,6 +1304,25 @@ def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
         expected_line = stripped
         break
     if expected_line not in ('true', 'false'):
+        uint32_match = re.fullmatch(r'uint32\s+([1-9][0-9]{0,2})', expected_line or '')
+        if uint32_match:
+            maximum = int(uint32_match.group(1))
+            pattern = _uint32_positive_le_pattern(maximum)
+            if (
+                pattern
+                and re.search(
+                    rf'If\s+["“]?[A-Za-z0-9_.-]+["”]?\s+is\s+set\s+to\s+["“]?0["”]?\s+or\s+a\s+value\s+greater\s+than\s+["“]?{maximum}["”]?',
+                    content,
+                    re.IGNORECASE,
+                )
+            ):
+                return {
+                    'vuln_id': rule.get('vuln_id', ''),
+                    'platform': 'linux',
+                    'check': {'type': 'command_output', 'command': command},
+                    'expected': {'type': 'matches', 'pattern': pattern},
+                    'description': rule.get('title', ''),
+                }
         if (
             re.fullmatch(r'gsettings\s+get\s+org\.gnome\.settings-daemon\.plugins\.media-keys\s+logout', command)
             and expected_line in ("['']", '"[\'\']"', '@as []')

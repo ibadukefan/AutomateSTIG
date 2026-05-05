@@ -167,6 +167,18 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
         self.assertEqual(case['pass_fixture']['command_outputs'], {'/usr/lib/vmware/openssh/bin/sshd -T|grep permittunnel': 'permittunnel no'})
         self.assertNotEqual(case['fail_fixture']['command_outputs']['/usr/lib/vmware/openssh/bin/sshd -T|grep permittunnel'], 'permittunnel no')
 
+    def test_builds_command_output_matches_fixture_case(self):
+        case = mod.build_case({
+            'vuln_id': 'V-230352',
+            'platform': 'linux',
+            'description': 'GNOME idle delay',
+            'check': {'type': 'command_output', 'command': 'gsettings get org.gnome.desktop.session idle-delay'},
+            'expected': {'type': 'matches', 'pattern': r'^uint32 (?:[1-9]|[1-9][0-9]|[1-8][0-9]{2}|900)$'},
+        })
+        self.assertEqual(case['evidence_type'], 'command_output_matches')
+        self.assertEqual(case['pass_fixture']['command_outputs'], {'gsettings get org.gnome.desktop.session idle-delay': 'uint32 900'})
+        self.assertEqual(case['fail_fixture']['command_outputs'], {'gsettings get org.gnome.desktop.session idle-delay': 'uint32 901'})
+
     def test_builds_command_output_not_equals_fixture_case(self):
         case = mod.build_case({
             'vuln_id': 'V-256404',

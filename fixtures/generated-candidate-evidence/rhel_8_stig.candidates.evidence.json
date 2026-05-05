@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 290,
+  "candidate_checks": 291,
   "cases": [
     {
       "check": {
@@ -1547,6 +1547,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230351"
+    },
+    {
+      "check": {
+        "command": "gsettings get org.gnome.desktop.session idle-delay",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must automatically lock graphical user sessions after 15 minutes of inactivity.",
+      "evidence_type": "command_output_matches",
+      "expected": {
+        "pattern": "^uint32 (?:[1-9]|[1-9][0-9]|[1-8][0-9]{2}|900)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.desktop.session idle-delay": "uint32 901"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.desktop.session idle-delay": "uint32 900"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230352"
     },
     {
       "check": {
@@ -7815,5 +7841,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 290
+  "validated_candidates": 291
 }

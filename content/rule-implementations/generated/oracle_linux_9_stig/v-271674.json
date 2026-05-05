@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "gsettings get org.gnome.desktop.session idle-delay",
+      "type": "command_output"
+    },
+    "description": "OL 9 must automatically lock graphical user sessions after 15 minutes of inactivity.",
+    "expected": {
+      "pattern": "^uint32 (?:[1-9]|[1-9][0-9]|[1-5][0-9]{2}|600)$",
+      "type": "matches"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271674"
+  },
   "check_content_excerpt": "This requirement assumes the use of the OL 9 default graphical user interface\u2014the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.\n\nVerify OL 9 initiates a session lock after a 10-minute period of inactivity for graphical user interfaces with the following command:\n\n$ gsettings get org.gnome.desktop.session idle-delay\nuint32 600\n\nIf \"idle-delay\" is set to \"0\" or a value greater than \"600\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "pattern": "^uint32 (?:[1-9]|[1-9][0-9]|[1-5][0-9]{2}|600)$",
+    "type": "matches"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure OL 9 to initiate a screensaver after a 10-minute period of inactivity for graphical user interfaces.\n\nCreate a database to contain the systemwide screensaver settings (if it does not already exist) with the following command:\n\n$ sudo touch /etc/dconf/db/local.d/00-screensaver\n\nEdit /etc/dconf/db/local.d/00-screensaver and add or update the following lines:\n\n[org/gnome/desktop/session]\n# Set the lock time out to 600 seconds before the session is considered idle\nidle-delay=uint32 600\n\nUpdate the system databases:\n\n$ sudo dconf update",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271674r1155332_rule",
   "severity": "medium",

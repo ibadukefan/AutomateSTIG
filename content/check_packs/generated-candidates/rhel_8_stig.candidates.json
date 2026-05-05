@@ -795,6 +795,19 @@
     },
     {
       "check": {
+        "command": "gsettings get org.gnome.desktop.session idle-delay",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must automatically lock graphical user sessions after 15 minutes of inactivity.",
+      "expected": {
+        "pattern": "^uint32 (?:[1-9]|[1-9][0-9]|[1-8][0-9]{2}|900)$",
+        "type": "matches"
+      },
+      "platform": "linux",
+      "vuln_id": "V-230352"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/dconf/profile/user",
         "pattern": "system-db",
