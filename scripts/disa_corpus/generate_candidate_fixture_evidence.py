@@ -161,8 +161,13 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
         elif expected.get('type') == 'matches':
             command = check['command']
             pattern = expected.get('pattern', '')
+            range_match = re.fullmatch(r'\^uint32 \[1-([1-9])\]\$', pattern)
             uint32_match = re.search(r'\|([1-9][0-9]{0,2})\)\$', pattern)
-            if uint32_match and pattern.startswith('^uint32 '):
+            if range_match:
+                maximum = int(range_match.group(1))
+                pass_fixture['command_outputs'] = {command: f'uint32 {maximum}'}
+                fail_fixture['command_outputs'] = {command: f'uint32 {maximum + 1}'}
+            elif uint32_match and pattern.startswith('^uint32 '):
                 maximum = int(uint32_match.group(1))
                 pass_fixture['command_outputs'] = {command: f'uint32 {maximum}'}
                 fail_fixture['command_outputs'] = {command: f'uint32 {maximum + 1}'}

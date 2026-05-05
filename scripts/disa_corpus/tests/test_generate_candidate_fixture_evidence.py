@@ -179,6 +179,18 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
         self.assertEqual(case['pass_fixture']['command_outputs'], {'gsettings get org.gnome.desktop.session idle-delay': 'uint32 900'})
         self.assertEqual(case['fail_fixture']['command_outputs'], {'gsettings get org.gnome.desktop.session idle-delay': 'uint32 901'})
 
+    def test_builds_command_output_matches_small_uint32_range_fixture_case(self):
+        case = mod.build_case({
+            'vuln_id': 'V-244535',
+            'platform': 'linux',
+            'description': 'GNOME lock delay',
+            'check': {'type': 'command_output', 'command': 'gsettings get org.gnome.desktop.screensaver lock-delay'},
+            'expected': {'type': 'matches', 'pattern': r'^uint32 [1-5]$'},
+        })
+        self.assertEqual(case['evidence_type'], 'command_output_matches')
+        self.assertEqual(case['pass_fixture']['command_outputs'], {'gsettings get org.gnome.desktop.screensaver lock-delay': 'uint32 5'})
+        self.assertEqual(case['fail_fixture']['command_outputs'], {'gsettings get org.gnome.desktop.screensaver lock-delay': 'uint32 6'})
+
     def test_builds_command_output_not_equals_fixture_case(self):
         case = mod.build_case({
             'vuln_id': 'V-256404',

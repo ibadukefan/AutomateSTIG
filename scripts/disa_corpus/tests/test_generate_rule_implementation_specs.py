@@ -125,6 +125,26 @@ If "idle-delay" is set to "0" or a value greater than "900", this is a finding.'
             'description': 'RHEL 8 must automatically lock graphical user sessions after 15 minutes of inactivity.',
         })
 
+    def test_infers_linux_gsettings_uint32_not_greater_than_maximum_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-244535',
+            'title': 'RHEL 8 must initiate a session lock for graphical user interfaces when the screensaver is activated.',
+            'check_content': '''Verify the operating system initiates a session lock a for graphical user interfaces when the screensaver is activated with the following command:
+
+$ sudo gsettings get org.gnome.desktop.screensaver lock-delay
+
+uint32 5
+
+If the "uint32" setting is missing, or is not set to "5" or less, this is a finding.''',
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-244535',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'gsettings get org.gnome.desktop.screensaver lock-delay'},
+            'expected': {'type': 'matches', 'pattern': r'^uint32 [1-5]$'},
+            'description': 'RHEL 8 must initiate a session lock for graphical user interfaces when the screensaver is activated.',
+        })
+
     def test_classifies_policy_language_as_manual_evidence_workflow(self):
         classification, collector = mod.classify_rule('The organization must document an approval process.')
         self.assertEqual(classification, 'manual')

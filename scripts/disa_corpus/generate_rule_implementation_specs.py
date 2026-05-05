@@ -1308,10 +1308,14 @@ def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
         if uint32_match:
             maximum = int(uint32_match.group(1))
             pattern = _uint32_positive_le_pattern(maximum)
-            if (
-                pattern
-                and re.search(
+            if pattern and (
+                re.search(
                     rf'If\s+["“]?[A-Za-z0-9_.-]+["”]?\s+is\s+set\s+to\s+["“]?0["”]?\s+or\s+a\s+value\s+greater\s+than\s+["“]?{maximum}["”]?',
+                    content,
+                    re.IGNORECASE,
+                )
+                or re.search(
+                    rf'If\s+the\s+["“]?uint32["”]?\s+setting\s+is\s+missing,\s+or\s+is\s+not\s+set\s+to\s+["“]?{maximum}["”]?\s+or\s+less',
                     content,
                     re.IGNORECASE,
                 )

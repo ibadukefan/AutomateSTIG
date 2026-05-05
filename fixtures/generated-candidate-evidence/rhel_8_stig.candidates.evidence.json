@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 291,
+  "candidate_checks": 292,
   "cases": [
     {
       "check": {
@@ -6723,6 +6723,32 @@
     },
     {
       "check": {
+        "command": "gsettings get org.gnome.desktop.screensaver lock-delay",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must initiate a session lock for graphical user interfaces when the screensaver is activated.",
+      "evidence_type": "command_output_matches",
+      "expected": {
+        "pattern": "^uint32 [1-5]$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.desktop.screensaver lock-delay": "uint32 6"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.desktop.screensaver lock-delay": "uint32 5"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-244535"
+    },
+    {
+      "check": {
         "command": "gsettings get org.gnome.login-screen disable-user-list",
         "type": "command_output"
       },
@@ -7841,5 +7867,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 291
+  "validated_candidates": 292
 }
