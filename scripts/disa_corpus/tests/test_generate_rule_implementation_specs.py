@@ -2183,6 +2183,34 @@ If "deployXML" does not equal "false", this is a finding.'''
             'description': 'The vCenter Lookup service deployXML attribute must be disabled.',
         })
 
+    def test_infers_sles_dconf_banner_message_enable_true_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234808',
+            'title': 'The SUSE operating system must display a banner before granting local or remote access to the system via a graphical user logon.',
+            'check_content': '''Note: If the system does not have a graphical user interface installed, this requirement is Not Applicable.
+
+Verify the SUSE operating system displays a banner before local or remote access to the system via a graphical user logon.
+
+Check that the SUSE operating system displays a banner at the logon screen by performing the following command:
+
+> grep banner-message-enable /etc/dconf/db/gdm.d/*
+banner-message-enable=true
+
+> cat /etc/dconf/profile/gdm
+user-db:user
+system-db:gdm
+file-db:/usr/share/gdm/greeter-dconf-defaults
+
+If "banner-message-enable" is set to "false" or is missing completely, this is a finding.'''
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-234808',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'grep banner-message-enable /etc/dconf/db/gdm.d/*'},
+            'expected': {'type': 'contains', 'substring': 'banner-message-enable=true'},
+            'description': 'The SUSE operating system must display a banner before granting local or remote access to the system via a graphical user logon.',
+        })
+
     def test_infers_dconf_grep_candidate_from_exact_authoritative_sample(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271690',

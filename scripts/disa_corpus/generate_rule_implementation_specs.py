@@ -2366,6 +2366,23 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    if (
+        _linux_platform(stig_id)
+        and command == 'grep banner-message-enable /etc/dconf/db/gdm.d/*'
+        and re.search(r'^\s*banner-message-enable\s*=\s*true\s*$', content, re.MULTILINE)
+        and re.search(
+            r'If\s+["“]banner-message-enable["”]\s+is\s+set\s+to\s+["“]false["”]\s+or\s+is\s+missing\s+completely,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'contains', 'substring': 'banner-message-enable=true'},
+            'description': rule.get('title', ''),
+        }
     if re.search(r'\bPART\b', command) and '[PART]' in content:
         return None
     crypto_policy_krb5_symlink = (

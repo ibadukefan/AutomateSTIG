@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "grep banner-message-enable /etc/dconf/db/gdm.d/*",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must display a banner before granting local or remote access to the system via a graphical user logon.",
+      "expected": {
+        "substring": "banner-message-enable=true",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-234808"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "Ciphers aes256-ctr,aes192-ctr,aes128-ctr",

@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 155,
+  "candidate_checks": 156,
   "cases": [
+    {
+      "check": {
+        "command": "grep banner-message-enable /etc/dconf/db/gdm.d/*",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must display a banner before granting local or remote access to the system via a graphical user logon.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "banner-message-enable=true",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep banner-message-enable /etc/dconf/db/gdm.d/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep banner-message-enable /etc/dconf/db/gdm.d/*": "before\nbanner-message-enable=true\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234808"
+    },
     {
       "check": {
         "is_regex": false,
@@ -4104,5 +4130,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 155
+  "validated_candidates": 156
 }
