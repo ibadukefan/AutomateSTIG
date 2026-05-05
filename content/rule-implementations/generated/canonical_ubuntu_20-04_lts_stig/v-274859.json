@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "egrep -iR 'NOPASSWD' /etc/sudoers /etc/sudoers.d/",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 20.04 LTS must require users to provide a password for privilege escalation.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-274859"
+  },
   "check_content_excerpt": "Verify that \"/etc/sudoers\" has no occurrences of \"NOPASSWD\" with the following command:\n\n$ sudo egrep -iR 'NOPASSWD' /etc/sudoers /etc/sudoers.d/\n\nIf any occurrences of \"NOPASSWD\" are returned from the command and have not been documented with the information system security officer (ISSO) as an organizationally defined administrative group using multifactor authentication (MFA), this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the operating system to not allow users to execute privileged actions without authenticating with a password.\n\nRemove any occurrence of \"NOPASSWD\" found in \"/etc/sudoers\" file or files in the \"/etc/sudoers.d\" directory.\n\n$ sudo find /etc/sudoers /etc/sudoers.d -type f -exec sed -i '/NOPASSWD/ s/^/# /g' {} \\;",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-274859r1101698_rule",
   "severity": "medium",

@@ -2111,7 +2111,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         re.IGNORECASE,
     )
     no_output_for_grep_occurrences_return = re.search(r'\b(?:e?grep|grep)\b', command) and re.search(
-        r'if\s+any\s+occurrences\s+of\s+["“][^"”\n]+["”]\s+(?:return|are\s+returned)\s+from\s+the\s+command,?\s+this\s+is\s+a\s+finding|if\s+any\s+occurrences\s+of\s+["“][^"”\n]+["”]\s+are\s+returned,?\s+this\s+is\s+a\s+finding',
+        r'if\s+any\s+occurrences\s+of\s+["“][^"”\n]+["”]\s+(?:return|are\s+returned)\s+from\s+the\s+command(?:\s+and\s+have\s+not\s+been\s+documented\s+with\s+the\s+information\s+system\s+security\s+officer\s+\(ISSO\)\s+as\s+an\s+organizationally\s+defined\s+administrative\s+group\s+using\s+multifactor\s+authentication\s+\(MFA\))?,?\s+this\s+is\s+a\s+finding|if\s+any\s+occurrences\s+of\s+["“][^"”\n]+["”]\s+are\s+returned,?\s+this\s+is\s+a\s+finding',
         content,
         re.IGNORECASE,
     )

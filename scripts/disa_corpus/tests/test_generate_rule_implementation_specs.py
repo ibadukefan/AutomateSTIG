@@ -2881,6 +2881,20 @@ If any occurrences of "!authenticate" return from the command, this is a finding
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "egrep -iR '!authenticate' /etc/sudoers /etc/sudoers.d/"})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_no_output_candidate_for_sudoers_nopasswd_documented_exception(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-274868',
+            'title': 'Ubuntu 24.04 LTS must require users to provide a password for privilege escalation.',
+            'check_content': '''Verify that "/etc/sudoers" has no occurrences of "NOPASSWD" with the following command:
+
+$ sudo egrep -iR 'NOPASSWD' /etc/sudoers /etc/sudoers.d/
+
+If any occurrences of "NOPASSWD" are returned from the command and have not been documented with the information system security officer (ISSO) as an organizationally defined administrative group using multifactor authentication (MFA), this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "egrep -iR 'NOPASSWD' /etc/sudoers /etc/sudoers.d/"})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_skips_no_output_candidate_when_returned_items_are_qualified(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271901',
