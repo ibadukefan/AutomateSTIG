@@ -791,6 +791,53 @@ def _sshd_multi_directive_egrep_candidate(rule: dict) -> dict | None:
     }
 
 
+def _vcenter_lookup_service_grep_property_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    if 'lookup' not in stig_id.lower() or 'vmw_vsphere' not in stig_id.lower():
+        return None
+    if 'xmllint' in content.lower():
+        return None
+    if re.search(r'does\s+not\s+exist,?\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    grep_matches = list(re.finditer(
+        r'^\s*#\s*(?P<command>grep\s+(?P<token>[A-Za-z0-9_.-]+)\s+(?P<path>/usr/lib/vmware-lookupsvc/conf/catalina\.properties))\s*$',
+        content,
+        re.MULTILINE,
+    ))
+    if len(grep_matches) != 1:
+        return None
+    token = grep_matches[0].group('token')
+    expected_line = None
+    for line in content[grep_matches[0].end():].splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.lower() in ('example result:', 'expected output:'):
+            continue
+        if stripped.lower().startswith(('if ', 'note:', '$', '#', '>')):
+            break
+        if token in stripped and '=' in stripped:
+            expected_line = stripped
+            break
+    if not expected_line:
+        return None
+    key, expected_value = expected_line.split('=', 1)
+    if key != token and token not in key:
+        return None
+    finding = re.search(
+        rf'If\s+there\s+are\s+no\s+results,?\s+or\s+if\s+the\s+["“]{re.escape(key)}["”]\s+is\s+not\s+set\s+to\s+["“]{re.escape(expected_value)}["”],?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if not finding:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {'type': 'file_content', 'path': grep_matches[0].group('path'), 'pattern': expected_line, 'is_regex': False},
+        'expected': {'type': 'contains'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _grep_expected_line_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     grep = re.search(r'\bgrep\s+(?:-[A-Za-z]+\s+)*(?:(?:["\'][^"\']+["\']|[^\s|;]+)\s+)?(?P<path>/[A-Za-z0-9_./:*+{}-]+)', content)
@@ -2730,6 +2777,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     esxi_advanced_setting_candidate = _esxi_advanced_setting_exact_value_candidate(rule, stig_id)
     if esxi_advanced_setting_candidate:
         return esxi_advanced_setting_candidate
+
+    vcenter_lookup_service_grep_property_candidate = _vcenter_lookup_service_grep_property_candidate(rule, stig_id)
+    if vcenter_lookup_service_grep_property_candidate:
+        return vcenter_lookup_service_grep_property_candidate
 
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:

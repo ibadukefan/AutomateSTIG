@@ -67,6 +67,34 @@
     },
     {
       "check": {
+        "is_regex": false,
+        "path": "/usr/lib/vmware-lookupsvc/conf/catalina.properties",
+        "pattern": "org.apache.catalina.startup.EXIT_ON_INIT_FAILURE=true",
+        "type": "file_content"
+      },
+      "description": "The vCenter Lookup service must be configured to fail to a known safe state if system initialization fails.",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259046"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/lib/vmware-lookupsvc/conf/catalina.properties",
+        "pattern": "org.apache.catalina.STRICT_SERVLET_COMPLIANCE=true",
+        "type": "file_content"
+      },
+      "description": "The vCenter Lookup service must enable \"STRICT_SERVLET_COMPLIANCE\".",
+      "expected": {
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259051"
+    },
+    {
+      "check": {
         "command": "xmllint --xpath \"//Connector[@connectionTimeout = '-1']\" /usr/lib/vmware-lookupsvc/conf/server.xml",
         "type": "command_output"
       },

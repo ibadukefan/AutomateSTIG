@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 11,
+  "candidate_checks": 13,
   "cases": [
     {
       "check": {
@@ -130,6 +130,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259044"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/lib/vmware-lookupsvc/conf/catalina.properties",
+        "pattern": "org.apache.catalina.startup.EXIT_ON_INIT_FAILURE=true",
+        "type": "file_content"
+      },
+      "description": "The vCenter Lookup service must be configured to fail to a known safe state if system initialization fails.",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/usr/lib/vmware-lookupsvc/conf/catalina.properties": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "files": {
+          "/usr/lib/vmware-lookupsvc/conf/catalina.properties": "before\norg.apache.catalina.startup.EXIT_ON_INIT_FAILURE=true\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259046"
+    },
+    {
+      "check": {
+        "is_regex": false,
+        "path": "/usr/lib/vmware-lookupsvc/conf/catalina.properties",
+        "pattern": "org.apache.catalina.STRICT_SERVLET_COMPLIANCE=true",
+        "type": "file_content"
+      },
+      "description": "The vCenter Lookup service must enable \"STRICT_SERVLET_COMPLIANCE\".",
+      "evidence_type": "linux_file_content_contains",
+      "expected": {
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "files": {
+          "/usr/lib/vmware-lookupsvc/conf/catalina.properties": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "files": {
+          "/usr/lib/vmware-lookupsvc/conf/catalina.properties": "before\norg.apache.catalina.STRICT_SERVLET_COMPLIANCE=true\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259051"
     },
     {
       "check": {
@@ -293,5 +347,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
-  "validated_candidates": 11
+  "validated_candidates": 13
 }

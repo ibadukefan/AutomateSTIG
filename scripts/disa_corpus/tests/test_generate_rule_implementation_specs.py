@@ -77,6 +77,33 @@ If the "TFTP" application exists, this is a finding.''',
         self.assertEqual(classification, 'manual')
         self.assertEqual(collector, 'manual_evidence_workflow')
 
+    def test_infers_vcenter_lookup_service_grep_expected_property_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259046',
+            'title': 'The vCenter Lookup service must be configured to fail to a known safe state if system initialization fails.',
+            'check_content': '''At the command line, run the following command:
+
+# grep EXIT_ON_INIT_FAILURE /usr/lib/vmware-lookupsvc/conf/catalina.properties
+
+Example result:
+
+org.apache.catalina.startup.EXIT_ON_INIT_FAILURE=true
+
+If there are no results, or if the "org.apache.catalina.startup.EXIT_ON_INIT_FAILURE" is not set to "true", this is a finding.''',
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259046',
+            'platform': 'generic',
+            'check': {
+                'type': 'file_content',
+                'path': '/usr/lib/vmware-lookupsvc/conf/catalina.properties',
+                'pattern': 'org.apache.catalina.startup.EXIT_ON_INIT_FAILURE=true',
+                'is_regex': False,
+            },
+            'expected': {'type': 'contains'},
+            'description': 'The vCenter Lookup service must be configured to fail to a known safe state if system initialization fails.',
+        })
+
     def test_infers_postgresql_shared_preload_libraries_pgaudit_contains_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-233600',
