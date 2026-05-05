@@ -124,6 +124,29 @@ If either of these commands returns any output, this is a finding.''',
             'description': 'SNMP community strings on the Red Hat Enterprise Linux operating system must be changed from the default.',
         })
 
+    def test_infers_linux_keytab_listing_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230238',
+            'title': 'RHEL 8 must prevent system daemons from using Kerberos for authentication.',
+            'check_content': '''Verify that RHEL 8 prevents system daemons from using Kerberos for authentication.
+
+If the system is a server utilizing krb5-server-1.17-18.el8.x86_64 or newer, this requirement is not applicable.
+If the system is a workstation utilizing krb5-workstation-1.17-18.el8.x86_64 or newer, this requirement is not applicable.
+
+Check if there are available keytabs with the following command:
+
+$ sudo ls -al /etc/*.keytab
+
+If this command produces any file(s), this is a finding.''',
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-230238',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'ls -al /etc/*.keytab'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'RHEL 8 must prevent system daemons from using Kerberos for authentication.',
+        })
+
     def test_infers_linux_apt_allowunauthenticated_true_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-238359',

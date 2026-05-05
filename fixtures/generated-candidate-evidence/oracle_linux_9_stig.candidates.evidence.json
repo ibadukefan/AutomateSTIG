@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 408,
+  "candidate_checks": 409,
   "cases": [
     {
       "check": {
@@ -8064,6 +8064,32 @@
     },
     {
       "check": {
+        "command": "ls -al /etc/*.keytab",
+        "type": "command_output"
+      },
+      "description": "OL 9 must prevent system daemons from using Kerberos for authentication.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "ls -al /etc/*.keytab": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "ls -al /etc/*.keytab": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271767"
+    },
+    {
+      "check": {
         "key": "net.core.bpf_jit_harden",
         "type": "sysctl"
       },
@@ -11342,5 +11368,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 408
+  "validated_candidates": 409
 }

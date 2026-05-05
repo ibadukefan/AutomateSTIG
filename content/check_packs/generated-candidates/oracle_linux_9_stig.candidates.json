@@ -4117,6 +4117,19 @@
     },
     {
       "check": {
+        "command": "ls -al /etc/*.keytab",
+        "type": "command_output"
+      },
+      "description": "OL 9 must prevent system daemons from using Kerberos for authentication.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271767"
+    },
+    {
+      "check": {
         "key": "net.core.bpf_jit_harden",
         "type": "sysctl"
       },

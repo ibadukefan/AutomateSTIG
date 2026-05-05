@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 319,
+  "candidate_checks": 320,
   "cases": [
     {
       "check": {
@@ -214,6 +214,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248544"
+    },
+    {
+      "check": {
+        "command": "ls -al /etc/*.keytab",
+        "type": "command_output"
+      },
+      "description": "OL 8 must prevent system daemons from using Kerberos for authentication.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "ls -al /etc/*.keytab": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "ls -al /etc/*.keytab": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248545"
     },
     {
       "check": {
@@ -8688,5 +8714,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 319
+  "validated_candidates": 320
 }

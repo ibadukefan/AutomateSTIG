@@ -240,16 +240,17 @@
       "vuln_id": "V-248544"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248545",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-248545 from source identifier xccdf_mil.disa.stig_group_V-248545.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-248545r971535_rule",
       "severity": "medium",
       "title": "OL 8 must prevent system daemons from using Kerberos for authentication.",
-      "tracking_issue": "TODO-V-248545",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/21143197fc2353b191a5a92cd0ddd916dca8ccd8c3ce1e74c875f20d1b9fc526/U_Oracle_Linux_8_V2R5_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-248545"

@@ -2352,6 +2352,11 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     )
     no_output_for_explicit_output = re.search(r'if\s+(?:any\s+)?output\s+is\s+produced,?\s+this\s+is\s+a\s+finding|if\s+this\s+produces\s+any\s+output|if\s+the\s+command\s+displays\s+any\s+(?:output|results),?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
     no_output_for_command_output = re.search(r'if\s+the\s+command\s+(?:has|produces)\s+any\s+output,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    no_output_for_keytab_listing = re.fullmatch(r'ls\s+-al\s+/etc/\*\.keytab', command) and re.search(
+        r'If\s+this\s+command\s+produces\s+any\s+(?:["“]keytab["”]\s+)?file\(s\),?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
     no_output_for_any_output = re.search(r'if\s+(?:there\s+is\s+output|any\s+output\s+is\s+returned|(?:the\s+)?command\s+returns\s+any\s+output),?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
     no_output_for_audit_backlog_limit_grep_v = re.fullmatch(
         r"grubby\s+--info=ALL\s+\|\s+grep\s+args\s+\|\s+grep\s+-v\s+'audit_backlog_limit=8192'",
@@ -2422,7 +2427,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             re.IGNORECASE,
         )
     )
-    if no_output_for_find or no_output_for_find_not_owner or no_output_for_explicit_output or no_output_for_command_output or no_output_for_any_output or no_output_for_audit_backlog_limit_grep_v or no_output_for_rpm_va_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found or no_output_for_grep_occurrences_return or no_output_for_find_unassigned_owner_group or no_output_for_duplicate_gid or no_output_for_public_directory_sticky_bit or no_output_for_pwck_home_directories or no_output_for_pwck_gid_defined:
+    if no_output_for_find or no_output_for_find_not_owner or no_output_for_explicit_output or no_output_for_command_output or no_output_for_keytab_listing or no_output_for_any_output or no_output_for_audit_backlog_limit_grep_v or no_output_for_rpm_va_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found or no_output_for_grep_occurrences_return or no_output_for_find_unassigned_owner_group or no_output_for_duplicate_gid or no_output_for_public_directory_sticky_bit or no_output_for_pwck_home_directories or no_output_for_pwck_gid_defined:
         return {
             'vuln_id': rule.get('vuln_id', ''),
             'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',

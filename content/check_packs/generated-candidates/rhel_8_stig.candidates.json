@@ -58,6 +58,19 @@
     },
     {
       "check": {
+        "command": "ls -al /etc/*.keytab",
+        "type": "command_output"
+      },
+      "description": "RHEL 8 must prevent system daemons from using Kerberos for authentication.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-230238"
+    },
+    {
+      "check": {
         "name": "krb5-workstation",
         "should_be_installed": false,
         "type": "package"
