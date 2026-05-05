@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "Get-VMHost | Get-AdvancedSetting -Name Security.AccountLockFailures | Select-Object -ExpandProperty Value",
+      "type": "command_output"
+    },
+    "description": "The ESXi host must enforce the limit of three consecutive invalid logon attempts by a user.",
+    "expected": {
+      "type": "equals",
+      "value": "3"
+    },
+    "platform": "generic",
+    "vuln_id": "V-256379"
+  },
   "check_content_excerpt": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nSelect the \"Security.AccountLockFailures\" value and verify it is set to \"3\".\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Security.AccountLockFailures\n\nIf the \"Security.AccountLockFailures\" setting is set to a value other than \"3\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "3"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick \"Edit\". Select the \"Security.AccountLockFailures\" value and configure it to \"3\".\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Security.AccountLockFailures | Set-AdvancedSetting -Value 3",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-256379r958388_rule",
   "severity": "medium",

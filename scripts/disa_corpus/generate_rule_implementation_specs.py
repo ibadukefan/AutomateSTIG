@@ -1619,6 +1619,37 @@ def _macos_pass_fail_shell_block_candidate(rule: dict, stig_id: str) -> dict | N
     }
 
 
+def _esxi_advanced_setting_exact_value_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'esxi' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    command_match = re.search(r'(?m)^\s*(?:PS>\s*)?Get-VMHost\s*\|\s*Get-AdvancedSetting\s+-Name\s+([A-Za-z0-9_.-]+)\s*$', content)
+    if not command_match:
+        return None
+    setting_name = command_match.group(1)
+    quoted_name = re.escape(setting_name)
+    finding_match = re.search(
+        rf'If\s+(?:the\s+)?"{quoted_name}"\s+(?:setting\s+)?(?:is\s+set\s+to\s+a\s+value\s+other\s+than|is\s+not\s+set\s+to)\s+"([^"]+)"(?:\s+or\s+the\s+setting\s+does\s+not\s+exist)?\s*,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if not finding_match:
+        return None
+    expected_value = finding_match.group(1).strip()
+    if not expected_value or re.search(r'\b(?:or|and)\b', expected_value, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {
+            'type': 'command_output',
+            'command': f'Get-VMHost | Get-AdvancedSetting -Name {setting_name} | Select-Object -ExpandProperty Value',
+        },
+        'expected': {'type': 'equals', 'value': expected_value},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_certificate_store_thumbprint_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -2486,6 +2517,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     systemctl_get_default_candidate = _systemctl_get_default_candidate(rule, stig_id)
     if systemctl_get_default_candidate:
         return systemctl_get_default_candidate
+
+    esxi_advanced_setting_candidate = _esxi_advanced_setting_exact_value_candidate(rule, stig_id)
+    if esxi_advanced_setting_candidate:
+        return esxi_advanced_setting_candidate
 
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:

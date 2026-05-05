@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.solo.enableMob | Select-Object -ExpandProperty Value",
+      "type": "command_output"
+    },
+    "description": "The ESXi host must disable the Managed Object Browser (MOB).",
+    "expected": {
+      "type": "equals",
+      "value": "false"
+    },
+    "platform": "generic",
+    "vuln_id": "V-256399"
+  },
   "check_content_excerpt": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nSelect the \"Config.HostAgent.plugins.solo.enableMob\" value and verify it is set to \"false\".\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.solo.enableMob\n\nIf the \"Config.HostAgent.plugins.solo.enableMob\" setting is not set to \"false\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": "false"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings. Click \"Edit\".\n\nClick \"Edit\". Select the \"Config.HostAgent.plugins.solo.enableMob\" value and configure it to \"false\".\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.solo.enableMob | Set-AdvancedSetting -Value false",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-256399r958478_rule",
   "severity": "medium",

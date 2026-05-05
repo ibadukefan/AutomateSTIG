@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 15,
+  "candidate_checks": 27,
   "cases": [
+    {
+      "check": {
+        "command": "Get-VMHost | Get-AdvancedSetting -Name Security.AccountLockFailures | Select-Object -ExpandProperty Value",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must enforce the limit of three consecutive invalid logon attempts by a user.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "3"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Security.AccountLockFailures | Select-Object -ExpandProperty Value": "unexpected-3"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Security.AccountLockFailures | Select-Object -ExpandProperty Value": "3"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256379"
+    },
     {
       "check": {
         "command": "/usr/lib/vmware/openssh/bin/sshd -T|grep banner",
@@ -159,6 +185,110 @@
     },
     {
       "check": {
+        "command": "Get-VMHost | Get-AdvancedSetting -Name Security.PasswordHistory | Select-Object -ExpandProperty Value",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must prohibit the reuse of passwords within five iterations.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "5"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Security.PasswordHistory | Select-Object -ExpandProperty Value": "unexpected-5"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Security.PasswordHistory | Select-Object -ExpandProperty Value": "5"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256398"
+    },
+    {
+      "check": {
+        "command": "Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.solo.enableMob | Select-Object -ExpandProperty Value",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must disable the Managed Object Browser (MOB).",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "false"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.solo.enableMob | Select-Object -ExpandProperty Value": "unexpected-false"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.solo.enableMob | Select-Object -ExpandProperty Value": "false"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256399"
+    },
+    {
+      "check": {
+        "command": "Get-VMHost | Get-AdvancedSetting -Name UserVars.DcuiTimeOut | Select-Object -ExpandProperty Value",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must log out of the console UI after two minutes.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "120"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name UserVars.DcuiTimeOut | Select-Object -ExpandProperty Value": "unexpected-120"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name UserVars.DcuiTimeOut | Select-Object -ExpandProperty Value": "120"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256407"
+    },
+    {
+      "check": {
+        "command": "Get-VMHost | Get-AdvancedSetting -Name UserVars.ESXiVPsDisabledProtocols | Select-Object -ExpandProperty Value",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must exclusively enable Transport Layer Security (TLS) 1.2 for all endpoints.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "tlsv1,tlsv1.1,sslv3"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name UserVars.ESXiVPsDisabledProtocols | Select-Object -ExpandProperty Value": "unexpected-tlsv1,tlsv1.1,sslv3"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name UserVars.ESXiVPsDisabledProtocols | Select-Object -ExpandProperty Value": "tlsv1,tlsv1.1,sslv3"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256429"
+    },
+    {
+      "check": {
         "command": "/usr/lib/vmware/secureboot/bin/secureBoot.py -s",
         "type": "command_output"
       },
@@ -182,6 +312,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-256430"
+    },
+    {
+      "check": {
+        "command": "Get-VMHost | Get-AdvancedSetting -Name UserVars.SuppressShellWarning | Select-Object -ExpandProperty Value",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must not suppress warnings that the local or remote shell sessions are enabled.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name UserVars.SuppressShellWarning | Select-Object -ExpandProperty Value": "unexpected-0"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name UserVars.SuppressShellWarning | Select-Object -ExpandProperty Value": "0"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256432"
+    },
+    {
+      "check": {
+        "command": "Get-VMHost | Get-AdvancedSetting -Name UserVars.SuppressHyperthreadWarning | Select-Object -ExpandProperty Value",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must not suppress warnings about unmitigated hyperthreading vulnerabilities.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "0"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name UserVars.SuppressHyperthreadWarning | Select-Object -ExpandProperty Value": "unexpected-0"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name UserVars.SuppressHyperthreadWarning | Select-Object -ExpandProperty Value": "0"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256433"
     },
     {
       "check": {
@@ -237,6 +419,110 @@
     },
     {
       "check": {
+        "command": "Get-VMHost | Get-AdvancedSetting -Name Syslog.global.logCheckSSLCerts | Select-Object -ExpandProperty Value",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must verify certificates for SSL syslog endpoints.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Syslog.global.logCheckSSLCerts | Select-Object -ExpandProperty Value": "unexpected-true"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Syslog.global.logCheckSSLCerts | Select-Object -ExpandProperty Value": "true"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256438"
+    },
+    {
+      "check": {
+        "command": "Get-VMHost | Get-AdvancedSetting -Name Mem.MemEagerZero | Select-Object -ExpandProperty Value",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must enable volatile key destruction.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Mem.MemEagerZero | Select-Object -ExpandProperty Value": "unexpected-1"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Mem.MemEagerZero | Select-Object -ExpandProperty Value": "1"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256439"
+    },
+    {
+      "check": {
+        "command": "Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.vmacore.soap.sessionTimeout | Select-Object -ExpandProperty Value",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must configure a session timeout for the vSphere API.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "30"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.vmacore.soap.sessionTimeout | Select-Object -ExpandProperty Value": "unexpected-30"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Config.HostAgent.vmacore.soap.sessionTimeout | Select-Object -ExpandProperty Value": "30"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256440"
+    },
+    {
+      "check": {
+        "command": "Get-VMHost | Get-AdvancedSetting -Name UserVars.HostClientSessionTimeout | Select-Object -ExpandProperty Value",
+        "type": "command_output"
+      },
+      "description": "The ESXi Host Client must be configured with a session timeout.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "600"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name UserVars.HostClientSessionTimeout | Select-Object -ExpandProperty Value": "unexpected-600"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name UserVars.HostClientSessionTimeout | Select-Object -ExpandProperty Value": "600"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256441"
+    },
+    {
+      "check": {
         "command": "esxcli system security fips140 rhttpproxy get",
         "type": "command_output"
       },
@@ -260,6 +546,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-256442"
+    },
+    {
+      "check": {
+        "command": "Get-VMHost | Get-AdvancedSetting -Name Security.PasswordMaxDays | Select-Object -ExpandProperty Value",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must be configured with an appropriate maximum password age.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "90"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Security.PasswordMaxDays | Select-Object -ExpandProperty Value": "unexpected-90"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "Get-VMHost | Get-AdvancedSetting -Name Security.PasswordMaxDays | Select-Object -ExpandProperty Value": "90"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-256443"
     },
     {
       "check": {
@@ -397,5 +709,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_7-0_esxi_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "VMW_vSphere_7-0_ESXi_STIG",
-  "validated_candidates": 15
+  "validated_candidates": 27
 }
