@@ -1496,6 +1496,44 @@ def _macos_result_variable_shell_block_candidate(rule: dict, stig_id: str) -> di
     }
 
 
+def _macos_sshd_fips_count_shell_block_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _macos_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    if not re.search(r'\blimit\s+SSHD\s+to\s+FIPS-compliant\s+connections\b', rule.get('title', ''), re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+result\s+is\s+not\s+["“]7["”],?\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+        return None
+    block_match = re.search(
+        r'(?P<command>fips_sshd_config=\((?P<items>[^\n]+)\)\ntotal=0\nfor\s+config\s+in\s+\$fips_sshd_config;\s+do\n\s*total=\$\(expr\s+\$\(/usr/sbin/sshd\s+-G\s+\|\s+/usr/bin/grep\s+-i\s+-c\s+"\$config"\)\s+\+\s+\$total\)\ndone\n\s*echo\s+\$total)',
+        content,
+        re.DOTALL,
+    )
+    if not block_match:
+        return None
+    items = re.findall(r'"([^"]+)"', block_match.group('items'))
+    expected_prefixes = {
+        'Ciphers ',
+        'HostbasedAcceptedAlgorithms ',
+        'HostKeyAlgorithms ',
+        'KexAlgorithms ',
+        'MACs ',
+        'PubkeyAcceptedAlgorithms ',
+        'CASignatureAlgorithms ',
+    }
+    if len(items) != 7 or {item.split(' ', 1)[0] + ' ' for item in items if ' ' in item} != expected_prefixes:
+        return None
+    if any('...' in item or any(token in item for token in (';', '`', '$(', '&&', '<<', '>', '|')) for item in items):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'macos',
+        'check': {'type': 'command_output', 'command': block_match.group('command').strip()},
+        'expected': {'type': 'equals', 'value': '7'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _macos_pass_fail_shell_block_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _macos_platform(stig_id):
         return None
@@ -1641,6 +1679,9 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     macos_result_variable_candidate = _macos_result_variable_shell_block_candidate(rule, stig_id)
     if macos_result_variable_candidate:
         return macos_result_variable_candidate
+    macos_sshd_fips_count_candidate = _macos_sshd_fips_count_shell_block_candidate(rule, stig_id)
+    if macos_sshd_fips_count_candidate:
+        return macos_sshd_fips_count_candidate
     macos_pass_fail_candidate = _macos_pass_fail_shell_block_candidate(rule, stig_id)
     if macos_pass_fail_candidate:
         return macos_pass_fail_candidate

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 124,
+  "candidate_checks": 125,
   "cases": [
     {
       "check": {
@@ -390,6 +390,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259437"
+    },
+    {
+      "check": {
+        "command": "fips_sshd_config=(\"Ciphers aes128-gcm@openssh.com\" \"HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"HostKeyAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"KexAlgorithms ecdh-sha2-nistp256\" \"MACs hmac-sha2-256\" \"PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"CASignatureAlgorithms ecdsa-sha2-nistp256\")\ntotal=0\nfor config in $fips_sshd_config; do\n  total=$(expr $(/usr/sbin/sshd -G | /usr/bin/grep -i -c \"$config\") + $total)\ndone\n\necho $total",
+        "type": "command_output"
+      },
+      "description": "The macOS system must limit SSHD to FIPS-compliant connections.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "7"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "fips_sshd_config=(\"Ciphers aes128-gcm@openssh.com\" \"HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"HostKeyAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"KexAlgorithms ecdh-sha2-nistp256\" \"MACs hmac-sha2-256\" \"PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"CASignatureAlgorithms ecdsa-sha2-nistp256\")\ntotal=0\nfor config in $fips_sshd_config; do\n  total=$(expr $(/usr/sbin/sshd -G | /usr/bin/grep -i -c \"$config\") + $total)\ndone\n\necho $total": "unexpected-7"
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "fips_sshd_config=(\"Ciphers aes128-gcm@openssh.com\" \"HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"HostKeyAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"KexAlgorithms ecdh-sha2-nistp256\" \"MACs hmac-sha2-256\" \"PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"CASignatureAlgorithms ecdsa-sha2-nistp256\")\ntotal=0\nfor config in $fips_sshd_config; do\n  total=$(expr $(/usr/sbin/sshd -G | /usr/bin/grep -i -c \"$config\") + $total)\ndone\n\necho $total": "7"
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259438"
     },
     {
       "check": {
@@ -3231,5 +3257,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apple_macos_14_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apple_macOS_14_STIG",
-  "validated_candidates": 124
+  "validated_candidates": 125
 }

@@ -2523,6 +2523,45 @@ If the result is not "0", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': "/bin/ls -le $(/usr/bin/grep '^dir' /etc/security/audit_control | /usr/bin/awk -F: '{print $2}') | /usr/bin/awk '{print $1}' | /usr/bin/grep -c \":\""})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '0'})
 
+    def test_infers_macos_sshd_fips_count_shell_block_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259438',
+            'title': 'The macOS system must limit SSHD to FIPS-compliant connections.',
+            'check_content': '''Verify the macOS system is configured to limit SSHD to FIPS-compliant connections with the following command:
+
+fips_sshd_config=("Ciphers aes128-gcm@openssh.com" "HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com" "HostKeyAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com" "KexAlgorithms ecdh-sha2-nistp256" "MACs hmac-sha2-256" "PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com" "CASignatureAlgorithms ecdsa-sha2-nistp256")
+total=0
+for config in $fips_sshd_config; do
+  total=$(expr $(/usr/sbin/sshd -G | /usr/bin/grep -i -c "$config") + $total)
+done
+
+echo $total
+
+If the result is not "7", this is a finding.'''
+        }, 'Apple_macOS_14_STIG')
+        self.assertEqual(candidate['platform'], 'macos')
+        self.assertEqual(candidate['check']['type'], 'command_output')
+        self.assertTrue(candidate['check']['command'].startswith('fips_sshd_config=("Ciphers aes128-gcm@openssh.com"'))
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '7'})
+
+    def test_skips_macos_sshd_fips_count_shell_block_with_ellipsized_items(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-268438',
+            'title': 'The macOS system must limit SSHD to FIPS-compliant connections.',
+            'check_content': '''Verify the macOS system is configured to limit SSHD to FIPS-compliant connections with the following command:
+
+fips_sshd_config=("Ciphers aes128-gcm@openssh.com" "HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com" "HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecd...-v01@openssh.com,ecdsa-sha2-nistp256,sk-ecd...p256@openssh.com" "KexAlgorithms ecdh-sha2-nistp256" "MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-256" "PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecd...-v01@openssh.com" "CASignatureAlgorithms ecdsa-sha2-nistp256,sk-ecd...p256@openssh.com")
+total=0
+for config in $fips_sshd_config; do
+total=$(expr $(/usr/sbin/sshd -G | /usr/bin/grep -i -c "$config") + $total)
+done
+
+echo $total
+
+If the result is not "7", this is a finding.'''
+        }, 'Apple_macOS_15_STIG')
+        self.assertIsNone(candidate)
+
     def test_skips_result_literal_when_no_shell_command_is_present(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-NO-COMMAND',

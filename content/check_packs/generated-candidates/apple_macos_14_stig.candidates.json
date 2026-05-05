@@ -197,6 +197,19 @@
     },
     {
       "check": {
+        "command": "fips_sshd_config=(\"Ciphers aes128-gcm@openssh.com\" \"HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"HostKeyAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"KexAlgorithms ecdh-sha2-nistp256\" \"MACs hmac-sha2-256\" \"PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"CASignatureAlgorithms ecdsa-sha2-nistp256\")\ntotal=0\nfor config in $fips_sshd_config; do\n  total=$(expr $(/usr/sbin/sshd -G | /usr/bin/grep -i -c \"$config\") + $total)\ndone\n\necho $total",
+        "type": "command_output"
+      },
+      "description": "The macOS system must limit SSHD to FIPS-compliant connections.",
+      "expected": {
+        "type": "equals",
+        "value": "7"
+      },
+      "platform": "macos",
+      "vuln_id": "V-259438"
+    },
+    {
+      "check": {
         "command": "/usr/bin/grep -c \"$fips_ssh_config\" /etc/ssh/ssh_config.d/fips_ssh_config",
         "type": "command_output"
       },
