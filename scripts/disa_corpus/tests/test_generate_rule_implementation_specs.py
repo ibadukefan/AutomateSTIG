@@ -214,6 +214,34 @@ The configured policy does NOT match the generated policy''',
             'description': 'RHEL 9 cryptographic policy must not be overridden.',
         })
 
+    def test_infers_linux_cron_stat_group_root_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257927',
+            'title': 'RHEL 9 cron configuration files directory must be group-owned by root.',
+            'check_content': '''Verify the group ownership of all cron configuration files with the following command:
+
+$ stat -c "%G %n" /etc/cron*
+root /etc/cron.d
+root /etc/cron.daily
+root /etc/cron.deny
+root /etc/cron.hourly
+root /etc/cron.monthly
+root /etc/crontab
+root /etc/cron.weekly
+
+If any crontab is not group owned by root, this is a finding.''',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-257927',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'find /etc/cron* ! -group root -exec stat -c "%G %n" {} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'RHEL 9 cron configuration files directory must be group-owned by root.',
+        })
+
     def test_infers_kubernetes_multiple_root_owned_conf_stat_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-242446',

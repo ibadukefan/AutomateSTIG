@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /etc/cron* ! -group root -exec stat -c \"%G %n\" {} \\;",
+      "type": "command_output"
+    },
+    "description": "OL 9 cron configuration files directory must be group-owned by root.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-271828"
+  },
   "check_content_excerpt": "Verify that OL 9 configures group ownership of all cron configuration files with the following command:\n\n$ stat -c \"%G %n\" /etc/cron*\nroot /etc/cron.d\nroot /etc/cron.daily\nroot /etc/cron.deny\nroot /etc/cron.hourly\nroot /etc/cron.monthly\nroot /etc/crontab\nroot /etc/cron.weekly\n\nIf any crontab is not group owned by root, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure any cron configuration not group-owned by root with the following command:\n\n$ sudo chgrp root [cron config file]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271828r1092196_rule",
   "severity": "medium",

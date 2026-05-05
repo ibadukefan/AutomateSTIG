@@ -2000,6 +2000,26 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': 'root'},
             'description': rule.get('title', ''),
         }
+    cron_group_root_match = re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?stat\s+-c\s+["\']%G\s+%n["\']\s+/etc/cron\*\s*$',
+        content,
+        re.MULTILINE,
+    )
+    if cron_group_root_match and re.search(
+        r'If\s+any\s+crontab\s+is\s+not\s+group\s+owned\s+by\s+root,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'find /etc/cron* ! -group root -exec stat -c "%G %n" {} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     macos_osascript_true_candidate = _macos_osascript_true_heredoc_candidate(rule, stig_id)
     if macos_osascript_true_candidate:
         return macos_osascript_true_candidate

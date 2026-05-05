@@ -4924,6 +4924,19 @@
     },
     {
       "check": {
+        "command": "find /etc/cron* ! -group root -exec stat -c \"%G %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "OL 9 cron configuration files directory must be group-owned by root.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271828"
+    },
+    {
+      "check": {
         "group": null,
         "mode": null,
         "owner": "root",
