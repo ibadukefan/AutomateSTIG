@@ -247,6 +247,53 @@ If this command produces any file(s), this is a finding.''',
             'description': 'RHEL 8 must prevent system daemons from using Kerberos for authentication.',
         })
 
+    def test_infers_rhel7_dconf_automount_literal_files_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-219059',
+            'title': 'The Red Hat Enterprise Linux operating system must disable the graphical user interface automounter unless required.',
+            'check_content': '''Note: If the operating system does not have a graphical user interface installed, this requirement is Not Applicable.
+
+Verify the operating system disables the ability to automount devices in a graphical user interface.
+
+Note: The example below is using the database "local" for the system, so the path is "/etc/dconf/db/local.d". This path must be modified if a database other than "local" is being used.
+
+Check to see if automounter service is disabled with the following commands:
+# cat /etc/dconf/db/local.d/00-No-Automount
+
+[org/gnome/desktop/media-handling]
+
+automount=false
+
+automount-open=false
+
+autorun-never=true
+
+If the output does not match the example above, this is a finding.
+
+# cat /etc/dconf/db/local.d/locks/00-No-Automount
+
+/org/gnome/desktop/media-handling/automount
+
+/org/gnome/desktop/media-handling/automount-open
+
+/org/gnome/desktop/media-handling/autorun-never
+
+If the output does not match the example, this is a finding.''',
+        }, 'RHEL_7_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-219059',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'cat /etc/dconf/db/local.d/00-No-Automount && cat /etc/dconf/db/local.d/locks/00-No-Automount',
+            },
+            'expected': {
+                'type': 'contains',
+                'substring': '[org/gnome/desktop/media-handling]\nautomount=false\nautomount-open=false\nautorun-never=true\n/org/gnome/desktop/media-handling/automount\n/org/gnome/desktop/media-handling/automount-open\n/org/gnome/desktop/media-handling/autorun-never',
+            },
+            'description': 'The Red Hat Enterprise Linux operating system must disable the graphical user interface automounter unless required.',
+        })
+
     def test_infers_linux_sshd_x11_forwarding_no_literal_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270708',

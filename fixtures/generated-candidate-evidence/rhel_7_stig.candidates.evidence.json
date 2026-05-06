@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 146,
+  "candidate_checks": 147,
   "cases": [
     {
       "check": {
@@ -3423,6 +3423,32 @@
     },
     {
       "check": {
+        "command": "cat /etc/dconf/db/local.d/00-No-Automount && cat /etc/dconf/db/local.d/locks/00-No-Automount",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must disable the graphical user interface automounter unless required.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "[org/gnome/desktop/media-handling]\nautomount=false\nautomount-open=false\nautorun-never=true\n/org/gnome/desktop/media-handling/automount\n/org/gnome/desktop/media-handling/automount-open\n/org/gnome/desktop/media-handling/autorun-never",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "cat /etc/dconf/db/local.d/00-No-Automount && cat /etc/dconf/db/local.d/locks/00-No-Automount": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "cat /etc/dconf/db/local.d/00-No-Automount && cat /etc/dconf/db/local.d/locks/00-No-Automount": "before\n[org/gnome/desktop/media-handling]\nautomount=false\nautomount-open=false\nautorun-never=true\n/org/gnome/desktop/media-handling/automount\n/org/gnome/desktop/media-handling/automount-open\n/org/gnome/desktop/media-handling/autorun-never\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-219059"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0600",
         "owner": null,
@@ -3916,5 +3942,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 146
+  "validated_candidates": 147
 }

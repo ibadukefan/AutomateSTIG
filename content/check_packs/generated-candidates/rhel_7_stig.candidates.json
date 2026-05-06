@@ -1758,6 +1758,19 @@
     },
     {
       "check": {
+        "command": "cat /etc/dconf/db/local.d/00-No-Automount && cat /etc/dconf/db/local.d/locks/00-No-Automount",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must disable the graphical user interface automounter unless required.",
+      "expected": {
+        "substring": "[org/gnome/desktop/media-handling]\nautomount=false\nautomount-open=false\nautorun-never=true\n/org/gnome/desktop/media-handling/automount\n/org/gnome/desktop/media-handling/automount-open\n/org/gnome/desktop/media-handling/autorun-never",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-219059"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0600",
         "owner": null,

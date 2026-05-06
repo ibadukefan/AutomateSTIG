@@ -823,6 +823,48 @@ def _file_content_candidate(rule: dict) -> dict | None:
     }
 
 
+def _dconf_media_automount_literal_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    title = rule.get('title', '') or ''
+    if not re.search(r'disable\s+the\s+graphical\s+user\s+interface\s+automounter', title, re.IGNORECASE):
+        return None
+    if not re.search(r'output\s+does\s+not\s+match\s+the\s+example', content, re.IGNORECASE):
+        return None
+    first = re.search(
+        r'^\s*#\s*(?P<command>cat\s+(?P<path>/etc/dconf/db/local\.d/00-No-Automount))\s*$',
+        content,
+        re.MULTILINE,
+    )
+    second = re.search(
+        r'^\s*#\s*(?P<command>cat\s+(?P<path>/etc/dconf/db/local\.d/locks/00-No-Automount))\s*$',
+        content,
+        re.MULTILINE,
+    )
+    if not first or not second:
+        return None
+    required_lines = [
+        '[org/gnome/desktop/media-handling]',
+        'automount=false',
+        'automount-open=false',
+        'autorun-never=true',
+        '/org/gnome/desktop/media-handling/automount',
+        '/org/gnome/desktop/media-handling/automount-open',
+        '/org/gnome/desktop/media-handling/autorun-never',
+    ]
+    if not all(re.search(rf'^\s*{re.escape(line)}\s*$', content, re.MULTILINE) for line in required_lines):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {
+            'type': 'command_output',
+            'command': f"{_normalize_command(first.group('command'))} && {_normalize_command(second.group('command'))}",
+        },
+        'expected': {'type': 'contains', 'substring': '\n'.join(required_lines)},
+        'description': rule.get('title', ''),
+    }
+
+
 def _firewalld_target_drop_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
@@ -3334,7 +3376,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return tomcat_auditctl_candidate
 
     if _linux_platform(stig_id):
-        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _firewalld_target_drop_candidate, _sshd_multi_directive_egrep_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _auditctl_expected_rule_candidate, _audit_rules_file_expected_rule_candidate, _service_candidate, _aide_audit_tool_selection_candidate, _file_permission_candidate):
+        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _dconf_media_automount_literal_candidate, _firewalld_target_drop_candidate, _sshd_multi_directive_egrep_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _auditctl_expected_rule_candidate, _audit_rules_file_expected_rule_candidate, _service_candidate, _aide_audit_tool_selection_candidate, _file_permission_candidate):
             candidate = infer(rule)
             if candidate:
                 return candidate
