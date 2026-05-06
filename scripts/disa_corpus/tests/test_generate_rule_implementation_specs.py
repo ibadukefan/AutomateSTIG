@@ -3040,6 +3040,31 @@ If "deployXML" does not equal "false", this is a finding.'''
             'description': 'The vCenter Lookup service deployXML attribute must be disabled.',
         })
 
+    def test_infers_xmllint_example_xml_attribute_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259048',
+            'title': 'The vCenter Lookup service "ErrorReportValve showServerInfo" must be set to "false".',
+            'check_content': '''At the command prompt, run the following command:
+
+# xmllint --xpath '/Server/Service/Engine/Host/Valve[@className="org.apache.catalina.valves.ErrorReportValve"]' /usr/lib/vmware-lookupsvc/conf/server.xml
+
+Example result:
+
+<Valve className="org.apache.catalina.valves.ErrorReportValve" showServerInfo="false" showReport="false"/>
+
+If the "ErrorReportValve" element is not defined or "showServerInfo" is not set to "false", this is a finding.'''
+        }, 'VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259048',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'xmllint --xpath \'/Server/Service/Engine/Host/Valve[@className="org.apache.catalina.valves.ErrorReportValve"]\' /usr/lib/vmware-lookupsvc/conf/server.xml',
+            },
+            'expected': {'type': 'contains', 'substring': 'showServerInfo="false"'},
+            'description': 'The vCenter Lookup service "ErrorReportValve showServerInfo" must be set to "false".',
+        })
+
     def test_infers_sles_dconf_banner_message_enable_true_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-234808',

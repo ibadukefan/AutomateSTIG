@@ -81,6 +81,19 @@
     },
     {
       "check": {
+        "command": "xmllint --xpath '/Server/Service/Engine/Host/Valve[@className=\"org.apache.catalina.valves.ErrorReportValve\"]' /usr/lib/vmware-lookupsvc/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service \"ErrorReportValve showServerInfo\" must be set to \"false\".",
+      "expected": {
+        "substring": "showServerInfo=\"false\"",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-259048"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/usr/lib/vmware-lookupsvc/conf/catalina.properties",
         "pattern": "org.apache.catalina.STRICT_SERVLET_COMPLIANCE=true",

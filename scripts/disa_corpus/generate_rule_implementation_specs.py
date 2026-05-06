@@ -3126,6 +3126,26 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     if literal_sample_candidate:
         return literal_sample_candidate
 
+    example_xml_attribute_match = re.search(r'Example\s+result:\s*(?P<body>.*?)(?:\n\s*If\b|\Z)', content, re.IGNORECASE | re.DOTALL)
+    if command.startswith('xmllint ') and example_xml_attribute_match:
+        example_lines = [line.strip() for line in example_xml_attribute_match.group('body').splitlines() if line.strip()]
+        if len(example_lines) == 1 and re.fullmatch(r'<[A-Za-z][^\n<>]*/?>', example_lines[0]):
+            attribute_requirement = re.search(
+                r'If\s+the\s+["“][^"”]+["”]\s+element\s+is\s+not\s+defined\s+or\s+["“](?P<attribute>[A-Za-z][A-Za-z0-9_.:-]*)["”]\s+is\s+not\s+set\s+to\s+["“](?P<value>[^"”\n]+)["”],?\s+this\s+is\s+a\s+finding',
+                content,
+                re.IGNORECASE,
+            )
+            if attribute_requirement:
+                required_fragment = f'{attribute_requirement.group("attribute")}="{attribute_requirement.group("value")}"'
+                if required_fragment in example_lines[0]:
+                    return {
+                        'vuln_id': rule.get('vuln_id', ''),
+                        'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',
+                        'check': {'type': 'command_output', 'command': command},
+                        'expected': {'type': 'contains', 'substring': required_fragment},
+                        'description': rule.get('title', ''),
+                    }
+
     expected_match = re.search(r'Expected\s+result:\s*(?P<body>.*?)(?:\n\s*If\b|\Z)', content, re.IGNORECASE | re.DOTALL)
     if expected_match:
         expected_lines = [line.strip() for line in expected_match.group('body').splitlines() if line.strip()]

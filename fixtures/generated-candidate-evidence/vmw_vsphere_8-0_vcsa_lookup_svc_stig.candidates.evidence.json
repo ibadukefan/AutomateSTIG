@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 13,
+  "candidate_checks": 14,
   "cases": [
     {
       "check": {
@@ -157,6 +157,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-259046"
+    },
+    {
+      "check": {
+        "command": "xmllint --xpath '/Server/Service/Engine/Host/Valve[@className=\"org.apache.catalina.valves.ErrorReportValve\"]' /usr/lib/vmware-lookupsvc/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The vCenter Lookup service \"ErrorReportValve showServerInfo\" must be set to \"false\".",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "showServerInfo=\"false\"",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "xmllint --xpath '/Server/Service/Engine/Host/Valve[@className=\"org.apache.catalina.valves.ErrorReportValve\"]' /usr/lib/vmware-lookupsvc/conf/server.xml": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "xmllint --xpath '/Server/Service/Engine/Host/Valve[@className=\"org.apache.catalina.valves.ErrorReportValve\"]' /usr/lib/vmware-lookupsvc/conf/server.xml": "before\nshowServerInfo=\"false\"\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-259048"
     },
     {
       "check": {
@@ -347,5 +373,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/vmw_vsphere_8-0_vcsa_lookup_svc_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "VMW_vSphere_8-0_VCSA_Lookup_Svc_STIG",
-  "validated_candidates": 13
+  "validated_candidates": 14
 }
