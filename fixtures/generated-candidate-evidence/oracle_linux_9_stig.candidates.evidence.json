@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 419,
+  "candidate_checks": 420,
   "cases": [
     {
       "check": {
@@ -10890,6 +10890,32 @@
     },
     {
       "check": {
+        "command": "NetworkManager --print-config | grep -E \"^dns=(none|default)$\"",
+        "type": "command_output"
+      },
+      "description": "OL 9 must configure a DNS processing mode set be Network Manager.",
+      "evidence_type": "command_output_matches",
+      "expected": {
+        "pattern": "^dns=(?:default|none)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "NetworkManager --print-config | grep -E \"^dns=(none|default)$\"": "dns=unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "NetworkManager --print-config | grep -E \"^dns=(none|default)$\"": "dns=none"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271860"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/resolv.conf",
         "pattern": "nameserver 192.168.1.2",
@@ -11628,5 +11654,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 419
+  "validated_candidates": 420
 }

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "NetworkManager --print-config | grep -E \"^dns=(none|default)$\"",
+      "type": "command_output"
+    },
+    "description": "OL 9 must configure a DNS processing mode set be Network Manager.",
+    "expected": {
+      "pattern": "^dns=(?:default|none)$",
+      "type": "matches"
+    },
+    "platform": "linux",
+    "vuln_id": "V-271860"
+  },
   "check_content_excerpt": "Verify that OL 9 has a DNS mode configured in Network Manager.\n\n$ NetworkManager --print-config\n[main]\ndns=none\n\nIf the DNS key under main does not exist or is not set to \"none\" or \"default\", this is a finding.",
   "classification": "manual",
   "collector_commands": [],
   "collector_type": "manual_evidence_workflow",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "pattern": "^dns=(?:default|none)$",
+    "type": "matches"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure NetworkManager in OL 9 to use a DNS mode.\n\nIn \"/etc/NetworkManager/NetworkManager.conf\" add the following line in the \"[main]\" section:\n\ndns = none\n\nNetworkManager must be reloaded for the change to take effect.\n\n$ sudo systemctl reload NetworkManager",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271860r1092292_rule",
   "severity": "medium",

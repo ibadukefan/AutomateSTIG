@@ -2384,6 +2384,25 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'not_equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    networkmanager_dns_allowed_value = (
+        _linux_platform(stig_id)
+        and 'oracle_linux_9' in stig_id.lower()
+        and re.search(r'^\s*[$#>]\s*NetworkManager\s+--print-config\s*$', content, re.MULTILINE)
+        and re.search(r'^\s*dns\s*=\s*none\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(
+            r'If\s+the\s+DNS\s+key\s+under\s+main\s+does\s+not\s+exist\s+or\s+is\s+not\s+set\s+to\s+["“]none["”]\s+or\s+["“]default["”],\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+    )
+    if networkmanager_dns_allowed_value:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'NetworkManager --print-config | grep -E "^dns=(none|default)$"'},
+            'expected': {'type': 'matches', 'pattern': r'^dns=(?:default|none)$'},
+            'description': rule.get('title', ''),
+        }
     nmcli_wireless_disabled = (
         _linux_platform(stig_id)
         and re.search(r'^\s*[$#>]\s*(?:sudo\s+)?nmcli\s+device(?:\s+status)?\s*$', content, re.MULTILINE)

@@ -174,6 +174,9 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
             elif pattern == r'^password\s+requisite\s+pam_pwquality\.so\b.*\bretry=[1-3]\b.*$':
                 pass_fixture['command_outputs'] = {command: 'password requisite pam_pwquality.so retry=3'}
                 fail_fixture['command_outputs'] = {command: 'password requisite pam_pwquality.so retry=4'}
+            elif pattern == r'^dns=(?:default|none)$':
+                pass_fixture['command_outputs'] = {command: 'dns=none'}
+                fail_fixture['command_outputs'] = {command: 'dns=unexpected'}
             else:
                 raise ValueError(f"{candidate['vuln_id']}: command_output matches evidence requires supported deterministic regex")
             evidence_type = 'command_output_matches'

@@ -129,6 +129,26 @@ If the value of "retry" is set to "0" or greater than "3", this is a finding.'''
             'description': 'OL 8 systems below version 8.4 must ensure the password complexity module in the system-auth file is configured for three retries or less.',
         })
 
+    def test_infers_oracle_linux_networkmanager_dns_mode_allowed_value_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271860',
+            'title': 'OL 9 must configure a DNS processing mode set be Network Manager.',
+            'check_content': '''Verify that OL 9 has a DNS mode configured in Network Manager.
+
+$ NetworkManager --print-config
+[main]
+dns=none
+
+If the DNS key under main does not exist or is not set to "none" or "default", this is a finding.''',
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-271860',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'NetworkManager --print-config | grep -E "^dns=(none|default)$"'},
+            'expected': {'type': 'matches', 'pattern': r'^dns=(?:default|none)$'},
+            'description': 'OL 9 must configure a DNS processing mode set be Network Manager.',
+        })
+
     def test_infers_linux_gsettings_uint32_positive_maximum_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230352',

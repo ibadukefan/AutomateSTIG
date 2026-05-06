@@ -201,8 +201,21 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
             'expected': {'type': 'matches', 'pattern': r'^password\s+requisite\s+pam_pwquality\.so\b.*\bretry=[1-3]\b.*$'},
         })
         self.assertEqual(case['evidence_type'], 'command_output_matches')
-        self.assertEqual(case['pass_fixture']['command_outputs'], {command: 'password requisite pam_pwquality.so retry=3'})
-        self.assertEqual(case['fail_fixture']['command_outputs'], {command: 'password requisite pam_pwquality.so retry=4'})
+        self.assertEqual(case['pass_fixture']['command_outputs'][command], 'password requisite pam_pwquality.so retry=3')
+        self.assertEqual(case['fail_fixture']['command_outputs'][command], 'password requisite pam_pwquality.so retry=4')
+
+    def test_generates_networkmanager_dns_allowed_value_fixture_evidence(self):
+        command = 'NetworkManager --print-config | grep -E "^dns=(none|default)$"'
+        candidate = {
+            'vuln_id': 'V-271860',
+            'platform': 'linux',
+            'description': 'NetworkManager DNS mode none or default',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'matches', 'pattern': r'^dns=(?:default|none)$'},
+        }
+        case = mod.build_case(candidate)
+        self.assertEqual(case['pass_fixture']['command_outputs'][command], 'dns=none')
+        self.assertEqual(case['fail_fixture']['command_outputs'][command], 'dns=unexpected')
 
     def test_builds_command_output_not_equals_fixture_case(self):
         case = mod.build_case({

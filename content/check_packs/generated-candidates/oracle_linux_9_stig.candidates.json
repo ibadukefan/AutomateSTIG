@@ -5376,6 +5376,19 @@
     },
     {
       "check": {
+        "command": "NetworkManager --print-config | grep -E \"^dns=(none|default)$\"",
+        "type": "command_output"
+      },
+      "description": "OL 9 must configure a DNS processing mode set be Network Manager.",
+      "expected": {
+        "pattern": "^dns=(?:default|none)$",
+        "type": "matches"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271860"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/resolv.conf",
         "pattern": "nameserver 192.168.1.2",
