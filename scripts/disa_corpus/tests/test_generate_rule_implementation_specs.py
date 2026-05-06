@@ -254,6 +254,39 @@ If the dns key under main does not exist or is not set to "none" or "default", t
             'description': 'RHEL 9 must configure a DNS processing mode in Network Manager.',
         })
 
+    def test_infers_sles_gsettings_logout_key_disabled_and_locked_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234989',
+            'title': 'The SUSE operating system must disable the x86 Ctrl-Alt-Delete key sequence for Graphical User Interfaces.',
+            'check_content': '''Note: If a graphical user interface is not installed, this requirement is Not Applicable.
+
+Verify the SUSE operating system is not configured to reboot the system when Ctrl-Alt-Delete is pressed in the graphical user interface.
+
+Check that the dconf setting was disabled to allow the Ctrl-Alt-Delete sequence in the graphical user interface with the following command:
+
+Check the default logout key sequence:
+
+> sudo gsettings get org.gnome.settings-daemon.plugins.media-keys logout
+''
+
+Check that the value is not writable and cannot be changed by the user:
+
+> sudo gsettings writable org.gnome.settings-daemon.plugins.media-keys logout
+false
+
+If the logout value is not [''] and the writable status is not false, this is a finding.''',
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-234989',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'gsettings get org.gnome.settings-daemon.plugins.media-keys logout && gsettings writable org.gnome.settings-daemon.plugins.media-keys logout',
+            },
+            'expected': {'type': 'equals', 'value': "''\nfalse"},
+            'description': 'The SUSE operating system must disable the x86 Ctrl-Alt-Delete key sequence for Graphical User Interfaces.',
+        })
+
     def test_infers_linux_gsettings_uint32_positive_maximum_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230352',

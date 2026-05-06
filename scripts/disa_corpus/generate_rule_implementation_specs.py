@@ -1531,10 +1531,39 @@ def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
             'description': rule.get('title', ''),
         }
     command_matches = list(re.finditer(
-        r'^\s*\**\s*\$\s*(?P<command>(?:sudo\s+)?gsettings\s+(?:get|writable)\s+[A-Za-z0-9_.-]+\s+[A-Za-z0-9_.-]+)\s*$',
+        r'^\s*\**\s*[$#>]\s*(?P<command>(?:sudo\s+)?gsettings\s+(?:get|writable)\s+[A-Za-z0-9_.-]+\s+[A-Za-z0-9_.-]+)\s*$',
         content,
         re.MULTILINE,
     ))
+    if len(command_matches) == 2:
+        commands = [_normalize_command(match.group('command')) for match in command_matches]
+        expected_lines = []
+        for match in command_matches:
+            expected_line_for_command = None
+            for line in content[match.end():].splitlines():
+                stripped = line.strip()
+                if not stripped:
+                    continue
+                if stripped.lower().startswith(('if ', 'note:', '$', '#', '>')):
+                    break
+                expected_line_for_command = stripped
+                break
+            expected_lines.append(expected_line_for_command)
+        if (
+            commands == [
+                'gsettings get org.gnome.settings-daemon.plugins.media-keys logout',
+                'gsettings writable org.gnome.settings-daemon.plugins.media-keys logout',
+            ]
+            and expected_lines == ["''", 'false']
+            and re.search(r'If\s+the\s+logout\s+value\s+is\s+not\s+\[\'\'\]\s+and\s+the\s+writable\s+status\s+is\s+not\s+false,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        ):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'linux',
+                'check': {'type': 'command_output', 'command': ' && '.join(commands)},
+                'expected': {'type': 'equals', 'value': '\n'.join(expected_lines)},
+                'description': rule.get('title', ''),
+            }
     if len(command_matches) == 3:
         commands = [_normalize_command(match.group('command')) for match in command_matches]
         expected_lines = []

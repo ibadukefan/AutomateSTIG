@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 160,
+  "candidate_checks": 161,
   "cases": [
     {
       "check": {
@@ -3175,6 +3175,32 @@
     },
     {
       "check": {
+        "command": "gsettings get org.gnome.settings-daemon.plugins.media-keys logout && gsettings writable org.gnome.settings-daemon.plugins.media-keys logout",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must disable the x86 Ctrl-Alt-Delete key sequence for Graphical User Interfaces.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "''\nfalse"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.settings-daemon.plugins.media-keys logout && gsettings writable org.gnome.settings-daemon.plugins.media-keys logout": "unexpected-''\nfalse"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.settings-daemon.plugins.media-keys logout && gsettings writable org.gnome.settings-daemon.plugins.media-keys logout": "''\nfalse"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234989"
+    },
+    {
+      "check": {
         "command": "pwck -r",
         "type": "command_output"
       },
@@ -4234,5 +4260,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 160
+  "validated_candidates": 161
 }
