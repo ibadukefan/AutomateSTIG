@@ -69,6 +69,37 @@ Policy Value: N/A''',
             'description': 'Download restrictions must be configured.',
         })
 
+    def test_infers_chrome_default_cookies_setting_path_terminal_value_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-245539',
+            'title': 'Session only based cookies must be enabled.',
+            'check_content': '''Universal method:
+1. In the omnibox (address bar), type chrome://policy
+2. If the policy "DefaultCookiesSetting" is not shown or is not set to "4", this is a finding.
+
+Windows method:
+1. Start regedit.
+2. Navigate to HKLM\\Software\\Policies\\Google\\Chrome\\DefaultCookiesSetting.
+3. If this key does not exist, or is not set to "4", this is a finding.''',
+            'fix_text': '''Windows group policy:
+1. Open the group policy editor tool with gpedit.msc
+2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Google\\Google Chrome\\Content Settings.
+- Policy Name: Default cookies setting
+- Policy State: Enabled
+- Policy Value: Keep cookies for the duration of the session''',
+        }, 'Google_Chrome_Current_Windows')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-245539',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKLM\\Software\\Policies\\Google\\Chrome',
+                'value_name': 'DefaultCookiesSetting',
+            },
+            'expected': {'type': 'equals', 'value': 4},
+            'description': 'Session only based cookies must be enabled.',
+        })
+
     def test_infers_office_registry_dword_primary_value_with_additional_acceptable_values_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-223282',

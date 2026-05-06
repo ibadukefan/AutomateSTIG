@@ -242,6 +242,20 @@
       "check": {
         "path": "HKLM\\Software\\Policies\\Google\\Chrome",
         "type": "registry",
+        "value_name": "DefaultCookiesSetting"
+      },
+      "description": "Session only based cookies must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 4
+      },
+      "platform": "windows",
+      "vuln_id": "V-245539"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
         "value_name": "CreateThemesSettings"
       },
       "description": "Create Themes with AI must be disabled.",

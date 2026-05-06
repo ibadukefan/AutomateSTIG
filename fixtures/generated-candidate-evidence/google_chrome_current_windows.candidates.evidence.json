@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 23,
+  "candidate_checks": 24,
   "cases": [
     {
       "check": {
@@ -464,6 +464,33 @@
       "check": {
         "path": "HKLM\\Software\\Policies\\Google\\Chrome",
         "type": "registry",
+        "value_name": "DefaultCookiesSetting"
+      },
+      "description": "Session only based cookies must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 4
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\DefaultCookiesSetting": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Google\\Chrome\\DefaultCookiesSetting": 4
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-245539"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Google\\Chrome",
+        "type": "registry",
         "value_name": "CreateThemesSettings"
       },
       "description": "Create Themes with AI must be disabled.",
@@ -628,5 +655,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Google_Chrome_Current_Windows",
-  "validated_candidates": 23
+  "validated_candidates": 24
 }

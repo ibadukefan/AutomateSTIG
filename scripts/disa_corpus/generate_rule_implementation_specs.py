@@ -160,6 +160,29 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
                 'expected': {'type': 'matches', 'pattern': '^(?:1|2|4)$'},
                 'description': rule.get('title', ''),
             }
+        chrome_terminal_value_path = re.search(
+            r'Navigate\s+to\s+["“]?(HKLM\\Software\\Policies\\Google\\Chrome)\\(DefaultCookiesSetting)["”]?\.?',
+            content,
+            re.IGNORECASE,
+        )
+        if (
+            chrome_terminal_value_path
+            and re.search(r'policy\s+["“]DefaultCookiesSetting["”]\s+is\s+not\s+shown\s+or\s+is\s+not\s+set\s+to\s+["“]4["”],?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+            and re.search(r'If\s+this\s+key\s+does\s+not\s+exist,\s+or\s+is\s+not\s+set\s+to\s+["“]4["”],?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+            and re.search(r'Policy\s+Name:\s+Default\s+cookies\s+setting', fix_text, re.IGNORECASE)
+            and re.search(r'Policy\s+Value:\s+Keep\s+cookies\s+for\s+the\s+duration\s+of\s+the\s+session', fix_text, re.IGNORECASE)
+        ):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'windows',
+                'check': {
+                    'type': 'registry',
+                    'path': _normalize_registry_path(chrome_terminal_value_path.group(1)),
+                    'value_name': chrome_terminal_value_path.group(2),
+                },
+                'expected': {'type': 'equals', 'value': 4},
+                'description': rule.get('title', ''),
+            }
     path_match = re.search(r'Navigate\s+to\s+["“]?((?:HKLM|HKCU|HKCR|HKU|HKCC|HKEY_[A-Z_]+)\\[^\n\r"”]+)', content, re.IGNORECASE)
     value_match = None
     expected_value = None

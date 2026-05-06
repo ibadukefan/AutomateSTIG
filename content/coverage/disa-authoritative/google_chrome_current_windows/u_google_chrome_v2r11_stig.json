@@ -624,16 +624,17 @@
       "vuln_id": "V-245538"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-245539",
+      "check_pack": "generated-candidates/google_chrome_current_windows.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-245539r960864_rule",
       "severity": "medium",
       "title": "Session only based cookies must be enabled.",
-      "tracking_issue": "TODO-V-245539",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/google_chrome_current_windows.candidates.json",
         "content/disa-corpus/artifacts/04f577373ec9a151eff12481ae377b69d119b3ea7b114d8476faa59fb34e109d/U_Google_Chrome_V2R11_STIG.zip"
       ],
       "vuln_id": "V-245539"
