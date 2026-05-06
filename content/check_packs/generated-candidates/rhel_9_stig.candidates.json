@@ -4242,6 +4242,19 @@
     },
     {
       "check": {
+        "command": "find /var/log/audit/ -type f -perm /7177 -exec stat -c \"%a %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 audit logs file must have mode 0600 or less permissive to prevent unauthorized access to the audit log.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-258167"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/auditd.conf",
         "pattern": "freq = 100",

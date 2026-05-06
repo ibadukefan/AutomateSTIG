@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /var/log/audit/ -type f -perm /7177 -exec stat -c \"%a %n\" {} \\;",
+      "type": "command_output"
+    },
+    "description": "RHEL 9 audit logs file must have mode 0600 or less permissive to prevent unauthorized access to the audit log.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-258167"
+  },
   "check_content_excerpt": "Verify the audit logs have a mode of \"0600\". \n\nDetermine where the audit logs are stored with the following command:\n\n$ sudo find /var/log/audit/ -type f -exec stat -c '%a %n' {} \\;\n\n600 /var/log/audit/audit.log\n\nUsing the location of the audit log file, determine the mode of each audit log with the following command:\n\n$ sudo find /var/log/audit/ -type f -exec stat -c '%a %n' {} \\;\n\nrw-------. 2 root root 237923 Jun 11 11:56 /var/log/audit/audit.log\n\nIf the audit logs have a mode more permissive than \"0600\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the audit logs to have a mode of \"0600\" with the following command:\n\nReplace \"[audit_log_file]\" with the path to each audit log file. By default, these logs are located in \"/var/log/audit/.\n\n$ sudo chmod 0600 /var/log/audit/[audit_log_file]\n\nCheck the group that owns the system audit logs:\n\n$ sudo grep -iw log_group /etc/audit/auditd.conf\n\nIf log_group is set to a user other than root, configure the permissions the following way:\n\n$ sudo chmod 0640 $log_file\n$ sudo chmod 0440 $log_file.*\n\nOtherwise, configure the permissions the following way:\n\n$ sudo chmod 0600 $log_file\n$ sudo chmod 0400 $log_file.*",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-258167r1101918_rule",
   "severity": "medium",

@@ -169,6 +169,37 @@ If the "uint32" setting is missing, or is not set to "5" or less, this is a find
             'description': 'RHEL 8 must initiate a session lock for graphical user interfaces when the screensaver is activated.',
         })
 
+    def test_infers_linux_audit_log_file_mode_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258167',
+            'title': 'RHEL 9 audit logs file must have mode 0600 or less permissive to prevent unauthorized access to the audit log.',
+            'check_content': '''Verify the audit logs have a mode of "0600".
+
+Determine where the audit logs are stored with the following command:
+
+$ sudo find /var/log/audit/ -type f -exec stat -c '%a %n' {} \\;
+
+600 /var/log/audit/audit.log
+
+Using the location of the audit log file, determine the mode of each audit log with the following command:
+
+$ sudo find /var/log/audit/ -type f -exec stat -c '%a %n' {} \\;
+
+600 /var/log/audit/audit.log
+
+If the audit logs have a mode more permissive than "0600", this is a finding.''',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-258167',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'find /var/log/audit/ -type f -perm /7177 -exec stat -c "%a %n" {} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'RHEL 9 audit logs file must have mode 0600 or less permissive to prevent unauthorized access to the audit log.',
+        })
+
     def test_classifies_policy_language_as_manual_evidence_workflow(self):
         classification, collector = mod.classify_rule('The organization must document an approval process.')
         self.assertEqual(classification, 'manual')

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 383,
+  "candidate_checks": 384,
   "cases": [
     {
       "check": {
@@ -8607,6 +8607,32 @@
     },
     {
       "check": {
+        "command": "find /var/log/audit/ -type f -perm /7177 -exec stat -c \"%a %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 audit logs file must have mode 0600 or less permissive to prevent unauthorized access to the audit log.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /var/log/audit/ -type f -perm /7177 -exec stat -c \"%a %n\" {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /var/log/audit/ -type f -perm /7177 -exec stat -c \"%a %n\" {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258167"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/audit/auditd.conf",
         "pattern": "freq = 100",
@@ -10620,5 +10646,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 383
+  "validated_candidates": 384
 }

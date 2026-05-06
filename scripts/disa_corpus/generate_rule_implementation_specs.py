@@ -2422,6 +2422,29 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    audit_log_mode_matches = re.findall(
+        r'^\s*[$#>]\s*(?:sudo\s+)?find\s+/var/log/audit/\s+-type\s+f\s+-exec\s+stat\s+-c\s+["\']%a\s+%n["\']\s+\{\}\s+\\;\s*$',
+        content,
+        re.MULTILINE,
+    )
+    audit_log_mode_finding = re.search(
+        r'If\s+the\s+audit\s+logs\s+have\s+a\s+mode\s+more\s+permissive\s+than\s+["“]?(?P<mode>0?[0-7]{3})["”]?,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if audit_log_mode_matches and audit_log_mode_finding:
+        mode = int(audit_log_mode_finding.group('mode'), 8)
+        prohibited_bits = 0o7777 & ~mode
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': f'find /var/log/audit/ -type f -perm /{prohibited_bits:o} -exec stat -c "%a %n" {{}} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     macos_osascript_true_candidate = _macos_osascript_true_heredoc_candidate(rule, stig_id)
     if macos_osascript_true_candidate:
         return macos_osascript_true_candidate

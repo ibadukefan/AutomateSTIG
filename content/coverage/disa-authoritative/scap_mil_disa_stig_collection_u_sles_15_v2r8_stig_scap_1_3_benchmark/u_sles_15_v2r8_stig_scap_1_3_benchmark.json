@@ -1646,7 +1646,7 @@
       "check_pack": "generated-candidates/sles_15_stig.candidates",
       "classification": "automated",
       "evidence_required": true,
-      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-235009 from source identifier xccdf_mil.disa.stig_group_V-235009.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-235009r991589_rule",
       "severity": "medium",
       "title": "The SUSE operating system SSH daemon private host key files must have mode 0640 or less permissive.",
