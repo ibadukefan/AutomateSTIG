@@ -1500,6 +1500,41 @@ def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
         content,
         re.MULTILINE,
     ))
+    if len(command_matches) == 3:
+        commands = [_normalize_command(match.group('command')) for match in command_matches]
+        expected_lines = []
+        for match in command_matches:
+            expected_line_for_command = None
+            for line in content[match.end():].splitlines():
+                stripped = line.strip()
+                if not stripped:
+                    continue
+                if stripped.lower().startswith(('if ', 'note:', '$', '#', '>')):
+                    break
+                expected_line_for_command = stripped
+                break
+            expected_lines.append(expected_line_for_command)
+        idle_delay = re.fullmatch(r'uint32\s+([1-9][0-9]{0,2})', expected_lines[2] or '')
+        if (
+            commands == [
+                'gsettings get org.gnome.desktop.screensaver lock-enabled',
+                'gsettings get org.gnome.desktop.screensaver lock-delay',
+                'gsettings get org.gnome.desktop.session idle-delay',
+            ]
+            and expected_lines[0] == 'true'
+            and expected_lines[1] == 'uint32 0'
+            and idle_delay
+            and re.search(r'If\s+["“]lock-enabled["”]\s+is\s+not\s+set\s+to\s+["“]true["”]', content, re.IGNORECASE)
+            and re.search(r'If\s+["“]lock-delay["”]\s+is\s+set\s+to\s+a\s+value\s+greater\s+than\s+["“]0["”]', content, re.IGNORECASE)
+            and re.search(r'["“]idle-delay["”]\s+is\s+set\s+to\s+a\s+value\s+greater\s+than\s+["“]' + re.escape(idle_delay.group(1)) + r'["”]', content, re.IGNORECASE)
+        ):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'linux',
+                'check': {'type': 'command_output', 'command': ' && '.join(commands)},
+                'expected': {'type': 'equals', 'value': '\n'.join(expected_lines)},
+                'description': rule.get('title', ''),
+            }
     if len(command_matches) != 1:
         return None
     command = _normalize_command(command_matches[0].group('command'))

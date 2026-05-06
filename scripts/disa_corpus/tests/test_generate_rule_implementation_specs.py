@@ -200,6 +200,40 @@ If the DNS key under main does not exist or is not set to "none" or "default", t
             'description': 'OL 9 must configure a DNS processing mode set be Network Manager.',
         })
 
+    def test_infers_ubuntu_graphical_session_lock_multi_gsettings_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270678',
+            'title': 'Ubuntu 24.04 LTS must initiate a graphical session lock after 10 minutes of inactivity.',
+            'check_content': '''Note: If Ubuntu 24.04 LTS does not have a graphical user interface installed, this requirement is not applicable.
+
+Verify the Ubuntu operation system has a graphical user interface session lock configured to activate after 10 minutes of inactivity with the following commands:
+
+Set the following settings to verify the graphical user interface session is configured to lock the graphical user session after 10 minutes of inactivity:
+
+**$ gsettings get org.gnome.desktop.screensaver lock-enabled
+true
+
+$ gsettings get org.gnome.desktop.screensaver lock-delay
+uint32 0
+
+$ gsettings get org.gnome.desktop.session idle-delay
+uint32 600
+
+Note: If "lock-enabled" is not set to "true", this is a finding.
+
+If "lock-delay" is set to a value greater than "0", or if "idle-delay" is set to a value greater than "600", or either settings are missing, this is a finding.''',
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-270678',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'gsettings get org.gnome.desktop.screensaver lock-enabled && gsettings get org.gnome.desktop.screensaver lock-delay && gsettings get org.gnome.desktop.session idle-delay',
+            },
+            'expected': {'type': 'equals', 'value': 'true\nuint32 0\nuint32 600'},
+            'description': 'Ubuntu 24.04 LTS must initiate a graphical session lock after 10 minutes of inactivity.',
+        })
+
     def test_infers_rhel_networkmanager_dns_mode_allowed_value_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257949',

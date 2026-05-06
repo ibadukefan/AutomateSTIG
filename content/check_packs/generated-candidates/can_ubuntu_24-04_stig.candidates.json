@@ -413,6 +413,19 @@
     },
     {
       "check": {
+        "command": "gsettings get org.gnome.desktop.screensaver lock-enabled && gsettings get org.gnome.desktop.screensaver lock-delay && gsettings get org.gnome.desktop.session idle-delay",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must initiate a graphical session lock after 10 minutes of inactivity.",
+      "expected": {
+        "type": "equals",
+        "value": "true\nuint32 0\nuint32 600"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270678"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/dconf/profile/user",
         "pattern": "system-db",
