@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -i shutdown $CATALINA_BASE/conf/server.xml",
+      "type": "command_output"
+    },
+    "description": "The shutdown port must be disabled.",
+    "expected": {
+      "substring": "<Server port=\"-1\" shutdown=\"SHUTDOWN\">",
+      "type": "contains"
+    },
+    "platform": "generic",
+    "vuln_id": "V-222951"
+  },
   "check_content_excerpt": "From the Tomcat server run the following OS command:\n\n$ sudo grep -i shutdown $CATALINA_BASE/conf/server.xml\n\nEnsure the server shutdown port attribute in $CATALINA_BASE/conf/server.xml is set to -1. \n\nEXAMPLE:\n<Server port=\"-1\" shutdown=\"SHUTDOWN\">\n\nIf Server port not = \"-1\" shutdown=\"SHUTDOWN\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "<Server port=\"-1\" shutdown=\"SHUTDOWN\">",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From the Tomcat server as a privileged user, edit the $CATALINA_BASE/conf/server.xml file: set the Server port setting to -1 and restart the Tomcat server.\n\n<Server port=\"-1\" shutdown=\"SHUTDOWN\">\n\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-222951r960963_rule",
   "severity": "medium",

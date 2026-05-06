@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 8,
+  "candidate_checks": 9,
   "cases": [
+    {
+      "check": {
+        "command": "grep -i shutdown $CATALINA_BASE/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The shutdown port must be disabled.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "<Server port=\"-1\" shutdown=\"SHUTDOWN\">",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i shutdown $CATALINA_BASE/conf/server.xml": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i shutdown $CATALINA_BASE/conf/server.xml": "before\n<Server port=\"-1\" shutdown=\"SHUTDOWN\">\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222951"
+    },
     {
       "check": {
         "command": "find $CATALINA_HOME -follow -maxdepth 0 \\( ! -user root -o ! -group tomcat \\) -ls",
@@ -215,5 +241,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 8
+  "validated_candidates": 9
 }

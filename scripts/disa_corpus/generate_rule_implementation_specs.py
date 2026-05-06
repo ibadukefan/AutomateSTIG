@@ -2972,6 +2972,24 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     if command.startswith('xmllint ') and re.search(r'\bnot\s*\[', command):
         return None
 
+    if (
+        stig_id == 'Tomcat_Application_Server_9_STIG'
+        and command == 'grep -i shutdown $CATALINA_BASE/conf/server.xml'
+        and re.search(r'^\s*<Server\s+port=["“]-1["”]\s+shutdown=["“]SHUTDOWN["”]>\s*$', content, re.MULTILINE)
+        and re.search(
+            r'If\s+Server\s+port\s+not\s*=\s*["“]-1["”]\s+shutdown=["“]SHUTDOWN["”],?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'contains', 'substring': '<Server port="-1" shutdown="SHUTDOWN">'},
+            'description': rule.get('title', ''),
+        }
+
     grep_sample_candidate = _grep_sample_line_candidate(rule, stig_id, command, command_end)
     if grep_sample_candidate:
         return grep_sample_candidate

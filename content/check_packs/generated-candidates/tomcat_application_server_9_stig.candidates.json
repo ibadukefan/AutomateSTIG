@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "grep -i shutdown $CATALINA_BASE/conf/server.xml",
+        "type": "command_output"
+      },
+      "description": "The shutdown port must be disabled.",
+      "expected": {
+        "substring": "<Server port=\"-1\" shutdown=\"SHUTDOWN\">",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-222951"
+    },
+    {
+      "check": {
         "command": "find $CATALINA_HOME -follow -maxdepth 0 \\( ! -user root -o ! -group tomcat \\) -ls",
         "type": "command_output"
       },

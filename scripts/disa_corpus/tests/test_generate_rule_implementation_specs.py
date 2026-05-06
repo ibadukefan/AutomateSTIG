@@ -923,6 +923,32 @@ If results indicate the $CATALINA_HOME folder ownership and group membership is 
         })
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_tomcat_shutdown_port_disabled_literal_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222951',
+            'title': 'The shutdown port must be disabled.',
+            'check_content': '''From the Tomcat server run the following OS command:
+
+$ sudo grep -i shutdown $CATALINA_BASE/conf/server.xml
+
+Ensure the server shutdown port attribute in $CATALINA_BASE/conf/server.xml is set to -1.
+
+EXAMPLE:
+<Server port="-1" shutdown="SHUTDOWN">
+
+If Server port not = "-1" shutdown="SHUTDOWN", this is a finding.'''
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222951',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'grep -i shutdown $CATALINA_BASE/conf/server.xml',
+            },
+            'expected': {'type': 'contains', 'substring': '<Server port="-1" shutdown="SHUTDOWN">'},
+            'description': 'The shutdown port must be disabled.',
+        })
+
     def test_infers_ubuntu_sshd_multi_directive_egrep_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270717',
