@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 329,
+  "candidate_checks": 330,
   "cases": [
     {
       "check": {
@@ -3661,6 +3661,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248700"
+    },
+    {
+      "check": {
+        "command": "awk -F \":\" 'list[$3]++{print $1, $3}' /etc/passwd",
+        "type": "command_output"
+      },
+      "description": "OL 8 duplicate User IDs (UIDs) must not exist for interactive users.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F \":\" 'list[$3]++{print $1, $3}' /etc/passwd": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F \":\" 'list[$3]++{print $1, $3}' /etc/passwd": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248701"
     },
     {
       "check": {
@@ -8948,5 +8974,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 329
+  "validated_candidates": 330
 }

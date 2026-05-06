@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 385,
+  "candidate_checks": 386,
   "cases": [
     {
       "check": {
@@ -5900,6 +5900,32 @@
     },
     {
       "check": {
+        "command": "awk -F \":\" 'list[$3]++{print $1, $3}' /etc/passwd",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 duplicate User IDs (UIDs) must not exist for interactive users.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "awk -F \":\" 'list[$3]++{print $1, $3}' /etc/passwd": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "awk -F \":\" 'list[$3]++{print $1, $3}' /etc/passwd": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-258045"
+    },
+    {
+      "check": {
         "command": "pwck -r",
         "type": "command_output"
       },
@@ -10672,5 +10698,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 385
+  "validated_candidates": 386
 }

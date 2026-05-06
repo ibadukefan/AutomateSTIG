@@ -1081,6 +1081,24 @@ If the system has duplicate GIDs, this is a finding.'''
         })
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_duplicate_uid_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258045',
+            'title': 'RHEL 9 duplicate User IDs (UIDs) must not exist for interactive users.',
+            'check_content': '''Verify that RHEL 9 contains no duplicate UIDs for interactive users with the following command:
+
+$ sudo awk -F ":" 'list[$3]++{print $1, $3}' /etc/passwd
+
+If output is produced and the accounts listed are interactive user accounts, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': 'awk -F ":" \'list[$3]++{print $1, $3}\' /etc/passwd',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_audit_backlog_limit_grep_v_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271592',

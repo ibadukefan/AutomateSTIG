@@ -3191,6 +3191,14 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         content,
         re.IGNORECASE,
     )
+    no_output_for_duplicate_uid = re.fullmatch(
+        r"awk\s+-F\s+['\"]?:['\"]?\s+['\"]list\[\$3\]\+\+\{print\s+\$1,\s*\$3\}\s*['\"]\s+/etc/passwd",
+        command,
+    ) and re.search(
+        r'If\s+output\s+is\s+produced\s+and\s+the\s+accounts\s+listed\s+are\s+interactive\s+user\s+accounts,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
     no_output_for_public_directory_sticky_bit = re.fullmatch(
         r'find\s+/\s+-type\s+d\s+\\\(\s+-perm\s+-0002\s+-a\s+!\s+-perm\s+-1000\s+\\\)\s+-print\s+2>/dev/null',
         command,
@@ -3228,7 +3236,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             re.IGNORECASE,
         )
     )
-    if no_output_for_find or no_output_for_find_not_owner or no_output_for_explicit_output or no_output_for_command_output or no_output_for_keytab_listing or no_output_for_any_output or no_output_for_audit_backlog_limit_grep_v or no_output_for_rpm_va_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found or no_output_for_grep_occurrences_return or no_output_for_find_unassigned_owner_group or no_output_for_duplicate_gid or no_output_for_public_directory_sticky_bit or no_output_for_pwck_home_directories or no_output_for_pwck_gid_defined:
+    if no_output_for_find or no_output_for_find_not_owner or no_output_for_explicit_output or no_output_for_command_output or no_output_for_keytab_listing or no_output_for_any_output or no_output_for_audit_backlog_limit_grep_v or no_output_for_rpm_va_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found or no_output_for_grep_occurrences_return or no_output_for_find_unassigned_owner_group or no_output_for_duplicate_gid or no_output_for_duplicate_uid or no_output_for_public_directory_sticky_bit or no_output_for_pwck_home_directories or no_output_for_pwck_gid_defined:
         return {
             'vuln_id': rule.get('vuln_id', ''),
             'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',
