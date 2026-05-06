@@ -2126,6 +2126,29 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': 'X11Forwarding no'},
             'description': rule.get('title', ''),
         }
+    ubuntu_sshd_macs_literal = (
+        _linux_platform(stig_id)
+        and 'ubuntu' in stig_id.lower()
+        and re.search(r'^\s*[$#>]\s*(?:sudo\s+)?grep\s+-irs\s+macs\s+/etc/ssh/sshd_config\*\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(
+            r'^\s*MACs\s+hmac-sha2-512-etm@openssh\.com,hmac-sha2-256-etm@openssh\.com,hmac-sha2-512,hmac-sha2-256\s*$',
+            content,
+            re.MULTILINE | re.IGNORECASE,
+        )
+        and re.search(
+            r'If\s+any\s+algorithms\s+other\s+than\s+["“]hmac-sha2-512-etm@openssh\.com,hmac-sha2-256-etm@openssh\.com,hmac-sha2-512,hmac-sha2-256["”]\s+are\s+listed,\s+the\s+returned\s+line\s+is\s+commented\s+out,\s+or\s+if\s+conflicting\s+results\s+are\s+returned,\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+    )
+    if ubuntu_sshd_macs_literal:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'grep -irs macs /etc/ssh/sshd_config*'},
+            'expected': {'type': 'equals', 'value': 'MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256'},
+            'description': rule.get('title', ''),
+        }
     vlock_binary_literal = (
         _linux_platform(stig_id)
         and re.search(r'\bVerify\s+[^.\n]*\bhas\s+the\s+["“]vlock["”]\s+package\s+installed\b', content, re.IGNORECASE)

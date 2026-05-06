@@ -266,6 +266,25 @@ If the "X11Forwarding" keyword is set to "yes" and is not documented with the in
             'description': 'Ubuntu 24.04 LTS must be configured so that remote X connections are disabled.',
         })
 
+    def test_infers_ubuntu_sshd_macs_exact_literal_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270668',
+            'title': 'Ubuntu 24.04 LTS must configure the SSH daemon to use Message Authentication Codes (MACs) employing FIPS 140-3 approved cryptographic hashes to prevent the unauthorized disclosure of information and/or detect changes to information during transmission.',
+            'check_content': '''Verify the SSH daemon is configured to only use MACs that employ FIPS 140-3 approved ciphers with the following command:
+
+$ grep -irs macs /etc/ssh/sshd_config*
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
+
+If any algorithms other than "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256" are listed, the returned line is commented out, or if conflicting results are returned, this is a finding.''',
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-270668',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'grep -irs macs /etc/ssh/sshd_config*'},
+            'expected': {'type': 'equals', 'value': 'MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256'},
+            'description': 'Ubuntu 24.04 LTS must configure the SSH daemon to use Message Authentication Codes (MACs) employing FIPS 140-3 approved cryptographic hashes to prevent the unauthorized disclosure of information and/or detect changes to information during transmission.',
+        })
+
     def test_infers_linux_find_named_file_found_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-248597',

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 178,
+  "candidate_checks": 179,
   "cases": [
     {
       "check": {
@@ -551,6 +551,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270667"
+    },
+    {
+      "check": {
+        "command": "grep -irs macs /etc/ssh/sshd_config*",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must configure the SSH daemon to use Message Authentication Codes (MACs) employing FIPS 140-3 approved cryptographic hashes to prevent the unauthorized disclosure of information and/or detect changes to information during transmission.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -irs macs /etc/ssh/sshd_config*": "unexpected-MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -irs macs /etc/ssh/sshd_config*": "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270668"
     },
     {
       "check": {
@@ -4867,5 +4893,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 178
+  "validated_candidates": 179
 }
