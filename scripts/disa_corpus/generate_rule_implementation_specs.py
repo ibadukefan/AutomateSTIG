@@ -2384,7 +2384,7 @@ def _ssh_host_key_mode_candidate(rule: dict, stig_id: str) -> dict | None:
     key_kind = None
     key_glob = None
     if re.search(
-        r'^\s*[$#>]\s*(?:sudo\s+)?ls\s+-l\s+/etc/ssh/(?:ssh_host\*key|\*_key)\s*$',
+        r'^\s*[$#>]\s*(?:sudo\s+)?ls\s+-[alL]*l[alL]*\s+/etc/ssh/(?:ssh_host\*key|\*_key)\s*$',
         content,
         re.MULTILINE,
     ) or re.search(
@@ -2422,12 +2422,20 @@ def _ssh_host_key_mode_candidate(rule: dict, stig_id: str) -> dict | None:
     prohibited_bits = 0o777 & ~mode
     if prohibited_bits == 0:
         return None
+    follow_links = bool(
+        re.search(
+            r'^\s*[$#>]\s*(?:sudo\s+)?ls\s+-[alL]*L[alL]*\s+/etc/ssh/(?:ssh_host\*key|\*_key)\s*$',
+            content,
+            re.MULTILINE,
+        )
+    )
+    find_prefix = 'find -L /etc/ssh' if follow_links else 'find /etc/ssh'
     return {
         'vuln_id': rule.get('vuln_id', ''),
         'platform': 'linux',
         'check': {
             'type': 'command_output',
-            'command': f'find /etc/ssh -maxdepth 1 -type f -name \'{key_glob}\' -perm /{prohibited_bits:o} -exec stat -c "%n %a" {{}} \\;',
+            'command': f'{find_prefix} -maxdepth 1 -type f -name \'{key_glob}\' -perm /{prohibited_bits:o} -exec stat -c "%n %a" {{}} \\;',
         },
         'expected': {'type': 'equals', 'value': ''},
         'description': rule.get('title', ''),

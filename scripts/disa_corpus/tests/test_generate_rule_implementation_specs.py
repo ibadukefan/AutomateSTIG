@@ -5093,6 +5093,23 @@ If "Audit Process Creation" is not set to "Failure", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'audit_policy', 'subcategory': 'Process Creation', 'setting': 'Failure'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Failure'})
 
+    def test_infers_oracle_linux_private_host_key_mode_candidate_from_ls_alL(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248602',
+            'title': 'The OL 8 SSH private host key files must have mode "0640" or less permissive.',
+            'check_content': '''Verify the SSH private host key files have mode "0640" or less permissive with the following command:
+
+$ sudo ls -alL /etc/ssh/ssh_host*key
+-rw-r----- 1 root wheel 668 Nov 28 06:43 ssh_host_dsa_key
+-rw-r----- 1 root wheel 582 Nov 28 06:43 ssh_host_key
+-rw-r----- 1 root wheel 887 Nov 28 06:43 ssh_host_rsa_key
+
+If any private host key file has a mode more permissive than "0640", this is a finding.'''
+        }, 'Oracle_Linux_8_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'find -L /etc/ssh -maxdepth 1 -type f -name \'ssh_host*key\' -perm /137 -exec stat -c "%n %a" {} \\;'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_linux_audit_rules_file_cat_grep_expected_rule_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258214',

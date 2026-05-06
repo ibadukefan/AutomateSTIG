@@ -832,6 +832,19 @@
     },
     {
       "check": {
+        "command": "find -L /etc/ssh -maxdepth 1 -type f -name 'ssh_host*key' -perm /137 -exec stat -c \"%n %a\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The OL 8 SSH private host key files must have mode \"0640\" or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-248602"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "StrictModes yes",
