@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "psql -c \"SHOW pgaudit.log\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when categorized information (e.g., classification levels/security levels) is accessed.",
+      "expected": {
+        "substring": "ddl, write, role",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233551"
+    },
+    {
+      "check": {
         "command": "psql -c \"SHOW shared_preload_libraries\"",
         "type": "command_output"
       },
@@ -12,6 +25,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-233565"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW pgaudit.log\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when unsuccessful attempts to access categorized information (e.g., classification levels/security levels) occur.",
+      "expected": {
+        "substring": "ddl, write, role",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233566"
     },
     {
       "check": {

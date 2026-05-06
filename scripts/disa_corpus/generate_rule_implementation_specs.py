@@ -2330,6 +2330,7 @@ def _kubernetes_pki_mode_candidate(rule: dict, stig_id: str) -> dict | None:
 
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
     kubernetes_pki_mode_candidate = _kubernetes_pki_mode_candidate(rule, stig_id)
     if kubernetes_pki_mode_candidate:
         return kubernetes_pki_mode_candidate
@@ -2443,6 +2444,25 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'platform': 'generic',
             'check': {'type': 'command_output', 'command': 'psql -c "SHOW shared_preload_libraries"'},
             'expected': {'type': 'contains', 'substring': 'pgaudit'},
+            'description': rule.get('title', ''),
+        }
+    pgaudit_log_commands = re.findall(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+pgaudit\.log["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+    postgresql_pgaudit_log_literal = re.search(
+        r'If\s+pgaudit\.log\s+does\s+not\s+contain,?\s+["“]([^"”]+)["”],?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if (
+        'postgresql' in stig_id.lower()
+        and len(pgaudit_log_commands) == 1
+        and postgresql_pgaudit_log_literal
+        and re.search(rf'pgaudit\.log\s*=\s*[\'"“]{re.escape(postgresql_pgaudit_log_literal.group(1))}[\'"”]', fix_text, re.IGNORECASE)
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'psql -c "SHOW pgaudit.log"'},
+            'expected': {'type': 'contains', 'substring': postgresql_pgaudit_log_literal.group(1).strip()},
             'description': rule.get('title', ''),
         }
     yum_repo_gpgcheck_all_returned_lines = (

@@ -457,6 +457,35 @@ If the output does not contain pgaudit, this is a finding.''',
             'description': 'PostgreSQL must generate audit records when privileges/permissions are deleted.',
         })
 
+    def test_infers_postgresql_pgaudit_log_literal_contains_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-233551',
+            'title': 'PostgreSQL must generate audit records when categorized information (e.g., classification levels/security levels) is accessed.',
+            'check_content': '''As the database administrator (shown here as "postgres"), run the following SQL:
+
+$ sudo su - postgres
+$ psql -c "SHOW pgaudit.log"
+
+If pgaudit.log does not contain, "ddl, write, role", this is a finding.''',
+            'fix_text': '''With pgaudit installed the following configurations can be made:
+
+$ sudo su - postgres
+$ vi ${PGDATA?}/postgresql.conf
+
+Add the following parameters (or edit existing parameters):
+
+pgaudit.log = 'ddl, write, role'
+
+Next, as the system administrator, reload the server with the new configuration.''',
+        }, 'Crunchy_Data_PostgreSQL_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-233551',
+            'platform': 'generic',
+            'check': {'type': 'command_output', 'command': 'psql -c "SHOW pgaudit.log"'},
+            'expected': {'type': 'contains', 'substring': 'ddl, write, role'},
+            'description': 'PostgreSQL must generate audit records when categorized information (e.g., classification levels/security levels) is accessed.',
+        })
+
     def test_infers_linux_snmp_default_community_strings_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-204627',

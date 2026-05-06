@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 9,
+  "candidate_checks": 11,
   "cases": [
+    {
+      "check": {
+        "command": "psql -c \"SHOW pgaudit.log\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when categorized information (e.g., classification levels/security levels) is accessed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "ddl, write, role",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW pgaudit.log\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW pgaudit.log\"": "before\nddl, write, role\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233551"
+    },
     {
       "check": {
         "command": "psql -c \"SHOW shared_preload_libraries\"",
@@ -26,6 +52,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-233565"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW pgaudit.log\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when unsuccessful attempts to access categorized information (e.g., classification levels/security levels) occur.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "ddl, write, role",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW pgaudit.log\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW pgaudit.log\"": "before\nddl, write, role\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233566"
     },
     {
       "check": {
@@ -241,5 +293,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 9
+  "validated_candidates": 11
 }

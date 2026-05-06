@@ -587,16 +587,17 @@
       "vuln_id": "V-233550"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-233551",
+      "check_pack": "generated-candidates/crunchy_data_postgresql_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-233551r961797_rule",
       "severity": "medium",
       "title": "PostgreSQL must generate audit records when categorized information (e.g., classification levels/security levels) is accessed.",
-      "tracking_issue": "TODO-V-233551",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233551"
@@ -813,16 +814,17 @@
       "vuln_id": "V-233565"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-233566",
+      "check_pack": "generated-candidates/crunchy_data_postgresql_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-233566r961797_rule",
       "severity": "medium",
       "title": "PostgreSQL must generate audit records when unsuccessful attempts to access categorized information (e.g., classification levels/security levels) occur.",
-      "tracking_issue": "TODO-V-233566",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233566"
