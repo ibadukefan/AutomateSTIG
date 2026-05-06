@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+      "type": "registry",
+      "value_name": "TrackingPrevention"
+    },
+    "description": "Tracking of browsing activity must be disabled.",
+    "expected": {
+      "pattern": "^(?:2|3)$",
+      "type": "matches"
+    },
+    "platform": "windows",
+    "vuln_id": "V-235766"
+  },
   "check_content_excerpt": "The policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Block tracking of users' web-browsing activity\" must be set to \"Enabled\" with the option value set to \"Balanced\" or \"Strict\".\n\nUse the Windows Registry Editor to navigate to the following key:\nHKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\n\nIf the value for \"TrackingPrevention\" is not set to \"REG_DWORD = 2\" or \"REG_DWORD = 3\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "pattern": "^(?:2|3)$",
+    "type": "matches"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for \"Computer Configuration/Administrative Templates/Microsoft Edge/Block tracking of users' web-browsing activity\" to \"Balanced\" or \"Strict\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-235766r1051115_rule",
   "severity": "medium",

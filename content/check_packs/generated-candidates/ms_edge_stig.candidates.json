@@ -284,6 +284,20 @@
       "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
         "type": "registry",
+        "value_name": "TrackingPrevention"
+      },
+      "description": "Tracking of browsing activity must be disabled.",
+      "expected": {
+        "pattern": "^(?:2|3)$",
+        "type": "matches"
+      },
+      "platform": "windows",
+      "vuln_id": "V-235766"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
         "value_name": "PaymentMethodQueryEnabled"
       },
       "description": "A website's ability to query for payment methods must be disabled.",

@@ -168,6 +168,25 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
         if not value_match:
             value_match = re.search(r'If\s+([A-Za-z0-9_.-]+)\s+is\s+not\s+displayed[^\n\r.]*?or\s+it\s+is\s+not\s+set\s+to', content, re.IGNORECASE)
         expected_value = _parse_expected_registry_data(content)
+        allowed_dword_value_match = re.search(
+            r'If\s+the\s+value\s+for\s+["“]?([A-Za-z0-9_.-]+)["”]?\s+is\s+not\s+set\s+to\s+["“]?REG_DWORD\s*=\s*(\d+)["”]?\s+or\s+["“]?REG_DWORD\s*=\s*(\d+)["”]?\s*,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+        if allowed_dword_value_match:
+            allowed_values = sorted({int(allowed_dword_value_match.group(2)), int(allowed_dword_value_match.group(3))})
+            if len(allowed_values) > 1:
+                return {
+                    'vuln_id': rule.get('vuln_id', ''),
+                    'platform': 'windows' if any(token in stig_id.lower() for token in ('windows', 'chrome', 'edge', 'defender', 'office')) else 'generic',
+                    'check': {
+                        'type': 'registry',
+                        'path': _normalize_registry_path(path_match.group(1)),
+                        'value_name': allowed_dword_value_match.group(1).strip(),
+                    },
+                    'expected': {'type': 'matches', 'pattern': f"^(?:{'|'.join(str(value) for value in allowed_values)})$"},
+                    'description': rule.get('title', ''),
+                }
         if (expected_value is None or not value_match) and 'chrome' in stig_id.lower():
             chrome_key_value = re.search(
                 r'If\s+the\s+key\s+["“]([A-Za-z0-9_.-]+)["”]\s+does\s+not\s+exist\s+or\s+is\s+not\s+set\s+to\s+["“]?(\d+)["”]?,\s+this\s+is\s+a\s+finding',
@@ -192,6 +211,26 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
             content,
             re.IGNORECASE,
         )
+        if path_match:
+            allowed_dword_value_match = re.search(
+                r'If\s+the\s+value\s+for\s+["“]?([A-Za-z0-9_.-]+)["”]?\s+is\s+not\s+set\s+to\s+["“]?REG_DWORD\s*=\s*(\d+)["”]?\s+or\s+["“]?REG_DWORD\s*=\s*(\d+)["”]?\s*,?\s+this\s+is\s+a\s+finding',
+                content,
+                re.IGNORECASE,
+            )
+            if allowed_dword_value_match:
+                allowed_values = sorted({int(allowed_dword_value_match.group(2)), int(allowed_dword_value_match.group(3))})
+                if len(allowed_values) > 1:
+                    return {
+                        'vuln_id': rule.get('vuln_id', ''),
+                        'platform': 'windows' if any(token in stig_id.lower() for token in ('windows', 'chrome', 'edge', 'defender', 'office')) else 'generic',
+                        'check': {
+                            'type': 'registry',
+                            'path': _normalize_registry_path(path_match.group(1)),
+                            'value_name': allowed_dword_value_match.group(1).strip(),
+                        },
+                        'expected': {'type': 'matches', 'pattern': f"^(?:{'|'.join(str(value) for value in allowed_values)})$"},
+                        'description': rule.get('title', ''),
+                    }
         if not path_match and not value_match and 'Administrative Template' in content:
             admin_registry = re.search(
                 r'Using\s+the\s+registry,\s+check\s+((?:HKLM|HKCU|HKCR|HKU|HKCC|HKEY_[A-Z_]+)\\[^,\n\r]+),\s*Key:\s*([A-Za-z0-9_.-]+)',

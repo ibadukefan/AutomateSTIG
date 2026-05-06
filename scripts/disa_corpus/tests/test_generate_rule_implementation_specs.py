@@ -1307,6 +1307,26 @@ If "cac" is not listed as a card driver, or no line is returned for "card_driver
         })
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'cac'})
 
+    def test_infers_edge_registry_policy_dword_allowed_values_from_not_set_to_or_clause(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-235766',
+            'title': 'Tracking of browsing activity must be disabled.',
+            'check_content': '''To check that the policy is configured correctly:
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge
+
+If the value for "TrackingPrevention" is not set to "REG_DWORD = 2" or "REG_DWORD = 3", this is a finding.'''
+        }, 'MS_Edge_STIG')
+        self.assertEqual(candidate['platform'], 'windows')
+        self.assertEqual(candidate['check'], {
+            'type': 'registry',
+            'path': 'HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge',
+            'value_name': 'TrackingPrevention',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'matches', 'pattern': '^(?:2|3)$'})
+
     def test_infers_defender_registry_candidate_from_explicit_criteria_not_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-278668',

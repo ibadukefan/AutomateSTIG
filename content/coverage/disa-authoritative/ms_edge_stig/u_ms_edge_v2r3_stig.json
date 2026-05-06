@@ -702,16 +702,17 @@
       "vuln_id": "V-235765"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-235766",
+      "check_pack": "generated-candidates/ms_edge_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-235766r1051115_rule",
       "severity": "medium",
       "title": "Tracking of browsing activity must be disabled.",
-      "tracking_issue": "TODO-V-235766",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_edge_stig.candidates.json",
         "content/disa-corpus/artifacts/d9b69c64ab2c220169a91ca48355024a49e34d93049711d3fcf4f830583f5a73/U_MS_Edge_V2R3_STIG.zip"
       ],
       "vuln_id": "V-235766"

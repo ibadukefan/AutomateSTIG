@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 35,
+  "candidate_checks": 36,
   "cases": [
     {
       "check": {
@@ -545,6 +545,33 @@
       "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
         "type": "registry",
+        "value_name": "TrackingPrevention"
+      },
+      "description": "Tracking of browsing activity must be disabled.",
+      "evidence_type": "registry_value_matches",
+      "expected": {
+        "pattern": "^(?:2|3)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\TrackingPrevention": 4
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge\\TrackingPrevention": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235766"
+    },
+    {
+      "check": {
+        "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+        "type": "registry",
         "value_name": "PaymentMethodQueryEnabled"
       },
       "description": "A website's ability to query for payment methods must be disabled.",
@@ -952,5 +979,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_edge_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Edge_STIG",
-  "validated_candidates": 35
+  "validated_candidates": 36
 }
