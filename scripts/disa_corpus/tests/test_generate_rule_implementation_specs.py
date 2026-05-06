@@ -486,6 +486,36 @@ If a wireless interface is configured and its use on the system is not documente
             'description': 'The Red Hat Enterprise Linux operating system must be configured so that all wireless network adapters are disabled.',
         })
 
+    def test_infers_oracle_linux_nmcli_allows_no_wireless_interfaces_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271859',
+            'title': 'OL 9 wireless network adapters must be disabled.',
+            'check_content': '''Note: For systems that do not have physical wireless network radios, this requirement is Not Applicable.
+
+Verify that OL 9 allows no wireless interfaces to be configured on the system with the following command:
+
+$ nmcli device status
+DEVICE           TYPE       STATE         CONNECTION
+virbr0           bridge     connected     virbr0
+wlp7s0           wifi       connected     wifiSSID
+enp6s0           ethernet   disconnected  --
+p2p-dev-wlp7s0   wifi-p2p   disconnected  --
+lo               loopback   unmanaged     --
+virbr0-nic       tun        unmanaged     --
+
+If a wireless interface is configured and has not been documented and approved by the information system security officer (ISSO), this is a finding.''',
+            'fix_text': '''Configure the system to disable all wireless network interfaces with the following command:
+
+$ sudo nmcli radio all off''',
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-271859',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "nmcli -t -f TYPE device status | grep -Fx 'wifi'"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'OL 9 wireless network adapters must be disabled.',
+        })
+
     def test_infers_linux_sysfs_wireless_interface_absent_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-252704',

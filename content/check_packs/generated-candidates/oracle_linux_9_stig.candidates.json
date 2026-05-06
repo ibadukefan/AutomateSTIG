@@ -5324,6 +5324,19 @@
     },
     {
       "check": {
+        "command": "nmcli -t -f TYPE device status | grep -Fx 'wifi'",
+        "type": "command_output"
+      },
+      "description": "OL 9 wireless network adapters must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271859"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/resolv.conf",
         "pattern": "nameserver 192.168.1.2",
