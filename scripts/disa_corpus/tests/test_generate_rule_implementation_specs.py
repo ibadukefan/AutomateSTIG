@@ -226,6 +226,29 @@ If any cron configuration directory is more permissive than "700", this is a fin
             'description': 'OL 9 cron configuration directories must have a mode of 0700 or less permissive.',
         })
 
+    def test_infers_linux_audit_rules_file_mode_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258171',
+            'title': 'RHEL 9 audit rule configuration files must have mode 0640 or less permissive.',
+            'check_content': '''Verify that the files in directory "/etc/audit/rules.d/" and "/etc/audit/auditd.conf" file have a mode of "0640" or less permissive with the following command:
+
+$ sudo find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f -exec stat -c "%a %n" {} \\;
+
+600 /etc/audit/rules.d/audit.rules
+640 /etc/audit/audit.rules
+640 /etc/audit/auditd.conf''',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-258171',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f -perm /0137 -exec stat -c "%a %n" {} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'RHEL 9 audit rule configuration files must have mode 0640 or less permissive.',
+        })
+
     def test_classifies_policy_language_as_manual_evidence_workflow(self):
         classification, collector = mod.classify_rule('The organization must document an approval process.')
         self.assertEqual(classification, 'manual')

@@ -2445,6 +2445,29 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    audit_rules_mode_match = re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?find\s+/etc/audit/rules\.d/\s+/etc/audit/audit\.rules\s+/etc/audit/auditd\.conf\s+-type\s+f\s+-exec\s+stat\s+-c\s+["\']%a\s+%n["\']\s+\{\}\s+\\;\s*$',
+        content,
+        re.MULTILINE,
+    )
+    audit_rules_mode_prose = re.search(
+        r'files\s+in\s+directory\s+["“]/etc/audit/rules\.d/["”]\s+and\s+["“]/etc/audit/auditd\.conf["”]\s+file\s+have\s+a\s+mode\s+of\s+["“]?(?P<mode>0?[0-7]{3})["”]?\s+or\s+less\s+permissive',
+        content,
+        re.IGNORECASE,
+    )
+    if audit_rules_mode_match and audit_rules_mode_prose:
+        mode = int(audit_rules_mode_prose.group('mode'), 8)
+        prohibited_bits = 0o777 & ~mode
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': f'find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f -perm /{prohibited_bits:04o} -exec stat -c "%a %n" {{}} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     audit_log_mode_matches = re.findall(
         r'^\s*[$#>]\s*(?:sudo\s+)?find\s+/var/log/audit/\s+-type\s+f\s+-exec\s+stat\s+-c\s+["\']%a\s+%n["\']\s+\{\}\s+\\;\s*$',
         content,

@@ -4297,6 +4297,19 @@
     },
     {
       "check": {
+        "command": "find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f -perm /0137 -exec stat -c \"%a %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must allow only the information system security manager (ISSM) (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-258171"
+    },
+    {
+      "check": {
         "group": null,
         "mode": "0640",
         "owner": null,
