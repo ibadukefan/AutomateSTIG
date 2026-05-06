@@ -2008,7 +2008,7 @@ def _ssh_host_key_mode_candidate(rule: dict, stig_id: str) -> dict | None:
     key_kind = None
     key_glob = None
     if re.search(
-        r'^\s*[$#>]\s*(?:sudo\s+)?ls\s+-l\s+/etc/ssh/ssh_host\*key\s*$',
+        r'^\s*[$#>]\s*(?:sudo\s+)?ls\s+-l\s+/etc/ssh/(?:ssh_host\*key|\*_key)\s*$',
         content,
         re.MULTILINE,
     ):
@@ -2024,7 +2024,7 @@ def _ssh_host_key_mode_candidate(rule: dict, stig_id: str) -> dict | None:
     if not key_kind or not key_glob:
         return None
     mode_match = re.search(
-        rf'SSH(?:\s+daemon)?\s+{key_kind}\s+host\s+key\s+files\s+have\s+mode\s+["“](?P<mode>0?[0-7]{{3}})["”]\s+or\s+less\s+permissive',
+        rf'SSH(?:\s+daemon)?\s+{key_kind}\s+host\s+key\s+files\s+have\s+(?:a\s+)?mode\s+(?:of\s+)?["“](?P<mode>0?[0-7]{{3}})["”]\s+or\s+less\s+permissive',
         content,
         re.IGNORECASE,
     )

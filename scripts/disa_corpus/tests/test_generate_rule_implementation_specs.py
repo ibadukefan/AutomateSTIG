@@ -1770,6 +1770,31 @@ If any key.pub file has a mode more permissive than "0644", this is a finding.''
             'description': 'The RHEL 8 SSH public host key files must have mode 0644 or less permissive.',
         })
 
+    def test_infers_oracle_linux_ssh_private_host_key_mode_underscore_glob_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271771',
+            'title': 'OL 9 SSH private host key files must have mode 0640 or less permissive.',
+            'check_content': '''Verify that OL 9 SSH private host key files have a mode of "0640" or less permissive with the following command:
+
+$ ls -l /etc/ssh/*_key
+640 /etc/ssh/ssh_host_dsa_key
+640 /etc/ssh/ssh_host_ecdsa_key
+640 /etc/ssh/ssh_host_ed25519_key
+640 /etc/ssh/ssh_host_rsa_key
+
+If any private host key file has a mode more permissive than "0640", this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-271771',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'find /etc/ssh -maxdepth 1 -type f -name \'ssh_host*key\' -perm /137 -exec stat -c "%n %a" {} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'OL 9 SSH private host key files must have mode 0640 or less permissive.',
+        })
+
     def test_infers_grep_command_when_produces_any_output_is_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-256445',
