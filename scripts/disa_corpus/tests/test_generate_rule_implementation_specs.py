@@ -200,6 +200,26 @@ If the DNS key under main does not exist or is not set to "none" or "default", t
             'description': 'OL 9 must configure a DNS processing mode set be Network Manager.',
         })
 
+    def test_infers_rhel_networkmanager_dns_mode_allowed_value_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-257949',
+            'title': 'RHEL 9 must configure a DNS processing mode in Network Manager.',
+            'check_content': '''Verify that RHEL 9 has a DNS mode configured in Network Manager.
+
+$ NetworkManager --print-config
+[main]
+dns=none
+
+If the dns key under main does not exist or is not set to "none" or "default", this is a finding.''',
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-257949',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'NetworkManager --print-config | grep -E "^dns=(none|default)$"'},
+            'expected': {'type': 'matches', 'pattern': r'^dns=(?:default|none)$'},
+            'description': 'RHEL 9 must configure a DNS processing mode in Network Manager.',
+        })
+
     def test_infers_linux_gsettings_uint32_positive_maximum_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230352',

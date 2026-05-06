@@ -1651,6 +1651,19 @@
     },
     {
       "check": {
+        "command": "NetworkManager --print-config | grep -E \"^dns=(none|default)$\"",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must configure a DNS processing mode in Network Manager.",
+      "expected": {
+        "pattern": "^dns=(?:default|none)$",
+        "type": "matches"
+      },
+      "platform": "linux",
+      "vuln_id": "V-257949"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ipsec.conf",
         "pattern": "/etc/ipsec.d/",

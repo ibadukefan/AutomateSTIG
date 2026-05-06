@@ -2504,7 +2504,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         }
     networkmanager_dns_allowed_value = (
         _linux_platform(stig_id)
-        and 'oracle_linux_9' in stig_id.lower()
+        and re.search(r'(?:oracle_linux_9|rhel_9)', stig_id, re.IGNORECASE)
         and re.search(r'^\s*[$#>]\s*NetworkManager\s+--print-config\s*$', content, re.MULTILINE)
         and re.search(r'^\s*dns\s*=\s*none\s*$', content, re.MULTILINE | re.IGNORECASE)
         and re.search(

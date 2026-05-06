@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 386,
+  "candidate_checks": 387,
   "cases": [
     {
       "check": {
@@ -3523,6 +3523,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-257948"
+    },
+    {
+      "check": {
+        "command": "NetworkManager --print-config | grep -E \"^dns=(none|default)$\"",
+        "type": "command_output"
+      },
+      "description": "RHEL 9 must configure a DNS processing mode in Network Manager.",
+      "evidence_type": "command_output_matches",
+      "expected": {
+        "pattern": "^dns=(?:default|none)$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "NetworkManager --print-config | grep -E \"^dns=(none|default)$\"": "dns=unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "NetworkManager --print-config | grep -E \"^dns=(none|default)$\"": "dns=none"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-257949"
     },
     {
       "check": {
@@ -10698,5 +10724,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_9_STIG",
-  "validated_candidates": 386
+  "validated_candidates": 387
 }
