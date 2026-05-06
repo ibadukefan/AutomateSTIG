@@ -3501,6 +3501,22 @@ If the "/etc/ssh/sshd_config" file does not have a group owner of "root", this i
         self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/etc/ssh/sshd_config', 'owner': None, 'group': 'root', 'mode': None})
         self.assertEqual(candidate['expected'], {'type': 'is_true'})
 
+    def test_infers_linux_optional_file_ls_owner_other_than_root_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204490',
+            'title': 'The Red Hat Enterprise Linux operating system must be configured so that the cron.allow file, if it exists, is owned by root.',
+            'check_content': '''Verify that the "cron.allow" file is owned by root.
+
+Check the owner of the "cron.allow" file with the following command:
+
+# ls -al /etc/cron.allow
+-rw------- 1 root root 6 Mar  5  2011 /etc/cron.allow
+
+If the "cron.allow" file exists and has an owner other than root, this is a finding.'''
+        }, 'RHEL_7_STIG')
+        self.assertEqual(candidate['check'], {'type': 'file_permission', 'path': '/etc/cron.allow', 'owner': 'root', 'group': None, 'mode': None})
+        self.assertEqual(candidate['expected'], {'type': 'is_true'})
+
     def test_skips_recursive_ls_file_permission_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-244531',

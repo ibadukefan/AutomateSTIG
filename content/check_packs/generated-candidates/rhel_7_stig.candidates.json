@@ -468,6 +468,36 @@
     },
     {
       "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/cron.allow",
+        "type": "file_permission"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the cron.allow file, if it exists, is owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204490"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/cron.allow",
+        "type": "file_permission"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the cron.allow file, if it exists, is group-owned by root.",
+      "expected": {
+        "type": "is_true"
+      },
+      "platform": "linux",
+      "vuln_id": "V-204491"
+    },
+    {
+      "check": {
         "expected_status": "stopped",
         "name": "kdump",
         "type": "service"

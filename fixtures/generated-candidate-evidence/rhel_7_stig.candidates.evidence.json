@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 148,
+  "candidate_checks": 150,
   "cases": [
     {
       "check": {
@@ -908,6 +908,82 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204489"
+    },
+    {
+      "check": {
+        "group": null,
+        "mode": null,
+        "owner": "root",
+        "path": "/etc/cron.allow",
+        "type": "file_permission"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the cron.allow file, if it exists, is owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/cron.allow": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "unexpected-root"
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/cron.allow": {
+            "exists": true,
+            "group": null,
+            "mode": null,
+            "owner": "root"
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204490"
+    },
+    {
+      "check": {
+        "group": "root",
+        "mode": null,
+        "owner": null,
+        "path": "/etc/cron.allow",
+        "type": "file_permission"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the cron.allow file, if it exists, is group-owned by root.",
+      "evidence_type": "linux_file_permission",
+      "expected": {
+        "type": "is_true"
+      },
+      "fail_fixture": {
+        "file_permissions": {
+          "/etc/cron.allow": {
+            "exists": true,
+            "group": "unexpected-root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "file_permissions": {
+          "/etc/cron.allow": {
+            "exists": true,
+            "group": "root",
+            "mode": null,
+            "owner": null
+          }
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204491"
     },
     {
       "check": {
@@ -3968,5 +4044,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 148
+  "validated_candidates": 150
 }

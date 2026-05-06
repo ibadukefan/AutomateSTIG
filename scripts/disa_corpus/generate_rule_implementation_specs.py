@@ -3768,10 +3768,14 @@ def _file_permission_candidate(rule: dict) -> dict | None:
 
     if owner is None:
         owner_match = re.search(r'not\s+owned\s+by\s+["“]?([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
+        if not owner_match:
+            owner_match = re.search(r'has\s+an?\s+owner\s+other\s+than\s+["“]?([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
         if owner_match:
             owner = owner_match.group(1).strip('"”.,')
     if group is None:
         group_match = re.search(r'not\s+group-owned\s+by\s+["“]?([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
+        if not group_match:
+            group_match = re.search(r'has\s+a\s+group\s+owner\s+other\s+than\s+["“]?([A-Za-z0-9_.-]+)', content, re.IGNORECASE)
         if group_match:
             group = group_match.group(1).strip('"”.,')
 
