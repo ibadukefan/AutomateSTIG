@@ -1911,6 +1911,19 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the chacl command.",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270795"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "Ubuntu 24.04 LTS must generate audit records for the use and modification of faillog file.",
       "expected": {
         "substring": "-w /var/log/faillog -p wa -k logins",

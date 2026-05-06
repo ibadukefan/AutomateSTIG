@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 185,
+  "candidate_checks": 186,
   "cases": [
     {
       "check": {
@@ -3835,6 +3835,32 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the chacl command.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=-1",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=-1\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270795"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "Ubuntu 24.04 LTS must generate audit records for the use and modification of faillog file.",
       "evidence_type": "command_output_contains",
       "expected": {
@@ -5049,5 +5075,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 185
+  "validated_candidates": 186
 }

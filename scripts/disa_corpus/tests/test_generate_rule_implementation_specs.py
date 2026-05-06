@@ -3648,6 +3648,25 @@ If the command does not return a line that matches the example or the line is co
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': '-w /etc/shadow -p wa -k usergroup_modification'})
 
+    def test_infers_linux_auditctl_candidate_when_authoritative_command_has_audtctl_typo(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270795',
+            'title': 'Ubuntu 24.04 LTS must generate audit records for successful/unsuccessful uses of the chacl command.',
+            'check_content': '''Verify Ubuntu 24.04 LTS generates an audit record upon successful/unsuccessful attempts to use the "chacl" command with the following command:
+
+$ sudo audtctl -l | grep chacl
+-a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=-1 -k perm_chng
+
+If the command does not return a line that matches the example or the line is commented out, this is a finding.
+
+Note: The "-k" allows for specifying an arbitrary identifier, and the string after it does not need to match the example output above.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'auditctl -l'})
+        self.assertEqual(candidate['expected'], {
+            'type': 'contains',
+            'substring': '-a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=-1',
+        })
+
     def test_infers_linux_auditctl_expected_rule_candidate_from_egrep_command(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258222',
