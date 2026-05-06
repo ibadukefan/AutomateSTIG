@@ -77,6 +77,32 @@
       },
       "platform": "generic",
       "vuln_id": "V-242457"
+    },
+    {
+      "check": {
+        "command": "find /etc/kubernetes/pki -name \"*.crt\" -perm /133 -exec stat -c \"%n %a\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes PKI CRT must have file permissions set to 644 or more restrictive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-242466"
+    },
+    {
+      "check": {
+        "command": "find /etc/kubernetes/pki -name \"*.key\" -perm /177 -exec stat -c \"%n %a\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes PKI keys must have file permissions set to 600 or more restrictive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-242467"
     }
   ],
   "platform": "generic",

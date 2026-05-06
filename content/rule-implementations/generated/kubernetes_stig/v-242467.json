@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /etc/kubernetes/pki -name \"*.key\" -perm /177 -exec stat -c \"%n %a\" {} \\;",
+      "type": "command_output"
+    },
+    "description": "The Kubernetes PKI keys must have file permissions set to 600 or more restrictive.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-242467"
+  },
   "check_content_excerpt": "Review the permissions of the Kubernetes PKI key files by using the command:\n\nsudo find /etc/kubernetes/pki -name \"*.key\" | xargs stat -c '%n %a'\n\nIf any of the files have permissions more permissive than \"600\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the ownership of the key files to \"600\" by executing the command: \n\nfind /etc/kubernetes/pki -name \"*.key\" | xargs chmod 600",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242467r961863_rule",
   "severity": "medium",

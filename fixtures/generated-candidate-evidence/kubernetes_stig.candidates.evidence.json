@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 6,
+  "candidate_checks": 8,
   "cases": [
     {
       "check": {
@@ -156,6 +156,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-242457"
+    },
+    {
+      "check": {
+        "command": "find /etc/kubernetes/pki -name \"*.crt\" -perm /133 -exec stat -c \"%n %a\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes PKI CRT must have file permissions set to 644 or more restrictive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /etc/kubernetes/pki -name \"*.crt\" -perm /133 -exec stat -c \"%n %a\" {} \\;": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /etc/kubernetes/pki -name \"*.crt\" -perm /133 -exec stat -c \"%n %a\" {} \\;": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242466"
+    },
+    {
+      "check": {
+        "command": "find /etc/kubernetes/pki -name \"*.key\" -perm /177 -exec stat -c \"%n %a\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes PKI keys must have file permissions set to 600 or more restrictive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /etc/kubernetes/pki -name \"*.key\" -perm /177 -exec stat -c \"%n %a\" {} \\;": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /etc/kubernetes/pki -name \"*.key\" -perm /177 -exec stat -c \"%n %a\" {} \\;": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242467"
     }
   ],
   "production_claim": false,
@@ -163,5 +215,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 6
+  "validated_candidates": 8
 }

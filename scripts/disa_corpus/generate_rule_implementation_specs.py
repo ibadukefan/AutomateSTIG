@@ -2266,8 +2266,43 @@ def _ssh_private_host_key_mode_candidate(rule: dict, stig_id: str) -> dict | Non
     return _ssh_host_key_mode_candidate(rule, stig_id)
 
 
+def _kubernetes_pki_mode_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'kubernetes' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    command_match = re.search(
+        r'^\s*(?:[$#>]\s*)?(?:sudo\s+)?find\s+(?P<path>/etc/kubernetes/pki(?:/\*)?)\s+-name\s+["\'](?P<glob>\*\.(?:key|crt))["\']\s*\|\s*xargs\s+stat\s+-c\s+["\']%n\s+%a["\']\s*$',
+        content,
+        re.MULTILINE | re.IGNORECASE,
+    )
+    mode_match = re.search(
+        r'If\s+any\s+of\s+the\s+files\s+have\s+permissions\s+more\s+permissive\s+than\s+["“](?P<mode>[0-7]{3})["”],?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if not command_match or not mode_match:
+        return None
+    mode = int(mode_match.group('mode'), 8)
+    prohibited_bits = 0o777 & ~mode
+    if prohibited_bits == 0:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {
+            'type': 'command_output',
+            'command': f'find /etc/kubernetes/pki -name "{command_match.group("glob")}" -perm /{prohibited_bits:o} -exec stat -c "%n %a" {{}} \\;',
+        },
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
+    kubernetes_pki_mode_candidate = _kubernetes_pki_mode_candidate(rule, stig_id)
+    if kubernetes_pki_mode_candidate:
+        return kubernetes_pki_mode_candidate
     ssh_private_host_key_mode_candidate = _ssh_private_host_key_mode_candidate(rule, stig_id)
     if ssh_private_host_key_mode_candidate:
         return ssh_private_host_key_mode_candidate

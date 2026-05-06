@@ -701,6 +701,27 @@ If the command returns any non root:root file permissions, this is a finding.'''
             'description': 'The Kubernetes conf files must be owned by root.',
         })
 
+    def test_infers_kubernetes_pki_key_mode_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242467',
+            'title': 'The Kubernetes PKI keys must have file permissions set to 600 or more restrictive.',
+            'check_content': '''Review the permissions of the Kubernetes PKI key files by using the command:
+
+sudo find /etc/kubernetes/pki -name "*.key" | xargs stat -c '%n %a'
+
+If any of the files have permissions more permissive than "600", this is a finding.''',
+        }, 'Kubernetes_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-242467',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'find /etc/kubernetes/pki -name "*.key" -perm /177 -exec stat -c "%n %a" {} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Kubernetes PKI keys must have file permissions set to 600 or more restrictive.',
+        })
+
     def test_infers_linux_yum_repo_gpgcheck_all_returned_lines_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271525',
