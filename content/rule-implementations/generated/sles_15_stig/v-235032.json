@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs grep -iEH '^\\s*(permit(.*?)(passwords|environment))'",
+      "type": "command_output"
+    },
+    "description": "The SUSE operating system must not allow unattended or automatic logon via SSH.",
+    "expected": {
+      "substring": "PermitEmptyPasswords no\nPermitUserEnvironment no",
+      "type": "contains"
+    },
+    "platform": "linux",
+    "vuln_id": "V-235032"
+  },
   "check_content_excerpt": "Verify the SUSE operating system disables unattended or automatic logon via SSH.\n\nCheck that unattended or automatic logon via SSH is disabled with the following command:\n\n> sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iEH '^\\s*(permit(.*?)(passwords|environment))'\n\nPermitEmptyPasswords no\nPermitUserEnvironment no\n\nIf \"PermitEmptyPasswords\" or \"PermitUserEnvironment\" keywords are not set to \"no\", are missing completely, or are commented out, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "PermitEmptyPasswords no\nPermitUserEnvironment no",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the SUSE operating system disables unattended or automatic logon via SSH.\n\nAdd or edit the following lines in the \"/etc/ssh/sshd_config\" file:\n\nPermitEmptyPasswords no\nPermitUserEnvironment no",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-235032r991591_rule",
   "severity": "high",

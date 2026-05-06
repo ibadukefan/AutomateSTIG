@@ -2067,6 +2067,19 @@
     },
     {
       "check": {
+        "command": "sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs grep -iEH '^\\s*(permit(.*?)(passwords|environment))'",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must not allow unattended or automatic logon via SSH.",
+      "expected": {
+        "substring": "PermitEmptyPasswords no\nPermitUserEnvironment no",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-235032"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sudoers",
         "pattern": "@includedir /etc/sudoers.d",

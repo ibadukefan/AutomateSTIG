@@ -981,6 +981,12 @@ def _sshd_multi_directive_egrep_candidate(rule: dict) -> dict | None:
         re.MULTILINE,
     )
     if not command_match:
+        command_match = re.search(
+            r"^\s*[$#>]\s*(?P<command>(?:sudo\s+)?/usr/sbin/sshd\s+-dd\s+2>&1\s*\|[^\n\r]+?xargs\s+(?:sudo\s+)?grep\s+-iEH\s+'[^']*permit[^']*passwords\|environment[^']*')\s*$",
+            content,
+            re.MULTILINE | re.IGNORECASE,
+        )
+    if not command_match:
         return None
     expected_lines = []
     for raw_line in content[command_match.end():].splitlines():
@@ -994,16 +1000,24 @@ def _sshd_multi_directive_egrep_candidate(rule: dict) -> dict | None:
         expected_lines.append(stripped)
     if expected_lines != ['PermitEmptyPasswords no', 'PermitUserEnvironment no']:
         return None
-    if not re.search(
+    legacy_finding = re.search(
         r'If\s+the\s+["“]PermitEmptyPasswords["”]\s+or\s+["“]PermitUserEnvironment["”]\s+keywords\s+are\s+set\s+to\s+a\s+value\s+other\s+than\s+["“]no["”],\s+are\s+commented\s+out,\s+are\s+both\s+missing,\s+or\s+conflicting\s+results\s+are\s+returned,\s+this\s+is\s+a\s+finding',
         content,
         re.IGNORECASE,
-    ):
+    )
+    sles_finding = re.search(
+        r'If\s+["“]PermitEmptyPasswords["”]\s+or\s+["“]PermitUserEnvironment["”]\s+keywords\s+are\s+not\s+set\s+to\s+["“]no["”],\s+are\s+missing\s+completely,\s+or\s+are\s+commented\s+out,\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if not (legacy_finding or sles_finding):
         return None
+    command = _normalize_command(command_match.group('command'))
+    command = command.replace('/usr/sbin/sshd', 'sshd').replace('xargs sudo grep', 'xargs grep')
     return {
         'vuln_id': rule.get('vuln_id', ''),
         'platform': 'linux',
-        'check': {'type': 'command_output', 'command': _normalize_command(command_match.group('command'))},
+        'check': {'type': 'command_output', 'command': command},
         'expected': {'type': 'contains', 'substring': '\n'.join(expected_lines)},
         'description': rule.get('title', ''),
     }

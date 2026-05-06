@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 161,
+  "candidate_checks": 162,
   "cases": [
     {
       "check": {
@@ -4070,6 +4070,32 @@
     },
     {
       "check": {
+        "command": "sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs grep -iEH '^\\s*(permit(.*?)(passwords|environment))'",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must not allow unattended or automatic logon via SSH.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "PermitEmptyPasswords no\nPermitUserEnvironment no",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs grep -iEH '^\\s*(permit(.*?)(passwords|environment))'": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs grep -iEH '^\\s*(permit(.*?)(passwords|environment))'": "before\nPermitEmptyPasswords no\nPermitUserEnvironment no\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-235032"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/sudoers",
         "pattern": "@includedir /etc/sudoers.d",
@@ -4260,5 +4286,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 161
+  "validated_candidates": 162
 }

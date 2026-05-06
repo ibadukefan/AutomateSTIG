@@ -1347,6 +1347,31 @@ If the "PermitEmptyPasswords" or "PermitUserEnvironment" keywords are set to a v
             'substring': 'PermitEmptyPasswords no\nPermitUserEnvironment no',
         })
 
+    def test_infers_sles_sshd_multi_directive_pipeline_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-235032',
+            'title': 'The SUSE operating system must not allow unattended or automatic logon via SSH.',
+            'check_content': '''Verify the SUSE operating system disables unattended or automatic logon via SSH.
+
+Check that unattended or automatic logon via SSH is disabled with the following command:
+
+> sudo /usr/sbin/sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs sudo grep -iEH '^\\s*(permit(.*?)(passwords|environment))'
+
+PermitEmptyPasswords no
+PermitUserEnvironment no
+
+If "PermitEmptyPasswords" or "PermitUserEnvironment" keywords are not set to "no", are missing completely, or are commented out, this is a finding.'''
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': "sshd -dd 2>&1 | awk '/filename/ {print $4}' | tr -d '\\r' | tr '\\n' ' ' | xargs grep -iEH '^\\s*(permit(.*?)(passwords|environment))'",
+        })
+        self.assertEqual(candidate['expected'], {
+            'type': 'contains',
+            'substring': 'PermitEmptyPasswords no\nPermitUserEnvironment no',
+        })
+
     def test_infers_windows_hardened_unc_paths_registry_pair_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-250319',
