@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 151,
+  "candidate_checks": 152,
   "cases": [
     {
       "check": {
@@ -910,6 +910,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-268460"
+    },
+    {
+      "check": {
+        "command": "/usr/bin/stat -f %A $(/usr/bin/grep '^dir' /etc/security/audit_control | /usr/bin/awk -F: '{print $2}')",
+        "type": "command_output"
+      },
+      "description": "The macOS system must configure audit log folders to mode 700 or less permissive.",
+      "evidence_type": "command_output_matches",
+      "expected": {
+        "pattern": "^[0-7]00$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "/usr/bin/stat -f %A $(/usr/bin/grep '^dir' /etc/security/audit_control | /usr/bin/awk -F: '{print $2}')": "701"
+        },
+        "platform": "macos"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "/usr/bin/stat -f %A $(/usr/bin/grep '^dir' /etc/security/audit_control | /usr/bin/awk -F: '{print $2}')": "700"
+        },
+        "platform": "macos"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-268461"
     },
     {
       "check": {
@@ -3933,5 +3959,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/apple_macos_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Apple_macOS_15_STIG",
-  "validated_candidates": 151
+  "validated_candidates": 152
 }

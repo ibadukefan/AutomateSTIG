@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "/usr/bin/stat -f %A $(/usr/bin/grep '^dir' /etc/security/audit_control | /usr/bin/awk -F: '{print $2}')",
+      "type": "command_output"
+    },
+    "description": "The macOS system must configure audit log folders to mode 700 or less permissive.",
+    "expected": {
+      "pattern": "^[0-7]00$",
+      "type": "matches"
+    },
+    "platform": "macos",
+    "vuln_id": "V-259461"
+  },
   "check_content_excerpt": "Verify the macOS system is configured with audit log folders set to mode 700 or less permissive with the following command:\n\n/usr/bin/stat -f %A $(/usr/bin/grep '^dir' /etc/security/audit_control | /usr/bin/awk -F: '{print $2}')\n\nIf the result is not a mode of 700 or less permissive, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "pattern": "^[0-7]00$",
+    "type": "matches"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the macOS system with audit log folders set to mode 700 with the following command:\n\n/bin/chmod 700 /var/audit",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-259461r958434_rule",
   "severity": "medium",

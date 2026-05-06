@@ -2594,6 +2594,25 @@ If the command does not return "1", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': '/usr/sbin/sshd -G | /usr/bin/grep -c "^banner /etc/banner"'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
 
+    def test_infers_macos_audit_log_folder_mode_upper_bound_command_substitution(self):
+        command = "/usr/bin/stat -f %A $(/usr/bin/grep '^dir' /etc/security/audit_control | /usr/bin/awk -F: '{print $2}')"
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-259461',
+            'title': 'The macOS system must configure audit log folders to mode 700 or less permissive.',
+            'check_content': f'''Verify the macOS system is configured with audit log folders set to mode 700 or less permissive with the following command:
+
+{command}
+
+If the result is not a mode of 700 or less permissive, this is a finding.''',
+        }, 'Apple_macOS_14_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-259461',
+            'platform': 'macos',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'matches', 'pattern': r'^[0-7]00$'},
+            'description': 'The macOS system must configure audit log folders to mode 700 or less permissive.',
+        })
+
     def test_infers_macos_audit_control_flag_count_when_flag_must_be_listed(self):
         command = "/usr/bin/awk -F':' '/^flags/ { print $NF }' /etc/security/audit_control | /usr/bin/tr ',' '\\n' | /usr/bin/grep -Ec 'ad'"
         candidate = mod.infer_candidate_check({

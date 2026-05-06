@@ -177,6 +177,9 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
             elif pattern == r'^dns=(?:default|none)$':
                 pass_fixture['command_outputs'] = {command: 'dns=none'}
                 fail_fixture['command_outputs'] = {command: 'dns=unexpected'}
+            elif pattern == r'^[0-7]00$':
+                pass_fixture['command_outputs'] = {command: '700'}
+                fail_fixture['command_outputs'] = {command: '701'}
             else:
                 raise ValueError(f"{candidate['vuln_id']}: command_output matches evidence requires supported deterministic regex")
             evidence_type = 'command_output_matches'

@@ -204,6 +204,19 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
         self.assertEqual(case['pass_fixture']['command_outputs'][command], 'password requisite pam_pwquality.so retry=3')
         self.assertEqual(case['fail_fixture']['command_outputs'][command], 'password requisite pam_pwquality.so retry=4')
 
+    def test_builds_command_output_matches_octal_mode_hundreds_fixture_case(self):
+        command = "/usr/bin/stat -f %A $(/usr/bin/grep '^dir' /etc/security/audit_control | /usr/bin/awk -F: '{print $2}')"
+        case = mod.build_case({
+            'vuln_id': 'V-259461',
+            'platform': 'macos',
+            'description': 'macOS audit log folder mode upper bound',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'matches', 'pattern': r'^[0-7]00$'},
+        })
+        self.assertEqual(case['evidence_type'], 'command_output_matches')
+        self.assertEqual(case['pass_fixture']['command_outputs'][command], '700')
+        self.assertEqual(case['fail_fixture']['command_outputs'][command], '701')
+
     def test_generates_networkmanager_dns_allowed_value_fixture_evidence(self):
         command = 'NetworkManager --print-config | grep -E "^dns=(none|default)$"'
         candidate = {
