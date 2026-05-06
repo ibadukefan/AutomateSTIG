@@ -2773,6 +2773,21 @@ If the result is not "pass", this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': command})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'pass'})
 
+    def test_infers_macos_authorizationdb_shell_block_with_security_path_variant(self):
+        command = 'authDBs=("system.preferences" "system.preferences.energysaver" "system.preferences.network" "system.preferences.printing" "system.preferences.sharing" "system.preferences.softwareupdate" "system.preferences.startupdisk" "system.preferences.timemachine")\nresult="1"\nfor section in ${authDBs[@]}; do\nif [[ $(/usr/bin/security -q authorizationdb read "$section" | /usr/bin/xmllint -xpath \'name(//*[contains(text(), "shared")]/following-sibling::*[1])\' -) != "false" ]]; then\nresult="0"\nfi\nif [[ $(security -q authorizationdb read "$section" | /usr/bin/xmllint -xpath \'//*[contains(text(), "group")]/following-sibling::*[1]/text()\' - ) != "admin" ]]; then\nresult="0"\nfi\nif [[ $(/usr/bin/security -q authorizationdb read "$section" | /usr/bin/xmllint -xpath \'name(//*[contains(text(), "authenticate-user")]/following-sibling::*[1])\' -) != "true" ]]; then\nresult="0"\nfi\nif [[ $(/usr/bin/security -q authorizationdb read "$section" | /usr/bin/xmllint -xpath \'name(//*[contains(text(), "session-owner")]/following-sibling::*[1])\' -) != "false" ]]; then\nresult="0"\nfi\ndone\necho $result'
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-268514',
+            'title': 'The macOS system must require an administrator password to modify systemwide preferences.',
+            'check_content': f'''Verify the macOS system is configured to require administrator privileges to modify systemwide settings with the following command:
+
+{command}
+
+If the result is not "1", this is a finding.'''
+        }, 'Apple_macOS_15_STIG')
+        self.assertEqual(candidate['platform'], 'macos')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': command})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': '1'})
+
     def test_infers_inline_macos_password_hint_pass_fail_shell_block(self):
         command = 'HINT=$(/usr/bin/dscl . -list /Users hint | /usr/bin/awk \'{ print $2 }\')\nif [ -z "$HINT" ]; then echo "PASS"\nelse echo "FAIL"\nfi'
         candidate = mod.infer_candidate_check({

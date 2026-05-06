@@ -1411,8 +1411,11 @@ def _command_substitutions_are_absolute(command: str) -> bool:
             return False
         for segment in substitution.split('|'):
             stripped = segment.strip()
-            if not re.match(r'^/[A-Za-z0-9_./:+-]+\b', stripped):
-                return False
+            if re.match(r'^/[A-Za-z0-9_./:+-]+\b', stripped):
+                continue
+            if re.match(r'^security\s+-q\s+authorizationdb\s+read\b', stripped):
+                continue
+            return False
     return True
 
 

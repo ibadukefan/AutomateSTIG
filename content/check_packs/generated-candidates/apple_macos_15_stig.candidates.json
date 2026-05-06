@@ -1120,6 +1120,19 @@
     },
     {
       "check": {
+        "command": "authDBs=(\"system.preferences\" \"system.preferences.energysaver\" \"system.preferences.network\" \"system.preferences.printing\" \"system.preferences.sharing\" \"system.preferences.softwareupdate\" \"system.preferences.startupdisk\" \"system.preferences.timemachine\")\nresult=\"1\"\nfor section in ${authDBs[@]}; do\nif [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"shared\")]/following-sibling::*[1])' -) != \"false\" ]]; then\nresult=\"0\"\nfi\nif [[ $(security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath '//*[contains(text(), \"group\")]/following-sibling::*[1]/text()' - ) != \"admin\" ]]; then\nresult=\"0\"\nfi\nif [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"authenticate-user\")]/following-sibling::*[1])' -) != \"true\" ]]; then\nresult=\"0\"\nfi\nif [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"session-owner\")]/following-sibling::*[1])' -) != \"false\" ]]; then\nresult=\"0\"\nfi\ndone\necho $result",
+        "type": "command_output"
+      },
+      "description": "The macOS system must require an administrator password to modify systemwide preferences.",
+      "expected": {
+        "type": "equals",
+        "value": "1"
+      },
+      "platform": "macos",
+      "vuln_id": "V-268514"
+    },
+    {
+      "check": {
         "command": ".NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\",
         "type": "command_output"
       },
