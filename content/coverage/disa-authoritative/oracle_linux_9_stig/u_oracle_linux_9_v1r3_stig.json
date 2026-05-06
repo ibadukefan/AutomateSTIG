@@ -6258,16 +6258,17 @@
       "vuln_id": "V-271826"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-271827",
+      "check_pack": "generated-candidates/oracle_linux_9_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-271827r1092193_rule",
       "severity": "medium",
       "title": "OL 9 cron configuration directories must have a mode of 0700 or less permissive.",
-      "tracking_issue": "TODO-V-271827",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
         "content/disa-corpus/artifacts/be452ffdb41ff20a00afe381cd12afb20e7998432a01d86e3600dba0140b87b1/U_Oracle_Linux_9_V1R3_STIG.zip"
       ],
       "vuln_id": "V-271827"

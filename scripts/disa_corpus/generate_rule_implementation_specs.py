@@ -2422,6 +2422,29 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    cron_directory_mode_match = re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?find\s+/etc/cron\*\s+-type\s+d\s*\|\s*xargs\s+stat\s+-c\s+["\']%a\s+%n["\']\s*$',
+        content,
+        re.MULTILINE,
+    )
+    cron_directory_mode_finding = re.search(
+        r'If\s+any\s+cron\s+configuration\s+directory\s+is\s+more\s+permissive\s+than\s+["“]?(?P<mode>0?[0-7]{3})["”]?,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if cron_directory_mode_match and cron_directory_mode_finding:
+        mode = int(cron_directory_mode_finding.group('mode'), 8)
+        prohibited_bits = 0o777 & ~mode
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': f'find /etc/cron* -type d -perm /{prohibited_bits:03o} -exec stat -c "%a %n" {{}} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     audit_log_mode_matches = re.findall(
         r'^\s*[$#>]\s*(?:sudo\s+)?find\s+/var/log/audit/\s+-type\s+f\s+-exec\s+stat\s+-c\s+["\']%a\s+%n["\']\s+\{\}\s+\\;\s*$',
         content,

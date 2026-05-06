@@ -200,6 +200,32 @@ If the audit logs have a mode more permissive than "0600", this is a finding.'''
             'description': 'RHEL 9 audit logs file must have mode 0600 or less permissive to prevent unauthorized access to the audit log.',
         })
 
+    def test_infers_linux_cron_directory_mode_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271827',
+            'title': 'OL 9 cron configuration directories must have a mode of 0700 or less permissive.',
+            'check_content': '''Verify that OL 9 configures permissions of the cron directories with the following command:
+
+$ find /etc/cron* -type d | xargs stat -c "%a %n"
+700 /etc/cron.d
+700 /etc/cron.daily
+700 /etc/cron.hourly
+700 /etc/cron.monthly
+700 /etc/cron.weekly
+
+If any cron configuration directory is more permissive than "700", this is a finding.''',
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-271827',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'find /etc/cron* -type d -perm /077 -exec stat -c "%a %n" {} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'OL 9 cron configuration directories must have a mode of 0700 or less permissive.',
+        })
+
     def test_classifies_policy_language_as_manual_evidence_workflow(self):
         classification, collector = mod.classify_rule('The organization must document an approval process.')
         self.assertEqual(classification, 'manual')

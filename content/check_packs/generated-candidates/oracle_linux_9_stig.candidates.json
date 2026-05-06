@@ -4989,6 +4989,19 @@
     },
     {
       "check": {
+        "command": "find /etc/cron* -type d -perm /077 -exec stat -c \"%a %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "OL 9 cron configuration directories must have a mode of 0700 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271827"
+    },
+    {
+      "check": {
         "command": "find /etc/cron* ! -group root -exec stat -c \"%G %n\" {} \\;",
         "type": "command_output"
       },

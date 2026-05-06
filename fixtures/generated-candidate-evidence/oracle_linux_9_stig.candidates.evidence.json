@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 417,
+  "candidate_checks": 418,
   "cases": [
     {
       "check": {
@@ -10119,6 +10119,32 @@
     },
     {
       "check": {
+        "command": "find /etc/cron* -type d -perm /077 -exec stat -c \"%a %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "OL 9 cron configuration directories must have a mode of 0700 or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /etc/cron* -type d -perm /077 -exec stat -c \"%a %n\" {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /etc/cron* -type d -perm /077 -exec stat -c \"%a %n\" {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271827"
+    },
+    {
+      "check": {
         "command": "find /etc/cron* ! -group root -exec stat -c \"%G %n\" {} \\;",
         "type": "command_output"
       },
@@ -11576,5 +11602,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 417
+  "validated_candidates": 418
 }

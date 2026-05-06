@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /etc/cron* -type d -perm /077 -exec stat -c \"%a %n\" {} \\;",
+      "type": "command_output"
+    },
+    "description": "OL 9 cron configuration directories must have a mode of 0700 or less permissive.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-271827"
+  },
   "check_content_excerpt": "Verify that OL 9 configures permissions of the cron directories with the following command:\n\n$ find /etc/cron* -type d | xargs stat -c \"%a %n\"\n700 /etc/cron.d\n700 /etc/cron.daily\n700 /etc/cron.hourly\n700 /etc/cron.monthly\n700 /etc/cron.weekly\n\nIf any cron configuration directory is more permissive than \"700\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure any OL 9 cron configuration directory with a mode more permissive than \"0700\" as follows:\n\n$ sudo chmod 0700 [cron configuration directory]",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-271827r1092193_rule",
   "severity": "medium",
