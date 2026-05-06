@@ -231,6 +231,30 @@ def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
                         'expected': {'type': 'matches', 'pattern': f"^(?:{'|'.join(str(value) for value in allowed_values)})$"},
                         'description': rule.get('title', ''),
                     }
+            office_also_acceptable_dword = re.search(
+                r'If\s+the\s+value\s+(?:for\s+)?["“]?([A-Za-z0-9_.-]+)["”]?\s+is\s+REG_DWORD\s*=\s*(\d+)\s*,?\s+this\s+is\s+not\s+a\s+finding\.\s+A\s+value\s+of\s+REG_DWORD\s*=\s*(\d+)(?P<tail>[^.]*?)\s+is\s+also\s+acceptable\.',
+                content,
+                re.IGNORECASE,
+            )
+            if office_also_acceptable_dword and 'office' in stig_id.lower():
+                values = {
+                    int(office_also_acceptable_dword.group(2)),
+                    int(office_also_acceptable_dword.group(3)),
+                }
+                values.update(int(value) for value in re.findall(r'\bor\s+REG_DWORD\s*=\s*(\d+)', office_also_acceptable_dword.group('tail'), re.IGNORECASE))
+                allowed_values = sorted(values)
+                if len(allowed_values) > 1:
+                    return {
+                        'vuln_id': rule.get('vuln_id', ''),
+                        'platform': 'windows',
+                        'check': {
+                            'type': 'registry',
+                            'path': _normalize_registry_path(path_match.group(1)),
+                            'value_name': office_also_acceptable_dword.group(1).strip(),
+                        },
+                        'expected': {'type': 'matches', 'pattern': f"^(?:{'|'.join(str(value) for value in allowed_values)})$"},
+                        'description': rule.get('title', ''),
+                    }
         if not path_match and not value_match and 'Administrative Template' in content:
             admin_registry = re.search(
                 r'Using\s+the\s+registry,\s+check\s+((?:HKLM|HKCU|HKCR|HKU|HKCC|HKEY_[A-Z_]+)\\[^,\n\r]+),\s*Key:\s*([A-Za-z0-9_.-]+)',

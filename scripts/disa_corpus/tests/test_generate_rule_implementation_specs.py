@@ -69,6 +69,31 @@ Policy Value: N/A''',
             'description': 'Download restrictions must be configured.',
         })
 
+    def test_infers_office_registry_dword_primary_value_with_additional_acceptable_values_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223282',
+            'title': 'VBA macros not digitally signed must be blocked in Access.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Access 2016 >> Application Settings >> Security >> Trust Center >> VBA Macro Notification Settings is set to "Disable all except digitally signed macros".
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\software\\policies\\Microsoft\\office\\16.0\\access\\security
+
+If the value vbawarnings is REG_DWORD = 3, this is not a finding. A value of REG_DWORD = 2 or REG_DWORD =  4 is also acceptable. If the registry key does not exist, or is not configured properly, this is a finding.''',
+            'fix_text': 'Set User Configuration >> Administrative Templates >> Microsoft Access 2016 >> Application Settings >> Security >> Trust Center >> VBA Macro Notification Settings to "Disable all except digitally signed macros".',
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-223282',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKCU\\software\\policies\\Microsoft\\office\\16.0\\access\\security',
+                'value_name': 'vbawarnings',
+            },
+            'expected': {'type': 'matches', 'pattern': '^(?:2|3|4)$'},
+            'description': 'VBA macros not digitally signed must be blocked in Access.',
+        })
+
     def test_infers_windows_system32_telnet_absent_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-220721',

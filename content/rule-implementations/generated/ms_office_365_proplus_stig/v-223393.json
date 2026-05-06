@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\visio\\security",
+      "type": "registry",
+      "value_name": "vbawarnings"
+    },
+    "description": "VBA Macros not digitally signed must be blocked in Visio.",
+    "expected": {
+      "pattern": "^(?:3|4)$",
+      "type": "matches"
+    },
+    "platform": "windows",
+    "vuln_id": "V-223393"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates/Microsoft Visio 2016 >> Visio Options >> Security >> Trust Center >> VBA Macro Notification Settings is set to \"Enabled\" and \"Disable all except digitally signed macros\".\n\nUse the Windows Registry Editor to navigate to the following key: \n\nHKCU\\software\\policies\\microsoft\\office\\16.0\\visio\\security\n\nIf the value for vbawarnings is REG_DWORD = 3, this is not a finding. A value of REG_DWORD =  4 is also acceptable. If the registry key does not exist or is not configured properly, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "pattern": "^(?:3|4)$",
+    "type": "matches"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates/Microsoft Visio 2016 >> Visio Options >> Security >> Trust Center >> VBA Macro Notification Settings to \"Enabled\" and select \"Disable all except digitally signed macros\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223393r960963_rule",
   "severity": "medium",
