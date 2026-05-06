@@ -1437,6 +1437,35 @@ def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _linux_platform(stig_id):
         return None
     content = rule.get('check_content', '') or ''
+    picture_uri_command = re.search(
+        r'^\s*\$\s*(?P<command>(?:sudo\s+)?gsettings\s+get\s+org\.gnome\.desktop\.screensaver\s+picture-uri)\s*$',
+        content,
+        re.MULTILINE,
+    )
+    picture_uri_lock = re.search(
+        r'^\s*\$\s*(?P<command>grep\s+picture-uri\s+/etc/dconf/db/local\.d/locks/\*)\s*$',
+        content,
+        re.MULTILINE,
+    )
+    if (
+        picture_uri_command
+        and picture_uri_lock
+        and re.search(r'output\s+should\s+be\s+["“]\'\'["”]', content, re.IGNORECASE)
+        and re.search(r'output\s+should\s+be\s+["“]/org/gnome/desktop/screensaver/picture-uri["”]', content, re.IGNORECASE)
+        and re.search(r'If\s+it\s+is\s+not\s+set\s+or\s+configured\s+properly,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+        and re.search(r'^\s*picture-uri=\'\'\s*$', rule.get('fix_text', '') or '', re.MULTILINE)
+        and re.search(r'^\s*/org/gnome/desktop/screensaver/picture-uri\s*$', rule.get('fix_text', '') or '', re.MULTILINE)
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': f"{_normalize_command(picture_uri_command.group('command'))} && {_normalize_command(picture_uri_lock.group('command'))}",
+            },
+            'expected': {'type': 'contains', 'substring': "''\n/org/gnome/desktop/screensaver/picture-uri"},
+            'description': rule.get('title', ''),
+        }
     command_matches = list(re.finditer(
         r'^\s*\**\s*\$\s*(?P<command>(?:sudo\s+)?gsettings\s+(?:get|writable)\s+[A-Za-z0-9_.-]+\s+[A-Za-z0-9_.-]+)\s*$',
         content,

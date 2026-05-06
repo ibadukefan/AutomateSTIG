@@ -2753,6 +2753,39 @@ If the result is not 'lock-screen', this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'gsettings get org.gnome.settings-daemon.peripherals.smartcard removal-action'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': "'lock-screen'"})
 
+    def test_infers_gsettings_picture_uri_blank_with_dconf_lock_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271676',
+            'title': 'OL 9 must conceal, via the session lock, information previously visible on the display with a publicly viewable image.',
+            'check_content': '''Verify that OL 9 configures the screensaver to be blank with the following command:
+
+$ gsettings get org.gnome.desktop.screensaver picture-uri 
+
+If properly configured, the output should be "''".
+
+To ensure that users cannot set the screensaver background, run the following: 
+
+$ grep picture-uri /etc/dconf/db/local.d/locks/* 
+
+If properly configured, the output should be "/org/gnome/desktop/screensaver/picture-uri".
+
+If it is not set or configured properly, this is a finding.''',
+            'fix_text': '''Add or update the [org/gnome/desktop/screensaver] section of the "/etc/dconf/db/local.d/00-security-settings" database file and add or update the following lines:
+
+[org/gnome/desktop/screensaver]
+picture-uri=''
+
+Add the following line to "/etc/dconf/db/local.d/locks/00-security-settings-lock" to prevent user modification:
+
+/org/gnome/desktop/screensaver/picture-uri'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': 'gsettings get org.gnome.desktop.screensaver picture-uri && grep picture-uri /etc/dconf/db/local.d/locks/*',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': "''\n/org/gnome/desktop/screensaver/picture-uri"})
+
     def test_infers_gsettings_empty_logout_action_candidate_from_bound_action_finding(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270711',

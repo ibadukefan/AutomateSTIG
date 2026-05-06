@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 420,
+  "candidate_checks": 421,
   "cases": [
     {
       "check": {
@@ -5925,6 +5925,32 @@
     },
     {
       "check": {
+        "command": "gsettings get org.gnome.desktop.screensaver picture-uri && grep picture-uri /etc/dconf/db/local.d/locks/*",
+        "type": "command_output"
+      },
+      "description": "OL 9 must conceal, via the session lock, information previously visible on the display with a publicly viewable image.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "''\n/org/gnome/desktop/screensaver/picture-uri",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.desktop.screensaver picture-uri && grep picture-uri /etc/dconf/db/local.d/locks/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.desktop.screensaver picture-uri && grep picture-uri /etc/dconf/db/local.d/locks/*": "before\n''\n/org/gnome/desktop/screensaver/picture-uri\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271676"
+    },
+    {
+      "check": {
         "command": "gsettings get org.gnome.settings-daemon.plugins.media-keys logout",
         "type": "command_output"
       },
@@ -11654,5 +11680,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 420
+  "validated_candidates": 421
 }
