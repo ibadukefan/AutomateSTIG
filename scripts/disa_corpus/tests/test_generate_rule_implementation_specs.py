@@ -1820,6 +1820,35 @@ If any file has a mode more permissive than "0644", this is a finding.'''
             'description': 'The SUSE operating system SSH daemon public host key files must have mode 0644 or less permissive.',
         })
 
+    def test_infers_ssh_public_host_key_mode_find_ls_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204596',
+            'title': 'The Red Hat Enterprise Linux operating system must be configured so that the SSH public host key files have mode 0644 or less permissive.',
+            'check_content': '''Verify the SSH public host key files have mode "0644" or less permissive.
+
+Note: SSH public key files may be found in other directories on the system depending on the installation.
+
+The following command will find all SSH public key files on the system:
+
+# find /etc/ssh -name '*.pub' -exec ls -lL {} \\;
+
+-rw-r--r-- 1 root root 618 Nov 28 06:43 ssh_host_dsa_key.pub
+-rw-r--r-- 1 root root 347 Nov 28 06:43 ssh_host_key.pub
+-rw-r--r-- 1 root root 238 Nov 28 06:43 ssh_host_rsa_key.pub
+
+If any file has a mode more permissive than "0644", this is a finding.'''
+        }, 'RHEL_7_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-204596',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'find /etc/ssh -maxdepth 1 -type f -name \'ssh_host*key.pub\' -perm /133 -exec stat -c "%n %a" {} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Red Hat Enterprise Linux operating system must be configured so that the SSH public host key files have mode 0644 or less permissive.',
+        })
+
     def test_infers_ssh_public_host_key_mode_ls_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230286',

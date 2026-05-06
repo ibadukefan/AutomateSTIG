@@ -2060,7 +2060,7 @@ def _ssh_host_key_mode_candidate(rule: dict, stig_id: str) -> dict | None:
         key_kind = 'private'
         key_glob = 'ssh_host*key'
     elif re.search(
-        r'^\s*[$#>]\s*(?:sudo\s+)?(?:find\s+/etc/ssh\s+-name\s+["\']ssh_host\*key\.pub["\']\s+-exec\s+stat\s+-c\s+["\']%a\s+%n["\']\s+\{\}\s+\\;|ls\s+-l\s+/etc/ssh/\*\.pub)\s*$',
+        r'^\s*[$#>]\s*(?:sudo\s+)?(?:find\s+/etc/ssh\s+-name\s+(?:["\']ssh_host\*key\.pub["\']|["\']\*\.pub["\'])\s+-exec\s+(?:stat\s+-c\s+["\']%a\s+%n["\']|ls\s+-lL)\s+\{\}\s+\\;|ls\s+-l\s+/etc/ssh/\*\.pub)\s*$',
         content,
         re.MULTILINE,
     ):

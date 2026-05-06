@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 144,
+  "candidate_checks": 145,
   "cases": [
     {
       "check": {
@@ -2395,6 +2395,32 @@
     },
     {
       "check": {
+        "command": "find /etc/ssh -maxdepth 1 -type f -name 'ssh_host*key.pub' -perm /133 -exec stat -c \"%n %a\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the SSH public host key files have mode 0644 or less permissive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /etc/ssh -maxdepth 1 -type f -name 'ssh_host*key.pub' -perm /133 -exec stat -c \"%n %a\" {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /etc/ssh -maxdepth 1 -type f -name 'ssh_host*key.pub' -perm /133 -exec stat -c \"%n %a\" {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204596"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "GSSAPIAuthentication no",
@@ -3864,5 +3890,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 144
+  "validated_candidates": 145
 }
