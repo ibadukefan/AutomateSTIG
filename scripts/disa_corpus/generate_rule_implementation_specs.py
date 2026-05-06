@@ -3652,6 +3652,29 @@ def _file_permission_candidate(rule: dict) -> dict | None:
     }
 
 
+def _sql_server_sa_login_renamed_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    title = rule.get('title', '') or ''
+    if title.strip().lower() != 'the sql server default account [sa] must have its name changed.':
+        return None
+    if not re.search(r'FROM\s+sys\.sql_logins\s+WHERE\s+\[name\]\s*=\s*\'sa\'\s+OR\s+\[principal_id\]\s*=\s*1', content, re.IGNORECASE):
+        return None
+    if not re.search(r'If\s+the\s+login\s+account\s+name\s+["“]SA["”]\s+or\s+["“]sa["”]\s+appears\s+in\s+the\s+query\s+output,?\s+this\s+is\s+a\s+finding\.', content, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {
+            'type': 'command_output',
+            'command': 'sqlcmd -Q "SET NOCOUNT ON; SELECT name FROM sys.sql_logins WHERE [name] = \'sa\' OR [principal_id] = 1;"',
+        },
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_system32_absent_application_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -3830,6 +3853,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:
         return command_candidate
+
+    sql_server_sa_candidate = _sql_server_sa_login_renamed_candidate(rule, stig_id)
+    if sql_server_sa_candidate:
+        return sql_server_sa_candidate
 
     tomcat_auditctl_candidate = _tomcat_auditctl_expected_rule_candidate(rule, stig_id)
     if tomcat_auditctl_candidate:

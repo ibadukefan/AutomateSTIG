@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "sqlcmd -Q \"SET NOCOUNT ON; SELECT name FROM sys.sql_logins WHERE [name] = 'sa' OR [principal_id] = 1;\"",
+      "type": "command_output"
+    },
+    "description": "The SQL Server default account [sa] must have its name changed.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-274445"
+  },
   "check_content_excerpt": "Verify the SQL Server default [sa] (system administrator) account name has been changed by executing the following query:\nUSE master; \nGO \nSELECT * \nFROM sys.sql_logins \nWHERE [name] = 'sa' OR [principal_id] = 1; \nGO \n\nIf the login account name \"SA\" or \"sa\" appears in the query output, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Modify the SQL Server's [sa] (system administrator) account by running the following script:\n\nUSE master; \nGO \nALTER LOGIN [sa] WITH NAME = <new name> \nGO",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-274445r1111103_rule",
   "severity": "medium",

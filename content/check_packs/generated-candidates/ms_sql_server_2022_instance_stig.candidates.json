@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+      "check": {
+        "command": "sqlcmd -Q \"SET NOCOUNT ON; SELECT name FROM sys.sql_logins WHERE [name] = 'sa' OR [principal_id] = 1;\"",
+        "type": "command_output"
+      },
+      "description": "The SQL Server default account [sa] must have its name changed.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-274445"
+    }
+  ],
+  "platform": "generic",
+  "stig_id": "MS_SQL_Server_2022_Instance_STIG",
+  "version": "candidate-planned"
+}

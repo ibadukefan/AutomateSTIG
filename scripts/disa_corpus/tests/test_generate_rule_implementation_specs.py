@@ -94,6 +94,32 @@ If the value vbawarnings is REG_DWORD = 3, this is not a finding. A value of REG
             'description': 'VBA macros not digitally signed must be blocked in Access.',
         })
 
+    def test_infers_sql_server_sa_login_renamed_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-274445',
+            'title': 'The SQL Server default account [sa] must have its name changed.',
+            'check_content': '''Verify the SQL Server default [sa] (system administrator) account name has been changed by executing the following query:
+USE master;
+GO
+SELECT *
+FROM sys.sql_logins
+WHERE [name] = 'sa' OR [principal_id] = 1;
+GO
+
+If the login account name "SA" or "sa" appears in the query output, this is a finding.''',
+            'fix_text': 'Rename the SQL Server default [sa] account.',
+        }, 'MS_SQL_Server_2022_Instance_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-274445',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': "sqlcmd -Q \"SET NOCOUNT ON; SELECT name FROM sys.sql_logins WHERE [name] = 'sa' OR [principal_id] = 1;\"",
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The SQL Server default account [sa] must have its name changed.',
+        })
+
     def test_infers_windows_system32_telnet_absent_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-220721',
