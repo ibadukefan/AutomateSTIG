@@ -2231,10 +2231,10 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         }
     nmcli_wireless_disabled = (
         _linux_platform(stig_id)
-        and re.search(r'^\s*[$#>]\s*(?:sudo\s+)?nmcli\s+device\s+status\s*$', content, re.MULTILINE)
-        and re.search(r'\bwireless\s+interfaces?\s+configured\b', content, re.IGNORECASE)
+        and re.search(r'^\s*[$#>]\s*(?:sudo\s+)?nmcli\s+device(?:\s+status)?\s*$', content, re.MULTILINE)
+        and re.search(r'\bwireless\s+interfaces?\s+(?:configured|with the following command)\b', content, re.IGNORECASE)
         and re.search(
-            r'If\s+a\s+wireless\s+interface\s+is\s+configured\s+and\s+has\s+not\s+been\s+documented\s+and\s+approved\s+by\s+the\s+[^.]+,?\s+this\s+is\s+a\s+finding',
+            r'If\s+a\s+wireless\s+interface\s+is\s+configured\s+and\s+(?:has\s+not\s+been\s+documented\s+and\s+approved\s+by\s+the|its\s+use\s+on\s+the\s+system\s+is\s+not\s+documented\s+with\s+the)\s+[^.]+,?\s+this\s+is\s+a\s+finding',
             content,
             re.IGNORECASE,
         )

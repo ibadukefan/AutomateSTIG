@@ -460,6 +460,32 @@ If any of the files returned from the command with "AllowUnauthenticated" are se
             'description': 'The Ubuntu operating system\'s Advance Package Tool (APT) must be configured to prevent the installation of patches, service packs, device drivers, or Ubuntu operating system components without verification they have been digitally signed using a certificate that is recognized and approved by the organization.',
         })
 
+    def test_infers_linux_nmcli_device_wireless_disabled_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204634',
+            'title': 'The Red Hat Enterprise Linux operating system must be configured so that all wireless network adapters are disabled.',
+            'check_content': '''Verify that there are no wireless interfaces configured on the system.
+
+This is N/A for systems that do not have wireless network adapters.
+
+Check for the presence of active wireless interfaces with the following command:
+
+# nmcli device
+DEVICE TYPE STATE
+eth0 ethernet connected
+wlp3s0 wifi disconnected
+lo loopback unmanaged
+
+If a wireless interface is configured and its use on the system is not documented with the Information System Security Officer (ISSO), this is a finding.''',
+        }, 'RHEL_7_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-204634',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': "nmcli -t -f TYPE device status | grep -Fx 'wifi'"},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Red Hat Enterprise Linux operating system must be configured so that all wireless network adapters are disabled.',
+        })
+
     def test_infers_linux_timedatectl_timezone_utc_or_gmt_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-238308',

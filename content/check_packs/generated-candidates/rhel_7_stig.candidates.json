@@ -1679,6 +1679,19 @@
     },
     {
       "check": {
+        "command": "nmcli -t -f TYPE device status | grep -Fx 'wifi'",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all wireless network adapters are disabled.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-204634"
+    },
+    {
+      "check": {
         "command": "rpm -Va --noconfig | grep '^..5'",
         "type": "command_output"
       },
