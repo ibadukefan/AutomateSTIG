@@ -1197,6 +1197,41 @@ def _auditctl_expected_rule_candidate(rule: dict) -> dict | None:
     }
 
 
+def _tomcat_systemd_boolean_property_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    if 'tomcat' not in stig_id.lower():
+        return None
+    command_match = re.search(
+        r'^\s*(?:[$#>]\s*)?(?:sudo\s+)?grep\s+-i\s+(?P<token>[A-Za-z0-9_.-]+)\s+/etc/systemd/system/tomcat\.service\s*$',
+        content,
+        re.IGNORECASE | re.MULTILINE,
+    )
+    if not command_match:
+        return None
+    finding_match = re.search(
+        r'If\s+there\s+are\s+no\s+results,\s+or\s+if\s+the\s+(?P<property>org\.apache\.catalina(?:\.[A-Za-z0-9_]+)+)\s+is\s+not\s*=\s*["“](?P<value>true|false)["”],?\s+this\s+is\s+a\s+finding\.',
+        content,
+        re.IGNORECASE,
+    )
+    if not finding_match:
+        return None
+    property_name = finding_match.group('property')
+    expected_value = finding_match.group('value').lower()
+    grep_token = command_match.group('token').lower()
+    if grep_token not in property_name.lower():
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {
+            'type': 'command_output',
+            'command': f'grep -i {command_match.group("token")} /etc/systemd/system/tomcat.service',
+        },
+        'expected': {'type': 'contains', 'substring': f'{property_name}={expected_value}'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _tomcat_auditctl_expected_rule_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     if 'tomcat' not in stig_id.lower():
@@ -3948,6 +3983,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     vcenter_lookup_service_grep_property_candidate = _vcenter_lookup_service_grep_property_candidate(rule, stig_id)
     if vcenter_lookup_service_grep_property_candidate:
         return vcenter_lookup_service_grep_property_candidate
+
+    tomcat_systemd_boolean_property_candidate = _tomcat_systemd_boolean_property_candidate(rule, stig_id)
+    if tomcat_systemd_boolean_property_candidate:
+        return tomcat_systemd_boolean_property_candidate
 
     command_candidate = _command_output_candidate(rule, stig_id)
     if command_candidate:

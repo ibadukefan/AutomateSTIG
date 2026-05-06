@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -i enforce_encoding /etc/systemd/system/tomcat.service",
+      "type": "command_output"
+    },
+    "description": "ENFORCE_ENCODING_IN_GET_WRITER must be set to true.",
+    "expected": {
+      "substring": "org.apache.catalina.connector.Response.ENFORCE_ENCODING_IN_GET_WRITER=true",
+      "type": "contains"
+    },
+    "platform": "generic",
+    "vuln_id": "V-223005"
+  },
   "check_content_excerpt": "From the Tomcat server as a privileged user, run the following command:\n\nsudo grep -i  enforce_encoding /etc/systemd/system/tomcat.service \n\nIf there are no results, or if the org.apache.catalina.connector.Response.ENFORCE_ENCODING_IN_GET_WRITER is not =\"true\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "org.apache.catalina.connector.Response.ENFORCE_ENCODING_IN_GET_WRITER=true",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "From the Tomcat server as a privileged user: \n\nEdit the /etc/systemd/system/tomcat.service file, and either add or edit the org.apache.catalina.connector.Response.ENFORCE_ENCODING_IN_GET_WRITER setting.\n\nSet the org.apache.catalina.connector.Response.ENFORCE_ENCODING_IN_GET_WRITER=true \n\nEXAMPLE:\nEnvironment='CATALINA_OPTS -Dorg.apache.catalina.connector.Response.ENFORCE_ENCODING_IN_GET_WRITER=true'\n\nRestart the Tomcat server:\nsudo systemctl restart tomcat\nsudo systemctl daemon-reload",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-223005r1135509_rule",
   "severity": "medium",

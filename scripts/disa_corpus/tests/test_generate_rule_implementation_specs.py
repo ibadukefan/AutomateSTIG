@@ -1221,6 +1221,30 @@ If results indicate the $CATALINA_HOME folder ownership and group membership is 
         })
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_tomcat_systemd_boolean_property_literal_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223003',
+            'title': 'RECYCLE_FACADES must be set to true.',
+            'check_content': '''From the Tomcat server as a privileged user, run the following command:
+
+sudo grep -i  recycle_facades /etc/systemd/system/tomcat.service
+
+If there are no results, or if the org.apache.catalina.connector.RECYCLE_FACADES is not ="true", this is a finding.'''
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-223003',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'grep -i recycle_facades /etc/systemd/system/tomcat.service',
+            },
+            'expected': {
+                'type': 'contains',
+                'substring': 'org.apache.catalina.connector.RECYCLE_FACADES=true',
+            },
+            'description': 'RECYCLE_FACADES must be set to true.',
+        })
+
     def test_infers_tomcat_shutdown_port_disabled_literal_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-222951',

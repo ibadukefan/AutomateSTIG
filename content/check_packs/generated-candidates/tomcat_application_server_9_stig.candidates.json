@@ -129,6 +129,32 @@
       },
       "platform": "linux",
       "vuln_id": "V-223000"
+    },
+    {
+      "check": {
+        "command": "grep -i recycle_facades /etc/systemd/system/tomcat.service",
+        "type": "command_output"
+      },
+      "description": "RECYCLE_FACADES must be set to true.",
+      "expected": {
+        "substring": "org.apache.catalina.connector.RECYCLE_FACADES=true",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-223003"
+    },
+    {
+      "check": {
+        "command": "grep -i enforce_encoding /etc/systemd/system/tomcat.service",
+        "type": "command_output"
+      },
+      "description": "ENFORCE_ENCODING_IN_GET_WRITER must be set to true.",
+      "expected": {
+        "substring": "org.apache.catalina.connector.Response.ENFORCE_ENCODING_IN_GET_WRITER=true",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-223005"
     }
   ],
   "platform": "linux",

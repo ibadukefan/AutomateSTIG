@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 10,
+  "candidate_checks": 12,
   "cases": [
     {
       "check": {
@@ -260,6 +260,58 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223000"
+    },
+    {
+      "check": {
+        "command": "grep -i recycle_facades /etc/systemd/system/tomcat.service",
+        "type": "command_output"
+      },
+      "description": "RECYCLE_FACADES must be set to true.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "org.apache.catalina.connector.RECYCLE_FACADES=true",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i recycle_facades /etc/systemd/system/tomcat.service": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i recycle_facades /etc/systemd/system/tomcat.service": "before\norg.apache.catalina.connector.RECYCLE_FACADES=true\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223003"
+    },
+    {
+      "check": {
+        "command": "grep -i enforce_encoding /etc/systemd/system/tomcat.service",
+        "type": "command_output"
+      },
+      "description": "ENFORCE_ENCODING_IN_GET_WRITER must be set to true.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "org.apache.catalina.connector.Response.ENFORCE_ENCODING_IN_GET_WRITER=true",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i enforce_encoding /etc/systemd/system/tomcat.service": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i enforce_encoding /etc/systemd/system/tomcat.service": "before\norg.apache.catalina.connector.Response.ENFORCE_ENCODING_IN_GET_WRITER=true\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223005"
     }
   ],
   "production_claim": false,
@@ -267,5 +319,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 10
+  "validated_candidates": 12
 }
