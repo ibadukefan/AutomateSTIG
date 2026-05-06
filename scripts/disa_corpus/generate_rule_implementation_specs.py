@@ -823,6 +823,51 @@ def _file_content_candidate(rule: dict) -> dict | None:
     }
 
 
+def _firewalld_target_drop_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    title = rule.get('title', '') or ''
+    if not re.search(r'firewall\s+employs?\s+a\s+deny-all,\s+allow-by-exception\s+policy', title, re.IGNORECASE):
+        return None
+    if not re.search(r'runtime\s+and\s+permanent\s+targets?\s+are\s+set\s+to\s+a\s+different\s+option\s+other\s+than\s+["“]DROP["”]', content, re.IGNORECASE):
+        return None
+    runtime = re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?(?P<command>firewall-cmd\s+--info-zone=(?P<zone>[A-Za-z0-9_.-]+)\s*\|\s*grep\s+target)\s*$',
+        content,
+        re.IGNORECASE | re.MULTILINE,
+    )
+    permanent = re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?(?P<command>firewall-cmd\s+--permanent\s+--info-zone=(?P<zone>[A-Za-z0-9_.-]+)\s*\|\s*grep\s+target)\s*$',
+        content,
+        re.IGNORECASE | re.MULTILINE,
+    )
+    if not runtime or not permanent or runtime.group('zone') != permanent.group('zone'):
+        return None
+    expected_lines: list[str] = []
+    for match in (runtime, permanent):
+        expected = None
+        for raw_line in content[match.end():].splitlines():
+            stripped = raw_line.strip()
+            if not stripped:
+                if expected:
+                    break
+                continue
+            if stripped.startswith(('$', '#', '>')) or stripped.lower().startswith(('if ', 'note:', 'verify ', 'configure ')):
+                break
+            if stripped == 'target: DROP':
+                expected = stripped
+                break
+        if expected != 'target: DROP':
+            return None
+        expected_lines.append(expected)
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': f"{_normalize_command(runtime.group('command'))} && {_normalize_command(permanent.group('command'))}"},
+        'expected': {'type': 'contains', 'substring': '\n'.join(expected_lines)},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sshd_multi_directive_egrep_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     command_match = re.search(
@@ -3201,7 +3246,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return tomcat_auditctl_candidate
 
     if _linux_platform(stig_id):
-        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _sshd_multi_directive_egrep_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _auditctl_expected_rule_candidate, _audit_rules_file_expected_rule_candidate, _service_candidate, _aide_audit_tool_selection_candidate, _file_permission_candidate):
+        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _firewalld_target_drop_candidate, _sshd_multi_directive_egrep_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _auditctl_expected_rule_candidate, _audit_rules_file_expected_rule_candidate, _service_candidate, _aide_audit_tool_selection_candidate, _file_permission_candidate):
             candidate = infer(rule)
             if candidate:
                 return candidate

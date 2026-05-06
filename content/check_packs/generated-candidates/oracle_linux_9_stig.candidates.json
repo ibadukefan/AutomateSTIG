@@ -475,6 +475,19 @@
     },
     {
       "check": {
+        "command": "firewall-cmd --info-zone=public | grep target && firewall-cmd --permanent --info-zone=public | grep target",
+        "type": "command_output"
+      },
+      "description": "OL 9 must be configured so that the firewall employs a deny-all, allow-by-exception policy for allowing connections to other systems.",
+      "expected": {
+        "substring": "target: DROP\ntarget: DROP",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-271473"
+    },
+    {
+      "check": {
         "name": "sudo",
         "should_be_installed": true,
         "type": "package"

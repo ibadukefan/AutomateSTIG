@@ -1561,6 +1561,36 @@ If "mailx" is not installed, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'package', 'name': 'mailx', 'should_be_installed': True})
         self.assertEqual(candidate['expected'], {'type': 'is_true'})
 
+    def test_infers_linux_firewalld_public_target_drop_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271473',
+            'title': 'OL 9 must be configured so that the firewall employs a deny-all, allow-by-exception policy for allowing connections to other systems.',
+            'check_content': '''Verify that OL 9 is configured to employ a deny-all, allow-by-exception policy for allowing connections to other systems with the following commands:
+
+$ sudo firewall-cmd --state
+running
+
+$ sudo firewall-cmd --get-active-zones
+public
+   interfaces: ens33
+
+$ sudo firewall-cmd --info-zone=public | grep target
+   target: DROP
+
+$ sudo firewall-cmd --permanent --info-zone=public | grep target
+   target: DROP
+
+If no zones are active on the OL 9 interfaces or if runtime and permanent targets are set to a different option other than "DROP", this is a finding.''',
+            'fix_text': 'Configure firewalld to use DROP as the target for runtime and permanent public zones.',
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-271473',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'firewall-cmd --info-zone=public | grep target && firewall-cmd --permanent --info-zone=public | grep target'},
+            'expected': {'type': 'contains', 'substring': 'target: DROP\ntarget: DROP'},
+            'description': 'OL 9 must be configured so that the firewall employs a deny-all, allow-by-exception policy for allowing connections to other systems.',
+        })
+
     def test_infers_linux_package_absent_candidate_from_dpkg_grep_content(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-238326',
