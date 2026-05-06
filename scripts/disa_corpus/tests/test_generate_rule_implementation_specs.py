@@ -4887,6 +4887,22 @@ If GIDs referenced in "/etc/passwd" file are returned as not defined in "/etc/gr
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'pwck -r'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_pwck_quiet_duplicate_gid_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-271834',
+            'title': 'OL 9 interactive users must have a primary group that exists.',
+            'check_content': '''Verify that OL 9 interactive users have a valid GID.
+
+Check that the interactive users have a valid GID with the following command:
+
+$ sudo pwck -qr
+
+If the system has any interactive users with duplicate GIDs, this is a finding.'''
+        }, 'Oracle_Linux_9_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'pwck -qr'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_no_output_candidate_when_grep_occurrences_return_from_command(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-270707',

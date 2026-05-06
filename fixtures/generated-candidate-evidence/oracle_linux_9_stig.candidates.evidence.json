@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 421,
+  "candidate_checks": 422,
   "cases": [
     {
       "check": {
@@ -10325,6 +10325,32 @@
     },
     {
       "check": {
+        "command": "pwck -qr",
+        "type": "command_output"
+      },
+      "description": "OL 9 interactive users must have a primary group that exists.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "pwck -qr": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "pwck -qr": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271834"
+    },
+    {
+      "check": {
         "command": "cut -d : -f 3 /etc/group | uniq -d",
         "type": "command_output"
       },
@@ -11680,5 +11706,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 421
+  "validated_candidates": 422
 }

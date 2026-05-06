@@ -5084,6 +5084,19 @@
     },
     {
       "check": {
+        "command": "pwck -qr",
+        "type": "command_output"
+      },
+      "description": "OL 9 interactive users must have a primary group that exists.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-271834"
+    },
+    {
+      "check": {
         "command": "cut -d : -f 3 /etc/group | uniq -d",
         "type": "command_output"
       },

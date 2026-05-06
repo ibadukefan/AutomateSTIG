@@ -3696,7 +3696,12 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             re.IGNORECASE,
         )
     )
-    if no_output_for_find or no_output_for_find_not_owner or no_output_for_explicit_output or no_output_for_command_output or no_output_for_keytab_listing or no_output_for_any_output or no_output_for_audit_backlog_limit_grep_v or no_output_for_rpm_va_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found or no_output_for_grep_occurrences_return or no_output_for_find_unassigned_owner_group or no_output_for_duplicate_gid or no_output_for_duplicate_uid or no_output_for_public_directory_sticky_bit or no_output_for_pwck_home_directories or no_output_for_pwck_gid_defined:
+    no_output_for_pwck_quiet_duplicate_gid = command == 'pwck -qr' and re.search(
+        r'If\s+the\s+system\s+has\s+any\s+interactive\s+users\s+with\s+duplicate\s+GIDs,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if no_output_for_find or no_output_for_find_not_owner or no_output_for_explicit_output or no_output_for_command_output or no_output_for_keytab_listing or no_output_for_any_output or no_output_for_audit_backlog_limit_grep_v or no_output_for_rpm_va_any_output or no_output_for_shadow_blank_password or no_output_for_grep_found or no_output_for_grep_occurrences_return or no_output_for_find_unassigned_owner_group or no_output_for_duplicate_gid or no_output_for_duplicate_uid or no_output_for_public_directory_sticky_bit or no_output_for_pwck_home_directories or no_output_for_pwck_gid_defined or no_output_for_pwck_quiet_duplicate_gid:
         return {
             'vuln_id': rule.get('vuln_id', ''),
             'platform': 'linux' if _linux_platform(stig_id) else 'windows' if _windows_platform(stig_id) else 'generic',
