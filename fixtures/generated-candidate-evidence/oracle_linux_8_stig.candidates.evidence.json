@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 325,
+  "candidate_checks": 326,
   "cases": [
     {
       "check": {
@@ -2302,6 +2302,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248634"
+    },
+    {
+      "check": {
+        "command": "pwck -r",
+        "type": "command_output"
+      },
+      "description": "All OL 8 local interactive users must have a home directory assigned in the \"/etc/passwd\" file.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "pwck -r": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "pwck -r": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248638"
     },
     {
       "check": {
@@ -8844,5 +8870,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 325
+  "validated_candidates": 326
 }

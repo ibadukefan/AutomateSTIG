@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "pwck -r",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that all local interactive users have a home directory assigned and defined in the /etc/passwd file.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-204467"
+  },
   "check_content_excerpt": "Verify local interactive users on the system have a home directory assigned and the directory exists.\n\nCheck the home directory assignment for all local interactive non-privileged users on the system with the following command:\n\n# awk -F: '($3>=1000)&&($7 !~ /nologin/){print $1, $3, $6}' /etc/passwd\n\nsmithj 1001 /home/smithj\n\nNote: This may miss interactive users that have been assigned a privileged UID. Evidence of interactive use may be obtained from a number of log files containing system logon information.\n\nCheck that all referenced home directories exist with the following command:\n\n# pwck -r\nuser 'smithj': directory '/home/smithj' does not exist\n\nIf any home directories referenced in \"/etc/passwd\" are returned as not defined, or if any interactive users do not have a home directory assigned, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Create home directories to all local interactive users that currently do not have a home directory assigned. Use the following commands to create the user home directory assigned in \"/etc/ passwd\":\n\nNote: The example will be for the user smithj, who has a home directory of \"/home/smithj\", a UID of \"smithj\", and a Group Identifier (GID) of \"users\" assigned in \"/etc/passwd\".\n\n# mkdir /home/smithj \n# chown smithj /home/smithj\n# chgrp users /home/smithj\n# chmod 0750 /home/smithj",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-204467r991589_rule",
   "severity": "medium",

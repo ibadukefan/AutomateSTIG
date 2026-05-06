@@ -476,6 +476,19 @@
     },
     {
       "check": {
+        "command": "pwck -r",
+        "type": "command_output"
+      },
+      "description": "All RHEL 8 local interactive users must have a home directory assigned in the /etc/passwd file.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-230320"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/passwd",
         "pattern": "| awk -F: '{print $4}') /etc/group",

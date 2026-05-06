@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 294,
+  "candidate_checks": 295,
   "cases": [
     {
       "check": {
@@ -929,6 +929,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-230318"
+    },
+    {
+      "check": {
+        "command": "pwck -r",
+        "type": "command_output"
+      },
+      "description": "All RHEL 8 local interactive users must have a home directory assigned in the /etc/passwd file.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "pwck -r": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "pwck -r": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-230320"
     },
     {
       "check": {
@@ -7919,5 +7945,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_8_STIG",
-  "validated_candidates": 294
+  "validated_candidates": 295
 }

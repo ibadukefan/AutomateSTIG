@@ -3940,6 +3940,29 @@ If users home directory does not exist, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'pwck -r'})
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_pwck_home_directory_assigned_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230320',
+            'title': 'All RHEL 8 local interactive users must have a home directory assigned in the /etc/passwd file.',
+            'check_content': '''Verify local interactive users on RHEL 8 have a home directory assigned with the following command:
+
+$ sudo pwck -r
+
+user 'lp': directory '/var/spool/lpd' does not exist
+user 'news': directory '/var/spool/news' does not exist
+user 'uucp': directory '/var/spool/uucp' does not exist
+user 'www-data': directory '/var/www' does not exist
+
+Ask the System Administrator (SA) if any users found without home directories are local interactive users. If the SA is unable to provide a response, check for users with a User Identifier (UID) of 1000 or greater with the following command:
+
+$ sudo awk -F: '($3>=1000)&&($7 !~ /nologin/){print $1, $3, $6}' /etc/passwd
+
+If any interactive users do not have a home directory assigned, this is a finding.'''
+        }, 'RHEL_8_STIG')
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'pwck -r'})
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_pwck_gid_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258048',

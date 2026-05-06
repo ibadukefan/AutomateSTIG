@@ -2662,6 +2662,11 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             content,
             re.IGNORECASE,
         )
+        or re.search(
+            r'If\s+any\s+interactive\s+users\s+do\s+not\s+have\s+a\s+home\s+directory\s+assigned,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
     ):
         command = _normalize_command(pwck_home_directory_match.group('command'))
         command_end = pwck_home_directory_match.end()
@@ -3023,6 +3028,11 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         )
         or re.search(
             r'If\s+users\s+home\s+director(?:y|ies)\s+does\s+not\s+exist,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+        or re.search(
+            r'If\s+any\s+interactive\s+users\s+do\s+not\s+have\s+a\s+home\s+directory\s+assigned,?\s+this\s+is\s+a\s+finding',
             content,
             re.IGNORECASE,
         )

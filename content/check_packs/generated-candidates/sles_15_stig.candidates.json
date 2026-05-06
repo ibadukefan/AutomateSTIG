@@ -1604,6 +1604,19 @@
         "command": "pwck -r",
         "type": "command_output"
       },
+      "description": "All SUSE operating system local interactive users must have a home directory assigned in the /etc/passwd file.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-234991"
+    },
+    {
+      "check": {
+        "command": "pwck -r",
+        "type": "command_output"
+      },
       "description": "All SUSE operating system local interactive user home directories defined in the /etc/passwd file must exist.",
       "expected": {
         "type": "equals",

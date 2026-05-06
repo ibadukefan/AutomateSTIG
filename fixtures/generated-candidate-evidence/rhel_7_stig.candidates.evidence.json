@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 147,
+  "candidate_checks": 148,
   "cases": [
     {
       "check": {
@@ -694,6 +694,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-204466"
+    },
+    {
+      "check": {
+        "command": "pwck -r",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that all local interactive users have a home directory assigned and defined in the /etc/passwd file.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "pwck -r": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "pwck -r": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-204467"
     },
     {
       "check": {
@@ -3942,5 +3968,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/rhel_7_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "RHEL_7_STIG",
-  "validated_candidates": 147
+  "validated_candidates": 148
 }
