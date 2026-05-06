@@ -146,16 +146,17 @@
       "vuln_id": "V-238204"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-238205",
+      "check_pack": "generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-238205r958482_rule",
       "severity": "medium",
       "title": "The Ubuntu operating system must uniquely identify interactive users.",
-      "tracking_issue": "TODO-V-238205",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
         "content/disa-corpus/artifacts/3efd167f182f5827ed691be6d98874fe011cf36f86baea4c3bacc2165ec75bbc/U_CAN_Ubuntu_20-04_LTS_V2R4_STIG.zip"
       ],
       "vuln_id": "V-238205"

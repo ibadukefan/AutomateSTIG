@@ -1091,7 +1091,25 @@ $ sudo awk -F ":" 'list[$3]++{print $1, $3}' /etc/passwd
 
 If output is produced and the accounts listed are interactive user accounts, this is a finding.'''
         }, 'RHEL_9_STIG')
-        self.assertIsNotNone(candidate)
+
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': 'awk -F ":" \'list[$3]++{print $1, $3}\' /etc/passwd',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
+    def test_infers_duplicate_uid_no_output_candidate_with_comma_after_produced(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-230371',
+            'title': 'RHEL 8 duplicate User IDs (UIDs) must not exist for interactive users.',
+            'check_content': '''Check that the operating system contains no duplicate UIDs for interactive users with the following command:
+
+$ sudo awk -F ":" 'list[$3]++{print $1, $3}' /etc/passwd
+
+If output is produced, and the accounts listed are interactive user accounts, this is a finding.'''
+        }, 'RHEL_8_STIG')
+
         self.assertEqual(candidate['platform'], 'linux')
         self.assertEqual(candidate['check'], {
             'type': 'command_output',

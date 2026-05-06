@@ -3195,7 +3195,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         r"awk\s+-F\s+['\"]?:['\"]?\s+['\"]list\[\$3\]\+\+\{print\s+\$1,\s*\$3\}\s*['\"]\s+/etc/passwd",
         command,
     ) and re.search(
-        r'If\s+output\s+is\s+produced\s+and\s+the\s+accounts\s+listed\s+are\s+interactive\s+user\s+accounts,?\s+this\s+is\s+a\s+finding',
+        r'If\s+output\s+is\s+produced,?\s+and\s+the\s+accounts\s+listed\s+are\s+interactive\s+user\s+accounts,?\s+this\s+is\s+a\s+finding',
         content,
         re.IGNORECASE,
     )
