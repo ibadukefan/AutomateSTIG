@@ -2408,7 +2408,7 @@ def _kubernetes_fixed_file_mode_candidate(rule: dict, stig_id: str) -> dict | No
         return None
     content = rule.get('check_content', '') or ''
     command_matches = list(re.finditer(
-        r'^\s*(?:[$#>]\s*)?stat\s+-c\s+%a\s+(?P<path>/etc/kubernetes/[A-Za-z0-9_.@/-]+)\s*$',
+        r'^\s*(?:[$#>]\s*)?stat\s+-c\s+%a\s+(?P<path>/(?:etc/kubernetes|var/lib/kubelet)/[A-Za-z0-9_.@/-]+)\s*$',
         content,
         re.MULTILINE,
     ))

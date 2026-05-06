@@ -711,16 +711,17 @@
       "vuln_id": "V-242453"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-242456",
+      "check_pack": "generated-candidates/kubernetes_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-242456 from source identifier xccdf_mil.disa.stig_group_V-242456.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-242456r961863_rule",
       "severity": "medium",
       "title": "The Kubernetes kubelet config must have file permissions set to 644 or more restrictive.",
-      "tracking_issue": "TODO-V-242456",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
         "content/disa-corpus/artifacts/de3dcb370a0299c1919ee3219a778649efd50a2b8dfa7af8db2529590a57ac95/U_Kubernetes_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-242456"

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 10,
+  "candidate_checks": 11,
   "cases": [
     {
       "check": {
@@ -159,6 +159,32 @@
     },
     {
       "check": {
+        "command": "find /var/lib/kubelet/config.yaml -perm /133 -exec stat -c \"%a %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes kubelet config must have file permissions set to 644 or more restrictive.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /var/lib/kubelet/config.yaml -perm /133 -exec stat -c \"%a %n\" {} \\;": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /var/lib/kubelet/config.yaml -perm /133 -exec stat -c \"%a %n\" {} \\;": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242456"
+    },
+    {
+      "check": {
         "command": "stat -c %U:%G /var/lib/kubelet/config.yaml| grep -v root:root",
         "type": "command_output"
       },
@@ -267,5 +293,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 10
+  "validated_candidates": 11
 }

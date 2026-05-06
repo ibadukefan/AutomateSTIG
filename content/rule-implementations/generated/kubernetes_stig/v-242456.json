@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /var/lib/kubelet/config.yaml -perm /133 -exec stat -c \"%a %n\" {} \\;",
+      "type": "command_output"
+    },
+    "description": "The Kubernetes kubelet config must have file permissions set to 644 or more restrictive.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-242456"
+  },
   "check_content_excerpt": "Review the permissions of the Kubernetes config.yaml by using the command:\n\nstat -c %a /var/lib/kubelet/config.yaml\n\nIf any of the files are have permissions more permissive than \"644\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the permissions of the config.yaml to \"644\" by executing the command:\n\nchmod 644 /var/lib/kubelet/config.yaml",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242456r961863_rule",
   "severity": "medium",

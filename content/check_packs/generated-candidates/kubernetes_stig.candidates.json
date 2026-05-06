@@ -80,6 +80,19 @@
     },
     {
       "check": {
+        "command": "find /var/lib/kubelet/config.yaml -perm /133 -exec stat -c \"%a %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes kubelet config must have file permissions set to 644 or more restrictive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-242456"
+    },
+    {
+      "check": {
         "command": "stat -c %U:%G /var/lib/kubelet/config.yaml| grep -v root:root",
         "type": "command_output"
       },
