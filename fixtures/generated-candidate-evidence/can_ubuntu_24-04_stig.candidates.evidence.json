@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 177,
+  "candidate_checks": 178,
   "cases": [
     {
       "check": {
@@ -2596,6 +2596,32 @@
     },
     {
       "check": {
+        "command": "ls -L -d /sys/class/net/*/wireless | xargs dirname | xargs basename",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must disable all wireless network adapters.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "ls -L -d /sys/class/net/*/wireless | xargs dirname | xargs basename": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "ls -L -d /sys/class/net/*/wireless | xargs dirname | xargs basename": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270755"
+    },
+    {
+      "check": {
         "command": "find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' -type f -exec stat -c \"%n %a\" {} \\;",
         "type": "command_output"
       },
@@ -4841,5 +4867,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 177
+  "validated_candidates": 178
 }

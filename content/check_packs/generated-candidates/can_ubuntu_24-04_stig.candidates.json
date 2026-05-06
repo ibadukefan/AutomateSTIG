@@ -1321,6 +1321,19 @@
     },
     {
       "check": {
+        "command": "ls -L -d /sys/class/net/*/wireless | xargs dirname | xargs basename",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must disable all wireless network adapters.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-270755"
+    },
+    {
+      "check": {
         "command": "find /var/log -perm /137 ! -name '*[bw]tmp' ! -name '*lastlog' -type f -exec stat -c \"%n %a\" {} \\;",
         "type": "command_output"
       },

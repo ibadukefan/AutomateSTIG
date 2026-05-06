@@ -486,6 +486,26 @@ If a wireless interface is configured and its use on the system is not documente
             'description': 'The Red Hat Enterprise Linux operating system must be configured so that all wireless network adapters are disabled.',
         })
 
+    def test_infers_linux_sysfs_wireless_interface_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-252704',
+            'title': 'The Ubuntu operating system must disable all wireless network adapters.',
+            'check_content': '''Note: This requirement is Not Applicable for systems that do not have physical wireless network radios.
+
+Verify that there are no wireless interfaces configured on the system with the following command:
+
+$ ls -L -d /sys/class/net/*/wireless | xargs dirname | xargs basename
+
+If a wireless interface is configured and has not been documented and approved by the ISSO, this is a finding.''',
+        }, 'Canonical_Ubuntu_20-04_LTS_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-252704',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'ls -L -d /sys/class/net/*/wireless | xargs dirname | xargs basename'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Ubuntu operating system must disable all wireless network adapters.',
+        })
+
     def test_infers_linux_timedatectl_timezone_utc_or_gmt_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-238308',

@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 132,
+  "candidate_checks": 133,
   "cases": [
     {
       "check": {
@@ -3346,6 +3346,32 @@
     },
     {
       "check": {
+        "command": "ls -L -d /sys/class/net/*/wireless | xargs dirname | xargs basename",
+        "type": "command_output"
+      },
+      "description": "The Ubuntu operating system must disable all wireless network adapters.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "ls -L -d /sys/class/net/*/wireless | xargs dirname | xargs basename": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "ls -L -d /sys/class/net/*/wireless | xargs dirname | xargs basename": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-252704"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "KexAlgorithms ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256",
@@ -3644,5 +3670,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/canonical_ubuntu_20-04_lts_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Canonical_Ubuntu_20-04_LTS_STIG",
-  "validated_candidates": 132
+  "validated_candidates": 133
 }

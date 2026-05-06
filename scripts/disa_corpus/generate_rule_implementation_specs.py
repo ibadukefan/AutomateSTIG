@@ -2251,6 +2251,28 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    sysfs_wireless_disabled = (
+        _linux_platform(stig_id)
+        and re.search(
+            r'^\s*[$#>]\s*(?:sudo\s+)?ls\s+-L\s+-d\s+/sys/class/net/\*/wireless\s*\|\s*xargs\s+dirname\s*\|\s*xargs\s+basename\s*$',
+            content,
+            re.MULTILINE,
+        )
+        and re.search(r'\bno\s+wireless\s+interfaces?\s+configured\b', content, re.IGNORECASE)
+        and re.search(
+            r'If\s+a\s+wireless\s+interface\s+is\s+configured\s+and\s+has\s+not\s+been\s+documented\s+and\s+approved\s+by\s+the\s+[^.]+,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+    )
+    if sysfs_wireless_disabled:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'ls -L -d /sys/class/net/*/wireless | xargs dirname | xargs basename'},
+            'expected': {'type': 'equals', 'value': ''},
+            'description': rule.get('title', ''),
+        }
     duplicate_uid_zero_match = re.search(
         r'^\s*[$#>]\s*(?:sudo\s+)?(?P<command>awk\s+-F:\s+["\']\$3\s*==\s*0\s*\{print\s+\$1\}\s*["\']\s+/etc/passwd)\s*$',
         content,
