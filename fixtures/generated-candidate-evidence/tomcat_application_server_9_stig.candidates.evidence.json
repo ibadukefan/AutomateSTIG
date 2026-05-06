@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 9,
+  "candidate_checks": 10,
   "cases": [
     {
       "check": {
@@ -214,6 +214,32 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "Changes to $CATALINA_BASE/conf/ folder must be logged.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "-w $CATALINA_BASE/conf -p wa -k tomcat",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "auditctl -l": "before\n-w $CATALINA_BASE/conf -p wa -k tomcat\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222999"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "Changes to $CATALINA_HOME/lib/ folder must be logged.",
       "evidence_type": "command_output_contains",
       "expected": {
@@ -241,5 +267,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 9
+  "validated_candidates": 10
 }

@@ -1216,7 +1216,9 @@ def _tomcat_auditctl_expected_rule_candidate(rule: dict, stig_id: str) -> dict |
     if not finding_match:
         return None
     expected = ' '.join(finding_match.group('expected').split())
-    if not expected.startswith(f'-w {command_match.group("path")} '):
+    command_path_tail = re.sub(r'^\$CATALINA_(?:HOME|BASE)/', '', command_match.group('path'))
+    expected_path_match = re.match(r'-w\s+\$CATALINA_(?:HOME|BASE)/(?P<tail>\S+)\s+', expected)
+    if not expected_path_match or expected_path_match.group('tail') != command_path_tail:
         return None
     return {
         'vuln_id': rule.get('vuln_id', ''),

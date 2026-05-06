@@ -109,6 +109,19 @@
         "command": "auditctl -l",
         "type": "command_output"
       },
+      "description": "Changes to $CATALINA_BASE/conf/ folder must be logged.",
+      "expected": {
+        "substring": "-w $CATALINA_BASE/conf -p wa -k tomcat",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-222999"
+    },
+    {
+      "check": {
+        "command": "auditctl -l",
+        "type": "command_output"
+      },
       "description": "Changes to $CATALINA_HOME/lib/ folder must be logged.",
       "expected": {
         "substring": "-w $CATALINA_HOME/lib -p wa -k tomcat",
