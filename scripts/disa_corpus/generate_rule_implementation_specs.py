@@ -2328,9 +2328,48 @@ def _kubernetes_pki_mode_candidate(rule: dict, stig_id: str) -> dict | None:
     }
 
 
+def _kubernetes_fixed_file_mode_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'kubernetes' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    command_matches = list(re.finditer(
+        r'^\s*(?:[$#>]\s*)?stat\s+-c\s+%a\s+(?P<path>/etc/kubernetes/[A-Za-z0-9_.@/-]+)\s*$',
+        content,
+        re.MULTILINE,
+    ))
+    if not command_matches:
+        return None
+    mode_match = re.search(
+        r'If\s+any\s+of\s+the\s+files\s+are\s+have\s+permissions\s+more\s+permissive\s+than\s+["“](?P<mode>[0-7]{3})["”],?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if not mode_match:
+        return None
+    paths = [match.group('path') for match in command_matches]
+    if len(paths) != len(set(paths)):
+        return None
+    prohibited_bits = 0o777 & ~int(mode_match.group('mode'), 8)
+    if prohibited_bits == 0:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {
+            'type': 'command_output',
+            'command': f'find {" ".join(paths)} -perm /{prohibited_bits:o} -exec stat -c "%a %n" {{}} \\;',
+        },
+        'expected': {'type': 'equals', 'value': ''},
+        'description': rule.get('title', ''),
+    }
+
+
 def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+    kubernetes_fixed_file_mode_candidate = _kubernetes_fixed_file_mode_candidate(rule, stig_id)
+    if kubernetes_fixed_file_mode_candidate:
+        return kubernetes_fixed_file_mode_candidate
     kubernetes_pki_mode_candidate = _kubernetes_pki_mode_candidate(rule, stig_id)
     if kubernetes_pki_mode_candidate:
         return kubernetes_pki_mode_candidate

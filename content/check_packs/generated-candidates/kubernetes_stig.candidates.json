@@ -54,6 +54,19 @@
     },
     {
       "check": {
+        "command": "find /etc/kubernetes/kubelet.conf -perm /133 -exec stat -c \"%a %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes kubelet KubeConfig must have file permissions set to 644 or more restrictive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-242452"
+    },
+    {
+      "check": {
         "command": "stat -c %U:%G /etc/kubernetes/kubelet.conf| grep -v root:root",
         "type": "command_output"
       },
@@ -77,6 +90,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-242457"
+    },
+    {
+      "check": {
+        "command": "find /etc/kubernetes/admin.conf /etc/kubernetes/scheduler.conf /etc/kubernetes/controller-manager.conf -perm /133 -exec stat -c \"%a %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes admin kubeconfig must have file permissions set to 644 or more restrictive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-242460"
     },
     {
       "check": {

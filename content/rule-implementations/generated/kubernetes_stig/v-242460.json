@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /etc/kubernetes/admin.conf /etc/kubernetes/scheduler.conf /etc/kubernetes/controller-manager.conf -perm /133 -exec stat -c \"%a %n\" {} \\;",
+      "type": "command_output"
+    },
+    "description": "The Kubernetes admin kubeconfig must have file permissions set to 644 or more restrictive.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "generic",
+    "vuln_id": "V-242460"
+  },
   "check_content_excerpt": "Review the permissions of the Kubernetes config files by using the command:\n\nstat -c %a /etc/kubernetes/admin.conf\nstat -c %a /etc/kubernetes/scheduler.conf\nstat -c %a /etc/kubernetes/controller-manager.conf\n\nIf any of the files are have permissions more permissive than \"644\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Change the permissions of the conf files to \"644\" by executing the command:\n\nchmod 644 /etc/kubernetes/admin.conf \nchmod 644 /etc/kubernetes/scheduler.conf\nchmod 644 /etc/kubernetes/controller-manager.conf",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242460r961863_rule",
   "severity": "medium",

@@ -776,6 +776,29 @@ If the command returns any non root:root file permissions, this is a finding.'''
             'description': 'The Kubernetes conf files must be owned by root.',
         })
 
+    def test_infers_kubernetes_multiple_fixed_kubeconfig_mode_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242460',
+            'title': 'The Kubernetes admin kubeconfig must have file permissions set to 644 or more restrictive.',
+            'check_content': '''Review the permissions of the Kubernetes config files by using the command:
+
+stat -c %a /etc/kubernetes/admin.conf
+stat -c %a /etc/kubernetes/scheduler.conf
+stat -c %a /etc/kubernetes/controller-manager.conf
+
+If any of the files are have permissions more permissive than "644", this is a finding.''',
+        }, 'Kubernetes_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-242460',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'find /etc/kubernetes/admin.conf /etc/kubernetes/scheduler.conf /etc/kubernetes/controller-manager.conf -perm /133 -exec stat -c "%a %n" {} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Kubernetes admin kubeconfig must have file permissions set to 644 or more restrictive.',
+        })
+
     def test_infers_kubernetes_pki_key_mode_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-242467',
@@ -2898,7 +2921,7 @@ If "gpgcheck" is not set to "1", this is a finding.'''
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258050',
             'title': 'RHEL 9 SSH daemon must use approved algorithms.',
-            'check_content': '''Verify SSH configuration with the following command:
+            'check_content': r'''Verify SSH configuration with the following command:
 
 $ sudo find /etc/ssh -type f -exec grep -i ciphers {} \\\;
 Ciphers aes256-ctr
