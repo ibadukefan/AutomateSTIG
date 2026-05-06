@@ -2484,6 +2484,62 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'equals', 'value': ''},
             'description': rule.get('title', ''),
         }
+    audit_configuration_ls_match = re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?ls\s+-al\s+/etc/audit/\s+/etc/audit/rules\.d/\s*$',
+        content,
+        re.MULTILINE,
+    )
+    audit_configuration_paths = '/etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf'
+    if audit_configuration_ls_match:
+        if re.search(
+            r'If\s+(?:the\s+)?["“]?/etc/audit/audit\.rules["”]?,\s+["“]?/etc/audit/rules\.d/\*["”]?,\s+or\s+["“]?/etc/audit/auditd\.conf["”]?\s+files?\s+(?:is|are)\s+owned\s+by\s+a\s+user\s+other\s+than\s+["“]root["”],?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        ):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+                'check': {
+                    'type': 'command_output',
+                    'command': f'find {audit_configuration_paths} -type f ! -user root -exec stat -c "%U %n" {{}} \\;',
+                },
+                'expected': {'type': 'equals', 'value': ''},
+                'description': rule.get('title', ''),
+            }
+        if re.search(
+            r'If\s+(?:the\s+)?["“]?/etc/audit/audit\.rules["”]?,\s+["“]?/etc/audit/rules\.d/\*["”]?,\s+or\s+["“]?/etc/audit/auditd\.conf["”]?\s+files?\s+(?:is|are)\s+owned\s+by\s+a\s+group\s+other\s+than\s+["“]root["”],?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        ):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+                'check': {
+                    'type': 'command_output',
+                    'command': f'find {audit_configuration_paths} -type f ! -group root -exec stat -c "%G %n" {{}} \\;',
+                },
+                'expected': {'type': 'equals', 'value': ''},
+                'description': rule.get('title', ''),
+            }
+        audit_configuration_mode_finding = re.search(
+            r'If\s+(?:the\s+)?["“]?/etc/audit/audit\.rules?["”]?,\s+["“]?/etc/audit/rules\.d/\*["”]?,\s+or\s+["“]?/etc/audit/auditd\.conf["”]?\s+files?\s+have\s+a\s+mode\s+more\s+permissive\s+than\s+["“]?(?P<mode>0?[0-7]{3})["”]?,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+        if audit_configuration_mode_finding:
+            mode = int(audit_configuration_mode_finding.group('mode'), 8)
+            prohibited_bits = 0o777 & ~mode
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+                'check': {
+                    'type': 'command_output',
+                    'command': f'find {audit_configuration_paths} -type f -perm /{prohibited_bits:04o} -exec stat -c "%a %n" {{}} \\;',
+                },
+                'expected': {'type': 'equals', 'value': ''},
+                'description': rule.get('title', ''),
+            }
+
     audit_rules_mode_match = re.search(
         r'^\s*[$#>]\s*(?:sudo\s+)?find\s+/etc/audit/rules\.d/\s+/etc/audit/audit\.rules\s+/etc/audit/auditd\.conf\s+-type\s+f\s+-exec\s+stat\s+-c\s+["\']%a\s+%n["\']\s+\{\}\s+\\;\s*$',
         content,

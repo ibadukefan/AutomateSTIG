@@ -2072,46 +2072,49 @@
       "vuln_id": "V-270774"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270775",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270775r1068369_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must be configured so that audit configuration files are not write-accessible by unauthorized users.",
-      "tracking_issue": "TODO-V-270775",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/6abfdf294296013732f9d73914f9d5b969163275f6d19d2d81f59c501f0004a8/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip"
       ],
       "vuln_id": "V-270775"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270776",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270776r1066817_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must permit only authorized accounts to own the audit configuration files.",
-      "tracking_issue": "TODO-V-270776",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/6abfdf294296013732f9d73914f9d5b969163275f6d19d2d81f59c501f0004a8/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip"
       ],
       "vuln_id": "V-270776"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270777",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270777r1066820_rule",
       "severity": "medium",
       "title": "Ubuntu 24.04 LTS must permit only authorized groups to own the audit configuration files.",
-      "tracking_issue": "TODO-V-270777",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/6abfdf294296013732f9d73914f9d5b969163275f6d19d2d81f59c501f0004a8/U_CAN_Ubuntu_24-04_LTS_V1R1_STIG.zip"
       ],
       "vuln_id": "V-270777"

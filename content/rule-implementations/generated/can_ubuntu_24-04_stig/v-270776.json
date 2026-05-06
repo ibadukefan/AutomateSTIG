@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f ! -user root -exec stat -c \"%U %n\" {} \\;",
+      "type": "command_output"
+    },
+    "description": "Ubuntu 24.04 LTS must permit only authorized accounts to own the audit configuration files.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-270776"
+  },
   "check_content_excerpt": "Verify /etc/audit/audit.rules, /etc/audit/rules.d/*, and /etc/audit/auditd.conf files are owned by \"root\" account with the following command: \n \n$ sudo ls -al /etc/audit/ /etc/audit/rules.d/ \n/etc/audit/: \n \n-rw-r-----   1 root root   804 Nov 25 11:01 auditd.conf \n -rw-r-----   1 root root  9128 Dec 27 09:56 audit.rules \n-rw-r-----   1 root root   127 Feb  7  2018 audit-stop.rules \n \ndrwxr-x---   2 root root  4096 Dec 27 09:56 rules.d \n \n/etc/audit/rules.d/: \n\n -rw-r----- 1 root root 244 Dec 27 09:56 audit.rules \n-rw-r----- 1 root root 10357 Dec 27 09:56 stig.rules \n \nIf the /etc/audit/audit.rules, /etc/audit/rules.d/*, or /etc/audit/auditd.conf file is owned by a user other than \"root\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure /etc/audit/audit.rules, /etc/audit/rules.d/*, and /etc/audit/auditd.conf files to be owned by \"root\" user by using the following command: \n \n$ sudo chown root /etc/audit/audit*.{rules,conf} /etc/audit/rules.d/*",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-270776r1066817_rule",
   "severity": "medium",

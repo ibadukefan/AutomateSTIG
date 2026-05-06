@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 181,
+  "candidate_checks": 184,
   "cases": [
     {
       "check": {
@@ -3279,6 +3279,84 @@
     },
     {
       "check": {
+        "command": "find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f -perm /0137 -exec stat -c \"%a %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured so that audit configuration files are not write-accessible by unauthorized users.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f -perm /0137 -exec stat -c \"%a %n\" {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f -perm /0137 -exec stat -c \"%a %n\" {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270775"
+    },
+    {
+      "check": {
+        "command": "find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f ! -user root -exec stat -c \"%U %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must permit only authorized accounts to own the audit configuration files.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f ! -user root -exec stat -c \"%U %n\" {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f ! -user root -exec stat -c \"%U %n\" {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270776"
+    },
+    {
+      "check": {
+        "command": "find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f ! -group root -exec stat -c \"%G %n\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must permit only authorized groups to own the audit configuration files.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f ! -group root -exec stat -c \"%G %n\" {} \\;": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f ! -group root -exec stat -c \"%G %n\" {} \\;": ""
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270777"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/bin/su",
         "pattern": "-a always,exit -F path=/bin/su -F perm=x -F auid>=1000 -F auid!=-1 -k privileged-priv_change",
@@ -4945,5 +5023,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 181
+  "validated_candidates": 184
 }

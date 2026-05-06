@@ -226,6 +226,53 @@ If any cron configuration directory is more permissive than "700", this is a fin
             'description': 'OL 9 cron configuration directories must have a mode of 0700 or less permissive.',
         })
 
+    def test_infers_ubuntu_audit_configuration_file_owner_group_mode_no_output_candidates(self):
+        cases = [
+            (
+                'V-270776',
+                'Ubuntu 24.04 LTS must permit only authorized accounts to own the audit configuration files.',
+                'owned by "root" account',
+                'If the /etc/audit/audit.rules, /etc/audit/rules.d/*, or /etc/audit/auditd.conf file is owned by a user other than "root", this is a finding.',
+                'find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f ! -user root -exec stat -c "%U %n" {} \\;',
+            ),
+            (
+                'V-270777',
+                'Ubuntu 24.04 LTS must permit only authorized groups to own the audit configuration files.',
+                'owned by "root" group',
+                'If the "/etc/audit/audit.rules", "/etc/audit/rules.d/*", or "/etc/audit/auditd.conf" file is owned by a group other than "root", this is a finding.',
+                'find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f ! -group root -exec stat -c "%G %n" {} \\;',
+            ),
+            (
+                'V-270775',
+                'Ubuntu 24.04 LTS must be configured so that audit configuration files are not write-accessible by unauthorized users.',
+                'have a mode of "0640" or less permissive',
+                'If /etc/audit/audit.rule, /etc/audit/rules.d/*, or /etc/audit/auditd.conf files have a mode more permissive than "0640", this is a finding.',
+                'find /etc/audit/rules.d/ /etc/audit/audit.rules /etc/audit/auditd.conf -type f -perm /0137 -exec stat -c "%a %n" {} \\;',
+            ),
+        ]
+        for vuln_id, title, requirement, finding, expected_command in cases:
+            with self.subTest(vuln_id=vuln_id):
+                candidate = mod.infer_candidate_check({
+                    'vuln_id': vuln_id,
+                    'title': title,
+                    'check_content': f'''Verify /etc/audit/audit.rules, /etc/audit/rules.d/*, and /etc/audit/auditd.conf files {requirement} with the following command:
+
+$ sudo ls -al /etc/audit/ /etc/audit/rules.d/
+/etc/audit/:
+-rw-r-----   1 root root   804 Nov 25 11:01 auditd.conf
+-rw-r-----   1 root root  9128 Dec 27 09:56 audit.rules
+-rw-r-----   1 root root   127 Feb  7  2018 audit-stop.rules
+drwxr-x---   2 root root  4096 Dec 27 09:56 rules.d
+
+/etc/audit/rules.d/:
+-rw-r----- 1 root root 244 Dec 27 09:56 audit.rules
+-rw-r----- 1 root root 10357 Dec 27 09:56 stig.rules
+
+{finding}'''
+                }, 'CAN_Ubuntu_24-04_STIG')
+                self.assertEqual(candidate['check'], {'type': 'command_output', 'command': expected_command})
+                self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_linux_audit_rules_file_mode_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-258171',
