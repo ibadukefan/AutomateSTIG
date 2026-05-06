@@ -2102,6 +2102,10 @@ def _ssh_host_key_mode_candidate(rule: dict, stig_id: str) -> dict | None:
         r'^\s*[$#>]\s*(?:sudo\s+)?find\s+/\s+-name\s+["\']\*ssh_host\*key["\']\s*\|\s*xargs\s+ls\s+-lL\s*$',
         content,
         re.MULTILINE,
+    ) or re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?find\s+/etc/ssh\s+-name\s+["\']ssh_host\*key["\']\s+-exec\s+stat\s+-c\s+["\']%a\s+%n["\']\s+\{\}\s+\\;\s*$',
+        content,
+        re.MULTILINE,
     ):
         key_kind = 'private'
         key_glob = 'ssh_host*key'
