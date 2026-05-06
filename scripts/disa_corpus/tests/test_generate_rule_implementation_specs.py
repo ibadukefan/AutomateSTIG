@@ -1990,6 +1990,31 @@ If any key.pub file has a mode more permissive than "0644", this is a finding.''
             'description': 'The RHEL 8 SSH public host key files must have mode 0644 or less permissive.',
         })
 
+    def test_infers_oracle_linux_8_quoted_ssh_public_host_key_mode_ls_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248601',
+            'title': 'The OL 8 SSH public host key files must have mode "0644" or less permissive.',
+            'check_content': '''Verify the SSH public host key files have mode "0644" or less permissive with the following command:
+
+$ sudo ls -l /etc/ssh/*.pub
+
+-rw-r--r-- 1 root wheel 618 Nov 28 06:43 ssh_host_dsa_key.pub
+-rw-r--r-- 1 root wheel 347 Nov 28 06:43 ssh_host_key.pub
+-rw-r--r-- 1 root wheel 238 Nov 28 06:43 ssh_host_rsa_key.pub
+
+If any "key.pub" file has a mode more permissive than "0644", this is a finding.'''
+        }, 'Oracle_Linux_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-248601',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'find /etc/ssh -maxdepth 1 -type f -name \'ssh_host*key.pub\' -perm /133 -exec stat -c "%n %a" {} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The OL 8 SSH public host key files must have mode "0644" or less permissive.',
+        })
+
     def test_infers_rhel7_ssh_private_host_key_mode_find_xargs_ls_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-204597',
