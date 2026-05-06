@@ -3103,6 +3103,31 @@ If "firewalld" is active and is not configured to grant access to specific hosts
         }, 'RHEL_7_STIG')
         self.assertIsNone(candidate)
 
+    def test_infers_tomcat_temp_permissions_find_no_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-222990',
+            'title': '$CATALINA_BASE/temp folder permissions must be set to 750.',
+            'check_content': '''Access the Tomcat server from the command line and execute the following OS command:
+
+sudo find $CATALINA_BASE/temp -follow -maxdepth 0 -type d \\( \\! -perm 750 \\) -ls
+
+If ISSM risk acceptance specifies deviation from requirement based on operational/application needs, this is not a finding if the permissions are set in accordance with the risk acceptance.
+
+If no folders are displayed, this is not a finding.
+
+If results indicate the $CATALINA_BASE/temp folder permissions are not set to 750, this is a finding.'''
+        }, 'Tomcat_Application_Server_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-222990',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': 'find $CATALINA_BASE/temp -follow -maxdepth 0 -type d \\( \\! -perm 750 \\) -ls',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': '$CATALINA_BASE/temp folder permissions must be set to 750.',
+        })
+
     def test_infers_linux_masked_systemctl_status_candidate_as_disabled(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230532',

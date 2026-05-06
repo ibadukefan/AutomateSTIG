@@ -54,6 +54,19 @@
     },
     {
       "check": {
+        "command": "find $CATALINA_BASE/temp -follow -maxdepth 0 -type d \\( \\! -perm 750 \\) -ls",
+        "type": "command_output"
+      },
+      "description": "$CATALINA_BASE/temp folder permissions must be set to 750.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "generic",
+      "vuln_id": "V-222990"
+    },
+    {
+      "check": {
         "command": "find $CATALINA_BASE/work -follow -maxdepth 0 \\( ! -user tomcat -o ! -group tomcat \\) -ls",
         "type": "command_output"
       },

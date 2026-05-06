@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 7,
+  "candidate_checks": 8,
   "cases": [
     {
       "check": {
@@ -107,6 +107,32 @@
     },
     {
       "check": {
+        "command": "find $CATALINA_BASE/temp -follow -maxdepth 0 -type d \\( \\! -perm 750 \\) -ls",
+        "type": "command_output"
+      },
+      "description": "$CATALINA_BASE/temp folder permissions must be set to 750.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "find $CATALINA_BASE/temp -follow -maxdepth 0 -type d \\( \\! -perm 750 \\) -ls": "unexpected"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "find $CATALINA_BASE/temp -follow -maxdepth 0 -type d \\( \\! -perm 750 \\) -ls": ""
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-222990"
+    },
+    {
+      "check": {
         "command": "find $CATALINA_BASE/work -follow -maxdepth 0 \\( ! -user tomcat -o ! -group tomcat \\) -ls",
         "type": "command_output"
       },
@@ -189,5 +215,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/tomcat_application_server_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Tomcat_Application_Server_9_STIG",
-  "validated_candidates": 7
+  "validated_candidates": 8
 }

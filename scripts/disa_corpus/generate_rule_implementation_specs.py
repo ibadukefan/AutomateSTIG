@@ -2494,6 +2494,27 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
                 'description': rule.get('title', ''),
             }
 
+    tomcat_find_permission_match = re.search(
+        r'^\s*(?:sudo\s+)?(?P<command>find\s+\$(?:CATALINA_HOME|CATALINA_BASE)(?:/[A-Za-z0-9_.-]+/?)*\s+-follow\s+-maxdepth\s+0\s+-type\s+d\s+\\\(\s+\\?!\s+-perm\s+(?P<mode>[0-7]{3,4})\s+\\\)\s+-ls)\s*$',
+        content,
+        re.MULTILINE,
+    )
+    if tomcat_find_permission_match:
+        mode = tomcat_find_permission_match.group('mode')
+        folder_pattern = re.escape(tomcat_find_permission_match.group('command').split()[1].rstrip('/'))
+        if re.search(r'If\s+no\s+folders\s+are\s+displayed,?\s+this\s+is\s+not\s+a\s+finding', content, re.IGNORECASE) and re.search(
+            rf'If\s+results\s+indicate\s+the\s+{folder_pattern}/?\s+folder\s+permissions\s+are\s+not\s+set\s+to\s+{re.escape(mode)},?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        ):
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'generic',
+                'check': {'type': 'command_output', 'command': re.sub(r'\s+', ' ', _normalize_command(tomcat_find_permission_match.group('command')))},
+                'expected': {'type': 'equals', 'value': ''},
+                'description': rule.get('title', ''),
+            }
+
     command_matches = list(re.finditer(r'^\s*[$#>]\s*(?P<command>(?:sudo\s+)?(?:/[A-Za-z0-9_./:+-]+|[A-Za-z0-9_.:+-]+)\b[^\n\r]*)$', content, re.MULTILINE))
     rpm_xorg_server_matches = [
         match for match in command_matches
