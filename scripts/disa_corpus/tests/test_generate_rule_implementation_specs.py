@@ -187,6 +187,28 @@ If the "TFTP" application exists, this is a finding.''',
         self.assertEqual(candidate['check']['command'], 'powershell -NoProfile -Command "Test-Path \\\"$env:windir\\System32\\tftp.exe\\\""')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'False'})
 
+    def test_infers_windows_system32_snmp_absent_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-253276',
+            'title': 'Simple Network Management Protocol (SNMP) must not be installed on the system.',
+            'check_content': '''Verify SNMP has not been installed.
+
+Navigate to the Windows\\System32 directory.
+
+If the "SNMP" application exists, this is a finding.''',
+            'fix_text': 'Uninstall "Simple Network Management Protocol (SNMP)" from the system.',
+        }, 'Microsoft_Windows_11_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-253276',
+            'platform': 'windows',
+            'check': {
+                'type': 'command_output',
+                'command': 'powershell -NoProfile -Command "Test-Path \\\"$env:windir\\System32\\snmp.exe\\\""',
+            },
+            'expected': {'type': 'equals', 'value': 'False'},
+            'description': 'Simple Network Management Protocol (SNMP) must not be installed on the system.',
+        })
+
     def test_infers_oracle_linux_pam_pwquality_retry_upper_bound_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-252658',

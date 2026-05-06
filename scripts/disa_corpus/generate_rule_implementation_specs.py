@@ -3887,15 +3887,19 @@ def _windows_system32_absent_application_candidate(rule: dict, stig_id: str) -> 
     if not re.search(r'Navigate\s+to\s+the\s+Windows\\System32\s+directory\.', content, re.IGNORECASE):
         return None
     app_match = re.search(
-        r'If\s+the\s+["“](telnet|tftp)["”]\s+application\s+exists,?\s+this\s+is\s+a\s+finding\.',
+        r'If\s+the\s+["“](telnet|tftp|snmp)["”]\s+application\s+exists,?\s+this\s+is\s+a\s+finding\.',
         content,
         re.IGNORECASE,
     )
     if not app_match:
         return None
     app = app_match.group(1).lower()
-    expected_title = f'The {"Telnet" if app == "telnet" else "TFTP"} Client must not be installed on the system.'
-    if rule.get('title', '').strip().lower() != expected_title.lower():
+    expected_titles = {
+        'telnet': 'The Telnet Client must not be installed on the system.',
+        'tftp': 'The TFTP Client must not be installed on the system.',
+        'snmp': 'Simple Network Management Protocol (SNMP) must not be installed on the system.',
+    }
+    if rule.get('title', '').strip().lower() != expected_titles[app].lower():
         return None
     return {
         'vuln_id': rule.get('vuln_id', ''),

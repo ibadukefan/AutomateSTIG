@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 185,
+  "candidate_checks": 186,
   "cases": [
+    {
+      "check": {
+        "command": "powershell -NoProfile -Command \"Test-Path \\\"$env:windir\\System32\\snmp.exe\\\"\"",
+        "type": "command_output"
+      },
+      "description": "Simple Network Management Protocol (SNMP) must not be installed on the system.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "False"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Test-Path \\\"$env:windir\\System32\\snmp.exe\\\"\"": "unexpected-False"
+        },
+        "platform": "windows"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "powershell -NoProfile -Command \"Test-Path \\\"$env:windir\\System32\\snmp.exe\\\"\"": "False"
+        },
+        "platform": "windows"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-253276"
+    },
     {
       "check": {
         "command": "powershell -NoProfile -Command \"Test-Path \\\"$env:windir\\System32\\telnet.exe\\\"\"",
@@ -4995,5 +5021,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Microsoft_Windows_11_STIG",
-  "validated_candidates": 185
+  "validated_candidates": 186
 }
