@@ -2504,6 +2504,30 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
                 'expected': {'type': 'equals', 'value': ''},
                 'description': rule.get('title', ''),
             }
+    journal_find_mode_match = re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?find\s+/run/log/journal\s+/var/log/journal\s+-type\s+(?P<kind>[df])\s+-exec\s+stat\s+-c\s+["\']%n\s+%a["\']\s+\{\}\s+\\;\s*$',
+        content,
+        re.MULTILINE,
+    )
+    if journal_find_mode_match:
+        finding = re.search(
+            r'If\s+any\s+output\s+returned\s+has\s+a\s+permission\s+(?:set\s+)?greater\s+than\s+["“]?(?P<mode>[0-7]{3,4})["”]?,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+        if finding:
+            mode = int(finding.group('mode'), 8)
+            prohibited_bits = 0o7777 & ~mode
+            return {
+                'vuln_id': rule.get('vuln_id', ''),
+                'platform': 'linux' if _linux_platform(stig_id) else 'generic',
+                'check': {
+                    'type': 'command_output',
+                    'command': f'find /run/log/journal /var/log/journal -type {journal_find_mode_match.group("kind")} -perm /{prohibited_bits:o} -exec stat -c "%n %a" {{}} \\;',
+                },
+                'expected': {'type': 'equals', 'value': ''},
+                'description': rule.get('title', ''),
+            }
     journal_find_stat_match = re.search(
         r'^\s*[$#>]\s*(?:sudo\s+)?find\s+/run/log/journal\s+/var/log/journal\s+-type\s+(?P<kind>[df])\s+-exec\s+stat\s+-c\s+["\']%n\s+%(?P<field>[UG])["\']\s+\{\}\s+\\;\s*$',
         content,

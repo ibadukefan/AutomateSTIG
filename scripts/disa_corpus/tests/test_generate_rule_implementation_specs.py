@@ -2544,6 +2544,25 @@ If any output returned is not group-owned by "systemd-journal", this is a findin
         })
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
 
+    def test_infers_journal_find_stat_mode_negative_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270757',
+            'title': 'Ubuntu 24.04 LTS must generate system journal entries without revealing information that could be exploited by adversaries.',
+            'check_content': '''Verify the /run/log/journal and /var/log/journal directories have permissions set to "2640" or less permissive with the following command:
+
+$ sudo find /run/log/journal /var/log/journal  -type d -exec stat -c "%n %a" {} \\;
+/run/log/journal 2640
+/var/log/journal 2640
+/var/log/journal/d5745ad455d34fb8b6f78be37c1fcd3e 2640
+
+If any output returned has a permission set greater than 2640, this is a finding.'''
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate['check'], {
+            'type': 'command_output',
+            'command': 'find /run/log/journal /var/log/journal -type d -perm /5137 -exec stat -c "%n %a" {} \\;',
+        })
+        self.assertEqual(candidate['expected'], {'type': 'equals', 'value': ''})
+
     def test_infers_sshd_config_find_stat_owner_negative_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-257998',
