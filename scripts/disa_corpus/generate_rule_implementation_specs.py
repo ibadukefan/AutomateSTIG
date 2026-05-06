@@ -1196,6 +1196,31 @@ def _audit_rules_file_expected_rule_candidate(rule: dict) -> dict | None:
     }
 
 
+def _sles_firewalld_status_enabled_active_candidate(rule: dict) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    title = rule.get('title', '') or ''
+    lower = f"{title}\n{content}".lower()
+    if 'suse' not in lower and 'sles' not in lower:
+        return None
+    if not re.search(r'\bsystemctl\s+status\s+firewalld\.service\b', content):
+        return None
+    if not re.search(r'if\s+the\s+service\s+is\s+not\s+enabled,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    if not re.search(r'if\s+the\s+service\s+is\s+not\s+active,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    loaded = re.search(r'^\s*Loaded:\s+loaded \([^\n;]+/firewalld\.service; enabled;[^\n]+\)', content, re.MULTILINE)
+    active = re.search(r'^\s*Active:\s+active \(running\)(?:\s|$)[^\n]*', content, re.MULTILINE)
+    if not loaded or not active:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': 'systemctl status firewalld.service'},
+        'expected': {'type': 'contains', 'substring': f"{loaded.group(0).strip()}\n   Active: active (running)"},
+        'description': rule.get('title', ''),
+    }
+
+
 def _service_candidate(rule: dict) -> dict | None:
     content = rule.get('check_content', '') or ''
     title = rule.get('title', '') or ''
@@ -3432,7 +3457,7 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         return tomcat_auditctl_candidate
 
     if _linux_platform(stig_id):
-        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _dconf_media_automount_literal_candidate, _firewalld_target_drop_candidate, _sshd_multi_directive_egrep_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _auditctl_expected_rule_candidate, _audit_rules_file_expected_rule_candidate, _service_candidate, _aide_audit_tool_selection_candidate, _file_permission_candidate):
+        for infer in (_sysctl_candidate, _package_candidate, _file_content_candidate, _dconf_media_automount_literal_candidate, _sles_firewalld_status_enabled_active_candidate, _firewalld_target_drop_candidate, _sshd_multi_directive_egrep_candidate, _grep_expected_line_candidate, _sshd_config_candidate, _auditctl_expected_rule_candidate, _audit_rules_file_expected_rule_candidate, _service_candidate, _aide_audit_tool_selection_candidate, _file_permission_candidate):
             candidate = infer(rule)
             if candidate:
                 return candidate

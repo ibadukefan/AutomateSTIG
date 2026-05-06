@@ -1746,6 +1746,36 @@ If "mailx" is not installed, this is a finding.'''
         self.assertEqual(candidate['check'], {'type': 'package', 'name': 'mailx', 'should_be_installed': True})
         self.assertEqual(candidate['expected'], {'type': 'is_true'})
 
+    def test_infers_sles_firewalld_status_enabled_and_active_literal_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-234846',
+            'title': 'The SUSE operating system must have a firewall system installed to immediately disconnect or disable remote access to the whole operating system.',
+            'check_content': '''Verify "firewalld" is configured to protect the SUSE operating system.
+
+Run the following command:
+
+> systemctl status firewalld.service
+ firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: disabled)
+   Active: active (running) since Wed 2019-11-06 10:58:11 CET; 24h ago
+     Docs: man:firewalld(1)
+ Main PID: 1105 (firewalld)
+    Tasks: 2 (limit: 4915)
+   CGroup: /system.slice/firewalld.service
+           ??1105 /usr/bin/python3 -Es /usr/sbin/firewalld --nofork --nopid
+
+If the service is not enabled, this is a finding.
+
+If the service is not active, this is a finding.''',
+        }, 'SLES_15_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-234846',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'systemctl status firewalld.service'},
+            'expected': {'type': 'contains', 'substring': 'Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: disabled)\n   Active: active (running)'},
+            'description': 'The SUSE operating system must have a firewall system installed to immediately disconnect or disable remote access to the whole operating system.',
+        })
+
     def test_infers_linux_firewalld_public_target_drop_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271473',

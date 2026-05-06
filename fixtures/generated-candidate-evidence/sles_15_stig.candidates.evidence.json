@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 159,
+  "candidate_checks": 160,
   "cases": [
     {
       "check": {
@@ -447,6 +447,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-234845"
+    },
+    {
+      "check": {
+        "command": "systemctl status firewalld.service",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must have a firewall system installed to immediately disconnect or disable remote access to the whole operating system.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: disabled)\n   Active: active (running)",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "systemctl status firewalld.service": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "systemctl status firewalld.service": "before\nLoaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: disabled)\n   Active: active (running)\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-234846"
     },
     {
       "check": {
@@ -4208,5 +4234,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/sles_15_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "SLES_15_STIG",
-  "validated_candidates": 159
+  "validated_candidates": 160
 }

@@ -228,6 +228,19 @@
     },
     {
       "check": {
+        "command": "systemctl status firewalld.service",
+        "type": "command_output"
+      },
+      "description": "The SUSE operating system must have a firewall system installed to immediately disconnect or disable remote access to the whole operating system.",
+      "expected": {
+        "substring": "Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: disabled)\n   Active: active (running)",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-234846"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/chrony.conf",
         "pattern": "server 0.us.pool.ntp.mil maxpoll 16",
