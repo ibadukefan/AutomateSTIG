@@ -1,6 +1,162 @@
 {
-  "candidate_checks": 3,
+  "candidate_checks": 9,
   "cases": [
+    {
+      "check": {
+        "command": "psql -c \"SHOW shared_preload_libraries\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records for all privileged activities or other system-level access.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "pgaudit",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW shared_preload_libraries\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW shared_preload_libraries\"": "before\npgaudit\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233565"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW shared_preload_libraries\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must be able to generate audit records when security objects are accessed.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "pgaudit",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW shared_preload_libraries\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW shared_preload_libraries\"": "before\npgaudit\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233567"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW shared_preload_libraries\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when privileges/permissions are deleted.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "pgaudit",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW shared_preload_libraries\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW shared_preload_libraries\"": "before\npgaudit\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233568"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW shared_preload_libraries\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when unsuccessful attempts to delete security objects occur.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "pgaudit",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW shared_preload_libraries\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW shared_preload_libraries\"": "before\npgaudit\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233570"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW shared_preload_libraries\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when privileges/permissions are modified.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "pgaudit",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW shared_preload_libraries\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW shared_preload_libraries\"": "before\npgaudit\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233571"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW shared_preload_libraries\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when categories of information (e.g., classification levels/security levels) is modified.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "pgaudit",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW shared_preload_libraries\"": "before\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "psql -c \"SHOW shared_preload_libraries\"": "before\npgaudit\nafter\n"
+        },
+        "platform": "generic"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-233574"
+    },
     {
       "check": {
         "command": "cat /proc/sys/crypto/fips_enabled",
@@ -85,5 +241,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Crunchy_Data_PostgreSQL_STIG",
-  "validated_candidates": 3
+  "validated_candidates": 9
 }

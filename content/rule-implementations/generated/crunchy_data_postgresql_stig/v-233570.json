@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "psql -c \"SHOW shared_preload_libraries\"",
+      "type": "command_output"
+    },
+    "description": "PostgreSQL must generate audit records when unsuccessful attempts to delete security objects occur.",
+    "expected": {
+      "substring": "pgaudit",
+      "type": "contains"
+    },
+    "platform": "generic",
+    "vuln_id": "V-233570"
+  },
   "check_content_excerpt": "First, as the database administrator, verify pgaudit is enabled by running the following SQL:\n\n$ sudo su - postgres\n$ psql -c \"SHOW shared_preload_libraries\"\n\nIf the output does not contain pgaudit, this is a finding.\n\nNext, verify that role, read, write, and ddl auditing are enabled:\n\n$ psql -c \"SHOW pgaudit.log\"\n\nIf the output does not contain role, read, write, and ddl, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "substring": "pgaudit",
+    "type": "contains"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nConfigure PostgreSQL to produce audit records when unsuccessful attempts to delete security objects occur.\n\nAll errors and denials are logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.\n\nWith pgaudit installed the following configurations can be made:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nAdd the following parameters (or edit existing parameters):\n\npgaudit.log='ddl, role, read, write'\n\nNow, as the system administrator, reload the server with the new configuration:\n\n$ sudo systemctl reload postgresql-${PGVER?}",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-233570r961818_rule",
   "severity": "medium",

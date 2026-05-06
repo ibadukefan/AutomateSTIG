@@ -797,16 +797,17 @@
       "vuln_id": "V-233564"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-233565",
+      "check_pack": "generated-candidates/crunchy_data_postgresql_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-233565r961827_rule",
       "severity": "medium",
       "title": "PostgreSQL must generate audit records for all privileged activities or other system-level access.",
-      "tracking_issue": "TODO-V-233565",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233565"
@@ -827,31 +828,33 @@
       "vuln_id": "V-233566"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-233567",
+      "check_pack": "generated-candidates/crunchy_data_postgresql_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-233567r961791_rule",
       "severity": "medium",
       "title": "PostgreSQL must be able to generate audit records when security objects are accessed.",
-      "tracking_issue": "TODO-V-233567",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233567"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-233568",
+      "check_pack": "generated-candidates/crunchy_data_postgresql_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-233568r961812_rule",
       "severity": "medium",
       "title": "PostgreSQL must generate audit records when privileges/permissions are deleted.",
-      "tracking_issue": "TODO-V-233568",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233568"
@@ -872,31 +875,33 @@
       "vuln_id": "V-233569"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-233570",
+      "check_pack": "generated-candidates/crunchy_data_postgresql_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-233570r961818_rule",
       "severity": "medium",
       "title": "PostgreSQL must generate audit records when unsuccessful attempts to delete security objects occur.",
-      "tracking_issue": "TODO-V-233570",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233570"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-233571",
+      "check_pack": "generated-candidates/crunchy_data_postgresql_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-233571r961800_rule",
       "severity": "medium",
       "title": "PostgreSQL must generate audit records when privileges/permissions are modified.",
-      "tracking_issue": "TODO-V-233571",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233571"
@@ -932,16 +937,17 @@
       "vuln_id": "V-233573"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-233574",
+      "check_pack": "generated-candidates/crunchy_data_postgresql_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-233574r961809_rule",
       "severity": "medium",
       "title": "PostgreSQL must generate audit records when categories of information (e.g., classification levels/security levels) is modified.",
-      "tracking_issue": "TODO-V-233574",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/crunchy_data_postgresql_stig.candidates.json",
         "content/disa-corpus/artifacts/e585ea8c7457e199548f80d1df6790752a37f541821aae87198c148f5f5ce68e/U_CD_PGSQL_V3R1_STIG.zip"
       ],
       "vuln_id": "V-233574"
