@@ -2378,16 +2378,17 @@
       "vuln_id": "V-248673"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-248678",
+      "check_pack": "generated-candidates/oracle_linux_8_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-248678r1015045_rule",
       "severity": "medium",
       "title": "OL 8 must enable a user session lock until that user reestablishes access using established identification and authentication procedures for command line sessions.",
-      "tracking_issue": "TODO-V-248678",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
         "content/disa-corpus/artifacts/30c723dcad10a9a589e86de471d788799875cb3b296e60629968cbf215ffc002/U_Oracle_Linux_8_V2R4_STIG.zip"
       ],
       "vuln_id": "V-248678"

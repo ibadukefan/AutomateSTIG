@@ -2059,6 +2059,21 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     ssh_private_host_key_mode_candidate = _ssh_private_host_key_mode_candidate(rule, stig_id)
     if ssh_private_host_key_mode_candidate:
         return ssh_private_host_key_mode_candidate
+    vlock_binary_literal = (
+        _linux_platform(stig_id)
+        and re.search(r'\bVerify\s+[^.\n]*\bhas\s+the\s+["“]vlock["”]\s+package\s+installed\b', content, re.IGNORECASE)
+        and re.search(r'^\s*[$#>]\s*(?:sudo\s+)?grep\s+vlock\s+/usr/bin/\*\s*$', content, re.MULTILINE)
+        and re.search(r'^\s*Binary\s+file\s+/usr/bin/vlock\s+matches\s*$', content, re.MULTILINE)
+        and re.search(r'If\s+["“]vlock["”]\s+is\s+not\s+installed,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    )
+    if vlock_binary_literal:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'grep vlock /usr/bin/*'},
+            'expected': {'type': 'contains', 'substring': 'Binary file /usr/bin/vlock matches'},
+            'description': rule.get('title', ''),
+        }
     snmp_default_community_strings = (
         _linux_platform(stig_id)
         and re.search(r'^\s*[$#>]\s*grep\s+public\s+/etc/snmp/snmpd\.conf\s*$', content, re.MULTILINE)

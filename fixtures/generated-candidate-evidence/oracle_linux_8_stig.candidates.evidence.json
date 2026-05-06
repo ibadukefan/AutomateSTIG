@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 324,
+  "candidate_checks": 325,
   "cases": [
     {
       "check": {
@@ -3133,6 +3133,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-248673"
+    },
+    {
+      "check": {
+        "command": "grep vlock /usr/bin/*",
+        "type": "command_output"
+      },
+      "description": "OL 8 must enable a user session lock until that user reestablishes access using established identification and authentication procedures for command line sessions.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "Binary file /usr/bin/vlock matches",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep vlock /usr/bin/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep vlock /usr/bin/*": "before\nBinary file /usr/bin/vlock matches\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-248678"
     },
     {
       "check": {
@@ -8818,5 +8844,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_8_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_8_STIG",
-  "validated_candidates": 324
+  "validated_candidates": 325
 }

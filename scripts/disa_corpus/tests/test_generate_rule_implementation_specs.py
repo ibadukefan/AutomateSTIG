@@ -4459,5 +4459,26 @@ If the option "--hostname-override" is present, this is a finding.''',
             'description': 'Kubernetes Kubelet must deny hostname override.',
         })
 
+
+    def test_infers_oracle_linux_vlock_binary_literal_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-248678',
+            'title': 'OL 8 must enable a user session lock until that user reestablishes access using established identification and authentication procedures for command line sessions.',
+            'check_content': '''Verify OL 8 has the "vlock" package installed by running the following command:
+
+$ sudo grep vlock /usr/bin/*
+
+Binary file /usr/bin/vlock matches
+
+If "vlock" is not installed, this is a finding.''',
+            'fix_text': '''Install the "vlock" package, if it is not already installed, by running the following command:
+
+$ sudo yum install kbd.x86_64''',
+        }, 'Oracle_Linux_8_STIG')
+        self.assertIsNotNone(candidate)
+        self.assertEqual(candidate['platform'], 'linux')
+        self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep vlock /usr/bin/*'})
+        self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Binary file /usr/bin/vlock matches'})
+
 if __name__ == '__main__':
     unittest.main()

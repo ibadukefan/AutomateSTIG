@@ -1580,6 +1580,19 @@
     },
     {
       "check": {
+        "command": "grep vlock /usr/bin/*",
+        "type": "command_output"
+      },
+      "description": "OL 8 must enable a user session lock until that user reestablishes access using established identification and authentication procedures for command line sessions.",
+      "expected": {
+        "substring": "Binary file /usr/bin/vlock matches",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-248678"
+    },
+    {
+      "check": {
         "command": "grep -r removal-action /etc/dconf/db/*",
         "type": "command_output"
       },
