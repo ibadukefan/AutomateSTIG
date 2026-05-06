@@ -158,6 +158,19 @@
     },
     {
       "check": {
+        "command": "$esxcli = Get-EsxCli -v2; $esxcli.system.syslog.config.get.Invoke() | Select-Object -ExpandProperty LocalLogOutputIsPersistent",
+        "type": "command_output"
+      },
+      "description": "The ESXi host must enable a persistent log location for all locally stored logs.",
+      "expected": {
+        "type": "equals",
+        "value": "true"
+      },
+      "platform": "generic",
+      "vuln_id": "V-256408"
+    },
+    {
+      "check": {
         "command": "Get-VMHost | Get-AdvancedSetting -Name UserVars.ESXiVPsDisabledProtocols | Select-Object -ExpandProperty Value",
         "type": "command_output"
       },

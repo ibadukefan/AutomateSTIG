@@ -967,6 +967,40 @@ If the Directory Services Type is not set to "Active Directory", this is a findi
             'description': 'The ESXi host must use Active Directory for local user authentication.',
         })
 
+    def test_infers_esxi_syslog_persistent_log_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-256408',
+            'title': 'The ESXi host must enable a persistent log location for all locally stored logs.',
+            'check_content': '''From the vSphere Client, go to Hosts and Clusters.
+
+Select the ESXi Host >> Configure >> System >> Advanced System Settings.
+
+Select the "Syslog.global.logDir" value and verify it is set to a persistent location.
+
+If the value of the setting is "[] /scratch/logs", verify the advanced setting "ScratchConfig.CurrentScratchLocation" is not set to "/tmp/scratch". This is a nonpersistent location.
+
+If "Syslog.global.logDir" is not configured to a persistent location, this is a finding.
+
+or
+
+From a PowerCLI command prompt while connected to the ESXi host, run the following commands:
+
+$esxcli = Get-EsxCli -v2
+$esxcli.system.syslog.config.get.Invoke() | Select LocalLogOutput,LocalLogOutputIsPersistent
+
+If the "LocalLogOutputIsPersistent" value is not true, this is a finding.'''
+        }, 'VMW_vSphere_7-0_ESXi_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-256408',
+            'platform': 'generic',
+            'check': {
+                'type': 'command_output',
+                'command': '$esxcli = Get-EsxCli -v2; $esxcli.system.syslog.config.get.Invoke() | Select-Object -ExpandProperty LocalLogOutputIsPersistent',
+            },
+            'expected': {'type': 'equals', 'value': 'true'},
+            'description': 'The ESXi host must enable a persistent log location for all locally stored logs.',
+        })
+
     def test_infers_esxi_advanced_setting_exact_value_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-256379',

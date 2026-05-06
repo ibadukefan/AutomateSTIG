@@ -2094,6 +2094,36 @@ def _esxi_active_directory_authentication_candidate(rule: dict, stig_id: str) ->
     }
 
 
+def _esxi_syslog_persistent_log_output_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'esxi' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    if not re.search(r'(?m)^\s*\$esxcli\s*=\s*Get-EsxCli\s+-v2\s*$', content):
+        return None
+    if not re.search(
+        r'(?m)^\s*\$esxcli\.system\.syslog\.config\.get\.Invoke\(\)\s*\|\s*Select\s+LocalLogOutput\s*,\s*LocalLogOutputIsPersistent\s*$',
+        content,
+        re.IGNORECASE,
+    ):
+        return None
+    if not re.search(
+        r'If\s+the\s+["“]LocalLogOutputIsPersistent["”]\s+value\s+is\s+not\s+true,?\s+this\s+is\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    ):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'generic',
+        'check': {
+            'type': 'command_output',
+            'command': '$esxcli = Get-EsxCli -v2; $esxcli.system.syslog.config.get.Invoke() | Select-Object -ExpandProperty LocalLogOutputIsPersistent',
+        },
+        'expected': {'type': 'equals', 'value': 'true'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _esxi_advanced_setting_exact_value_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'esxi' not in stig_id.lower():
         return None
@@ -3756,6 +3786,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     esxi_active_directory_authentication_candidate = _esxi_active_directory_authentication_candidate(rule, stig_id)
     if esxi_active_directory_authentication_candidate:
         return esxi_active_directory_authentication_candidate
+
+    esxi_syslog_persistent_log_output_candidate = _esxi_syslog_persistent_log_output_candidate(rule, stig_id)
+    if esxi_syslog_persistent_log_output_candidate:
+        return esxi_syslog_persistent_log_output_candidate
 
     esxi_advanced_setting_candidate = _esxi_advanced_setting_exact_value_candidate(rule, stig_id)
     if esxi_advanced_setting_candidate:
