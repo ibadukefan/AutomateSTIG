@@ -2015,6 +2015,28 @@ If any "key.pub" file has a mode more permissive than "0644", this is a finding.
             'description': 'The OL 8 SSH public host key files must have mode "0644" or less permissive.',
         })
 
+    def test_infers_rhel9_gsettings_uint32_lock_delay_upper_bound_with_missing_last_phrase(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-258025',
+            'title': 'RHEL 9 must initiate a session lock for graphical user interfaces when the screensaver is activated.',
+            'check_content': '''Verify RHEL 9 initiates a session lock for graphical user interfaces when the screensaver is activated with the following command:
+
+Note: This requirement assumes the use of the RHEL 9 default graphical user interface, the GNOME desktop environment. If the system does not have any graphical user interface installed, this requirement is Not Applicable.
+
+$ gsettings get org.gnome.desktop.screensaver lock-delay
+
+uint32 5
+
+If the "uint32" setting is not set to "5" or less, or is missing, this is a finding.'''
+        }, 'RHEL_9_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-258025',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'gsettings get org.gnome.desktop.screensaver lock-delay'},
+            'expected': {'type': 'matches', 'pattern': '^uint32 [1-5]$'},
+            'description': 'RHEL 9 must initiate a session lock for graphical user interfaces when the screensaver is activated.',
+        })
+
     def test_infers_rhel7_ssh_private_host_key_mode_find_xargs_ls_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-204597',

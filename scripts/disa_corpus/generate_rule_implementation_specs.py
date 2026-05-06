@@ -1402,7 +1402,7 @@ def _gsettings_candidate(rule: dict, stig_id: str) -> dict | None:
                     re.IGNORECASE,
                 )
                 or re.search(
-                    rf'If\s+the\s+["“]?uint32["”]?\s+setting\s+is\s+missing,\s+or\s+is\s+not\s+set\s+to\s+["“]?{maximum}["”]?\s+or\s+less',
+                    rf'If\s+the\s+["“]?uint32["”]?\s+setting\s+is\s+(?:missing,\s+or\s+is\s+)?not\s+set\s+to\s+["“]?{maximum}["”]?\s+or\s+less(?:,\s+or\s+is\s+missing)?',
                     content,
                     re.IGNORECASE,
                 )

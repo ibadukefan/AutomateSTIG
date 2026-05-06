@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 416,
+  "candidate_checks": 417,
   "cases": [
     {
       "check": {
@@ -5873,6 +5873,32 @@
     },
     {
       "check": {
+        "command": "gsettings get org.gnome.desktop.screensaver lock-delay",
+        "type": "command_output"
+      },
+      "description": "OL 9 must initiate a session lock for graphical user interfaces when the screensaver is activated.",
+      "evidence_type": "command_output_matches",
+      "expected": {
+        "pattern": "^uint32 [1-5]$",
+        "type": "matches"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.desktop.screensaver lock-delay": "uint32 6"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "gsettings get org.gnome.desktop.screensaver lock-delay": "uint32 5"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-271673"
+    },
+    {
+      "check": {
         "command": "gsettings get org.gnome.desktop.session idle-delay",
         "type": "command_output"
       },
@@ -11550,5 +11576,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/oracle_linux_9_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Oracle_Linux_9_STIG",
-  "validated_candidates": 416
+  "validated_candidates": 417
 }
