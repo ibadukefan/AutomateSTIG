@@ -1874,6 +1874,33 @@ If any key.pub file has a mode more permissive than "0644", this is a finding.''
             'description': 'The RHEL 8 SSH public host key files must have mode 0644 or less permissive.',
         })
 
+    def test_infers_rhel7_ssh_private_host_key_mode_find_xargs_ls_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-204597',
+            'title': 'The Red Hat Enterprise Linux operating system must be configured so that the SSH private host key files have mode 0640 or less permissive.',
+            'check_content': '''Verify the SSH private host key files have mode "0640" or less permissive.
+
+The following command will find all SSH private key files on the system and list their modes:
+
+# find / -name '*ssh_host*key' | xargs ls -lL
+
+-rw-r----- 1 root ssh_keys 112 Apr 1 11:59 ssh_host_dsa_key
+-rw-r----- 1 root ssh_keys 202 Apr 1 11:59 ssh_host_key
+-rw-r----- 1 root ssh_keys 352 Apr 1 11:59 ssh_host_rsa_key
+
+If any file has a mode more permissive than "0640", this is a finding.'''
+        }, 'RHEL_7_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-204597',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'find /etc/ssh -maxdepth 1 -type f -name \'ssh_host*key\' -perm /137 -exec stat -c "%n %a" {} \\;',
+            },
+            'expected': {'type': 'equals', 'value': ''},
+            'description': 'The Red Hat Enterprise Linux operating system must be configured so that the SSH private host key files have mode 0640 or less permissive.',
+        })
+
     def test_infers_oracle_linux_ssh_private_host_key_mode_underscore_glob_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-271771',

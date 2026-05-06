@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "find /etc/ssh -maxdepth 1 -type f -name 'ssh_host*key' -perm /137 -exec stat -c \"%n %a\" {} \\;",
+      "type": "command_output"
+    },
+    "description": "The Red Hat Enterprise Linux operating system must be configured so that the SSH private host key files have mode 0640 or less permissive.",
+    "expected": {
+      "type": "equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-204597"
+  },
   "check_content_excerpt": "Verify the SSH private host key files have mode \"0640\" or less permissive.\n\nThe following command will find all SSH private key files on the system and list their modes:\n\n     # find / -name '*ssh_host*key' | xargs ls -lL\n\n     -rw-r----- 1 root ssh_keys 112 Apr 1 11:59 ssh_host_dsa_key\n     -rw-r----- 1 root ssh_keys 202 Apr 1 11:59 ssh_host_key\n     -rw-r----- 1 root ssh_keys 352 Apr 1 11:59 ssh_host_rsa_key\n\nIf any file has a mode more permissive than \"0640\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "linux_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Configure the mode of SSH private host key files under \"/etc/ssh\" to \"0640\" with the following command:\n\n# chmod 0640 /path/to/file/ssh_host*key",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-204597r991589_rule",
   "severity": "medium",

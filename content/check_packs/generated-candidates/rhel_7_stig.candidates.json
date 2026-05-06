@@ -1250,6 +1250,19 @@
     },
     {
       "check": {
+        "command": "find /etc/ssh -maxdepth 1 -type f -name 'ssh_host*key' -perm /137 -exec stat -c \"%n %a\" {} \\;",
+        "type": "command_output"
+      },
+      "description": "The Red Hat Enterprise Linux operating system must be configured so that the SSH private host key files have mode 0640 or less permissive.",
+      "expected": {
+        "type": "equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-204597"
+    },
+    {
+      "check": {
         "is_regex": false,
         "path": "/etc/ssh/sshd_config",
         "pattern": "GSSAPIAuthentication no",
