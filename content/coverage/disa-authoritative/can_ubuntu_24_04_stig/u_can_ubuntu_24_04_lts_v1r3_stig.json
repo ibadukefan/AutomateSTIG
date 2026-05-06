@@ -1003,16 +1003,17 @@
       "vuln_id": "V-270707"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-270708",
+      "check_pack": "generated-candidates/can_ubuntu_24-04_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-270708r1066613_rule",
       "severity": "high",
       "title": "Ubuntu 24.04 LTS must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements.",
-      "tracking_issue": "TODO-V-270708",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
         "content/disa-corpus/artifacts/46b6503794ce48b93d54a118e15606ad665da9164bf94ede9f1669481e7f25ac/U_CAN_Ubuntu_24-04_LTS_V1R3_STIG.zip"
       ],
       "vuln_id": "V-270708"

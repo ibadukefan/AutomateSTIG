@@ -2104,6 +2104,24 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
     ssh_private_host_key_mode_candidate = _ssh_private_host_key_mode_candidate(rule, stig_id)
     if ssh_private_host_key_mode_candidate:
         return ssh_private_host_key_mode_candidate
+    sshd_x11_forwarding_no_literal = (
+        _linux_platform(stig_id)
+        and re.search(r'^\s*[$#>]\s*(?:sudo\s+)?grep\s+-ir\s+x11forwarding\s+/etc/ssh/sshd_config\*\s*\|\s*grep\s+-v\s+["“]\^#["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(r'^\s*X11Forwarding\s+no\s*$', content, re.MULTILINE | re.IGNORECASE)
+        and re.search(
+            r'If\s+the\s+["“]X11Forwarding["”]\s+keyword\s+is\s+set\s+to\s+["“]yes["”][^.]*?,\s+is\s+missing,\s+or\s+multiple\s+conflicting\s+results\s+are\s+returned,?\s+this\s+is\s+a\s+finding',
+            content,
+            re.IGNORECASE,
+        )
+    )
+    if sshd_x11_forwarding_no_literal:
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'grep -ir x11forwarding /etc/ssh/sshd_config* | grep -v "^#"'},
+            'expected': {'type': 'equals', 'value': 'X11Forwarding no'},
+            'description': rule.get('title', ''),
+        }
     vlock_binary_literal = (
         _linux_platform(stig_id)
         and re.search(r'\bVerify\s+[^.\n]*\bhas\s+the\s+["“]vlock["”]\s+package\s+installed\b', content, re.IGNORECASE)

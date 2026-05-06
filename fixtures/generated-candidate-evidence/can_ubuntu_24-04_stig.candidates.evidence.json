@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 176,
+  "candidate_checks": 177,
   "cases": [
     {
       "check": {
@@ -1474,6 +1474,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-270707"
+    },
+    {
+      "check": {
+        "command": "grep -ir x11forwarding /etc/ssh/sshd_config* | grep -v \"^#\"",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements.",
+      "evidence_type": "command_output_equals",
+      "expected": {
+        "type": "equals",
+        "value": "X11Forwarding no"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -ir x11forwarding /etc/ssh/sshd_config* | grep -v \"^#\"": "unexpected-X11Forwarding no"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -ir x11forwarding /etc/ssh/sshd_config* | grep -v \"^#\"": "X11Forwarding no"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-270708"
     },
     {
       "check": {
@@ -4815,5 +4841,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/can_ubuntu_24-04_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "CAN_Ubuntu_24-04_STIG",
-  "validated_candidates": 176
+  "validated_candidates": 177
 }

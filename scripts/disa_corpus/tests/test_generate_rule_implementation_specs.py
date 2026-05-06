@@ -247,6 +247,25 @@ If this command produces any file(s), this is a finding.''',
             'description': 'RHEL 8 must prevent system daemons from using Kerberos for authentication.',
         })
 
+    def test_infers_linux_sshd_x11_forwarding_no_literal_output_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-270708',
+            'title': 'Ubuntu 24.04 LTS must be configured so that remote X connections are disabled.',
+            'check_content': '''Verify that X11Forwarding is disabled with the following command:
+
+$ sudo grep -ir x11forwarding /etc/ssh/sshd_config* | grep -v "^#"
+X11Forwarding no
+
+If the "X11Forwarding" keyword is set to "yes" and is not documented with the information system security officer (ISSO) as an operational requirement, is missing, or multiple conflicting results are returned, this is a finding.''',
+        }, 'CAN_Ubuntu_24-04_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-270708',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'grep -ir x11forwarding /etc/ssh/sshd_config* | grep -v "^#"'},
+            'expected': {'type': 'equals', 'value': 'X11Forwarding no'},
+            'description': 'Ubuntu 24.04 LTS must be configured so that remote X connections are disabled.',
+        })
+
     def test_infers_linux_find_named_file_found_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-248597',

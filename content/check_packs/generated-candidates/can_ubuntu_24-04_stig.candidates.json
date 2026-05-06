@@ -748,6 +748,19 @@
     },
     {
       "check": {
+        "command": "grep -ir x11forwarding /etc/ssh/sshd_config* | grep -v \"^#\"",
+        "type": "command_output"
+      },
+      "description": "Ubuntu 24.04 LTS must be configured so that remote X connections are disabled, unless to fulfill documented and validated mission requirements.",
+      "expected": {
+        "type": "equals",
+        "value": "X11Forwarding no"
+      },
+      "platform": "linux",
+      "vuln_id": "V-270708"
+    },
+    {
+      "check": {
         "command": "grep -ir x11uselocalhost /etc/ssh/sshd_config*",
         "type": "command_output"
       },
