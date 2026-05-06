@@ -171,6 +171,9 @@ def build_case(candidate: dict[str, Any]) -> dict[str, Any]:
                 maximum = int(uint32_match.group(1))
                 pass_fixture['command_outputs'] = {command: f'uint32 {maximum}'}
                 fail_fixture['command_outputs'] = {command: f'uint32 {maximum + 1}'}
+            elif pattern == r'^password\s+requisite\s+pam_pwquality\.so\b.*\bretry=[1-3]\b.*$':
+                pass_fixture['command_outputs'] = {command: 'password requisite pam_pwquality.so retry=3'}
+                fail_fixture['command_outputs'] = {command: 'password requisite pam_pwquality.so retry=4'}
             else:
                 raise ValueError(f"{candidate['vuln_id']}: command_output matches evidence requires supported deterministic regex")
             evidence_type = 'command_output_matches'

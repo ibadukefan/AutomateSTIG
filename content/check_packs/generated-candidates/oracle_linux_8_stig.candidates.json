@@ -4383,6 +4383,32 @@
     },
     {
       "check": {
+        "command": "cat /etc/pam.d/system-auth | grep pam_pwquality",
+        "type": "command_output"
+      },
+      "description": "OL 8 systems below version 8.4 must ensure the password complexity module in the system-auth file is configured for three retries or less.",
+      "expected": {
+        "pattern": "^password\\s+requisite\\s+pam_pwquality\\.so\\b.*\\bretry=[1-3]\\b.*$",
+        "type": "matches"
+      },
+      "platform": "linux",
+      "vuln_id": "V-252658"
+    },
+    {
+      "check": {
+        "command": "cat /etc/pam.d/password-auth | grep pam_pwquality",
+        "type": "command_output"
+      },
+      "description": "OL 8 systems below version 8.4 must ensure the password complexity module in the password-auth file is configured for three retries or less.",
+      "expected": {
+        "pattern": "^password\\s+requisite\\s+pam_pwquality\\.so\\b.*\\bretry=[1-3]\\b.*$",
+        "type": "matches"
+      },
+      "platform": "linux",
+      "vuln_id": "V-252659"
+    },
+    {
+      "check": {
         "command": "grep -r retry /etc/security/pwquality.conf*",
         "type": "command_output"
       },

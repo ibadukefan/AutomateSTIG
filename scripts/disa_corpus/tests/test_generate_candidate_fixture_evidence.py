@@ -191,6 +191,19 @@ class GenerateCandidateFixtureEvidenceTests(unittest.TestCase):
         self.assertEqual(case['pass_fixture']['command_outputs'], {'gsettings get org.gnome.desktop.screensaver lock-delay': 'uint32 5'})
         self.assertEqual(case['fail_fixture']['command_outputs'], {'gsettings get org.gnome.desktop.screensaver lock-delay': 'uint32 6'})
 
+    def test_builds_command_output_matches_pam_pwquality_retry_fixture_case(self):
+        command = 'cat /etc/pam.d/system-auth | grep pam_pwquality'
+        case = mod.build_case({
+            'vuln_id': 'V-252658',
+            'platform': 'linux',
+            'description': 'pam pwquality retry upper bound',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'matches', 'pattern': r'^password\s+requisite\s+pam_pwquality\.so\b.*\bretry=[1-3]\b.*$'},
+        })
+        self.assertEqual(case['evidence_type'], 'command_output_matches')
+        self.assertEqual(case['pass_fixture']['command_outputs'], {command: 'password requisite pam_pwquality.so retry=3'})
+        self.assertEqual(case['fail_fixture']['command_outputs'], {command: 'password requisite pam_pwquality.so retry=4'})
+
     def test_builds_command_output_not_equals_fixture_case(self):
         case = mod.build_case({
             'vuln_id': 'V-256404',

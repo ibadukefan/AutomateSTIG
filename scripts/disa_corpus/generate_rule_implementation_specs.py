@@ -2206,6 +2206,24 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
             'expected': {'type': 'contains', 'substring': 'Binary file /usr/bin/vlock matches'},
             'description': rule.get('title', ''),
         }
+    pam_pwquality_retry_upper_bound = re.search(
+        r'^\s*[$#>]\s*(?:sudo\s+)?(?P<command>cat\s+(?P<path>/etc/pam\.d/(?:system-auth|password-auth))\s*\|\s*grep\s+pam_pwquality)\s*$',
+        content,
+        re.MULTILINE | re.IGNORECASE,
+    )
+    if (
+        _linux_platform(stig_id)
+        and pam_pwquality_retry_upper_bound
+        and re.search(r'^\s*password\s+requisite\s+pam_pwquality\.so\s+retry=3\s*$', content, re.MULTILINE)
+        and re.search(r'If\s+the\s+value\s+of\s+["“]retry["”]\s+is\s+set\s+to\s+["“]0["”]\s+or\s+greater\s+than\s+["“]3["”],\s+this\s+is\s+a\s+finding', content, re.IGNORECASE)
+    ):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': _normalize_command(pam_pwquality_retry_upper_bound.group('command'))},
+            'expected': {'type': 'matches', 'pattern': r'^password\s+requisite\s+pam_pwquality\.so\b.*\bretry=[1-3]\b.*$'},
+            'description': rule.get('title', ''),
+        }
     snmp_default_community_strings = (
         _linux_platform(stig_id)
         and re.search(r'^\s*[$#>]\s*grep\s+public\s+/etc/snmp/snmpd\.conf\s*$', content, re.MULTILINE)

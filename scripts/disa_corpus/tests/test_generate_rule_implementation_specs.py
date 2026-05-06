@@ -105,6 +105,30 @@ If the "TFTP" application exists, this is a finding.''',
         self.assertEqual(candidate['check']['command'], 'powershell -NoProfile -Command "Test-Path \\\"$env:windir\\System32\\tftp.exe\\\""')
         self.assertEqual(candidate['expected'], {'type': 'equals', 'value': 'False'})
 
+    def test_infers_oracle_linux_pam_pwquality_retry_upper_bound_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-252658',
+            'title': 'OL 8 systems below version 8.4 must ensure the password complexity module in the system-auth file is configured for three retries or less.',
+            'check_content': '''Note: This requirement applies to OL versions 8.0 through 8.3. If the system is OL version 8.4 or newer, this requirement is not applicable.
+
+Verify the operating system is configured to limit the "pwquality" retry option to 3.
+
+Check for the use of the "pwquality" retry option in the system-auth file with the following command:
+
+     $ sudo cat /etc/pam.d/system-auth | grep pam_pwquality
+
+     password requisite pam_pwquality.so retry=3
+
+If the value of "retry" is set to "0" or greater than "3", this is a finding.''',
+        }, 'Oracle_Linux_8_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-252658',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'cat /etc/pam.d/system-auth | grep pam_pwquality'},
+            'expected': {'type': 'matches', 'pattern': r'^password\s+requisite\s+pam_pwquality\.so\b.*\bretry=[1-3]\b.*$'},
+            'description': 'OL 8 systems below version 8.4 must ensure the password complexity module in the system-auth file is configured for three retries or less.',
+        })
+
     def test_infers_linux_gsettings_uint32_positive_maximum_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-230352',
