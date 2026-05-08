@@ -150,6 +150,58 @@ If the value WordBypassEncryptedMacroScan does not exist, this is not a finding.
             'description': 'In Word, encrypted macros must be scanned.',
         })
 
+    def test_infers_office_registry_value_zero_or_absent_reverse_order_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223340',
+            'title': 'Files from Internet zone must be opened in Excel in Protected View mode.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Excel 2016 >> Excel Options >> Security >> Trust Center >> Protected View >> Enable Protected View for files originating from the Internet is set to "Enabled".
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview
+
+If the value DisableInternetFilesInPV is REG_DWORD = 0, this is not a finding.
+If the value does not exist, this is not a finding.
+If the value is REG_DWORD = 1, this is a finding.''',
+            'fix_text': 'Set the policy value to "Enabled".',
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-223340',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview',
+                'value_name': 'DisableInternetFilesInPV',
+            },
+            'expected': {'type': 'equals', 'value': 0},
+            'description': 'Files from Internet zone must be opened in Excel in Protected View mode.',
+        })
+
+    def test_infers_office_registry_single_dword_candidate_without_the_prefix(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223332',
+            'title': 'File extensions must be enabled to match file types in Excel.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Excel 2016 >> Excel Options >> Security >> Trust Center >> File Block Settings >> Set default file block behavior is set to "Enabled" "Blocked files are not opened".
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security
+
+If value for extensionhardening is REG_DWORD = 2, this is not a finding.''',
+            'fix_text': 'Set the policy value to "Enabled" "Blocked files are not opened".',
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-223332',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security',
+                'value_name': 'extensionhardening',
+            },
+            'expected': {'type': 'equals', 'value': 2},
+            'description': 'File extensions must be enabled to match file types in Excel.',
+        })
+
     def test_infers_sql_server_sa_login_renamed_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-274445',

@@ -3887,6 +3887,18 @@ def _office_registry_absent_or_dword_value_candidate(rule: dict, stig_id: str) -
         re.IGNORECASE,
     )
     if not expected_match:
+        expected_match = re.search(
+            r'If\s+the\s+value\s+([A-Za-z0-9_.-]+)\s+is\s+REG_DWORD\s*=\s*(\d+),\s+this\s+is\s+not\s+a\s+finding\.\s*If\s+the\s+value\s+does\s+not\s+exist,\s+this\s+is\s+not\s+a\s+finding\.',
+            content,
+            re.IGNORECASE,
+        )
+    if not expected_match:
+        expected_match = re.search(
+            r'If\s+(?:the\s+)?value\s+for\s+([A-Za-z0-9_.-]+)\s+is\s+REG_DWORD\s*=\s*(\d+),\s+this\s+is\s+not\s+a\s+finding\.',
+            content,
+            re.IGNORECASE,
+        )
+    if not expected_match:
         return None
     return {
         'vuln_id': rule.get('vuln_id', ''),

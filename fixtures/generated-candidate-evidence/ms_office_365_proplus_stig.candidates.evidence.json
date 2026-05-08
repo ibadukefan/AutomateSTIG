@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 105,
+  "candidate_checks": 113,
   "cases": [
     {
       "check": {
@@ -894,6 +894,87 @@
     },
     {
       "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options",
+        "type": "registry",
+        "value_name": "disableautorepublishwarning"
+      },
+      "description": "AutoRepublish warning alert in Excel must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options\\disableautorepublishwarning": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options\\disableautorepublishwarning": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223331"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security",
+        "type": "registry",
+        "value_name": "extensionhardening"
+      },
+      "description": "File extensions must be enabled to match file types in Excel.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\extensionhardening": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\extensionhardening": 2
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223332"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security",
+        "type": "registry",
+        "value_name": "excelbypassencryptedmacroscan"
+      },
+      "description": "Scan of encrypted macros in Excel Open XML workbooks must be enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\excelbypassencryptedmacroscan": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\excelbypassencryptedmacroscan": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223333"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\filevalidation",
         "type": "registry",
         "value_name": "enableonload"
@@ -918,6 +999,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223334"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security",
+        "type": "registry",
+        "value_name": "webservicefunctionwarnings"
+      },
+      "description": "WEBSERVICE Function Notification in Excel must be configured to disable all, with notifications.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\webservicefunctionwarnings": 0
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\webservicefunctionwarnings": 1
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223335"
     },
     {
       "check": {
@@ -1026,6 +1134,60 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223339"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview",
+        "type": "registry",
+        "value_name": "DisableInternetFilesInPV"
+      },
+      "description": "Files from Internet zone must be opened in Excel in Protected View mode.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview\\DisableInternetFilesInPV": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview\\DisableInternetFilesInPV": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223340"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview",
+        "type": "registry",
+        "value_name": "DisableUnsafeLocationsInPV"
+      },
+      "description": "Files from unsafe locations must be opened in Excel in Protected View mode.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview\\DisableUnsafeLocationsInPV": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview\\DisableUnsafeLocationsInPV": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223341"
     },
     {
       "check": {
@@ -2435,6 +2597,60 @@
       "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\protectedview",
         "type": "registry",
+        "value_name": "disableinternetfilesinpv"
+      },
+      "description": "Files downloaded from the Internet must be opened in Protected view in Word.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\protectedview\\disableinternetfilesinpv": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\protectedview\\disableinternetfilesinpv": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223402"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\protectedview",
+        "type": "registry",
+        "value_name": "disableunsafelocationsinpv"
+      },
+      "description": "Files located in unsafe locations must be opened in Protected view in Word.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\protectedview\\disableunsafelocationsinpv": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\protectedview\\disableunsafelocationsinpv": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223403"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\protectedview",
+        "type": "registry",
         "value_name": "disableattachmentsinpv"
       },
       "description": "Word attachments opened from Outlook must be in Protected View.",
@@ -2842,5 +3058,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Office_365_ProPlus_STIG",
-  "validated_candidates": 105
+  "validated_candidates": 113
 }

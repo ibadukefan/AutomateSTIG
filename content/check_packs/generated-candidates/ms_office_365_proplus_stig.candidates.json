@@ -464,6 +464,48 @@
     },
     {
       "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\options",
+        "type": "registry",
+        "value_name": "disableautorepublishwarning"
+      },
+      "description": "AutoRepublish warning alert in Excel must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223331"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security",
+        "type": "registry",
+        "value_name": "extensionhardening"
+      },
+      "description": "File extensions must be enabled to match file types in Excel.",
+      "expected": {
+        "type": "equals",
+        "value": 2
+      },
+      "platform": "windows",
+      "vuln_id": "V-223332"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security",
+        "type": "registry",
+        "value_name": "excelbypassencryptedmacroscan"
+      },
+      "description": "Scan of encrypted macros in Excel Open XML workbooks must be enabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223333"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\filevalidation",
         "type": "registry",
         "value_name": "enableonload"
@@ -475,6 +517,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-223334"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security",
+        "type": "registry",
+        "value_name": "webservicefunctionwarnings"
+      },
+      "description": "WEBSERVICE Function Notification in Excel must be configured to disable all, with notifications.",
+      "expected": {
+        "type": "equals",
+        "value": 1
+      },
+      "platform": "windows",
+      "vuln_id": "V-223335"
     },
     {
       "check": {
@@ -531,6 +587,34 @@
       },
       "platform": "windows",
       "vuln_id": "V-223339"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview",
+        "type": "registry",
+        "value_name": "DisableInternetFilesInPV"
+      },
+      "description": "Files from Internet zone must be opened in Excel in Protected View mode.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223340"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\excel\\security\\protectedview",
+        "type": "registry",
+        "value_name": "DisableUnsafeLocationsInPV"
+      },
+      "description": "Files from unsafe locations must be opened in Excel in Protected View mode.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223341"
     },
     {
       "check": {
@@ -1259,6 +1343,34 @@
       },
       "platform": "windows",
       "vuln_id": "V-223401"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\protectedview",
+        "type": "registry",
+        "value_name": "disableinternetfilesinpv"
+      },
+      "description": "Files downloaded from the Internet must be opened in Protected view in Word.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223402"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\protectedview",
+        "type": "registry",
+        "value_name": "disableunsafelocationsinpv"
+      },
+      "description": "Files located in unsafe locations must be opened in Protected view in Word.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223403"
     },
     {
       "check": {
