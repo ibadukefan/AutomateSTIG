@@ -125,6 +125,31 @@ If the value vbawarnings is REG_DWORD = 3, this is not a finding. A value of REG
             'description': 'VBA macros not digitally signed must be blocked in Access.',
         })
 
+    def test_infers_office_registry_value_absent_or_zero_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-223401',
+            'title': 'In Word, encrypted macros must be scanned.',
+            'check_content': '''Verify the policy value for User Configuration >> Administrative Templates >> Microsoft Word 2016 >> Word Options >> Security >> Trust Center >> Scan encrypted macros in Word Open XML documents is set to "Enabled" "Scan encrypted macros (default)".
+
+Use the Windows Registry Editor to navigate to the following key:
+
+HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security
+
+If the value WordBypassEncryptedMacroScan does not exist, this is not a finding. If the value is REG_DWORD = 0, this is not a finding.''',
+            'fix_text': 'Set the policy value for User Configuration >> Administrative Templates >> Microsoft Word 2016 >> Word Options >> Security >> Trust Center >> Scan encrypted macros in Word Open XML documents to "Enabled" "Scan encrypted macros (default)".',
+        }, 'MS_Office_365_ProPlus_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-223401',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security',
+                'value_name': 'WordBypassEncryptedMacroScan',
+            },
+            'expected': {'type': 'equals', 'value': 0},
+            'description': 'In Word, encrypted macros must be scanned.',
+        })
+
     def test_infers_sql_server_sa_login_renamed_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-274445',

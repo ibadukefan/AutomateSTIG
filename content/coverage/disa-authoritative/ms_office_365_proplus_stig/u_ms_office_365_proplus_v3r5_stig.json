@@ -1524,16 +1524,17 @@
       "vuln_id": "V-223377"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223378",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223378r961092_rule",
       "severity": "medium",
       "title": "The ability to run programs from PowerPoint must be disabled.",
-      "tracking_issue": "TODO-V-223378",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223378"
@@ -1571,16 +1572,17 @@
       "vuln_id": "V-223380"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223381",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223381r961092_rule",
       "severity": "medium",
       "title": "Encrypted macros in PowerPoint Open XML presentations must be scanned.",
-      "tracking_issue": "TODO-V-223381",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223381"
@@ -1889,16 +1891,17 @@
       "vuln_id": "V-223400"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-223401",
+      "check_pack": "generated-candidates/ms_office_365_proplus_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-223401r961092_rule",
       "severity": "medium",
       "title": "In Word, encrypted macros must be scanned.",
-      "tracking_issue": "TODO-V-223401",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
         "content/disa-corpus/artifacts/ce8a0336fb139f205ad1f2d413f21ed8a852a12a0f62f8cce8de8f3c573a03d0/U_MS_Office_365_ProPlus_V3R5_STIG.zip"
       ],
       "vuln_id": "V-223401"

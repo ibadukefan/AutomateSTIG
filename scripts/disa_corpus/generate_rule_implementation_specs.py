@@ -3870,6 +3870,37 @@ def _file_permission_candidate(rule: dict) -> dict | None:
     }
 
 
+def _office_registry_absent_or_dword_value_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'office' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    path_match = re.search(
+        r'Use\s+the\s+Windows\s+Registry\s+Editor\s+to\s+navigate\s+to\s+the\s+following\s+key:\s*\n+\s*((?:HKCU|HKLM)\\[^\n\r]+)',
+        content,
+        re.IGNORECASE,
+    )
+    if not path_match:
+        return None
+    expected_match = re.search(
+        r'If\s+the\s+value\s+([A-Za-z0-9_.-]+)\s+does\s+not\s+exist,\s+this\s+is\s+not\s+a\s+finding\.\s+If\s+the\s+value\s+is\s+REG_DWORD\s*=\s*(\d+),\s+this\s+is\s+not\s+a\s+finding\.',
+        content,
+        re.IGNORECASE,
+    )
+    if not expected_match:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {
+            'type': 'registry',
+            'path': _normalize_registry_path(path_match.group(1)),
+            'value_name': expected_match.group(1),
+        },
+        'expected': {'type': 'equals', 'value': int(expected_match.group(2))},
+        'description': rule.get('title', ''),
+    }
+
+
 def _sql_server_sa_login_renamed_candidate(rule: dict, stig_id: str) -> dict | None:
     if 'sql_server' not in stig_id.lower() and 'sql server' not in stig_id.lower():
         return None
@@ -4009,6 +4040,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         policy_candidate = _windows_registry_policy_candidate(rule, stig_id)
         if policy_candidate:
             return policy_candidate
+
+        office_absent_or_dword_candidate = _office_registry_absent_or_dword_value_candidate(rule, stig_id)
+        if office_absent_or_dword_candidate:
+            return office_absent_or_dword_candidate
 
         audit_policy_candidate = _windows_audit_policy_candidate(rule)
         if audit_policy_candidate:

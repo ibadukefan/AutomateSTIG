@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 102,
+  "candidate_checks": 105,
   "cases": [
     {
       "check": {
@@ -1812,6 +1812,33 @@
     },
     {
       "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\powerpoint\\security",
+        "type": "registry",
+        "value_name": "runprograms"
+      },
+      "description": "The ability to run programs from PowerPoint must be disabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\powerpoint\\security\\runprograms": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\powerpoint\\security\\runprograms": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223378"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\powerpoint\\security\\fileblock",
         "type": "registry",
         "value_name": "binaryfiles"
@@ -1863,6 +1890,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-223380"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security",
+        "type": "registry",
+        "value_name": "PowerPointBypassEncryptedMacroScan"
+      },
+      "description": "Encrypted macros in PowerPoint Open XML presentations must be scanned.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security\\PowerPointBypassEncryptedMacroScan": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security\\PowerPointBypassEncryptedMacroScan": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223381"
     },
     {
       "check": {
@@ -2352,6 +2406,33 @@
     },
     {
       "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security",
+        "type": "registry",
+        "value_name": "WordBypassEncryptedMacroScan"
+      },
+      "description": "In Word, encrypted macros must be scanned.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\WordBypassEncryptedMacroScan": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\WordBypassEncryptedMacroScan": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-223401"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security\\protectedview",
         "type": "registry",
         "value_name": "disableattachmentsinpv"
@@ -2761,5 +2842,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_office_365_proplus_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Office_365_ProPlus_STIG",
-  "validated_candidates": 102
+  "validated_candidates": 105
 }

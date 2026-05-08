@@ -940,6 +940,20 @@
     },
     {
       "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\powerpoint\\security",
+        "type": "registry",
+        "value_name": "runprograms"
+      },
+      "description": "The ability to run programs from PowerPoint must be disabled.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223378"
+    },
+    {
+      "check": {
         "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\powerpoint\\security\\fileblock",
         "type": "registry",
         "value_name": "binaryfiles"
@@ -965,6 +979,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-223380"
+    },
+    {
+      "check": {
+        "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security",
+        "type": "registry",
+        "value_name": "PowerPointBypassEncryptedMacroScan"
+      },
+      "description": "Encrypted macros in PowerPoint Open XML presentations must be scanned.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223381"
     },
     {
       "check": {
@@ -1217,6 +1245,20 @@
       },
       "platform": "windows",
       "vuln_id": "V-223400"
+    },
+    {
+      "check": {
+        "path": "HKCU\\software\\policies\\microsoft\\office\\16.0\\word\\security",
+        "type": "registry",
+        "value_name": "WordBypassEncryptedMacroScan"
+      },
+      "description": "In Word, encrypted macros must be scanned.",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "platform": "windows",
+      "vuln_id": "V-223401"
     },
     {
       "check": {

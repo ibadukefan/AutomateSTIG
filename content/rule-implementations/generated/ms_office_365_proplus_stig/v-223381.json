@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security",
+      "type": "registry",
+      "value_name": "PowerPointBypassEncryptedMacroScan"
+    },
+    "description": "Encrypted macros in PowerPoint Open XML presentations must be scanned.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-223381"
+  },
   "check_content_excerpt": "Verify the policy value for User Configuration >> Administrative Templates >> Microsoft PowerPoint 2016 >> PowerPoint Options >> Security \"Scan encrypted macros in PowerPoint Open XML presentations\" is set to \"Enabled\" and \"Scan encrypted macros\".\n\nUse the Windows Registry Editor to navigate to the following key:\n\nHKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\PowerPoint\\security\n\nIf the value PowerPointBypassEncryptedMacroScan does not exist, this is not a finding.\n\nIf the value is REG_DWORD = 0, this is not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for User Configuration >> Administrative Templates >> Microsoft PowerPoint 2016 >> PowerPoint Options >> Security \"Scan encrypted macros in PowerPoint Open XML presentations\" to \"Enabled\" and \"Scan encrypted macros\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-223381r961092_rule",
   "severity": "medium",
