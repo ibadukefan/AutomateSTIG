@@ -36,6 +36,60 @@ class GenerateRuleImplementationSpecsTests(unittest.TestCase):
             self.assertIn('"vuln_id": "V-1"', text)
             self.assertNotIn('V-2', text)
 
+    def test_infers_windows_legal_notice_text_registry_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254457',
+            'title': 'Windows Server required legal notice must be configured to display before console logon.',
+            'check_content': '''If the following registry value does not exist or is not configured as specified, this is a finding:
+
+Registry Hive: HKEY_LOCAL_MACHINE
+Registry Path: \\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\
+
+Value Name: LegalNoticeText
+
+Value Type: REG_SZ
+Value: See message text below
+
+You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.
+
+By using this IS (which includes any device attached to this IS), you consent to the following conditions:
+
+-The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing. See User Agreement for details.''',
+            'fix_text': 'Configure the policy value for Interactive Logon: Message text for users attempting to log on.',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-254457',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System',
+                'value_name': 'LegalNoticeText',
+            },
+            'expected': {'type': 'equals', 'value': 'You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\n\nBy using this IS (which includes any device attached to this IS), you consent to the following conditions:\n\n-The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing. See User Agreement for details.'},
+            'description': 'Windows Server required legal notice must be configured to display before console logon.',
+        })
+
+    def test_infers_kubernetes_validating_admission_webhook_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242436',
+            'title': 'The Kubernetes API server must have the ValidatingAdmissionWebhook enabled.',
+            'check_content': '''Change to the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Run the command:
+ grep -i ValidatingAdmissionWebhook *
+
+If a line is not returned that includes enable-admission-plugins and ValidatingAdmissionWebhook, this is a finding.''',
+            'fix_text': 'Edit the Kubernetes API server manifest to include ValidatingAdmissionWebhook in enable-admission-plugins.',
+        }, 'Kubernetes_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-242436',
+            'platform': 'linux',
+            'check': {
+                'type': 'command_output',
+                'command': 'grep -i ValidatingAdmissionWebhook /etc/kubernetes/manifests/*',
+            },
+            'expected': {'type': 'contains', 'substring': 'enable-admission-plugins'},
+            'description': 'The Kubernetes API server must have the ValidatingAdmissionWebhook enabled.',
+        })
+
     def test_infers_chrome_download_restrictions_allowed_registry_values_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221588',

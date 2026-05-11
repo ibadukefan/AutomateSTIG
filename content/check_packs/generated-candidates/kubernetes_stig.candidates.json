@@ -15,6 +15,19 @@
     },
     {
       "check": {
+        "command": "grep -i ValidatingAdmissionWebhook /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes API server must have the ValidatingAdmissionWebhook enabled.",
+      "expected": {
+        "substring": "enable-admission-plugins",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-242436"
+    },
+    {
+      "check": {
         "command": "stat -c %U:%G /etc/kubernetes/manifests/* | grep -v root:root",
         "type": "command_output"
       },
@@ -144,7 +157,7 @@
       "vuln_id": "V-242467"
     }
   ],
-  "platform": "generic",
+  "platform": "linux",
   "stig_id": "Kubernetes_STIG",
   "version": "candidate-planned"
 }

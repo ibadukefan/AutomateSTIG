@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 11,
+  "candidate_checks": 12,
   "cases": [
     {
       "check": {
@@ -26,6 +26,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-242404"
+    },
+    {
+      "check": {
+        "command": "grep -i ValidatingAdmissionWebhook /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes API server must have the ValidatingAdmissionWebhook enabled.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "enable-admission-plugins",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i ValidatingAdmissionWebhook /etc/kubernetes/manifests/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i ValidatingAdmissionWebhook /etc/kubernetes/manifests/*": "before\nenable-admission-plugins\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242436"
     },
     {
       "check": {
@@ -293,5 +319,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 11
+  "validated_candidates": 12
 }

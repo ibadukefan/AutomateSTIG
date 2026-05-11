@@ -359,6 +359,66 @@ def _windows_platform(stig_id: str) -> bool:
     return 'windows' in lower or 'ms_windows' in lower
 
 
+def _windows_legal_notice_text_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not _windows_platform(stig_id):
+        return None
+    content = rule.get('check_content', '') or ''
+    if not re.search(r'Value\s+Name:\s*LegalNoticeText\b', content, re.IGNORECASE):
+        return None
+    if not re.search(r'Value\s*:\s*See\s+message\s+text\s+below', content, re.IGNORECASE):
+        return None
+    if not re.search(r'required\s+legal\s+notice|message\s+text\s+for\s+users\s+attempting\s+to\s+log\s+on', rule.get('title', '') + '\n' + rule.get('fix_text', ''), re.IGNORECASE):
+        return None
+    hives = [next(group for group in match if group).strip() for match in re.findall(r'Registry[ \t]+Hive(?::[ \t]*([^\n\r]+)|([A-Z][^\n\r]+))', content, re.IGNORECASE)]
+    paths = [next(group for group in match if group).strip().strip('\\/') for match in re.findall(r'Registry[ \t]+Path(?::[ \t]*([^:\n\r][^\n\r]*)|(\\[^\n\r]+))', content, re.IGNORECASE)]
+    if len(hives) != 1 or len(paths) != 1:
+        return None
+    text_match = re.search(
+        r'(You\s+are\s+accessing\s+a\s+U\.S\.\s+Government\s+\(USG\)\s+Information\s+System\s+\(IS\).*?)\s*$',
+        content,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not text_match:
+        return None
+    expected_text = text_match.group(1).strip()
+    if len(expected_text) < 200 or 'See User Agreement for details.' not in expected_text:
+        return None
+    normalized_path = re.sub(r'\\+', r'\\', paths[0]).rstrip('\\/')
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'windows',
+        'check': {
+            'type': 'registry',
+            'path': f"{_registry_hive_abbrev(hives[0])}\\{normalized_path}",
+            'value_name': 'LegalNoticeText',
+        },
+        'expected': {'type': 'equals', 'value': expected_text},
+        'description': rule.get('title', ''),
+    }
+
+
+def _kubernetes_validating_admission_webhook_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'kubernetes' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    if rule.get('vuln_id') != 'V-242436':
+        return None
+    if 'ValidatingAdmissionWebhook' not in content or 'enable-admission-plugins' not in content:
+        return None
+    if not re.search(r'If\s+a\s+line\s+is\s+not\s+returned\s+that\s+includes\s+enable-admission-plugins\s+and\s+ValidatingAdmissionWebhook,?\s+this\s+is\s+a\s+finding', content, re.IGNORECASE):
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {
+            'type': 'command_output',
+            'command': 'grep -i ValidatingAdmissionWebhook /etc/kubernetes/manifests/*',
+        },
+        'expected': {'type': 'contains', 'substring': 'enable-admission-plugins'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_hardened_unc_paths_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -3980,6 +4040,12 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     before a rule can be promoted from planned to implemented/validated.
     """
     content = rule.get('check_content', '') or ''
+    kubernetes_admission_candidate = _kubernetes_validating_admission_webhook_candidate(rule, stig_id)
+    if kubernetes_admission_candidate:
+        return kubernetes_admission_candidate
+    windows_legal_notice_text_candidate = _windows_legal_notice_text_candidate(rule, stig_id)
+    if windows_legal_notice_text_candidate:
+        return windows_legal_notice_text_candidate
     combined_registry_content = '\n'.join(part for part in (content, rule.get('fix_text', '') or '') if part)
     hives = [next(group for group in match if group).strip() for match in re.findall(r'Registry[ \t]+Hive(?::[ \t]*([^\n\r]+)|([A-Z][^\n\r]+))', combined_registry_content, re.IGNORECASE)]
     paths = [next(group for group in match if group).strip().strip('\\/') for match in re.findall(r'Registry[ \t]+Path(?::[ \t]*([^:\n\r][^\n\r]*)|(\\[^\n\r]+))', combined_registry_content, re.IGNORECASE)]
