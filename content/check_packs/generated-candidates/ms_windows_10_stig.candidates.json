@@ -699,6 +699,19 @@
     },
     {
       "check": {
+        "command": "powershell -NoProfile -Command \"$paths=@('HKLM:\\SOFTWARE\\Classes\\batfile\\shell\\runasuser','HKLM:\\SOFTWARE\\Classes\\cmdfile\\shell\\runasuser','HKLM:\\SOFTWARE\\Classes\\exefile\\shell\\runasuser','HKLM:\\SOFTWARE\\Classes\\mscfile\\shell\\runasuser'); if (($paths | Where-Object { (Get-ItemProperty -Path $_ -Name SuppressionPolicy -ErrorAction SilentlyContinue).SuppressionPolicy -eq 4096 }).Count -eq 4) { 'Compliant' }\"",
+        "type": "command_output"
+      },
+      "description": "Run as different user must be removed from context menus.",
+      "expected": {
+        "type": "equals",
+        "value": "Compliant"
+      },
+      "platform": "windows",
+      "vuln_id": "V-220801"
+    },
+    {
+      "check": {
         "path": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation",
         "type": "registry",
         "value_name": "AllowInsecureGuestAuth"

@@ -1162,16 +1162,17 @@
       "vuln_id": "V-253358"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-253359",
+      "check_pack": "generated-candidates/microsoft_windows_11_stig.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation. Matched via canonical DISA Vuln ID V-253359 from source identifier xccdf_mil.disa.stig_group_V-253359.",
       "rule_id": "xccdf_mil.disa.stig_rule_SV-253359r958478_rule",
       "severity": "medium",
       "title": "Run as different user must be removed from context menus.",
-      "tracking_issue": "TODO-V-253359",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/microsoft_windows_11_stig.candidates.json",
         "content/disa-corpus/artifacts/0148c1eb48c789a3f6fa9284da0b4285b0f9d78b75d1062f0f03fba120ab052f/U_MS_Windows_11_V2R4_STIG_SCAP_1-3_Benchmark.zip"
       ],
       "vuln_id": "V-253359"

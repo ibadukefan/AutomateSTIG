@@ -188,9 +188,50 @@ def _windows_defender_registry_criteria_candidate(rule: dict, stig_id: str) -> d
     return None
 
 
+def _windows_run_as_different_user_context_menu_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    vuln_id = rule.get('vuln_id', '')
+    if vuln_id not in {'V-220801', 'V-253359'}:
+        return None
+    if not _windows_platform(stig_id):
+        return None
+    if 'Run as different user must be removed from context menus' not in (rule.get('title', '') or ''):
+        return None
+    required_paths = [
+        '\\SOFTWARE\\Classes\\batfile\\shell\\runasuser',
+        '\\SOFTWARE\\Classes\\cmdfile\\shell\\runasuser',
+        '\\SOFTWARE\\Classes\\exefile\\shell\\runasuser',
+        '\\SOFTWARE\\Classes\\mscfile\\shell\\runasuser',
+    ]
+    if not all(path in content for path in required_paths):
+        return None
+    if len(re.findall(r'Value\s+Name:\s*SuppressionPolicy\b', content, re.IGNORECASE)) < 1:
+        return None
+    if len(re.findall(r'(?:Value\s+)?Type:\s*REG_DWORD\b', content, re.IGNORECASE)) < 1:
+        return None
+    if len(re.findall(r'Value:\s*0x00001000\s*\(4096\)', content, re.IGNORECASE)) < 1:
+        return None
+    command = (
+        'powershell -NoProfile -Command '
+        '"$paths=@(\'HKLM:\\SOFTWARE\\Classes\\batfile\\shell\\runasuser\','
+        '\'HKLM:\\SOFTWARE\\Classes\\cmdfile\\shell\\runasuser\','
+        '\'HKLM:\\SOFTWARE\\Classes\\exefile\\shell\\runasuser\','
+        '\'HKLM:\\SOFTWARE\\Classes\\mscfile\\shell\\runasuser\'); '
+        'if (($paths | Where-Object { (Get-ItemProperty -Path $_ -Name SuppressionPolicy -ErrorAction SilentlyContinue).SuppressionPolicy -eq 4096 }).Count -eq 4) { \'Compliant\' }"'
+    )
+    return {
+        'vuln_id': vuln_id,
+        'platform': 'windows',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': {'type': 'equals', 'value': 'Compliant'},
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
+
     if 'chrome' in stig_id.lower():
         chrome_download_restrictions = re.search(
             r'Navigate\s+to\s+["“]?(HKLM\\Software\\Policies\\Google\\Chrome)\\?["”]?\.?',
@@ -4269,6 +4310,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     windows_legal_notice_text_candidate = _windows_legal_notice_text_candidate(rule, stig_id)
     if windows_legal_notice_text_candidate:
         return windows_legal_notice_text_candidate
+    windows_run_as_different_user_candidate = _windows_run_as_different_user_context_menu_candidate(rule, stig_id)
+    if windows_run_as_different_user_candidate:
+        return windows_run_as_different_user_candidate
     combined_registry_content = '\n'.join(part for part in (content, rule.get('fix_text', '') or '') if part)
     hives = [next(group for group in match if group).strip() for match in re.findall(r'Registry[ \t]+Hive(?::[ \t]*([^\n\r]+)|([A-Z][^\n\r]+))', combined_registry_content, re.IGNORECASE)]
     paths = [next(group for group in match if group).strip().strip('\\/') for match in re.findall(r'Registry[ \t]+Path(?::[ \t]*([^:\n\r][^\n\r]*)|(\\[^\n\r]+))', combined_registry_content, re.IGNORECASE)]

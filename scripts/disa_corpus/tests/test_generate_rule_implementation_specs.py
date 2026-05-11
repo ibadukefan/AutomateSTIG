@@ -6046,5 +6046,35 @@ $ sudo yum install kbd.x86_64''',
         self.assertEqual(candidate['check'], {'type': 'command_output', 'command': 'grep vlock /usr/bin/*'})
         self.assertEqual(candidate['expected'], {'type': 'contains', 'substring': 'Binary file /usr/bin/vlock matches'})
 
+
+    def test_infers_windows_run_as_different_user_context_menu_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-220801',
+            'title': 'Run as different user must be removed from context menus.',
+            'check_content': '''If the following registry values do not exist or are not configured as specified, this is a finding.
+The policy configures the same Value Name, Type and Value under four different registry paths.
+
+Registry Hive:  HKEY_LOCAL_MACHINE
+Registry Paths:
+\\SOFTWARE\\Classes\\batfile\\shell\\runasuser\\
+\\SOFTWARE\\Classes\\cmdfile\\shell\\runasuser\\
+\\SOFTWARE\\Classes\\exefile\\shell\\runasuser\\
+\\SOFTWARE\\Classes\\mscfile\\shell\\runasuser\\
+
+Value Name:  SuppressionPolicy
+
+Type:  REG_DWORD
+Value:  0x00001000 (4096)''',
+            'fix_text': 'Configure the policy value for Computer Configuration >> Administrative Templates >> MS Security Guide >> "Remove "Run as Different User" from context menus" to "Enabled".',
+        }, 'MS_Windows_10_STIG')
+        command = "powershell -NoProfile -Command \"$paths=@('HKLM:\\SOFTWARE\\Classes\\batfile\\shell\\runasuser','HKLM:\\SOFTWARE\\Classes\\cmdfile\\shell\\runasuser','HKLM:\\SOFTWARE\\Classes\\exefile\\shell\\runasuser','HKLM:\\SOFTWARE\\Classes\\mscfile\\shell\\runasuser'); if (($paths | Where-Object { (Get-ItemProperty -Path $_ -Name SuppressionPolicy -ErrorAction SilentlyContinue).SuppressionPolicy -eq 4096 }).Count -eq 4) { 'Compliant' }\""
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-220801',
+            'platform': 'windows',
+            'check': {'type': 'command_output', 'command': command},
+            'expected': {'type': 'equals', 'value': 'Compliant'},
+            'description': 'Run as different user must be removed from context menus.',
+        })
+
 if __name__ == '__main__':
     unittest.main()
