@@ -18,6 +18,32 @@
         "command": "psql -c \"SHOW shared_preload_libraries\"",
         "type": "command_output"
       },
+      "description": "PostgreSQL must generate audit records when unsuccessful attempts to delete categorized information (e.g., classification levels/security levels) occur.",
+      "expected": {
+        "substring": "pgaudit",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233557"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW shared_preload_libraries\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when unsuccessful attempts to modify categorized information (e.g., classification levels/security levels) occur.",
+      "expected": {
+        "substring": "pgaudit",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233563"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW shared_preload_libraries\"",
+        "type": "command_output"
+      },
       "description": "PostgreSQL must generate audit records for all privileged activities or other system-level access.",
       "expected": {
         "substring": "pgaudit",
@@ -142,6 +168,45 @@
       },
       "platform": "generic",
       "vuln_id": "V-233600"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW shared_preload_libraries\"",
+        "type": "command_output"
+      },
+      "description": "Audit records must be generated when categorized information (e.g., classification levels/security levels) is deleted.",
+      "expected": {
+        "substring": "pgaudit",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233620"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW shared_preload_libraries\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records when successful accesses to objects occur.",
+      "expected": {
+        "substring": "pgaudit",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233621"
+    },
+    {
+      "check": {
+        "command": "psql -c \"SHOW shared_preload_libraries\"",
+        "type": "command_output"
+      },
+      "description": "PostgreSQL must generate audit records for all direct access to the database(s).",
+      "expected": {
+        "substring": "pgaudit",
+        "type": "contains"
+      },
+      "platform": "generic",
+      "vuln_id": "V-233622"
     }
   ],
   "platform": "generic",

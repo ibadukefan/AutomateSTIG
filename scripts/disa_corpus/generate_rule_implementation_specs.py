@@ -2756,7 +2756,7 @@ def _command_output_candidate(rule: dict, stig_id: str) -> dict | None:
         'postgresql' in stig_id.lower()
         and re.search(r'^\s*[$#>]\s*psql\s+-c\s+["“]SHOW\s+shared_preload_libraries["”]\s*$', content, re.MULTILINE | re.IGNORECASE)
         and re.search(
-            r'If\s+(?:pgaudit\s+is\s+not\s+present\s+in\s+the\s+result\s+from\s+the\s+query|the\s+output\s+does\s+not\s+contain\s+pgaudit),?\s+this\s+is\s+a\s+finding',
+            r'If\s+(?:pgaudit\s+is\s+not\s+present\s+in\s+the\s+result\s+from\s+the\s+query|the\s+output\s+does\s+not\s+contain\s+["“]?pgaudit["”]?),?\s+this\s+is\s+a\s+finding',
             content,
             re.IGNORECASE,
         )
