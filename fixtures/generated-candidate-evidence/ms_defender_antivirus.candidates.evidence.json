@@ -1,5 +1,5 @@
 {
-  "candidate_checks": 43,
+  "candidate_checks": 57,
   "cases": [
     {
       "check": {
@@ -30,6 +30,33 @@
     },
     {
       "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender",
+        "type": "registry",
+        "value_name": "DisableRoutinelyTakingAction"
+      },
+      "description": "Microsoft Defender AV must be configured to automatically take action on all detected tasks.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\DisableRoutinelyTakingAction": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\DisableRoutinelyTakingAction": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213427"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Exclusions",
         "type": "registry",
         "value_name": "DisableAutoExclusions"
@@ -54,6 +81,33 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-213431"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet",
+        "type": "registry",
+        "value_name": "LocalSettingOverrideSpynetReporting"
+      },
+      "description": "Microsoft Defender AV must be configured to disable local setting override for reporting to Microsoft MAPS.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet\\LocalSettingOverrideSpynetReporting": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet\\LocalSettingOverrideSpynetReporting": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213432"
     },
     {
       "check": {
@@ -111,6 +165,168 @@
     },
     {
       "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\NIS",
+        "type": "registry",
+        "value_name": "DisableProtocolRecognition"
+      },
+      "description": "Microsoft Defender AV must be configured for protocol recognition for network protection.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\NIS\\DisableProtocolRecognition": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\NIS\\DisableProtocolRecognition": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213436"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
+        "type": "registry",
+        "value_name": "LocalSettingOverrideDisableOnAccessProtection"
+      },
+      "description": "Microsoft Defender AV must be configured to not allow local override of monitoring for file and program activity.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\LocalSettingOverrideDisableOnAccessProtection": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\LocalSettingOverrideDisableOnAccessProtection": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213437"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
+        "type": "registry",
+        "value_name": "LocalSettingOverrideRealtimeScanDirection"
+      },
+      "description": "Microsoft Defender AV must be configured to not allow override of monitoring for incoming and outgoing file activity.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\LocalSettingOverrideRealtimeScanDirection": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\LocalSettingOverrideRealtimeScanDirection": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213438"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
+        "type": "registry",
+        "value_name": "LocalSettingOverrideDisableIOAVProtection"
+      },
+      "description": "Microsoft Defender AV must be configured to not allow override of scanning for downloaded files and attachments.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\LocalSettingOverrideDisableIOAVProtection": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\LocalSettingOverrideDisableIOAVProtection": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213439"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
+        "type": "registry",
+        "value_name": "LocalSettingOverrideDisableBehaviorMonitoring"
+      },
+      "description": "Microsoft Defender AV must be configured to not allow override of behavior monitoring.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\LocalSettingOverrideDisableBehaviorMonitoring": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\LocalSettingOverrideDisableBehaviorMonitoring": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213440"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
+        "type": "registry",
+        "value_name": "LocalSettingOverrideDisableRealtimeMonitoring"
+      },
+      "description": "Microsoft Defender AV Group Policy settings must take priority over the local preference settings.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\LocalSettingOverrideDisableRealtimeMonitoring": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\LocalSettingOverrideDisableRealtimeMonitoring": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213441"
+    },
+    {
+      "check": {
         "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
         "type": "registry",
         "value_name": "RealtimeScanDirection"
@@ -135,6 +351,168 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-213442"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
+        "type": "registry",
+        "value_name": "DisableOnAccessProtection"
+      },
+      "description": "Microsoft Defender AV must be configured to monitor for file and program activity.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\DisableOnAccessProtection": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\DisableOnAccessProtection": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213443"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
+        "type": "registry",
+        "value_name": "DisableIOAVProtection"
+      },
+      "description": "Microsoft Defender AV must be configured to scan all downloaded files and attachments.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\DisableIOAVProtection": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\DisableIOAVProtection": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213444"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
+        "type": "registry",
+        "value_name": "DisableRealtimeMonitoring"
+      },
+      "description": "Microsoft Defender AV must be configured to always enable real-time protection.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\DisableRealtimeMonitoring": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\DisableRealtimeMonitoring": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213445"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
+        "type": "registry",
+        "value_name": "DisableBehaviorMonitoring"
+      },
+      "description": "Microsoft Defender AV must be configured to enable behavior monitoring.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\DisableBehaviorMonitoring": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\DisableBehaviorMonitoring": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213446"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
+        "type": "registry",
+        "value_name": "DisableScanOnRealtimeEnable"
+      },
+      "description": "Microsoft Defender AV must be configured to process scanning when real-time protection is enabled.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\DisableScanOnRealtimeEnable": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\\DisableScanOnRealtimeEnable": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213447"
+    },
+    {
+      "check": {
+        "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Scan",
+        "type": "registry",
+        "value_name": "DisableArchiveScanning"
+      },
+      "description": "Microsoft Defender AV must be configured to scan archive files.",
+      "evidence_type": "registry_value_equals",
+      "expected": {
+        "type": "equals",
+        "value": 0
+      },
+      "fail_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Scan\\DisableArchiveScanning": 1
+        }
+      },
+      "pass_fixture": {
+        "platform": "windows",
+        "registry": {
+          "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Scan\\DisableArchiveScanning": 0
+        }
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-213448"
     },
     {
       "check": {
@@ -1168,5 +1546,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "MS_Defender_Antivirus",
-  "validated_candidates": 43
+  "validated_candidates": 57
 }

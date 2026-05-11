@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet",
+      "type": "registry",
+      "value_name": "LocalSettingOverrideSpynetReporting"
+    },
+    "description": "Microsoft Defender AV must be configured to disable local setting override for reporting to Microsoft MAPS.",
+    "expected": {
+      "type": "equals",
+      "value": 0
+    },
+    "platform": "windows",
+    "vuln_id": "V-213432"
+  },
   "check_content_excerpt": "This is applicable to unclassified systems. For other systems this is NA.\n\nVerify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> MAPS >> \"Configure local setting override for reporting to Microsoft MAPS\" is set to \"Disabled\" or \"Not Configured\".\n     \nProcedure: Use the Windows Registry Editor to navigate to the following key: \nHKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet\n\nCriteria: If the value \"LocalSettingOverrideSpynetReporting\" is REG_DWORD = 0, this is not a finding.\n\nIf the value does not exist, this is not a finding.\n\nIf the value is 1, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "equals",
+    "value": 0
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "This is applicable to unclassified systems. For other systems this is NA.\n\nSet the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> MAPS >> \"Configure local setting override for reporting to Microsoft MAPS\" to \"Disabled\" or \"Not Configured\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-213432r961092_rule",
   "severity": "medium",

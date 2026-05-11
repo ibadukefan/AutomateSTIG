@@ -18,16 +18,17 @@
       "vuln_id": "V-213426"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213427",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213427r961197_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured to automatically take action on all detected tasks.",
-      "tracking_issue": "TODO-V-213427",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213427"
@@ -94,16 +95,17 @@
       "vuln_id": "V-213431"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213432",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213432r961092_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured to disable local setting override for reporting to Microsoft MAPS.",
-      "tracking_issue": "TODO-V-213432",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213432"
@@ -156,91 +158,97 @@
       "vuln_id": "V-213435"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213436",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213436r961194_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured for protocol recognition for network protection.",
-      "tracking_issue": "TODO-V-213436",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213436"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213437",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213437r960921_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured to not allow local override of monitoring for file and program activity.",
-      "tracking_issue": "TODO-V-213437",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213437"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213438",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213438r960921_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured to not allow override of monitoring for incoming and outgoing file activity.",
-      "tracking_issue": "TODO-V-213438",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213438"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213439",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213439r961089_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured to not allow override of scanning for downloaded files and attachments.",
-      "tracking_issue": "TODO-V-213439",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213439"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213440",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213440r961092_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured to not allow override of behavior monitoring.",
-      "tracking_issue": "TODO-V-213440",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213440"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213441",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213441r961194_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV Group Policy settings must take priority over the local preference settings.",
-      "tracking_issue": "TODO-V-213441",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213441"
@@ -262,91 +270,97 @@
       "vuln_id": "V-213442"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213443",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213443r961194_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured to monitor for file and program activity.",
-      "tracking_issue": "TODO-V-213443",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213443"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213444",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213444r961089_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured to scan all downloaded files and attachments.",
-      "tracking_issue": "TODO-V-213444",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213444"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213445",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213445r961194_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured to always enable real-time protection.",
-      "tracking_issue": "TODO-V-213445",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213445"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213446",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213446r961092_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured to enable behavior monitoring.",
-      "tracking_issue": "TODO-V-213446",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213446"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213447",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213447r961194_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured to process scanning when real-time protection is enabled.",
-      "tracking_issue": "TODO-V-213447",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213447"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213448",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213448r961194_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured to scan archive files.",
-      "tracking_issue": "TODO-V-213448",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213448"

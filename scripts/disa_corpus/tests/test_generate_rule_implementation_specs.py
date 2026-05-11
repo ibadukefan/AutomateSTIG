@@ -202,6 +202,34 @@ If value for extensionhardening is REG_DWORD = 2, this is not a finding.''',
             'description': 'File extensions must be enabled to match file types in Excel.',
         })
 
+    def test_infers_defender_registry_absent_or_zero_dword_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-213445',
+            'title': 'Microsoft Defender AV must be configured to always enable real-time protection.',
+            'check_content': '''Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Real-time Protection >> "Turn off real-time protection" is set to "Disabled" or "Not Configured".
+
+Procedure: Use the Windows Registry Editor to navigate to the following key:
+HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection
+
+Criteria: If the value "DisableRealtimeMonitoring" is REG_DWORD = 0, this is not a finding.
+
+If the value does not exist, this is not a finding.
+
+If the value is 1, this is a finding.''',
+            'fix_text': 'Set the policy value to "Disabled" or "Not Configured".',
+        }, 'MS_Defender_Antivirus')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-213445',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection',
+                'value_name': 'DisableRealtimeMonitoring',
+            },
+            'expected': {'type': 'equals', 'value': 0},
+            'description': 'Microsoft Defender AV must be configured to always enable real-time protection.',
+        })
+
     def test_infers_sql_server_sa_login_renamed_no_output_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-274445',

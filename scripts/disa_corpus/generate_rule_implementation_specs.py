@@ -3870,8 +3870,8 @@ def _file_permission_candidate(rule: dict) -> dict | None:
     }
 
 
-def _office_registry_absent_or_dword_value_candidate(rule: dict, stig_id: str) -> dict | None:
-    if 'office' not in stig_id.lower():
+def _windows_registry_absent_or_dword_value_candidate(rule: dict, stig_id: str) -> dict | None:
+    if not any(token in stig_id.lower() for token in ('office', 'defender')):
         return None
     content = rule.get('check_content', '') or ''
     path_match = re.search(
@@ -3882,19 +3882,19 @@ def _office_registry_absent_or_dword_value_candidate(rule: dict, stig_id: str) -
     if not path_match:
         return None
     expected_match = re.search(
-        r'If\s+the\s+value\s+([A-Za-z0-9_.-]+)\s+does\s+not\s+exist,\s+this\s+is\s+not\s+a\s+finding\.\s+If\s+the\s+value\s+is\s+REG_DWORD\s*=\s*(\d+),\s+this\s+is\s+not\s+a\s+finding\.',
+        r'If\s+the\s+value\s+["“]?([A-Za-z0-9_.-]+)["”]?\s+does\s+not\s+exist,\s+this\s+is\s+not\s+a\s+finding\.\s+If\s+the\s+value\s+is\s+REG_DWORD\s*=\s*(\d+),\s+this\s+is\s+not\s+a\s+finding\.',
         content,
         re.IGNORECASE,
     )
     if not expected_match:
         expected_match = re.search(
-            r'If\s+the\s+value\s+([A-Za-z0-9_.-]+)\s+is\s+REG_DWORD\s*=\s*(\d+),\s+this\s+is\s+not\s+a\s+finding\.\s*If\s+the\s+value\s+does\s+not\s+exist,\s+this\s+is\s+not\s+a\s+finding\.',
+            r'If\s+the\s+value\s+["“]?([A-Za-z0-9_.-]+)["”]?\s+is\s+REG_DWORD\s*=\s*(\d+),\s+this\s+is\s+not\s+a\s+finding\.\s*If\s+the\s+value\s+does\s+not\s+exist,\s+this\s+is\s+not\s+a\s+finding\.',
             content,
             re.IGNORECASE,
         )
     if not expected_match:
         expected_match = re.search(
-            r'If\s+(?:the\s+)?value\s+for\s+([A-Za-z0-9_.-]+)\s+is\s+REG_DWORD\s*=\s*(\d+),\s+this\s+is\s+not\s+a\s+finding\.',
+            r'If\s+(?:the\s+)?value\s+for\s+["“]?([A-Za-z0-9_.-]+)["”]?\s+is\s+REG_DWORD\s*=\s*(\d+),\s+this\s+is\s+not\s+a\s+finding\.',
             content,
             re.IGNORECASE,
         )
@@ -3911,6 +3911,10 @@ def _office_registry_absent_or_dword_value_candidate(rule: dict, stig_id: str) -
         'expected': {'type': 'equals', 'value': int(expected_match.group(2))},
         'description': rule.get('title', ''),
     }
+
+
+def _office_registry_absent_or_dword_value_candidate(rule: dict, stig_id: str) -> dict | None:
+    return _windows_registry_absent_or_dword_value_candidate(rule, stig_id)
 
 
 def _sql_server_sa_login_renamed_candidate(rule: dict, stig_id: str) -> dict | None:
