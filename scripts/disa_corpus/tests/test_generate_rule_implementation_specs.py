@@ -184,6 +184,59 @@ If a line is not returned that includes enable-admission-plugins and ValidatingA
             'description': 'The Kubernetes API server must have the ValidatingAdmissionWebhook enabled.',
         })
 
+    def test_infers_windows_user_right_exact_allowlist_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-254418',
+            'title': 'Windows Server 2022 Access this computer from the network user right must only be assigned to the Administrators, Authenticated Users, and Enterprise Domain Controllers groups on domain controllers.',
+            'check_content': '''This applies to domain controllers. It is NA for other systems.
+
+Verify the effective setting in Local Group Policy Editor.
+
+Run "gpedit.msc".
+
+Navigate to Local Computer Policy >> Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment.
+
+If any accounts or groups other than the following are granted the "Access this computer from the network" right, this is a finding.
+
+- Administrators
+- Authenticated Users
+- Enterprise Domain Controllers''',
+            'fix_text': '''Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> User Rights Assignment >> Access this computer from the network to include only the following accounts or groups:
+
+- Administrators
+- Authenticated Users
+- Enterprise Domain Controllers''',
+        }, 'MS_Windows_Server_2022_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-254418',
+            'platform': 'windows',
+            'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': 'SeNetworkLogonRight'},
+            'expected': {'type': 'equals', 'value': '*S-1-5-32-544,*S-1-5-11,*S-1-5-9'},
+            'description': 'Windows Server 2022 Access this computer from the network user right must only be assigned to the Administrators, Authenticated Users, and Enterprise Domain Controllers groups on domain controllers.',
+        })
+
+    def test_infers_defender_threat_severity_default_action_allowed_registry_values_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-213455',
+            'title': 'Microsoft Defender AV must be configured for automatic remediation action to be taken for threat alert level Severe.',
+            'check_content': '''Procedure: Use the Windows Registry Editor to navigate to the following key:
+HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Threats\\ThreatSeverityDefaultAction
+
+Criteria: If the value "5" is REG_SZ = 2 (or 3), this is not a finding.''',
+            'fix_text': '''Select the "Show…" option box and enter "5" in the "Value name" field and enter "2" in the "Value" field.''',
+        }, 'MS_Defender_Antivirus')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-213455',
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': 'HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Threats\\ThreatSeverityDefaultAction',
+                'value_name': '5',
+            },
+            'expected': {'type': 'matches', 'pattern': '^(?:2|3)$'},
+            'description': 'Microsoft Defender AV must be configured for automatic remediation action to be taken for threat alert level Severe.',
+        })
+
     def test_infers_chrome_download_restrictions_allowed_registry_values_candidate(self):
         candidate = mod.infer_candidate_check({
             'vuln_id': 'V-221588',

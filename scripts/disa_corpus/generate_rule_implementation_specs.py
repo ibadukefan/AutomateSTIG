@@ -134,6 +134,60 @@ def _parse_expected_registry_data(text: str):
         return raw
 
 
+def _windows_defender_registry_criteria_candidate(rule: dict, stig_id: str) -> dict | None:
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if 'defender' not in stig_id.lower():
+        return None
+    path_match = re.search(
+        r'Windows\s+Registry\s+Editor\s+to\s+navigate\s+to\s+the\s+following\s+key:\s*\n\s*((?:HKLM|HKCU|HKCR|HKU|HKCC|HKEY_[A-Z_]+)\\[^\n\r]+)',
+        content,
+        re.IGNORECASE,
+    )
+    if not path_match:
+        return None
+    allowed_regsz_match = re.search(
+        r'Criteria:\s*If\s+the\s+value\s+["“]([A-Za-z0-9_.-]+)["”]\s+is\s+REG_SZ\s*=\s*([0-9]+)\s*\(or\s+([0-9]+)\),\s+this\s+is\s+not\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if allowed_regsz_match and re.search(
+        rf'enter\s+["“]{re.escape(allowed_regsz_match.group(1))}["”]\s+in\s+the\s+["“]Value\s+name["”]\s+field\s+and\s+enter\s+["“]{re.escape(allowed_regsz_match.group(2))}["”]\s+in\s+the\s+["“]Value["”]\s+field',
+        fix_text,
+        re.IGNORECASE,
+    ):
+        allowed_values = sorted({int(allowed_regsz_match.group(2)), int(allowed_regsz_match.group(3))})
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': _normalize_registry_path(path_match.group(1)),
+                'value_name': allowed_regsz_match.group(1),
+            },
+            'expected': {'type': 'matches', 'pattern': f"^(?:{'|'.join(str(value) for value in allowed_values)})$"},
+            'description': rule.get('title', ''),
+        }
+    weekday_scan_match = re.search(
+        r'Criteria:\s*If\s+the\s+value\s+["“]([A-Za-z0-9_.-]+)["”]\s+is\s+REG_DWORD\s*=\s*0x8,\s+this\s+is\s+a\s+finding\.\s*\n\s*Values\s+of\s+0x0\s+through\s+0x7\s+are\s+acceptable\s+and\s+not\s+a\s+finding',
+        content,
+        re.IGNORECASE,
+    )
+    if weekday_scan_match and re.search(r'select\s+anything\s+other\s+than\s+["“]Never["”]', fix_text, re.IGNORECASE):
+        return {
+            'vuln_id': rule.get('vuln_id', ''),
+            'platform': 'windows',
+            'check': {
+                'type': 'registry',
+                'path': _normalize_registry_path(path_match.group(1)),
+                'value_name': weekday_scan_match.group(1),
+            },
+            'expected': {'type': 'matches', 'pattern': '^(?:0|1|2|3|4|5|6|7)$'},
+            'description': rule.get('title', ''),
+        }
+    return None
+
+
 def _windows_registry_policy_candidate(rule: dict, stig_id: str) -> dict | None:
     content = rule.get('check_content', '') or ''
     fix_text = rule.get('fix_text', '') or ''
@@ -844,6 +898,51 @@ def _windows_security_policy_candidate(rule: dict) -> dict | None:
                 key = fixed_service_right_keys.get(check_display_name.lower())
                 if key:
                     expected_value = ','.join(fixed_service_principal_sids[principal] for principal in expected_principals)
+                    return {
+                        'vuln_id': rule.get('vuln_id', ''),
+                        'platform': 'windows',
+                        'check': {'type': 'security_policy', 'section': 'Privilege Rights', 'key': key},
+                        'expected': {'type': 'equals', 'value': expected_value},
+                        'description': rule.get('title', ''),
+                    }
+
+        exact_allowlist_match = re.search(
+            r'If\s+any\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups)\s+other\s+than\s+the\s+following\s+are\s+granted\s+the\s+"([^"]+)"\s+(?:user\s+)?right,\s+this\s+is\s+a\s+finding[:.]\s*(?P<body>(?:\n\s*(?:[-*]\s*)?[A-Za-z][^\n.]+)+)',
+            content,
+            re.IGNORECASE,
+        )
+        exact_allowlist_fix = re.search(
+            r'User\s+Rights\s+Assignment\s*>>\s*"?([^"\n]+?)"?\s+to\s+(?:only\s+include|include\s+only)\s+the\s+following\s+(?:groups\s+or\s+accounts|accounts\s+or\s+groups):\s*(?P<body>(?:\n\s*(?:[-*]\s*)?[A-Za-z][^\n.]+)+)',
+            fix_text,
+            re.IGNORECASE,
+        )
+        exact_allowlist_right_keys = {
+            'access this computer from the network': 'SeNetworkLogonRight',
+            'allow log on locally': 'SeInteractiveLogonRight',
+            'allow log on through remote desktop services': 'SeRemoteInteractiveLogonRight',
+            'deny access to this computer from the network': 'SeDenyNetworkLogonRight',
+            'deny log on as a batch job': 'SeDenyBatchLogonRight',
+            'deny log on locally': 'SeDenyInteractiveLogonRight',
+            'deny log on through remote desktop services': 'SeDenyRemoteInteractiveLogonRight',
+        }
+        exact_allowlist_principal_sids = {
+            'administrators': '*S-1-5-32-544',
+            'authenticated users': '*S-1-5-11',
+            'enterprise domain controllers': '*S-1-5-9',
+            'guests': '*S-1-5-32-546',
+            'remote desktop users': '*S-1-5-32-555',
+            'local account': '*S-1-5-113',
+            'local account and member of administrators group': '*S-1-5-114',
+        }
+        if exact_allowlist_match and exact_allowlist_fix and not re.search(r'\b(application|documented|ISSO|organization-defined|site-defined|except|exception)\b', policy_text, re.IGNORECASE):
+            check_display_name = exact_allowlist_match.group(1).strip().strip('"')
+            fix_display_name = exact_allowlist_fix.group(1).strip().strip('"')
+            check_principals = [line.strip(' -*\t.').lower() for line in exact_allowlist_match.group('body').splitlines() if line.strip()]
+            fix_principals = [line.strip(' -*\t.').lower() for line in exact_allowlist_fix.group('body').splitlines() if line.strip()]
+            if check_display_name.lower() == fix_display_name.lower() and check_principals == fix_principals:
+                key = exact_allowlist_right_keys.get(check_display_name.lower())
+                if key and check_principals and all(principal in exact_allowlist_principal_sids for principal in check_principals):
+                    expected_value = ','.join(exact_allowlist_principal_sids[principal] for principal in check_principals)
                     return {
                         'vuln_id': rule.get('vuln_id', ''),
                         'platform': 'windows',
@@ -4242,6 +4341,10 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
         hardened_unc_candidate = _windows_hardened_unc_paths_candidate(rule, stig_id)
         if hardened_unc_candidate:
             return hardened_unc_candidate
+
+        defender_registry_criteria_candidate = _windows_defender_registry_criteria_candidate(rule, stig_id)
+        if defender_registry_criteria_candidate:
+            return defender_registry_criteria_candidate
 
         policy_candidate = _windows_registry_policy_candidate(rule, stig_id)
         if policy_candidate:

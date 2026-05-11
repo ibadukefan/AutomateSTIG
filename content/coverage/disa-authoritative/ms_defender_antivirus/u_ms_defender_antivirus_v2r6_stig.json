@@ -382,16 +382,17 @@
       "vuln_id": "V-213449"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213450",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213450r961191_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured to perform a weekly scheduled scan.",
-      "tracking_issue": "TODO-V-213450",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213450"
@@ -459,16 +460,17 @@
       "vuln_id": "V-213454"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213455",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213455r961086_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured for automatic remediation action to be taken for threat alert level Severe.",
-      "tracking_issue": "TODO-V-213455",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213455"
@@ -602,46 +604,49 @@
       "vuln_id": "V-213463"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213464",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213464r961086_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured for automatic remediation action to be taken for threat alert level High.",
-      "tracking_issue": "TODO-V-213464",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213464"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213465",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213465r961086_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured for automatic remediation action to be taken for threat alert level Medium.",
-      "tracking_issue": "TODO-V-213465",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213465"
     },
     {
-      "check_id": "",
-      "check_pack": "",
-      "classification": "unsupported",
+      "check_id": "V-213466",
+      "check_pack": "generated-candidates/ms_defender_antivirus.candidates",
+      "classification": "automated",
       "evidence_required": true,
-      "reason": "Authoritative DISA rule inventory item pending automation classification and implementation.",
+      "reason": "Mapped to generated AutomateSTIG candidate check with deterministic pass/fail fixture evidence; still experimental until live asset validation.",
       "rule_id": "SV-213466r961086_rule",
       "severity": "medium",
       "title": "Microsoft Defender AV must be configured for automatic remediation action to be taken for threat alert level Low.",
-      "tracking_issue": "TODO-V-213466",
+      "tracking_issue": "",
       "validated_by": [
+        "content/check_packs/generated-candidates/ms_defender_antivirus.candidates.json",
         "content/disa-corpus/artifacts/a4c2d58f054b8de6e5d9123d150efed4decbee80cb1f1a566eb43e574d400a29/U_MS_Defender_Antivirus_V2R6_STIG.zip"
       ],
       "vuln_id": "V-213466"

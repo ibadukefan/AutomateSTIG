@@ -1,9 +1,23 @@
 {
+  "candidate_check": {
+    "check": {
+      "path": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Scan",
+      "type": "registry",
+      "value_name": "ScheduleDay"
+    },
+    "description": "Microsoft Defender AV must be configured to perform a weekly scheduled scan.",
+    "expected": {
+      "pattern": "^(?:0|1|2|3|4|5|6|7)$",
+      "type": "matches"
+    },
+    "platform": "windows",
+    "vuln_id": "V-213450"
+  },
   "check_content_excerpt": "Verify the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Scan >> \"Specify the day of the week to run a scheduled scan\" is set to \"Enabled\" and anything other than \"Never\" is selected in the drop-down box.\n  \nProcedure: Use the Windows Registry Editor to navigate to the following key: \nHKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Scan\n\nCriteria: If the value \"ScheduleDay\" is REG_DWORD = 0x8, this is a finding.\n\nValues of 0x0 through 0x7 are acceptable and not a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +25,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "pattern": "^(?:0|1|2|3|4|5|6|7)$",
+    "type": "matches"
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Set the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Microsoft Defender Antivirus >> Scan >> \"Specify the day of the week to run a scheduled scan\" to \"Enabled \" and select anything other than \"Never\" in the drop-down box.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "registry",
   "remediation": "planned",
   "rule_id": "SV-213450r961191_rule",
   "severity": "medium",
