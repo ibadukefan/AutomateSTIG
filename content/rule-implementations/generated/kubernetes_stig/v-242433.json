@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -i peer-key-file /etc/kubernetes/manifests/*",
+      "type": "command_output"
+    },
+    "description": "Kubernetes etcd must have a peer-key-file set for secure communication.",
+    "expected": {
+      "type": "not_equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-242433"
+  },
   "check_content_excerpt": "Change to the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Run the command:\ngrep -i peer-key-file *\n\nIf the setting \"peer-key-file\" is not set in the Kubernetes etcd manifest file, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "not_equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the Kubernetes etcd manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. \n\nSet the value of \"--peer-key-file\" to the certificate to be used for communication with etcd.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242433r1043178_rule",
   "severity": "medium",

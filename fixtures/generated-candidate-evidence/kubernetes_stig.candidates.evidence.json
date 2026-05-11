@@ -1,6 +1,32 @@
 {
-  "candidate_checks": 12,
+  "candidate_checks": 31,
   "cases": [
+    {
+      "check": {
+        "command": "grep -i audit-log-path /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes API Server must have an audit log path set.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i audit-log-path /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i audit-log-path /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242402"
+    },
     {
       "check": {
         "command": "ps -ef | grep '[k]ubelet' | grep -- '--hostname-override'",
@@ -26,6 +52,318 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-242404"
+    },
+    {
+      "check": {
+        "command": "grep -i profiling /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes Controller Manager must disable profiling.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "false",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i profiling /etc/kubernetes/manifests/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i profiling /etc/kubernetes/manifests/*": "before\nfalse\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242409"
+    },
+    {
+      "check": {
+        "command": "grep -i client-ca-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes API Server must have the SSL Certificate Authority set.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i client-ca-file /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i client-ca-file /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242419"
+    },
+    {
+      "check": {
+        "command": "grep -i root-ca-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes Controller Manager must have the SSL Certificate Authority set.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i root-ca-file /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i root-ca-file /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242421"
+    },
+    {
+      "check": {
+        "command": "grep -i client-cert-auth /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must enable client authentication to secure service.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "true",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i client-cert-auth /etc/kubernetes/manifests/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i client-cert-auth /etc/kubernetes/manifests/*": "before\ntrue\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242423"
+    },
+    {
+      "check": {
+        "command": "grep -i peer-client-cert-auth /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must enable client authentication to secure service.",
+      "evidence_type": "command_output_contains",
+      "expected": {
+        "substring": "true",
+        "type": "contains"
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i peer-client-cert-auth /etc/kubernetes/manifests/*": "before\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i peer-client-cert-auth /etc/kubernetes/manifests/*": "before\ntrue\nafter\n"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242426"
+    },
+    {
+      "check": {
+        "command": "grep -i key-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must have a key file for secure communication.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i key-file /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i key-file /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242427"
+    },
+    {
+      "check": {
+        "command": "grep -i cert-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must have a certificate for communication.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i cert-file /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i cert-file /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242428"
+    },
+    {
+      "check": {
+        "command": "grep -i etcd-cafile /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must have the SSL Certificate Authority set.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i etcd-cafile /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i etcd-cafile /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242429"
+    },
+    {
+      "check": {
+        "command": "grep -i etcd-certfile /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must have a certificate for communication.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i etcd-certfile /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i etcd-certfile /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242430"
+    },
+    {
+      "check": {
+        "command": "grep -i etcd-keyfile /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must have a key file for secure communication.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i etcd-keyfile /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i etcd-keyfile /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242431"
+    },
+    {
+      "check": {
+        "command": "grep -i peer-cert-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must have peer-cert-file set for secure communication.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i peer-cert-file /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i peer-cert-file /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242432"
+    },
+    {
+      "check": {
+        "command": "grep -i peer-key-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must have a peer-key-file set for secure communication.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i peer-key-file /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i peer-key-file /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242433"
     },
     {
       "check": {
@@ -263,6 +601,136 @@
     },
     {
       "check": {
+        "command": "grep -i audit-policy-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes API Server audit logs must be enabled.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i audit-policy-file /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i audit-policy-file /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242461"
+    },
+    {
+      "check": {
+        "command": "grep -i audit-log-maxsize /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes API Server must be set to audit log max size.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i audit-log-maxsize /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i audit-log-maxsize /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242462"
+    },
+    {
+      "check": {
+        "command": "grep -i audit-log-maxbackup /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes API Server must be set to audit log maximum backup.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i audit-log-maxbackup /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i audit-log-maxbackup /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242463"
+    },
+    {
+      "check": {
+        "command": "grep -i audit-log-maxage /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes API Server audit log retention must be set.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i audit-log-maxage /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i audit-log-maxage /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242464"
+    },
+    {
+      "check": {
+        "command": "grep -i audit-log-path /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes API Server audit log path must be set.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i audit-log-path /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i audit-log-path /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-242465"
+    },
+    {
+      "check": {
         "command": "find /etc/kubernetes/pki -name \"*.crt\" -perm /133 -exec stat -c \"%n %a\" {} \\;",
         "type": "command_output"
       },
@@ -312,6 +780,32 @@
       },
       "validation_status": "fixture_validated",
       "vuln_id": "V-242467"
+    },
+    {
+      "check": {
+        "command": "grep -i encryption-provider-config /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes Secrets must be encrypted at rest.",
+      "evidence_type": "command_output_not_equals",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "fail_fixture": {
+        "command_outputs": {
+          "grep -i encryption-provider-config /etc/kubernetes/manifests/*": ""
+        },
+        "platform": "linux"
+      },
+      "pass_fixture": {
+        "command_outputs": {
+          "grep -i encryption-provider-config /etc/kubernetes/manifests/*": "unexpected"
+        },
+        "platform": "linux"
+      },
+      "validation_status": "fixture_validated",
+      "vuln_id": "V-274882"
     }
   ],
   "production_claim": false,
@@ -319,5 +813,5 @@
   "source_check_pack": "content/check_packs/generated-candidates/kubernetes_stig.candidates.json",
   "status": "fixture_validated_candidates",
   "stig_id": "Kubernetes_STIG",
-  "validated_candidates": 12
+  "validated_candidates": 31
 }

@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -i audit-log-path /etc/kubernetes/manifests/*",
+      "type": "command_output"
+    },
+    "description": "The Kubernetes API Server must have an audit log path set.",
+    "expected": {
+      "type": "not_equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-242402"
+  },
   "check_content_excerpt": "Change to the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Run the command:\ngrep -i audit-log-path * \n\nIf the \"--audit-log-path\" is not set, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "not_equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. \n\nSet the value of \"--audit-log-path\" to a secure location for the audit logs to be written.\n\nNote: If the API server is running as a Pod, then the manifest will also need to be updated to mount the host system filesystem where the audit log file is to be written.",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242402r960888_rule",
   "severity": "medium",

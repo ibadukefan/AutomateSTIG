@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -i audit-log-maxbackup /etc/kubernetes/manifests/*",
+      "type": "command_output"
+    },
+    "description": "The Kubernetes API Server must be set to audit log maximum backup.",
+    "expected": {
+      "type": "not_equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-242463"
+  },
   "check_content_excerpt": "Change to the /etc/kubernetes/manifests/ directory on the Kubernetes Control Plane. Run the command:\ngrep -i audit-log-maxbackup * \n\nIf the setting \"audit-log-maxbackup\" is not set in the Kubernetes API Server manifest file or it is set less than \"10\", this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "not_equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Set the value of \"--audit-log-maxbackup\" to a minimum of \"10\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242463r961863_rule",
   "severity": "medium",

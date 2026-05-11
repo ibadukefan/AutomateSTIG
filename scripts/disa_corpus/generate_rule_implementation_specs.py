@@ -454,6 +454,50 @@ def _kubernetes_validating_admission_webhook_candidate(rule: dict, stig_id: str)
     }
 
 
+def _kubernetes_manifest_grep_candidate(rule: dict, stig_id: str) -> dict | None:
+    if 'kubernetes' not in stig_id.lower():
+        return None
+    content = rule.get('check_content', '') or ''
+    fix_text = rule.get('fix_text', '') or ''
+    if re.search(r'\b(?:PPSM|Ports,\s+Protocols|organization|documentation|interview|namespace|podname|<[^>]+>|latest|skew\s+policy)\b', content + '\n' + fix_text, re.IGNORECASE):
+        return None
+    if '/etc/kubernetes/manifests' not in content:
+        return None
+    command_match = re.search(
+        r'Run\s+the\s+command:\s*(?:\n|\s)+(?P<command>grep\s+-[iI]\s+(?P<flag>[A-Za-z0-9_-]+)\s+\*)\s*(?:\n|\s)+If\s+(?P<finding>[^.]+?this\s+is\s+a\s+finding)',
+        content,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not command_match:
+        return None
+    flag = command_match.group('flag')
+    if not re.fullmatch(r'[A-Za-z0-9_-]+', flag):
+        return None
+    finding = command_match.group('finding')
+    command = f'grep -i {flag} /etc/kubernetes/manifests/*'
+    if re.search(r'\bset\s+to\s+["“]false["”]|or\s+set\s+to\s+["“]false["”]', finding, re.IGNORECASE):
+        fix_value = re.search(rf'Set\s+the\s+value\s+of\s+["“]--?{re.escape(flag)}["”]?\s+to\s+["“](true)["”]', fix_text, re.IGNORECASE)
+        if not fix_value:
+            return None
+        expected = {'type': 'contains', 'substring': fix_value.group(1).lower()}
+    elif re.search(r'\bset\s+to\s+["“]true["”]|or\s+(?:it\s+is\s+)?set\s+to\s+["“]True["”]', finding, re.IGNORECASE):
+        fix_value = re.search(rf'(?:Set\s+(?:the\s+argument\s+)?["“]--?{re.escape(flag)}(?:\s+value)?["”]?|Set\s+the\s+value\s+of\s+["“]--?{re.escape(flag)}["”]?)\s+to\s+["“](false)["”]', fix_text, re.IGNORECASE)
+        if not fix_value:
+            return None
+        expected = {'type': 'contains', 'substring': fix_value.group(1).lower()}
+    elif re.search(r'\b(?:not\s+set|not\s+configured|contains\s+no\s+value)\b', finding, re.IGNORECASE) and not re.search(r'\bdoes\s+not\s+contain\b', finding, re.IGNORECASE):
+        expected = {'type': 'not_equals', 'value': ''}
+    else:
+        return None
+    return {
+        'vuln_id': rule.get('vuln_id', ''),
+        'platform': 'linux',
+        'check': {'type': 'command_output', 'command': command},
+        'expected': expected,
+        'description': rule.get('title', ''),
+    }
+
+
 def _windows_hardened_unc_paths_candidate(rule: dict, stig_id: str) -> dict | None:
     if not _windows_platform(stig_id):
         return None
@@ -4117,6 +4161,9 @@ def infer_candidate_check(rule: dict, stig_id: str) -> dict | None:
     kubernetes_admission_candidate = _kubernetes_validating_admission_webhook_candidate(rule, stig_id)
     if kubernetes_admission_candidate:
         return kubernetes_admission_candidate
+    kubernetes_manifest_grep_candidate = _kubernetes_manifest_grep_candidate(rule, stig_id)
+    if kubernetes_manifest_grep_candidate:
+        return kubernetes_manifest_grep_candidate
     windows_legal_notice_caption_candidate = _windows_legal_notice_caption_candidate(rule, stig_id)
     if windows_legal_notice_caption_candidate:
         return windows_legal_notice_caption_candidate

@@ -69,6 +69,42 @@ By using this IS (which includes any device attached to this IS), you consent to
             'description': 'Windows Server required legal notice must be configured to display before console logon.',
         })
 
+    def test_infers_kubernetes_manifest_flag_presence_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242402',
+            'title': 'The Kubernetes API Server must have an audit log path set.',
+            'check_content': '''Change to the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Run the command:
+grep -i audit-log-path *
+
+If the "--audit-log-path" is not set, this is a finding.''',
+            'fix_text': 'Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Set the value of "--audit-log-path" to a secure location for the audit logs to be written.',
+        }, 'Kubernetes_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-242402',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'grep -i audit-log-path /etc/kubernetes/manifests/*'},
+            'expected': {'type': 'not_equals', 'value': ''},
+            'description': 'The Kubernetes API Server must have an audit log path set.',
+        })
+
+    def test_infers_kubernetes_manifest_boolean_flag_candidate(self):
+        candidate = mod.infer_candidate_check({
+            'vuln_id': 'V-242423',
+            'title': 'Kubernetes etcd must enable client authentication to secure service.',
+            'check_content': '''Change to the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Run the command:
+grep -i client-cert-auth *
+
+If the setting client-cert-auth is not configured in the Kubernetes etcd manifest file or set to "false", this is a finding.''',
+            'fix_text': 'Edit the Kubernetes etcd manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Set the value of "--client-cert-auth" to "true" for the etcd.',
+        }, 'Kubernetes_STIG')
+        self.assertEqual(candidate, {
+            'vuln_id': 'V-242423',
+            'platform': 'linux',
+            'check': {'type': 'command_output', 'command': 'grep -i client-cert-auth /etc/kubernetes/manifests/*'},
+            'expected': {'type': 'contains', 'substring': 'true'},
+            'description': 'Kubernetes etcd must enable client authentication to secure service.',
+        })
+
 
     def test_infers_windows_legal_notice_caption_allowed_titles_candidate(self):
         candidate = mod.infer_candidate_check({

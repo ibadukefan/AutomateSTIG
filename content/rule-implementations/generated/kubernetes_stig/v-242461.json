@@ -1,9 +1,22 @@
 {
+  "candidate_check": {
+    "check": {
+      "command": "grep -i audit-policy-file /etc/kubernetes/manifests/*",
+      "type": "command_output"
+    },
+    "description": "Kubernetes API Server audit logs must be enabled.",
+    "expected": {
+      "type": "not_equals",
+      "value": ""
+    },
+    "platform": "linux",
+    "vuln_id": "V-242461"
+  },
   "check_content_excerpt": "Change to the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Run the command:\ngrep -i audit-policy-file * \n\nIf the setting \"audit-policy-file\" is not set or is found in the Kubernetes API manifest file without valid content, this is a finding.",
   "classification": "automated",
   "collector_commands": [],
   "collector_type": "platform_collector",
-  "evaluator": "planned",
+  "evaluator": "candidate_template",
   "evidence_fields": [
     "rule_id",
     "vuln_id",
@@ -11,13 +24,16 @@
     "evidence",
     "source_artifact"
   ],
-  "expected_values": {},
+  "expected_values": {
+    "type": "not_equals",
+    "value": ""
+  },
   "external_acceptance_refs": [],
   "fix_text_excerpt": "Edit the Kubernetes API Server manifest file in the /etc/kubernetes/manifests directory on the Kubernetes Control Plane. Set the argument \"--audit-policy-file\" to \"log file directory\".",
   "fixtures": [],
   "implementation_status": "planned",
   "na_conditions": [],
-  "normalizer": "planned",
+  "normalizer": "command_output",
   "remediation": "planned",
   "rule_id": "SV-242461r961863_rule",
   "severity": "medium",

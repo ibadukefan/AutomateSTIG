@@ -2,6 +2,19 @@
   "checks": [
     {
       "check": {
+        "command": "grep -i audit-log-path /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes API Server must have an audit log path set.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242402"
+    },
+    {
+      "check": {
         "command": "ps -ef | grep '[k]ubelet' | grep -- '--hostname-override'",
         "type": "command_output"
       },
@@ -12,6 +25,162 @@
       },
       "platform": "generic",
       "vuln_id": "V-242404"
+    },
+    {
+      "check": {
+        "command": "grep -i profiling /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes Controller Manager must disable profiling.",
+      "expected": {
+        "substring": "false",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-242409"
+    },
+    {
+      "check": {
+        "command": "grep -i client-ca-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes API Server must have the SSL Certificate Authority set.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242419"
+    },
+    {
+      "check": {
+        "command": "grep -i root-ca-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes Controller Manager must have the SSL Certificate Authority set.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242421"
+    },
+    {
+      "check": {
+        "command": "grep -i client-cert-auth /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must enable client authentication to secure service.",
+      "expected": {
+        "substring": "true",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-242423"
+    },
+    {
+      "check": {
+        "command": "grep -i peer-client-cert-auth /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must enable client authentication to secure service.",
+      "expected": {
+        "substring": "true",
+        "type": "contains"
+      },
+      "platform": "linux",
+      "vuln_id": "V-242426"
+    },
+    {
+      "check": {
+        "command": "grep -i key-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must have a key file for secure communication.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242427"
+    },
+    {
+      "check": {
+        "command": "grep -i cert-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must have a certificate for communication.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242428"
+    },
+    {
+      "check": {
+        "command": "grep -i etcd-cafile /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must have the SSL Certificate Authority set.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242429"
+    },
+    {
+      "check": {
+        "command": "grep -i etcd-certfile /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must have a certificate for communication.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242430"
+    },
+    {
+      "check": {
+        "command": "grep -i etcd-keyfile /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must have a key file for secure communication.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242431"
+    },
+    {
+      "check": {
+        "command": "grep -i peer-cert-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must have peer-cert-file set for secure communication.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242432"
+    },
+    {
+      "check": {
+        "command": "grep -i peer-key-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes etcd must have a peer-key-file set for secure communication.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242433"
     },
     {
       "check": {
@@ -132,6 +301,71 @@
     },
     {
       "check": {
+        "command": "grep -i audit-policy-file /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes API Server audit logs must be enabled.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242461"
+    },
+    {
+      "check": {
+        "command": "grep -i audit-log-maxsize /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes API Server must be set to audit log max size.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242462"
+    },
+    {
+      "check": {
+        "command": "grep -i audit-log-maxbackup /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes API Server must be set to audit log maximum backup.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242463"
+    },
+    {
+      "check": {
+        "command": "grep -i audit-log-maxage /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes API Server audit log retention must be set.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242464"
+    },
+    {
+      "check": {
+        "command": "grep -i audit-log-path /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "The Kubernetes API Server audit log path must be set.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-242465"
+    },
+    {
+      "check": {
         "command": "find /etc/kubernetes/pki -name \"*.crt\" -perm /133 -exec stat -c \"%n %a\" {} \\;",
         "type": "command_output"
       },
@@ -155,6 +389,19 @@
       },
       "platform": "generic",
       "vuln_id": "V-242467"
+    },
+    {
+      "check": {
+        "command": "grep -i encryption-provider-config /etc/kubernetes/manifests/*",
+        "type": "command_output"
+      },
+      "description": "Kubernetes Secrets must be encrypted at rest.",
+      "expected": {
+        "type": "not_equals",
+        "value": ""
+      },
+      "platform": "linux",
+      "vuln_id": "V-274882"
     }
   ],
   "platform": "linux",
